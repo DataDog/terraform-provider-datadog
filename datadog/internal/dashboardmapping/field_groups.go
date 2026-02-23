@@ -61,7 +61,7 @@ var widgetTimeField = FieldSpec{
 	JSONPath:    "time.live_span",
 	Type:        TypeString,
 	OmitEmpty:   true,
-	Description: "The timeframe to use when displaying the widget.",
+	Description: "The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.",
 }
 
 // widgetAxisFields corresponds to OpenAPI components/schemas/WidgetAxis.
@@ -195,13 +195,13 @@ var formulaAndFunctionMetricQueryFields = []FieldSpec{
 		Description: "The metrics query definition."},
 	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
 		Description: "The aggregation methods available for metrics queries.",
-		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"}},
+		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"}},
 	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The name of the query for use in formulas."},
 	{HCLKey: "cross_org_uuids", Type: TypeStringList, OmitEmpty: true, MaxItems: 1,
 		Description: "The source organization UUID for cross organization queries. Feature in Private Beta."},
 	{HCLKey: "semantic_mode", Type: TypeString, OmitEmpty: true,
-		Description: "Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed."},
+		Description: "Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`."},
 }
 
 // formulaAndFunctionEventQueryComputeFields corresponds to the compute block inside
@@ -293,7 +293,7 @@ var formulaAndFunctionProcessQueryFields = []FieldSpec{
 		ValidValues: []string{"asc", "desc"}},
 	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
 		Description: "The aggregation methods available for metrics queries.",
-		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"}},
+		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"}},
 	{HCLKey: "is_normalized_cpu", Type: TypeBool, OmitEmpty: true,
 		Description: "Whether to normalize the CPU percentages."},
 	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
@@ -320,7 +320,7 @@ var formulaAndFunctionApmDependencyStatsQueryFields = []FieldSpec{
 	{HCLKey: "service", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "APM service."},
 	{HCLKey: "primary_tag_name", Type: TypeString, OmitEmpty: true,
-		Description: "The name of the second primary tag used within APM; required when `primary_tag_value` is specified."},
+		Description: "The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog."},
 	{HCLKey: "primary_tag_value", Type: TypeString, OmitEmpty: true,
 		Description: "Filter APM data by the second primary tag. `primary_tag_name` must also be specified."},
 	{HCLKey: "is_upstream", Type: TypeBool, OmitEmpty: true,
@@ -351,7 +351,7 @@ var formulaAndFunctionApmResourceStatsQueryFields = []FieldSpec{
 	{HCLKey: "service", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "APM service."},
 	{HCLKey: "primary_tag_name", Type: TypeString, OmitEmpty: true,
-		Description: "The name of the second primary tag used within APM; required when `primary_tag_value` is specified."},
+		Description: "The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog."},
 	{HCLKey: "primary_tag_value", Type: TypeString, OmitEmpty: true,
 		Description: "Filter APM data by the second primary tag. `primary_tag_name` must also be specified."},
 	{HCLKey: "group_by", Type: TypeStringList, OmitEmpty: true,
@@ -370,7 +370,7 @@ var formulaAndFunctionSLOQueryFields = []FieldSpec{
 		Description: "ID of an SLO to query."},
 	{HCLKey: "measure", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "SLO measures queries.",
-		ValidValues: []string{"good_events", "bad_events", "slo_status", "error_budget_remaining", "burn_rate", "error_budget_burndown"}},
+		ValidValues: []string{"good_events", "bad_events", "good_minutes", "bad_minutes", "slo_status", "error_budget_remaining", "burn_rate", "error_budget_burndown"}},
 	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
 		Description: "The name of query for use in formulas."},
 	{HCLKey: "group_mode", Type: TypeString, OmitEmpty: false, Default: "overall",
@@ -378,7 +378,7 @@ var formulaAndFunctionSLOQueryFields = []FieldSpec{
 		ValidValues: []string{"overall", "components"}},
 	{HCLKey: "slo_query_type", Type: TypeString, OmitEmpty: false, Default: "metric",
 		Description: "type of the SLO to query.",
-		ValidValues: []string{"metric", "time_slice"}},
+		ValidValues: []string{"metric", "time_slice", "monitor"}},
 	{HCLKey: "additional_query_filters", Type: TypeString, OmitEmpty: true,
 		Description: "Additional filters applied to the SLO query."},
 }
@@ -395,7 +395,7 @@ var formulaAndFunctionCloudCostQueryFields = []FieldSpec{
 		Description: "The cloud cost query definition."},
 	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
 		Description: "The aggregation methods available for cloud cost queries.",
-		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"}},
+		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"}},
 	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The name of the query for use in formulas."},
 }
@@ -431,16 +431,16 @@ var formulaAndFunctionQueryFields = []FieldSpec{
 // Used by: change, distribution, heatmap, query_value, toplist, sunburst requests.
 var standardQueryFields = []FieldSpec{
 	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The log query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The APM query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The RUM query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The security query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The process query to use in the widget. The structure of this block is described below.",
@@ -573,7 +573,7 @@ var widgetFormulaFields = []FieldSpec{
 var widgetConditionalFormatFields = []FieldSpec{
 	{HCLKey: "comparator", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The comparator to use.",
-		ValidValues: []string{"<", "<=", ">", ">="}},
+		ValidValues: []string{"=", ">", ">=", "<", "<="}},
 	{HCLKey: "value", Type: TypeFloat, OmitEmpty: false, Required: true,
 		Description: "A value for the comparator."},
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: false, Required: true,
@@ -667,7 +667,7 @@ var scatterplotXYRequestFields = append([]FieldSpec{
 		Description: "The metric query to use for this widget."},
 	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
 		Description: "Aggregator used for the request.",
-		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"}},
+		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"}},
 }, standardQueryFields...)
 
 // scatterplotFormulaFields corresponds to OpenAPI ScatterplotWidgetFormula.
@@ -864,7 +864,7 @@ var queryTableOldRequestFields = []FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Description: "The metric query to use for this widget."},
 	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget.", Children: processQueryDefinitionFields},
+	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget. The structure of this block is described below.", Children: processQueryDefinitionFields},
 	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Children: apmStatsQueryFields},
@@ -881,7 +881,7 @@ var queryTableOldRequestFields = []FieldSpec{
 		Type:        TypeString,
 		OmitEmpty:   true,
 		Description: "The aggregator to use for time aggregation.",
-		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"},
+		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"},
 	},
 	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "The alias for the column name (defaults to metric name)."},
 	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "The number of lines to show in the table."},
@@ -897,7 +897,7 @@ var queryTableOldRequestFields = []FieldSpec{
 		HCLKey:      "cell_display_mode",
 		Type:        TypeStringList,
 		OmitEmpty:   true,
-		Description: "A list of display modes for each table cell.",
+		Description: "A list of display modes for each table cell. Valid values are `number`, `bar`.",
 	},
 	// text_formats: each element is a list of text_format blocks
 	{HCLKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
@@ -1214,7 +1214,8 @@ var CommonWidgetFields = []FieldSpec{
 	widgetTimeField,
 	// WidgetTime: hide_incomplete_cost_data (HCL) → {"time": {"hide_incomplete_cost_data": true}} (JSON)
 	{HCLKey: "hide_incomplete_cost_data", JSONPath: "time.hide_incomplete_cost_data", Type: TypeBool, OmitEmpty: true,
-		Description: "Toggle to hide the widget's incomplete cost data."},
+		Computed:    true,
+		Description: "Hide any portion of the widget's timeframe that is incomplete due to cost data not being available."},
 }
 
 // ============================================================
@@ -1241,7 +1242,9 @@ var DashboardTopLevelFields = []FieldSpec{
 		ValidValues: []string{"auto", "fixed"},
 		Description: "Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts."},
 
-	{HCLKey: "description", Type: TypeString, OmitEmpty: false,
+	// OmitEmpty: true — description is only emitted when explicitly set.
+	// Cassettes recorded without description have no "description" key.
+	{HCLKey: "description", Type: TypeString, OmitEmpty: true,
 		Description: "The description of the dashboard."},
 
 	// url: Computed+Optional. Always suppress diff — value is assigned by API and cannot be updated.

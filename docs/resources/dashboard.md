@@ -765,10 +765,10 @@ Required:
 
 Optional:
 
-- `available_values` (List of String) The list of values that the template variable drop-down is limited to.
-- `default` (String, Deprecated) (deprecated) The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`. **Deprecated.** Use `defaults` instead.
+- `available_values` (List of String) The list of values that the template variable drop-down is be limited to
+- `default` (String, Deprecated) The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`. **Deprecated.** Use `defaults` instead.
 - `defaults` (List of String) One or many default values for template variables on load. If more than one default is specified, they will be unioned together with `OR`. Cannot be used in conjunction with `default`.
-- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable drop-down.
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
 - `type` (String) The type of variable. This is to differentiate between filter variables (interpolated in query) and group by variables (interpolated into group by).
 
 
@@ -778,14 +778,14 @@ Optional:
 Optional:
 
 - `name` (String) The name of the preset.
-- `template_variable` (Block List) The template variable names and assumed values under the given preset. (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
+- `template_variable` (Block List) The template variable names and assumed values under the given preset (see [below for nested schema](#nestedblock--template_variable_preset--template_variable))
 
 <a id="nestedblock--template_variable_preset--template_variable"></a>
 ### Nested Schema for `template_variable_preset.template_variable`
 
 Optional:
 
-- `name` (String) The name of the template variable.
+- `name` (String) The name of the template variable
 - `value` (String, Deprecated) The value that should be assumed by the template variable in this preset. Cannot be used in conjunction with `values`. **Deprecated.** Use `values` instead.
 - `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified. Cannot be used in conjunction with `value`.
 
@@ -797,38 +797,38 @@ Optional:
 Optional:
 
 - `alert_graph_definition` (Block List, Max: 1) The definition for a Alert Graph widget. (see [below for nested schema](#nestedblock--widget--alert_graph_definition))
-- `alert_value_definition` (Block List, Max: 1) The definition for an Alert Value widget. (see [below for nested schema](#nestedblock--widget--alert_value_definition))
-- `change_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition))
+- `alert_value_definition` (Block List, Max: 1) The definition for a Alert Value widget. (see [below for nested schema](#nestedblock--widget--alert_value_definition))
+- `change_definition` (Block List, Max: 1) The definition for a Change widget. (see [below for nested schema](#nestedblock--widget--change_definition))
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--check_status_definition))
-- `distribution_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--distribution_definition))
-- `event_stream_definition` (Block List, Max: 1) The definition for an Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
-- `event_timeline_definition` (Block List, Max: 1) The definition for an Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
+- `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--distribution_definition))
+- `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
+- `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--free_text_definition))
-- `geomap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition))
+- `geomap_definition` (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--geomap_definition))
 - `group_definition` (Block List, Max: 1) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition))
-- `heatmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition))
-- `hostmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--hostmap_definition))
-- `iframe_definition` (Block List, Max: 1) The definition for an IFrame widget. (see [below for nested schema](#nestedblock--widget--iframe_definition))
+- `heatmap_definition` (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition))
+- `hostmap_definition` (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition))
+- `iframe_definition` (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--iframe_definition))
 - `image_definition` (Block List, Max: 1) The definition for an Image widget. (see [below for nested schema](#nestedblock--widget--image_definition))
 - `list_stream_definition` (Block List, Max: 1) The definition for a List Stream widget. (see [below for nested schema](#nestedblock--widget--list_stream_definition))
-- `log_stream_definition` (Block List, Max: 1) The definition for a Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
-- `manage_status_definition` (Block List, Max: 1) The definition for a Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
+- `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
+- `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
 - `powerpack_definition` (Block List, Max: 1) The definition for a Powerpack widget. (see [below for nested schema](#nestedblock--widget--powerpack_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--query_table_definition))
-- `query_value_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition))
+- `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--run_workflow_definition))
-- `scatterplot_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--scatterplot_definition))
+- `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--servicemap_definition))
-- `slo_list_definition` (Block List, Max: 1) The definition for a SLO List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition))
+- `slo_list_definition` (Block List, Max: 1) The definition for an SLO (Service Level Objective) List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition))
 - `split_graph_definition` (Block List, Max: 1) The definition for a Split Graph widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition))
-- `sunburst_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition))
-- `timeseries_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition))
-- `toplist_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition))
-- `topology_map_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--topology_map_definition))
-- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service (Service Summary) widget. (see [below for nested schema](#nestedblock--widget--trace_service_definition))
-- `treemap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition))
+- `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition))
+- `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition))
+- `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--toplist_definition))
+- `topology_map_definition` (Block List, Max: 1) The definition for a Topology Map widget. (see [below for nested schema](#nestedblock--widget--topology_map_definition))
+- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--trace_service_definition))
+- `treemap_definition` (Block List, Max: 1) The definition for a Treemap widget. (see [below for nested schema](#nestedblock--widget--treemap_definition))
 - `widget_layout` (Block List, Max: 1) The layout of the widget on a 'free' dashboard. (see [below for nested schema](#nestedblock--widget--widget_layout))
 
 Read-Only:
@@ -845,8 +845,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -861,8 +861,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
@@ -877,8 +877,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -900,19 +900,19 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
 - `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
 - `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
 - `show_present` (Boolean) If set to `true`, displays the current value.
 
 <a id="nestedblock--widget--change_definition--request--apm_query"></a>
@@ -1010,7 +1010,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -1200,7 +1200,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -1220,7 +1220,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -1236,7 +1236,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -1315,10 +1315,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--change_definition--request--query--process_query"></a>
@@ -1332,7 +1332,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -1347,7 +1347,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -1356,7 +1356,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -1502,8 +1502,8 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -1515,9 +1515,9 @@ Optional:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -1531,15 +1531,15 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style))
 
 <a id="nestedblock--widget--distribution_definition--request--apm_query"></a>
@@ -1668,7 +1668,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -1858,7 +1858,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -1878,7 +1878,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -1894,7 +1894,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -1973,10 +1973,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--distribution_definition--request--query--process_query"></a>
@@ -1990,7 +1990,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -2005,7 +2005,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -2014,7 +2014,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -2189,8 +2189,8 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2206,8 +2206,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2225,8 +2225,8 @@ Optional:
 
 - `color` (String) The color of the text in the widget.
 - `font_size` (String) The size of the text in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2239,8 +2239,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -2265,10 +2265,10 @@ Optional:
 Optional:
 
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula`
@@ -2301,7 +2301,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -2477,7 +2477,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -2497,7 +2497,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -2513,7 +2513,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -2592,10 +2592,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--process_query"></a>
@@ -2609,7 +2609,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -2624,7 +2624,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -2633,7 +2633,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -2731,8 +2731,8 @@ Optional:
 
 - `background_color` (String) The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
 - `banner_img` (String) The image URL to display as a banner for the group.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2745,38 +2745,38 @@ Optional:
 Optional:
 
 - `alert_graph_definition` (Block List, Max: 1) The definition for a Alert Graph widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_graph_definition))
-- `alert_value_definition` (Block List, Max: 1) The definition for an Alert Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_value_definition))
-- `change_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition))
+- `alert_value_definition` (Block List, Max: 1) The definition for a Alert Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_value_definition))
+- `change_definition` (Block List, Max: 1) The definition for a Change widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition))
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--check_status_definition))
-- `distribution_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition))
-- `event_stream_definition` (Block List, Max: 1) The definition for an Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition))
-- `event_timeline_definition` (Block List, Max: 1) The definition for an Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
+- `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition))
+- `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition))
+- `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition))
-- `geomap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition))
+- `geomap_definition` (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition))
 - `group_definition` (Block List, Max: 1) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--group_definition))
-- `heatmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition))
-- `hostmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
-- `iframe_definition` (Block List, Max: 1) The definition for an IFrame widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition))
+- `heatmap_definition` (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition))
+- `hostmap_definition` (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
+- `iframe_definition` (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition))
 - `image_definition` (Block List, Max: 1) The definition for an Image widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--image_definition))
 - `list_stream_definition` (Block List, Max: 1) The definition for a List Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition))
-- `log_stream_definition` (Block List, Max: 1) The definition for a Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
-- `manage_status_definition` (Block List, Max: 1) The definition for a Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
+- `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
+- `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
 - `powerpack_definition` (Block List, Max: 1) The definition for a Powerpack widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition))
-- `query_value_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition))
+- `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition))
-- `scatterplot_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition))
+- `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition))
-- `slo_list_definition` (Block List, Max: 1) The definition for a SLO List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition))
+- `slo_list_definition` (Block List, Max: 1) The definition for an SLO (Service Level Objective) List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition))
 - `split_graph_definition` (Block List, Max: 1) The definition for a Split Graph widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition))
-- `sunburst_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition))
-- `timeseries_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition))
-- `toplist_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition))
-- `topology_map_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition))
-- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service (Service Summary) widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition))
-- `treemap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition))
+- `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition))
+- `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition))
+- `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition))
+- `topology_map_definition` (Block List, Max: 1) The definition for a Topology Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition))
+- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition))
+- `treemap_definition` (Block List, Max: 1) The definition for a Treemap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition))
 - `widget_layout` (Block List, Max: 1) The layout of the widget on a 'free' dashboard. (see [below for nested schema](#nestedblock--widget--group_definition--widget--widget_layout))
 
 Read-Only:
@@ -2793,8 +2793,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -2809,8 +2809,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
@@ -2825,8 +2825,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2848,19 +2848,19 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
 - `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
 - `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query))
 - `show_present` (Boolean) If set to `true`, displays the current value.
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query"></a>
@@ -2958,7 +2958,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -3148,7 +3148,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -3168,7 +3168,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -3184,7 +3184,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -3263,10 +3263,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--process_query"></a>
@@ -3280,7 +3280,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -3295,7 +3295,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -3304,7 +3304,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -3450,8 +3450,8 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -3463,9 +3463,9 @@ Optional:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -3479,15 +3479,15 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query"></a>
@@ -3616,7 +3616,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -3806,7 +3806,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -3826,7 +3826,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -3842,7 +3842,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -3921,10 +3921,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--query--process_query"></a>
@@ -3938,7 +3938,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -3953,7 +3953,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -3962,7 +3962,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -4137,8 +4137,8 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -4154,8 +4154,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -4173,8 +4173,8 @@ Optional:
 
 - `color` (String) The color of the text in the widget.
 - `font_size` (String) The size of the text in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -4187,8 +4187,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -4213,10 +4213,10 @@ Optional:
 Optional:
 
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula`
@@ -4249,7 +4249,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -4425,7 +4425,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -4445,7 +4445,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -4461,7 +4461,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -4540,10 +4540,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query"></a>
@@ -4557,7 +4557,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -4572,7 +4572,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -4581,7 +4581,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -4679,8 +4679,8 @@ Optional:
 
 - `background_color` (String) The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
 - `banner_img` (String) The image URL to display as a banner for the group.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -4694,9 +4694,9 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -4732,14 +4732,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query"></a>
@@ -4837,7 +4837,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -5027,7 +5027,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -5047,7 +5047,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -5063,7 +5063,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -5142,10 +5142,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--process_query"></a>
@@ -5159,7 +5159,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -5174,7 +5174,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -5183,7 +5183,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -5344,8 +5344,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--custom_link))
 - `group` (List of String) The list of tags to group nodes by.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
@@ -5380,14 +5380,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.apm_query`
@@ -5484,7 +5484,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -5674,7 +5674,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -5694,7 +5694,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -5710,7 +5710,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -5789,10 +5789,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--process_query"></a>
@@ -5806,7 +5806,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -5821,7 +5821,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -5830,7 +5830,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -5968,14 +5968,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.apm_query`
@@ -6072,7 +6072,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -6262,7 +6262,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -6282,7 +6282,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -6298,7 +6298,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -6377,10 +6377,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--process_query"></a>
@@ -6394,7 +6394,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -6409,7 +6409,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -6418,7 +6418,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -6573,8 +6573,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -6589,11 +6589,11 @@ Required:
 
 Optional:
 
-- `has_background` (Boolean) Whether to display a background or not.
-- `has_border` (Boolean) Whether to display a border or not.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `has_background` (Boolean) Whether to display a background or not. Defaults to `true`.
+- `has_border` (Boolean) Whether to display a border or not. Defaults to `true`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `horizontal_align` (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
 - `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - `title` (String) The title of the widget.
@@ -6612,8 +6612,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -6679,9 +6679,9 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
@@ -6712,9 +6712,9 @@ Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
@@ -6736,8 +6736,8 @@ Optional:
 - `background_color` (String) The background color of the note.
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_tick` (Boolean) Whether to show a tick or not.
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
@@ -6759,8 +6759,8 @@ Optional:
 
 - `background_color` (String) The background color of the powerpack title.
 - `banner_img` (String) URL of image to display as a banner for the powerpack.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_title` (Boolean) Whether to show the title of the powerpack.
 - `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables))
 - `title` (String) The title of the widget.
@@ -6810,8 +6810,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -6833,17 +6833,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
+- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
@@ -6950,7 +6950,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -6995,7 +6995,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -7185,7 +7185,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -7205,7 +7205,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -7221,7 +7221,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -7300,10 +7300,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--process_query"></a>
@@ -7317,7 +7317,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -7332,7 +7332,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -7341,7 +7341,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -7528,8 +7528,8 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -7554,17 +7554,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.query_value_definition.request.apm_query`
@@ -7699,7 +7699,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -7744,7 +7744,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -7934,7 +7934,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -7954,7 +7954,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -7970,7 +7970,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -8049,10 +8049,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query"></a>
@@ -8066,7 +8066,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -8081,7 +8081,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -8090,7 +8090,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -8258,9 +8258,9 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--input))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -8293,8 +8293,8 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -8373,7 +8373,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -8393,7 +8393,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -8409,7 +8409,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -8488,10 +8488,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -8505,7 +8505,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -8520,7 +8520,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -8529,7 +8529,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -8539,15 +8539,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.apm_query`
@@ -8644,7 +8644,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -8834,7 +8834,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -8854,7 +8854,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -8870,7 +8870,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -8949,10 +8949,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--process_query"></a>
@@ -8966,7 +8966,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -8981,7 +8981,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -8990,7 +8990,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -9128,15 +9128,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.apm_query`
@@ -9233,7 +9233,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -9423,7 +9423,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -9443,7 +9443,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -9459,7 +9459,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -9538,10 +9538,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--process_query"></a>
@@ -9555,7 +9555,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -9570,7 +9570,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -9579,7 +9579,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -9752,8 +9752,8 @@ Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -9771,8 +9771,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9798,8 +9798,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9848,8 +9848,8 @@ Required:
 Optional:
 
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9860,35 +9860,35 @@ Optional:
 Optional:
 
 - `alert_graph_definition` (Block List, Max: 1) The definition for a Alert Graph widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--alert_graph_definition))
-- `alert_value_definition` (Block List, Max: 1) The definition for an Alert Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--alert_value_definition))
-- `change_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition))
+- `alert_value_definition` (Block List, Max: 1) The definition for a Alert Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--alert_value_definition))
+- `change_definition` (Block List, Max: 1) The definition for a Change widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition))
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--check_status_definition))
-- `distribution_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition))
-- `event_stream_definition` (Block List, Max: 1) The definition for an Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--event_stream_definition))
-- `event_timeline_definition` (Block List, Max: 1) The definition for an Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--event_timeline_definition))
+- `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition))
+- `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--event_stream_definition))
+- `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--free_text_definition))
-- `geomap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition))
-- `heatmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition))
-- `hostmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition))
-- `iframe_definition` (Block List, Max: 1) The definition for an IFrame widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--iframe_definition))
+- `geomap_definition` (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition))
+- `heatmap_definition` (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition))
+- `hostmap_definition` (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition))
+- `iframe_definition` (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--iframe_definition))
 - `image_definition` (Block List, Max: 1) The definition for an Image widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--image_definition))
 - `list_stream_definition` (Block List, Max: 1) The definition for a List Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--list_stream_definition))
-- `log_stream_definition` (Block List, Max: 1) The definition for a Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--log_stream_definition))
-- `manage_status_definition` (Block List, Max: 1) The definition for a Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--manage_status_definition))
+- `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--log_stream_definition))
+- `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--note_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition))
-- `query_value_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition))
+- `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--run_workflow_definition))
-- `scatterplot_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition))
+- `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--servicemap_definition))
-- `slo_list_definition` (Block List, Max: 1) The definition for a SLO List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--slo_list_definition))
-- `sunburst_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition))
-- `timeseries_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition))
-- `toplist_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition))
-- `topology_map_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--topology_map_definition))
-- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service (Service Summary) widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--trace_service_definition))
-- `treemap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition))
+- `slo_list_definition` (Block List, Max: 1) The definition for an SLO (Service Level Objective) List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--slo_list_definition))
+- `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition))
+- `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition))
+- `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition))
+- `topology_map_definition` (Block List, Max: 1) The definition for a Topology Map widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--topology_map_definition))
+- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--trace_service_definition))
+- `treemap_definition` (Block List, Max: 1) The definition for a Treemap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--alert_graph_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.alert_graph_definition`
@@ -9900,8 +9900,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9916,8 +9916,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
@@ -9932,8 +9932,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -9955,19 +9955,19 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--apm_query))
 - `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--log_query))
 - `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--security_query))
 - `show_present` (Boolean) If set to `true`, displays the current value.
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--apm_query"></a>
@@ -10065,7 +10065,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -10255,7 +10255,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -10275,7 +10275,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -10291,7 +10291,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -10370,10 +10370,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -10387,7 +10387,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -10402,7 +10402,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -10411,7 +10411,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -10557,8 +10557,8 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -10570,9 +10570,9 @@ Optional:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -10586,15 +10586,15 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_query"></a>
@@ -10723,7 +10723,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -10913,7 +10913,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -10933,7 +10933,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -10949,7 +10949,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -11028,10 +11028,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--distribution_definition--request--query--process_query"></a>
@@ -11045,7 +11045,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -11060,7 +11060,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -11069,7 +11069,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -11244,8 +11244,8 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -11261,8 +11261,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -11280,8 +11280,8 @@ Optional:
 
 - `color` (String) The color of the text in the widget.
 - `font_size` (String) The size of the text in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -11294,8 +11294,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -11320,10 +11320,10 @@ Optional:
 Optional:
 
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--log_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--rum_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula`
@@ -11356,7 +11356,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -11532,7 +11532,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -11552,7 +11552,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -11568,7 +11568,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -11647,10 +11647,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -11664,7 +11664,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -11679,7 +11679,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -11688,7 +11688,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -11782,9 +11782,9 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -11820,14 +11820,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--apm_query"></a>
@@ -11925,7 +11925,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -12115,7 +12115,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -12135,7 +12135,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -12151,7 +12151,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -12230,10 +12230,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--query--process_query"></a>
@@ -12247,7 +12247,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -12262,7 +12262,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -12271,7 +12271,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -12432,8 +12432,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--custom_link))
 - `group` (List of String) The list of tags to group nodes by.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
@@ -12468,14 +12468,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.hostmap_definition.request.fill.apm_query`
@@ -12572,7 +12572,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -12762,7 +12762,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -12782,7 +12782,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -12798,7 +12798,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -12877,10 +12877,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--query--process_query"></a>
@@ -12894,7 +12894,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -12909,7 +12909,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -12918,7 +12918,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -13056,14 +13056,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.hostmap_definition.request.size.apm_query`
@@ -13160,7 +13160,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -13350,7 +13350,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -13370,7 +13370,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -13386,7 +13386,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -13465,10 +13465,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--query--process_query"></a>
@@ -13482,7 +13482,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -13497,7 +13497,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -13506,7 +13506,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -13661,8 +13661,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -13677,11 +13677,11 @@ Required:
 
 Optional:
 
-- `has_background` (Boolean) Whether to display a background or not.
-- `has_border` (Boolean) Whether to display a border or not.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `has_background` (Boolean) Whether to display a background or not. Defaults to `true`.
+- `has_border` (Boolean) Whether to display a border or not. Defaults to `true`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `horizontal_align` (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
 - `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - `title` (String) The title of the widget.
@@ -13700,8 +13700,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -13767,9 +13767,9 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
@@ -13800,9 +13800,9 @@ Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
@@ -13824,8 +13824,8 @@ Optional:
 - `background_color` (String) The background color of the note.
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_tick` (Boolean) Whether to show a tick or not.
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
@@ -13843,8 +13843,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -13866,17 +13866,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--process_query))
+- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--rum_query))
@@ -13983,7 +13983,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -14028,7 +14028,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -14218,7 +14218,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -14238,7 +14238,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -14254,7 +14254,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -14333,10 +14333,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -14350,7 +14350,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -14365,7 +14365,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -14374,7 +14374,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -14561,8 +14561,8 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -14587,17 +14587,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--audit_query))
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.apm_query`
@@ -14732,7 +14732,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -14777,7 +14777,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -14967,7 +14967,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -14987,7 +14987,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -15003,7 +15003,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -15082,10 +15082,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -15099,7 +15099,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -15114,7 +15114,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -15123,7 +15123,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -15291,9 +15291,9 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--run_workflow_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--run_workflow_definition--input))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -15326,8 +15326,8 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -15406,7 +15406,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -15426,7 +15426,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -15442,7 +15442,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -15521,10 +15521,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -15538,7 +15538,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -15553,7 +15553,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -15562,7 +15562,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -15572,15 +15572,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.x.apm_query`
@@ -15677,7 +15677,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -15867,7 +15867,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -15887,7 +15887,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -15903,7 +15903,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -15982,10 +15982,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--process_query"></a>
@@ -15999,7 +15999,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -16014,7 +16014,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -16023,7 +16023,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -16161,15 +16161,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.y.apm_query`
@@ -16266,7 +16266,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -16456,7 +16456,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -16476,7 +16476,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -16492,7 +16492,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -16571,10 +16571,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--process_query"></a>
@@ -16588,7 +16588,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -16603,7 +16603,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -16612,7 +16612,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -16785,8 +16785,8 @@ Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -16804,8 +16804,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--servicemap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -16831,8 +16831,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -16875,11 +16875,11 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -16922,16 +16922,16 @@ Required:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--audit_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--log_query))
-- `network_query` (Block List, Max: 1) The network query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--network_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--log_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--network_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--security_query))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query"></a>
@@ -17093,7 +17093,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -17347,7 +17347,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -17367,7 +17367,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -17383,7 +17383,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -17462,10 +17462,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -17479,7 +17479,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -17494,7 +17494,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -17503,7 +17503,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -17652,11 +17652,11 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--right_yaxis))
@@ -17707,20 +17707,20 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula))
-- `log_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--metadata))
-- `network_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--network_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--network_query))
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--process_query))
-- `profile_metrics_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--profile_metrics_query))
+- `profile_metrics_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--profile_metrics_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query))
-- `rum_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query"></a>
@@ -17882,7 +17882,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -18212,7 +18212,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -18232,7 +18232,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -18248,7 +18248,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -18327,10 +18327,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -18344,7 +18344,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -18359,7 +18359,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -18368,7 +18368,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -18543,8 +18543,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
 - `title` (String) The title of the widget.
@@ -18567,16 +18567,16 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--security_query))
 - `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query"></a>
@@ -18712,7 +18712,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -18757,7 +18757,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -18947,7 +18947,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -18967,7 +18967,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -18983,7 +18983,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -19062,10 +19062,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -19079,7 +19079,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -19094,7 +19094,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -19103,7 +19103,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -19269,8 +19269,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--topology_map_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--topology_map_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -19322,8 +19322,8 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
 - `show_errors` (Boolean) Whether to show the error metrics or not.
@@ -19342,8 +19342,8 @@ Optional:
 Optional:
 
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--custom_links))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -19399,7 +19399,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -19511,7 +19511,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -19531,7 +19531,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -19547,7 +19547,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -19626,10 +19626,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -19643,7 +19643,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -19658,7 +19658,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -19667,7 +19667,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -19744,11 +19744,11 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -19791,16 +19791,16 @@ Required:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query))
-- `network_query` (Block List, Max: 1) The network query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query"></a>
@@ -19962,7 +19962,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -20216,7 +20216,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -20236,7 +20236,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -20252,7 +20252,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -20331,10 +20331,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query"></a>
@@ -20348,7 +20348,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -20363,7 +20363,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -20372,7 +20372,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -20521,11 +20521,11 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
@@ -20576,20 +20576,20 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
-- `log_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
-- `network_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query))
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--process_query))
-- `profile_metrics_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--profile_metrics_query))
+- `profile_metrics_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--profile_metrics_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query))
-- `rum_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query"></a>
@@ -20751,7 +20751,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -21081,7 +21081,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -21101,7 +21101,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -21117,7 +21117,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -21196,10 +21196,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query"></a>
@@ -21213,7 +21213,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -21228,7 +21228,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -21237,7 +21237,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -21412,8 +21412,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style))
 - `title` (String) The title of the widget.
@@ -21436,16 +21436,16 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query))
 - `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query"></a>
@@ -21581,7 +21581,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -21626,7 +21626,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -21816,7 +21816,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -21836,7 +21836,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -21852,7 +21852,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -21931,10 +21931,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query"></a>
@@ -21948,7 +21948,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -21963,7 +21963,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -21972,7 +21972,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -22138,8 +22138,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -22191,8 +22191,8 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
 - `show_errors` (Boolean) Whether to show the error metrics or not.
@@ -22211,8 +22211,8 @@ Optional:
 Optional:
 
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--custom_links))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -22268,7 +22268,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -22380,7 +22380,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -22400,7 +22400,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -22416,7 +22416,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -22495,10 +22495,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--process_query"></a>
@@ -22512,7 +22512,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -22527,7 +22527,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -22536,7 +22536,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -22566,9 +22566,9 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -22604,14 +22604,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--heatmap_definition--request--apm_query"></a>
@@ -22709,7 +22709,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -22899,7 +22899,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -22919,7 +22919,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -22935,7 +22935,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -23014,10 +23014,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--process_query"></a>
@@ -23031,7 +23031,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -23046,7 +23046,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -23055,7 +23055,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -23216,8 +23216,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--custom_link))
 - `group` (List of String) The list of tags to group nodes by.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
@@ -23252,14 +23252,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--apm_query"></a>
 ### Nested Schema for `widget.hostmap_definition.request.fill.apm_query`
@@ -23356,7 +23356,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -23546,7 +23546,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -23566,7 +23566,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -23582,7 +23582,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -23661,10 +23661,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--query--process_query"></a>
@@ -23678,7 +23678,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -23693,7 +23693,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -23702,7 +23702,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -23840,14 +23840,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.apm_query`
@@ -23944,7 +23944,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -24134,7 +24134,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -24154,7 +24154,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -24170,7 +24170,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -24249,10 +24249,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--query--process_query"></a>
@@ -24266,7 +24266,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -24281,7 +24281,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -24290,7 +24290,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -24445,8 +24445,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -24461,11 +24461,11 @@ Required:
 
 Optional:
 
-- `has_background` (Boolean) Whether to display a background or not.
-- `has_border` (Boolean) Whether to display a border or not.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `has_background` (Boolean) Whether to display a background or not. Defaults to `true`.
+- `has_border` (Boolean) Whether to display a border or not. Defaults to `true`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `horizontal_align` (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
 - `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - `title` (String) The title of the widget.
@@ -24484,8 +24484,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -24551,9 +24551,9 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
@@ -24584,9 +24584,9 @@ Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
@@ -24608,8 +24608,8 @@ Optional:
 - `background_color` (String) The background color of the note.
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_tick` (Boolean) Whether to show a tick or not.
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
@@ -24631,8 +24631,8 @@ Optional:
 
 - `background_color` (String) The background color of the powerpack title.
 - `banner_img` (String) URL of image to display as a banner for the powerpack.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_title` (Boolean) Whether to show the title of the powerpack.
 - `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables))
 - `title` (String) The title of the widget.
@@ -24682,8 +24682,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -24705,17 +24705,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
+- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
@@ -24822,7 +24822,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -24867,7 +24867,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -25057,7 +25057,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -25077,7 +25077,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -25093,7 +25093,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -25172,10 +25172,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--process_query"></a>
@@ -25189,7 +25189,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -25204,7 +25204,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -25213,7 +25213,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -25400,8 +25400,8 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -25426,17 +25426,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--query_value_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_value_definition.request.apm_query`
@@ -25571,7 +25571,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -25616,7 +25616,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -25806,7 +25806,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -25826,7 +25826,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -25842,7 +25842,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -25921,10 +25921,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--process_query"></a>
@@ -25938,7 +25938,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -25953,7 +25953,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -25962,7 +25962,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -26130,9 +26130,9 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -26165,8 +26165,8 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -26245,7 +26245,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -26265,7 +26265,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -26281,7 +26281,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -26360,10 +26360,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -26377,7 +26377,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -26392,7 +26392,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -26401,7 +26401,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -26411,15 +26411,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--apm_query"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.x.apm_query`
@@ -26516,7 +26516,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -26706,7 +26706,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -26726,7 +26726,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -26742,7 +26742,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -26821,10 +26821,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--query--process_query"></a>
@@ -26838,7 +26838,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -26853,7 +26853,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -26862,7 +26862,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -27000,15 +27000,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.apm_query`
@@ -27105,7 +27105,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -27295,7 +27295,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -27315,7 +27315,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -27331,7 +27331,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -27410,10 +27410,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--query--process_query"></a>
@@ -27427,7 +27427,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -27442,7 +27442,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -27451,7 +27451,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -27624,8 +27624,8 @@ Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -27643,8 +27643,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -27670,8 +27670,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -27720,8 +27720,8 @@ Required:
 Optional:
 
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -27732,35 +27732,35 @@ Optional:
 Optional:
 
 - `alert_graph_definition` (Block List, Max: 1) The definition for a Alert Graph widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--alert_graph_definition))
-- `alert_value_definition` (Block List, Max: 1) The definition for an Alert Value widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--alert_value_definition))
-- `change_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition))
+- `alert_value_definition` (Block List, Max: 1) The definition for a Alert Value widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--alert_value_definition))
+- `change_definition` (Block List, Max: 1) The definition for a Change widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition))
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--check_status_definition))
-- `distribution_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition))
-- `event_stream_definition` (Block List, Max: 1) The definition for an Event Stream widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--event_stream_definition))
-- `event_timeline_definition` (Block List, Max: 1) The definition for an Event Timeline widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--event_timeline_definition))
+- `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition))
+- `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--event_stream_definition))
+- `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--free_text_definition))
-- `geomap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition))
-- `heatmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition))
-- `hostmap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition))
-- `iframe_definition` (Block List, Max: 1) The definition for an IFrame widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--iframe_definition))
+- `geomap_definition` (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition))
+- `heatmap_definition` (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition))
+- `hostmap_definition` (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition))
+- `iframe_definition` (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--iframe_definition))
 - `image_definition` (Block List, Max: 1) The definition for an Image widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--image_definition))
 - `list_stream_definition` (Block List, Max: 1) The definition for a List Stream widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--list_stream_definition))
-- `log_stream_definition` (Block List, Max: 1) The definition for a Log Stream widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--log_stream_definition))
-- `manage_status_definition` (Block List, Max: 1) The definition for a Manage Status widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--manage_status_definition))
+- `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--log_stream_definition))
+- `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--note_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition))
-- `query_value_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition))
+- `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--run_workflow_definition))
-- `scatterplot_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition))
+- `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition))
 - `service_level_objective_definition` (Block List, Max: 1) The definition for a Service Level Objective widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--service_level_objective_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--servicemap_definition))
-- `slo_list_definition` (Block List, Max: 1) The definition for a SLO List widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--slo_list_definition))
-- `sunburst_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition))
-- `timeseries_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition))
-- `toplist_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition))
-- `topology_map_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--topology_map_definition))
-- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service (Service Summary) widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--trace_service_definition))
-- `treemap_definition` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition))
+- `slo_list_definition` (Block List, Max: 1) The definition for an SLO (Service Level Objective) List widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--slo_list_definition))
+- `sunburst_definition` (Block List, Max: 1) The definition for a Sunburst widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition))
+- `timeseries_definition` (Block List, Max: 1) The definition for a Timeseries widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition))
+- `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition))
+- `topology_map_definition` (Block List, Max: 1) The definition for a Topology Map widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--topology_map_definition))
+- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--trace_service_definition))
+- `treemap_definition` (Block List, Max: 1) The definition for a Treemap widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--alert_graph_definition"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.alert_graph_definition`
@@ -27772,8 +27772,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -27788,8 +27788,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
@@ -27804,8 +27804,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -27827,19 +27827,19 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--apm_query))
 - `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--log_query))
 - `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--security_query))
 - `show_present` (Boolean) If set to `true`, displays the current value.
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--apm_query"></a>
@@ -27937,7 +27937,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -28127,7 +28127,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -28147,7 +28147,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -28163,7 +28163,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -28242,10 +28242,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -28259,7 +28259,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -28274,7 +28274,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -28283,7 +28283,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -28429,8 +28429,8 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -28442,9 +28442,9 @@ Optional:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -28458,15 +28458,15 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--apm_query"></a>
@@ -28595,7 +28595,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -28785,7 +28785,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -28805,7 +28805,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -28821,7 +28821,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -28900,10 +28900,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--distribution_definition--request--query--process_query"></a>
@@ -28917,7 +28917,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -28932,7 +28932,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -28941,7 +28941,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -29116,8 +29116,8 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -29133,8 +29133,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -29152,8 +29152,8 @@ Optional:
 
 - `color` (String) The color of the text in the widget.
 - `font_size` (String) The size of the text in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -29166,8 +29166,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -29192,10 +29192,10 @@ Optional:
 Optional:
 
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--log_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--rum_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula`
@@ -29228,7 +29228,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -29404,7 +29404,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -29424,7 +29424,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -29440,7 +29440,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -29519,10 +29519,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -29536,7 +29536,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -29551,7 +29551,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -29560,7 +29560,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -29654,9 +29654,9 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -29692,14 +29692,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--apm_query"></a>
@@ -29797,7 +29797,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -29987,7 +29987,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -30007,7 +30007,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -30023,7 +30023,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -30102,10 +30102,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--heatmap_definition--request--query--process_query"></a>
@@ -30119,7 +30119,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -30134,7 +30134,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -30143,7 +30143,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -30304,8 +30304,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--custom_link))
 - `group` (List of String) The list of tags to group nodes by.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
@@ -30340,14 +30340,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--security_query))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--apm_query"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.hostmap_definition.request.fill.apm_query`
@@ -30444,7 +30444,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -30634,7 +30634,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -30654,7 +30654,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -30670,7 +30670,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -30749,10 +30749,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--fill--query--process_query"></a>
@@ -30766,7 +30766,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -30781,7 +30781,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -30790,7 +30790,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -30928,14 +30928,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--apm_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.hostmap_definition.request.size.apm_query`
@@ -31032,7 +31032,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -31222,7 +31222,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -31242,7 +31242,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -31258,7 +31258,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -31337,10 +31337,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--hostmap_definition--request--size--query--process_query"></a>
@@ -31354,7 +31354,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -31369,7 +31369,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -31378,7 +31378,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -31533,8 +31533,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -31549,11 +31549,11 @@ Required:
 
 Optional:
 
-- `has_background` (Boolean) Whether to display a background or not.
-- `has_border` (Boolean) Whether to display a border or not.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `has_background` (Boolean) Whether to display a background or not. Defaults to `true`.
+- `has_border` (Boolean) Whether to display a border or not. Defaults to `true`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `horizontal_align` (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
 - `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - `title` (String) The title of the widget.
@@ -31572,8 +31572,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -31639,9 +31639,9 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
@@ -31672,9 +31672,9 @@ Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
@@ -31696,8 +31696,8 @@ Optional:
 - `background_color` (String) The background color of the note.
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_tick` (Boolean) Whether to show a tick or not.
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
@@ -31715,8 +31715,8 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -31738,17 +31738,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--process_query))
+- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--rum_query))
@@ -31855,7 +31855,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -31900,7 +31900,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -32090,7 +32090,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -32110,7 +32110,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -32126,7 +32126,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -32205,10 +32205,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -32222,7 +32222,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -32237,7 +32237,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -32246,7 +32246,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -32433,8 +32433,8 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -32459,17 +32459,17 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--audit_query))
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--apm_query"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.apm_query`
@@ -32604,7 +32604,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -32649,7 +32649,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -32839,7 +32839,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -32859,7 +32859,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -32875,7 +32875,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -32954,10 +32954,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -32971,7 +32971,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -32986,7 +32986,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -32995,7 +32995,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -33163,9 +33163,9 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--run_workflow_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--run_workflow_definition--input))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -33198,8 +33198,8 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -33278,7 +33278,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -33298,7 +33298,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -33314,7 +33314,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -33393,10 +33393,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -33410,7 +33410,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -33425,7 +33425,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -33434,7 +33434,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -33444,15 +33444,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--security_query))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--apm_query"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.x.apm_query`
@@ -33549,7 +33549,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -33739,7 +33739,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -33759,7 +33759,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -33775,7 +33775,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -33854,10 +33854,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--process_query"></a>
@@ -33871,7 +33871,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -33886,7 +33886,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -33895,7 +33895,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -34033,15 +34033,15 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--apm_query))
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.y.apm_query`
@@ -34138,7 +34138,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -34328,7 +34328,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -34348,7 +34348,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -34364,7 +34364,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -34443,10 +34443,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--process_query"></a>
@@ -34460,7 +34460,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -34475,7 +34475,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -34484,7 +34484,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -34657,8 +34657,8 @@ Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -34676,8 +34676,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--servicemap_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -34703,8 +34703,8 @@ Required:
 
 Optional:
 
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -34747,11 +34747,11 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -34794,16 +34794,16 @@ Required:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--audit_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--log_query))
-- `network_query` (Block List, Max: 1) The network query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--network_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--log_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--network_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--security_query))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--apm_query"></a>
@@ -34965,7 +34965,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -35219,7 +35219,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -35239,7 +35239,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -35255,7 +35255,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -35334,10 +35334,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -35351,7 +35351,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -35366,7 +35366,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -35375,7 +35375,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -35524,11 +35524,11 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--right_yaxis))
@@ -35579,20 +35579,20 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula))
-- `log_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--metadata))
-- `network_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--network_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--network_query))
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--process_query))
-- `profile_metrics_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--profile_metrics_query))
+- `profile_metrics_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--profile_metrics_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query))
-- `rum_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query"></a>
@@ -35754,7 +35754,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -36084,7 +36084,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -36104,7 +36104,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -36120,7 +36120,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -36199,10 +36199,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -36216,7 +36216,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -36231,7 +36231,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -36240,7 +36240,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -36415,8 +36415,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
 - `title` (String) The title of the widget.
@@ -36439,16 +36439,16 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--security_query))
 - `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query"></a>
@@ -36584,7 +36584,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -36629,7 +36629,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -36819,7 +36819,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -36839,7 +36839,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -36855,7 +36855,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -36934,10 +36934,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -36951,7 +36951,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -36966,7 +36966,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -36975,7 +36975,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -37141,8 +37141,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--topology_map_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--topology_map_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -37194,8 +37194,8 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
 - `show_errors` (Boolean) Whether to show the error metrics or not.
@@ -37214,8 +37214,8 @@ Optional:
 Optional:
 
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--custom_links))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -37271,7 +37271,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -37383,7 +37383,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -37403,7 +37403,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -37419,7 +37419,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -37498,10 +37498,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -37515,7 +37515,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -37530,7 +37530,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -37539,7 +37539,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -37616,11 +37616,11 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -37663,16 +37663,16 @@ Required:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query))
-- `network_query` (Block List, Max: 1) The network query to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--sunburst_definition--request--apm_query"></a>
@@ -37834,7 +37834,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -38088,7 +38088,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -38108,7 +38108,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -38124,7 +38124,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -38203,10 +38203,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--process_query"></a>
@@ -38220,7 +38220,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -38235,7 +38235,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -38244,7 +38244,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -38393,11 +38393,11 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
@@ -38448,20 +38448,20 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
-- `log_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
-- `network_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
+- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
-- `profile_metrics_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--profile_metrics_query))
+- `profile_metrics_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--profile_metrics_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query))
-- `rum_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--timeseries_definition--request--apm_query"></a>
@@ -38623,7 +38623,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -38953,7 +38953,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -38973,7 +38973,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -38989,7 +38989,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -39068,10 +39068,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--process_query"></a>
@@ -39085,7 +39085,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -39100,7 +39100,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -39109,7 +39109,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -39284,8 +39284,8 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
 - `title` (String) The title of the widget.
@@ -39308,16 +39308,16 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula))
-- `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query))
-- `rum_query` (Block List, Max: 1) The RUM query to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The security query to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
 - `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
 
 <a id="nestedblock--widget--toplist_definition--request--apm_query"></a>
@@ -39453,7 +39453,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -39498,7 +39498,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -39688,7 +39688,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -39708,7 +39708,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -39724,7 +39724,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -39803,10 +39803,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--process_query"></a>
@@ -39820,7 +39820,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -39835,7 +39835,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -39844,7 +39844,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 
@@ -40010,8 +40010,8 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--topology_map_definition--custom_link))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--topology_map_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -40063,8 +40063,8 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
 - `show_errors` (Boolean) Whether to show the error metrics or not.
@@ -40083,8 +40083,8 @@ Optional:
 Optional:
 
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_links))
-- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
-- `live_span` (String) The timeframe to use when displaying the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -40140,7 +40140,7 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
 - `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
@@ -40252,7 +40252,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 
 
@@ -40272,7 +40272,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
 
@@ -40288,7 +40288,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -40367,10 +40367,10 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
-- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--process_query"></a>
@@ -40384,7 +40384,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
@@ -40399,7 +40399,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -40408,7 +40408,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
 
 
 

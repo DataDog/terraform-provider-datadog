@@ -338,7 +338,11 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 			}
 
 		case TypeStringList:
-			result[f.HCLKey] = toStringSliceFromInterface(jsonVal)
+			strs := toStringSliceFromInterface(jsonVal)
+			if f.OmitEmpty && len(strs) == 0 {
+				continue
+			}
+			result[f.HCLKey] = strs
 
 		case TypeBlock:
 			if m, ok := jsonVal.(map[string]interface{}); ok {
@@ -802,6 +806,14 @@ func buildFormulaProcessQueryJSON(d *schema.ResourceData, path string) map[strin
 			result["tag_filters"] = tags
 		}
 	}
+	// cross_org_uuids: list of one string
+	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
+		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
+			if s, ok := items[0].(string); ok && s != "" {
+				result["cross_org_uuids"] = []string{s}
+			}
+		}
+	}
 	return result
 }
 
@@ -829,6 +841,13 @@ func buildSLOQueryJSON(d *schema.ResourceData, path string) map[string]interface
 	if v, ok := d.GetOk(path + ".additional_query_filters"); ok && v != "" {
 		result["additional_query_filters"] = fmt.Sprintf("%v", v)
 	}
+	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
+		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
+			if s, ok := items[0].(string); ok && s != "" {
+				result["cross_org_uuids"] = []string{s}
+			}
+		}
+	}
 	return result
 }
 
@@ -846,6 +865,13 @@ func buildCloudCostQueryJSON(d *schema.ResourceData, path string) map[string]int
 	}
 	if v, ok := d.GetOk(path + ".aggregator"); ok && v != "" {
 		result["aggregator"] = fmt.Sprintf("%v", v)
+	}
+	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
+		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
+			if s, ok := items[0].(string); ok && s != "" {
+				result["cross_org_uuids"] = []string{s}
+			}
+		}
 	}
 	return result
 }
@@ -1272,6 +1298,9 @@ func flattenMetricQueryJSON(q map[string]interface{}) map[string]interface{} {
 	if v, ok := q["semantic_mode"].(string); ok && v != "" {
 		result["semantic_mode"] = v
 	}
+	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
+		result["cross_org_uuids"] = uuids
+	}
 	return result
 }
 
@@ -1359,6 +1388,9 @@ func flattenEventQueryJSON(q map[string]interface{}) map[string]interface{} {
 		}
 		result["group_by"] = flatGBs
 	}
+	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
+		result["cross_org_uuids"] = uuids
+	}
 	return result
 }
 
@@ -1397,6 +1429,9 @@ func flattenFormulaProcessQueryFlatJSON(q map[string]interface{}) map[string]int
 		}
 		result["tag_filters"] = tagStrs
 	}
+	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
+		result["cross_org_uuids"] = uuids
+	}
 	return result
 }
 
@@ -1407,6 +1442,9 @@ func flattenSLOQueryJSON(q map[string]interface{}) map[string]interface{} {
 			result[field] = v
 		}
 	}
+	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
+		result["cross_org_uuids"] = uuids
+	}
 	return result
 }
 
@@ -1416,6 +1454,9 @@ func flattenCloudCostQueryJSON(q map[string]interface{}) map[string]interface{} 
 		if v, ok := q[field].(string); ok && v != "" {
 			result[field] = v
 		}
+	}
+	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
+		result["cross_org_uuids"] = uuids
 	}
 	return result
 }
@@ -2526,7 +2567,11 @@ func UpdateDashboardEngineState(d *schema.ResourceData, resp map[string]interfac
 		}
 	}
 	if v, ok := resp["description"]; ok {
-		if err := d.Set("description", fmt.Sprintf("%v", v)); err != nil {
+		desc := ""
+		if v != nil {
+			desc = fmt.Sprintf("%v", v)
+		}
+		if err := d.Set("description", desc); err != nil {
 			return diag.FromErr(err)
 		}
 	}

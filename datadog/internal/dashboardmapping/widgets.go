@@ -51,7 +51,7 @@ var AlertGraphWidgetSpec = WidgetSpec{
 var AlertValueWidgetSpec = WidgetSpec{
 	HCLKey:      "alert_value_definition",
 	JSONType:    "alert_value",
-	Description: "The definition for an Alert Value widget.",
+	Description: "The definition for a Alert Value widget.",
 	Fields: []FieldSpec{
 		{
 			HCLKey:      "alert_id",
@@ -121,7 +121,7 @@ var FreeTextWidgetSpec = WidgetSpec{
 var IFrameWidgetSpec = WidgetSpec{
 	HCLKey:      "iframe_definition",
 	JSONType:    "iframe",
-	Description: "The definition for an IFrame widget.",
+	Description: "The definition for an Iframe widget.",
 	Fields: []FieldSpec{
 		{
 			HCLKey:      "url",
@@ -275,7 +275,7 @@ var NoteWidgetSpec = WidgetSpec{
 var EventStreamWidgetSpec = WidgetSpec{
 	HCLKey:      "event_stream_definition",
 	JSONType:    "event_stream",
-	Description: "The definition for an Event Stream widget.",
+	Description: "The definition for a Event Stream widget.",
 	Fields: []FieldSpec{
 		{
 			HCLKey:      "query",
@@ -304,7 +304,7 @@ var EventStreamWidgetSpec = WidgetSpec{
 var EventTimelineWidgetSpec = WidgetSpec{
 	HCLKey:      "event_timeline_definition",
 	JSONType:    "event_timeline",
-	Description: "The definition for an Event Timeline widget.",
+	Description: "The definition for a Event Timeline widget.",
 	Fields: []FieldSpec{
 		{
 			HCLKey:      "query",
@@ -368,7 +368,7 @@ var CheckStatusWidgetSpec = WidgetSpec{
 var LogStreamWidgetSpec = WidgetSpec{
 	HCLKey:      "log_stream_definition",
 	JSONType:    "log_stream",
-	Description: "The definition for a Log Stream widget.",
+	Description: "The definition for an Log Stream widget.",
 	Fields: []FieldSpec{
 		// Always emitted as [] when empty (cassette-verified)
 		{
@@ -434,7 +434,7 @@ var LogStreamWidgetSpec = WidgetSpec{
 var ManageStatusWidgetSpec = WidgetSpec{
 	HCLKey:      "manage_status_definition",
 	JSONType:    "manage_status",
-	Description: "The definition for a Manage Status widget.",
+	Description: "The definition for an Manage Status widget.",
 	Fields: []FieldSpec{
 		{
 			HCLKey:      "query",
@@ -558,7 +558,7 @@ var ServiceMapWidgetSpec = WidgetSpec{
 var TraceServiceWidgetSpec = WidgetSpec{
 	HCLKey:      "trace_service_definition",
 	JSONType:    "trace_service",
-	Description: "The definition for a Trace Service (Service Summary) widget.",
+	Description: "The definition for a Trace Service widget.",
 	Fields: []FieldSpec{
 		{
 			HCLKey:      "env",
@@ -642,8 +642,9 @@ var TraceServiceWidgetSpec = WidgetSpec{
 // TimeseriesWidgetSpec corresponds to OpenAPI
 // components/schemas/TimeseriesWidgetDefinition.
 var TimeseriesWidgetSpec = WidgetSpec{
-	HCLKey:   "timeseries_definition",
-	JSONType: "timeseries",
+	HCLKey:      "timeseries_definition",
+	JSONType:    "timeseries",
+	Description: "The definition for a Timeseries widget.",
 	Fields: []FieldSpec{
 		// show_legend is always emitted even when false — cassette confirms false appears when not set
 		{
@@ -745,8 +746,9 @@ var changeWidgetRequestFields = append([]FieldSpec{
 }, standardQueryFields...)
 
 var ChangeWidgetSpec = WidgetSpec{
-	HCLKey:   "change_definition",
-	JSONType: "change",
+	HCLKey:      "change_definition",
+	JSONType:    "change",
+	Description: "The definition for a Change widget.",
 	Fields: []FieldSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
@@ -789,8 +791,9 @@ var distributionWidgetYAxisFields = append(
 )
 
 var DistributionWidgetSpec = WidgetSpec{
-	HCLKey:   "distribution_definition",
-	JSONType: "distribution",
+	HCLKey:      "distribution_definition",
+	JSONType:    "distribution",
+	Description: "The definition for a Distribution widget.",
 	Fields: []FieldSpec{
 		// show_legend: OmitEmpty: false — cassette confirms false is emitted when not set
 		{HCLKey: "show_legend", Type: TypeBool, OmitEmpty: false,
@@ -819,8 +822,9 @@ var heatmapWidgetRequestFields = append([]FieldSpec{
 }, standardQueryFields...)
 
 var HeatmapWidgetSpec = WidgetSpec{
-	HCLKey:   "heatmap_definition",
-	JSONType: "heatmap",
+	HCLKey:      "heatmap_definition",
+	JSONType:    "heatmap",
+	Description: "The definition for a Heatmap widget.",
 	Fields: []FieldSpec{
 		// show_legend: OmitEmpty: false — cassette confirms false is emitted when not set
 		{HCLKey: "show_legend", Type: TypeBool, OmitEmpty: false,
@@ -852,8 +856,9 @@ var hostmapRequestInnerFields = []FieldSpec{
 }
 
 var HostmapWidgetSpec = WidgetSpec{
-	HCLKey:   "hostmap_definition",
-	JSONType: "hostmap",
+	HCLKey:      "hostmap_definition",
+	JSONType:    "hostmap",
+	Description: "The definition for a Hostmap widget.",
 	Fields: []FieldSpec{
 		// TypeBlock (not TypeBlockList) — "requests" is a JSON object, not array
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlock, OmitEmpty: true,
@@ -882,19 +887,20 @@ var queryValueRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Description: "The metric query to use for this widget."},
 	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The audit query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
 		Description: "The aggregator to use for time aggregation.",
-		ValidValues: []string{"avg", "last", "max", "min", "sum", "percentile"}},
+		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"}},
 	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
 		Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 		Children:    widgetConditionalFormatFields},
 }, standardQueryFields...)
 
 var QueryValueWidgetSpec = WidgetSpec{
-	HCLKey:   "query_value_definition",
-	JSONType: "query_value",
+	HCLKey:      "query_value_definition",
+	JSONType:    "query_value",
+	Description: "The definition for a Query Value widget.",
 	Fields: []FieldSpec{
 		// Emitted even when false/0 (cassette-verified)
 		{HCLKey: "autoscale", Type: TypeBool, OmitEmpty: false,
@@ -921,7 +927,7 @@ var toplistWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Description: "The metric query to use for this widget."},
 	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The audit query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
 		Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
@@ -932,8 +938,9 @@ var toplistWidgetRequestFields = append([]FieldSpec{
 }, standardQueryFields...)
 
 var ToplistWidgetSpec = WidgetSpec{
-	HCLKey:   "toplist_definition",
-	JSONType: "toplist",
+	HCLKey:      "toplist_definition",
+	JSONType:    "toplist",
+	Description: "The definition for a Toplist widget.",
 	Fields: []FieldSpec{
 		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 			Description: "The style of the widget",
@@ -962,8 +969,9 @@ var scatterplotRequestOuterFields = []FieldSpec{
 }
 
 var ScatterplotWidgetSpec = WidgetSpec{
-	HCLKey:   "scatterplot_definition",
-	JSONType: "scatterplot",
+	HCLKey:      "scatterplot_definition",
+	JSONType:    "scatterplot",
+	Description: "The definition for a Scatterplot widget.",
 	Fields: []FieldSpec{
 		// TypeBlock (not TypeBlockList) — "requests" is a JSON object, not array
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlock, OmitEmpty: false,
@@ -987,10 +995,10 @@ var sunburstWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Description: "The metric query to use for this widget."},
 	{HCLKey: "network_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The network query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The audit query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "Define style for the widget's request.",
@@ -998,8 +1006,9 @@ var sunburstWidgetRequestFields = append([]FieldSpec{
 }, standardQueryFields...)
 
 var SunburstWidgetSpec = WidgetSpec{
-	HCLKey:   "sunburst_definition",
-	JSONType: "sunburst",
+	HCLKey:      "sunburst_definition",
+	JSONType:    "sunburst",
+	Description: "The definition for a Sunburst widget.",
 	Fields: []FieldSpec{
 		{HCLKey: "hide_total", Type: TypeBool, OmitEmpty: true,
 			Description: "Whether or not to show the total value in the widget."},
@@ -1025,10 +1034,10 @@ var geomapWidgetRequestFields = []FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Description: "The metric query to use for this widget."},
 	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The log query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true,
-		Description: "The RUM query to use in the widget.",
+		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	// FormulaAndFunction query/formula fields
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
@@ -1040,8 +1049,9 @@ var geomapWidgetRequestFields = []FieldSpec{
 }
 
 var GeomapWidgetSpec = WidgetSpec{
-	HCLKey:   "geomap_definition",
-	JSONType: "geomap",
+	HCLKey:      "geomap_definition",
+	JSONType:    "geomap",
+	Description: "The definition for a Geomap widget.",
 	Fields: []FieldSpec{
 		{HCLKey: "style", Type: TypeBlock, OmitEmpty: false,
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
@@ -1082,8 +1092,9 @@ var treemapRequestFields = []FieldSpec{
 }
 
 var TreemapWidgetSpec = WidgetSpec{
-	HCLKey:   "treemap_definition",
-	JSONType: "treemap",
+	HCLKey:      "treemap_definition",
+	JSONType:    "treemap",
+	Description: "The definition for a Treemap widget.",
 	Fields: []FieldSpec{
 		// request block: treemap uses formula/query only
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: true,
@@ -1109,8 +1120,9 @@ var topologyRequestFields = []FieldSpec{
 }
 
 var TopologyMapWidgetSpec = WidgetSpec{
-	HCLKey:   "topology_map_definition",
-	JSONType: "topology_map",
+	HCLKey:      "topology_map_definition",
+	JSONType:    "topology_map",
+	Description: "The definition for a Topology Map widget.",
 	Fields: []FieldSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request).",
@@ -1223,7 +1235,7 @@ var SLOWidgetSpec = WidgetSpec{
 var SLOListWidgetSpec = WidgetSpec{
 	HCLKey:      "slo_list_definition",
 	JSONType:    "slo_list",
-	Description: "The definition for a SLO List widget.",
+	Description: "The definition for an SLO (Service Level Objective) List widget.",
 	Fields: []FieldSpec{
 		// request: HCL singular "request" → JSON plural "requests"
 		{
@@ -1520,13 +1532,13 @@ var timeseriesWidgetRequestFields = []FieldSpec{
 	},
 	// The following 7 fields all use logQueryDefinitionFields (same OpenAPI $ref,
 	// different JSON key per query source type):
-	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "network_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
-	{HCLKey: "profile_metrics_query", Type: TypeBlock, OmitEmpty: true, Children: logQueryDefinitionFields},
+	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "network_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "profile_metrics_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	// ProcessQueryDefinition
 	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Children: processQueryDefinitionFields},
 	// FormulaAndFunction query/formula fields
