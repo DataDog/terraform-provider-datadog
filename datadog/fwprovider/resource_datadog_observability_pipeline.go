@@ -363,8 +363,9 @@ type fieldValue struct {
 }
 
 type amazonOpenSearchDestinationModel struct {
-	BulkIndex types.String                `tfsdk:"bulk_index"`
-	Auth      []amazonOpenSearchAuthModel `tfsdk:"auth"`
+	BulkIndex types.String                                `tfsdk:"bulk_index"`
+	Auth      []amazonOpenSearchAuthModel                 `tfsdk:"auth"`
+	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type amazonOpenSearchAuthModel struct {
@@ -376,8 +377,9 @@ type amazonOpenSearchAuthModel struct {
 }
 
 type opensearchDestinationModel struct {
-	BulkIndex  types.String                           `tfsdk:"bulk_index"`
-	DataStream []opensearchDestinationDataStreamModel `tfsdk:"data_stream"`
+	BulkIndex  types.String                                `tfsdk:"bulk_index"`
+	DataStream []opensearchDestinationDataStreamModel      `tfsdk:"data_stream"`
+	Buffer     []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type opensearchDestinationDataStreamModel struct {
@@ -387,37 +389,43 @@ type opensearchDestinationDataStreamModel struct {
 }
 
 type sentinelOneDestinationModel struct {
-	Region types.String `tfsdk:"region"`
+	Region types.String                                `tfsdk:"region"`
+	Buffer []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type newRelicDestinationModel struct {
-	Region types.String `tfsdk:"region"`
+	Region types.String                                `tfsdk:"region"`
+	Buffer []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type googleSecopsDestinationModel struct {
-	Auth       []gcpAuthModel `tfsdk:"auth"`
-	CustomerId types.String   `tfsdk:"customer_id"`
-	Encoding   types.String   `tfsdk:"encoding"`
-	LogType    types.String   `tfsdk:"log_type"`
+	Auth       []gcpAuthModel                              `tfsdk:"auth"`
+	CustomerId types.String                                `tfsdk:"customer_id"`
+	Encoding   types.String                                `tfsdk:"encoding"`
+	LogType    types.String                                `tfsdk:"log_type"`
+	Buffer     []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type googlePubSubDestinationModel struct {
-	Project  types.String                      `tfsdk:"project"`
-	Topic    types.String                      `tfsdk:"topic"`
-	Auth     []gcpAuthModel                    `tfsdk:"auth"`
-	Encoding types.String                      `tfsdk:"encoding"`
-	Tls      []observability_pipeline.TlsModel `tfsdk:"tls"`
+	Project  types.String                                `tfsdk:"project"`
+	Topic    types.String                                `tfsdk:"topic"`
+	Auth     []gcpAuthModel                              `tfsdk:"auth"`
+	Encoding types.String                                `tfsdk:"encoding"`
+	Tls      []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Buffer   []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type datadogLogsDestinationModel struct {
-	Routes []datadogLogsDestinationRouteModel `tfsdk:"routes"`
+	Routes []datadogLogsDestinationRouteModel          `tfsdk:"routes"`
+	Buffer []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type datadogLogsDestinationRouteModel struct {
-	RouteId   types.String `tfsdk:"route_id"`
-	Include   types.String `tfsdk:"include"`
-	Site      types.String `tfsdk:"site"`
-	ApiKeyKey types.String `tfsdk:"api_key_key"`
+	RouteId   types.String                                `tfsdk:"route_id"`
+	Include   types.String                                `tfsdk:"include"`
+	Site      types.String                                `tfsdk:"site"`
+	ApiKeyKey types.String                                `tfsdk:"api_key_key"`
+	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type parseGrokProcessorModel struct {
@@ -481,19 +489,21 @@ type splunkTcpSourceModel struct {
 }
 
 type splunkHecDestinationModel struct {
-	AutoExtractTimestamp types.Bool   `tfsdk:"auto_extract_timestamp"`
-	Encoding             types.String `tfsdk:"encoding"`
-	Sourcetype           types.String `tfsdk:"sourcetype"`
-	Index                types.String `tfsdk:"index"`
+	AutoExtractTimestamp types.Bool                                  `tfsdk:"auto_extract_timestamp"`
+	Encoding             types.String                                `tfsdk:"encoding"`
+	Sourcetype           types.String                                `tfsdk:"sourcetype"`
+	Index                types.String                                `tfsdk:"index"`
+	Buffer               []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type gcsDestinationModel struct {
-	Bucket       types.String    `tfsdk:"bucket"`
-	KeyPrefix    types.String    `tfsdk:"key_prefix"`
-	StorageClass types.String    `tfsdk:"storage_class"`
-	Acl          types.String    `tfsdk:"acl"`
-	Auth         []gcpAuthModel  `tfsdk:"auth"`
-	Metadata     []metadataEntry `tfsdk:"metadata"`
+	Bucket       types.String                                `tfsdk:"bucket"`
+	KeyPrefix    types.String                                `tfsdk:"key_prefix"`
+	StorageClass types.String                                `tfsdk:"storage_class"`
+	Acl          types.String                                `tfsdk:"acl"`
+	Auth         []gcpAuthModel                              `tfsdk:"auth"`
+	Metadata     []metadataEntry                             `tfsdk:"metadata"`
+	Buffer       []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type metadataEntry struct {
@@ -502,11 +512,12 @@ type metadataEntry struct {
 }
 
 type sumoLogicDestinationModel struct {
-	Encoding             types.String             `tfsdk:"encoding"`
-	HeaderHostName       types.String             `tfsdk:"header_host_name"`
-	HeaderSourceName     types.String             `tfsdk:"header_source_name"`
-	HeaderSourceCategory types.String             `tfsdk:"header_source_category"`
-	HeaderCustomFields   []headerCustomFieldModel `tfsdk:"header_custom_field"`
+	Encoding             types.String                                `tfsdk:"encoding"`
+	HeaderHostName       types.String                                `tfsdk:"header_host_name"`
+	HeaderSourceName     types.String                                `tfsdk:"header_source_name"`
+	HeaderSourceCategory types.String                                `tfsdk:"header_source_category"`
+	HeaderCustomFields   []headerCustomFieldModel                    `tfsdk:"header_custom_field"`
+	Buffer               []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type headerCustomFieldModel struct {
@@ -525,19 +536,22 @@ type syslogNgSourceModel struct {
 }
 
 type rsyslogDestinationModel struct {
-	Keepalive types.Int64                       `tfsdk:"keepalive"`
-	Tls       []observability_pipeline.TlsModel `tfsdk:"tls"`
+	Keepalive types.Int64                                 `tfsdk:"keepalive"`
+	Tls       []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type syslogNgDestinationModel struct {
-	Keepalive types.Int64                       `tfsdk:"keepalive"`
-	Tls       []observability_pipeline.TlsModel `tfsdk:"tls"`
+	Keepalive types.Int64                                 `tfsdk:"keepalive"`
+	Tls       []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type elasticsearchDestinationModel struct {
-	ApiVersion types.String                              `tfsdk:"api_version"`
-	BulkIndex  types.String                              `tfsdk:"bulk_index"`
-	DataStream []elasticsearchDestinationDataStreamModel `tfsdk:"data_stream"`
+	ApiVersion types.String                                `tfsdk:"api_version"`
+	BulkIndex  types.String                                `tfsdk:"bulk_index"`
+	DataStream []elasticsearchDestinationDataStreamModel   `tfsdk:"data_stream"`
+	Buffer     []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type elasticsearchDestinationDataStreamModel struct {
@@ -547,15 +561,17 @@ type elasticsearchDestinationDataStreamModel struct {
 }
 
 type azureStorageDestinationModel struct {
-	ContainerName types.String `tfsdk:"container_name"`
-	BlobPrefix    types.String `tfsdk:"blob_prefix"`
+	ContainerName types.String                                `tfsdk:"container_name"`
+	BlobPrefix    types.String                                `tfsdk:"blob_prefix"`
+	Buffer        []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type microsoftSentinelDestinationModel struct {
-	ClientId       types.String `tfsdk:"client_id"`
-	TenantId       types.String `tfsdk:"tenant_id"`
-	DcrImmutableId types.String `tfsdk:"dcr_immutable_id"`
-	Table          types.String `tfsdk:"table"`
+	ClientId       types.String                                `tfsdk:"client_id"`
+	TenantId       types.String                                `tfsdk:"tenant_id"`
+	DcrImmutableId types.String                                `tfsdk:"dcr_immutable_id"`
+	Table          types.String                                `tfsdk:"table"`
+	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type sensitiveDataScannerProcessorModel struct {
@@ -1941,6 +1957,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										Description: "The `datadog_logs` destination forwards logs to Datadog Log Management.",
 										NestedObject: schema.NestedBlockObject{
 											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 												"routes": schema.ListNestedBlock{
 													Description: "A list of routing rules that forward matching logs to Datadog using dedicated API keys.",
 													NestedObject: schema.NestedBlockObject{
@@ -1961,6 +1978,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																Required:    true,
 																Description: "Name of the environment variable or secret that stores the Datadog API key used by this route.",
 															},
+														},
+														Blocks: map[string]schema.Block{
+															"buffer": observability_pipeline.BufferOptionsSchema(),
 														},
 													},
 													Validators: []validator.List{
@@ -2053,6 +2073,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2074,8 +2095,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"auth": gcpAuthSchema(),
-												"tls":  observability_pipeline.TlsSchema(),
+												"auth":   gcpAuthSchema(),
+												"tls":    observability_pipeline.TlsSchema(),
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2099,6 +2121,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Optional name of the Splunk index where logs are written.",
 												},
+											},
+											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2139,6 +2164,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2152,7 +2178,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls":    observability_pipeline.TlsSchema(),
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2166,7 +2193,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls":    observability_pipeline.TlsSchema(),
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2207,6 +2235,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2243,6 +2272,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2286,6 +2316,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 												},
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2301,6 +2332,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Optional:    true,
 													Description: "Optional prefix for blobs written to the container.",
 												},
+											},
+											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2325,6 +2359,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Description: "The name of the Log Analytics table where logs will be sent.",
 												},
 											},
+											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
+											},
 										},
 									},
 									"google_secops": schema.ListNestedBlock{
@@ -2348,7 +2385,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"auth": gcpAuthSchema(),
+												"auth":   gcpAuthSchema(),
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -2361,6 +2399,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Description: "The New Relic region.",
 												},
 											},
+											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
+											},
 										},
 									},
 									"sentinel_one": schema.ListNestedBlock{
@@ -2371,6 +2412,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Required:    true,
 													Description: "The SentinelOne region to send logs to.",
 												},
+											},
+											Blocks: map[string]schema.Block{
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -4696,6 +4740,13 @@ func flattenDatadogLogsDestination(ctx context.Context, src *datadogV2.Observabi
 		}
 	}
 
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
 	return out
 }
 
@@ -4718,6 +4769,13 @@ func expandDatadogLogsDestination(ctx context.Context, dest *destinationModel, s
 		}
 
 		d.SetRoutes(routes)
+	}
+
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			d.SetBuffer(*buffer)
+		}
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -4950,6 +5008,13 @@ func expandGoogleCloudStorageDestination(ctx context.Context, destModel *destina
 	destModel.Inputs.ElementsAs(ctx, &inputs, false)
 	dest.SetInputs(inputs)
 
+	if len(d.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(d.Buffer[0])
+		if buffer != nil {
+			dest.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineGoogleCloudStorageDestination: dest,
 	}
@@ -4983,6 +5048,13 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		out.Auth = flattenGcpAuth(auth)
 	}
 
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
 	return out
 }
 
@@ -5007,6 +5079,13 @@ func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, 
 	var inputs []string
 	dest.Inputs.ElementsAs(ctx, &inputs, false)
 	pubsub.SetInputs(inputs)
+
+	if len(d.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(d.Buffer[0])
+		if buffer != nil {
+			pubsub.SetBuffer(*buffer)
+		}
+	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineGooglePubSubDestination: pubsub,
@@ -5033,6 +5112,13 @@ func flattenGooglePubSubDestination(ctx context.Context, src *datadogV2.Observab
 
 	if auth, ok := src.GetAuthOk(); ok {
 		out.Auth = flattenGcpAuth(auth)
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return out
@@ -5085,6 +5171,13 @@ func expandSplunkHecDestination(ctx context.Context, dest *destinationModel, d *
 		splunk.SetIndex(d.Index.ValueString())
 	}
 
+	if len(d.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(d.Buffer[0])
+		if buffer != nil {
+			splunk.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSplunkHecDestination: splunk,
 	}
@@ -5100,12 +5193,21 @@ func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.Observabili
 		autoExtractTimestamp = types.BoolValue(src.GetAutoExtractTimestamp())
 	}
 
-	return &splunkHecDestinationModel{
+	out := &splunkHecDestinationModel{
 		AutoExtractTimestamp: autoExtractTimestamp,
 		Encoding:             types.StringValue(string(*src.Encoding)),
 		Sourcetype:           types.StringPointerValue(src.Sourcetype),
 		Index:                types.StringPointerValue(src.Index),
 	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
+	return out
 }
 
 func expandAmazonS3Source(src *amazonS3SourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
@@ -5177,6 +5279,13 @@ func expandSumoLogicDestination(ctx context.Context, dest *destinationModel, src
 		sumo.SetHeaderCustomFields(fields)
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			sumo.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSumoLogicDestination: sumo,
 	}
@@ -5207,6 +5316,12 @@ func flattenSumoLogicDestination(ctx context.Context, src *datadogV2.Observabili
 				Name:  types.StringValue(f.Name),
 				Value: types.StringValue(f.Value),
 			})
+		}
+	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
 		}
 	}
 
@@ -5278,6 +5393,14 @@ func expandRsyslogDestination(ctx context.Context, dest *destinationModel, src *
 		obj.SetKeepalive(src.Keepalive.ValueInt64())
 	}
 	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
+
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			obj.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineRsyslogDestination: obj,
 	}
@@ -5293,6 +5416,12 @@ func flattenRsyslogDestination(ctx context.Context, src *datadogV2.Observability
 	}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
+	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
 	}
 	return out
 }
@@ -5310,6 +5439,13 @@ func expandSyslogNgDestination(ctx context.Context, dest *destinationModel, src 
 	}
 	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			obj.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSyslogNgDestination: obj,
 	}
@@ -5325,6 +5461,12 @@ func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.Observabilit
 	}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
+	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
 	}
 	return out
 }
@@ -5357,6 +5499,13 @@ func expandElasticsearchDestination(ctx context.Context, dest *destinationModel,
 		obj.DataStream = ds
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			obj.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineElasticsearchDestination: obj,
 	}
@@ -5386,6 +5535,13 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 		}
 		out.DataStream = []elasticsearchDestinationDataStreamModel{dsModel}
 	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
 	return out
 }
 
@@ -5403,6 +5559,13 @@ func expandAzureStorageDestination(ctx context.Context, dest *destinationModel, 
 		obj.SetBlobPrefix(src.BlobPrefix.ValueString())
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			obj.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		AzureStorageDestination: obj,
 	}
@@ -5417,6 +5580,13 @@ func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureSto
 	}
 	if v, ok := src.GetBlobPrefixOk(); ok {
 		out.BlobPrefix = types.StringValue(*v)
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
 	}
 	return out
 }
@@ -5434,6 +5604,13 @@ func expandMicrosoftSentinelDestination(ctx context.Context, dest *destinationMo
 	obj.SetDcrImmutableId(src.DcrImmutableId.ValueString())
 	obj.SetTable(src.Table.ValueString())
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			obj.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		MicrosoftSentinelDestination: obj,
 	}
@@ -5443,12 +5620,20 @@ func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.Mic
 	if src == nil {
 		return nil
 	}
-	return &microsoftSentinelDestinationModel{
+	out := microsoftSentinelDestinationModel{
 		ClientId:       types.StringValue(src.GetClientId()),
 		TenantId:       types.StringValue(src.GetTenantId()),
 		DcrImmutableId: types.StringValue(src.GetDcrImmutableId()),
 		Table:          types.StringValue(src.GetTable()),
 	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
+	return &out
 }
 
 func expandSumoLogicSource(src *sumoLogicSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
@@ -5636,6 +5821,13 @@ func expandGoogleSecopsDestination(ctx context.Context, dest *destinationModel, 
 		chronicle.SetLogType(src.LogType.ValueString())
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			chronicle.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineGoogleChronicleDestination: chronicle,
 	}
@@ -5661,6 +5853,12 @@ func flattenGoogleSecopsDestination(ctx context.Context, src *datadogV2.Observab
 	if auth, ok := src.GetAuthOk(); ok {
 		out.Auth = flattenGcpAuth(auth)
 	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
 
 	return out
 }
@@ -5675,6 +5873,13 @@ func expandNewRelicDestination(ctx context.Context, dest *destinationModel, src 
 
 	newrelic.SetRegion(datadogV2.ObservabilityPipelineNewRelicDestinationRegion(src.Region.ValueString()))
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			newrelic.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineNewRelicDestination: newrelic,
 	}
@@ -5685,9 +5890,17 @@ func flattenNewRelicDestination(ctx context.Context, src *datadogV2.Observabilit
 		return nil
 	}
 
-	return &newRelicDestinationModel{
+	out := newRelicDestinationModel{
 		Region: types.StringValue(string(src.GetRegion())),
 	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
+	return &out
 }
 
 func expandSentinelOneDestination(ctx context.Context, dest *destinationModel, src *sentinelOneDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -5700,6 +5913,13 @@ func expandSentinelOneDestination(ctx context.Context, dest *destinationModel, s
 
 	sentinel.SetRegion(datadogV2.ObservabilityPipelineSentinelOneDestinationRegion(src.Region.ValueString()))
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			sentinel.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSentinelOneDestination: sentinel,
 	}
@@ -5710,9 +5930,17 @@ func flattenSentinelOneDestination(ctx context.Context, src *datadogV2.Observabi
 		return nil
 	}
 
-	return &sentinelOneDestinationModel{
+	out := sentinelOneDestinationModel{
 		Region: types.StringValue(string(src.GetRegion())),
 	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
+	return &out
 }
 
 func expandOpenSearchDestination(ctx context.Context, dest *destinationModel, src *opensearchDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -5725,6 +5953,13 @@ func expandOpenSearchDestination(ctx context.Context, dest *destinationModel, sr
 
 	if !src.BulkIndex.IsNull() {
 		opensearch.SetBulkIndex(src.BulkIndex.ValueString())
+	}
+
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			opensearch.SetBuffer(*buffer)
+		}
 	}
 
 	if len(src.DataStream) > 0 {
@@ -5763,6 +5998,13 @@ func flattenOpenSearchDestination(ctx context.Context, src *datadogV2.Observabil
 		}}
 	}
 
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
+	}
+
 	return out
 }
 
@@ -5798,6 +6040,13 @@ func expandAmazonOpenSearchDestination(ctx context.Context, dest *destinationMod
 		amazonopensearch.SetAuth(auth)
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			amazonopensearch.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineAmazonOpenSearchDestination: amazonopensearch,
 	}
@@ -5822,6 +6071,12 @@ func flattenAmazonOpenSearchDestination(src *datadogV2.ObservabilityPipelineAmaz
 			ExternalId:  types.StringPointerValue(src.Auth.ExternalId),
 			SessionName: types.StringPointerValue(src.Auth.SessionName),
 		},
+	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			model.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return model
