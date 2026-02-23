@@ -1162,7 +1162,7 @@ var splitConfigFields = []FieldSpec{
 		Type:        TypeBlockList,
 		OmitEmpty:   true,
 		SchemaOnly:  true,
-		Description: "Controls the splitting into fixed or static groups.",
+		Description: "The property by which the graph splits",
 		Children:    staticSplitsEntryFields,
 	},
 }

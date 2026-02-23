@@ -16271,7 +16271,7 @@ Required:
 
 Optional:
 
-- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--custom_links))
+- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--custom_links))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request))
@@ -16615,7 +16615,7 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
-- `static_splits` (Block List) Controls the splitting into fixed or static groups. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
+- `static_splits` (Block List) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.split_config.sort`
@@ -19140,7 +19140,7 @@ Optional:
 
 Optional:
 
-- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--custom_links))
+- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--custom_links))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request))
@@ -31073,7 +31073,7 @@ Required:
 
 Optional:
 
-- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--custom_links))
+- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--custom_links))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request))
@@ -31417,7 +31417,7 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
-- `static_splits` (Block List) Controls the splitting into fixed or static groups. (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
+- `static_splits` (Block List) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.split_graph_definition.split_config.sort`
@@ -33942,7 +33942,7 @@ Optional:
 
 Optional:
 
-- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_links))
+- `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_links))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))

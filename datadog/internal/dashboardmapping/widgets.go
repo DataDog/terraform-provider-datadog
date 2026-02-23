@@ -1102,7 +1102,7 @@ var TreemapWidgetSpec = WidgetSpec{
 			Children:    treemapRequestFields},
 		// custom_links: both HCL and JSON keys are plural for treemap (schema-verified).
 		{HCLKey: "custom_links", JSONKey: "custom_links", Type: TypeBlockList, OmitEmpty: true,
-			Description: "A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below.",
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Children:    widgetCustomLinkFields},
 	},
 }
