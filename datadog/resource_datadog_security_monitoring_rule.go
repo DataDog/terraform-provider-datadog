@@ -290,6 +290,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									ValidateFunc: validation.IntAtLeast(0),
 									Description:  "An optional override baseline to apply while the rule is in the learning period. Must be greater than or equal to 0.",
 								},
+								"instantaneous_baseline": {
+									Type:        schema.TypeBool,
+									Optional:    true,
+									Default:     false,
+									Description: "When set to true, Datadog uses previous values that fall within the defined learning window to construct the baseline, enabling the system to establish an accurate baseline more rapidly rather than relying solely on gradual learning over time.",
+								},
 							},
 						},
 					},
@@ -797,9 +803,41 @@ func checkQueryConsistency(d utils.Resource) error {
 	return nil
 }
 
+func validateAnomalyDetectionOptions(d utils.Resource) error {
+	v, ok := d.GetOk("options")
+	if !ok {
+		return nil
+	}
+	tfOptionsList := v.([]interface{})
+	if len(tfOptionsList) == 0 {
+		return nil
+	}
+	options := extractMapFromInterface(tfOptionsList)
+	adRaw, ok := options["anomaly_detection_options"]
+	if !ok {
+		return nil
+	}
+	adList := adRaw.([]interface{})
+	if len(adList) == 0 {
+		return nil
+	}
+	ad := extractMapFromInterface(adList)
+	// TODO(SEC-27123): SDKv2 always populates optional int attrs with zero value, so we can only
+	// detect explicit learning_period_baseline when > 0. A proper fix requires GetRawConfig().
+	learningPeriod, _ := ad["learning_period_baseline"].(int)
+	instantaneous, _ := ad["instantaneous_baseline"].(bool)
+	if learningPeriod > 0 && instantaneous {
+		return fmt.Errorf("anomaly_detection_options: cannot set both learning_period_baseline and instantaneous_baseline = true; choose one baseline method")
+	}
+	return nil
+}
+
 func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 
 	if err := checkQueryConsistency(d); err != nil {
+		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
+	}
+	if err := validateAnomalyDetectionOptions(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
 	}
 	if isSignalCorrelationSchema(d) {
@@ -1169,10 +1207,22 @@ func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}) (*datadogV
 		options.DetectionTolerance = &detectionTolerance
 	}
 
-	if v, ok := tfOptions["learning_period_baseline"]; ok {
+	instantaneous := false
+	if v, ok := tfOptions["instantaneous_baseline"]; ok {
 		hasPayload = true
-		learningPeriodBaseline := int64(v.(int))
-		options.LearningPeriodBaseline = &learningPeriodBaseline
+		instantaneous = v.(bool)
+		options.SetInstantaneousBaseline(instantaneous)
+	}
+
+	// Only set learning_period_baseline when not using instantaneous baseline.
+	// SDKv2 always populates optional int attributes (default 0), so the key is always present;
+	// we must skip it when instantaneous is true since the API forbids both.
+	if !instantaneous {
+		if v, ok := tfOptions["learning_period_baseline"]; ok {
+			hasPayload = true
+			learningPeriodBaseline := int64(v.(int))
+			options.LearningPeriodBaseline = &learningPeriodBaseline
+		}
 	}
 
 	return options, hasPayload
@@ -1777,6 +1827,7 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 		if learningPeriodBaseline, ok := anomalyDetectionOptions.GetLearningPeriodBaselineOk(); ok {
 			tfAnomalyDetectionOptions["learning_period_baseline"] = *learningPeriodBaseline
 		}
+		tfAnomalyDetectionOptions["instantaneous_baseline"] = bool(anomalyDetectionOptions.GetInstantaneousBaseline())
 		tfOptions["anomaly_detection_options"] = []map[string]interface{}{tfAnomalyDetectionOptions}
 	}
 	if thirdPartyOptions, ok := options.GetThirdPartyRuleOptionsOk(); ok {
@@ -1917,6 +1968,9 @@ func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.
 func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleUpdatePayload, error) {
 	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
 	if err := checkQueryConsistency(d); err != nil {
+		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
+	}
+	if err := validateAnomalyDetectionOptions(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
 	}
 
