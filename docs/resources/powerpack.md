@@ -135,22 +135,10 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--alert_graph_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--alert_graph_definition--custom_link"></a>
-### Nested Schema for `widget.alert_graph_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--alert_value_definition"></a>
@@ -162,7 +150,6 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--alert_value_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget.
@@ -170,17 +157,6 @@ Optional:
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `unit` (String) The unit for the value displayed in the widget.
-
-<a id="nestedblock--widget--alert_value_definition--custom_link"></a>
-### Nested Schema for `widget.alert_value_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--change_definition"></a>
@@ -811,7 +787,6 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--check_status_definition--custom_link))
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
 - `live_span` (String) The timeframe to use when displaying the widget.
@@ -820,24 +795,12 @@ Optional:
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--check_status_definition--custom_link"></a>
-### Nested Schema for `widget.check_status_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
-
 
 <a id="nestedblock--widget--distribution_definition"></a>
 ### Nested Schema for `widget.distribution_definition`
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--custom_link))
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
@@ -847,17 +810,6 @@ Optional:
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--xaxis))
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--yaxis))
-
-<a id="nestedblock--widget--distribution_definition--custom_link"></a>
-### Nested Schema for `widget.distribution_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 <a id="nestedblock--widget--distribution_definition--request"></a>
 ### Nested Schema for `widget.distribution_definition.request`
@@ -1521,24 +1473,12 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--event_stream_definition--custom_link))
 - `event_size` (String) The size to use to display an event.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--event_stream_definition--custom_link"></a>
-### Nested Schema for `widget.event_stream_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--event_timeline_definition"></a>
@@ -1550,23 +1490,11 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--event_timeline_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--event_timeline_definition--custom_link"></a>
-### Nested Schema for `widget.event_timeline_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--free_text_definition"></a>
@@ -1579,24 +1507,12 @@ Required:
 Optional:
 
 - `color` (String) The color of the text in the widget.
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--free_text_definition--custom_link))
 - `font_size` (String) The size of the text in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `text_align` (String) The alignment of the text in the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--free_text_definition--custom_link"></a>
-### Nested Schema for `widget.free_text_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--geomap_definition"></a>
@@ -2096,23 +2012,11 @@ Optional:
 
 - `background_color` (String) The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
 - `banner_img` (String) The image URL to display as a banner for the group.
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--group_definition--custom_link"></a>
-### Nested Schema for `widget.group_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--heatmap_definition"></a>
@@ -3999,22 +3903,10 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--iframe_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--iframe_definition--custom_link"></a>
-### Nested Schema for `widget.iframe_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--image_definition"></a>
@@ -4026,7 +3918,6 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--image_definition--custom_link))
 - `has_background` (Boolean) Whether to display a background or not.
 - `has_border` (Boolean) Whether to display a border or not.
 - `horizontal_align` (String) The horizontal alignment for the widget.
@@ -4039,17 +3930,6 @@ Optional:
 - `url_dark_theme` (String) The URL in dark mode to use as a data source for the widget.
 - `vertical_align` (String) The vertical alignment for the widget.
 
-<a id="nestedblock--widget--image_definition--custom_link"></a>
-### Nested Schema for `widget.image_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
-
 
 <a id="nestedblock--widget--list_stream_definition"></a>
 ### Nested Schema for `widget.list_stream_definition`
@@ -4060,7 +3940,6 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--list_stream_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
@@ -4120,17 +3999,6 @@ Required:
 
 
 
-<a id="nestedblock--widget--list_stream_definition--custom_link"></a>
-### Nested Schema for `widget.list_stream_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
-
 
 <a id="nestedblock--widget--log_stream_definition"></a>
 ### Nested Schema for `widget.log_stream_definition`
@@ -4138,28 +4006,16 @@ Optional:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--log_stream_definition--custom_link))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `message_display` (String) The number of log lines to display.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
 - `show_message_column` (Boolean) If the message column should be displayed.
-- `sort` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--log_stream_definition--custom_link"></a>
-### Nested Schema for `widget.log_stream_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 <a id="nestedblock--widget--log_stream_definition--sort"></a>
 ### Nested Schema for `widget.log_stream_definition.sort`
@@ -4181,7 +4037,6 @@ Required:
 Optional:
 
 - `color_preference` (String) Whether to colorize text or background.
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--manage_status_definition--custom_link))
 - `display_format` (String) The display setting to use.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
 - `live_span` (String) The timeframe to use when displaying the widget.
@@ -4192,17 +4047,6 @@ Optional:
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--manage_status_definition--custom_link"></a>
-### Nested Schema for `widget.manage_status_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--note_definition"></a>
@@ -4215,7 +4059,6 @@ Required:
 Optional:
 
 - `background_color` (String) The background color of the note.
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--note_definition--custom_link))
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
 - `live_span` (String) The timeframe to use when displaying the widget.
@@ -4227,17 +4070,6 @@ Optional:
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `vertical_align` (String) The vertical alignment for the widget.
-
-<a id="nestedblock--widget--note_definition--custom_link"></a>
-### Nested Schema for `widget.note_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--query_table_definition"></a>
@@ -5693,7 +5525,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--custom_link))
-- `input` (Block List) (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
+- `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
@@ -7184,24 +7016,12 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition--custom_link))
 - `global_time_target` (String) The global time target of the widget.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--service_level_objective_definition--custom_link"></a>
-### Nested Schema for `widget.service_level_objective_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 
 <a id="nestedblock--widget--servicemap_definition"></a>
@@ -7241,7 +7061,6 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--slo_list_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
@@ -7276,17 +7095,6 @@ Required:
 - `order` (String) Widget sorting methods.
 
 
-
-
-<a id="nestedblock--widget--slo_list_definition--custom_link"></a>
-### Nested Schema for `widget.slo_list_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
 
 
 
@@ -8136,7 +7944,7 @@ Optional:
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
 - `profile_metrics_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--profile_metrics_query))
-- `q` (String)
+- `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query))
 - `rum_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
@@ -9738,7 +9546,6 @@ Required:
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--trace_service_definition--custom_link))
 - `display_format` (String) The number of columns to display.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
@@ -9752,41 +9559,18 @@ Optional:
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
-<a id="nestedblock--widget--trace_service_definition--custom_link"></a>
-### Nested Schema for `widget.trace_service_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
-
 
 <a id="nestedblock--widget--treemap_definition"></a>
 ### Nested Schema for `widget.treemap_definition`
 
 Optional:
 
-- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_link))
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_links))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-
-<a id="nestedblock--widget--treemap_definition--custom_link"></a>
-### Nested Schema for `widget.treemap_definition.custom_link`
-
-Optional:
-
-- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
-- `label` (String) The label for the custom link URL.
-- `link` (String) The URL of the custom link.
-- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
-
 
 <a id="nestedblock--widget--treemap_definition--custom_links"></a>
 ### Nested Schema for `widget.treemap_definition.custom_links`
@@ -10124,7 +9908,7 @@ Required:
 
 Optional:
 
-- `is_column_break` (Boolean) The number of columns the widget occupies on the dashboard.
+- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
 
 ## Import
 

@@ -406,23 +406,25 @@ var LogStreamWidgetSpec = WidgetSpec{
 			Description: "The number of log lines to display.",
 			ValidValues: []string{"inline", "expanded-md", "expanded-lg"},
 		},
-		{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, Children: []FieldSpec{
-			{
-				HCLKey:      "column",
-				Type:        TypeString,
-				OmitEmpty:   false,
-				Required:    true,
-				Description: "The facet path for the column.",
-			}, // required in OpenAPI
-			{
-				HCLKey:      "order",
-				Type:        TypeString,
-				OmitEmpty:   false,
-				Required:    true,
-				Description: "Widget sorting methods.",
-				ValidValues: []string{"asc", "desc"},
-			}, // required in OpenAPI
-		}},
+		{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+			Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
+			Children: []FieldSpec{
+				{
+					HCLKey:      "column",
+					Type:        TypeString,
+					OmitEmpty:   false,
+					Required:    true,
+					Description: "The facet path for the column.",
+				}, // required in OpenAPI
+				{
+					HCLKey:      "order",
+					Type:        TypeString,
+					OmitEmpty:   false,
+					Required:    true,
+					Description: "Widget sorting methods.",
+					ValidValues: []string{"asc", "desc"},
+				}, // required in OpenAPI
+			}},
 	},
 }
 
@@ -504,6 +506,7 @@ var RunWorkflowWidgetSpec = WidgetSpec{
 		},
 		// HCL: "input" (singular) → JSON: "inputs" (plural)
 		{HCLKey: "input", JSONKey: "inputs", Type: TypeBlockList, OmitEmpty: true,
+			Description: "Array of workflow inputs to map to dashboard template variables.",
 			Children: []FieldSpec{
 				{
 					HCLKey:      "name",
@@ -520,6 +523,7 @@ var RunWorkflowWidgetSpec = WidgetSpec{
 					Description: "Dashboard template variable. Can be suffixed with `.value` or `.key`.",
 				}, // required in OpenAPI
 			}},
+		widgetCustomLinkField,
 	},
 }
 
@@ -544,6 +548,7 @@ var ServiceMapWidgetSpec = WidgetSpec{
 			Required:    true,
 			Description: "Your environment and primary tag (or `*` if enabled for your account).",
 		},
+		widgetCustomLinkField,
 	},
 }
 
@@ -710,6 +715,7 @@ var TimeseriesWidgetSpec = WidgetSpec{
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
 			Children:    timeseriesWidgetRequestFields,
 		},
+		widgetCustomLinkField,
 	},
 }
 
@@ -743,6 +749,7 @@ var ChangeWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Children:    changeWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -827,6 +834,7 @@ var HeatmapWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Children:    heatmapWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -863,6 +871,7 @@ var HostmapWidgetSpec = WidgetSpec{
 		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 			Children:    hostmapStyleFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -901,6 +910,7 @@ var QueryValueWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Children:    queryValueRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -929,6 +939,7 @@ var ToplistWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Children:    toplistWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -962,6 +973,7 @@ var ScatterplotWidgetSpec = WidgetSpec{
 			Children:    widgetAxisFields},
 		{HCLKey: "color_by_groups", Type: TypeStringList, OmitEmpty: true,
 			Description: "List of groups used for colors."},
+		widgetCustomLinkField,
 	},
 }
 
@@ -1000,6 +1012,7 @@ var SunburstWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
 			Children:    sunburstWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -1038,6 +1051,7 @@ var GeomapWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
 			Children:    geomapWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -1097,6 +1111,7 @@ var TopologyMapWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request).",
 			Children:    topologyRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
@@ -1130,6 +1145,7 @@ var QueryTableWidgetSpec = WidgetSpec{
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block).",
 			Children:    queryTableOldRequestFields,
 		},
+		widgetCustomLinkField,
 	},
 }
 
@@ -1359,7 +1375,7 @@ var widgetLayoutFieldSpecs = []FieldSpec{
 	{HCLKey: "y", Type: TypeInt, Required: true, Description: "The position of the widget on the y (vertical) axis. Must be greater than or equal to 0."},
 	{HCLKey: "width", Type: TypeInt, Required: true, Description: "The width of the widget."},
 	{HCLKey: "height", Type: TypeInt, Required: true, Description: "The height of the widget."},
-	{HCLKey: "is_column_break", Type: TypeBool, OmitEmpty: true, Description: "The number of columns the widget occupies on the dashboard."},
+	{HCLKey: "is_column_break", Type: TypeBool, OmitEmpty: true, Description: "Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`."},
 }
 
 // AllWidgetSchemasMap returns the schema map for all widget definition types,
@@ -1443,7 +1459,7 @@ var timeseriesWidgetMetadataFields = []FieldSpec{
 // components/schemas/TimeseriesWidgetRequest.
 // HCL key: "request" (singular), JSON key: "requests" (plural).
 var timeseriesWidgetRequestFields = []FieldSpec{
-	{HCLKey: "q", Type: TypeString, OmitEmpty: true},
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Description: "The metric query to use for this widget."},
 	{
 		HCLKey:      "display_type",
 		Type:        TypeString,

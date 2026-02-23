@@ -21,10 +21,10 @@ import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 // (base groups used by commonWidgetFields)
 
 // widgetCustomLinkFields corresponds to OpenAPI components/schemas/WidgetCustomLink.
-// Used by: timeseries, toplist, query_value, change, distribution, heatmap, hostmap,
+// Used by: timeseries, toplist, query_value, change, heatmap, hostmap,
 //
-//	geomap, scatterplot, service_map, sunburst, table, topology_map, treemap,
-//	run_workflow (15 widget types).
+//	geomap, scatterplot, service_map, sunburst, table, topology_map,
+//	run_workflow (13 widget types).
 //
 // HCL key: "custom_link" (singular Terraform convention)
 // JSON key: "custom_links" (plural, matching OpenAPI)
@@ -37,6 +37,18 @@ var widgetCustomLinkFields = []FieldSpec{
 		Description: "The flag for toggling context menu link visibility."},
 	{HCLKey: "override_label", Type: TypeString, OmitEmpty: true,
 		Description: "The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field."},
+}
+
+// widgetCustomLinkField is the standard custom_link FieldSpec entry used by
+// widgets that support custom_links per the OpenAPI spec.
+// HCL: "custom_link" (singular) → JSON: "custom_links" (plural)
+var widgetCustomLinkField = FieldSpec{
+	HCLKey:      "custom_link",
+	JSONKey:     "custom_links",
+	Type:        TypeBlockList,
+	OmitEmpty:   true,
+	Children:    widgetCustomLinkFields,
+	Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 }
 
 // widgetTimeField corresponds to OpenAPI components/schemas/WidgetLegacyLiveSpan
@@ -1191,10 +1203,6 @@ var CommonWidgetFields = []FieldSpec{
 		ValidValues: []string{"center", "left", "right"}},
 	// WidgetTime: live_span (HCL) → {"time": {"live_span": "..."}} (JSON)
 	widgetTimeField,
-	// WidgetCustomLink: HCL "custom_link" (singular) → JSON "custom_links" (plural)
-	{HCLKey: "custom_link", JSONKey: "custom_links", Type: TypeBlockList, OmitEmpty: true,
-		Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
-		Children:    widgetCustomLinkFields},
 }
 
 // ============================================================

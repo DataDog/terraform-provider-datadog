@@ -24,21 +24,21 @@ var dashboardTemplateVariableFields = []FieldSpec{
 // dashboardTemplateVariablePresetValueFields corresponds to OpenAPI DashboardTemplateVariablePresetValue.
 var dashboardTemplateVariablePresetValueFields = []FieldSpec{
 	{HCLKey: "name", OmitEmpty: true, Type: TypeString,
-		Description: "The name of the variable."},
+		Description: "The name of the template variable."},
 	{HCLKey: "values", OmitEmpty: true, Type: TypeStringList,
 		Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified. Cannot be used in conjunction with `value`."},
 	{HCLKey: "value", OmitEmpty: true, Type: TypeString,
 		Deprecated:  "Use `values` instead.",
-		Description: "(deprecated) The value of the template variable within the saved view. Cannot be used in conjunction with `values`."},
+		Description: "The value that should be assumed by the template variable in this preset. Cannot be used in conjunction with `values`."},
 }
 
 // dashboardTemplateVariablePresetFields corresponds to OpenAPI DashboardTemplateVariablePreset.
 // HCL: "template_variable" (singular) → JSON: "template_variables" (plural).
 var dashboardTemplateVariablePresetFields = []FieldSpec{
 	{HCLKey: "name", OmitEmpty: true, Type: TypeString,
-		Description: "The name of the variable."},
+		Description: "The name of the preset."},
 	{HCLKey: "template_variable", JSONKey: "template_variables",
 		OmitEmpty: false, Type: TypeBlockList,
-		Description: "List of variables.",
+		Description: "The template variable names and assumed values under the given preset.",
 		Children:    dashboardTemplateVariablePresetValueFields},
 }
