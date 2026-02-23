@@ -137,7 +137,7 @@ var IFrameWidgetSpec = WidgetSpec{
 var ImageWidgetSpec = WidgetSpec{
 	HCLKey:      "image_definition",
 	JSONType:    "image",
-	Description: "The definition for an Image widget.",
+	Description: "The definition for an Image widget",
 	Fields: []FieldSpec{
 		{
 			HCLKey:      "url",
@@ -1394,13 +1394,20 @@ var widgetLayoutFieldSpecs = []FieldSpec{
 	{HCLKey: "is_column_break", Type: TypeBool, OmitEmpty: true, Description: "Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`."},
 }
 
+// splitGraphSourceWidgetTypes are the widget types supported as split_graph source widgets.
+// This matches the original getSplitGraphSourceWidgetSchema() function exactly.
+var splitGraphSourceWidgetTypes = map[string]bool{
+	"change": true, "geomap": true, "query_value": true, "query_table": true,
+	"scatterplot": true, "sunburst": true, "timeseries": true, "toplist": true, "treemap": true,
+}
+
 // splitGraphSourceWidgetSchema builds the *schema.Schema for the source_widget_definition
-// block inside split_graph_definition. It includes all widget types except group, powerpack,
-// and split_group (which cannot be source widgets).
+// block inside split_graph_definition. Only the 9 widget types supported by the API
+// as split graph sources are included (matching the original schema exactly).
 func splitGraphSourceWidgetSchema() *schema.Schema {
 	inner := make(map[string]*schema.Schema)
 	for _, spec := range allWidgetSpecs {
-		if spec.JSONType == "group" || spec.JSONType == "powerpack" || spec.JSONType == "split_group" {
+		if !splitGraphSourceWidgetTypes[spec.JSONType] {
 			continue
 		}
 		inner[spec.HCLKey] = WidgetSpecToSchemaBlock(spec)

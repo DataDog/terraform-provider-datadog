@@ -101,7 +101,7 @@ Optional:
 - `heatmap_definition` (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition))
 - `hostmap_definition` (Block List, Max: 1) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition))
 - `iframe_definition` (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--iframe_definition))
-- `image_definition` (Block List, Max: 1) The definition for an Image widget. (see [below for nested schema](#nestedblock--widget--image_definition))
+- `image_definition` (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--image_definition))
 - `list_stream_definition` (Block List, Max: 1) The definition for a List Stream widget. (see [below for nested schema](#nestedblock--widget--list_stream_definition))
 - `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
