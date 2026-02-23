@@ -1155,7 +1155,16 @@ var splitConfigFields = []FieldSpec{
 		Description: "Controls the order in which graphs appear in the split.",
 		Children:    splitSortFields,
 	},
-	// static_splits handled by custom code (buildSplitConfigStaticSplitsJSON)
+	// static_splits: JSON serialization handled by custom code (buildSplitConfigStaticSplitsJSON)
+	// but the FieldSpec entry is needed for schema generation.
+	{
+		HCLKey:      "static_splits",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		SchemaOnly:  true,
+		Description: "Controls the splitting into fixed or static groups.",
+		Children:    staticSplitsEntryFields,
+	},
 }
 
 // powerpackTVarContentFields corresponds to OpenAPI
@@ -1203,6 +1212,9 @@ var CommonWidgetFields = []FieldSpec{
 		ValidValues: []string{"center", "left", "right"}},
 	// WidgetTime: live_span (HCL) → {"time": {"live_span": "..."}} (JSON)
 	widgetTimeField,
+	// WidgetTime: hide_incomplete_cost_data (HCL) → {"time": {"hide_incomplete_cost_data": true}} (JSON)
+	{HCLKey: "hide_incomplete_cost_data", JSONPath: "time.hide_incomplete_cost_data", Type: TypeBool, OmitEmpty: true,
+		Description: "Toggle to hide the widget's incomplete cost data."},
 }
 
 // ============================================================
@@ -1233,7 +1245,8 @@ var DashboardTopLevelFields = []FieldSpec{
 		Description: "The description of the dashboard."},
 
 	// url: Computed+Optional. Always suppress diff — value is assigned by API and cannot be updated.
-	{HCLKey: "url", Type: TypeString, Computed: true, OmitEmpty: true,
+	// SchemaOnly: managed by UpdateDashboardEngineState, not serialized to JSON.
+	{HCLKey: "url", Type: TypeString, Computed: true, OmitEmpty: true, SchemaOnly: true,
 		DiffSuppress: func(_, _, _ string, _ *schema.ResourceData) bool { return true },
 		Description:  "The URL of the dashboard."},
 
@@ -1257,11 +1270,13 @@ var DashboardTopLevelFields = []FieldSpec{
 	{HCLKey: "notify_list", Type: TypeStringList, UseSet: true, OmitEmpty: false,
 		Description: "The list of handles for the users to notify when changes are made to this dashboard."},
 
-	{HCLKey: "dashboard_lists", Type: TypeIntList, UseSet: true, OmitEmpty: false,
+	// SchemaOnly: managed as side effects via updateDashboardLists, not serialized to JSON.
+	{HCLKey: "dashboard_lists", Type: TypeIntList, UseSet: true, OmitEmpty: false, SchemaOnly: true,
 		Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior."},
 
 	// dashboard_lists_removed: computed only via CustomizeDiff, never sent in JSON
-	{HCLKey: "dashboard_lists_removed", Type: TypeIntList, UseSet: true, Computed: true,
+	// SchemaOnly: managed as side effects via updateDashboardLists, not serialized to JSON.
+	{HCLKey: "dashboard_lists_removed", Type: TypeIntList, UseSet: true, Computed: true, SchemaOnly: true,
 		Description: "A list of dashboard lists this dashboard should be removed from. Internal only."},
 
 	{HCLKey: "is_read_only", Type: TypeBool, Default: false, OmitEmpty: true,

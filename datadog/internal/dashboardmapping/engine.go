@@ -108,6 +108,11 @@ type FieldSpec struct {
 
 	// DiffSuppress: custom diff suppression function.
 	DiffSuppress schema.SchemaDiffSuppressFunc
+
+	// SchemaOnly: if true, this field is for schema registration only.
+	// BuildEngineJSON skips it. Use for fields like dashboard_lists
+	// that are managed as side effects, not serialized to the API.
+	SchemaOnly bool
 }
 
 // effectiveJSONKey returns the JSON key or path root for a FieldSpec.
@@ -156,6 +161,9 @@ type WidgetSpec struct {
 func BuildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpec) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
+		if f.SchemaOnly {
+			continue
+		}
 		var hclPath string
 		if hclPrefix == "" {
 			hclPath = f.HCLKey
@@ -294,6 +302,9 @@ func setAtJSONPath(m map[string]interface{}, path string, val interface{}) {
 func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
+		if f.SchemaOnly {
+			continue
+		}
 		jsonVal := getAtJSONPath(data, f.effectiveJSONPath())
 		if jsonVal == nil {
 			continue
@@ -413,18 +424,13 @@ func buildWidgetEngineJSON(d *schema.ResourceData, widgetPath string) map[string
 		if layoutCount, _ := d.Get(layoutPath).(int); layoutCount > 0 {
 			lPath := widgetPath + ".widget_layout.0"
 			layout := map[string]interface{}{}
-			if v, ok := d.GetOk(lPath + ".x"); ok {
-				layout["x"] = v
-			}
-			if v, ok := d.GetOk(lPath + ".y"); ok {
-				layout["y"] = v
-			}
-			if v, ok := d.GetOk(lPath + ".width"); ok {
-				layout["width"] = v
-			}
-			if v, ok := d.GetOk(lPath + ".height"); ok {
-				layout["height"] = v
-			}
+			// Use d.Get (not d.GetOk) for x, y, width, height because GetOk
+			// returns ok=false for zero-valued integers (e.g., y=0), which
+			// would incorrectly omit these required layout fields.
+			layout["x"] = d.Get(lPath + ".x")
+			layout["y"] = d.Get(lPath + ".y")
+			layout["width"] = d.Get(lPath + ".width")
+			layout["height"] = d.Get(lPath + ".height")
 			if v, ok := d.Get(lPath + ".is_column_break").(bool); ok && v {
 				layout["is_column_break"] = v
 			}

@@ -166,17 +166,19 @@ var ImageWidgetSpec = WidgetSpec{
 			Description: "The margins to use around the image. Note: `small` and `large` values are deprecated.",
 			ValidValues: []string{"sm", "md", "lg", "small", "large"},
 		},
-		// Default: true in schema — always emitted
+		// Default: true in schema — always emitted (old schema had Default:true)
 		{
 			HCLKey:      "has_background",
 			Type:        TypeBool,
 			OmitEmpty:   false,
+			Default:     true,
 			Description: "Whether to display a background or not.",
 		},
 		{
 			HCLKey:      "has_border",
 			Type:        TypeBool,
 			OmitEmpty:   false,
+			Default:     true,
 			Description: "Whether to display a border or not.",
 		},
 		{
@@ -952,7 +954,9 @@ var scatterplotRequestOuterFields = []FieldSpec{
 	{HCLKey: "y", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query used for the Y-Axis. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the block).",
 		Children:    scatterplotXYRequestFields},
-	{HCLKey: "scatterplot_table", Type: TypeBlockList, OmitEmpty: true,
+	// SchemaOnly: JSON building is handled by buildScatterplotTableJSON (injected as requests.table),
+	// not by the FieldSpec engine (which would incorrectly emit it as requests.scatterplot_table).
+	{HCLKey: "scatterplot_table", Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
 		Description: "Scatterplot request containing formulas and functions.",
 		Children:    scatterplotTableRequestFields},
 }
@@ -1378,6 +1382,26 @@ var widgetLayoutFieldSpecs = []FieldSpec{
 	{HCLKey: "is_column_break", Type: TypeBool, OmitEmpty: true, Description: "Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`."},
 }
 
+// splitGraphSourceWidgetSchema builds the *schema.Schema for the source_widget_definition
+// block inside split_graph_definition. It includes all widget types except group, powerpack,
+// and split_group (which cannot be source widgets).
+func splitGraphSourceWidgetSchema() *schema.Schema {
+	inner := make(map[string]*schema.Schema)
+	for _, spec := range allWidgetSpecs {
+		if spec.JSONType == "group" || spec.JSONType == "powerpack" || spec.JSONType == "split_group" {
+			continue
+		}
+		inner[spec.HCLKey] = WidgetSpecToSchemaBlock(spec)
+	}
+	return &schema.Schema{
+		Type:        schema.TypeList,
+		Required:    true,
+		MaxItems:    1,
+		Description: "The original widget we are splitting on.",
+		Elem:        &schema.Resource{Schema: inner},
+	}
+}
+
 // AllWidgetSchemasMap returns the schema map for all widget definition types,
 // including widget_layout and id wrapper fields. If excludePowerpackOnly is true,
 // powerpack and split_graph definitions are excluded (for use by the powerpack resource).
@@ -1401,6 +1425,12 @@ func AllWidgetSchemasMap(excludePowerpackOnly bool) map[string]*schema.Schema {
 			continue
 		}
 		s[spec.HCLKey] = WidgetSpecToSchemaBlock(spec)
+	}
+	// Inject source_widget_definition into split_graph_definition schema.
+	// This block is dynamically generated from allWidgetSpecs (excluding group/powerpack/split_group)
+	// and cannot be expressed as a static FieldSpec.
+	if splitGraphSchema, ok := s["split_graph_definition"]; ok {
+		splitGraphSchema.Elem.(*schema.Resource).Schema["source_widget_definition"] = splitGraphSourceWidgetSchema()
 	}
 	return s
 }

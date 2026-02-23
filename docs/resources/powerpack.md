@@ -135,6 +135,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -150,6 +151,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
@@ -165,6 +167,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
 - `title` (String) The title of the widget.
@@ -789,6 +792,7 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
@@ -801,6 +805,7 @@ Optional:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
@@ -1474,6 +1479,7 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
@@ -1490,6 +1496,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
@@ -1508,6 +1515,7 @@ Optional:
 
 - `color` (String) The color of the text in the widget.
 - `font_size` (String) The size of the text in the widget.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
@@ -1521,6 +1529,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
@@ -2012,6 +2021,7 @@ Optional:
 
 - `background_color` (String) The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
 - `banner_img` (String) The image URL to display as a banner for the group.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
 - `title` (String) The title of the widget.
@@ -2026,6 +2036,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
@@ -2675,6 +2686,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--custom_link))
 - `group` (List of String) The list of tags to group nodes by.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
@@ -3903,6 +3915,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -3920,6 +3933,7 @@ Optional:
 
 - `has_background` (Boolean) Whether to display a background or not.
 - `has_border` (Boolean) Whether to display a border or not.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `horizontal_align` (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
@@ -3940,6 +3954,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -4006,6 +4021,7 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
@@ -4038,6 +4054,7 @@ Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
@@ -4061,6 +4078,7 @@ Optional:
 - `background_color` (String) The background color of the note.
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_tick` (Boolean) Whether to show a tick or not.
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -4079,6 +4097,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
@@ -4796,6 +4815,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
@@ -5525,6 +5545,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
@@ -5559,6 +5580,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
@@ -7017,6 +7039,7 @@ Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `global_time_target` (String) The global time target of the widget.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
@@ -7035,6 +7058,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -7061,6 +7085,7 @@ Required:
 
 Optional:
 
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -7104,6 +7129,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
@@ -7880,6 +7906,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
@@ -8770,6 +8797,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
@@ -9495,6 +9523,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--topology_map_definition--custom_link))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--topology_map_definition--request))
 - `title` (String) The title of the widget.
@@ -9547,6 +9576,7 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
@@ -9566,6 +9596,7 @@ Optional:
 Optional:
 
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_links` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_links))
+- `hide_incomplete_cost_data` (Boolean) Toggle to hide the widget's incomplete cost data.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
 - `title` (String) The title of the widget.
