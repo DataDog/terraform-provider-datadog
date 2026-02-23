@@ -252,7 +252,7 @@ var formulaAndFunctionEventQuerySearchFields = []FieldSpec{
 var formulaAndFunctionEventQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for event platform-based queries.",
-		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "database_queries"}},
+		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events"}},
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
 		Description: "Storage location (private beta)."},
 	{HCLKey: "search", Type: TypeBlock, OmitEmpty: true,
@@ -378,7 +378,7 @@ var formulaAndFunctionSLOQueryFields = []FieldSpec{
 		ValidValues: []string{"overall", "components"}},
 	{HCLKey: "slo_query_type", Type: TypeString, OmitEmpty: false, Default: "metric",
 		Description: "type of the SLO to query.",
-		ValidValues: []string{"metric", "time_slice", "monitor"}},
+		ValidValues: []string{"metric", "monitor", "time_slice"}},
 	{HCLKey: "additional_query_filters", Type: TypeString, OmitEmpty: true,
 		Description: "Additional filters applied to the SLO query."},
 }
@@ -464,7 +464,7 @@ var standardQueryFields = []FieldSpec{
 var widgetFormulaLimitFields = []FieldSpec{
 	{HCLKey: "count", Type: TypeInt, OmitEmpty: true,
 		Description: "The number of results to return."},
-	{HCLKey: "order", Type: TypeString, OmitEmpty: true,
+	{HCLKey: "order", Type: TypeString, OmitEmpty: true, Default: "desc",
 		Description: "The direction of the sort.",
 		ValidValues: []string{"asc", "desc"}},
 }
@@ -1235,12 +1235,12 @@ var DashboardTopLevelFields = []FieldSpec{
 	{HCLKey: "layout_type", Type: TypeString, Required: true, OmitEmpty: false,
 		ForceNew:    true,
 		ValidValues: []string{"ordered", "free"},
-		Description: "Layout type of the dashboard."},
+		Description: "The layout type of the dashboard."},
 
 	// DashboardReflowType enum: auto | fixed (OpenAPI DashboardReflowType)
 	{HCLKey: "reflow_type", Type: TypeString, OmitEmpty: true,
 		ValidValues: []string{"auto", "fixed"},
-		Description: "Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts."},
+		Description: "The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts."},
 
 	// OmitEmpty: true — description is only emitted when explicitly set.
 	// Cassettes recorded without description have no "description" key.

@@ -1041,10 +1041,10 @@ var geomapWidgetRequestFields = []FieldSpec{
 		Children:    logQueryDefinitionFields},
 	// FormulaAndFunction query/formula fields
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
-		Description: "A list of queries to use in the widget.",
+
 		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
-		Description: "A list of formulas to use in the widget.",
+
 		Children:    widgetFormulaFields},
 }
 
@@ -1084,10 +1084,10 @@ var GeomapWidgetSpec = WidgetSpec{
 // Treemap only supports formula/query style — no old-style requests.
 var treemapRequestFields = []FieldSpec{
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
-		Description: "A list of queries to use in the widget.",
+
 		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
-		Description: "A list of formulas to use in the widget.",
+
 		Children:    widgetFormulaFields},
 }
 
@@ -1550,9 +1550,9 @@ var timeseriesWidgetRequestFields = []FieldSpec{
 	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Children: processQueryDefinitionFields},
 	// FormulaAndFunction query/formula fields
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
-		Description: "A list of queries to use in the widget.",
+
 		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
-		Description: "A list of formulas to use in the widget.",
+
 		Children:    widgetFormulaFields},
 }

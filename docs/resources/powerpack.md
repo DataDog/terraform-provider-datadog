@@ -320,7 +320,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--change_definition--request--formula--number_format"></a>
@@ -536,7 +536,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -646,7 +646,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -978,7 +978,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--distribution_definition--request--formula--number_format"></a>
@@ -1194,7 +1194,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -1304,7 +1304,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -1554,10 +1554,10 @@ Optional:
 
 Optional:
 
-- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula))
+- `formula` (Block List) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
 - `q` (String) The metric query to use for this widget.
-- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query))
+- `query` (Block List) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--geomap_definition--request--formula"></a>
@@ -1611,7 +1611,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format"></a>
@@ -1813,7 +1813,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -1923,7 +1923,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -2199,7 +2199,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format"></a>
@@ -2415,7 +2415,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -2525,7 +2525,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -2846,7 +2846,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--formula--number_format"></a>
@@ -3062,7 +3062,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -3172,7 +3172,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -3434,7 +3434,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--formula--number_format"></a>
@@ -3650,7 +3650,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -3760,7 +3760,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -4302,7 +4302,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format"></a>
@@ -4518,7 +4518,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -4628,7 +4628,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -5051,7 +5051,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format"></a>
@@ -5267,7 +5267,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -5377,7 +5377,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -5706,7 +5706,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -5816,7 +5816,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -5951,7 +5951,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--formula--number_format"></a>
@@ -6167,7 +6167,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -6277,7 +6277,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -6540,7 +6540,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--formula--number_format"></a>
@@ -6756,7 +6756,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -6866,7 +6866,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -7367,7 +7367,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format"></a>
@@ -7647,7 +7647,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -7757,7 +7757,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -7964,7 +7964,7 @@ Optional:
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
-- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
+- `formula` (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
 - `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
@@ -7972,7 +7972,7 @@ Optional:
 - `process_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
 - `profile_metrics_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--profile_metrics_query))
 - `q` (String) The metric query to use for this widget.
-- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query))
+- `query` (Block List) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
@@ -8156,7 +8156,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format"></a>
@@ -8512,7 +8512,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -8622,7 +8622,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -9031,7 +9031,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format"></a>
@@ -9247,7 +9247,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -9357,7 +9357,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -9619,8 +9619,8 @@ Optional:
 
 Optional:
 
-- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula))
-- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query))
+- `formula` (Block List) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula))
+- `query` (Block List) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query))
 
 <a id="nestedblock--widget--treemap_definition--request--formula"></a>
 ### Nested Schema for `widget.treemap_definition.request.formula`
@@ -9673,7 +9673,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format"></a>
@@ -9811,7 +9811,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -9921,7 +9921,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`, `monitor`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
 
 
