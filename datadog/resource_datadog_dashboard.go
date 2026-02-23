@@ -417,109 +417,18 @@ func buildTerraformRestrictedRoles(datadogRestrictedRoles *[]string) *[]string {
 // The generic widget schema is a combination of the schema for a non-group widget
 // and the schema for a Group Widget (which can contains only non-group widgets)
 func getWidgetSchema() map[string]*schema.Schema {
-	widgetSchema := getNonGroupWidgetSchema(false)
-	// Build the group_definition schema from GroupWidgetSpec and inject the widget sub-schema.
-	groupSchema := dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.GroupWidgetSpec)
-	groupSchema.Elem.(*schema.Resource).Schema["widget"] = &schema.Schema{
-		Type:        schema.TypeList,
-		Optional:    true,
-		Description: "The list of widgets in this group.",
-		Elem: &schema.Resource{
-			Schema: getNonGroupWidgetSchema(false),
-		},
-	}
-	widgetSchema["group_definition"] = groupSchema
-	return widgetSchema
-}
-
-func getNonGroupWidgetSchema(isPowerpackSchema bool) map[string]*schema.Schema {
-	s := map[string]*schema.Schema{
-		"widget_layout": {
+	s := dashboardmapping.AllWidgetSchemasMap(false)
+	// Inject recursive group widget sub-schema
+	groupSchema := s["group_definition"]
+	if groupSchema != nil {
+		groupSchema.Elem.(*schema.Resource).Schema["widget"] = &schema.Schema{
 			Type:        schema.TypeList,
-			MaxItems:    1,
 			Optional:    true,
-			Description: "The layout of the widget on a 'free' dashboard.",
+			Description: "The list of widgets in this group.",
 			Elem: &schema.Resource{
-				Schema: getWidgetLayoutSchema(),
+				Schema: dashboardmapping.AllWidgetSchemasMap(false),
 			},
-		},
-		"id": {
-			Type:        schema.TypeInt,
-			Computed:    true,
-			Description: "The ID of the widget.",
-		},
-		// A widget should implement exactly one of the following definitions
-		"alert_graph_definition":             dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.AlertGraphWidgetSpec),
-		"alert_value_definition":             dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.AlertValueWidgetSpec),
-		"change_definition":                  dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.ChangeWidgetSpec),
-		"check_status_definition":            dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.CheckStatusWidgetSpec),
-		"distribution_definition":            dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.DistributionWidgetSpec),
-		"event_stream_definition":            dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.EventStreamWidgetSpec),
-		"event_timeline_definition":          dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.EventTimelineWidgetSpec),
-		"free_text_definition":               dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.FreeTextWidgetSpec),
-		"heatmap_definition":                 dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.HeatmapWidgetSpec),
-		"hostmap_definition":                 dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.HostmapWidgetSpec),
-		"iframe_definition":                  dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.IFrameWidgetSpec),
-		"image_definition":                   dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.ImageWidgetSpec),
-		"list_stream_definition":             dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.ListStreamWidgetSpec),
-		"log_stream_definition":              dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.LogStreamWidgetSpec),
-		"manage_status_definition":           dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.ManageStatusWidgetSpec),
-		"note_definition":                    dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.NoteWidgetSpec),
-		"query_value_definition":             dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.QueryValueWidgetSpec),
-		"query_table_definition":             dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.QueryTableWidgetSpec),
-		"scatterplot_definition":             dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.ScatterplotWidgetSpec),
-		"servicemap_definition":              dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.ServiceMapWidgetSpec),
-		"service_level_objective_definition": dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.SLOWidgetSpec),
-		"slo_list_definition":                dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.SLOListWidgetSpec),
-		"sunburst_definition":                dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.SunburstWidgetSpec),
-		"timeseries_definition":              dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.TimeseriesWidgetSpec),
-		"toplist_definition":                 dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.ToplistWidgetSpec),
-		"topology_map_definition":            dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.TopologyMapWidgetSpec),
-		"trace_service_definition":           dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.TraceServiceWidgetSpec),
-		"treemap_definition":                 dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.TreemapWidgetSpec),
-		"geomap_definition":                  dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.GeomapWidgetSpec),
-		"run_workflow_definition":            dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.RunWorkflowWidgetSpec),
+		}
 	}
-
-	// Non powerpack specific widgets
-	if !isPowerpackSchema {
-		s["powerpack_definition"] = dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.PowerpackWidgetSpec)
-		s["split_graph_definition"] = dashboardmapping.WidgetSpecToSchemaBlock(dashboardmapping.SplitGraphWidgetSpec)
-	}
-
 	return s
-}
-
-//
-// Widget Layout helpers
-//
-
-func getWidgetLayoutSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"x": {
-			Description: "The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.",
-			Type:        schema.TypeInt,
-			Required:    true,
-		},
-		"y": {
-			Description: "The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.",
-			Type:        schema.TypeInt,
-			Required:    true,
-		},
-		"width": {
-			Description: "The width of the widget.",
-			Type:        schema.TypeInt,
-			Required:    true,
-		},
-		"height": {
-			Description: "The height of the widget.",
-			Type:        schema.TypeInt,
-			Required:    true,
-		},
-		"is_column_break": {
-			Description: "Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.",
-			Type:        schema.TypeBool,
-			Optional:    true,
-		},
-	}
 }

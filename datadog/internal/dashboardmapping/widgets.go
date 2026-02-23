@@ -1,5 +1,7 @@
 package dashboardmapping
 
+import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 // widgets.go
 //
 // All WidgetSpec declarations and the allWidgetSpecs registry.
@@ -1344,6 +1346,42 @@ func concatWidgetSpecs(slices ...[]WidgetSpec) []WidgetSpec {
 		result = append(result, s...)
 	}
 	return result
+}
+
+// widgetLayoutFieldSpecs are the fields inside the widget_layout block.
+var widgetLayoutFieldSpecs = []FieldSpec{
+	{HCLKey: "x", Type: TypeInt, Required: true, Description: "The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0."},
+	{HCLKey: "y", Type: TypeInt, Required: true, Description: "The position of the widget on the y (vertical) axis. Must be greater than or equal to 0."},
+	{HCLKey: "width", Type: TypeInt, Required: true, Description: "The width of the widget."},
+	{HCLKey: "height", Type: TypeInt, Required: true, Description: "The height of the widget."},
+	{HCLKey: "is_column_break", Type: TypeBool, OmitEmpty: true, Description: "The number of columns the widget occupies on the dashboard."},
+}
+
+// AllWidgetSchemasMap returns the schema map for all widget definition types,
+// including widget_layout and id wrapper fields. If excludePowerpackOnly is true,
+// powerpack and split_graph definitions are excluded (for use by the powerpack resource).
+func AllWidgetSchemasMap(excludePowerpackOnly bool) map[string]*schema.Schema {
+	s := map[string]*schema.Schema{
+		"id": {
+			Type:        schema.TypeInt,
+			Computed:    true,
+			Description: "The ID of the widget.",
+		},
+		"widget_layout": {
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Description: "The layout of the widget on a 'free' dashboard.",
+			Elem:        &schema.Resource{Schema: FieldSpecsToSchema(widgetLayoutFieldSpecs)},
+		},
+	}
+	for _, spec := range allWidgetSpecs {
+		if excludePowerpackOnly && (spec.JSONType == "powerpack" || spec.JSONType == "split_group") {
+			continue
+		}
+		s[spec.HCLKey] = WidgetSpecToSchemaBlock(spec)
+	}
+	return s
 }
 
 // timeseriesWidgetRequestStyleFields corresponds to OpenAPI

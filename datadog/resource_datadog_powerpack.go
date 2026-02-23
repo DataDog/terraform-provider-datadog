@@ -73,7 +73,7 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Optional:    true,
 					Description: "The list of widgets to display in the powerpack.",
 					Elem: &schema.Resource{
-						Schema: getNonGroupWidgetSchema(true),
+						Schema: dashboardmapping.AllWidgetSchemasMap(true),
 					},
 				},
 				"layout": {
