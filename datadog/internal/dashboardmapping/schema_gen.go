@@ -9,6 +9,9 @@ package dashboardmapping
 // TypeList/MaxItems:1 block schema for a widget definition.
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -19,8 +22,19 @@ var ValidateStringIsNotEmpty = validation.ToDiagFunc(validation.StringIsNotEmpty
 
 // FieldSpecToSchemaElem converts a single FieldSpec to *schema.Schema.
 func FieldSpecToSchemaElem(f FieldSpec) *schema.Schema {
+	// Enrich description with valid values when present, matching the format
+	// used in the original hand-written schemas: "Valid values are `a`, `b`, `c`."
+	desc := f.Description
+	if len(f.ValidValues) > 0 && !strings.Contains(desc, "Valid values") {
+		quoted := make([]string, len(f.ValidValues))
+		for i, v := range f.ValidValues {
+			quoted[i] = fmt.Sprintf("`%s`", v)
+		}
+		desc += " Valid values are " + strings.Join(quoted, ", ") + "."
+	}
+
 	s := &schema.Schema{
-		Description: f.Description,
+		Description: desc,
 		Deprecated:  f.Deprecated,
 		Sensitive:   f.Sensitive,
 	}

@@ -734,7 +734,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
 ### Required
 
-- `layout_type` (String) Layout type of the dashboard.
+- `layout_type` (String) Layout type of the dashboard. Valid values are `ordered`, `free`.
 - `title` (String) The title of the dashboard.
 
 ### Optional
@@ -744,7 +744,7 @@ resource "datadog_dashboard" "free_dashboard" {
 - `description` (String) The description of the dashboard.
 - `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard. Defaults to `false`.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
-- `reflow_type` (String) Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts.
+- `reflow_type` (String) Reflow type for a **new dashboard layout** dashboard. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts. Valid values are `auto`, `fixed`.
 - `restricted_roles` (Set of String) UUIDs of roles whose associated users are authorized to edit the dashboard.
 - `tags` (List of String) A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.
 - `template_variable` (Block List) The list of template variables for this dashboard. (see [below for nested schema](#nestedblock--template_variable))
@@ -841,13 +841,13 @@ Read-Only:
 Required:
 
 - `alert_id` (String) The ID of the monitor used by the widget.
-- `viz_type` (String) Type of visualization to use when displaying the widget.
+- `viz_type` (String) Type of visualization to use when displaying the widget. Valid values are `timeseries`, `toplist`.
 
 Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -862,9 +862,9 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
-- `text_align` (String) The alignment of the text in the widget.
+- `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `unit` (String) The unit for the value displayed in the widget.
 
@@ -878,7 +878,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--change_definition--custom_link"></a>
@@ -898,13 +898,13 @@ Optional:
 Optional:
 
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
-- `change_type` (String) Whether to show absolute or relative change.
-- `compare_to` (String) Choose from when to compare current data to.
+- `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
+- `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
 - `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
-- `order_by` (String) What to order by.
-- `order_dir` (String) Widget sorting method.
+- `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
+- `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--query))
@@ -954,7 +954,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1007,8 +1007,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -1027,7 +1027,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--change_definition--request--formula--number_format"></a>
@@ -1131,7 +1131,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1185,13 +1185,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -1206,11 +1206,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -1227,13 +1227,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -1243,7 +1243,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -1259,7 +1259,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -1284,12 +1284,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -1312,7 +1312,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -1323,17 +1323,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -1343,17 +1343,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -1399,7 +1399,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1463,7 +1463,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1493,7 +1493,7 @@ Optional:
 Required:
 
 - `check` (String) The check to use in the widget.
-- `grouping` (String) The kind of grouping to use.
+- `grouping` (String) The kind of grouping to use. Valid values are `check`, `cluster`.
 
 Optional:
 
@@ -1502,7 +1502,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -1516,7 +1516,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--xaxis))
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--yaxis))
@@ -1579,7 +1579,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1609,7 +1609,7 @@ Required:
 - `env` (String) The environment name.
 - `name` (String) The operation name associated with the service.
 - `primary_tag` (String) The organization's host group name and value.
-- `row_type` (String) The level of detail for the request.
+- `row_type` (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
 - `service` (String) The service name.
 
 Optional:
@@ -1627,8 +1627,8 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell.
-- `order` (String) Widget sorting methods.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -1663,8 +1663,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -1683,7 +1683,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--distribution_definition--request--formula--number_format"></a>
@@ -1787,7 +1787,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -1841,13 +1841,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -1862,11 +1862,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -1883,13 +1883,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -1899,7 +1899,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -1915,7 +1915,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -1940,12 +1940,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -1968,7 +1968,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -1979,17 +1979,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -1999,17 +1999,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -2055,7 +2055,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2119,7 +2119,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2183,11 +2183,11 @@ Required:
 
 Optional:
 
-- `event_size` (String) The size to use to display an event.
+- `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -2203,7 +2203,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -2219,9 +2219,9 @@ Optional:
 - `color` (String) The color of the text in the widget.
 - `font_size` (String) The size of the text in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget.
-- `text_align` (String) The alignment of the text in the widget.
+- `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -2235,7 +2235,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `view` (Block List, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--geomap_definition--view))
 
@@ -2292,8 +2292,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -2312,7 +2312,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format"></a>
@@ -2416,7 +2416,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2456,13 +2456,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -2477,11 +2477,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -2498,13 +2498,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -2514,7 +2514,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -2530,7 +2530,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -2555,12 +2555,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -2583,7 +2583,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -2594,17 +2594,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -2614,17 +2614,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -2670,7 +2670,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2716,7 +2716,7 @@ Required:
 
 Required:
 
-- `layout_type` (String) The layout type of the group.
+- `layout_type` (String) The layout type of the group. Valid values are `ordered`.
 
 Optional:
 
@@ -2725,7 +2725,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `widget` (Block List) The list of widgets in this group. (see [below for nested schema](#nestedblock--widget--group_definition--widget))
 
@@ -2779,13 +2779,13 @@ Read-Only:
 Required:
 
 - `alert_id` (String) The ID of the monitor used by the widget.
-- `viz_type` (String) Type of visualization to use when displaying the widget.
+- `viz_type` (String) Type of visualization to use when displaying the widget. Valid values are `timeseries`, `toplist`.
 
 Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -2800,9 +2800,9 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
-- `text_align` (String) The alignment of the text in the widget.
+- `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `unit` (String) The unit for the value displayed in the widget.
 
@@ -2816,7 +2816,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--custom_link"></a>
@@ -2836,13 +2836,13 @@ Optional:
 Optional:
 
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
-- `change_type` (String) Whether to show absolute or relative change.
-- `compare_to` (String) Choose from when to compare current data to.
+- `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
+- `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
 - `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
-- `order_by` (String) What to order by.
-- `order_dir` (String) Widget sorting method.
+- `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
+- `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query))
@@ -2892,7 +2892,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -2945,8 +2945,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -2965,7 +2965,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format"></a>
@@ -3069,7 +3069,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3123,13 +3123,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -3144,11 +3144,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -3165,13 +3165,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -3181,7 +3181,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -3197,7 +3197,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -3222,12 +3222,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -3250,7 +3250,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -3261,17 +3261,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -3281,17 +3281,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -3337,7 +3337,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3401,7 +3401,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3431,7 +3431,7 @@ Optional:
 Required:
 
 - `check` (String) The check to use in the widget.
-- `grouping` (String) The kind of grouping to use.
+- `grouping` (String) The kind of grouping to use. Valid values are `check`, `cluster`.
 
 Optional:
 
@@ -3440,7 +3440,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -3454,7 +3454,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--xaxis))
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--yaxis))
@@ -3517,7 +3517,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3547,7 +3547,7 @@ Required:
 - `env` (String) The environment name.
 - `name` (String) The operation name associated with the service.
 - `primary_tag` (String) The organization's host group name and value.
-- `row_type` (String) The level of detail for the request.
+- `row_type` (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
 - `service` (String) The service name.
 
 Optional:
@@ -3565,8 +3565,8 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell.
-- `order` (String) Widget sorting methods.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -3601,8 +3601,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -3621,7 +3621,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--formula--number_format"></a>
@@ -3725,7 +3725,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -3779,13 +3779,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -3800,11 +3800,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -3821,13 +3821,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -3837,7 +3837,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -3853,7 +3853,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -3878,12 +3878,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -3906,7 +3906,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -3917,17 +3917,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -3937,17 +3937,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -3993,7 +3993,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4057,7 +4057,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4121,11 +4121,11 @@ Required:
 
 Optional:
 
-- `event_size` (String) The size to use to display an event.
+- `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -4141,7 +4141,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -4157,9 +4157,9 @@ Optional:
 - `color` (String) The color of the text in the widget.
 - `font_size` (String) The size of the text in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget.
-- `text_align` (String) The alignment of the text in the widget.
+- `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -4173,7 +4173,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `view` (Block List, Max: 1) The view of the world that the map should render. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--view))
 
@@ -4230,8 +4230,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -4250,7 +4250,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format"></a>
@@ -4354,7 +4354,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4394,13 +4394,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -4415,11 +4415,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -4436,13 +4436,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -4452,7 +4452,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -4468,7 +4468,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -4493,12 +4493,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -4521,7 +4521,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -4532,17 +4532,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -4552,17 +4552,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -4608,7 +4608,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4654,7 +4654,7 @@ Required:
 
 Required:
 
-- `layout_type` (String) The layout type of the group.
+- `layout_type` (String) The layout type of the group. Valid values are `ordered`.
 
 Optional:
 
@@ -4663,7 +4663,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -4679,7 +4679,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--yaxis))
 
@@ -4763,7 +4763,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4816,8 +4816,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -4836,7 +4836,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format"></a>
@@ -4940,7 +4940,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -4994,13 +4994,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -5015,11 +5015,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -5036,13 +5036,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -5052,7 +5052,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -5068,7 +5068,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -5093,12 +5093,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -5121,7 +5121,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -5132,17 +5132,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -5152,17 +5152,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -5208,7 +5208,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5272,7 +5272,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5326,12 +5326,12 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
-- `node_type` (String) The type of node used.
+- `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags to filter nodes by.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--custom_link"></a>
@@ -5409,7 +5409,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5462,8 +5462,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -5482,7 +5482,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--formula--number_format"></a>
@@ -5586,7 +5586,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5640,13 +5640,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -5661,11 +5661,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -5682,13 +5682,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -5698,7 +5698,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -5714,7 +5714,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -5739,12 +5739,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -5767,7 +5767,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -5778,17 +5778,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -5798,17 +5798,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -5854,7 +5854,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5918,7 +5918,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -5997,7 +5997,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6050,8 +6050,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -6070,7 +6070,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--formula--number_format"></a>
@@ -6174,7 +6174,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6228,13 +6228,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -6249,11 +6249,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -6270,13 +6270,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -6286,7 +6286,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -6302,7 +6302,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -6327,12 +6327,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -6355,7 +6355,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -6366,17 +6366,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -6386,17 +6386,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -6442,7 +6442,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6506,7 +6506,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6553,7 +6553,7 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -6568,15 +6568,15 @@ Optional:
 
 - `has_background` (Boolean) Whether to display a background or not.
 - `has_border` (Boolean) Whether to display a border or not.
-- `horizontal_align` (String) The horizontal alignment for the widget.
+- `horizontal_align` (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
 - `live_span` (String) The timeframe to use when displaying the widget.
-- `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated.
-- `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated.
+- `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
+- `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `url_dark_theme` (String) The URL in dark mode to use as a data source for the widget.
-- `vertical_align` (String) The vertical alignment for the widget.
+- `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition"></a>
@@ -6590,7 +6590,7 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition--request"></a>
@@ -6600,7 +6600,7 @@ Required:
 
 - `columns` (Block List, Min: 1) Widget columns. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--columns))
 - `query` (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query))
-- `response_format` (String) Widget response format.
+- `response_format` (String) Widget response format. Valid values are `event_list`.
 
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.columns`
@@ -6608,7 +6608,7 @@ Required:
 Optional:
 
 - `field` (String) Widget column field.
-- `width` (String) Widget column width.
+- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
 
 
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--query"></a>
@@ -6616,12 +6616,12 @@ Optional:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
 
 Optional:
 
 - `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
-- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
 - `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--group_by))
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
@@ -6642,7 +6642,7 @@ Required:
 Required:
 
 - `column` (String) The facet path for the column.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -6656,13 +6656,13 @@ Optional:
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget.
-- `message_display` (String) The number of log lines to display.
+- `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
 - `show_message_column` (Boolean) If the message column should be displayed.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--sort))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition--sort"></a>
@@ -6671,7 +6671,7 @@ Optional:
 Required:
 
 - `column` (String) The facet path for the column.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -6684,16 +6684,16 @@ Required:
 
 Optional:
 
-- `color_preference` (String) Whether to colorize text or background.
-- `display_format` (String) The display setting to use.
+- `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
+- `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
-- `sort` (String) The method to sort the monitors.
-- `summary_type` (String) The summary type to use.
+- `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
+- `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -6711,13 +6711,13 @@ Optional:
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_tick` (Boolean) Whether to show a tick or not.
-- `text_align` (String) The alignment of the widget's text.
-- `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed.
+- `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
+- `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
 - `tick_pos` (String) When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = "50%"` is centered alignment.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-- `vertical_align` (String) The vertical alignment for the widget.
+- `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--group_definition--widget--powerpack_definition"></a>
@@ -6735,7 +6735,7 @@ Optional:
 - `show_title` (Boolean) Whether to show the title of the powerpack.
 - `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--powerpack_definition--template_variables"></a>
@@ -6780,11 +6780,11 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--custom_link))
-- `has_search_bar` (String) Controls the display of the search bar.
+- `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--custom_link"></a>
@@ -6803,7 +6803,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
@@ -6812,7 +6812,7 @@ Optional:
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query))
-- `order` (String) The sort order for the rows.
+- `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query))
@@ -6862,7 +6862,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -6892,7 +6892,7 @@ Required:
 - `env` (String) The environment name.
 - `name` (String) The operation name associated with the service.
 - `primary_tag` (String) The organization's host group name and value.
-- `row_type` (String) The level of detail for the request.
+- `row_type` (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
 - `service` (String) The service name.
 
 Optional:
@@ -6910,8 +6910,8 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell.
-- `order` (String) Widget sorting methods.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -6920,8 +6920,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -6965,8 +6965,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -6985,7 +6985,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format"></a>
@@ -7089,7 +7089,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7143,13 +7143,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -7164,11 +7164,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -7185,13 +7185,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -7201,7 +7201,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -7217,7 +7217,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -7242,12 +7242,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -7270,7 +7270,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -7281,17 +7281,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -7301,17 +7301,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -7357,7 +7357,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7421,7 +7421,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7461,7 +7461,7 @@ Optional:
 
 - `custom_bg_color` (String) The custom color palette to apply to the background.
 - `custom_fg_color` (String) The custom color palette to apply to the foreground text.
-- `palette` (String) The color palette to apply.
+- `palette` (String) The color palette to apply. Valid values are `white_on_red`, `white_on_yellow`, `white_on_green`, `black_on_light_red`, `black_on_light_yellow`, `black_on_light_green`, `red_on_white`, `yellow_on_white`, `green_on_white`, `custom_bg`, `custom_text`.
 - `replace` (Block List, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats--text_format--replace))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats--text_format--match"></a>
@@ -7469,7 +7469,7 @@ Optional:
 
 Required:
 
-- `type` (String) Match or compare option.
+- `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
 - `value` (String) Table Widget Match String.
 
 
@@ -7478,7 +7478,7 @@ Required:
 
 Required:
 
-- `type` (String) Table widget text format replace all type.
+- `type` (String) Table widget text format replace all type. Valid values are `all`, `substring`.
 - `with` (String) Table Widget Match String.
 
 Optional:
@@ -7501,10 +7501,10 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
-- `text_align` (String) The alignment of the widget's text.
+- `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `timeseries_background` (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--custom_link"></a>
@@ -7523,7 +7523,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
@@ -7577,7 +7577,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7641,7 +7641,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7668,8 +7668,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -7713,8 +7713,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -7733,7 +7733,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format"></a>
@@ -7837,7 +7837,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -7891,13 +7891,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -7912,11 +7912,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -7933,13 +7933,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -7949,7 +7949,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -7965,7 +7965,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -7990,12 +7990,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -8018,7 +8018,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -8029,17 +8029,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -8049,17 +8049,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -8105,7 +8105,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8169,7 +8169,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8197,7 +8197,7 @@ Optional:
 
 Required:
 
-- `type` (String) Whether the Timeseries is made using an area or bars.
+- `type` (String) Whether the Timeseries is made using an area or bars. Valid values are `area`, `bars`.
 
 Optional:
 
@@ -8230,7 +8230,7 @@ Optional:
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--run_workflow_definition--custom_link"></a>
@@ -8264,7 +8264,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--xaxis))
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--yaxis))
@@ -8302,7 +8302,7 @@ Optional:
 
 Required:
 
-- `dimension` (String) Dimension of the Scatterplot.
+- `dimension` (String) Dimension of the Scatterplot. Valid values are `x`, `y`, `radius`, `color`.
 - `formula_expression` (String) A string expression built from queries, formulas, and functions.
 
 Optional:
@@ -8328,13 +8328,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -8349,11 +8349,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -8370,13 +8370,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -8386,7 +8386,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -8402,7 +8402,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -8427,12 +8427,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -8455,7 +8455,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -8466,17 +8466,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -8486,17 +8486,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -8506,7 +8506,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request.
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--formula))
 - `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
@@ -8558,7 +8558,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8611,8 +8611,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -8631,7 +8631,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--formula--number_format"></a>
@@ -8735,7 +8735,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -8789,13 +8789,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -8810,11 +8810,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -8831,13 +8831,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -8847,7 +8847,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -8863,7 +8863,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -8888,12 +8888,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -8916,7 +8916,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -8927,17 +8927,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -8947,17 +8947,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -9003,7 +9003,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9067,7 +9067,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9095,7 +9095,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request.
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--formula))
 - `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
@@ -9147,7 +9147,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9200,8 +9200,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -9220,7 +9220,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--formula--number_format"></a>
@@ -9324,7 +9324,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9378,13 +9378,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -9399,11 +9399,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -9420,13 +9420,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -9436,7 +9436,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -9452,7 +9452,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -9477,12 +9477,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -9505,7 +9505,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -9516,17 +9516,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -9536,17 +9536,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -9592,7 +9592,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9656,7 +9656,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9711,8 +9711,8 @@ Optional:
 Required:
 
 - `slo_id` (String) The ID of the service level objective used by the widget.
-- `time_windows` (List of String) A list of time windows to display in the widget.
-- `view_mode` (String) The view mode for the widget.
+- `time_windows` (List of String) A list of time windows to display in the widget. Valid values are `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, `previous_month`, `global_time`.
+- `view_mode` (String) The view mode for the widget. Valid values are `overall`, `component`, `both`.
 - `view_type` (String) The type of view to use when displaying the widget. Only `detail` is supported.
 
 Optional:
@@ -9722,7 +9722,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -9739,7 +9739,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--servicemap_definition--custom_link"></a>
@@ -9765,7 +9765,7 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request"></a>
@@ -9774,7 +9774,7 @@ Optional:
 Required:
 
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request--query))
-- `request_type` (String) The request type for the SLO List request.
+- `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.group_definition.widget.slo_list_definition.request.query`
@@ -9794,7 +9794,7 @@ Optional:
 Required:
 
 - `column` (String) The facet path for the column.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -9813,7 +9813,7 @@ Optional:
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--split_config"></a>
@@ -9833,7 +9833,7 @@ Optional:
 
 Required:
 
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -9874,7 +9874,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--custom_link"></a>
@@ -9968,7 +9968,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10032,7 +10032,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10085,8 +10085,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -10105,7 +10105,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format"></a>
@@ -10209,7 +10209,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10273,7 +10273,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10327,13 +10327,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -10348,11 +10348,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -10369,13 +10369,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -10385,7 +10385,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -10401,7 +10401,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -10426,12 +10426,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -10454,7 +10454,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -10465,17 +10465,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -10485,17 +10485,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -10541,7 +10541,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10605,7 +10605,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10644,16 +10644,16 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
-- `legend_columns` (Set of String) A list of columns to display in the legend.
-- `legend_layout` (String) The layout of the legend displayed in the widget.
-- `legend_size` (String) The size of the legend displayed in the widget.
+- `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
+- `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
+- `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--yaxis))
 
@@ -10700,7 +10700,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
@@ -10756,7 +10756,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10820,7 +10820,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -10873,8 +10873,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -10893,7 +10893,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format"></a>
@@ -10997,7 +10997,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11073,7 +11073,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11151,7 +11151,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11191,13 +11191,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -11212,11 +11212,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -11233,13 +11233,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -11249,7 +11249,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -11265,7 +11265,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -11290,12 +11290,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -11318,7 +11318,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -11329,17 +11329,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -11349,17 +11349,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -11405,7 +11405,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11469,7 +11469,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11496,9 +11496,9 @@ Optional:
 
 Optional:
 
-- `line_type` (String) The type of lines displayed.
-- `line_width` (String) The width of line displayed.
-- `order_by` (String) How to order series in timeseries visualizations.
+- `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
+- `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
+- `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -11538,7 +11538,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--custom_link"></a>
@@ -11611,7 +11611,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11675,7 +11675,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11702,8 +11702,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -11747,8 +11747,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -11767,7 +11767,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format"></a>
@@ -11871,7 +11871,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -11925,13 +11925,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -11946,11 +11946,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -11967,13 +11967,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -11983,7 +11983,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -11999,7 +11999,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -12024,12 +12024,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -12052,7 +12052,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -12063,17 +12063,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -12083,17 +12083,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -12139,7 +12139,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -12203,7 +12203,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -12262,7 +12262,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--topology_map_definition--custom_link"></a>
@@ -12310,7 +12310,7 @@ Required:
 
 Optional:
 
-- `display_format` (String) The number of columns to display.
+- `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
@@ -12318,9 +12318,9 @@ Optional:
 - `show_hits` (Boolean) Whether to show the hits metrics or not
 - `show_latency` (Boolean) Whether to show the latency metrics or not.
 - `show_resource_list` (Boolean) Whether to show the resource list or not.
-- `size_format` (String) The size of the widget.
+- `size_format` (String) The size of the widget. Valid values are `small`, `medium`, `large`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -12333,7 +12333,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--custom_links"></a>
@@ -12386,8 +12386,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -12406,7 +12406,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format"></a>
@@ -12486,13 +12486,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -12507,11 +12507,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -12528,13 +12528,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -12544,7 +12544,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -12560,7 +12560,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -12585,12 +12585,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -12613,7 +12613,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -12624,17 +12624,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -12644,17 +12644,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -12689,7 +12689,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--yaxis))
 
@@ -12773,7 +12773,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -12826,8 +12826,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -12846,7 +12846,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format"></a>
@@ -12950,7 +12950,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -13004,13 +13004,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -13025,11 +13025,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -13046,13 +13046,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -13062,7 +13062,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -13078,7 +13078,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -13103,12 +13103,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -13131,7 +13131,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -13142,17 +13142,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -13162,17 +13162,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -13218,7 +13218,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -13282,7 +13282,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -13336,12 +13336,12 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show ungrouped nodes.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
-- `node_type` (String) The type of node used.
+- `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags to filter nodes by.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--hostmap_definition--custom_link"></a>
@@ -13419,7 +13419,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -13472,8 +13472,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -13492,7 +13492,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--formula--number_format"></a>
@@ -13596,7 +13596,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -13650,13 +13650,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -13671,11 +13671,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -13692,13 +13692,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -13708,7 +13708,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -13724,7 +13724,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -13749,12 +13749,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -13777,7 +13777,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -13788,17 +13788,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -13808,17 +13808,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -13864,7 +13864,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -13928,7 +13928,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -14007,7 +14007,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -14060,8 +14060,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -14080,7 +14080,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--formula--number_format"></a>
@@ -14184,7 +14184,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -14238,13 +14238,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -14259,11 +14259,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -14280,13 +14280,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -14296,7 +14296,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -14312,7 +14312,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -14337,12 +14337,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -14365,7 +14365,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -14376,17 +14376,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -14396,17 +14396,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -14452,7 +14452,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -14516,7 +14516,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -14563,7 +14563,7 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -14578,15 +14578,15 @@ Optional:
 
 - `has_background` (Boolean) Whether to display a background or not.
 - `has_border` (Boolean) Whether to display a border or not.
-- `horizontal_align` (String) The horizontal alignment for the widget.
+- `horizontal_align` (String) The horizontal alignment for the widget. Valid values are `center`, `left`, `right`.
 - `live_span` (String) The timeframe to use when displaying the widget.
-- `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated.
-- `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated.
+- `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`.
+- `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `url_dark_theme` (String) The URL in dark mode to use as a data source for the widget.
-- `vertical_align` (String) The vertical alignment for the widget.
+- `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--list_stream_definition"></a>
@@ -14600,7 +14600,7 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--list_stream_definition--request"></a>
@@ -14610,7 +14610,7 @@ Required:
 
 - `columns` (Block List, Min: 1) Widget columns. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--columns))
 - `query` (Block List, Min: 1, Max: 1) Updated list stream widget. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query))
-- `response_format` (String) Widget response format.
+- `response_format` (String) Widget response format. Valid values are `event_list`.
 
 <a id="nestedblock--widget--list_stream_definition--request--columns"></a>
 ### Nested Schema for `widget.list_stream_definition.request.columns`
@@ -14618,7 +14618,7 @@ Required:
 Optional:
 
 - `field` (String) Widget column field.
-- `width` (String) Widget column width.
+- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
 
 
 <a id="nestedblock--widget--list_stream_definition--request--query"></a>
@@ -14626,12 +14626,12 @@ Optional:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
 
 Optional:
 
 - `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
-- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
 - `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--group_by))
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
@@ -14652,7 +14652,7 @@ Required:
 Required:
 
 - `column` (String) The facet path for the column.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -14666,13 +14666,13 @@ Optional:
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget.
-- `message_display` (String) The number of log lines to display.
+- `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
 - `show_message_column` (Boolean) If the message column should be displayed.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--log_stream_definition--sort"></a>
@@ -14681,7 +14681,7 @@ Optional:
 Required:
 
 - `column` (String) The facet path for the column.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -14694,16 +14694,16 @@ Required:
 
 Optional:
 
-- `color_preference` (String) Whether to colorize text or background.
-- `display_format` (String) The display setting to use.
+- `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
+- `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
 - `show_priority` (Boolean) Whether to show the priorities column.
-- `sort` (String) The method to sort the monitors.
-- `summary_type` (String) The summary type to use.
+- `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
+- `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -14721,13 +14721,13 @@ Optional:
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_tick` (Boolean) Whether to show a tick or not.
-- `text_align` (String) The alignment of the widget's text.
-- `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed.
+- `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
+- `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
 - `tick_pos` (String) When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = "50%"` is centered alignment.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
-- `vertical_align` (String) The vertical alignment for the widget.
+- `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
 <a id="nestedblock--widget--powerpack_definition"></a>
@@ -14745,7 +14745,7 @@ Optional:
 - `show_title` (Boolean) Whether to show the title of the powerpack.
 - `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--powerpack_definition--template_variables"></a>
@@ -14790,11 +14790,11 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
-- `has_search_bar` (String) Controls the display of the search bar.
+- `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--query_table_definition--custom_link"></a>
@@ -14813,7 +14813,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
@@ -14822,7 +14822,7 @@ Optional:
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
-- `order` (String) The sort order for the rows.
+- `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
 - `q` (String) The metric query to use for this widget.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
@@ -14872,7 +14872,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -14902,7 +14902,7 @@ Required:
 - `env` (String) The environment name.
 - `name` (String) The operation name associated with the service.
 - `primary_tag` (String) The organization's host group name and value.
-- `row_type` (String) The level of detail for the request.
+- `row_type` (String) The level of detail for the request. Valid values are `service`, `resource`, `span`.
 - `service` (String) The service name.
 
 Optional:
@@ -14920,8 +14920,8 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell.
-- `order` (String) Widget sorting methods.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -14930,8 +14930,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -14975,8 +14975,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -14995,7 +14995,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format"></a>
@@ -15099,7 +15099,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -15153,13 +15153,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -15174,11 +15174,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -15195,13 +15195,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -15211,7 +15211,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -15227,7 +15227,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -15252,12 +15252,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -15280,7 +15280,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -15291,17 +15291,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -15311,17 +15311,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -15367,7 +15367,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -15431,7 +15431,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -15471,7 +15471,7 @@ Optional:
 
 - `custom_bg_color` (String) The custom color palette to apply to the background.
 - `custom_fg_color` (String) The custom color palette to apply to the foreground text.
-- `palette` (String) The color palette to apply.
+- `palette` (String) The color palette to apply. Valid values are `white_on_red`, `white_on_yellow`, `white_on_green`, `black_on_light_red`, `black_on_light_yellow`, `black_on_light_green`, `red_on_white`, `yellow_on_white`, `green_on_white`, `custom_bg`, `custom_text`.
 - `replace` (Block List, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format--replace))
 
 <a id="nestedblock--widget--query_table_definition--request--text_formats--text_format--match"></a>
@@ -15479,7 +15479,7 @@ Optional:
 
 Required:
 
-- `type` (String) Match or compare option.
+- `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
 - `value` (String) Table Widget Match String.
 
 
@@ -15488,7 +15488,7 @@ Required:
 
 Required:
 
-- `type` (String) Table widget text format replace all type.
+- `type` (String) Table widget text format replace all type. Valid values are `all`, `substring`.
 - `with` (String) Table Widget Match String.
 
 Optional:
@@ -15511,10 +15511,10 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
-- `text_align` (String) The alignment of the widget's text.
+- `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
 - `timeseries_background` (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--query_value_definition--timeseries_background))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--query_value_definition--custom_link"></a>
@@ -15533,7 +15533,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) The aggregator to use for time aggregation.
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) The audit query to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
@@ -15587,7 +15587,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -15651,7 +15651,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -15678,8 +15678,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -15723,8 +15723,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -15743,7 +15743,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format"></a>
@@ -15847,7 +15847,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -15901,13 +15901,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -15922,11 +15922,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -15943,13 +15943,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -15959,7 +15959,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -15975,7 +15975,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -16000,12 +16000,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -16028,7 +16028,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -16039,17 +16039,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -16059,17 +16059,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -16115,7 +16115,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -16179,7 +16179,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -16207,7 +16207,7 @@ Optional:
 
 Required:
 
-- `type` (String) Whether the Timeseries is made using an area or bars.
+- `type` (String) Whether the Timeseries is made using an area or bars. Valid values are `area`, `bars`.
 
 Optional:
 
@@ -16240,7 +16240,7 @@ Optional:
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--run_workflow_definition--custom_link"></a>
@@ -16274,7 +16274,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--xaxis))
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--yaxis))
@@ -16312,7 +16312,7 @@ Optional:
 
 Required:
 
-- `dimension` (String) Dimension of the Scatterplot.
+- `dimension` (String) Dimension of the Scatterplot. Valid values are `x`, `y`, `radius`, `color`.
 - `formula_expression` (String) A string expression built from queries, formulas, and functions.
 
 Optional:
@@ -16338,13 +16338,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -16359,11 +16359,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -16380,13 +16380,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -16396,7 +16396,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -16412,7 +16412,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -16437,12 +16437,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -16465,7 +16465,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -16476,17 +16476,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -16496,17 +16496,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -16516,7 +16516,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request.
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--formula))
 - `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
@@ -16568,7 +16568,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -16621,8 +16621,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -16641,7 +16641,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--formula--number_format"></a>
@@ -16745,7 +16745,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -16799,13 +16799,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -16820,11 +16820,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -16841,13 +16841,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -16857,7 +16857,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -16873,7 +16873,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -16898,12 +16898,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -16926,7 +16926,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -16937,17 +16937,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -16957,17 +16957,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -17013,7 +17013,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -17077,7 +17077,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -17105,7 +17105,7 @@ Optional:
 
 Optional:
 
-- `aggregator` (String) Aggregator used for the request.
+- `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `apm_query` (Block List, Max: 1) The APM query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--formula))
 - `log_query` (Block List, Max: 1) The log query to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
@@ -17157,7 +17157,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -17210,8 +17210,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -17230,7 +17230,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--formula--number_format"></a>
@@ -17334,7 +17334,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -17388,13 +17388,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -17409,11 +17409,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -17430,13 +17430,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -17446,7 +17446,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -17462,7 +17462,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -17487,12 +17487,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -17515,7 +17515,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -17526,17 +17526,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -17546,17 +17546,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -17602,7 +17602,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -17666,7 +17666,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -17721,8 +17721,8 @@ Optional:
 Required:
 
 - `slo_id` (String) The ID of the service level objective used by the widget.
-- `time_windows` (List of String) A list of time windows to display in the widget.
-- `view_mode` (String) The view mode for the widget.
+- `time_windows` (List of String) A list of time windows to display in the widget. Valid values are `7d`, `30d`, `90d`, `week_to_date`, `previous_week`, `month_to_date`, `previous_month`, `global_time`.
+- `view_mode` (String) The view mode for the widget. Valid values are `overall`, `component`, `both`.
 - `view_type` (String) The type of view to use when displaying the widget. Only `detail` is supported.
 
 Optional:
@@ -17732,7 +17732,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -17749,7 +17749,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--servicemap_definition--custom_link"></a>
@@ -17775,7 +17775,7 @@ Optional:
 
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--slo_list_definition--request"></a>
@@ -17784,7 +17784,7 @@ Optional:
 Required:
 
 - `query` (Block List, Min: 1, Max: 1) Updated SLO List widget. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request--query))
-- `request_type` (String) The request type for the SLO List request.
+- `request_type` (String) The request type for the SLO List request. Valid values are `slo_list`.
 
 <a id="nestedblock--widget--slo_list_definition--request--query"></a>
 ### Nested Schema for `widget.slo_list_definition.request.query`
@@ -17804,7 +17804,7 @@ Optional:
 Required:
 
 - `column` (String) The facet path for the column.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -17823,7 +17823,7 @@ Optional:
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--split_graph_definition--split_config"></a>
@@ -17843,7 +17843,7 @@ Optional:
 
 Required:
 
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -17884,7 +17884,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--sunburst_definition--custom_link"></a>
@@ -17978,7 +17978,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18042,7 +18042,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18095,8 +18095,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -18115,7 +18115,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format"></a>
@@ -18219,7 +18219,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18283,7 +18283,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18337,13 +18337,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -18358,11 +18358,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -18379,13 +18379,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -18395,7 +18395,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -18411,7 +18411,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -18436,12 +18436,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -18464,7 +18464,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -18475,17 +18475,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -18495,17 +18495,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -18551,7 +18551,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18615,7 +18615,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18654,16 +18654,16 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
-- `legend_columns` (Set of String) A list of columns to display in the legend.
-- `legend_layout` (String) The layout of the legend displayed in the widget.
-- `legend_size` (String) The size of the legend displayed in the widget.
+- `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
+- `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
+- `legend_size` (String) The size of the legend displayed in the widget. Valid values are `0`, `2`, `4`, `8`, `16`, `auto`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--yaxis))
 
@@ -18710,7 +18710,7 @@ Optional:
 
 - `apm_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
-- `display_type` (String) How to display the marker lines.
+- `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - `log_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
@@ -18766,7 +18766,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18830,7 +18830,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -18883,8 +18883,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -18903,7 +18903,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format"></a>
@@ -19007,7 +19007,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19083,7 +19083,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19161,7 +19161,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19201,13 +19201,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -19222,11 +19222,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -19243,13 +19243,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -19259,7 +19259,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -19275,7 +19275,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -19300,12 +19300,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -19328,7 +19328,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -19339,17 +19339,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -19359,17 +19359,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -19415,7 +19415,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19479,7 +19479,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19506,9 +19506,9 @@ Optional:
 
 Optional:
 
-- `line_type` (String) The type of lines displayed.
-- `line_width` (String) The width of line displayed.
-- `order_by` (String) How to order series in timeseries visualizations.
+- `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
+- `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
+- `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -19548,7 +19548,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - `style` (Block List, Max: 1) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--toplist_definition--custom_link"></a>
@@ -19621,7 +19621,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19685,7 +19685,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19712,8 +19712,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -19757,8 +19757,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -19777,7 +19777,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format"></a>
@@ -19881,7 +19881,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -19935,13 +19935,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -19956,11 +19956,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -19977,13 +19977,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -19993,7 +19993,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -20009,7 +20009,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -20034,12 +20034,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -20062,7 +20062,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -20073,17 +20073,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -20093,17 +20093,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -20149,7 +20149,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -20213,7 +20213,7 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 Optional:
 
@@ -20272,7 +20272,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--topology_map_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--topology_map_definition--custom_link"></a>
@@ -20320,7 +20320,7 @@ Required:
 
 Optional:
 
-- `display_format` (String) The number of columns to display.
+- `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
@@ -20328,9 +20328,9 @@ Optional:
 - `show_hits` (Boolean) Whether to show the hits metrics or not
 - `show_latency` (Boolean) Whether to show the latency metrics or not.
 - `show_resource_list` (Boolean) Whether to show the resource list or not.
-- `size_format` (String) The size of the widget.
+- `size_format` (String) The size of the widget. Valid values are `small`, `medium`, `large`.
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
@@ -20343,7 +20343,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
 - `title` (String) The title of the widget.
-- `title_align` (String) The alignment of the widget's title.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 <a id="nestedblock--widget--treemap_definition--custom_links"></a>
@@ -20396,8 +20396,8 @@ Optional:
 
 Required:
 
-- `comparator` (String) The comparator to use.
-- `palette` (String) The color palette to apply.
+- `comparator` (String) The comparator to use. Valid values are `<`, `<=`, `>`, `>=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
 - `value` (Number) A value for the comparator.
 
 Optional:
@@ -20416,7 +20416,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format"></a>
@@ -20496,13 +20496,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Dependency Stats queries.
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
 
 Optional:
 
@@ -20517,11 +20517,11 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for APM Resource Stats queries.
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
 - `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
-- `stat` (String) APM statistic.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
 
 Optional:
 
@@ -20538,13 +20538,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
@@ -20554,7 +20554,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `database_queries`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -20570,7 +20570,7 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for event platform queries.
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -20595,12 +20595,12 @@ Optional:
 
 Required:
 
-- `aggregation` (String) The aggregation methods for the event platform queries.
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
 - `metric` (String) The metric used for sorting group by results.
-- `order` (String) Direction of sort.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
 
 
 
@@ -20623,7 +20623,7 @@ Required:
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed.
@@ -20634,17 +20634,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for process queries.
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
 - `metric` (String) The process metric name.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for metrics queries.
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Defaults to `"desc"`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -20654,17 +20654,17 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for SLO queries.
-- `measure` (String) SLO measures queries.
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_mode` (String) Group mode to query measures. Defaults to `"overall"`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
