@@ -216,15 +216,9 @@ type enrichmentTableProcessorModel struct {
 }
 
 type enrichmentFileModel struct {
-	Path     types.String          `tfsdk:"path"`
-	Encoding []fileEncodingModel   `tfsdk:"encoding"`
-	Key      []fileKeyItemModel    `tfsdk:"key"`
-	Schema   []fileSchemaItemModel `tfsdk:"schema"`
-}
-
-type fileSchemaItemModel struct {
-	Column types.String `tfsdk:"column"`
-	Type   types.String `tfsdk:"type"`
+	Path     types.String        `tfsdk:"path"`
+	Encoding []fileEncodingModel `tfsdk:"encoding"`
+	Key      []fileKeyItemModel  `tfsdk:"key"`
 }
 
 type fileEncodingModel struct {
@@ -1793,24 +1787,6 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																					"field": schema.StringAttribute{
 																						Optional:    true,
 																						Description: "The `items` `field`.",
-																					},
-																				},
-																			},
-																		},
-																		"schema": schema.ListNestedBlock{
-																			Description: "Schema defining column names and their types for the enrichment table file.",
-																			NestedObject: schema.NestedBlockObject{
-																				Attributes: map[string]schema.Attribute{
-																					"column": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The column name in the enrichment table.",
-																					},
-																					"type": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The data type of the column. One of: string, boolean, integer, float, date, timestamp.",
-																						Validators: []validator.String{
-																							stringvalidator.OneOf("string", "boolean", "integer", "float", "date", "timestamp"),
-																						},
 																					},
 																				},
 																			},
@@ -3787,12 +3763,6 @@ func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.Observa
 				},
 			},
 		}
-		for _, s := range src.File.GetSchema() {
-			enrichment.File[0].Schema = append(enrichment.File[0].Schema, fileSchemaItemModel{
-				Column: types.StringValue(s.GetColumn()),
-				Type:   types.StringValue(string(s.GetType())),
-			})
-		}
 		for _, k := range src.File.GetKey() {
 			enrichment.File[0].Key = append(enrichment.File[0].Key, fileKeyItemModel{
 				Column:     types.StringValue(k.GetColumn()),
@@ -4058,14 +4028,6 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, common observabilit
 			Type:            datadogV2.ObservabilityPipelineEnrichmentTableFileEncodingType(src.File[0].Encoding[0].Type.ValueString()),
 			Delimiter:       src.File[0].Encoding[0].Delimiter.ValueString(),
 			IncludesHeaders: src.File[0].Encoding[0].IncludesHeaders.ValueBool(),
-		}
-
-		file.Schema = []datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{}
-		for _, s := range src.File[0].Schema {
-			file.Schema = append(file.Schema, datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{
-				Column: s.Column.ValueString(),
-				Type:   datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItemsType(s.Type.ValueString()),
-			})
 		}
 
 		for _, k := range src.File[0].Key {
