@@ -1,0 +1,288 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 934
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"assertions":[{"operator":"lessThan","property":"max","target":100,"type":"latency"},{"operator":"lessThan","target":10,"type":"jitter"},{"operator":"lessThan","target":0.05,"type":"packetLossPercentage"},{"operator":"lessThan","property":"max","target":15,"type":"multiNetworkHop"}],"request":{"destination_service":"dns-server","e2e_queries":5,"host":"example.com","max_ttl":30,"port":53,"source_service":"monitoring","timeout":10,"traceroute_queries":3}},"locations":["aws:us-east-1"],"message":"Notify @pagerduty","name":"tf-TestAccDatadogSyntheticsNetworkTest_importBasic-local-1771349996","options":{"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0},"retry":{"count":2,"interval":300},"tick_every":900},"status":"paused","subtype":"udp","tags":["network:udp","env:prod"],"type":"network"},"type":"network"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/tests/network
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"network_test","attributes":{"creation_source":"terraform","status":"paused","public_id":"ftg-9uy-8se","options":{"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"min_location_failed":1,"retry":{"count":2,"interval":300},"tick_every":900},"tags":["network:udp","env:prod"],"message":"Notify @pagerduty","locations":["aws:us-east-1"],"type":"network","subtype":"udp","name":"tf-TestAccDatadogSyntheticsNetworkTest_importBasic-local-1771349996","config":{"assertions":[{"operator":"lessThan","property":"max","target":100,"type":"latency"},{"operator":"lessThan","target":10,"type":"jitter"},{"operator":"lessThan","target":0.05,"type":"packetLossPercentage"},{"operator":"lessThan","property":"max","target":15,"type":"multiNetworkHop"}],"request":{"source_service":"monitoring","e2e_queries":5,"host":"example.com","timeout":10,"destination_service":"dns-server","traceroute_queries":3,"max_ttl":30,"port":53}}},"id":"ftg-9uy-8se"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 834.946667ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/tests/network/ftg-9uy-8se
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"network_test","attributes":{"subtype":"udp","options":{"retry":{"count":2,"interval":300},"tick_every":900,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"min_location_failed":1},"status":"paused","public_id":"ftg-9uy-8se","locations":["aws:us-east-1"],"message":"Notify @pagerduty","tags":["network:udp","env:prod"],"config":{"assertions":[{"operator":"lessThan","property":"max","target":100,"type":"latency"},{"operator":"lessThan","target":10,"type":"jitter"},{"operator":"lessThan","target":0.05,"type":"packetLossPercentage"},{"operator":"lessThan","property":"max","target":15,"type":"multiNetworkHop"}],"request":{"traceroute_queries":3,"e2e_queries":5,"timeout":10,"host":"example.com","port":53,"max_ttl":30,"source_service":"monitoring","destination_service":"dns-server"}},"name":"tf-TestAccDatadogSyntheticsNetworkTest_importBasic-local-1771349996","type":"network"},"id":"ftg-9uy-8se"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 287.868458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ftg-9uy-8se
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ftg-9uy-8se","name":"tf-TestAccDatadogSyntheticsNetworkTest_importBasic-local-1771349996","status":"paused","type":"network","subtype":"udp","tags":["network:udp","env:prod"],"created_at":"2026-02-17T17:40:00.759705+00:00","modified_at":"2026-02-17T17:40:00.759705+00:00","config":{"assertions":[{"operator":"lessThan","property":"max","target":100,"type":"latency"},{"operator":"lessThan","target":10,"type":"jitter"},{"operator":"lessThan","target":0.05,"type":"packetLossPercentage"},{"operator":"lessThan","property":"max","target":15,"type":"multiNetworkHop"}],"request":{"destination_service":"dns-server","e2e_queries":5,"host":"example.com","max_ttl":30,"port":53,"source_service":"monitoring","timeout":10,"traceroute_queries":3}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":259556867,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 231.700375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/tests/network/ftg-9uy-8se
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"network_test","attributes":{"config":{"assertions":[{"operator":"lessThan","property":"max","target":100,"type":"latency"},{"operator":"lessThan","target":10,"type":"jitter"},{"operator":"lessThan","target":0.05,"type":"packetLossPercentage"},{"operator":"lessThan","property":"max","target":15,"type":"multiNetworkHop"}],"request":{"source_service":"monitoring","host":"example.com","port":53,"timeout":10,"e2e_queries":5,"max_ttl":30,"destination_service":"dns-server","traceroute_queries":3}},"tags":["network:udp","env:prod"],"locations":["aws:us-east-1"],"status":"paused","message":"Notify @pagerduty","type":"network","options":{"tick_every":900,"min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300}},"public_id":"ftg-9uy-8se","name":"tf-TestAccDatadogSyntheticsNetworkTest_importBasic-local-1771349996","subtype":"udp"},"id":"ftg-9uy-8se"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 233.745083ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ftg-9uy-8se
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"ftg-9uy-8se","name":"tf-TestAccDatadogSyntheticsNetworkTest_importBasic-local-1771349996","status":"paused","type":"network","subtype":"udp","tags":["network:udp","env:prod"],"created_at":"2026-02-17T17:40:00.759705+00:00","modified_at":"2026-02-17T17:40:00.759705+00:00","config":{"assertions":[{"operator":"lessThan","property":"max","target":100,"type":"latency"},{"operator":"lessThan","target":10,"type":"jitter"},{"operator":"lessThan","target":0.05,"type":"packetLossPercentage"},{"operator":"lessThan","property":"max","target":15,"type":"multiNetworkHop"}],"request":{"destination_service":"dns-server","e2e_queries":5,"host":"example.com","max_ttl":30,"port":53,"source_service":"monitoring","timeout":10,"traceroute_queries":3}},"message":"Notify @pagerduty","options":{"httpVersion":"any","min_location_failed":1,"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":259556867,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 235.058333ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/tests/network/ftg-9uy-8se
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"network_test","attributes":{"locations":["aws:us-east-1"],"subtype":"udp","message":"Notify @pagerduty","status":"paused","tags":["network:udp","env:prod"],"config":{"assertions":[{"operator":"lessThan","property":"max","target":100,"type":"latency"},{"operator":"lessThan","target":10,"type":"jitter"},{"operator":"lessThan","target":0.05,"type":"packetLossPercentage"},{"operator":"lessThan","property":"max","target":15,"type":"multiNetworkHop"}],"request":{"e2e_queries":5,"destination_service":"dns-server","host":"example.com","max_ttl":30,"traceroute_queries":3,"source_service":"monitoring","timeout":10,"port":53}},"name":"tf-TestAccDatadogSyntheticsNetworkTest_importBasic-local-1771349996","type":"network","public_id":"ftg-9uy-8se","options":{"min_location_failed":1,"tick_every":900,"retry":{"count":2,"interval":300},"monitor_options":{"escalation_message":"","renotify_interval":120,"renotify_occurrences":0,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true}}},"id":"ftg-9uy-8se"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 251.323833ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["ftg-9uy-8se"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"ftg-9uy-8se","deleted_at":"2026-02-17T17:40:05.876757+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.756705s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ftg-9uy-8se
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 136.327375ms
