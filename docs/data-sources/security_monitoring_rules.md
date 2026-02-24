@@ -128,9 +128,10 @@ Read-Only:
 
 - `bucket_duration` (Number)
 - `detection_tolerance` (Number)
+- `instantaneous_baseline` (Boolean)
 - `learning_duration` (Number)
 - `learning_period_baseline` (Number)
-- `instantaneous_baseline` (Boolean)
+
 
 <a id="nestedobjatt--rules--options--impossible_travel_options"></a>
 ### Nested Schema for `rules.options.impossible_travel_options`
