@@ -804,6 +804,7 @@ Optional:
 - `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
 - `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--free_text_definition))
+- `funnel_definition` (Block List, Max: 1) The definition for a Funnel widget. (see [below for nested schema](#nestedblock--widget--funnel_definition))
 - `geomap_definition` (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--geomap_definition))
 - `group_definition` (Block List, Max: 1) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition))
 - `heatmap_definition` (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition))
@@ -2233,6 +2234,50 @@ Optional:
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
+<a id="nestedblock--widget--funnel_definition"></a>
+### Nested Schema for `widget.funnel_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--funnel_definition--request))
+
+Optional:
+
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--funnel_definition--request"></a>
+### Nested Schema for `widget.funnel_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Updated funnel widget. (see [below for nested schema](#nestedblock--widget--funnel_definition--request--query))
+- `request_type` (String) The request type for the Funnel widget request. Valid values are `funnel`.
+
+<a id="nestedblock--widget--funnel_definition--request--query"></a>
+### Nested Schema for `widget.funnel_definition.request.query`
+
+Required:
+
+- `data_source` (String) The source from which to query items to display in the funnel. Valid values are `rum`.
+- `query_string` (String) The widget query.
+- `step` (Block List, Min: 1) List of funnel steps. (see [below for nested schema](#nestedblock--widget--funnel_definition--request--query--step))
+
+<a id="nestedblock--widget--funnel_definition--request--query--step"></a>
+### Nested Schema for `widget.funnel_definition.request.query.step`
+
+Required:
+
+- `facet` (String) The facet of the step.
+- `value` (String) The value of the step.
+
+
+
+
+
 <a id="nestedblock--widget--geomap_definition"></a>
 ### Nested Schema for `widget.geomap_definition`
 
@@ -2752,6 +2797,7 @@ Optional:
 - `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition))
 - `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition))
+- `funnel_definition` (Block List, Max: 1) The definition for a Funnel widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition))
 - `geomap_definition` (Block List, Max: 1) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition))
 - `group_definition` (Block List, Max: 1) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--group_definition))
 - `heatmap_definition` (Block List, Max: 1) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition))
@@ -4179,6 +4225,50 @@ Optional:
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request))
+
+Optional:
+
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Updated funnel widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request--query))
+- `request_type` (String) The request type for the Funnel widget request. Valid values are `funnel`.
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.request.query`
+
+Required:
+
+- `data_source` (String) The source from which to query items to display in the funnel. Valid values are `rum`.
+- `query_string` (String) The widget query.
+- `step` (Block List, Min: 1) List of funnel steps. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request--query--step))
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--request--query--step"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.request.query.step`
+
+Required:
+
+- `facet` (String) The facet of the step.
+- `value` (String) The value of the step.
+
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition"></a>

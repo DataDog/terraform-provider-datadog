@@ -322,6 +322,19 @@ var EventTimelineWidgetSpec = WidgetSpec{
 	},
 }
 
+// FunnelWidgetSpec corresponds to OpenAPI FunnelWidgetDefinition.
+var FunnelWidgetSpec = WidgetSpec{
+	HCLKey:      "funnel_definition",
+	JSONType:    "funnel",
+	Description: "The definition for a Funnel widget.",
+	Fields: []FieldSpec{
+		// HCL: "request" (singular) → JSON: "requests" (plural)
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true,
+			Description: "A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed.",
+			Children:    funnelRequestFields},
+	},
+}
+
 // CheckStatusWidgetSpec corresponds to OpenAPI CheckStatusWidgetDefinition.
 var CheckStatusWidgetSpec = WidgetSpec{
 	HCLKey:      "check_status_definition",
@@ -1346,6 +1359,7 @@ var allWidgetSpecs = []WidgetSpec{
 	NoteWidgetSpec,
 	EventStreamWidgetSpec,
 	EventTimelineWidgetSpec,
+	FunnelWidgetSpec,
 	CheckStatusWidgetSpec,
 	LogStreamWidgetSpec,
 	ManageStatusWidgetSpec,

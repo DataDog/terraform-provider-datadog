@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 483
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardFunnel-local-1771961809","widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/logs"},{"facet":"@view.name","value":"/apm/home"}]},"request_type":"funnel"}],"title":"Funnel Widget","title_align":"left","title_size":"16","type":"funnel"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"bv8-53d-8am","title":"tf-TestAccDatadogDashboardFunnel-local-1771961809","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/bv8-53d-8am/tf-testaccdatadogdashboardfunnel-local-1771961809","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/logs"},{"facet":"@view.name","value":"/apm/home"}]},"request_type":"funnel"}],"title":"Funnel Widget","title_align":"left","title_size":"16","type":"funnel"},"id":7270499625975305}],"notify_list":[],"created_at":"2026-02-24T19:36:51.430628+00:00","modified_at":"2026-02-24T19:36:51.430628+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 153.215667ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bv8-53d-8am
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"bv8-53d-8am","title":"tf-TestAccDatadogDashboardFunnel-local-1771961809","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/bv8-53d-8am/tf-testaccdatadogdashboardfunnel-local-1771961809","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/logs"},{"facet":"@view.name","value":"/apm/home"}]},"request_type":"funnel"}],"title":"Funnel Widget","title_align":"left","title_size":"16","type":"funnel"},"id":7270499625975305}],"notify_list":[],"created_at":"2026-02-24T19:36:51.430628+00:00","modified_at":"2026-02-24T19:36:51.430628+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 112.736042ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bv8-53d-8am
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"bv8-53d-8am","title":"tf-TestAccDatadogDashboardFunnel-local-1771961809","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/bv8-53d-8am/tf-testaccdatadogdashboardfunnel-local-1771961809","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/logs"},{"facet":"@view.name","value":"/apm/home"}]},"request_type":"funnel"}],"title":"Funnel Widget","title_align":"left","title_size":"16","type":"funnel"},"id":7270499625975305}],"notify_list":[],"created_at":"2026-02-24T19:36:51.430628+00:00","modified_at":"2026-02-24T19:36:51.430628+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 102.332083ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bv8-53d-8am
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"bv8-53d-8am","title":"tf-TestAccDatadogDashboardFunnel-local-1771961809","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/bv8-53d-8am/tf-testaccdatadogdashboardfunnel-local-1771961809","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/logs"},{"facet":"@view.name","value":"/apm/home"}]},"request_type":"funnel"}],"title":"Funnel Widget","title_align":"left","title_size":"16","type":"funnel"},"id":7270499625975305}],"notify_list":[],"created_at":"2026-02-24T19:36:51.430628+00:00","modified_at":"2026-02-24T19:36:51.430628+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 107.730375ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bv8-53d-8am
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"bv8-53d-8am"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 324.933166ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bv8-53d-8am
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID bv8-53d-8am not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 100.549167ms

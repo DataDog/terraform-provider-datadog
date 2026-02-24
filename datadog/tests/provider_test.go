@@ -150,6 +150,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_event_stream_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_event_timeline_test":                               "dashboards",
 	"tests/resource_datadog_dashboard_free_text_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_funnel_test":                                       "dashboards",
 	"tests/resource_datadog_dashboard_geomap_test":                                       "dashboards",
 	"tests/resource_datadog_dashboard_heatmap_test":                                      "dashboards",
 	"tests/resource_datadog_dashboard_hostmap_test":                                      "dashboards",

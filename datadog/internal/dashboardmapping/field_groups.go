@@ -1022,6 +1022,40 @@ var listStreamRequestFields = []FieldSpec{
 	},
 }
 
+// funnelStepFields corresponds to OpenAPI components/schemas/FunnelStep.
+// Used by funnelQueryFields.
+var funnelStepFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The facet of the step."},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The value of the step."},
+}
+
+// funnelQueryFields corresponds to OpenAPI components/schemas/FunnelQuery.
+// Used by funnelRequestFields.
+var funnelQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The source from which to query items to display in the funnel.",
+		ValidValues: []string{"rum"}},
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The widget query."},
+	// HCL: "step" (singular) → JSON: "steps" (plural)
+	{HCLKey: "step", JSONKey: "steps", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "List of funnel steps.",
+		Children:    funnelStepFields},
+}
+
+// funnelRequestFields corresponds to OpenAPI components/schemas/FunnelWidgetRequest.
+// Used by FunnelWidgetSpec.
+var funnelRequestFields = []FieldSpec{
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The request type for the Funnel widget request.",
+		ValidValues: []string{"funnel"}},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Updated funnel widget.",
+		Children:    funnelQueryFields},
+}
+
 // sloListSortFields corresponds to the sort block inside SLOListWidgetQuery.
 var sloListSortFields = []FieldSpec{
 	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
