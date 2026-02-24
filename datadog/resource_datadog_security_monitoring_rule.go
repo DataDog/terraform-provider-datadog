@@ -10,6 +10,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -803,41 +804,21 @@ func checkQueryConsistency(d utils.Resource) error {
 	return nil
 }
 
-func validateAnomalyDetectionOptions(d utils.Resource) error {
-	v, ok := d.GetOk("options")
-	if !ok {
-		return nil
-	}
-	tfOptionsList := v.([]interface{})
-	if len(tfOptionsList) == 0 {
-		return nil
-	}
-	options := extractMapFromInterface(tfOptionsList)
-	adRaw, ok := options["anomaly_detection_options"]
-	if !ok {
-		return nil
-	}
-	adList := adRaw.([]interface{})
-	if len(adList) == 0 {
-		return nil
-	}
-	ad := extractMapFromInterface(adList)
-	// TODO(SEC-27123): SDKv2 always populates optional int attrs with zero value, so we can only
-	// detect explicit learning_period_baseline when > 0. A proper fix requires GetRawConfig().
-	learningPeriod, _ := ad["learning_period_baseline"].(int)
-	instantaneous, _ := ad["instantaneous_baseline"].(bool)
-	if learningPeriod > 0 && instantaneous {
-		return fmt.Errorf("anomaly_detection_options: cannot set both learning_period_baseline and instantaneous_baseline = true; choose one baseline method")
-	}
-	return nil
+// isLearningPeriodBaselineConfigured checks the raw HCL config to determine whether the user
+// explicitly set learning_period_baseline. SDKv2 always populates optional int attrs with their
+// zero value, so map key presence alone cannot distinguish "set to 0" from "not set".
+func isLearningPeriodBaselineConfigured(d utils.Resource) bool {
+	val, diags := d.GetRawConfigAt(
+		cty.GetAttrPath("options").IndexInt(0).
+			GetAttr("anomaly_detection_options").IndexInt(0).
+			GetAttr("learning_period_baseline"),
+	)
+	return !diags.HasError() && !val.IsNull()
 }
 
 func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 
 	if err := checkQueryConsistency(d); err != nil {
-		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
-	}
-	if err := validateAnomalyDetectionOptions(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
 	}
 	if isSignalCorrelationSchema(d) {
@@ -873,7 +854,7 @@ func buildCreateCommonPayload(d utils.Resource, payload securityMonitoringRuleCr
 
 	if v, ok := d.GetOk("options"); ok {
 		tfOptionsList := v.([]interface{})
-		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
+		payloadOptions := buildPayloadOptions(d, tfOptionsList, d.Get("type").(string))
 		payload.SetOptions(*payloadOptions)
 	}
 
@@ -1106,7 +1087,7 @@ func buildPayloadSchedulingOptions(tfSchedulingOptionsList []any) *datadogV2.Sec
 	return schedulingOptions
 }
 
-func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
+func buildPayloadOptions(d utils.Resource, tfOptionsList []interface{}, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
 	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
 
@@ -1146,7 +1127,8 @@ func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV
 
 	if v, ok := tfOptions["anomaly_detection_options"]; ok {
 		tfAnomalyDetectionOptionsList := v.([]interface{})
-		if payloadAnomalyDetectionOptions, ok := buildPayloadAnomalyDetectionOptions(tfAnomalyDetectionOptionsList); ok {
+		learningPeriodBaselineConfigured := isLearningPeriodBaselineConfigured(d)
+		if payloadAnomalyDetectionOptions, ok := buildPayloadAnomalyDetectionOptions(tfAnomalyDetectionOptionsList, learningPeriodBaselineConfigured); ok {
 			payloadOptions.AnomalyDetectionOptions = payloadAnomalyDetectionOptions
 		}
 	}
@@ -1183,7 +1165,7 @@ func buildPayloadImpossibleTravelOptions(tfOptionsList []interface{}) (*datadogV
 	return options, hasPayload
 }
 
-func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions, bool) {
+func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}, learningPeriodBaselineConfigured bool) (*datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions, bool) {
 	options := datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
 
@@ -1207,22 +1189,18 @@ func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}) (*datadogV
 		options.DetectionTolerance = &detectionTolerance
 	}
 
-	instantaneous := false
 	if v, ok := tfOptions["instantaneous_baseline"]; ok {
 		hasPayload = true
-		instantaneous = v.(bool)
-		options.SetInstantaneousBaseline(instantaneous)
+		options.SetInstantaneousBaseline(v.(bool))
 	}
 
-	// Only set learning_period_baseline when not using instantaneous baseline.
-	// SDKv2 always populates optional int attributes (default 0), so the key is always present;
-	// we must skip it when instantaneous is true since the API forbids both.
-	if !instantaneous {
-		if v, ok := tfOptions["learning_period_baseline"]; ok {
-			hasPayload = true
-			learningPeriodBaseline := int64(v.(int))
-			options.LearningPeriodBaseline = &learningPeriodBaseline
-		}
+	// Only include learning_period_baseline when the user explicitly set it in HCL.
+	// SDKv2 always populates optional int attrs with 0, but 0 is a valid API value
+	// (means "immediately generate signals"), so we use the raw config to distinguish.
+	if learningPeriodBaselineConfigured {
+		hasPayload = true
+		learningPeriodBaseline := int64(tfOptions["learning_period_baseline"].(int))
+		options.LearningPeriodBaseline = &learningPeriodBaseline
 	}
 
 	return options, hasPayload
@@ -1970,10 +1948,6 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	if err := checkQueryConsistency(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
 	}
-	if err := validateAnomalyDetectionOptions(d); err != nil {
-		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
-	}
-
 	isSignalCorrelation := isSignalCorrelationSchema(d)
 
 	if isThirdPartyRule(d) {
@@ -2065,7 +2039,7 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	}
 
 	if v, ok := d.GetOk("options"); ok {
-		payload.Options = buildPayloadOptions(v.([]interface{}), d.Get("type").(string))
+		payload.Options = buildPayloadOptions(d, v.([]interface{}), d.Get("type").(string))
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
