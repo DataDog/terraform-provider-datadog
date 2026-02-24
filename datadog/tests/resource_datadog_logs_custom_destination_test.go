@@ -6,11 +6,13 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 
 	destinationWithRequiredFieldsOnly := `
@@ -28,7 +30,10 @@ func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 
 	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
@@ -54,7 +59,7 @@ func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 
 func TestAccDatadogLogsCustomDestination_forwarder_types(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 	nameUpdated := name + "-updated"
 
@@ -99,7 +104,10 @@ func TestAccDatadogLogsCustomDestination_forwarder_types(t *testing.T) {
 
 	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
@@ -190,4 +198,39 @@ func testAccCheckDatadogUpdateLogsCustomDestination(name string, destination str
 			%s
 		}
 	`, name, destination)
+}
+
+// testAccCleanupOrphanedLogsCustomDestinations deletes disabled custom destinations
+// that were left behind by previous test runs or external sources, to free up quota.
+func testAccCleanupOrphanedLogsCustomDestinations(t *testing.T, frameworkProvider *fwprovider.FrameworkProvider) {
+	apiInstances := frameworkProvider.DatadogApiInstances
+	auth := frameworkProvider.Auth
+	api := apiInstances.GetLogsCustomDestinationsApiV2()
+
+	resp, _, err := api.ListLogsCustomDestinations(auth)
+	if err != nil {
+		t.Logf("Warning: Could not list custom destinations for cleanup: %v", err)
+		return
+	}
+
+	destinations := resp.GetData()
+	t.Logf("Found %d existing custom destinations, cleaning up disabled ones...", len(destinations))
+
+	for _, dest := range destinations {
+		id := dest.GetId()
+		attrs, ok := dest.GetAttributesOk()
+		if !ok {
+			continue
+		}
+		name := attrs.GetName()
+		enabled := attrs.GetEnabled()
+
+		if !enabled {
+			t.Logf("Deleting disabled custom destination: %s (ID: %s)", name, id)
+			_, err := api.DeleteLogsCustomDestination(auth, id)
+			if err != nil {
+				t.Logf("Warning: Could not delete custom destination %s: %v", id, err)
+			}
+		}
+	}
 }
