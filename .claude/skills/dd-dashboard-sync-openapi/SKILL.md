@@ -28,7 +28,7 @@ Read these files before doing anything else:
 - `AGENTS.md` (conventions, FieldSpec system, naming rules)
 - `datadog/internal/dashboardmapping/widgets.go` (WidgetSpec declarations and `allWidgetSpecs` registry)
 - `datadog/internal/dashboardmapping/field_groups.go` (shared reusable FieldSpec groups)
-- `/Users/andy.yacomink/go/src/github.com/DataDog/datadog-api-spec/spec/v1/dashboard.yaml` (OpenAPI source of truth)
+- `https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml` (OpenAPI source of truth)
 
 ## Step 2 — Diff: Identify Gaps
 
@@ -131,34 +131,75 @@ For each new widget type or significantly new set of fields:
 
 1. Find the appropriate test file: `datadog/tests/resource_datadog_dashboard_{widget}_test.go`
    (create it if it doesn't exist for a new widget type)
-2. Write a test function following the existing pattern:
-   - HCL config using `{{uniq}}` for the dashboard name
-   - Assertions array covering every new field
-   - Test function calling `testAccDatadogDashboardWidgetUtil`
-3. For new widget test files, add the import block following existing test files
 
-Refer to existing test files (e.g. `resource_datadog_dashboard_timeseries_test.go`) as templates.
+2. Write the test file. Pattern (see `resource_datadog_dashboard_slo_list_test.go` as a minimal template):
+   ```go
+   package test
+
+   import (
+       "testing"
+   )
+
+   const datadogDashboard{Widget}Config = `
+   resource "datadog_dashboard" "{widget}_dashboard" {
+       title       = "{{uniq}}"
+       layout_type = "ordered"
+       widget {
+           {widget}_definition {
+               // ... all fields ...
+           }
+       }
+   }
+   `
+
+   var datadogDashboard{Widget}Asserts = []string{
+       "title = {{uniq}}",
+       "widget.0.{widget}_definition.0.some_field = expected_value",
+       // ... cover every new field ...
+   }
+
+   func TestAccDatadogDashboard{Widget}(t *testing.T) {
+       testAccDatadogDashboardWidgetUtil(t, datadogDashboard{Widget}Config, "datadog_dashboard.{widget}_dashboard", datadogDashboard{Widget}Asserts)
+   }
+
+   func TestAccDatadogDashboard{Widget}_import(t *testing.T) {
+       testAccDatadogDashboardWidgetUtilImport(t, datadogDashboard{Widget}Config, "datadog_dashboard.{widget}_dashboard")
+   }
+   ```
+   Key points:
+   - Config is a **`const` string**, not a function
+   - No extra imports beyond `"testing"`
+   - `{{uniq}}` is the placeholder for the unique dashboard name
+
+3. **Register the new test file** in `datadog/tests/provider_test.go` in the `testFiles2EndpointTags` map.
+   Find the alphabetical position among other `dashboard_*` entries and add:
+   ```go
+   "tests/resource_datadog_dashboard_{widget}_test": "dashboards",
+   ```
+   Without this entry the test will immediately fail with:
+   `Endpoint tag for test file ... not found in datadog/provider_test.go`
 
 ## Step 6 — Record Cassettes (RECORD=true)
 
-```bash
-# Verify API keys are set
-if [ -z "$DD_TEST_CLIENT_API_KEY" ] || [ -z "$DD_TEST_CLIENT_APP_KEY" ]; then
-  echo "ERROR: DD_TEST_CLIENT_API_KEY and DD_TEST_CLIENT_APP_KEY must be set for cassette recording"
-  exit 1
-fi
+**Prerequisites — two environment issues must be fixed before running tests:**
 
-# Record cassettes for new/changed tests
-RECORD=true \
-  DD_TEST_CLIENT_API_KEY=$DD_TEST_CLIENT_API_KEY \
-  DD_TEST_CLIENT_APP_KEY=$DD_TEST_CLIENT_APP_KEY \
-  TESTARGS="-run TestAccDatadogDashboard{WidgetName}" \
-  make testacc
+1. **Export API keys** — `make testacc` only inherits env vars that are exported:
+   ```bash
+   export DD_TEST_CLIENT_API_KEY DD_TEST_CLIENT_APP_KEY
+   ```
+
+2. **Unset `OTEL_TRACES_EXPORTER`** — if set to `otlp`, `terraform version` exits with code 1
+   and every acceptance test fails immediately. Clear it inline on the make invocation.
+
+**Record cassettes:**
+```bash
+export DD_TEST_CLIENT_API_KEY DD_TEST_CLIENT_APP_KEY
+OTEL_TRACES_EXPORTER= RECORD=true TESTARGS="-run TestAccDatadogDashboard{Widget}$" make testacc
 ```
 
-After recording, run with `RECORD=false` to confirm cassette replay passes:
+**Verify cassette replay passes:**
 ```bash
-RECORD=false TESTARGS="-run TestAccDatadogDashboard{WidgetName}" make testacc
+OTEL_TRACES_EXPORTER= RECORD=false TESTARGS="-run TestAccDatadogDashboard{Widget}" make testacc
 ```
 
 If `RECORD=false` replay fails after a successful `RECORD=true` run, check:
@@ -170,18 +211,20 @@ If `RECORD=false` replay fails after a successful `RECORD=true` run, check:
 ## Step 7 — Quality Gates
 
 ```bash
-make fmtcheck
-make test
-make vet
-make errcheck
-make docs && make check-docs
+# Build and vet (make fmtcheck fails on pre-existing example formatting issues — skip it)
+go build ./...
+go vet ./datadog/internal/dashboardmapping/...
+
+# Docs: make docs requires terraform and may fail due to OTEL env issues.
+# make check-docs does NOT require terraform and reliably verifies docs are in sync.
+OTEL_TRACES_EXPORTER= make check-docs
 ```
 
 All must pass before creating the PR.
 
 ## Step 8 — Create PR
 
-Branch name: `yacomink/YYYYMMDD-dashboard-openapi-sync-{widget-or-schema}`
+Branch name: `{github-username}/dashboard-{widget-or-schema}`
 
 PR title: `[datadog_dashboard] Add {description} from OpenAPI sync`
 
@@ -199,7 +242,7 @@ PR body should include:
 - `OmitEmpty` for new optional fields defaults to `true`; flag any that may need cassette
   verification in a PR comment
 - The OpenAPI spec path is always:
-  `/Users/andy.yacomink/go/src/github.com/DataDog/datadog-api-spec/spec/v1/dashboard.yaml`
+  `https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml`
 - FieldSpec declarations live in:
   - `datadog/internal/dashboardmapping/field_groups.go` — shared groups
   - `datadog/internal/dashboardmapping/field_groups_dashboard.go` — dashboard top-level groups
