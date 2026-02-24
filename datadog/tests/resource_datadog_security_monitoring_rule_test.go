@@ -1355,7 +1355,7 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckAnomalyDetectionRule(accProvi
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.detection_tolerance", "4"),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.learning_period_baseline", "10"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "options.0.anomaly_detection_options.0.instantaneous_baseline", "true"),
+			tfSecurityRuleName, "options.0.anomaly_detection_options.0.instantaneous_baseline", "false"),
 	)
 }
 
