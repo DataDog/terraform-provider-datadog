@@ -9,8 +9,16 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: New version number (e.g. '1.2.3' without the 'v' prefix)
+        description: "Version number (e.g. '3.45.0' or '4.0.0-rc.1', without the 'v' prefix)"
         required: true
+      branch:
+        description: "Target branch"
+        required: false
+        default: "master"
+        type: choice
+        options:
+          - master
+          - "4.x"
 
 jobs:
   prepare_release:
@@ -23,11 +31,13 @@ jobs:
           scope: DataDog/terraform-provider-datadog
           policy: self.release.prepare-release
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          ref: ${{ github.event.inputs.branch }}
       - name: Create PR
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version }}
-          BASE: ${{ github.event.ref }}
+          TARGET_BRANCH: ${{ github.event.inputs.branch }}
         with:
           github-token: ${{ steps.octo-sts.outputs.token }}
           script: |
@@ -35,6 +45,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: `v${process.env.RELEASE_VERSION}`,
+              target_commitish: process.env.TARGET_BRANCH,
             });
             const today = new Date().toLocaleDateString('en-US', {"month": "long", "day": "numeric", "year": "numeric"});
             const header = [`## ${process.env.RELEASE_VERSION} (${today})\n`];
@@ -44,6 +55,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               path: "CHANGELOG.md",
+              ref: process.env.TARGET_BRANCH,
             });
             const rawContent = Buffer.from(content.content, "base64")
               .toString("utf-8")
@@ -53,7 +65,7 @@ jobs:
             const { data: master } = await github.rest.git.getRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "heads/master",
+              ref: `heads/${process.env.TARGET_BRANCH}`,
             });
             await github.rest.git.createRef({
               owner: context.repo.owner,
@@ -75,7 +87,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: `release/${process.env.RELEASE_VERSION}`,
-              base: process.env.BASE,
+              base: process.env.TARGET_BRANCH,
               title: `Release ${process.env.RELEASE_VERSION}`,
               body: "Update CHANGELOG",
             });
