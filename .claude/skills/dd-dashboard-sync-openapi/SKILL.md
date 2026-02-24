@@ -26,7 +26,8 @@ The user may optionally specify:
 
 Read these files before doing anything else:
 - `AGENTS.md` (conventions, FieldSpec system, naming rules)
-- `datadog/resource_datadog_dashboard_new.go` (current FieldSpec definitions and WidgetSpec registry)
+- `datadog/internal/dashboardmapping/widgets.go` (WidgetSpec declarations and `allWidgetSpecs` registry)
+- `datadog/internal/dashboardmapping/field_groups.go` (shared reusable FieldSpec groups)
 - `/Users/andy.yacomink/go/src/github.com/DataDog/datadog-api-spec/spec/v1/dashboard.yaml` (OpenAPI source of truth)
 
 ## Step 2 — Diff: Identify Gaps
@@ -36,12 +37,12 @@ Read these files before doing anything else:
 In `dashboard.yaml`, find the `WidgetDefinition` schema's `oneOf` list — every `$ref` there
 is a widget type the API supports. For each widget type:
 1. Derive the `JSONType` string (e.g. `TimeseriesWidgetDefinition` → `"timeseries"`)
-2. Check whether a `WidgetSpec` with that `JSONType` exists in `allWidgetSpecs` in the resource file
+2. Check whether a `WidgetSpec` with that `JSONType` exists in `allWidgetSpecs` in `widgets.go`
 3. Record missing widget types
 
 ### 2b. Fields on existing FieldSpec groups
 
-For each reusable FieldSpec group in the resource (named after its OpenAPI counterpart, e.g.
+For each reusable FieldSpec group in `field_groups.go` (named after its OpenAPI counterpart, e.g.
 `logQueryDefinitionFields` → `LogQueryDefinition`):
 1. Find the corresponding OpenAPI schema in `dashboard.yaml`
 2. List its properties
@@ -92,7 +93,8 @@ For each gap the user wants to address:
 4. Determine `JSONKey`:
    - If the HCL name differs from the OpenAPI property name, set `JSONKey`
    - Apply singular/plural rule: HCL uses singular block names, JSON uses the OpenAPI (plural) key
-5. Add a comment citing the OpenAPI property name if the names differ
+5. Set `Description` from the OpenAPI property's `description` field
+6. Set `ValidValues` from the OpenAPI enum values if the property is an enum type
 
 Ask the user to confirm the `OmitEmpty` decision for any field that is optional but
 whose cassette behavior is unknown.
@@ -100,22 +102,28 @@ whose cassette behavior is unknown.
 ### New widget type
 
 1. Read the widget's OpenAPI schema (e.g. `BarChartWidgetDefinition`)
-2. Identify which properties are covered by existing reusable FieldSpec groups
+2. Identify which properties are covered by existing reusable FieldSpec groups in `field_groups.go`
    (check for `$ref` to known schemas like `WidgetCustomLink`, `WidgetTime`, `WidgetAxis`, etc.)
 3. Design new per-widget FieldSpec entries for properties not covered by shared groups
-4. Write the `WidgetSpec` struct, registering it in `allWidgetSpecs`
-5. Add the corresponding HCL schema block to `resourceDatadogDashboard()`
+4. Write the `WidgetSpec` struct and register it in `allWidgetSpecs` in `widgets.go`
+
+Note: do NOT manually add entries to `resourceDatadogDashboard()`. Adding the `WidgetSpec`
+to `allWidgetSpecs` is sufficient — `AllWidgetSchemasMap` and `WidgetSpecToSchemaBlock`
+generate the Terraform schema automatically.
 
 Pause and show the proposed design to the user before writing code.
 
 ## Step 4 — Implement
 
 Write the Go code additions:
-1. Add new `FieldSpec` group variables (if a new reusable group is needed)
-2. Add or update `WidgetSpec` entries
-3. Add HCL schema fields (`schema.Schema`) for any new fields or widget types
-4. All schema entries MUST have `Description` fields (required by `make docs`)
-5. Run `make fmtcheck` and `make test` after writing
+1. Add new `FieldSpec` group variables to `field_groups.go` if a new reusable group is needed
+2. Add or update `WidgetSpec` entries in `widgets.go`
+
+**Schema is auto-generated from FieldSpec — no manual `schema.Schema` entries are needed.**
+`FieldSpecToSchemaElem` in `schema_gen.go` converts each `FieldSpec` to a `*schema.Schema`
+automatically, using `Description`, `ValidValues`, `Required`, `Default`, etc.
+
+3. Run `make fmtcheck` and `make test` after writing
 
 ## Step 5 — Write Acceptance Test
 
@@ -153,9 +161,11 @@ After recording, run with `RECORD=false` to confirm cassette replay passes:
 RECORD=false TESTARGS="-run TestAccDatadogDashboard{WidgetName}" make testacc
 ```
 
-If `RECORD=false` replay fails after a successful `RECORD=true` run, the likely cause is
-non-deterministic JSON serialization. Check the cassette body against the generated request
-body (see AGENTS.md — Debugging Cassette Mismatches).
+If `RECORD=false` replay fails after a successful `RECORD=true` run, check:
+1. `OmitEmpty` — a field being included/excluded incorrectly
+2. `JSONKey` — missing or wrong singular/plural conversion
+3. `Default` — fields with `Default` are always emitted by Terraform even when not set in HCL
+4. `SchemaOnly` — fields that must not be serialized to JSON need `SchemaOnly: true`
 
 ## Step 7 — Quality Gates
 
@@ -185,10 +195,12 @@ PR body should include:
 
 - Never re-record cassettes for **existing** tests — only record for newly added tests
 - Existing test assertions must not change
-- All new schema fields must have `Description` set
+- All new FieldSpec entries must have `Description` set (drives `make docs`)
 - `OmitEmpty` for new optional fields defaults to `true`; flag any that may need cassette
   verification in a PR comment
 - The OpenAPI spec path is always:
   `/Users/andy.yacomink/go/src/github.com/DataDog/datadog-api-spec/spec/v1/dashboard.yaml`
-- The resource implementation is always: `datadog/resource_datadog_dashboard_new.go`
-  (adjust if the file was renamed)
+- FieldSpec declarations live in:
+  - `datadog/internal/dashboardmapping/field_groups.go` — shared groups
+  - `datadog/internal/dashboardmapping/field_groups_dashboard.go` — dashboard top-level groups
+  - `datadog/internal/dashboardmapping/widgets.go` — widget specs and registry

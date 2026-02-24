@@ -69,31 +69,58 @@ Some docs are manually maintained and excluded from auto generation. Check `scri
 
 ## Dashboard Resource: FieldSpec Bidirectional Mapping System
 
-`datadog/resource_datadog_dashboard_new.go` uses a mapping-driven architecture
+`datadog/internal/dashboardmapping/` contains a mapping-driven architecture
 instead of the legacy paired `build*()`/`flatten*()` functions. Understanding this
 system is essential before modifying or extending the dashboard resource.
 
+### Package layout
+
+| File | Contents |
+|---|---|
+| `engine.go` | `FieldSpec`/`WidgetSpec` types, build/flatten engine, CRUD helpers, widget dispatch, post-processing hooks |
+| `field_groups.go` | Reusable `[]FieldSpec` groups (widget-scoped), named after OpenAPI `$ref` schemas |
+| `field_groups_dashboard.go` | Dashboard top-level field groups (NOT shared with widget specs) |
+| `schema_gen.go` | `FieldSpecToSchemaElem`, `FieldSpecsToSchema`, `WidgetSpecToSchemaBlock` — generate `*schema.Schema` from FieldSpec |
+| `widgets.go` | All `WidgetSpec` declarations, `allWidgetSpecs` registry, `AllWidgetSchemasMap` |
+
 ### How It Works
 
-Each field in the dashboard resource is declared once as a `FieldSpec`. A generic
-engine uses these specs to handle both:
+Each field is declared **once** as a `FieldSpec`. That single declaration drives:
 - **HCL → JSON** (when Terraform writes to the API)
 - **JSON → HCL** (when Terraform reads from the API)
+- **Schema registration** (type, required/optional, description, validation)
+- **Docs generation** (`make docs` reads the Description field)
 
-Adding a new field or widget type requires editing **one location** — no separate
-build and flatten functions.
+Adding a new field requires editing **one location** only.
 
 ### FieldSpec
 
 ```go
 type FieldSpec struct {
+    // JSON mapping
     HCLKey    string      // key in the Terraform schema
     JSONKey   string      // key in the JSON body (defaults to HCLKey if empty)
     JSONPath  string      // dotted path for structural transforms, e.g. "time.live_span"
-    Type      FieldType   // drives serialization (TypeString, TypeBool, TypeInt,
-                          //   TypeStringList, TypeBlock, TypeBlockList, ...)
+    Type      FieldType   // TypeString, TypeBool, TypeInt, TypeStringList, TypeBlock, TypeBlockList, ...
     OmitEmpty bool        // if true, omit from JSON when zero value
     Children  []FieldSpec // for TypeBlock / TypeBlockList
+    SchemaOnly bool       // if true, register in schema but skip JSON serialization
+
+    // Terraform schema metadata (drives schema registration and docs)
+    Description   string
+    Required      bool
+    Computed      bool
+    Default       interface{}
+    MaxItems      int
+    Sensitive     bool
+    Deprecated    string
+    ValidValues   []string                   // generates StringInSlice validator; appended to Description in docs
+    ValidateDiag  schema.SchemaValidateDiagFunc
+    Validate      schema.SchemaValidateFunc  // use when error message format must match an existing test
+    ConflictsWith []string
+    UseSet        bool                       // use TypeSet instead of TypeList
+    ForceNew      bool                       // resource replacement when changed
+    DiffSuppress  schema.SchemaDiffSuppressFunc
 }
 ```
 
@@ -101,16 +128,17 @@ type FieldSpec struct {
 
 ```go
 type WidgetSpec struct {
-    HCLKey  string      // e.g. "timeseries_definition"
-    JSONType string     // e.g. "timeseries"   (the "type" field in the JSON definition)
-    Fields  []FieldSpec // widget-specific fields; commonWidgetFields merged in by engine
+    HCLKey      string      // e.g. "timeseries_definition"
+    JSONType    string      // e.g. "timeseries" (the "type" field in the JSON definition)
+    Description string      // outer block description for docs
+    Fields      []FieldSpec // widget-specific fields; CommonWidgetFields merged in by engine
 }
 ```
 
 ### Naming Convention: FieldSpec Groups Mirror OpenAPI Schema Names
 
-Reusable `[]FieldSpec` variables are named after the OpenAPI `components/schemas/`
-entry they correspond to (camelCase Go convention). Each has a comment identifying
+Reusable `[]FieldSpec` variables in `field_groups.go` are named after the OpenAPI
+`components/schemas/` entry they correspond to. Each has a comment identifying
 the OpenAPI schema and which widget types use it:
 
 ```go
@@ -120,21 +148,24 @@ the OpenAPI schema and which widget types use it:
 var logQueryDefinitionFields = []FieldSpec{ ... }
 ```
 
-Current reusable groups and their OpenAPI equivalents:
+Key reusable groups and their OpenAPI equivalents (see `field_groups.go` for the full list):
 
-| Go variable | OpenAPI schema |
-|---|---|
-| `widgetCustomLinkFields` | `WidgetCustomLink` |
-| `widgetAxisFields` | `WidgetAxis` |
-| `widgetMarkerFields` | `WidgetMarker` |
-| `widgetEventFields` | `WidgetEvent` |
-| `logQueryDefinitionFields` | `LogQueryDefinition` |
-| `logQueryDefinitionGroupByFields` | `LogQueryDefinitionGroupBy` |
-| `logsQueryComputeFields` | `LogsQueryCompute` |
-| `processQueryDefinitionFields` | `ProcessQueryDefinition` |
+| Go variable | OpenAPI schema | Used by |
+|---|---|---|
+| `widgetCustomLinkFields` | `WidgetCustomLink` | 13 specific widgets (not all — spec-verified) |
+| `widgetAxisFields` | `WidgetAxis` | timeseries, heatmap, distribution, scatterplot |
+| `widgetMarkerFields` | `WidgetMarker` | timeseries, distribution, heatmap |
+| `widgetEventFields` | `WidgetEvent` | timeseries, heatmap |
+| `logQueryDefinitionFields` | `LogQueryDefinition` | 7 query types (log, apm, rum, etc.) |
+| `processQueryDefinitionFields` | `ProcessQueryDefinition` | timeseries and others |
+| `widgetFormulaFields` | `WidgetFormula` | all formula-capable widgets |
+| `standardQueryFields` | (shared subset) | 6 request field lists |
+| `DashboardTopLevelFields` | `Dashboard` (top-level) | dashboard resource schema |
 
-`commonWidgetFields` is merged into every `WidgetSpec` by the engine and covers
-`title`, `title_size`, `title_align`, `live_span` (→ `time.live_span`), and `custom_link`.
+`CommonWidgetFields` (exported) is merged into every `WidgetSpec` by the engine and covers
+`title`, `title_size`, `title_align`, and `live_span` (→ `time.live_span`).
+`custom_link` is **not** in CommonWidgetFields — it is added explicitly only to the
+13 widget types that define `custom_links` in the OpenAPI spec.
 
 ### Singular/Plural Convention
 
@@ -167,38 +198,37 @@ When adding a new optional field and the cassette behavior is unknown, default t
 
 ### Adding a New Field to an Existing Widget or Schema
 
-1. Find the corresponding `[]FieldSpec` variable (named after the OpenAPI schema)
-2. Add the `FieldSpec` entry — one line covers both read and write
-3. If the field belongs to a reusable group, the change propagates to every widget
-   that references that group automatically
-4. Add the corresponding `schema.Schema` entry with a `Description` field
+1. Find the corresponding `[]FieldSpec` variable (named after the OpenAPI schema) in `field_groups.go`
+2. Add the `FieldSpec` entry with `HCLKey`, `Type`, `OmitEmpty`, `Description`, and any `ValidValues`
+3. **That's it.** `FieldSpecToSchemaElem` auto-generates the schema; no separate `schema.Schema` entry needed
+4. If the field belongs to a reusable group, the change propagates to every widget that references it
 5. Run `RECORD=false` tests for affected widgets to confirm cassette compatibility
-6. If cassettes don't match, check `OmitEmpty` and `JSONKey`
+6. If cassettes don't match, check `OmitEmpty`, `JSONKey`, and `Default`
 
 ### Adding a New Widget Type
 
 1. Read the widget's OpenAPI schema
-2. Identify which properties map to existing reusable FieldSpec groups
+2. Identify which properties map to existing reusable FieldSpec groups in `field_groups.go`
 3. Write per-widget FieldSpec entries for the remainder
-4. Register a `WidgetSpec` in `allWidgetSpecs`
-5. Add the HCL schema block to `resourceDatadogDashboard()`
-6. Write an acceptance test and record cassettes with `RECORD=true`
+4. Add a `WidgetSpec` to `allWidgetSpecs` in `widgets.go` — `AllWidgetSchemasMap` and `WidgetSpecToSchemaBlock` generate the schema automatically; no changes to `resourceDatadogDashboard()` needed
+5. Write an acceptance test and record cassettes with `RECORD=true`
 
 Use the `/dd-dashboard-sync-openapi` skill for a guided workflow that automates
 the diff and generation steps.
 
 ### Cassette Compatibility
 
-The JSON serialization must be byte-for-byte identical to what the Datadog SDK produced
-when the cassettes were recorded. This works because:
-- SDK produced alphabetically sorted JSON (struct fields defined alphabetically)
-- `json.Marshal` on `map[string]interface{}` also produces alphabetical output
+The JSON serialization must be byte-for-byte identical to what was originally recorded.
+This works because `json.Marshal` on `map[string]interface{}` produces alphabetically
+sorted output, matching how cassettes were originally recorded.
 
 If a `RECORD=false` test fails with a body mismatch, check:
 1. `OmitEmpty` — is a field being included/excluded incorrectly?
 2. `JSONKey` — is the JSON key correct (including singular vs plural)?
 3. `JSONPath` — for structural transforms, is the nesting correct?
-4. Type coercion — integers stored as strings in HCL must be emitted as integers in JSON
+4. `Default` — fields with a Default value are always included by Terraform even when not set in HCL
+5. `SchemaOnly` — fields that should not be serialized to JSON must have `SchemaOnly: true`
+6. Type coercion — integers stored as strings in HCL must be emitted as integers in JSON
 
 The OpenAPI spec is located at:
 `/Users/andy.yacomink/go/src/github.com/DataDog/datadog-api-spec/spec/v1/dashboard.yaml`
