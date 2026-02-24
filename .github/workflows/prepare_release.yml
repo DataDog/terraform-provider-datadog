@@ -15,6 +15,10 @@ on:
         description: "Target branch"
         required: false
         default: "master"
+        type: choice
+        options:
+          - master
+          - "4.x"
 
 jobs:
   prepare_release:
