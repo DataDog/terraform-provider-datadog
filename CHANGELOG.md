@@ -1,3 +1,27 @@
+## 4.0.0-rc.1 (February 24, 2026)
+
+### BUGFIXES
+* [datadog_sensitive_data_scanner_rule] Fix constant diff on should_save_match by @vinckama in https://github.com/DataDog/terraform-provider-datadog/pull/3525
+* [datadog_metric_metadata] fix: data source incorrect metric name  by @Vlaquit in https://github.com/DataDog/terraform-provider-datadog/pull/3527
+* [datadog_reference_table] Require schema attrs by @g-brizolier in https://github.com/DataDog/terraform-provider-datadog/pull/3511
+### IMPROVEMENTS
+* [datadog_monitor] Deprecate 'locked' and 'restricted_roles' field in favor of restriction policy by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3449
+* [datadog_integration_aws_event_bridge] Upgrade eventbridge to use v2 API by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3487
+* [datadog_team_permission_setting] Add import support by @grv231 in https://github.com/DataDog/terraform-provider-datadog/pull/3490
+### FEATURES
+* [datadog_logs_index] Add support for tags on logs indexes by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/3519
+* [datadog_observability_pipeline] Buffer support on Observability Pipelines by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3510
+### NOTES
+* [datadog_application_key] Remove previously deprecated import functionality by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3461
+* [AWSCORE-663] Remove deprecated resources by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3450
+* [datadog_application_key] Remove previously deprecated data source by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3464
+
+## New Contributors
+* @grv231 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3490
+* @Vlaquit made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3527
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.89.0...v4.0.0-rc.1
+
 ## 3.89.0 (February 18, 2026)
 
 ### BUGFIXES
