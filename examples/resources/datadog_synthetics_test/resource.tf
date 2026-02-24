@@ -719,3 +719,185 @@ resource "datadog_synthetics_test" "test_grpc_health" {
     tick_every = 900
   }
 }
+
+# Example Usage (TCP Network Path Test)
+# Create a new Datadog TCP Network Path test to example.com on port 443
+# using the TCP traceroute strategy "syn"
+resource "datadog_synthetics_test" "network_tcp" {
+  name      = "TCP Network Path Test"
+  type      = "network"
+  subtype   = "tcp"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host               = "example.com"
+    port               = "443"
+    e2e_queries        = 5
+    max_ttl            = 30
+    traceroute_queries = 3
+    tcp_method         = "syn"
+    timeout            = 10
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "avg"
+    target   = 200
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "max"
+    target   = 500
+  }
+
+  assertion {
+    type     = "jitter"
+    operator = "lessThan"
+    target   = 50
+  }
+
+  assertion {
+    type     = "packetLossPercentage"
+    operator = "lessThan"
+    target   = 0.5
+  }
+
+  assertion {
+    type     = "multiNetworkHop"
+    operator = "lessThan"
+    property = "max"
+    target   = 20
+  }
+
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300
+    }
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}
+
+# Example Usage (UDP Network Path Test)
+# Create a new Datadog UDP Network Path test to example.com on port 53
+resource "datadog_synthetics_test" "network_udp" {
+  name      = "UDP Network Path Test"
+  type      = "network"
+  subtype   = "udp"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host               = "example.com"
+    port               = "53"
+    e2e_queries        = 5
+    max_ttl            = 30
+    traceroute_queries = 3
+    timeout            = 10
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "avg"
+    target   = 100.2
+  }
+
+  assertion {
+    type     = "jitter"
+    operator = "lessThan"
+    target   = 20
+  }
+
+  assertion {
+    type     = "packetLossPercentage"
+    operator = "lessThan"
+    target   = 0.1
+  }
+
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300
+    }
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}
+
+# Example Usage (ICMP Network Path Test)
+# Create a new Datadog ICMP Network Path test to example.com
+resource "datadog_synthetics_test" "network_icmp" {
+  name      = "ICMP Network Path Test"
+  type      = "network"
+  subtype   = "icmp"
+  status    = "live"
+  message   = "Notify @pagerduty"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host               = "example.com"
+    e2e_queries        = 5
+    max_ttl            = 30
+    traceroute_queries = 3
+    timeout            = 10
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "avg"
+    target   = 150
+  }
+
+  assertion {
+    type     = "latency"
+    operator = "lessThan"
+    property = "max"
+    target   = 300
+  }
+
+  assertion {
+    type     = "jitter"
+    operator = "lessThan"
+    target   = 30
+  }
+
+  assertion {
+    type     = "packetLossPercentage"
+    operator = "lessThan"
+    target   = 0.5
+  }
+
+  assertion {
+    type     = "multiNetworkHop"
+    operator = "lessThan"
+    property = "avg"
+    target   = 15
+  }
+
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300
+    }
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}

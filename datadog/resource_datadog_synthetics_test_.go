@@ -17,6 +17,7 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
@@ -45,13 +46,13 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"type": {
-					Description:      "Synthetics test type.",
+					Description:      "The type of Synthetics test.",
 					Type:             schema.TypeString,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestDetailsTypeFromValue),
 				},
 				"subtype": {
-					Description: "The subtype of the Synthetic API test. Defaults to `http`.",
+					Description: "The subtype for API or Network Path tests. For API tests, defaults to `http`. For Network Path tests, only `tcp`, `udp`, `icmp` are available.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -238,7 +239,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"message": {
-				Description: "For gRPC, UDP and websocket tests, message to send with the request.",
+				Description: "For gRPC, UDP, and Websocket tests, message to send with the request.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -283,10 +284,44 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
-
 			"is_message_base64_encoded": {
-				Description: "Whether the message is base64-encoded.",
+				Description: "For Websocket tests, whether the message is treated as a base64-encoded string in the server.",
 				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			// Network Path tests
+			"e2e_queries": {
+				Description:  "For Network Path tests, the number of packets sent to probe the destination to measure packet loss, latency, and jitter.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(1, 10),
+			},
+			"max_ttl": {
+				Description:  "For Network Path tests, the maximum time-to-live (max number of hops) used in outgoing probe packets.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(1, 255),
+			},
+			"traceroute_queries": {
+				Description:  "For Network Path tests, the number of traceroute path tracings.",
+				Type:         schema.TypeInt,
+				Optional:     true,
+				ValidateFunc: validation.IntBetween(1, 10),
+			},
+			"tcp_method": {
+				Description:  "For TCP Network Path tests, the TCP traceroute strategy.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice([]string{"prefer_sack", "syn", "sack"}, false),
+			},
+			"destination_service": {
+				Description: "For Network Path tests, an optional label displayed for the destination host in the Network Path visualization.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"source_service": {
+				Description: "For Network Path tests, an optional label displayed for the source host in the Network Path visualization",
+				Type:        schema.TypeString,
 				Optional:    true,
 			},
 		},
@@ -495,19 +530,30 @@ func syntheticsAPIAssertion() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"type": {
-					Description:      "Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
-					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue, datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue),
-					Required:         true,
+					Description: "Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#synthetics-create-a-network-path-test).",
+					Type:        schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(
+						datadogV1.NewSyntheticsAssertionTypeFromValue,
+						datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue,
+						datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue,
+					),
+					Required: true,
 				},
 				"operator": {
-					Description:  "Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
-					Type:         schema.TypeString,
-					Optional:     true,
-					ValidateFunc: validateSyntheticsAssertionOperator,
+					Description: "Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).",
+					Type:        schema.TypeString,
+					Optional:    true,
+					ValidateDiagFunc: validators.ValidateEnumValue(
+						datadogV1.NewSyntheticsAssertionOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionXPathOperatorFromValue,
+						datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue,
+						datadogV2.NewSyntheticsNetworkAssertionOperatorFromValue,
+					),
 				},
 				"property": {
-					Description: "If assertion type is `header`, this is the header name.",
+					Description: "If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max`, or `stddev`.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -2045,6 +2091,45 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		updateDiags := updateSyntheticsMobileTestLocalState(d, &getSyntheticsMobileTestResponse)
 		return append(diags, updateDiags...)
+
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
+		syntheticsTest, buildDiags := buildDatadogSyntheticsNetworkTest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
+
+		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV2().CreateSyntheticsNetworkTest(auth, *syntheticsTest)
+		if err != nil {
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics network test")...)
+		}
+		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			return append(diags, diag.FromErr(err)...)
+		}
+
+		var getSyntheticsNetworkTestResponse datadogV2.SyntheticsNetworkTestResponse
+		var httpResponseGet *_nethttp.Response
+		err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
+			getSyntheticsNetworkTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV2().GetSyntheticsNetworkTest(auth, createdSyntheticsTest.Data.GetId())
+			if err != nil {
+				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+					return retry.RetryableError(fmt.Errorf("synthetics network test not created yet"))
+				}
+				return retry.NonRetryableError(err)
+			}
+			if err := utils.CheckForUnparsed(getSyntheticsNetworkTestResponse); err != nil {
+				return retry.NonRetryableError(err)
+			}
+			return nil
+		})
+		if err != nil {
+			return append(diags, diag.FromErr(err)...)
+		}
+
+		d.SetId(getSyntheticsNetworkTestResponse.Data.GetId())
+
+		updateDiags := updateSyntheticsNetworkTestLocalState(d, &getSyntheticsNetworkTestResponse)
+		return append(diags, updateDiags...)
 	}
 
 	return append(diags, diag.Errorf("unrecognized synthetics test type %v", testType)...)
@@ -2059,6 +2144,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	var syntheticsAPITest datadogV1.SyntheticsAPITest
 	var syntheticsBrowserTest datadogV1.SyntheticsBrowserTest
 	var syntheticsMobileTest datadogV1.SyntheticsMobileTest
+	var syntheticsNetworkTestResponse datadogV2.SyntheticsNetworkTestResponse
 	var err error
 	var httpresp *_nethttp.Response
 
@@ -2080,6 +2166,8 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 		syntheticsBrowserTest, _, err = apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, d.Id())
 	} else if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
 		syntheticsMobileTest, _, err = apiInstances.GetSyntheticsApiV1().GetMobileTest(auth, d.Id())
+	} else if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
+		syntheticsNetworkTestResponse, _, err = apiInstances.GetSyntheticsApiV2().GetSyntheticsNetworkTest(auth, d.Id())
 	} else {
 		syntheticsAPITest, _, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, d.Id())
 	}
@@ -2105,6 +2193,13 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsMobileTestLocalState(d, &syntheticsMobileTest)
+	}
+
+	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
+		if err := utils.CheckForUnparsed(syntheticsNetworkTestResponse); err != nil {
+			return diag.FromErr(err)
+		}
+		return updateSyntheticsNetworkTestLocalState(d, &syntheticsNetworkTestResponse)
 	}
 
 	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
@@ -2170,6 +2265,24 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		}
 
 		updateDiags := updateSyntheticsMobileTestLocalState(d, &updatedTest)
+		return append(diags, updateDiags...)
+
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_NETWORK {
+		syntheticsTest, buildDiags := buildDatadogSyntheticsNetworkTest(d)
+		diags = append(diags, buildDiags...)
+		if diags.HasError() {
+			return diags
+		}
+
+		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV2().UpdateSyntheticsNetworkTest(auth, d.Id(), *syntheticsTest)
+		if err != nil {
+			return append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics network test")...)
+		}
+		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			return append(diags, diag.FromErr(err)...)
+		}
+
+		updateDiags := updateSyntheticsNetworkTestLocalState(d, &updatedTest)
 		return append(diags, updateDiags...)
 	}
 
@@ -2726,6 +2839,160 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 	}
 
 	return nil
+}
+
+func updateSyntheticsNetworkTestLocalState(d *schema.ResourceData, response *datadogV2.SyntheticsNetworkTestResponse) diag.Diagnostics {
+	networkTest := response.Data.GetAttributes()
+
+	// Set type and subtype
+	if err := d.Set("type", "network"); err != nil {
+		return diag.FromErr(err)
+	}
+	if networkTest.HasSubtype() {
+		if err := d.Set("subtype", string(networkTest.GetSubtype())); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	// Set basic fields
+	if err := d.Set("name", networkTest.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("message", networkTest.GetMessage()); err != nil {
+		return diag.FromErr(err)
+	}
+	if networkTest.HasStatus() {
+		if err := d.Set("status", string(networkTest.GetStatus())); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	if err := d.Set("tags", networkTest.GetTags()); err != nil {
+		return diag.FromErr(err)
+	}
+	if networkTest.HasMonitorId() {
+		if err := d.Set("monitor_id", networkTest.GetMonitorId()); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	// Set locations
+	if err := d.Set("locations", networkTest.GetLocations()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	// Build request_definition from config.request
+	config := networkTest.GetConfig()
+	if config.HasRequest() {
+		request := config.GetRequest()
+		localRequest := map[string]interface{}{
+			"host":               request.GetHost(),
+			"e2e_queries":        int(request.GetE2eQueries()),
+			"max_ttl":            int(request.GetMaxTtl()),
+			"traceroute_queries": int(request.GetTracerouteQueries()),
+		}
+
+		// Add optional fields if present
+		if request.HasPort() {
+			localRequest["port"] = strconv.FormatInt(request.GetPort(), 10)
+		}
+		if request.HasTcpMethod() {
+			localRequest["tcp_method"] = string(request.GetTcpMethod())
+		}
+		if request.HasTimeout() {
+			localRequest["timeout"] = int(request.GetTimeout())
+		}
+		if request.HasDestinationService() {
+			localRequest["destination_service"] = request.GetDestinationService()
+		}
+		if request.HasSourceService() {
+			localRequest["source_service"] = request.GetSourceService()
+		}
+
+		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	// Build assertions
+	if config.HasAssertions() {
+		assertions, diags := buildTerraformNetworkAssertions(config.GetAssertions())
+		if diags.HasError() {
+			return diags
+		}
+		if err := d.Set("assertion", assertions); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	// Convert and set options
+	// V2 options is currently a subset of V1 options
+	optionsV2 := networkTest.GetOptions()
+	optionsJSON, err := optionsV2.MarshalJSON()
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	optionsV1 := datadogV1.NewSyntheticsTestOptions()
+	if err := optionsV1.UnmarshalJSON(optionsJSON); err != nil {
+		return diag.FromErr(err)
+	}
+	if httpVersion, ok := d.GetOk("options_list.0.http_version"); ok {
+		optionsV1.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(httpVersion.(string)))
+	}
+
+	localOptionsList := buildTerraformTestOptions(*optionsV1)
+	if err := d.Set("options_list", localOptionsList); err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
+}
+
+func buildTerraformNetworkAssertions(assertions []datadogV2.SyntheticsNetworkAssertion) ([]map[string]interface{}, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	localAssertions := make([]map[string]interface{}, 0, len(assertions))
+
+	for _, assertion := range assertions {
+		localAssertion := make(map[string]interface{})
+
+		// Check which union field is set
+		if assertion.SyntheticsNetworkAssertionLatency != nil {
+			latency := assertion.SyntheticsNetworkAssertionLatency
+			localAssertion["type"] = "latency"
+			localAssertion["operator"] = latency.GetOperator()
+			localAssertion["property"] = latency.GetProperty()
+			localAssertion["target"] = fmt.Sprintf("%v", latency.GetTarget()) // manually convert float to string
+
+		} else if assertion.SyntheticsNetworkAssertionJitter != nil {
+			jitter := assertion.SyntheticsNetworkAssertionJitter
+			localAssertion["type"] = "jitter"
+			localAssertion["operator"] = jitter.GetOperator()
+			localAssertion["target"] = fmt.Sprintf("%v", jitter.GetTarget()) // manually convert float to string
+
+		} else if assertion.SyntheticsNetworkAssertionPacketLossPercentage != nil {
+			packetLoss := assertion.SyntheticsNetworkAssertionPacketLossPercentage
+			localAssertion["type"] = "packetLossPercentage"
+			localAssertion["operator"] = packetLoss.GetOperator()
+			localAssertion["target"] = fmt.Sprintf("%v", packetLoss.GetTarget()) // manually convert float to string
+
+		} else if assertion.SyntheticsNetworkAssertionMultiNetworkHop != nil {
+			multiHop := assertion.SyntheticsNetworkAssertionMultiNetworkHop
+			localAssertion["type"] = "multiNetworkHop"
+			localAssertion["operator"] = multiHop.GetOperator()
+			localAssertion["property"] = multiHop.GetProperty()
+			localAssertion["target"] = fmt.Sprintf("%v", multiHop.GetTarget()) // manually convert float to string
+
+		} else {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  "Unknown assertion type in Network test response",
+				Detail:   "Encountered an assertion with no recognized type fields",
+			})
+			continue
+		}
+
+		localAssertions = append(localAssertions, localAssertion)
+	}
+
+	return localAssertions, diags
 }
 
 /*
@@ -3394,6 +3661,185 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 	}
 
 	return syntheticsTest
+}
+
+func buildDatadogSyntheticsNetworkTest(d *schema.ResourceData) (*datadogV2.SyntheticsNetworkTestEditRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+
+	// Create test attributes
+	networkTest := datadogV2.NewSyntheticsNetworkTestWithDefaults()
+
+	// Set basic fields
+	networkTest.SetName(d.Get("name").(string))
+	networkTest.SetMessage(d.Get("message").(string))
+	networkTest.SetType(datadogV2.SYNTHETICSNETWORKTESTTYPE_NETWORK)
+
+	// Set subtype
+	if v, ok := d.GetOk("subtype"); ok {
+		subtype := datadogV2.SyntheticsNetworkTestSubType(v.(string))
+		networkTest.SetSubtype(subtype)
+	}
+
+	// Set status
+	if v, ok := d.GetOk("status"); ok {
+		status := datadogV2.SyntheticsTestPauseStatus(v.(string))
+		networkTest.SetStatus(status)
+	}
+
+	// Set locations
+	if attr, ok := d.GetOk("locations"); ok {
+		locations := make([]string, 0, len(attr.(*schema.Set).List()))
+		for _, loc := range attr.(*schema.Set).List() {
+			locations = append(locations, loc.(string))
+		}
+		networkTest.SetLocations(locations)
+	}
+
+	// Set tags
+	if attr, ok := d.GetOk("tags"); ok {
+		tags := make([]string, 0, len(attr.([]interface{})))
+		for _, tag := range attr.([]interface{}) {
+			tags = append(tags, tag.(string))
+		}
+		networkTest.SetTags(tags)
+	}
+
+	// Build config with request and assertions
+	config := datadogV2.NewSyntheticsNetworkTestConfigWithDefaults()
+
+	// Build request from request_definition
+	if attr, ok := d.GetOk("request_definition"); ok && len(attr.([]interface{})) > 0 {
+		requestDef := attr.([]interface{})[0].(map[string]interface{})
+
+		// Required fields
+		host := requestDef["host"].(string)
+		e2eQueries := int64(requestDef["e2e_queries"].(int))
+		maxTTL := int64(requestDef["max_ttl"].(int))
+		tracerouteQueries := int64(requestDef["traceroute_queries"].(int))
+
+		request := datadogV2.NewSyntheticsNetworkTestRequest(e2eQueries, host, maxTTL, tracerouteQueries)
+
+		// Optional fields
+		if v, ok := requestDef["port"]; ok && v.(string) != "" {
+			port, _ := strconv.ParseInt(v.(string), 10, 64)
+			request.SetPort(port)
+		}
+		if v, ok := requestDef["tcp_method"]; ok && v.(string) != "" {
+			tcpMethod := datadogV2.SyntheticsNetworkTestRequestTCPMethod(v.(string))
+			request.SetTcpMethod(tcpMethod)
+		}
+		if v, ok := requestDef["timeout"]; ok && v.(int) != 0 {
+			request.SetTimeout(int64(v.(int)))
+		}
+		if v, ok := requestDef["destination_service"]; ok && v.(string) != "" {
+			request.SetDestinationService(v.(string))
+		}
+		if v, ok := requestDef["source_service"]; ok && v.(string) != "" {
+			request.SetSourceService(v.(string))
+		}
+
+		config.SetRequest(*request)
+	}
+
+	// Build assertions
+	if attr, ok := d.GetOk("assertion"); ok {
+		assertions, assertDiags := buildDatadogNetworkAssertions(attr.([]interface{}))
+		diags = append(diags, assertDiags...)
+		config.SetAssertions(assertions)
+	}
+
+	networkTest.SetConfig(*config)
+
+	// Convert and set options
+	// V1 options is currently a superset of V2 options
+	optionsV1 := buildDatadogTestOptions(d)
+	optionsJSON, err := optionsV1.MarshalJSON()
+	if err != nil {
+		diags = append(diags, diag.FromErr(err)...)
+	}
+	optionsV2 := datadogV2.NewSyntheticsTestOptions()
+	if err := optionsV2.UnmarshalJSON(optionsJSON); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
+	}
+	networkTest.SetOptions(*optionsV2)
+
+	// Wrap in edit request structure
+	testEdit := datadogV2.NewSyntheticsNetworkTestEdit(*networkTest, datadogV2.SYNTHETICSNETWORKTESTTYPE_NETWORK)
+
+	editRequest := datadogV2.NewSyntheticsNetworkTestEditRequestWithDefaults()
+	editRequest.SetData(*testEdit)
+
+	return editRequest, diags
+}
+
+func buildDatadogNetworkAssertions(attr []interface{}) ([]datadogV2.SyntheticsNetworkAssertion, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	assertions := make([]datadogV2.SyntheticsNetworkAssertion, 0, len(attr))
+
+	for _, assertion := range attr {
+		assertionMap := assertion.(map[string]interface{})
+		assertionType := assertionMap["type"].(string)
+		operator := datadogV2.SyntheticsNetworkAssertionOperator(assertionMap["operator"].(string))
+
+		// Parse target (could be int or float depending on assertion type)
+		targetStr := assertionMap["target"].(string)
+		target, err := strconv.ParseFloat(targetStr, 64)
+		if err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  "Invalid assertion target",
+				Detail:   fmt.Sprintf("Failed to parse target value '%s' as number: %v", targetStr, err),
+			})
+			continue
+		}
+
+		switch assertionType {
+		case "latency":
+			property := datadogV2.SyntheticsNetworkAssertionProperty(assertionMap["property"].(string))
+			assertionLatency := datadogV2.NewSyntheticsNetworkAssertionLatency(
+				operator,
+				property,
+				target,
+				datadogV2.SYNTHETICSNETWORKASSERTIONLATENCYTYPE_LATENCY,
+			)
+			assertions = append(assertions, datadogV2.SyntheticsNetworkAssertionLatencyAsSyntheticsNetworkAssertion(assertionLatency))
+
+		case "jitter":
+			assertionJitter := datadogV2.NewSyntheticsNetworkAssertionJitter(
+				operator,
+				target,
+				datadogV2.SYNTHETICSNETWORKASSERTIONJITTERTYPE_JITTER,
+			)
+			assertions = append(assertions, datadogV2.SyntheticsNetworkAssertionJitterAsSyntheticsNetworkAssertion(assertionJitter))
+
+		case "packetLossPercentage":
+			assertionPacketLoss := datadogV2.NewSyntheticsNetworkAssertionPacketLossPercentage(
+				operator,
+				target,
+				datadogV2.SYNTHETICSNETWORKASSERTIONPACKETLOSSPERCENTAGETYPE_PACKET_LOSS_PERCENTAGE,
+			)
+			assertions = append(assertions, datadogV2.SyntheticsNetworkAssertionPacketLossPercentageAsSyntheticsNetworkAssertion(assertionPacketLoss))
+
+		case "multiNetworkHop":
+			property := datadogV2.SyntheticsNetworkAssertionProperty(assertionMap["property"].(string))
+			assertionMultiHop := datadogV2.NewSyntheticsNetworkAssertionMultiNetworkHop(
+				operator,
+				property,
+				target,
+				datadogV2.SYNTHETICSNETWORKASSERTIONMULTINETWORKHOPTYPE_MULTI_NETWORK_HOP,
+			)
+			assertions = append(assertions, datadogV2.SyntheticsNetworkAssertionMultiNetworkHopAsSyntheticsNetworkAssertion(assertionMultiHop))
+
+		default:
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  "Invalid assertion type for Network test",
+				Detail:   fmt.Sprintf("Assertion type '%s' is not valid for Network Path tests. Valid types are: latency, jitter, packet_loss_percentage, multi_network_hop", assertionType),
+			})
+		}
+	}
+
+	return assertions, diags
 }
 
 func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion, diag.Diagnostics) {
@@ -5874,23 +6320,6 @@ func isApiSubtype(subtype datadogV1.SyntheticsAPITestStepSubtype) bool {
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_UDP ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_ICMP ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_WEBSOCKET
-}
-
-func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
-	if err != nil {
-		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
-		_, err3 := datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue(val.(string))
-		_, err4 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
-		_, err5 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
-
-		if err2 == nil || err3 == nil || err4 == nil || err5 == nil {
-			return
-		} else {
-			errs = append(errs, err, err2, err3, err4, err5)
-		}
-	}
-	return
 }
 
 func getConfigCertAndKeyContent(d *schema.ResourceData, stepIndex int) (*string, *string) {
