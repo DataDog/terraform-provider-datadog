@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 517
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"ocsf mapper custom (minimal)"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 814
+        uncompressed: false
+        body: |
+            {"data":{"id":"ca52243e-0d94-11f1-adba-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper custom (minimal)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 687.2285ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ca52243e-0d94-11f1-adba-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 814
+        uncompressed: false
+        body: |
+            {"data":{"id":"ca52243e-0d94-11f1-adba-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper custom (minimal)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 275.132042ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ca52243e-0d94-11f1-adba-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 814
+        uncompressed: false
+        body: |
+            {"data":{"id":"ca52243e-0d94-11f1-adba-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper custom (minimal)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 263.420334ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 859
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":{"mapping":[{"dest":"device.type","source":"host.type"},{"dest":"event.type","value":"static_value"},{"dest":"device.name","lookup":{"default":"unknown","table":[{"equals":"desktop","value":"desktop"},{"contains":"Mobile","value":"mobile"}]},"source":"hostname"}],"metadata":{"class":"Device Inventory Info","profiles":["container"],"version":"1.3.0"},"version":1}}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"ocsf mapper custom (full)"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ca52243e-0d94-11f1-adba-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1485
+        uncompressed: false
+        body: |
+            {"data":{"id":"ca52243e-0d94-11f1-adba-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper custom (full)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":{"mapping":[{"dest":"device.type","source":"host.type"},{"dest":"event.type","value":"static_value"},{"dest":"device.name","lookup":{"default":"unknown","table":[{"equals":"desktop","value":"desktop"},{"contains":"Mobile","value":"mobile"}]},"source":"hostname"}],"metadata":{"class":"Device Inventory Info","profiles":["container"],"version":"1.3.0"},"version":1}}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":{"mapping":[{"dest":"device.type","source":"host.type"},{"dest":"event.type","value":"static_value"},{"dest":"device.name","lookup":{"default":"unknown","table":[{"equals":"desktop","value":"desktop"},{"contains":"Mobile","value":"mobile"}]},"source":"hostname"}],"metadata":{"class":"Device Inventory Info","profiles":["container"],"version":"1.3.0"},"version":1}}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 694.35775ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ca52243e-0d94-11f1-adba-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 1485
+        uncompressed: false
+        body: |
+            {"data":{"id":"ca52243e-0d94-11f1-adba-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper custom (full)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":{"mapping":[{"dest":"device.type","source":"host.type"},{"dest":"event.type","value":"static_value"},{"dest":"device.name","lookup":{"default":"unknown","table":[{"equals":"desktop","value":"desktop"},{"contains":"Mobile","value":"mobile"}]},"source":"hostname"}],"metadata":{"class":"Device Inventory Info","profiles":["container"],"version":"1.3.0"},"version":1}}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:custom","mapping":{"mapping":[{"dest":"device.type","source":"host.type"},{"dest":"event.type","value":"static_value"},{"dest":"device.name","lookup":{"default":"unknown","table":[{"equals":"desktop","value":"desktop"},{"contains":"Mobile","value":"mobile"}]},"source":"hostname"}],"metadata":{"class":"Device Inventory Info","profiles":["container"],"version":"1.3.0"},"version":1}}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 284.7185ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ca52243e-0d94-11f1-adba-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 507.765708ms

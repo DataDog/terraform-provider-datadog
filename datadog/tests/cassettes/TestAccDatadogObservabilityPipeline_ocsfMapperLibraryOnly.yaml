@@ -31,13 +31,13 @@ interactions:
         content_length: 806
         uncompressed: false
         body: |
-            {"data":{"id":"e83a1040-f20c-11f0-9dea-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c864e44a-0d94-11f1-adb8-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 424.476125ms
+        duration: 703.825417ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/e83a1040-f20c-11f0-9dea-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c864e44a-0d94-11f1-adb8-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 806
         uncompressed: false
         body: |
-            {"data":{"id":"e83a1040-f20c-11f0-9dea-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c864e44a-0d94-11f1-adb8-da7ad0900002","type":"pipelines","attributes":{"name":"ocsf mapper (library only)","config":{"destinations":[{"id":"destination-1","inputs":["ocsf-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"processors":[{"enabled":true,"id":"ocsf-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"ocsf-mapper","include":"*","mappings":[{"include":"source:lib","mapping":"CloudTrail Account Change"}],"type":"ocsf_mapper"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 211.438792ms
+        duration: 242.064125ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/e83a1040-f20c-11f0-9dea-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c864e44a-0d94-11f1-adb8-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 468.781291ms
+        duration: 488.131459ms
