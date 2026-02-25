@@ -412,11 +412,12 @@ type newRelicDestinationModel struct {
 }
 
 type googleSecopsDestinationModel struct {
-	Auth       []gcpAuthModel                              `tfsdk:"auth"`
-	CustomerId types.String                                `tfsdk:"customer_id"`
-	Encoding   types.String                                `tfsdk:"encoding"`
-	LogType    types.String                                `tfsdk:"log_type"`
-	Buffer     []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	Auth           []gcpAuthModel                              `tfsdk:"auth"`
+	CustomerId     types.String                                `tfsdk:"customer_id"`
+	Encoding       types.String                                `tfsdk:"encoding"`
+	EndpointUrlKey types.String                                `tfsdk:"endpoint_url_key"`
+	LogType        types.String                                `tfsdk:"log_type"`
+	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type googlePubSubDestinationModel struct {
@@ -719,6 +720,7 @@ type httpClientSourceModel struct {
 	TokenKey       types.String                      `tfsdk:"token_key"`
 	PasswordKey    types.String                      `tfsdk:"password_key"`
 	UsernameKey    types.String                      `tfsdk:"username_key"`
+	CustomKey      types.String                      `tfsdk:"custom_key"`
 	Tls            []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
@@ -1071,6 +1073,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"username_key": schema.StringAttribute{
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the username.",
+												},
+												"custom_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds a custom header value (used with custom auth strategies).",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -2598,6 +2604,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Validators: []validator.String{
 														stringvalidator.OneOf("json", "raw_message"),
 													},
+												},
+												"endpoint_url_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the Google Chronicle endpoint URL.",
 												},
 												"log_type": schema.StringAttribute{
 													Required:    true,
@@ -6109,6 +6119,9 @@ func expandHttpClientSource(src *httpClientSourceModel, id string) datadogV2.Obs
 	if !src.UsernameKey.IsNull() {
 		httpSrc.SetUsernameKey(src.UsernameKey.ValueString())
 	}
+	if !src.CustomKey.IsNull() {
+		httpSrc.SetCustomKey(src.CustomKey.ValueString())
+	}
 	if !src.ScrapeInterval.IsNull() {
 		httpSrc.SetScrapeIntervalSecs(src.ScrapeInterval.ValueInt64())
 	}
@@ -6145,6 +6158,9 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 	}
 	if v, ok := src.GetUsernameKeyOk(); ok {
 		out.UsernameKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetCustomKeyOk(); ok {
+		out.CustomKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)
@@ -6251,6 +6267,9 @@ func expandGoogleSecopsDestination(ctx context.Context, dest *destinationModel, 
 	if !src.LogType.IsNull() {
 		chronicle.SetLogType(src.LogType.ValueString())
 	}
+	if !src.EndpointUrlKey.IsNull() {
+		chronicle.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
+	}
 
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
@@ -6279,6 +6298,9 @@ func flattenGoogleSecopsDestination(ctx context.Context, src *datadogV2.Observab
 	}
 	if v, ok := src.GetLogTypeOk(); ok && v != nil && *v != "" {
 		out.LogType = types.StringValue(*v)
+	}
+	if v, ok := src.GetEndpointUrlKeyOk(); ok {
+		out.EndpointUrlKey = types.StringValue(*v)
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
