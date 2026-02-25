@@ -1,3 +1,16 @@
+## 4.0.0-rc.1 (February 25, 2026)
+
+### IMPROVEMENTS
+* [datadog_monitor] Deprecate 'locked' and 'restricted_roles' field in favor of restriction policy by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3449
+* [datadog_integration_aws_event_bridge] Upgrade eventbridge to use v2 API by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3487
+### NOTES
+* [datadog_application_key] Remove previously deprecated import functionality by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3461
+* [AWSCORE-663] Remove deprecated resources by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3450
+* [datadog_application_key] Remove previously deprecated data source by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3464
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.90.0...v4.0.0-rc.1
+
 ## 3.90.0 (February 24, 2026)
 
 ### BUGFIXES
