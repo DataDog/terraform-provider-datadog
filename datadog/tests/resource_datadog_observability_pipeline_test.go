@@ -3433,6 +3433,145 @@ resource "datadog_observability_pipeline" "ocsf" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_ocsfMapperCustomMappings(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.ocsf_custom"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "ocsf_custom" {
+  name = "ocsf mapper custom (minimal)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "ocsf-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "ocsf-mapper"
+        enabled = true
+        include = "*"
+
+        ocsf_mapper {
+          mapping {
+            include         = "source:custom"
+            library_mapping = "CloudTrail Account Change"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ocsf-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.include", "source:custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.library_mapping", "CloudTrail Account Change"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "ocsf_custom" {
+  name = "ocsf mapper custom (full)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "ocsf-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "ocsf-mapper"
+        enabled = true
+        include = "*"
+
+        ocsf_mapper {
+          mapping {
+            include = "source:custom"
+            custom_mapping {
+              version = 1
+              metadata {
+                class    = "Device Inventory Info"
+                version  = "1.3.0"
+                profiles = ["container"]
+              }
+              mapping {
+                dest   = "device.type"
+                source = "host.type"
+              }
+              mapping {
+                dest  = "event.type"
+                value = "static_value"
+              }
+              mapping {
+                dest   = "device.name"
+                source = "hostname"
+                lookup {
+                  default = "unknown"
+                  table {
+                    equals = "desktop"
+                    value  = "desktop"
+                  }
+                  table {
+                    contains = "Mobile"
+                    value    = "mobile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ocsf-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.include", "source:custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.version", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.metadata.0.class", "Device Inventory Info"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.metadata.0.version", "1.3.0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.mapping.0.dest", "device.type"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.mapping.0.source", "host.type"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_opensearchDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
