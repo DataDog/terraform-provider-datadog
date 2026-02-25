@@ -1,7 +1,7 @@
 ---
 name: dd-dashboard-sync-openapi
 description: >
-  Syncs the datadog_dashboard Terraform resource with the Datadog OpenAPI spec.
+  Syncs the datadog_dashboard_v2 Terraform resource with the Datadog OpenAPI spec.
   Identifies fields and widget types present in the OpenAPI spec but missing from
   the FieldSpec-based implementation, generates the Go additions, writes and records
   new acceptance tests, then opens a PR. Requires DD_TEST_CLIENT_API_KEY and
@@ -12,7 +12,7 @@ model: sonnet
 
 # Dashboard OpenAPI Sync Skill
 
-You are syncing the `datadog_dashboard` Terraform resource with the Datadog OpenAPI spec.
+You are syncing the `datadog_dashboard_v2` Terraform resource with the Datadog OpenAPI spec.
 The resource uses a FieldSpec-based bidirectional mapping system described in AGENTS.md.
 Read that file first for the full conventions before proceeding.
 
@@ -26,8 +26,8 @@ The user may optionally specify:
 
 Read these files before doing anything else:
 - `AGENTS.md` (conventions, FieldSpec system, naming rules)
-- `datadog/internal/dashboardmapping/widgets.go` (WidgetSpec declarations and `allWidgetSpecs` registry)
-- `datadog/internal/dashboardmapping/field_groups.go` (shared reusable FieldSpec groups)
+- `datadog/dashboardmapping/widgets.go` (WidgetSpec declarations and `allWidgetSpecs` registry)
+- `datadog/dashboardmapping/field_groups.go` (shared reusable FieldSpec groups)
 - `https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml` (OpenAPI source of truth)
 
 ## Step 2 — Diff: Identify Gaps
@@ -129,7 +129,7 @@ automatically, using `Description`, `ValidValues`, `Required`, `Default`, etc.
 
 For each new widget type or significantly new set of fields:
 
-1. Find the appropriate test file: `datadog/tests/resource_datadog_dashboard_{widget}_test.go`
+1. Find the appropriate test file: `datadog/tests/resource_datadog_dashboard_v2_{widget}_test.go`
    (create it if it doesn't exist for a new widget type)
 
 2. Write the test file. Pattern (see `resource_datadog_dashboard_slo_list_test.go` as a minimal template):
@@ -141,7 +141,7 @@ For each new widget type or significantly new set of fields:
    )
 
    const datadogDashboard{Widget}Config = `
-   resource "datadog_dashboard" "{widget}_dashboard" {
+   resource "datadog_dashboard_v2" "{widget}_dashboard" {
        title       = "{{uniq}}"
        layout_type = "ordered"
        widget {
@@ -159,11 +159,11 @@ For each new widget type or significantly new set of fields:
    }
 
    func TestAccDatadogDashboard{Widget}(t *testing.T) {
-       testAccDatadogDashboardWidgetUtil(t, datadogDashboard{Widget}Config, "datadog_dashboard.{widget}_dashboard", datadogDashboard{Widget}Asserts)
+       testAccDatadogDashboardWidgetUtil(t, datadogDashboard{Widget}Config, "datadog_dashboard_v2.{widget}_dashboard", datadogDashboard{Widget}Asserts)
    }
 
    func TestAccDatadogDashboard{Widget}_import(t *testing.T) {
-       testAccDatadogDashboardWidgetUtilImport(t, datadogDashboard{Widget}Config, "datadog_dashboard.{widget}_dashboard")
+       testAccDatadogDashboardWidgetUtilImport(t, datadogDashboard{Widget}Config, "datadog_dashboard_v2.{widget}_dashboard")
    }
    ```
    Key points:
@@ -174,7 +174,7 @@ For each new widget type or significantly new set of fields:
 3. **Register the new test file** in `datadog/tests/provider_test.go` in the `testFiles2EndpointTags` map.
    Find the alphabetical position among other `dashboard_*` entries and add:
    ```go
-   "tests/resource_datadog_dashboard_{widget}_test": "dashboards",
+   "tests/resource_datadog_dashboard_v2_{widget}_test": "dashboards",
    ```
    Without this entry the test will immediately fail with:
    `Endpoint tag for test file ... not found in datadog/provider_test.go`
@@ -213,7 +213,7 @@ If `RECORD=false` replay fails after a successful `RECORD=true` run, check:
 ```bash
 # Build and vet (make fmtcheck fails on pre-existing example formatting issues — skip it)
 go build ./...
-go vet ./datadog/internal/dashboardmapping/...
+go vet ./datadog/dashboardmapping/...
 
 # Docs: make docs requires terraform and may fail due to OTEL env issues.
 # make check-docs does NOT require terraform and reliably verifies docs are in sync.
@@ -226,7 +226,7 @@ All must pass before creating the PR.
 
 Branch name: `{github-username}/dashboard-{widget-or-schema}`
 
-PR title: `[datadog_dashboard] Add {description} from OpenAPI sync`
+PR title: `[datadog_dashboard_v2] Add {description} from OpenAPI sync`
 
 PR body should include:
 - Which OpenAPI schema version / commit was diffed against
@@ -244,6 +244,6 @@ PR body should include:
 - The OpenAPI spec path is always:
   `https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml`
 - FieldSpec declarations live in:
-  - `datadog/internal/dashboardmapping/field_groups.go` — shared groups
-  - `datadog/internal/dashboardmapping/field_groups_dashboard.go` — dashboard top-level groups
-  - `datadog/internal/dashboardmapping/widgets.go` — widget specs and registry
+  - `datadog/dashboardmapping/field_groups.go` — shared groups
+  - `datadog/dashboardmapping/field_groups_dashboard.go` — dashboard top-level groups
+  - `datadog/dashboardmapping/widgets.go` — widget specs and registry

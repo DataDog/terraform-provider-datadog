@@ -69,9 +69,21 @@ Some docs are manually maintained and excluded from auto generation. Check `scri
 
 ## Dashboard Resource: FieldSpec Bidirectional Mapping System
 
-`datadog/internal/dashboardmapping/` contains a mapping-driven architecture
+`datadog/dashboardmapping/` contains a mapping-driven architecture
 instead of the legacy paired `build*()`/`flatten*()` functions. Understanding this
-system is essential before modifying or extending the dashboard resource.
+system is essential before modifying or extending the dashboard v2 resource.
+
+### Resource Versions
+
+- `datadog_dashboard` / `datadog_powerpack` — **Original** SDKv2 resources using hand-written
+  `build*()`/`flatten*()` functions in `datadog/resource_datadog_dashboard.go` (~11k lines).
+  These remain for backward compatibility with existing Terraform state.
+- `datadog_dashboard_v2` / `datadog_powerpack_v2` — **FieldSpec engine** resources in
+  `datadog/resource_datadog_dashboard_v2.go` and `datadog/resource_datadog_powerpack_v2.go`.
+  New development and OpenAPI sync work targets the v2 resources.
+
+The dashboardmapping package is exported (not under `internal/`) so that dd-source
+can import the engine for its HCL export API endpoint.
 
 ### Package layout
 
