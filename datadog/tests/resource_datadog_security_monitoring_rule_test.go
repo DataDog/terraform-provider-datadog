@@ -135,6 +135,25 @@ func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRuleInstantaneousBaseline(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigAnomalyDetectionRuleInstantaneousBaseline(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCreatedCheckAnomalyDetectionRuleInstantaneousBaseline(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSecurityMonitoringRule_SequenceDetection(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -919,6 +938,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
             learning_duration = 24
             detection_tolerance = 5
             learning_period_baseline = 0
+            instantaneous_baseline = false
         }
     }
 
@@ -938,6 +958,65 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckAnomalyDetectionRule(accProvi
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.learning_duration", "24"),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.detection_tolerance", "5"),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.learning_period_baseline", "0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.anomaly_detection_options.0.instantaneous_baseline", "false"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedConfigAnomalyDetectionRuleInstantaneousBaseline(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "anomaly detection rule triggered"
+    enabled = false
+    validate = true
+
+    query {
+        name = "my_query"
+        query = "*"
+        aggregation = "count"
+        data_source = "logs"
+        group_by_fields = ["host"]
+        has_optional_group_by_fields = false
+    }
+
+    case {
+        name = ""
+        status = "high"
+        condition = "my_query > 0.95"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "anomaly_detection"
+        keep_alive = 10800
+        max_signal_duration = 10800
+		evaluation_window = 1800
+        anomaly_detection_options {
+            bucket_duration = 300
+            learning_duration = 24
+            detection_tolerance = 5
+            instantaneous_baseline = true
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorCreatedCheckAnomalyDetectionRuleInstantaneousBaseline(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "message", "anomaly detection rule triggered"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.detection_method", "anomaly_detection"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.bucket_duration", "300"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.learning_duration", "24"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.detection_tolerance", "5"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.anomaly_detection_options.0.instantaneous_baseline", "true"),
 	)
 }
 
@@ -1255,6 +1334,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
             learning_duration = 48
             detection_tolerance = 4
             learning_period_baseline = 10
+            instantaneous_baseline = false
         }
     }
 
@@ -1274,6 +1354,8 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckAnomalyDetectionRule(accProvi
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.learning_duration", "48"),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.detection_tolerance", "4"),
 		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.anomaly_detection_options.0.learning_period_baseline", "10"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.anomaly_detection_options.0.instantaneous_baseline", "false"),
 	)
 }
 

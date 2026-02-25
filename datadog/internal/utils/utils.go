@@ -14,6 +14,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/hashicorp/go-cty/cty"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -99,6 +101,7 @@ var IntegrationAwsMutex = sync.Mutex{}
 type Resource interface {
 	Get(string) interface{}
 	GetOk(string) (interface{}, bool)
+	GetRawConfigAt(cty.Path) (cty.Value, diag.Diagnostics)
 }
 
 // NewTransport returns new transport with default values borrowed from http.DefaultTransport
