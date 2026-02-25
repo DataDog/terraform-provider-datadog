@@ -10,6 +10,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -289,6 +290,12 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									Optional:     true,
 									ValidateFunc: validation.IntAtLeast(0),
 									Description:  "An optional override baseline to apply while the rule is in the learning period. Must be greater than or equal to 0.",
+								},
+								"instantaneous_baseline": {
+									Type:        schema.TypeBool,
+									Optional:    true,
+									Default:     false,
+									Description: "When set to true, Datadog uses previous values that fall within the defined learning window to construct the baseline, enabling the system to establish an accurate baseline more rapidly rather than relying solely on gradual learning over time.",
 								},
 							},
 						},
@@ -797,6 +804,18 @@ func checkQueryConsistency(d utils.Resource) error {
 	return nil
 }
 
+// isLearningPeriodBaselineConfigured checks the raw HCL config to determine whether the user
+// explicitly set learning_period_baseline. SDKv2 always populates optional int attrs with their
+// zero value, so map key presence alone cannot distinguish "set to 0" from "not set".
+func isLearningPeriodBaselineConfigured(d utils.Resource) bool {
+	val, diags := d.GetRawConfigAt(
+		cty.GetAttrPath("options").IndexInt(0).
+			GetAttr("anomaly_detection_options").IndexInt(0).
+			GetAttr("learning_period_baseline"),
+	)
+	return !diags.HasError() && !val.IsNull()
+}
+
 func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 
 	if err := checkQueryConsistency(d); err != nil {
@@ -835,7 +854,7 @@ func buildCreateCommonPayload(d utils.Resource, payload securityMonitoringRuleCr
 
 	if v, ok := d.GetOk("options"); ok {
 		tfOptionsList := v.([]interface{})
-		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
+		payloadOptions := buildPayloadOptions(d, tfOptionsList, d.Get("type").(string))
 		payload.SetOptions(*payloadOptions)
 	}
 
@@ -1068,7 +1087,7 @@ func buildPayloadSchedulingOptions(tfSchedulingOptionsList []any) *datadogV2.Sec
 	return schedulingOptions
 }
 
-func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
+func buildPayloadOptions(d utils.Resource, tfOptionsList []interface{}, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
 	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
 
@@ -1108,7 +1127,8 @@ func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV
 
 	if v, ok := tfOptions["anomaly_detection_options"]; ok {
 		tfAnomalyDetectionOptionsList := v.([]interface{})
-		if payloadAnomalyDetectionOptions, ok := buildPayloadAnomalyDetectionOptions(tfAnomalyDetectionOptionsList); ok {
+		learningPeriodBaselineConfigured := isLearningPeriodBaselineConfigured(d)
+		if payloadAnomalyDetectionOptions, ok := buildPayloadAnomalyDetectionOptions(tfAnomalyDetectionOptionsList, learningPeriodBaselineConfigured); ok {
 			payloadOptions.AnomalyDetectionOptions = payloadAnomalyDetectionOptions
 		}
 	}
@@ -1145,7 +1165,7 @@ func buildPayloadImpossibleTravelOptions(tfOptionsList []interface{}) (*datadogV
 	return options, hasPayload
 }
 
-func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions, bool) {
+func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}, learningPeriodBaselineConfigured bool) (*datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions, bool) {
 	options := datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptions()
 	tfOptions := extractMapFromInterface(tfOptionsList)
 
@@ -1169,9 +1189,17 @@ func buildPayloadAnomalyDetectionOptions(tfOptionsList []interface{}) (*datadogV
 		options.DetectionTolerance = &detectionTolerance
 	}
 
-	if v, ok := tfOptions["learning_period_baseline"]; ok {
+	if v, ok := tfOptions["instantaneous_baseline"]; ok {
 		hasPayload = true
-		learningPeriodBaseline := int64(v.(int))
+		options.SetInstantaneousBaseline(v.(bool))
+	}
+
+	// Only include learning_period_baseline when the user explicitly set it in HCL.
+	// SDKv2 always populates optional int attrs with 0, but 0 is a valid API value
+	// (means "immediately generate signals"), so we use the raw config to distinguish.
+	if learningPeriodBaselineConfigured {
+		hasPayload = true
+		learningPeriodBaseline := int64(tfOptions["learning_period_baseline"].(int))
 		options.LearningPeriodBaseline = &learningPeriodBaseline
 	}
 
@@ -1777,6 +1805,7 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 		if learningPeriodBaseline, ok := anomalyDetectionOptions.GetLearningPeriodBaselineOk(); ok {
 			tfAnomalyDetectionOptions["learning_period_baseline"] = *learningPeriodBaseline
 		}
+		tfAnomalyDetectionOptions["instantaneous_baseline"] = bool(anomalyDetectionOptions.GetInstantaneousBaseline())
 		tfOptions["anomaly_detection_options"] = []map[string]interface{}{tfAnomalyDetectionOptions}
 	}
 	if thirdPartyOptions, ok := options.GetThirdPartyRuleOptionsOk(); ok {
@@ -1919,7 +1948,6 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	if err := checkQueryConsistency(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
 	}
-
 	isSignalCorrelation := isSignalCorrelationSchema(d)
 
 	if isThirdPartyRule(d) {
@@ -2011,7 +2039,7 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	}
 
 	if v, ok := d.GetOk("options"); ok {
-		payload.Options = buildPayloadOptions(v.([]interface{}), d.Get("type").(string))
+		payload.Options = buildPayloadOptions(d, v.([]interface{}), d.Get("type").(string))
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
