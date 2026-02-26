@@ -640,7 +640,7 @@ func initRecorderWithName(t *testing.T, cassetteName string) *recorder.Recorder 
 
 	rec, err := recorder.NewWithOptions(opts)
 	if err != nil {
-		log.Fatal(err)
+		t.Fatalf("Failed to initialize cassette recorder for %q: %v", cassetteName, err)
 	}
 
 	rec.SetMatcher(matchInteraction)
