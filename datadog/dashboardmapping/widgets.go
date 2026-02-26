@@ -948,6 +948,11 @@ var toplistWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "Define request for the widget's style.",
 		Children:    widgetRequestStyleFields},
+	// sort is SchemaOnly: the generic engine skips JSON build/flatten; custom helpers
+	// in buildScalarFormulaQueryRequestJSON / flattenScalarFormulaQueryRequestJSON handle it.
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget. Only applicable for formula-style requests.",
+		Children:    widgetSortByFields},
 }, standardQueryFields...)
 
 var ToplistWidgetSpec = WidgetSpec{
@@ -1388,6 +1393,22 @@ var allWidgetSpecs = []WidgetSpec{
 	SplitGraphWidgetSpec,
 	GroupWidgetSpec,
 	PowerpackWidgetSpec,
+	// Funnel widget (unique request structure; request_type injected by post-process hook)
+	FunnelWidgetSpec,
+}
+
+// FunnelWidgetSpec corresponds to OpenAPI FunnelWidgetDefinition.
+// The JSON "request_type" field is always "funnel" and is injected by buildWidgetPostProcess.
+var FunnelWidgetSpec = WidgetSpec{
+	HCLKey:      "funnel_definition",
+	JSONType:    "funnel",
+	Description: "The definition for a Funnel widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			MaxItems:    1,
+			Description: "A nested block describing the request to use when displaying the widget. Only one `request` block is allowed.",
+			Children:    funnelWidgetRequestFields},
+	},
 }
 
 // concatWidgetSpecs merges multiple WidgetSpec slices into one.

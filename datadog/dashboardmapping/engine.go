@@ -862,11 +862,63 @@ func buildScalarFormulaQueryRequestJSON(attrs map[string]attr.Value, widgetType 
 		}
 	}
 
+	// sort (optional WidgetSortBy — toplist, bar_chart, etc.)
+	if sortAttrs := getObjAttrs(attrs, "sort"); sortAttrs != nil {
+		if sortJSON := buildWidgetSortByJSON(sortAttrs); len(sortJSON) > 0 {
+			result["sort"] = sortJSON
+		}
+	}
+
 	// response_format depends on widget type
 	if len(formulaElems) > 0 || len(queryElems) > 0 {
 		result["response_format"] = formulaResponseFormat(widgetType)
 	}
 
+	return result
+}
+
+// buildWidgetSortByJSON builds the JSON for a WidgetSortBy block (sort { count, order_by { ... } }).
+// Each order_by element is a discriminated union: formula_sort or group_sort.
+func buildWidgetSortByJSON(sortAttrs map[string]attr.Value) map[string]interface{} {
+	result := map[string]interface{}{}
+	if count, ok := getInt64Attr(sortAttrs, "count"); ok && count > 0 {
+		result["count"] = int(count)
+	}
+	orderByElems := getListElems(sortAttrs, "order_by")
+	if len(orderByElems) > 0 {
+		orderBys := make([]interface{}, 0, len(orderByElems))
+		for _, obElem := range orderByElems {
+			obObj, ok := obElem.(types.Object)
+			if !ok {
+				continue
+			}
+			obAttrs := obObj.Attributes()
+			entry := map[string]interface{}{}
+			if fsAttrs := getObjAttrs(obAttrs, "formula_sort"); fsAttrs != nil {
+				entry["type"] = "formula"
+				if idx, ok := getInt64Attr(fsAttrs, "index"); ok {
+					entry["index"] = int(idx)
+				}
+				if ord, ok := getStrAttr(fsAttrs, "order"); ok && ord != "" {
+					entry["order"] = ord
+				}
+			} else if gsAttrs := getObjAttrs(obAttrs, "group_sort"); gsAttrs != nil {
+				entry["type"] = "group"
+				if name, ok := getStrAttr(gsAttrs, "name"); ok && name != "" {
+					entry["name"] = name
+				}
+				if ord, ok := getStrAttr(gsAttrs, "order"); ok && ord != "" {
+					entry["order"] = ord
+				}
+			}
+			if len(entry) > 0 {
+				orderBys = append(orderBys, entry)
+			}
+		}
+		if len(orderBys) > 0 {
+			result["order_by"] = orderBys
+		}
+	}
 	return result
 }
 
@@ -1465,6 +1517,59 @@ func flattenScalarFormulaQueryRequestJSON(req map[string]interface{}, widgetType
 		}
 	}
 
+	// sort (optional WidgetSortBy)
+	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
+		if sortState := flattenWidgetSortByJSON(sortObj); len(sortState) > 0 {
+			result["sort"] = []interface{}{sortState}
+		}
+	}
+
+	return result
+}
+
+// flattenWidgetSortByJSON flattens the WidgetSortBy JSON object into HCL state.
+func flattenWidgetSortByJSON(sortObj map[string]interface{}) map[string]interface{} {
+	result := map[string]interface{}{}
+	if count, ok := sortObj["count"].(float64); ok && count > 0 {
+		result["count"] = int(count)
+	}
+	if orderBys, ok := sortObj["order_by"].([]interface{}); ok && len(orderBys) > 0 {
+		flatOBs := make([]interface{}, 0, len(orderBys))
+		for _, ob := range orderBys {
+			obMap, ok := ob.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			obState := map[string]interface{}{}
+			sortType, _ := obMap["type"].(string)
+			switch sortType {
+			case "formula":
+				fs := map[string]interface{}{}
+				if idx, ok := obMap["index"].(float64); ok {
+					fs["index"] = int(idx)
+				}
+				if ord, ok := obMap["order"].(string); ok {
+					fs["order"] = ord
+				}
+				obState["formula_sort"] = []interface{}{fs}
+			case "group":
+				gs := map[string]interface{}{}
+				if name, ok := obMap["name"].(string); ok {
+					gs["name"] = name
+				}
+				if ord, ok := obMap["order"].(string); ok {
+					gs["order"] = ord
+				}
+				obState["group_sort"] = []interface{}{gs}
+			}
+			if len(obState) > 0 {
+				flatOBs = append(flatOBs, obState)
+			}
+		}
+		if len(flatOBs) > 0 {
+			result["order_by"] = flatOBs
+		}
+	}
 	return result
 }
 
@@ -1759,6 +1864,19 @@ func buildWidgetPostProcess(defAttrs map[string]attr.Value, spec WidgetSpec, def
 	if spec.JSONType == "group" {
 		widgets := buildGroupWidgetsJSON(defAttrs)
 		defJSON["widgets"] = widgets
+	}
+
+	// ---- Funnel request_type injection ----
+	// The OpenAPI FunnelWidgetRequest requires request_type = "funnel" but we don't
+	// expose it in HCL (it's always "funnel"). Inject it into each request object.
+	if spec.JSONType == "funnel" {
+		if requests, ok := defJSON["requests"].([]interface{}); ok {
+			for _, req := range requests {
+				if reqMap, ok := req.(map[string]interface{}); ok {
+					reqMap["request_type"] = "funnel"
+				}
+			}
+		}
 	}
 }
 

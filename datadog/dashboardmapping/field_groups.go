@@ -53,13 +53,65 @@ var widgetCustomLinkField = FieldSpec{
 // (the live_span variant of WidgetTime, which is the form used by HCL).
 // HCL flattens this to a single "live_span" string field on the widget definition,
 // which maps to {"time": {"live_span": "..."}} in JSON via JSONPath.
+// Deprecated in favor of the "time" TypeOneOf block; kept for backward compatibility.
 // Used by: 21+ widget types.
 var widgetTimeField = FieldSpec{
-	HCLKey:      "live_span",
-	JSONPath:    "time.live_span",
-	Type:        TypeString,
-	OmitEmpty:   true,
-	Description: "The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.",
+	HCLKey:        "live_span",
+	JSONPath:      "time.live_span",
+	Type:          TypeString,
+	OmitEmpty:     true,
+	ConflictsWith: []string{"time"},
+	Description:   "The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.",
+}
+
+// widgetNewLiveSpanFields corresponds to OpenAPI components/schemas/WidgetNewLiveSpan.
+// Represents an arbitrary live time span (e.g. 17 minutes, 6 hours).
+var widgetNewLiveSpanFields = []FieldSpec{
+	{HCLKey: "value", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Value of the time span."},
+	{HCLKey: "unit", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Unit of the time span.",
+		ValidValues: []string{"minute", "hour", "day", "week", "month", "year"}},
+}
+
+// widgetNewFixedSpanFields corresponds to OpenAPI components/schemas/WidgetNewFixedSpan.
+// Represents a fixed time range with explicit start and end times.
+var widgetNewFixedSpanFields = []FieldSpec{
+	{HCLKey: "from", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Start time in seconds since epoch."},
+	{HCLKey: "to", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "End time in seconds since epoch."},
+}
+
+// widgetTimeOneOfField corresponds to OpenAPI components/schemas/WidgetTime (new variants).
+// TypeOneOf covering WidgetNewLiveSpan ("live") and WidgetNewFixedSpan ("fixed").
+// The legacy live_span enum is still supported via the flat "live_span" field.
+// ConflictsWith "live_span" enforces that exactly one form is used.
+var widgetTimeOneOfField = FieldSpec{
+	HCLKey:        "time",
+	Type:          TypeOneOf,
+	OmitEmpty:     true,
+	ConflictsWith: []string{"live_span"},
+	Description:   "A nested block used to specify a time span for the widget. Use this or `live_span`, not both.",
+	Discriminator: &OneOfDiscriminator{JSONKey: "type"},
+	Children: []FieldSpec{
+		{
+			HCLKey:        "live",
+			Type:          TypeBlock,
+			OmitEmpty:     true,
+			Discriminator: &OneOfDiscriminator{Value: "live"},
+			Description:   "An arbitrary live time span, such as 17 minutes or 6 hours.",
+			Children:      widgetNewLiveSpanFields,
+		},
+		{
+			HCLKey:        "fixed",
+			Type:          TypeBlock,
+			OmitEmpty:     true,
+			Discriminator: &OneOfDiscriminator{Value: "fixed"},
+			Description:   "A fixed time range with explicit start and end times.",
+			Children:      widgetNewFixedSpanFields,
+		},
+	},
 }
 
 // widgetAxisFields corresponds to OpenAPI components/schemas/WidgetAxis.
@@ -1211,11 +1263,90 @@ var powerpackTemplateVariableFields = []FieldSpec{
 }
 
 // ============================================================
+// Widget Sort Fields (OpenAPI: WidgetSortBy / WidgetSortOrderBy)
+// ============================================================
+
+// widgetFormulaSortFields corresponds to OpenAPI components/schemas/WidgetFormulaSort.
+// Sort a toplist/bar_chart/etc. by a specific formula result (identified by index).
+var widgetFormulaSortFields = []FieldSpec{
+	{HCLKey: "index", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "The index of the formula to sort by."},
+	{HCLKey: "order", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Widget sorting direction.",
+		ValidValues: []string{"asc", "desc"}},
+}
+
+// widgetGroupSortFields corresponds to OpenAPI components/schemas/WidgetGroupSort.
+// Sort by a group (tag value).
+var widgetGroupSortFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The name of the group tag to sort by."},
+	{HCLKey: "order", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Widget sorting direction.",
+		ValidValues: []string{"asc", "desc"}},
+}
+
+// widgetSortByFields corresponds to OpenAPI components/schemas/WidgetSortBy.
+// The sort block on toplist (and other) widget requests.
+// order_by is SchemaOnly so the generic engine skips JSON building; the sort block
+// itself is also SchemaOnly on the request — custom build/flatten handles it.
+var widgetSortByFields = []FieldSpec{
+	{HCLKey: "count", Type: TypeInt, OmitEmpty: true,
+		Description: "The number of items to limit the widget to."},
+	{HCLKey: "order_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "The list of items to sort the widget by.",
+		Children: []FieldSpec{
+			{HCLKey: "formula_sort", Type: TypeBlock, OmitEmpty: true,
+				Description: "Sort by a formula value.",
+				Children:    widgetFormulaSortFields},
+			{HCLKey: "group_sort", Type: TypeBlock, OmitEmpty: true,
+				Description: "Sort by a group (tag) value.",
+				Children:    widgetGroupSortFields},
+		}},
+}
+
+// ============================================================
+// Funnel Widget Fields (OpenAPI: FunnelWidgetDefinition)
+// ============================================================
+
+// funnelStepFields corresponds to OpenAPI components/schemas/FunnelStep.
+var funnelStepFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The facet of the step."},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The value of the step."},
+}
+
+// funnelQueryFields corresponds to OpenAPI components/schemas/FunnelQuery.
+var funnelQueryFields = []FieldSpec{
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The widget query."},
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The data source for funnel queries.",
+		ValidValues: []string{"rum"}},
+	{HCLKey: "step", JSONKey: "steps", Type: TypeBlockList, OmitEmpty: false,
+		Description: "The funnel steps. Multiple `step` blocks are allowed.",
+		Children:    funnelStepFields},
+}
+
+// funnelWidgetRequestFields corresponds to OpenAPI components/schemas/FunnelWidgetRequest.
+// request_type is always "funnel" and is injected in the build post-process hook.
+var funnelWidgetRequestFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The query for the funnel widget request.",
+		Children:    funnelQueryFields},
+}
+
+// ============================================================
 // Common Widget Fields
 // ============================================================
 
 // CommonWidgetFields are the FieldSpecs shared by most widget definition types.
 // They are merged automatically into every WidgetSpec by the engine.
+//
+// Widget time is supported in two ways (mutually exclusive via ConflictsWith):
+//   - live_span: legacy flat string field, e.g. live_span = "5m"
+//   - time: TypeOneOf block with "live" and "fixed" variants for new-style spans
 var CommonWidgetFields = []FieldSpec{
 	// Inline properties on widget definitions (no OpenAPI $ref, common by convention)
 	{HCLKey: "title", Type: TypeString, OmitEmpty: true,
@@ -1225,9 +1356,13 @@ var CommonWidgetFields = []FieldSpec{
 	{HCLKey: "title_align", Type: TypeString, OmitEmpty: true,
 		Description: "The alignment of the widget's title.",
 		ValidValues: []string{"center", "left", "right"}},
-	// WidgetTime: live_span (HCL) → {"time": {"live_span": "..."}} (JSON)
+	// WidgetTime new-style (TypeOneOf): time { live { value=4, unit="hour" } } or time { fixed { from=X, to=Y } }
+	// Must come BEFORE live_span so the TypeOneOf sets result["time"] before the JSONPath field merges into it.
+	widgetTimeOneOfField,
+	// WidgetTime legacy: live_span (HCL) → {"time": {"live_span": "..."}} (JSON)
 	widgetTimeField,
 	// WidgetTime: hide_incomplete_cost_data (HCL) → {"time": {"hide_incomplete_cost_data": true}} (JSON)
+	// Applies to all WidgetTime variants; the setAtJSONPath helper merges into the existing time object.
 	{HCLKey: "hide_incomplete_cost_data", JSONPath: "time.hide_incomplete_cost_data", Type: TypeBool, OmitEmpty: true,
 		Computed:    true,
 		Description: "Hide any portion of the widget's timeframe that is incomplete due to cost data not being available."},
