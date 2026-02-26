@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
@@ -1403,6 +1404,9 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 // The config should use datadog_dashboard_v2 as the resource type; the entity name is derived from
 // the v1 test so that the cassette's recorded dashboard title matches.
 func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config string, name string, assertions []string) {
+	if os.Getenv("TF_ACC") == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProvidersWithCassette(context.Background(), t, v1TestName)
 	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
@@ -1429,6 +1433,9 @@ func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config
 
 // testAccDatadogDashboardV2WidgetUtilImport runs a v2 dashboard import test reusing the cassette from v1TestName.
 func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, config string, name string) {
+	if os.Getenv("TF_ACC") == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProvidersWithCassette(context.Background(), t, v1TestName)
 	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
