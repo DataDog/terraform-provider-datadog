@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 454
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2Funnel_import-local-1772139322","widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/home"},{"facet":"@view.name","value":"/checkout"}]},"request_type":"funnel"}],"title":"Browser Funnel","type":"funnel"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q46-jg7-upd","title":"tf-TestAccDatadogDashboardV2Funnel_import-local-1772139322","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q46-jg7-upd/tf-testaccdatadogdashboardv2funnelimport-local-1772139322","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/home"},{"facet":"@view.name","value":"/checkout"}]},"request_type":"funnel"}],"title":"Browser Funnel","type":"funnel"},"id":1100494121249532}],"notify_list":[],"created_at":"2026-02-26T20:55:25.744264+00:00","modified_at":"2026-02-26T20:55:25.744264+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 128.058416ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q46-jg7-upd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q46-jg7-upd","title":"tf-TestAccDatadogDashboardV2Funnel_import-local-1772139322","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q46-jg7-upd/tf-testaccdatadogdashboardv2funnelimport-local-1772139322","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/home"},{"facet":"@view.name","value":"/checkout"}]},"request_type":"funnel"}],"title":"Browser Funnel","type":"funnel"},"id":1100494121249532}],"notify_list":[],"created_at":"2026-02-26T20:55:25.744264+00:00","modified_at":"2026-02-26T20:55:25.744264+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 103.196709ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q46-jg7-upd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q46-jg7-upd","title":"tf-TestAccDatadogDashboardV2Funnel_import-local-1772139322","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q46-jg7-upd/tf-testaccdatadogdashboardv2funnelimport-local-1772139322","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/home"},{"facet":"@view.name","value":"/checkout"}]},"request_type":"funnel"}],"title":"Browser Funnel","type":"funnel"},"id":1100494121249532}],"notify_list":[],"created_at":"2026-02-26T20:55:25.744264+00:00","modified_at":"2026-02-26T20:55:25.744264+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 108.849833ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q46-jg7-upd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q46-jg7-upd","title":"tf-TestAccDatadogDashboardV2Funnel_import-local-1772139322","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q46-jg7-upd/tf-testaccdatadogdashboardv2funnelimport-local-1772139322","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","query_string":"@browser.name:Chrome","steps":[{"facet":"@view.name","value":"/home"},{"facet":"@view.name","value":"/checkout"}]},"request_type":"funnel"}],"title":"Browser Funnel","type":"funnel"},"id":1100494121249532}],"notify_list":[],"created_at":"2026-02-26T20:55:25.744264+00:00","modified_at":"2026-02-26T20:55:25.744264+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 103.598541ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q46-jg7-upd
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"q46-jg7-upd"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 337.375333ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q46-jg7-upd
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID q46-jg7-upd not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 78.877625ms
