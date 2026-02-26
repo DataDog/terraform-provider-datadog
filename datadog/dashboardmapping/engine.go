@@ -1268,25 +1268,6 @@ func flattenFormulaQueryJSON(q map[string]interface{}) map[string]interface{} {
 	}
 }
 
-// buildToplistStyleDisplayJSON post-processes the toplist style.display block to
-// inject "legend": "automatic" when type == "stacked" (SDK default behavior).
-// The HCL schema only has "type", but JSON requires "legend" for the stacked variant.
-// display is emitted as a single object by TypeBlock (not array).
-func buildToplistStyleDisplayJSON(defJSON map[string]interface{}) {
-	style, ok := defJSON["style"].(map[string]interface{})
-	if !ok {
-		return
-	}
-	displayObj, ok := style["display"].(map[string]interface{})
-	if !ok {
-		return
-	}
-	if t, ok := displayObj["type"].(string); ok && t == "stacked" {
-		// Inject "legend": "automatic" for stacked type (SDK default)
-		displayObj["legend"] = "automatic"
-	}
-}
-
 // buildScatterplotTableJSON builds the "table" object within scatterplot "requests"
 // for formula/query style scatterplot_table requests.
 // defAttrs is the attributes map of the scatterplot definition block.
@@ -1826,11 +1807,6 @@ func buildWidgetPostProcess(defAttrs map[string]attr.Value, spec WidgetSpec, def
 	// ---- Scatterplot table ----
 	if spec.JSONType == "scatterplot" {
 		buildScatterplotTableJSON(defAttrs, defJSON)
-	}
-
-	// ---- Toplist style display ----
-	if spec.JSONType == "toplist" {
-		buildToplistStyleDisplayJSON(defJSON)
 	}
 
 	// ---- Treemap color_by ----

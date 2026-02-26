@@ -269,6 +269,147 @@ func TestTypeOneOf_Flatten_MultiValue(t *testing.T) {
 	}
 }
 
+// TestTypeOneOf_Build_ToplistDisplay_Stacked verifies that the stacked variant injects
+// the discriminator "type":"stacked" and includes the optional "legend" field.
+func TestTypeOneOf_Build_ToplistDisplay_Stacked(t *testing.T) {
+	// display { stacked { legend = "automatic" } }
+	stackedAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayStackedFields)
+	flatAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayFlatFields)
+
+	stackedAttrs := map[string]attr.Value{
+		"legend": makeStrAttr("automatic"),
+	}
+	stackedBlock := makeListAttr(stackedAttrTypes, stackedAttrs)
+	flatBlock := makeEmptyListAttr(flatAttrTypes)
+
+	displayField := toplistWidgetStyleFields[0] // the TypeOneOf "display" field
+	displayAttrTypes := FieldSpecsToAttrTypes(displayField.Children)
+	displayAttrs := map[string]attr.Value{
+		"stacked": stackedBlock,
+		"flat":    flatBlock,
+	}
+	displayBlock := makeListAttr(displayAttrTypes, displayAttrs)
+
+	styleFields := toplistWidgetStyleFields
+	styleAttrTypes := FieldSpecsToAttrTypes(styleFields)
+	_ = styleAttrTypes
+	styleAttrs := map[string]attr.Value{
+		"display": displayBlock,
+		"palette": makeStrAttr(""),
+		"scaling": makeStrAttr(""),
+	}
+
+	result := BuildEngineJSON(styleAttrs, styleFields)
+	displayJSON, ok := result["display"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("expected display to be a map, got: %T (%v)", result["display"], result["display"])
+	}
+	if displayJSON["type"] != "stacked" {
+		t.Errorf("expected type=stacked, got %v", displayJSON["type"])
+	}
+	if displayJSON["legend"] != "automatic" {
+		t.Errorf("expected legend=automatic, got %v", displayJSON["legend"])
+	}
+}
+
+// TestTypeOneOf_Build_ToplistDisplay_Flat verifies that the flat variant injects
+// the discriminator "type":"flat" and emits no other fields.
+func TestTypeOneOf_Build_ToplistDisplay_Flat(t *testing.T) {
+	// display { flat {} }
+	stackedAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayStackedFields)
+	flatAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayFlatFields)
+
+	stackedBlock := makeEmptyListAttr(stackedAttrTypes)
+	flatAttrs := map[string]attr.Value{}
+	flatBlock := makeListAttr(flatAttrTypes, flatAttrs)
+
+	displayField := toplistWidgetStyleFields[0]
+	displayAttrTypes := FieldSpecsToAttrTypes(displayField.Children)
+	displayAttrs := map[string]attr.Value{
+		"stacked": stackedBlock,
+		"flat":    flatBlock,
+	}
+	displayBlock := makeListAttr(displayAttrTypes, displayAttrs)
+
+	styleAttrs := map[string]attr.Value{
+		"display": displayBlock,
+		"palette": makeStrAttr(""),
+		"scaling": makeStrAttr(""),
+	}
+
+	result := BuildEngineJSON(styleAttrs, toplistWidgetStyleFields)
+	displayJSON, ok := result["display"].(map[string]interface{})
+	if !ok {
+		t.Fatalf("expected display to be a map, got: %T", result["display"])
+	}
+	if displayJSON["type"] != "flat" {
+		t.Errorf("expected type=flat, got %v", displayJSON["type"])
+	}
+	if _, hasLegend := displayJSON["legend"]; hasLegend {
+		t.Error("unexpected 'legend' key in flat display JSON")
+	}
+}
+
+// TestTypeOneOf_Flatten_ToplistDisplay_Stacked verifies flatten of stacked display.
+func TestTypeOneOf_Flatten_ToplistDisplay_Stacked(t *testing.T) {
+	jsonData := map[string]interface{}{
+		"display": map[string]interface{}{
+			"type":   "stacked",
+			"legend": "automatic",
+		},
+	}
+
+	result := FlattenEngineJSON(toplistWidgetStyleFields, jsonData)
+	displayState, ok := result["display"].([]interface{})
+	if !ok || len(displayState) == 0 {
+		t.Fatalf("expected display state list, got: %v", result["display"])
+	}
+	displayMap, ok := displayState[0].(map[string]interface{})
+	if !ok {
+		t.Fatalf("expected display state map")
+	}
+	stackedList, ok := displayMap["stacked"].([]interface{})
+	if !ok || len(stackedList) == 0 {
+		t.Fatalf("expected stacked block in display state, got: %v", displayMap)
+	}
+	stackedMap, ok := stackedList[0].(map[string]interface{})
+	if !ok {
+		t.Fatalf("expected stacked map")
+	}
+	if stackedMap["legend"] != "automatic" {
+		t.Errorf("expected legend=automatic, got %v", stackedMap["legend"])
+	}
+	if _, ok := displayMap["flat"]; ok {
+		t.Error("unexpected 'flat' key in display state for stacked variant")
+	}
+}
+
+// TestTypeOneOf_Flatten_ToplistDisplay_Flat verifies flatten of flat display.
+func TestTypeOneOf_Flatten_ToplistDisplay_Flat(t *testing.T) {
+	jsonData := map[string]interface{}{
+		"display": map[string]interface{}{
+			"type": "flat",
+		},
+	}
+
+	result := FlattenEngineJSON(toplistWidgetStyleFields, jsonData)
+	displayState, ok := result["display"].([]interface{})
+	if !ok || len(displayState) == 0 {
+		t.Fatalf("expected display state list, got: %v", result["display"])
+	}
+	displayMap, ok := displayState[0].(map[string]interface{})
+	if !ok {
+		t.Fatalf("expected display state map")
+	}
+	flatList, ok := displayMap["flat"].([]interface{})
+	if !ok || len(flatList) == 0 {
+		t.Fatalf("expected flat block in display state, got: %v", displayMap)
+	}
+	if _, ok := displayMap["stacked"]; ok {
+		t.Error("unexpected 'stacked' key in display state for flat variant")
+	}
+}
+
 // TestTypeOneOf_DefaultVariant verifies that DefaultVariant is used when no discriminator
 // field exists in the JSON (e.g. WidgetLegacyLiveSpan pattern).
 func TestTypeOneOf_DefaultVariant(t *testing.T) {

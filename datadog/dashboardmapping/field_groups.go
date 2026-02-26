@@ -760,19 +760,48 @@ var scatterplotTableRequestFields = []FieldSpec{
 		Children:    scatterplotFormulaFields},
 }
 
-// toplistWidgetStyleDisplayFields corresponds to the display sub-block inside toplist style.
-var toplistWidgetStyleDisplayFields = []FieldSpec{
-	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "The display type for the widget."},
+// toplistWidgetDisplayStackedFields corresponds to OpenAPI ToplistWidgetStacked.
+// The "legend" field controls legend display behavior for stacked top lists.
+var toplistWidgetDisplayStackedFields = []FieldSpec{
+	{HCLKey: "legend", Type: TypeString, OmitEmpty: true,
+		Description: "Legend behavior for the stacked top list. Valid values are `automatic`, `inline`, `none`.",
+		ValidValues: []string{"automatic", "inline", "none"}},
 }
 
+// toplistWidgetDisplayFlatFields corresponds to OpenAPI ToplistWidgetFlat.
+// Flat display has no additional fields beyond the discriminator.
+var toplistWidgetDisplayFlatFields = []FieldSpec{}
+
 // toplistWidgetStyleFields corresponds to OpenAPI ToplistWidgetStyle.
-// Note: "display" is a single JSON object (MaxItems:1 in HCL); we use TypeBlock
-// to emit a single object rather than an array.
+// The "display" field is a TypeOneOf corresponding to OpenAPI ToplistWidgetDisplay,
+// which is a oneOf of ToplistWidgetStacked ("stacked") and ToplistWidgetFlat ("flat").
+// HCL: display { stacked { legend = "automatic" } } or display { flat {} }
 var toplistWidgetStyleFields = []FieldSpec{
-	{HCLKey: "display", Type: TypeBlock, OmitEmpty: true,
-		Description: "The display mode for the widget.",
-		Children:    toplistWidgetStyleDisplayFields},
+	{
+		HCLKey:      "display",
+		Type:        TypeOneOf,
+		OmitEmpty:   true,
+		Description: "The display mode for the top list widget. Use `stacked` or `flat` sub-block.",
+		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
+		Children: []FieldSpec{
+			{
+				HCLKey:        "stacked",
+				Type:          TypeBlock,
+				OmitEmpty:     true,
+				Description:   "Stacked display for the top list widget.",
+				Discriminator: &OneOfDiscriminator{Value: "stacked"},
+				Children:      toplistWidgetDisplayStackedFields,
+			},
+			{
+				HCLKey:        "flat",
+				Type:          TypeBlock,
+				OmitEmpty:     true,
+				Description:   "Flat display for the top list widget.",
+				Discriminator: &OneOfDiscriminator{Value: "flat"},
+				Children:      toplistWidgetDisplayFlatFields,
+			},
+		},
+	},
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
 		Description: "The color palette for the widget."},
 	{HCLKey: "scaling", Type: TypeString, OmitEmpty: true,
