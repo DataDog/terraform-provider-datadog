@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 545
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2TimeseriesEventQuery-local-1772141310","widgets":[{"definition":{"requests":[{"display_type":"bars","event_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":"status:error"}},"on_right_yaxis":false}],"show_legend":false,"title":"Timeseries with event_query","type":"timeseries"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"cx2-hbp-p9d","title":"tf-TestAccDatadogDashboardV2TimeseriesEventQuery-local-1772141310","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/cx2-hbp-p9d/tf-testaccdatadogdashboardv2timeserieseventquery-local-1772141310","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"bars","event_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":"status:error"}},"on_right_yaxis":false}],"show_legend":false,"title":"Timeseries with event_query","type":"timeseries"},"id":1215779911831027}],"notify_list":[],"created_at":"2026-02-26T21:28:35.865862+00:00","modified_at":"2026-02-26T21:28:35.865862+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 141.239958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/cx2-hbp-p9d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"cx2-hbp-p9d","title":"tf-TestAccDatadogDashboardV2TimeseriesEventQuery-local-1772141310","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/cx2-hbp-p9d/tf-testaccdatadogdashboardv2timeserieseventquery-local-1772141310","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"bars","event_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":"status:error"}},"on_right_yaxis":false}],"show_legend":false,"title":"Timeseries with event_query","type":"timeseries"},"id":1215779911831027}],"notify_list":[],"created_at":"2026-02-26T21:28:35.865862+00:00","modified_at":"2026-02-26T21:28:35.865862+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 115.182ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/cx2-hbp-p9d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"cx2-hbp-p9d","title":"tf-TestAccDatadogDashboardV2TimeseriesEventQuery-local-1772141310","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/cx2-hbp-p9d/tf-testaccdatadogdashboardv2timeserieseventquery-local-1772141310","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"bars","event_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":"status:error"}},"on_right_yaxis":false}],"show_legend":false,"title":"Timeseries with event_query","type":"timeseries"},"id":1215779911831027}],"notify_list":[],"created_at":"2026-02-26T21:28:35.865862+00:00","modified_at":"2026-02-26T21:28:35.865862+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 107.755041ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/cx2-hbp-p9d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"cx2-hbp-p9d","title":"tf-TestAccDatadogDashboardV2TimeseriesEventQuery-local-1772141310","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/cx2-hbp-p9d/tf-testaccdatadogdashboardv2timeserieseventquery-local-1772141310","template_variables":[],"widgets":[{"definition":{"requests":[{"display_type":"bars","event_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":"status:error"}},"on_right_yaxis":false}],"show_legend":false,"title":"Timeseries with event_query","type":"timeseries"},"id":1215779911831027}],"notify_list":[],"created_at":"2026-02-26T21:28:35.865862+00:00","modified_at":"2026-02-26T21:28:35.865862+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 109.981292ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/cx2-hbp-p9d
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"cx2-hbp-p9d"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 341.103125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/cx2-hbp-p9d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID cx2-hbp-p9d not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 90.711167ms
