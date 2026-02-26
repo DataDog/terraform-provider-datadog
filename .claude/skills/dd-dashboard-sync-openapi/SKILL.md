@@ -65,10 +65,12 @@ every widget that uses that group.
 
 ### 2d. Engine post-processing
 
-For formula-capable widgets, check whether `buildFormulaQueryRequestJSON` and
-`flattenFormulaQueryRequestJSON` in `engine.go` handle all the fields that the generic
-`BuildEngineJSON`/`FlattenEngineJSON` path handles. These manual paths sometimes lag behind
-when new fields are added to shared request style groups.
+For formula-capable widgets, check whether `buildFormulaRequest` / `flattenFormulaRequest`
+in `engine.go` handle all the fields needed. These functions are driven by `FormulaRequestConfig`
+— check the per-widget config (`timeseriesFormulaRequestConfig`, `scalarFormulaRequestConfig`,
+etc.) to see which style fields and extra request fields are declared. If a newly-added field
+belongs at the request level (not inside a formula or query), the relevant config's `ExtraFields`
+or `StyleFields` may need updating.
 
 ### 2e. Present findings
 
@@ -178,8 +180,12 @@ Write the Go code additions:
 to a framework `schema.Attribute` or `schema.Block` automatically, using `Description`,
 `ValidValues`, `Required`, `Default`, etc.
 
-3. If a new widget type introduces new post-processing logic (formula-capable, special JSON structure),
-   also update `buildWidgetPostProcess` and `flattenWidgetPostProcess` in `engine.go`.
+3. If a new widget type requires formula/query request support, add a `FormulaRequestConfig` entry
+   in `engine.go` and register it in `formulaRequestConfigForWidget`. Do NOT write new
+   `buildFormulaQueryRequestJSON`-style functions — the unified `buildFormulaRequest` /
+   `flattenFormulaRequest` handles all formula-capable widgets through the config.
+   For non-formula post-processing (injected constants, recursive widget dispatch), update
+   `buildWidgetPostProcess` and `flattenWidgetPostProcess` in `engine.go`.
 
 4. Run `go build ./...` and `go vet ./datadog/dashboardmapping/...` after writing.
 

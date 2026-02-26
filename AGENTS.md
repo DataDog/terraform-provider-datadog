@@ -89,11 +89,11 @@ can import the engine for its HCL export API endpoint.
 
 | File | Contents |
 |---|---|
-| `engine.go` | `FieldSpec`/`WidgetSpec` types, build/flatten engine, CRUD helpers, widget dispatch, post-processing hooks |
+| `engine.go` | `FieldSpec`/`WidgetSpec`/`FormulaRequestConfig` types, build/flatten engine, `buildFormulaRequest`/`flattenFormulaRequest`, widget dispatch, post-processing hooks |
 | `field_groups.go` | Reusable `[]FieldSpec` groups (widget-scoped), named after OpenAPI `$ref` schemas |
 | `field_groups_dashboard.go` | Dashboard top-level field groups (NOT shared with widget specs) |
-| `schema_gen.go` | `FieldSpecToSchemaElem`, `FieldSpecsToSchema`, `WidgetSpecToSchemaBlock` — generate `*schema.Schema` from FieldSpec |
-| `widgets.go` | All `WidgetSpec` declarations, `allWidgetSpecs` registry, `AllWidgetSchemasMap` |
+| `schema_gen.go` | `FieldSpecToFWAttribute`, `FieldSpecsToFWSchema`, `WidgetSpecToFWBlock` — generate framework schema from FieldSpec |
+| `widgets.go` | All `WidgetSpec` declarations and `allWidgetSpecs` registry |
 
 ### How It Works
 
@@ -113,9 +113,9 @@ type FieldSpec struct {
     HCLKey    string      // key in the Terraform schema
     JSONKey   string      // key in the JSON body (defaults to HCLKey if empty)
     JSONPath  string      // dotted path for structural transforms, e.g. "time.live_span"
-    Type      FieldType   // TypeString, TypeBool, TypeInt, TypeStringList, TypeBlock, TypeBlockList, ...
+    Type      FieldType   // TypeString, TypeBool, TypeInt, TypeStringList, TypeBlock, TypeBlockList, TypeOneOf
     OmitEmpty bool        // if true, omit from JSON when zero value
-    Children  []FieldSpec // for TypeBlock / TypeBlockList
+    Children  []FieldSpec // for TypeBlock / TypeBlockList / TypeOneOf
     SchemaOnly bool       // if true, register in schema but skip JSON serialization
 
     // Terraform schema metadata (drives schema registration and docs)
@@ -130,8 +130,21 @@ type FieldSpec struct {
     ConflictsWith []string
     UseSet        bool       // use TypeSet instead of TypeList
     ForceNew      bool       // resource replacement when changed
+
+    // Polymorphic oneOf support (TypeOneOf only)
+    Discriminator *OneOfDiscriminator
 }
 ```
+
+**TypeOneOf** maps a discriminated `oneOf` JSON object to mutually exclusive HCL sub-blocks:
+- Build: finds the populated child block, builds its JSON, injects `{JSONKey: Value}` automatically
+- Flatten: reads the JSON discriminator field, routes to the matching child variant
+- Set `Discriminator.JSONKey` on the parent field (the JSON field that discriminates)
+- Set `Discriminator.Value` on each child (the expected discriminator value; also injected on build)
+- Use `Discriminator.Values []string` for variants that match multiple values (flatten only)
+- Use `Discriminator.DefaultVariant: true` for the fallback when no discriminator field exists in JSON
+
+Example: `widgetNumberFormatFields.unit` is TypeOneOf with `canonical` and `custom` variants.
 
 ### WidgetSpec
 
@@ -172,7 +185,8 @@ Key reusable groups and their OpenAPI equivalents (see `field_groups.go` for the
 | `DashboardTopLevelFields` | `Dashboard` (top-level) | dashboard resource schema |
 
 `CommonWidgetFields` (exported) is merged into every `WidgetSpec` by the engine and covers
-`title`, `title_size`, `title_align`, and `live_span` (→ `time.live_span`).
+`title`, `title_size`, `title_align`, `live_span` (→ `time.live_span`), and the new `time`
+TypeOneOf block (for arbitrary live spans and fixed time ranges).
 `custom_link` is **not** in CommonWidgetFields — it is added explicitly only to the
 13 widget types that define `custom_links` in the OpenAPI spec.
 
@@ -219,8 +233,10 @@ When adding a new optional field and the cassette behavior is unknown, default t
 1. Read the widget's OpenAPI schema
 2. Identify which properties map to existing reusable FieldSpec groups in `field_groups.go`
 3. Write per-widget FieldSpec entries for the remainder
-4. Add a `WidgetSpec` to `allWidgetSpecs` in `widgets.go` — `AllWidgetSchemasMap` and `WidgetSpecToSchemaBlock` generate the schema automatically; no changes to `resourceDatadogDashboard()` needed
-5. Write an acceptance test and record cassettes with `RECORD=true`
+4. Add a `WidgetSpec` to `allWidgetSpecs` in `widgets.go` — `AllWidgetFWBlocks` and `WidgetSpecToFWBlock` in `schema_gen.go` generate the schema automatically; no changes to `fwprovider/resource_datadog_dashboard_v2.go` needed
+5. If the widget supports formula/query requests, add a `FormulaRequestConfig` and register it in `formulaRequestConfigForWidget` in `engine.go`
+6. If the widget requires constants injected into JSON (like `request_type: "funnel"` or `color_by: "user"`), add a case to `buildWidgetPostProcess` in `engine.go`
+7. Write an acceptance test and record cassettes with `RECORD=true`
 
 Use the `/dd-dashboard-sync-openapi` skill for a guided workflow that automates
 the diff and generation steps.
@@ -239,5 +255,5 @@ If a `RECORD=false` test fails with a body mismatch, check:
 5. `SchemaOnly` — fields that should not be serialized to JSON must have `SchemaOnly: true`
 6. Type coercion — integers stored as strings in HCL must be emitted as integers in JSON
 
-The OpenAPI spec is located at:
-`/Users/andy.yacomink/go/src/github.com/DataDog/datadog-api-spec/spec/v1/dashboard.yaml`
+The OpenAPI spec canonical URL is:
+`https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml`
