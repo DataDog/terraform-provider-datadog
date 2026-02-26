@@ -64,3 +64,33 @@ Some docs are manually maintained and excluded from auto generation. Check `scri
 
 - Changelog: `improvement`, `feature`, `bugfix`, `note`, or `no-changelog`
 - Title prefix: `[datadog_resource_name] Description`
+
+---
+
+## Dashboard Resource: FieldSpec Bidirectional Mapping System
+
+`datadog/dashboardmapping/` contains a mapping-driven architecture for the v2 dashboard
+and powerpack resources. Each field is declared **once** as a `FieldSpec`, which drives
+HCL↔JSON serialization, schema registration, and docs generation.
+
+- `datadog_dashboard` / `datadog_powerpack` — **Original** SDKv2 resources (maintained for backward compatibility)
+- `datadog_dashboard_v2` / `datadog_powerpack_v2` — **FieldSpec engine** resources (all new development)
+
+### Package layout
+
+| File | Contents |
+|---|---|
+| `engine.go` | `FieldSpec`/`WidgetSpec`/`FormulaRequestConfig` types, build/flatten engine, widget dispatch, post-processing hooks |
+| `field_groups.go` | Reusable `[]FieldSpec` groups (widget-scoped), named after OpenAPI `$ref` schemas |
+| `field_groups_dashboard.go` | Dashboard top-level field groups (NOT shared with widget specs) |
+| `schema_gen.go` | `FieldSpecToFWAttribute`, `FieldSpecsToFWSchema`, `WidgetSpecToFWBlock` — generate framework schema from FieldSpec |
+| `widgets.go` | All `WidgetSpec` declarations and `allWidgetSpecs` registry |
+
+### Key principles
+
+- Adding a field = adding one `FieldSpec` entry. Schema generation (`FieldSpecToFWAttribute`) and JSON mapping are automatic.
+- Reusable field groups in `field_groups.go` are named after their OpenAPI schema counterparts (e.g. `logQueryDefinitionFields` → `LogQueryDefinition`).
+- HCL uses **singular** block names; JSON uses **plural** keys. Set `JSONKey` to bridge the gap.
+- `OmitEmpty: true` for optional fields; cassette recordings are the ground truth.
+- `TypeOneOf` handles discriminated `oneOf` unions — see `widgetNumberFormatFields.unit` for an example.
+- Widget specs registered in `allWidgetSpecs` get schema and state converters generated automatically — no changes to `fwprovider/resource_datadog_dashboard_v2.go` needed.

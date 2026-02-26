@@ -200,6 +200,63 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	return ctx, httpClient
 }
 
+// testAccFrameworkMuxProvidersWithCassette works like testAccFrameworkMuxProviders but
+// uses cassetteName for the VCR cassette. This allows framework resource tests to
+// reuse cassettes recorded for v1 tests, proving backward compatibility.
+func testAccFrameworkMuxProvidersWithCassette(ctx context.Context, t *testing.T, cassetteName string) (context.Context, *compositeProviderStruct, map[string]func() (tfprotov5.ProviderServer, error)) {
+	ctx = testSpan(ctx, t)
+	rec := initRecorderWithName(t, cassetteName)
+	clock := testClockWithName(t, cassetteName)
+	ctx = context.WithValue(ctx, clockContextKey("clock"), clock)
+	httpClient := cleanhttp.DefaultClient()
+	httpClient.Transport = rec
+	t.Cleanup(func() {
+		rec.Stop()
+	})
+
+	ctx, apiInstances, communityClient := initAccTestApiClients(ctx, t, httpClient)
+
+	// Init sdkV2 provider
+	sdkV2Provider := datadog.Provider()
+	sdkV2Provider.ConfigureContextFunc = func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		return &datadog.ProviderConfiguration{
+			Auth:                ctx,
+			CommunityClient:     communityClient,
+			DatadogApiInstances: apiInstances,
+			Now:                 clockFromContext(ctx).Now,
+		}, nil
+	}
+
+	// Init framework provider
+	frameworkProvider := &fwprovider.FrameworkProvider{
+		Auth:                ctx,
+		CommunityClient:     communityClient,
+		DatadogApiInstances: apiInstances,
+		Now:                 clockFromContext(ctx).Now,
+		ConfigureCallbackFunc: func(p *fwprovider.FrameworkProvider, request *provider.ConfigureRequest, config *fwprovider.ProviderSchema) frameworkDiag.Diagnostics {
+			return nil
+		},
+	}
+
+	communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
+		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
+		"go-datadog-api",
+		runtime.Version(),
+		runtime.GOOS,
+		runtime.GOARCH,
+	))
+	apiInstances.HttpClient.Cfg.UserAgent = utils.GetUserAgent(apiInstances.HttpClient.Cfg.UserAgent)
+
+	muxServer := testAccFrameworkMuxProvidersServer(ctx, sdkV2Provider, frameworkProvider)
+
+	providers := &compositeProviderStruct{
+		sdkV2Provider:     sdkV2Provider,
+		frameworkProvider: frameworkProvider,
+	}
+
+	return ctx, providers, muxServer
+}
+
 func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov5.ProviderServer, error) {
 	return func() (tfprotov5.ProviderServer, error) {
 		providers.frameworkProvider.DefaultTags = defaultTags

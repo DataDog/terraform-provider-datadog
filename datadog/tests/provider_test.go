@@ -180,6 +180,11 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                                      "dashboards",
+	"tests/resource_datadog_dashboard_v2_test":                                           "dashboards",
+	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_toplist_sort_test":                              "dashboards",
+	"tests/resource_datadog_dashboard_v2_toplist_display_test":                           "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
 	"tests/resource_datadog_datastore_test":                                              "datastores",
 	"tests/resource_datadog_datastore_item_test":                                         "datastores",
@@ -494,13 +499,30 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 }
 
 func testClock(t *testing.T) clockwork.FakeClock {
+	return testClockWithName(t, t.Name())
+}
+
+func testClockWithName(t *testing.T, name string) clockwork.FakeClock {
 	if isRecording() {
 		return setClock(t)
 	} else if isReplaying() {
-		return restoreClock(t)
+		return restoreClockWithName(t, name)
 	}
 	// do not set or restore frozen time
 	return clockwork.NewFakeClockAt(clockwork.NewRealClock().Now())
+}
+
+func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
+	data, err := os.ReadFile(fmt.Sprintf("cassettes/%s.freeze", name))
+	if err != nil {
+		t.Logf("Could not load clock for %s: %v", name, err)
+		return setClock(t)
+	}
+	now, err := time.Parse(time.RFC3339Nano, string(data))
+	if err != nil {
+		t.Fatalf("Could not parse clock date: %v", err)
+	}
+	return clockwork.NewFakeClockAt(now)
 }
 
 func clockFromContext(ctx context.Context) clockwork.FakeClock {
@@ -596,6 +618,10 @@ func removeURLSecrets(u *url.URL) *url.URL {
 }
 
 func initRecorder(t *testing.T) *recorder.Recorder {
+	return initRecorderWithName(t, t.Name())
+}
+
+func initRecorderWithName(t *testing.T, cassetteName string) *recorder.Recorder {
 	var mode recorder.Mode
 	if isRecording() {
 		mode = recorder.ModeRecordOnly
@@ -606,7 +632,7 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 	}
 
 	opts := &recorder.Options{
-		CassetteName:       fmt.Sprintf("cassettes/%s", t.Name()),
+		CassetteName:       fmt.Sprintf("cassettes/%s", cassetteName),
 		Mode:               mode,
 		SkipRequestLatency: true,
 		RealTransport:      http.DefaultTransport,
@@ -614,7 +640,7 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 
 	rec, err := recorder.NewWithOptions(opts)
 	if err != nil {
-		log.Fatal(err)
+		t.Fatalf("Failed to initialize cassette recorder for %q: %v", cassetteName, err)
 	}
 
 	rec.SetMatcher(matchInteraction)
@@ -719,8 +745,12 @@ func testSpan(ctx context.Context, t *testing.T) context.Context {
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
+	return initAccProviderWithClock(ctx, t, httpClient, testClock(t))
+}
+
+func initAccProviderWithClock(ctx context.Context, t *testing.T, httpClient *http.Client, clock clockwork.FakeClock) *schema.Provider {
 	p := datadog.Provider()
-	p.ConfigureContextFunc = testProviderConfigure(ctx, httpClient, testClock(t))
+	p.ConfigureContextFunc = testProviderConfigure(ctx, httpClient, clock)
 
 	return p
 }
@@ -835,6 +865,31 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	c := cleanhttp.DefaultClient()
 	c.Transport = rec
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
+	t.Cleanup(func() {
+		rec.Stop()
+	})
+
+	return ctx, p
+}
+
+// testAccProvidersWithCassette works like testAccProviders but uses cassetteName
+// for the VCR cassette and freeze file instead of t.Name(). This allows v2 resource
+// tests to reuse cassettes recorded for v1 tests, proving backward compatibility.
+func testAccProvidersWithCassette(ctx context.Context, t *testing.T, cassetteName string) (context.Context, map[string]func() (*schema.Provider, error)) {
+	ctx = testSpan(ctx, t)
+	rec := initRecorderWithName(t, cassetteName)
+	clock := testClockWithName(t, cassetteName)
+	ctx = context.WithValue(ctx, clockContextKey("clock"), clock)
+	c := cleanhttp.DefaultClient()
+	c.Transport = rec
+	// Use initAccProviderWithClock to avoid the second testClock(t) call in initAccProvider
+	// that would use t.Name() (the v2 test name) instead of the v1 cassette name.
+	provider := initAccProviderWithClock(ctx, t, c, clock)
+	p := map[string]func() (*schema.Provider, error){
+		"datadog": func() (*schema.Provider, error) {
+			return provider, nil
+		},
+	}
 	t.Cleanup(func() {
 		rec.Stop()
 	})
