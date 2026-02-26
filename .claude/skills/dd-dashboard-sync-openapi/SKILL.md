@@ -4,8 +4,13 @@ description: >
   Syncs the datadog_dashboard_v2 Terraform resource with the Datadog OpenAPI spec.
   Identifies fields and widget types present in the OpenAPI spec but missing from
   the FieldSpec-based implementation, generates the Go additions, writes and records
-  new acceptance tests, then opens a PR. Requires DD_TEST_CLIENT_API_KEY and
-  DD_TEST_CLIENT_APP_KEY to be set (for RECORD=true cassette recording).
+  new acceptance tests, then opens a PR. Use this skill whenever the user mentions
+  syncing dashboard fields with the API spec, adding missing widget types, checking
+  for OpenAPI gaps, updating dashboard_v2 FieldSpecs, or diffing the dashboard resource
+  against the spec — even if they don't explicitly say "OpenAPI sync". Also use when the
+  user asks to add a specific widget type or field group to dashboard_v2. Requires
+  DD_TEST_CLIENT_API_KEY and DD_TEST_CLIENT_APP_KEY to be set (for RECORD=true cassette
+  recording).
 tools: Bash, Read, Write, Edit, Glob, Grep
 model: sonnet
 ---
@@ -28,7 +33,8 @@ Read these files before doing anything else:
 - `AGENTS.md` (conventions, FieldSpec system, naming rules)
 - `datadog/dashboardmapping/widgets.go` (WidgetSpec declarations and `allWidgetSpecs` registry)
 - `datadog/dashboardmapping/field_groups.go` (shared reusable FieldSpec groups)
-- `https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml` (OpenAPI source of truth)
+- `datadog/dashboardmapping/field_groups_dashboard.go` (dashboard top-level field groups — NOT shared with widget specs)
+- The OpenAPI spec (source of truth): `https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml`
 
 ## Step 2 — Diff: Identify Gaps
 
@@ -53,9 +59,18 @@ For each reusable FieldSpec group in `field_groups.go` (named after its OpenAPI 
 ### 2c. Fields on existing widget specs
 
 For each `WidgetSpec` in `allWidgetSpecs`, find its OpenAPI schema (e.g. `TimeseriesWidgetDefinition`)
-and check for properties not yet mapped.
+and check for properties not yet mapped. When focusing on a specific widget, also check the shared
+field groups it references — a missing field on a shared group (e.g. `WidgetMarker.time`) affects
+every widget that uses that group.
 
-### 2d. Present findings
+### 2d. Engine post-processing
+
+For formula-capable widgets, check whether `buildFormulaQueryRequestJSON` and
+`flattenFormulaQueryRequestJSON` in `engine.go` handle all the fields that the generic
+`BuildEngineJSON`/`FlattenEngineJSON` path handles. These manual paths sometimes lag behind
+when new fields are added to shared request style groups.
+
+### 2e. Present findings
 
 Show the user a structured gap report:
 ```
@@ -90,6 +105,7 @@ For each gap the user wants to address:
    - `array` of strings/ints → `TypeStringList` / `TypeIntList`
    - `array` of objects → `TypeBlockList` (with Children)
    - `object` (or `$ref` to object) → `TypeBlock` (with Children)
+   - `oneOf` with a JSON discriminator field → `TypeOneOf` (see below)
 4. Determine `JSONKey`:
    - If the HCL name differs from the OpenAPI property name, set `JSONKey`
    - Apply singular/plural rule: HCL uses singular block names, JSON uses the OpenAPI (plural) key
@@ -99,6 +115,38 @@ For each gap the user wants to address:
 Ask the user to confirm the `OmitEmpty` decision for any field that is optional but
 whose cassette behavior is unknown.
 
+### OneOf fields: use TypeOneOf
+
+When an OpenAPI property is a `oneOf` (its variants share a JSON object location but differ in
+shape, usually distinguished by a `type` discriminator field), use `TypeOneOf` instead of
+`TypeBlock`. Do NOT write `SchemaOnly + post-process hook` code for discriminated unions.
+
+**TypeOneOf structure:**
+```go
+{HCLKey: "field_name", Type: TypeOneOf, OmitEmpty: true,
+    Description: "...",
+    Discriminator: &OneOfDiscriminator{JSONKey: "type"},  // discriminator field in JSON
+    Children: []FieldSpec{
+        {HCLKey: "variant_a", Type: TypeBlock, OmitEmpty: true,
+            Discriminator: &OneOfDiscriminator{Value: "type_value_a"},  // injected on build
+            Children: variantAFields},
+        {HCLKey: "variant_b", Type: TypeBlock, OmitEmpty: true,
+            Discriminator: &OneOfDiscriminator{Value: "type_value_b"},
+            Children: variantBFields},
+    },
+}
+```
+
+**How it works:**
+- Build (HCL→JSON): finds the populated child block, builds its JSON, injects `{"type": "type_value_a"}` automatically
+- Flatten (JSON→HCL): reads `json["type"]`, matches against `Discriminator.Value`, populates only the matching child
+- If a variant maps to multiple discriminator values (e.g. "table" or "none"), use `Discriminator.Values: []string{"table", "none"}` — no build injection
+- If the legacy JSON has no discriminator field, mark that variant `DefaultVariant: true`
+
+**Example:** `NumberFormatUnit` (canonical vs custom) in `widgetNumberFormatFields` — the `unit` field is TypeOneOf.
+
+**When NOT to use TypeOneOf:** if the oneOf variants each require custom build/flatten logic beyond field mapping (e.g. `FormulaAndFunctionQueryDefinition`), keep the existing custom engine functions.
+
 ### New widget type
 
 1. Read the widget's OpenAPI schema (e.g. `BarChartWidgetDefinition`)
@@ -107,9 +155,15 @@ whose cassette behavior is unknown.
 3. Design new per-widget FieldSpec entries for properties not covered by shared groups
 4. Write the `WidgetSpec` struct and register it in `allWidgetSpecs` in `widgets.go`
 
-Note: do NOT manually add entries to `resourceDatadogDashboard()`. Adding the `WidgetSpec`
-to `allWidgetSpecs` is sufficient — `AllWidgetSchemasMap` and `WidgetSpecToSchemaBlock`
-generate the Terraform schema automatically.
+Note: do NOT manually modify `fwprovider/resource_datadog_dashboard_v2.go`. Adding the `WidgetSpec`
+to `allWidgetSpecs` is sufficient — `AllWidgetFWBlocks` and `WidgetSpecToFWBlock` in `schema_gen.go`
+generate the Terraform framework schema and state converters automatically. `AllWidgetAttrTypes` also
+auto-updates to include the new widget in state conversion.
+
+The FieldSpec engine serializes directly to/from `map[string]interface{}` JSON — it does NOT use
+the generated Go API client types (e.g. `datadogV1.TimeseriesWidgetDefinition`). Any widget or field
+that exists in the OpenAPI spec can be implemented regardless of whether the Go API client has
+generated types for it.
 
 Pause and show the proposed design to the user before writing code.
 
@@ -119,65 +173,75 @@ Write the Go code additions:
 1. Add new `FieldSpec` group variables to `field_groups.go` if a new reusable group is needed
 2. Add or update `WidgetSpec` entries in `widgets.go`
 
-**Schema is auto-generated from FieldSpec — no manual `schema.Schema` entries are needed.**
-`FieldSpecToSchemaElem` in `schema_gen.go` converts each `FieldSpec` to a `*schema.Schema`
-automatically, using `Description`, `ValidValues`, `Required`, `Default`, etc.
+**Schema is auto-generated from FieldSpec — no manual schema entries are needed.**
+`FieldSpecToFWAttribute` and `FieldSpecsToFWSchema` in `schema_gen.go` convert each `FieldSpec`
+to a framework `schema.Attribute` or `schema.Block` automatically, using `Description`,
+`ValidValues`, `Required`, `Default`, etc.
 
-3. Run `make fmtcheck` and `make test` after writing
+3. If a new widget type introduces new post-processing logic (formula-capable, special JSON structure),
+   also update `buildWidgetPostProcess` and `flattenWidgetPostProcess` in `engine.go`.
+
+4. Run `go build ./...` and `go vet ./datadog/dashboardmapping/...` after writing.
 
 ## Step 5 — Write Acceptance Test
 
-For each new widget type or significantly new set of fields:
+For each new widget type or set of new fields, create a new test file with its own cassette.
+Do not reuse v1 cassettes — the v1 `datadog_dashboard` resource is not being maintained.
 
-1. Find the appropriate test file: `datadog/tests/resource_datadog_dashboard_v2_{widget}_test.go`
-   (create it if it doesn't exist for a new widget type)
+Create `datadog/tests/resource_datadog_dashboard_v2_{widget}_test.go`:
 
-2. Write the test file. Pattern (see `resource_datadog_dashboard_slo_list_test.go` as a minimal template):
-   ```go
-   package test
+```go
+package test
 
-   import (
-       "testing"
-   )
+import (
+    "testing"
+)
 
-   const datadogDashboard{Widget}Config = `
-   resource "datadog_dashboard_v2" "{widget}_dashboard" {
-       title       = "{{uniq}}"
-       layout_type = "ordered"
-       widget {
-           {widget}_definition {
-               // ... all fields ...
-           }
-       }
-   }
-   `
+const datadogDashboard{Widget}Config = `
+resource "datadog_dashboard_v2" "{widget}_dashboard" {
+    title       = "{{uniq}}"
+    layout_type = "ordered"
+    widget {
+        {widget}_definition {
+            // ... all fields ...
+        }
+    }
+}
+`
 
-   var datadogDashboard{Widget}Asserts = []string{
-       "title = {{uniq}}",
-       "widget.0.{widget}_definition.0.some_field = expected_value",
-       // ... cover every new field ...
-   }
+var datadogDashboard{Widget}Asserts = []string{
+    "title = {{uniq}}",
+    "widget.0.{widget}_definition.0.some_field = expected_value",
+    // ... cover every new field ...
+}
 
-   func TestAccDatadogDashboard{Widget}(t *testing.T) {
-       testAccDatadogDashboardWidgetUtil(t, datadogDashboard{Widget}Config, "datadog_dashboard_v2.{widget}_dashboard", datadogDashboard{Widget}Asserts)
-   }
+func TestAccDatadogDashboardV2{Widget}(t *testing.T) {
+    config, name := datadogDashboard{Widget}Config, "datadog_dashboard_v2.{widget}_dashboard"
+    testAccDatadogDashboardV2WidgetUtil(t, "TestAccDatadogDashboardV2{Widget}", config, name, datadogDashboard{Widget}Asserts)
+}
 
-   func TestAccDatadogDashboard{Widget}_import(t *testing.T) {
-       testAccDatadogDashboardWidgetUtilImport(t, datadogDashboard{Widget}Config, "datadog_dashboard_v2.{widget}_dashboard")
-   }
-   ```
-   Key points:
-   - Config is a **`const` string**, not a function
-   - No extra imports beyond `"testing"`
-   - `{{uniq}}` is the placeholder for the unique dashboard name
+func TestAccDatadogDashboardV2{Widget}_import(t *testing.T) {
+    config, name := datadogDashboard{Widget}Config, "datadog_dashboard_v2.{widget}_dashboard"
+    testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardV2{Widget}_import", config, name)
+}
+```
 
-3. **Register the new test file** in `datadog/tests/provider_test.go` in the `testFiles2EndpointTags` map.
-   Find the alphabetical position among other `dashboard_*` entries and add:
-   ```go
-   "tests/resource_datadog_dashboard_v2_{widget}_test": "dashboards",
-   ```
-   Without this entry the test will immediately fail with:
-   `Endpoint tag for test file ... not found in datadog/provider_test.go`
+Key points:
+- Config is a **`const` string**, not a function
+- No extra imports beyond `"testing"`
+- `{{uniq}}` is the placeholder for the unique dashboard name
+- Uses `testAccDatadogDashboardV2WidgetUtil` (framework mux provider)
+- The cassette name argument (`"TestAccDatadogDashboardV2{Widget}"`) must match the test name
+  exactly so `testClockWithName` picks up the right `.freeze` file
+
+### Register in provider_test.go
+
+Add the new test file to `datadog/tests/provider_test.go` in the `testFiles2EndpointTags` map:
+```go
+"tests/resource_datadog_dashboard_v2_{widget}_test": "dashboards",
+```
+Without this entry the test will fail with:
+`Endpoint tag for test file ... not found in datadog/provider_test.go`
 
 ## Step 6 — Record Cassettes (RECORD=true)
 
@@ -194,24 +258,27 @@ For each new widget type or significantly new set of fields:
 **Record cassettes:**
 ```bash
 export DD_TEST_CLIENT_API_KEY DD_TEST_CLIENT_APP_KEY
-OTEL_TRACES_EXPORTER= RECORD=true TESTARGS="-run TestAccDatadogDashboard{Widget}$" make testacc
+OTEL_TRACES_EXPORTER= RECORD=true TESTARGS="-run TestAccDatadogDashboardV2{Widget}$" make testacc
 ```
 
 **Verify cassette replay passes:**
 ```bash
-OTEL_TRACES_EXPORTER= RECORD=false TESTARGS="-run TestAccDatadogDashboard{Widget}" make testacc
+OTEL_TRACES_EXPORTER= RECORD=false TESTARGS="-run TestAccDatadogDashboardV2{Widget}" make testacc
 ```
 
 If `RECORD=false` replay fails after a successful `RECORD=true` run, check:
 1. `OmitEmpty` — a field being included/excluded incorrectly
 2. `JSONKey` — missing or wrong singular/plural conversion
-3. `Default` — fields with `Default` are always emitted by Terraform even when not set in HCL
+3. `Default` — fields with `Default` are always emitted even when not set in HCL
 4. `SchemaOnly` — fields that must not be serialized to JSON need `SchemaOnly: true`
+5. **List ordering** — `UseSet: true` fields use `ListAttribute` (not `SetAttribute`) to
+   preserve HCL insertion order; the cassette body will reflect whatever order the user
+   wrote in the config, so be consistent
 
 ## Step 7 — Quality Gates
 
 ```bash
-# Build and vet (make fmtcheck fails on pre-existing example formatting issues — skip it)
+# Build and vet
 go build ./...
 go vet ./datadog/dashboardmapping/...
 
@@ -241,9 +308,11 @@ PR body should include:
 - All new FieldSpec entries must have `Description` set (drives `make docs`)
 - `OmitEmpty` for new optional fields defaults to `true`; flag any that may need cassette
   verification in a PR comment
-- The OpenAPI spec path is always:
+- The OpenAPI spec URL is:
   `https://github.com/DataDog/datadog-api-spec/blob/master/spec/v1/dashboard.yaml`
 - FieldSpec declarations live in:
   - `datadog/dashboardmapping/field_groups.go` — shared groups
   - `datadog/dashboardmapping/field_groups_dashboard.go` — dashboard top-level groups
   - `datadog/dashboardmapping/widgets.go` — widget specs and registry
+- Framework schema generation is fully automatic via `schema_gen.go` — never modify
+  `fwprovider/resource_datadog_dashboard_v2.go` to add widget-level schema

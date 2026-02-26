@@ -223,7 +223,7 @@ func FieldSpecToFWAttribute(f FieldSpec) schema.Attribute {
 }
 
 // FieldSpecsToFWSchema converts a []FieldSpec into separate framework (attrs, blocks) maps.
-// TypeBlock and TypeBlockList become blocks; all others become attributes.
+// TypeBlock, TypeBlockList, and TypeOneOf become blocks; all others become attributes.
 func FieldSpecsToFWSchema(fields []FieldSpec) (map[string]schema.Attribute, map[string]schema.Block) {
 	attrs := make(map[string]schema.Attribute)
 	blocks := make(map[string]schema.Block)
@@ -233,11 +233,36 @@ func FieldSpecsToFWSchema(fields []FieldSpec) (map[string]schema.Attribute, map[
 			blocks[f.HCLKey] = fieldSpecToFWBlock(f)
 		case TypeBlockList:
 			blocks[f.HCLKey] = fieldSpecToFWBlockList(f)
+		case TypeOneOf:
+			blocks[f.HCLKey] = fieldSpecToFWOneOf(f)
 		default:
 			attrs[f.HCLKey] = FieldSpecToFWAttribute(f)
 		}
 	}
 	return attrs, blocks
+}
+
+// fieldSpecToFWOneOf converts a TypeOneOf FieldSpec into a ListNestedBlock with SizeAtMost(1).
+// The nested block contains all variant children as optional attributes/blocks.
+// Exactly one child variant should be set; add ConflictsWith to the FieldSpec declarations
+// to enforce mutual exclusivity at the schema level.
+func fieldSpecToFWOneOf(f FieldSpec) schema.ListNestedBlock {
+	childAttrs, childBlocks := FieldSpecsToFWSchema(f.Children)
+	desc := enrichDesc(f.Description, f.ValidValues)
+	validators := []validator.List{
+		listvalidator.SizeAtMost(1),
+	}
+	if f.Required {
+		validators = append(validators, listvalidator.IsRequired())
+	}
+	return schema.ListNestedBlock{
+		Description: desc,
+		Validators:  validators,
+		NestedObject: schema.NestedBlockObject{
+			Attributes: childAttrs,
+			Blocks:     childBlocks,
+		},
+	}
 }
 
 // fieldSpecToFWBlock converts a TypeBlock FieldSpec into a ListNestedBlock with SizeAtMost(1).
@@ -439,7 +464,7 @@ func FieldSpecToAttrType(f FieldSpec) attr.Type {
 			return types.SetType{ElemType: types.Int64Type}
 		}
 		return types.ListType{ElemType: types.Int64Type}
-	case TypeBlock, TypeBlockList:
+	case TypeBlock, TypeBlockList, TypeOneOf:
 		childTypes := FieldSpecsToAttrTypes(f.Children)
 		objType := types.ObjectType{AttrTypes: childTypes}
 		return types.ListType{ElemType: objType}

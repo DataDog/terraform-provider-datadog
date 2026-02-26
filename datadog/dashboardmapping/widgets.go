@@ -763,7 +763,7 @@ var distributionWidgetRequestFields = append([]FieldSpec{
 }, standardQueryFields...)
 
 // distributionWidgetXAxisFields corresponds to OpenAPI DistributionWidgetXAxis.
-// Differs from WidgetAxis: include_zero uses OmitEmpty: true (not false).
+// Differs from WidgetAxis: include_zero uses OmitEmpty: true (not false), and has num_buckets.
 var distributionWidgetXAxisFields = []FieldSpec{
 	{HCLKey: "scale", Type: TypeString, OmitEmpty: true,
 		Description: "Specifies the scale type. Possible values are `linear`."},
@@ -773,14 +773,25 @@ var distributionWidgetXAxisFields = []FieldSpec{
 		Description: "Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
 	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
 		Description: "True includes zero."},
+	{HCLKey: "num_buckets", Type: TypeInt, OmitEmpty: true,
+		Description: "Number of value buckets to target, also known as the resolution of the value bins."},
 }
 
-// distributionWidgetYAxisFields extends distributionWidgetXAxisFields with a label field.
-var distributionWidgetYAxisFields = append(
-	append([]FieldSpec{}, distributionWidgetXAxisFields...),
-	FieldSpec{HCLKey: "label", Type: TypeString, OmitEmpty: true,
+// distributionWidgetYAxisFields corresponds to OpenAPI DistributionWidgetYAxis.
+// Defined independently (not derived from distributionWidgetXAxisFields) because
+// DistributionWidgetYAxis does not include num_buckets.
+var distributionWidgetYAxisFields = []FieldSpec{
+	{HCLKey: "scale", Type: TypeString, OmitEmpty: true,
+		Description: "Specifies the scale type. Possible values are `linear` or `log`."},
+	{HCLKey: "min", Type: TypeString, OmitEmpty: true,
+		Description: "Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior."},
+	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
+		Description: "Specifies the maximum value to show on the y-axis. It takes a number, or auto for default behavior."},
+	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
+		Description: "True includes zero."},
+	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
 		Description: "The label of the axis to display on the graph."},
-)
+}
 
 var DistributionWidgetSpec = WidgetSpec{
 	HCLKey:      "distribution_definition",
@@ -813,6 +824,13 @@ var heatmapWidgetRequestFields = append([]FieldSpec{
 		Children:    widgetRequestStyleFields},
 }, standardQueryFields...)
 
+// heatmapWidgetXAxisFields corresponds to OpenAPI components/schemas/HeatMapWidgetXAxis.
+// Used by: heatmap (xaxis only).
+var heatmapWidgetXAxisFields = []FieldSpec{
+	{HCLKey: "num_buckets", Type: TypeInt, OmitEmpty: true,
+		Description: "Number of time buckets to target, also known as the resolution of the time bins. This is only applicable for distribution of points (group distributions use the roll-up modifier)."},
+}
+
 var HeatmapWidgetSpec = WidgetSpec{
 	HCLKey:      "heatmap_definition",
 	JSONType:    "heatmap",
@@ -823,6 +841,9 @@ var HeatmapWidgetSpec = WidgetSpec{
 			Description: "Whether or not to show the legend on this widget."},
 		{HCLKey: "legend_size", Type: TypeString, OmitEmpty: true,
 			Description: "The size of the legend displayed in the widget."},
+		{HCLKey: "xaxis", Type: TypeBlock, OmitEmpty: true,
+			Description: "A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below.",
+			Children:    heatmapWidgetXAxisFields},
 		{HCLKey: "yaxis", Type: TypeBlock, OmitEmpty: true,
 			Description: "A nested block describing the Y-Axis Controls. The structure of this block is described below.",
 			Children:    widgetAxisFields},
@@ -1004,7 +1025,9 @@ var SunburstWidgetSpec = WidgetSpec{
 	Fields: []FieldSpec{
 		{HCLKey: "hide_total", Type: TypeBool, OmitEmpty: true,
 			Description: "Whether or not to show the total value in the widget."},
-		// Both map to JSON "legend"; engine post-processing disambiguates on flatten
+		// Both map to JSON "legend"; engine post-processing disambiguates on flatten.
+		// TODO: migrate to TypeOneOf when a HCL-compatible wrapper block can be introduced.
+		// The current sibling-block approach avoids changing user-facing HCL syntax.
 		{HCLKey: "legend_inline", JSONKey: "legend", Type: TypeBlock, OmitEmpty: true,
 			Description: "Used to configure the inline legend. Cannot be used in conjunction with legend_table.",
 			Children:    sunburstLegendInlineFields},
@@ -1476,8 +1499,9 @@ var timeseriesWidgetRequestFields = []FieldSpec{
 		Description: "Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below.",
 		Children:    timeseriesWidgetMetadataFields,
 	},
-	// The following 7 fields all use logQueryDefinitionFields (same OpenAPI $ref,
+	// The following 8 fields all use logQueryDefinitionFields (same OpenAPI $ref,
 	// different JSON key per query source type):
+	{HCLKey: "event_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},

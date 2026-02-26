@@ -126,13 +126,10 @@ type FieldSpec struct {
     MaxItems      int
     Sensitive     bool
     Deprecated    string
-    ValidValues   []string                   // generates StringInSlice validator; appended to Description in docs
-    ValidateDiag  schema.SchemaValidateDiagFunc
-    Validate      schema.SchemaValidateFunc  // use when error message format must match an existing test
+    ValidValues   []string   // generates ValidateEnumValue validator; appended to Description in docs
     ConflictsWith []string
-    UseSet        bool                       // use TypeSet instead of TypeList
-    ForceNew      bool                       // resource replacement when changed
-    DiffSuppress  schema.SchemaDiffSuppressFunc
+    UseSet        bool       // use TypeSet instead of TypeList
+    ForceNew      bool       // resource replacement when changed
 }
 ```
 

@@ -505,16 +505,6 @@ var numberFormatUnitCustomFields = []FieldSpec{
 		Description: "Unit label"},
 }
 
-// numberFormatUnitFields corresponds to the unit block inside WidgetNumberFormat.
-var numberFormatUnitFields = []FieldSpec{
-	{HCLKey: "canonical", Type: TypeBlock, OmitEmpty: true,
-		Description: "Canonical Units",
-		Children:    numberFormatUnitCanonicalFields},
-	{HCLKey: "custom", Type: TypeBlock, OmitEmpty: true,
-		Description: "Use custom (non canonical metrics)",
-		Children:    numberFormatUnitCustomFields},
-}
-
 // numberFormatUnitScaleFields corresponds to the unit_scale block inside WidgetNumberFormat.
 var numberFormatUnitScaleFields = []FieldSpec{
 	{HCLKey: "unit_name", Type: TypeString, OmitEmpty: false, Required: true,
@@ -523,10 +513,37 @@ var numberFormatUnitScaleFields = []FieldSpec{
 
 // widgetNumberFormatFields corresponds to OpenAPI WidgetNumberFormat.
 // Used inside widgetFormulaFields as the "number_format" block.
+//
+// The "unit" field is a TypeOneOf corresponding to OpenAPI NumberFormatUnit.
+// The JSON discriminator is "type": "canonical_unit" or "custom_unit_label".
+// HCL: unit { canonical { ... } } or unit { custom { ... } } — unchanged from before.
 var widgetNumberFormatFields = []FieldSpec{
-	{HCLKey: "unit", Type: TypeBlock, OmitEmpty: false, Required: true,
-		Description: "Unit of the number format. ",
-		Children:    numberFormatUnitFields},
+	{
+		HCLKey:   "unit",
+		Type:     TypeOneOf,
+		OmitEmpty: false,
+		Required: true,
+		Description: "Unit of the number format.",
+		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
+		Children: []FieldSpec{
+			{
+				HCLKey:        "canonical",
+				Type:          TypeBlock,
+				OmitEmpty:     true,
+				Description:   "Canonical Units",
+				Discriminator: &OneOfDiscriminator{Value: "canonical_unit"},
+				Children:      numberFormatUnitCanonicalFields,
+			},
+			{
+				HCLKey:        "custom",
+				Type:          TypeBlock,
+				OmitEmpty:     true,
+				Description:   "Use custom (non canonical metrics)",
+				Discriminator: &OneOfDiscriminator{Value: "custom_unit_label"},
+				Children:      numberFormatUnitCustomFields,
+			},
+		},
+	},
 	{HCLKey: "unit_scale", Type: TypeBlock, OmitEmpty: true,
 		Description: "The definition of `NumberFormatUnitScale` object.",
 		Children:    numberFormatUnitScaleFields},

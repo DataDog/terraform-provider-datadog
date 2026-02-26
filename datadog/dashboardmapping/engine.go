@@ -29,7 +29,32 @@ const (
 	TypeIntList                     // []int
 	TypeBlock                       // single nested block (MaxItems:1 in schema)
 	TypeBlockList                   // list of blocks
+	TypeOneOf                       // polymorphic block — exactly one child variant should be set
 )
+
+// OneOfDiscriminator configures how a TypeOneOf field determines which variant is active.
+// Set on the TypeOneOf parent field (JSONKey) and on each child variant field (Value/Values).
+type OneOfDiscriminator struct {
+	// JSONKey is the field in the JSON object that identifies the variant.
+	// Set on the parent TypeOneOf FieldSpec. Used to read the discriminator on flatten
+	// and as the key to inject on build when a child has a non-empty Value.
+	JSONKey string
+
+	// Value is the expected discriminator value for this variant.
+	// Set on child FieldSpecs. If non-empty, this value is injected into the built JSON
+	// object on build (using the parent's JSONKey). Also used for flatten matching.
+	Value string
+
+	// Values lists multiple JSON discriminator values that all map to this variant.
+	// Used for flatten-direction matching only (no build injection). Set on child FieldSpecs.
+	// Example: SunburstLegend "table" variant matches both "table" and "none".
+	Values []string
+
+	// DefaultVariant marks this child as the fallback when no discriminator field
+	// exists in the JSON or no Value/Values match. Used for legacy variants that
+	// predate the discriminator field (e.g. WidgetLegacyLiveSpan has no "type" field).
+	DefaultVariant bool
+}
 
 // FieldSpec declares the bidirectional mapping for a single field.
 // One declaration covers both the HCL→JSON build direction and the
@@ -102,6 +127,10 @@ type FieldSpec struct {
 	// BuildEngineJSON skips it. Use for fields like dashboard_lists
 	// that are managed as side effects, not serialized to the API.
 	SchemaOnly bool
+
+	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
+	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
+	Discriminator *OneOfDiscriminator
 }
 
 // effectiveJSONKey returns the JSON key or path root for a FieldSpec.
@@ -378,6 +407,53 @@ func BuildEngineJSON(attrs map[string]attr.Value, fields []FieldSpec) map[string
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), items)
+
+		case TypeOneOf:
+			// Get the outer TypeOneOf block (MaxItems:1 container)
+			elems := getListElems(attrs, f.HCLKey)
+			if len(elems) == 0 {
+				if f.OmitEmpty {
+					continue
+				}
+				break
+			}
+			outerObj, ok := elems[0].(types.Object)
+			if !ok {
+				continue
+			}
+			outerAttrs := outerObj.Attributes()
+
+			// Find the first populated variant child
+			var built map[string]interface{}
+			var matchedChild *FieldSpec
+			for i := range f.Children {
+				child := &f.Children[i]
+				if child.Type == TypeBlock {
+					childElems := getListElems(outerAttrs, child.HCLKey)
+					if len(childElems) > 0 {
+						if childObj, ok := childElems[0].(types.Object); ok {
+							built = BuildEngineJSON(childObj.Attributes(), child.Children)
+							matchedChild = child
+						}
+					}
+				}
+				if matchedChild != nil {
+					break
+				}
+			}
+			if built == nil {
+				if f.OmitEmpty {
+					continue
+				}
+				built = map[string]interface{}{}
+			}
+			// Inject discriminator into built JSON if the matched child specifies a value
+			if matchedChild != nil && matchedChild.Discriminator != nil &&
+				matchedChild.Discriminator.Value != "" &&
+				f.Discriminator != nil && f.Discriminator.JSONKey != "" {
+				built[f.Discriminator.JSONKey] = matchedChild.Discriminator.Value
+			}
+			setAtJSONPath(result, f.effectiveJSONPath(), built)
 		}
 	}
 	return result
@@ -465,6 +541,56 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				}
 				result[f.HCLKey] = list
 			}
+
+		case TypeOneOf:
+			jsonObj, ok := jsonVal.(map[string]interface{})
+			if !ok {
+				continue
+			}
+			// Read discriminator value from JSON
+			var discriminatorValue string
+			if f.Discriminator != nil && f.Discriminator.JSONKey != "" {
+				discriminatorValue, _ = jsonObj[f.Discriminator.JSONKey].(string)
+			}
+			// Find the matching variant child
+			var matchedChild *FieldSpec
+			for i := range f.Children {
+				child := &f.Children[i]
+				if child.Discriminator == nil {
+					continue
+				}
+				if child.Discriminator.Value != "" && child.Discriminator.Value == discriminatorValue {
+					matchedChild = child
+					break
+				}
+				for _, v := range child.Discriminator.Values {
+					if v == discriminatorValue {
+						matchedChild = child
+						break
+					}
+				}
+				if matchedChild != nil {
+					break
+				}
+			}
+			// Fall back to DefaultVariant if no explicit match
+			if matchedChild == nil {
+				for i := range f.Children {
+					if f.Children[i].Discriminator != nil && f.Children[i].Discriminator.DefaultVariant {
+						matchedChild = &f.Children[i]
+						break
+					}
+				}
+			}
+			if matchedChild == nil {
+				continue
+			}
+			// Flatten the matched variant into a state map for the outer TypeOneOf block
+			variantState := map[string]interface{}{}
+			if matchedChild.Type == TypeBlock {
+				variantState[matchedChild.HCLKey] = []interface{}{FlattenEngineJSON(matchedChild.Children, jsonObj)}
+			}
+			result[f.HCLKey] = []interface{}{variantState}
 		}
 	}
 	return result
@@ -1837,9 +1963,9 @@ func buildQueryTableFormulaRequestJSON(reqAttrs map[string]attr.Value) map[strin
 				}
 				formula["conditional_formats"] = cfs
 			}
-			// number_format (TypeBlock MaxItems:1)
+			// number_format (TypeOneOf: canonical/custom unit + unit_scale)
 			if nfAttrs := getObjAttrs(fAttrs, "number_format"); nfAttrs != nil {
-				nf := buildQueryTableNumberFormatJSON(nfAttrs)
+				nf := BuildEngineJSON(nfAttrs, widgetNumberFormatFields)
 				if len(nf) > 0 {
 					formula["number_format"] = nf
 				}
@@ -1888,47 +2014,6 @@ func buildQueryTableFormulaRequestJSON(reqAttrs map[string]attr.Value) map[strin
 	return result
 }
 
-// buildQueryTableNumberFormatJSON builds the number_format JSON object for a formula.
-// The HCL structure has unit { canonical { unit_name, per_unit_name } } or unit { custom { label } }.
-// The JSON structure has unit { type, unit_name, per_unit_name } or unit { type, label }.
-func buildQueryTableNumberFormatJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-	// unit block (TypeList MaxItems:1)
-	if unitAttrs := getObjAttrs(attrs, "unit"); unitAttrs != nil {
-		unit := map[string]interface{}{}
-		// canonical sub-block
-		if canonAttrs := getObjAttrs(unitAttrs, "canonical"); canonAttrs != nil {
-			unit["type"] = "canonical_unit"
-			if v, ok := getStrAttr(canonAttrs, "unit_name"); ok {
-				unit["unit_name"] = v
-			}
-			if v, ok := getStrAttr(canonAttrs, "per_unit_name"); ok {
-				unit["per_unit_name"] = v
-			}
-		}
-		// custom sub-block
-		if customAttrs := getObjAttrs(unitAttrs, "custom"); customAttrs != nil {
-			unit["type"] = "custom_unit_label"
-			if v, ok := getStrAttr(customAttrs, "label"); ok {
-				unit["label"] = v
-			}
-		}
-		if len(unit) > 0 {
-			result["unit"] = unit
-		}
-	}
-	// unit_scale block
-	if unitScaleAttrs := getObjAttrs(attrs, "unit_scale"); unitScaleAttrs != nil {
-		unitScale := map[string]interface{}{}
-		if v, ok := getStrAttr(unitScaleAttrs, "unit_name"); ok {
-			unitScale["unit_name"] = v
-		}
-		if len(unitScale) > 0 {
-			result["unit_scale"] = unitScale
-		}
-	}
-	return result
-}
 
 // buildQueryTableTextFormatsJSON handles the text_formats 2D array for query_table
 // old-style requests. It reads text_formats from the HCL attrs and injects them into
@@ -2130,9 +2215,9 @@ func flattenQueryTableFormulaRequestJSON(req map[string]interface{}) map[string]
 				}
 				flatF["conditional_formats"] = flatCFs
 			}
-			// number_format
+			// number_format (TypeOneOf: canonical/custom unit + unit_scale)
 			if nf, ok := fm["number_format"].(map[string]interface{}); ok {
-				nfState := flattenQueryTableNumberFormatJSON(nf)
+				nfState := FlattenEngineJSON(widgetNumberFormatFields, nf)
 				if len(nfState) > 0 {
 					flatF["number_format"] = []interface{}{nfState}
 				}
@@ -2240,46 +2325,6 @@ func flattenApmResourceStatsQueryJSON(q map[string]interface{}) map[string]inter
 	return result
 }
 
-// flattenQueryTableNumberFormatJSON flattens the number_format JSON into HCL state.
-// The JSON has unit { type, unit_name, per_unit_name } or unit { type, label }.
-// The HCL has unit { canonical { unit_name, per_unit_name } } or unit { custom { label } }.
-func flattenQueryTableNumberFormatJSON(nf map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	if unit, ok := nf["unit"].(map[string]interface{}); ok {
-		unitState := map[string]interface{}{}
-		unitType, _ := unit["type"].(string)
-		switch unitType {
-		case "canonical_unit":
-			canonState := map[string]interface{}{}
-			if v, ok := unit["unit_name"].(string); ok && v != "" {
-				canonState["unit_name"] = v
-			}
-			if v, ok := unit["per_unit_name"].(string); ok && v != "" {
-				canonState["per_unit_name"] = v
-			}
-			unitState["canonical"] = []interface{}{canonState}
-		case "custom_unit_label":
-			customState := map[string]interface{}{}
-			if v, ok := unit["label"].(string); ok && v != "" {
-				customState["label"] = v
-			}
-			unitState["custom"] = []interface{}{customState}
-		}
-		if len(unitState) > 0 {
-			result["unit"] = []interface{}{unitState}
-		}
-	}
-	if unitScale, ok := nf["unit_scale"].(map[string]interface{}); ok {
-		unitScaleState := map[string]interface{}{}
-		if v, ok := unitScale["unit_name"].(string); ok && v != "" {
-			unitScaleState["unit_name"] = v
-		}
-		if len(unitScaleState) > 0 {
-			result["unit_scale"] = []interface{}{unitScaleState}
-		}
-	}
-	return result
-}
 
 // flattenQueryTableTextFormatsJSON flattens the 2D text_formats array.
 func flattenQueryTableTextFormatsJSON(textFormats []interface{}) []interface{} {

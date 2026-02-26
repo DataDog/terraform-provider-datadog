@@ -181,6 +181,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_trace_service_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                                      "dashboards",
 	"tests/resource_datadog_dashboard_v2_test":                                           "dashboards",
+	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
 	"tests/resource_datadog_datastore_test":                                              "datastores",
 	"tests/resource_datadog_datastore_item_test":                                         "datastores",
