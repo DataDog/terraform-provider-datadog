@@ -10,8 +10,6 @@ exclude_files=(
   "docs/resources/on_call_user_notification_channel.md"
   "docs/resources/on_call_user_notification_rule.md"
   "docs/guides/dashboard_v2_migration.md"
-  "docs/resources/dashboard_v2.md"
-  "docs/resources/powerpack_v2.md"
 )
 
 # Check if manual changes were made to any excluded files and exit

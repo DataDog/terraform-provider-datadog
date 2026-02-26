@@ -215,6 +215,7 @@ Optional:
 - `event_stream_definition` (Block List) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
 - `event_timeline_definition` (Block List) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
 - `free_text_definition` (Block List) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--free_text_definition))
+- `funnel_definition` (Block List) The definition for a Funnel widget. (see [below for nested schema](#nestedblock--widget--funnel_definition))
 - `geomap_definition` (Block List) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--geomap_definition))
 - `group_definition` (Block List) The definition for a Group widget. (see [below for nested schema](#nestedblock--widget--group_definition))
 - `heatmap_definition` (Block List) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition))
@@ -258,9 +259,37 @@ Optional:
 
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--alert_graph_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--alert_graph_definition--time"></a>
+### Nested Schema for `widget.alert_graph_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--alert_graph_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--alert_graph_definition--time--live))
+
+<a id="nestedblock--widget--alert_graph_definition--time--fixed"></a>
+### Nested Schema for `widget.alert_graph_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--alert_graph_definition--time--live"></a>
+### Nested Schema for `widget.alert_graph_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--alert_value_definition"></a>
@@ -276,10 +305,38 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--alert_value_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `unit` (String) The unit for the value displayed in the widget.
+
+<a id="nestedblock--widget--alert_value_definition--time"></a>
+### Nested Schema for `widget.alert_value_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--alert_value_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--alert_value_definition--time--live))
+
+<a id="nestedblock--widget--alert_value_definition--time--fixed"></a>
+### Nested Schema for `widget.alert_value_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--alert_value_definition--time--live"></a>
+### Nested Schema for `widget.alert_value_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--change_definition"></a>
@@ -291,6 +348,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--change_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -897,6 +955,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--change_definition--time"></a>
+### Nested Schema for `widget.change_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--change_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--change_definition--time--live))
+
+<a id="nestedblock--widget--change_definition--time--fixed"></a>
+### Nested Schema for `widget.change_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--change_definition--time--live"></a>
+### Nested Schema for `widget.change_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--check_status_definition"></a>
 ### Nested Schema for `widget.check_status_definition`
@@ -913,9 +998,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags used to filter the groups reporting a cluster check.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--check_status_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--check_status_definition--time"></a>
+### Nested Schema for `widget.check_status_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--check_status_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--check_status_definition--time--live))
+
+<a id="nestedblock--widget--check_status_definition--time--fixed"></a>
+### Nested Schema for `widget.check_status_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--check_status_definition--time--live"></a>
+### Nested Schema for `widget.check_status_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--distribution_definition"></a>
@@ -928,6 +1041,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--distribution_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -1560,6 +1674,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--distribution_definition--time"></a>
+### Nested Schema for `widget.distribution_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--distribution_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--distribution_definition--time--live))
+
+<a id="nestedblock--widget--distribution_definition--time--fixed"></a>
+### Nested Schema for `widget.distribution_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--distribution_definition--time--live"></a>
+### Nested Schema for `widget.distribution_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--distribution_definition--xaxis"></a>
 ### Nested Schema for `widget.distribution_definition.xaxis`
 
@@ -1568,6 +1709,7 @@ Optional:
 - `include_zero` (Boolean) True includes zero.
 - `max` (String) Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
 - `min` (String) Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
+- `num_buckets` (Number) Number of value buckets to target, also known as the resolution of the value bins.
 - `scale` (String) Specifies the scale type. Possible values are `linear`.
 
 
@@ -1578,9 +1720,9 @@ Optional:
 
 - `include_zero` (Boolean) True includes zero.
 - `label` (String) The label of the axis to display on the graph.
-- `max` (String) Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
-- `min` (String) Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
-- `scale` (String) Specifies the scale type. Possible values are `linear`.
+- `max` (String) Specifies the maximum value to show on the y-axis. It takes a number, or auto for default behavior.
+- `min` (String) Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior.
+- `scale` (String) Specifies the scale type. Possible values are `linear` or `log`.
 
 
 
@@ -1597,9 +1739,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--event_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--event_stream_definition--time"></a>
+### Nested Schema for `widget.event_stream_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--event_stream_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--event_stream_definition--time--live))
+
+<a id="nestedblock--widget--event_stream_definition--time--fixed"></a>
+### Nested Schema for `widget.event_stream_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--event_stream_definition--time--live"></a>
+### Nested Schema for `widget.event_stream_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--event_timeline_definition"></a>
@@ -1614,9 +1784,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--event_timeline_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--event_timeline_definition--time"></a>
+### Nested Schema for `widget.event_timeline_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--event_timeline_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--event_timeline_definition--time--live))
+
+<a id="nestedblock--widget--event_timeline_definition--time--fixed"></a>
+### Nested Schema for `widget.event_timeline_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--event_timeline_definition--time--live"></a>
+### Nested Schema for `widget.event_timeline_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--free_text_definition"></a>
@@ -1633,9 +1831,108 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--free_text_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--free_text_definition--time"></a>
+### Nested Schema for `widget.free_text_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--free_text_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--free_text_definition--time--live))
+
+<a id="nestedblock--widget--free_text_definition--time--fixed"></a>
+### Nested Schema for `widget.free_text_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--free_text_definition--time--live"></a>
+### Nested Schema for `widget.free_text_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+
+<a id="nestedblock--widget--funnel_definition"></a>
+### Nested Schema for `widget.funnel_definition`
+
+Optional:
+
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Only one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--funnel_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--funnel_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--funnel_definition--request"></a>
+### Nested Schema for `widget.funnel_definition.request`
+
+Optional:
+
+- `query` (Block List) The query for the funnel widget request. (see [below for nested schema](#nestedblock--widget--funnel_definition--request--query))
+
+<a id="nestedblock--widget--funnel_definition--request--query"></a>
+### Nested Schema for `widget.funnel_definition.request.query`
+
+Required:
+
+- `data_source` (String) The data source for funnel queries. Valid values are `rum`. Valid values are `rum`.
+- `query_string` (String) The widget query.
+
+Optional:
+
+- `step` (Block List) The funnel steps. Multiple `step` blocks are allowed. (see [below for nested schema](#nestedblock--widget--funnel_definition--request--query--step))
+
+<a id="nestedblock--widget--funnel_definition--request--query--step"></a>
+### Nested Schema for `widget.funnel_definition.request.query.step`
+
+Required:
+
+- `facet` (String) The facet of the step.
+- `value` (String) The value of the step.
+
+
+
+
+<a id="nestedblock--widget--funnel_definition--time"></a>
+### Nested Schema for `widget.funnel_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--funnel_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--funnel_definition--time--live))
+
+<a id="nestedblock--widget--funnel_definition--time--fixed"></a>
+### Nested Schema for `widget.funnel_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--funnel_definition--time--live"></a>
+### Nested Schema for `widget.funnel_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--geomap_definition"></a>
@@ -1648,6 +1945,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - `style` (Block List) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--geomap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -2113,6 +2411,33 @@ Required:
 - `palette_flip` (Boolean) A Boolean indicating whether to flip the palette tones.
 
 
+<a id="nestedblock--widget--geomap_definition--time"></a>
+### Nested Schema for `widget.geomap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--geomap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--geomap_definition--time--live))
+
+<a id="nestedblock--widget--geomap_definition--time--fixed"></a>
+### Nested Schema for `widget.geomap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--geomap_definition--time--live"></a>
+### Nested Schema for `widget.geomap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--geomap_definition--view"></a>
 ### Nested Schema for `widget.geomap_definition.view`
 
@@ -2136,10 +2461,38 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `widget` (Block List) The list of widgets in this group. (see [below for nested schema](#nestedblock--widget--group_definition--widget))
+
+<a id="nestedblock--widget--group_definition--time"></a>
+### Nested Schema for `widget.group_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 <a id="nestedblock--widget--group_definition--widget"></a>
 ### Nested Schema for `widget.group_definition.widget`
@@ -2154,6 +2507,7 @@ Optional:
 - `event_stream_definition` (Block List) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition))
 - `event_timeline_definition` (Block List) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
 - `free_text_definition` (Block List) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition))
+- `funnel_definition` (Block List) The definition for a Funnel widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition))
 - `geomap_definition` (Block List) The definition for a Geomap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition))
 - `heatmap_definition` (Block List) The definition for a Heatmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition))
 - `hostmap_definition` (Block List) The definition for a Hostmap widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition))
@@ -2194,9 +2548,37 @@ Optional:
 
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_graph_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--alert_graph_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.alert_graph_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_graph_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_graph_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--alert_graph_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.alert_graph_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--alert_graph_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.alert_graph_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--alert_value_definition"></a>
@@ -2212,10 +2594,38 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_value_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `unit` (String) The unit for the value displayed in the widget.
+
+<a id="nestedblock--widget--group_definition--widget--alert_value_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.alert_value_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_value_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_value_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--alert_value_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.alert_value_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--alert_value_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.alert_value_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition"></a>
@@ -2227,6 +2637,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -2833,6 +3244,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--change_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--check_status_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.check_status_definition`
@@ -2849,9 +3287,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags used to filter the groups reporting a cluster check.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--check_status_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--check_status_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.check_status_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--check_status_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--check_status_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--check_status_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.check_status_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--check_status_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.check_status_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition"></a>
@@ -2864,6 +3330,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -3496,6 +3963,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--xaxis"></a>
 ### Nested Schema for `widget.group_definition.widget.distribution_definition.xaxis`
 
@@ -3504,6 +3998,7 @@ Optional:
 - `include_zero` (Boolean) True includes zero.
 - `max` (String) Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
 - `min` (String) Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
+- `num_buckets` (Number) Number of value buckets to target, also known as the resolution of the value bins.
 - `scale` (String) Specifies the scale type. Possible values are `linear`.
 
 
@@ -3514,9 +4009,9 @@ Optional:
 
 - `include_zero` (Boolean) True includes zero.
 - `label` (String) The label of the axis to display on the graph.
-- `max` (String) Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
-- `min` (String) Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior.
-- `scale` (String) Specifies the scale type. Possible values are `linear`.
+- `max` (String) Specifies the maximum value to show on the y-axis. It takes a number, or auto for default behavior.
+- `min` (String) Specifies minimum value to show on the y-axis. It takes a number, or auto for default behavior.
+- `scale` (String) Specifies the scale type. Possible values are `linear` or `log`.
 
 
 
@@ -3533,9 +4028,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--event_stream_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.event_stream_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--event_stream_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.event_stream_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--event_stream_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.event_stream_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--event_timeline_definition"></a>
@@ -3550,9 +4073,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--event_timeline_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.event_timeline_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--event_timeline_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.event_timeline_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--event_timeline_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.event_timeline_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--free_text_definition"></a>
@@ -3569,9 +4120,108 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--free_text_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.free_text_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--free_text_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--free_text_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.free_text_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--free_text_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.free_text_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition`
+
+Optional:
+
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Only one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.request`
+
+Optional:
+
+- `query` (Block List) The query for the funnel widget request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request--query))
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.request.query`
+
+Required:
+
+- `data_source` (String) The data source for funnel queries. Valid values are `rum`. Valid values are `rum`.
+- `query_string` (String) The widget query.
+
+Optional:
+
+- `step` (Block List) The funnel steps. Multiple `step` blocks are allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request--query--step))
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--request--query--step"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.request.query.step`
+
+Required:
+
+- `facet` (String) The facet of the step.
+- `value` (String) The value of the step.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--funnel_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.funnel_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition"></a>
@@ -3584,6 +4234,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
 - `style` (Block List) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -4049,6 +4700,33 @@ Required:
 - `palette_flip` (Boolean) A Boolean indicating whether to flip the palette tones.
 
 
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--view"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.view`
 
@@ -4070,9 +4748,11 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+- `xaxis` (Block List) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--xaxis))
 - `yaxis` (Block List) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--yaxis))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--custom_link"></a>
@@ -4692,6 +5372,41 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--xaxis"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.xaxis`
+
+Optional:
+
+- `num_buckets` (Number) Number of time buckets to target, also known as the resolution of the time bins. This is only applicable for distribution of points (group distributions use the roll-up modifier).
+
+
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--yaxis"></a>
 ### Nested Schema for `widget.group_definition.widget.heatmap_definition.yaxis`
 
@@ -4720,6 +5435,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -5925,6 +6641,33 @@ Optional:
 - `palette_flip` (Boolean) A Boolean indicating whether to flip the palette tones.
 
 
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--iframe_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.iframe_definition`
@@ -5937,9 +6680,37 @@ Optional:
 
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--iframe_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.iframe_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--iframe_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.iframe_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--iframe_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.iframe_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--image_definition"></a>
@@ -5958,11 +6729,39 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`. Valid values are `sm`, `md`, `lg`, `small`, `large`.
 - `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--image_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `url_dark_theme` (String) URL of the image in dark mode.
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`. Valid values are `center`, `top`, `bottom`.
+
+<a id="nestedblock--widget--group_definition--widget--image_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.image_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--image_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--image_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--image_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.image_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--image_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.image_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition"></a>
@@ -5973,6 +6772,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the requests to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -6034,6 +6834,33 @@ Required:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--log_stream_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.log_stream_definition`
@@ -6049,6 +6876,7 @@ Optional:
 - `show_date_column` (Boolean) If the date column should be displayed.
 - `show_message_column` (Boolean) If the message column should be displayed.
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--sort))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -6060,6 +6888,33 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--log_stream_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.log_stream_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--log_stream_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.log_stream_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--log_stream_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.log_stream_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
 
 
 
@@ -6081,9 +6936,37 @@ Optional:
 - `show_priority` (Boolean) Whether to show the priorities column.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
 - `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`. Valid values are `monitors`, `groups`, `combined`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--manage_status_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.manage_status_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--manage_status_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.manage_status_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--manage_status_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.manage_status_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--note_definition"></a>
@@ -6104,10 +6987,38 @@ Optional:
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`. Valid values are `bottom`, `left`, `right`, `top`.
 - `tick_pos` (String) When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = "50%"` is centered alignment.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`. Valid values are `center`, `top`, `bottom`.
+
+<a id="nestedblock--widget--group_definition--widget--note_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.note_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--note_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.note_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--note_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.note_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
@@ -6120,6 +7031,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -6820,6 +7732,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.query_value_definition`
@@ -6834,6 +7773,7 @@ Optional:
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--time))
 - `timeseries_background` (Block List) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
@@ -7521,6 +8461,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--timeseries_background"></a>
 ### Nested Schema for `widget.group_definition.widget.query_value_definition.timeseries_background`
 
@@ -7559,6 +8526,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -7583,6 +8551,33 @@ Required:
 - `value` (String) Dashboard template variable. Can be suffixed with `.value` or `.key`.
 
 
+<a id="nestedblock--widget--group_definition--widget--run_workflow_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.run_workflow_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--run_workflow_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.run_workflow_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--run_workflow_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.run_workflow_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition`
@@ -7594,6 +8589,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9005,6 +10001,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--xaxis"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.xaxis`
 
@@ -9047,9 +10070,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--service_level_objective_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.service_level_objective_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--service_level_objective_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--service_level_objective_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.service_level_objective_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--service_level_objective_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.service_level_objective_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--servicemap_definition"></a>
@@ -9065,6 +10116,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--custom_link))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9080,6 +10132,33 @@ Optional:
 - `override_label` (String) The label ID that refers to a context menu link. Can be `logs`, `hosts`, `traces`, `profiles`, `processes`, `containers`, or `rum`.
 
 
+<a id="nestedblock--widget--group_definition--widget--servicemap_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.servicemap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--servicemap_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.servicemap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--servicemap_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.servicemap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--slo_list_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.slo_list_definition`
@@ -9089,6 +10168,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9127,6 +10207,33 @@ Required:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--slo_list_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.slo_list_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.sunburst_definition`
@@ -9140,6 +10247,7 @@ Optional:
 - `legend_table` (Block List) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9900,6 +11008,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition`
@@ -9917,6 +11052,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
 - `right_yaxis` (Block List) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -9966,6 +11102,7 @@ Optional:
 - `apm_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`. Valid values are `area`, `bars`, `line`, `overlay`.
+- `event_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
 - `log_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
@@ -10095,6 +11232,70 @@ Optional:
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query--multi_compute"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.audit_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.event_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.event_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.event_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.event_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.event_query.multi_compute`
 
 Required:
 
@@ -10777,6 +11978,33 @@ Optional:
 - `scale` (String) Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`).
 
 
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--yaxis"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition.yaxis`
 
@@ -10800,6 +12028,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
 - `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -10830,6 +12059,7 @@ Optional:
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query))
 - `rum_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query))
 - `security_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query))
+- `sort` (Block List) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--sort))
 - `style` (Block List) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query"></a>
@@ -11485,6 +12715,42 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--sort"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+
+
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--style"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.request.style`
 
@@ -11499,16 +12765,56 @@ Optional:
 
 Optional:
 
-- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display))
+- `display` (Block List) The display mode for the top list widget. Use `stacked` or `flat` sub-block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display))
 - `palette` (String) The color palette for the widget.
 - `scaling` (String) The scaling mode for the widget.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display`
 
+Optional:
+
+- `flat` (Block List) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat))
+- `stacked` (Block List) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display--stacked))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display--flat"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display.flat`
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display--stacked"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display.stacked`
+
+Optional:
+
+- `legend` (String) Legend behavior for the stacked top list. Valid values are `automatic`, `inline`, `none`. Valid values are `automatic`, `inline`, `none`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.time.fixed`
+
 Required:
 
-- `type` (String) The display type for the widget.
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
 
 
 
@@ -11522,6 +12828,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -11559,6 +12866,33 @@ Required:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--topology_map_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.topology_map_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--topology_map_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.topology_map_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--topology_map_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.topology_map_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--trace_service_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.trace_service_definition`
@@ -11581,9 +12915,37 @@ Optional:
 - `show_latency` (Boolean) Whether to show the latency metrics or not.
 - `show_resource_list` (Boolean) Whether to show the resource list or not.
 - `size_format` (String) The size of the widget. Valid values are `small`, `medium`, `large`. Valid values are `small`, `medium`, `large`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--trace_service_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.trace_service_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--trace_service_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--trace_service_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.trace_service_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--trace_service_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.trace_service_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition"></a>
@@ -11595,6 +12957,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -11919,6 +13282,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--widget_layout"></a>
 ### Nested Schema for `widget.group_definition.widget.widget_layout`
@@ -11949,9 +13339,11 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--heatmap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+- `xaxis` (Block List) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--xaxis))
 - `yaxis` (Block List) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--yaxis))
 
 <a id="nestedblock--widget--heatmap_definition--custom_link"></a>
@@ -12571,6 +13963,41 @@ Optional:
 
 
 
+<a id="nestedblock--widget--heatmap_definition--time"></a>
+### Nested Schema for `widget.heatmap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--heatmap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--heatmap_definition--time--live))
+
+<a id="nestedblock--widget--heatmap_definition--time--fixed"></a>
+### Nested Schema for `widget.heatmap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--heatmap_definition--time--live"></a>
+### Nested Schema for `widget.heatmap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+<a id="nestedblock--widget--heatmap_definition--xaxis"></a>
+### Nested Schema for `widget.heatmap_definition.xaxis`
+
+Optional:
+
+- `num_buckets` (Number) Number of time buckets to target, also known as the resolution of the time bins. This is only applicable for distribution of points (group distributions use the roll-up modifier).
+
+
 <a id="nestedblock--widget--heatmap_definition--yaxis"></a>
 ### Nested Schema for `widget.heatmap_definition.yaxis`
 
@@ -12599,6 +14026,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -13804,6 +15232,33 @@ Optional:
 - `palette_flip` (Boolean) A Boolean indicating whether to flip the palette tones.
 
 
+<a id="nestedblock--widget--hostmap_definition--time"></a>
+### Nested Schema for `widget.hostmap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--hostmap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--hostmap_definition--time--live))
+
+<a id="nestedblock--widget--hostmap_definition--time--fixed"></a>
+### Nested Schema for `widget.hostmap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--hostmap_definition--time--live"></a>
+### Nested Schema for `widget.hostmap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--iframe_definition"></a>
 ### Nested Schema for `widget.iframe_definition`
@@ -13816,9 +15271,37 @@ Optional:
 
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--iframe_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--iframe_definition--time"></a>
+### Nested Schema for `widget.iframe_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--iframe_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--iframe_definition--time--live))
+
+<a id="nestedblock--widget--iframe_definition--time--fixed"></a>
+### Nested Schema for `widget.iframe_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--iframe_definition--time--live"></a>
+### Nested Schema for `widget.iframe_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--image_definition"></a>
@@ -13837,11 +15320,39 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `margin` (String) The margins to use around the image. Note: `small` and `large` values are deprecated. Valid values are `sm`, `md`, `lg`, `small`, `large`. Valid values are `sm`, `md`, `lg`, `small`, `large`.
 - `sizing` (String) The preferred method to adapt the dimensions of the image. The values are based on the image `object-fit` CSS properties. Note: `zoom`, `fit` and `center` values are deprecated. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`. Valid values are `fill`, `contain`, `cover`, `none`, `scale-down`, `zoom`, `fit`, `center`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--image_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `url_dark_theme` (String) URL of the image in dark mode.
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`. Valid values are `center`, `top`, `bottom`.
+
+<a id="nestedblock--widget--image_definition--time"></a>
+### Nested Schema for `widget.image_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--image_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--image_definition--time--live))
+
+<a id="nestedblock--widget--image_definition--time--fixed"></a>
+### Nested Schema for `widget.image_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--image_definition--time--live"></a>
+### Nested Schema for `widget.image_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--list_stream_definition"></a>
@@ -13852,6 +15363,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the requests to use when displaying the widget. Multiple `request` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--list_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -13913,6 +15425,33 @@ Required:
 
 
 
+<a id="nestedblock--widget--list_stream_definition--time"></a>
+### Nested Schema for `widget.list_stream_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--list_stream_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--list_stream_definition--time--live))
+
+<a id="nestedblock--widget--list_stream_definition--time--fixed"></a>
+### Nested Schema for `widget.list_stream_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--list_stream_definition--time--live"></a>
+### Nested Schema for `widget.list_stream_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--log_stream_definition"></a>
 ### Nested Schema for `widget.log_stream_definition`
@@ -13928,6 +15467,7 @@ Optional:
 - `show_date_column` (Boolean) If the date column should be displayed.
 - `show_message_column` (Boolean) If the message column should be displayed.
 - `sort` (Block List) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--log_stream_definition--sort))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--log_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -13939,6 +15479,33 @@ Required:
 
 - `column` (String) The facet path for the column.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--log_stream_definition--time"></a>
+### Nested Schema for `widget.log_stream_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--log_stream_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--log_stream_definition--time--live))
+
+<a id="nestedblock--widget--log_stream_definition--time--fixed"></a>
+### Nested Schema for `widget.log_stream_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--log_stream_definition--time--live"></a>
+### Nested Schema for `widget.log_stream_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
 
 
 
@@ -13960,9 +15527,37 @@ Optional:
 - `show_priority` (Boolean) Whether to show the priorities column.
 - `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
 - `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`. Valid values are `monitors`, `groups`, `combined`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--manage_status_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--manage_status_definition--time"></a>
+### Nested Schema for `widget.manage_status_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--manage_status_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--manage_status_definition--time--live))
+
+<a id="nestedblock--widget--manage_status_definition--time--fixed"></a>
+### Nested Schema for `widget.manage_status_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--manage_status_definition--time--live"></a>
+### Nested Schema for `widget.manage_status_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--note_definition"></a>
@@ -13983,10 +15578,38 @@ Optional:
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`. Valid values are `bottom`, `left`, `right`, `top`.
 - `tick_pos` (String) When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = "50%"` is centered alignment.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--note_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`. Valid values are `center`, `top`, `bottom`.
+
+<a id="nestedblock--widget--note_definition--time"></a>
+### Nested Schema for `widget.note_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--note_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--note_definition--time--live))
+
+<a id="nestedblock--widget--note_definition--time--fixed"></a>
+### Nested Schema for `widget.note_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--note_definition--time--live"></a>
+### Nested Schema for `widget.note_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--powerpack_definition"></a>
@@ -14004,6 +15627,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_title` (Boolean) Whether to show the title of the powerpack.
 - `template_variables` (Block List) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--powerpack_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -14043,6 +15667,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--powerpack_definition--time"></a>
+### Nested Schema for `widget.powerpack_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--powerpack_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--powerpack_definition--time--live))
+
+<a id="nestedblock--widget--powerpack_definition--time--fixed"></a>
+### Nested Schema for `widget.powerpack_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--powerpack_definition--time--live"></a>
+### Nested Schema for `widget.powerpack_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--query_table_definition"></a>
 ### Nested Schema for `widget.query_table_definition`
@@ -14054,6 +15705,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--query_table_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -14754,6 +16406,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--query_table_definition--time"></a>
+### Nested Schema for `widget.query_table_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--query_table_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--query_table_definition--time--live))
+
+<a id="nestedblock--widget--query_table_definition--time--fixed"></a>
+### Nested Schema for `widget.query_table_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--query_table_definition--time--live"></a>
+### Nested Schema for `widget.query_table_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--query_value_definition"></a>
 ### Nested Schema for `widget.query_value_definition`
@@ -14768,6 +16447,7 @@ Optional:
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--query_value_definition--time))
 - `timeseries_background` (Block List) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--query_value_definition--timeseries_background))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
@@ -15455,6 +17135,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--query_value_definition--time"></a>
+### Nested Schema for `widget.query_value_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--query_value_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--query_value_definition--time--live))
+
+<a id="nestedblock--widget--query_value_definition--time--fixed"></a>
+### Nested Schema for `widget.query_value_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--query_value_definition--time--live"></a>
+### Nested Schema for `widget.query_value_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--query_value_definition--timeseries_background"></a>
 ### Nested Schema for `widget.query_value_definition.timeseries_background`
 
@@ -15493,6 +17200,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -15517,6 +17225,33 @@ Required:
 - `value` (String) Dashboard template variable. Can be suffixed with `.value` or `.key`.
 
 
+<a id="nestedblock--widget--run_workflow_definition--time"></a>
+### Nested Schema for `widget.run_workflow_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--time--live))
+
+<a id="nestedblock--widget--run_workflow_definition--time--fixed"></a>
+### Nested Schema for `widget.run_workflow_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--run_workflow_definition--time--live"></a>
+### Nested Schema for `widget.run_workflow_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--scatterplot_definition"></a>
 ### Nested Schema for `widget.scatterplot_definition`
@@ -15528,6 +17263,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -16939,6 +18675,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--scatterplot_definition--time"></a>
+### Nested Schema for `widget.scatterplot_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--time--live))
+
+<a id="nestedblock--widget--scatterplot_definition--time--fixed"></a>
+### Nested Schema for `widget.scatterplot_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--scatterplot_definition--time--live"></a>
+### Nested Schema for `widget.scatterplot_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--scatterplot_definition--xaxis"></a>
 ### Nested Schema for `widget.scatterplot_definition.xaxis`
 
@@ -16981,9 +18744,37 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_error_budget` (Boolean) Whether to show the error budget or not.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--service_level_objective_definition--time"></a>
+### Nested Schema for `widget.service_level_objective_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--service_level_objective_definition--time--live))
+
+<a id="nestedblock--widget--service_level_objective_definition--time--fixed"></a>
+### Nested Schema for `widget.service_level_objective_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--service_level_objective_definition--time--live"></a>
+### Nested Schema for `widget.service_level_objective_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--servicemap_definition"></a>
@@ -16999,6 +18790,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--servicemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -17014,6 +18806,33 @@ Optional:
 - `override_label` (String) The label ID that refers to a context menu link. Can be `logs`, `hosts`, `traces`, `profiles`, `processes`, `containers`, or `rum`.
 
 
+<a id="nestedblock--widget--servicemap_definition--time"></a>
+### Nested Schema for `widget.servicemap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--servicemap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--servicemap_definition--time--live))
+
+<a id="nestedblock--widget--servicemap_definition--time--fixed"></a>
+### Nested Schema for `widget.servicemap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--servicemap_definition--time--live"></a>
+### Nested Schema for `widget.servicemap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--slo_list_definition"></a>
 ### Nested Schema for `widget.slo_list_definition`
@@ -17023,6 +18842,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--slo_list_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--slo_list_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -17061,6 +18881,33 @@ Required:
 
 
 
+<a id="nestedblock--widget--slo_list_definition--time"></a>
+### Nested Schema for `widget.slo_list_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--slo_list_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--slo_list_definition--time--live))
+
+<a id="nestedblock--widget--slo_list_definition--time--fixed"></a>
+### Nested Schema for `widget.slo_list_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--slo_list_definition--time--live"></a>
+### Nested Schema for `widget.slo_list_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--split_graph_definition"></a>
 ### Nested Schema for `widget.split_graph_definition`
@@ -17076,6 +18923,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `source_widget_definition` (Block List) The original widget we are splitting on. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition))
 - `split_config` (Block List) Encapsulates all user choices about how to split a graph. (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -17104,6 +18952,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -17710,6 +19559,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition`
@@ -17721,6 +19597,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request))
 - `style` (Block List) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -18186,6 +20063,33 @@ Required:
 - `palette_flip` (Boolean) A Boolean indicating whether to flip the palette tones.
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--view"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.view`
 
@@ -18205,6 +20109,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -18905,6 +20810,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition`
@@ -18919,6 +20851,7 @@ Optional:
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--time))
 - `timeseries_background` (Block List) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--timeseries_background))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
@@ -19606,6 +21539,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--timeseries_background"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.timeseries_background`
 
@@ -19641,6 +21601,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -21052,6 +23013,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--xaxis"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.xaxis`
 
@@ -21089,6 +23077,7 @@ Optional:
 - `legend_table` (Block List) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -21849,6 +23838,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition`
@@ -21866,6 +23882,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request))
 - `right_yaxis` (Block List) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -21915,6 +23932,7 @@ Optional:
 - `apm_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--apm_query))
 - `audit_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`. Valid values are `area`, `bars`, `line`, `overlay`.
+- `event_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula))
 - `log_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--metadata))
@@ -22044,6 +24062,70 @@ Optional:
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--audit_query--multi_compute"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.audit_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.event_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--compute_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.event_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--group_by"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.event_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--group_by--sort_query))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--group_by--sort_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.event_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--event_query--multi_compute"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.event_query.multi_compute`
 
 Required:
 
@@ -22726,6 +24808,33 @@ Optional:
 - `scale` (String) Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`).
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--yaxis"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.yaxis`
 
@@ -22749,6 +24858,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -22779,6 +24889,7 @@ Optional:
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query))
 - `rum_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--rum_query))
 - `security_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--security_query))
+- `sort` (Block List) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort))
 - `style` (Block List) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--apm_query"></a>
@@ -23434,6 +25545,42 @@ Optional:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+
+
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--style"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.style`
 
@@ -23448,16 +25595,56 @@ Optional:
 
 Optional:
 
-- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display))
+- `display` (Block List) The display mode for the top list widget. Use `stacked` or `flat` sub-block. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display))
 - `palette` (String) The color palette for the widget.
 - `scaling` (String) The scaling mode for the widget.
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display`
 
+Optional:
+
+- `flat` (Block List) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat))
+- `stacked` (Block List) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--stacked))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--flat"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display.flat`
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display--stacked"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display.stacked`
+
+Optional:
+
+- `legend` (String) Legend behavior for the stacked top list. Valid values are `automatic`, `inline`, `none`. Valid values are `automatic`, `inline`, `none`.
+
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.time.fixed`
+
 Required:
 
-- `type` (String) The display type for the widget.
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
 
 
 
@@ -23471,6 +25658,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -23795,6 +25983,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 
 <a id="nestedblock--widget--split_graph_definition--split_config"></a>
@@ -23857,6 +26072,33 @@ Required:
 
 
 
+<a id="nestedblock--widget--split_graph_definition--time"></a>
+### Nested Schema for `widget.split_graph_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--split_graph_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--split_graph_definition--time--live))
+
+<a id="nestedblock--widget--split_graph_definition--time--fixed"></a>
+### Nested Schema for `widget.split_graph_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--split_graph_definition--time--live"></a>
+### Nested Schema for `widget.split_graph_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--sunburst_definition"></a>
 ### Nested Schema for `widget.sunburst_definition`
@@ -23870,6 +26112,7 @@ Optional:
 - `legend_table` (Block List) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--sunburst_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -24630,6 +26873,33 @@ Optional:
 
 
 
+<a id="nestedblock--widget--sunburst_definition--time"></a>
+### Nested Schema for `widget.sunburst_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--sunburst_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--sunburst_definition--time--live))
+
+<a id="nestedblock--widget--sunburst_definition--time--fixed"></a>
+### Nested Schema for `widget.sunburst_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--sunburst_definition--time--live"></a>
+### Nested Schema for `widget.sunburst_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--timeseries_definition"></a>
 ### Nested Schema for `widget.timeseries_definition`
@@ -24647,6 +26917,7 @@ Optional:
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
 - `right_yaxis` (Block List) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--timeseries_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -24696,6 +26967,7 @@ Optional:
 - `apm_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
 - `audit_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`. Valid values are `area`, `bars`, `line`, `overlay`.
+- `event_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
 - `log_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
@@ -24825,6 +27097,70 @@ Optional:
 
 <a id="nestedblock--widget--timeseries_definition--request--audit_query--multi_compute"></a>
 ### Nested Schema for `widget.timeseries_definition.request.audit_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--event_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.event_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--timeseries_definition--request--event_query--compute_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.event_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--event_query--group_by"></a>
+### Nested Schema for `widget.timeseries_definition.request.event_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query--group_by--sort_query))
+
+<a id="nestedblock--widget--timeseries_definition--request--event_query--group_by--sort_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.event_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--event_query--multi_compute"></a>
+### Nested Schema for `widget.timeseries_definition.request.event_query.multi_compute`
 
 Required:
 
@@ -25507,6 +27843,33 @@ Optional:
 - `scale` (String) Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`).
 
 
+<a id="nestedblock--widget--timeseries_definition--time"></a>
+### Nested Schema for `widget.timeseries_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--timeseries_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--timeseries_definition--time--live))
+
+<a id="nestedblock--widget--timeseries_definition--time--fixed"></a>
+### Nested Schema for `widget.timeseries_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--timeseries_definition--time--live"></a>
+### Nested Schema for `widget.timeseries_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 <a id="nestedblock--widget--timeseries_definition--yaxis"></a>
 ### Nested Schema for `widget.timeseries_definition.yaxis`
 
@@ -25530,6 +27893,7 @@ Optional:
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--toplist_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -25560,6 +27924,7 @@ Optional:
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query))
 - `rum_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
 - `security_query` (Block List) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
+- `sort` (Block List) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort))
 - `style` (Block List) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
 
 <a id="nestedblock--widget--toplist_definition--request--apm_query"></a>
@@ -26215,6 +28580,42 @@ Optional:
 
 
 
+<a id="nestedblock--widget--toplist_definition--request--sort"></a>
+### Nested Schema for `widget.toplist_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--toplist_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.toplist_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--toplist_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.toplist_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--toplist_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.toplist_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`. Valid values are `asc`, `desc`.
+
+
+
+
 <a id="nestedblock--widget--toplist_definition--request--style"></a>
 ### Nested Schema for `widget.toplist_definition.request.style`
 
@@ -26229,16 +28630,56 @@ Optional:
 
 Optional:
 
-- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display))
+- `display` (Block List) The display mode for the top list widget. Use `stacked` or `flat` sub-block. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display))
 - `palette` (String) The color palette for the widget.
 - `scaling` (String) The scaling mode for the widget.
 
 <a id="nestedblock--widget--toplist_definition--style--display"></a>
 ### Nested Schema for `widget.toplist_definition.style.display`
 
+Optional:
+
+- `flat` (Block List) Flat display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--flat))
+- `stacked` (Block List) Stacked display for the top list widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display--stacked))
+
+<a id="nestedblock--widget--toplist_definition--style--display--flat"></a>
+### Nested Schema for `widget.toplist_definition.style.display.flat`
+
+
+<a id="nestedblock--widget--toplist_definition--style--display--stacked"></a>
+### Nested Schema for `widget.toplist_definition.style.display.stacked`
+
+Optional:
+
+- `legend` (String) Legend behavior for the stacked top list. Valid values are `automatic`, `inline`, `none`. Valid values are `automatic`, `inline`, `none`.
+
+
+
+
+<a id="nestedblock--widget--toplist_definition--time"></a>
+### Nested Schema for `widget.toplist_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--toplist_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--toplist_definition--time--live))
+
+<a id="nestedblock--widget--toplist_definition--time--fixed"></a>
+### Nested Schema for `widget.toplist_definition.time.fixed`
+
 Required:
 
-- `type` (String) The display type for the widget.
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--toplist_definition--time--live"></a>
+### Nested Schema for `widget.toplist_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
 
 
 
@@ -26252,6 +28693,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--topology_map_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--topology_map_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -26289,6 +28731,33 @@ Required:
 
 
 
+<a id="nestedblock--widget--topology_map_definition--time"></a>
+### Nested Schema for `widget.topology_map_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--topology_map_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--topology_map_definition--time--live))
+
+<a id="nestedblock--widget--topology_map_definition--time--fixed"></a>
+### Nested Schema for `widget.topology_map_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--topology_map_definition--time--live"></a>
+### Nested Schema for `widget.topology_map_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
 
 <a id="nestedblock--widget--trace_service_definition"></a>
 ### Nested Schema for `widget.trace_service_definition`
@@ -26311,9 +28780,37 @@ Optional:
 - `show_latency` (Boolean) Whether to show the latency metrics or not.
 - `show_resource_list` (Boolean) Whether to show the resource list or not.
 - `size_format` (String) The size of the widget. Valid values are `small`, `medium`, `large`. Valid values are `small`, `medium`, `large`.
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--trace_service_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--trace_service_definition--time"></a>
+### Nested Schema for `widget.trace_service_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--trace_service_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--trace_service_definition--time--live))
+
+<a id="nestedblock--widget--trace_service_definition--time--fixed"></a>
+### Nested Schema for `widget.trace_service_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--trace_service_definition--time--live"></a>
+### Nested Schema for `widget.trace_service_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
 
 
 <a id="nestedblock--widget--treemap_definition"></a>
@@ -26325,6 +28822,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))
+- `time` (Block List) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--treemap_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -26646,6 +29144,33 @@ Optional:
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
+
+
+
+<a id="nestedblock--widget--treemap_definition--time"></a>
+### Nested Schema for `widget.treemap_definition.time`
+
+Optional:
+
+- `fixed` (Block List) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--treemap_definition--time--fixed))
+- `live` (Block List) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--treemap_definition--time--live))
+
+<a id="nestedblock--widget--treemap_definition--time--fixed"></a>
+### Nested Schema for `widget.treemap_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--treemap_definition--time--live"></a>
+### Nested Schema for `widget.treemap_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
 
 
 
