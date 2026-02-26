@@ -279,7 +279,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 								Type:        schema.TypeList,
 								MaxItems:    1,
 								Optional:    true,
-								Description: "A count-based (metric) SLI specification. Composed of a good events formula, a total events formula, and the underlying metric queries.",
+								Description: "A count-based (metric) SLI specification. Composed of a good events formula, a total events formula or bad events formula, and the underlying metric queries.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"good_events_formula": {
@@ -288,9 +288,18 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 											Description: "The formula that specifies how to compute the good events.",
 										},
 										"total_events_formula": {
-											Type:        schema.TypeString,
-											Required:    true,
-											Description: "The formula that specifies how to compute the total events.",
+											Type:          schema.TypeString,
+											Optional:      true,
+											Description:   "The formula that specifies how to compute the total events. Mutually exclusive with `bad_events_formula`.",
+											ConflictsWith: []string{"sli_specification.0.count.0.bad_events_formula"},
+											AtLeastOneOf:  []string{"sli_specification.0.count.0.total_events_formula", "sli_specification.0.count.0.bad_events_formula"},
+										},
+										"bad_events_formula": {
+											Type:          schema.TypeString,
+											Optional:      true,
+											Description:   "The formula that specifies how to compute the bad events. Mutually exclusive with `total_events_formula`.",
+											ConflictsWith: []string{"sli_specification.0.count.0.total_events_formula"},
+											AtLeastOneOf:  []string{"sli_specification.0.count.0.total_events_formula", "sli_specification.0.count.0.bad_events_formula"},
 										},
 										"queries": {
 											Type:        schema.TypeList,
@@ -435,7 +444,6 @@ func buildSLOCountSpec(d []interface{}) *datadogV1.SLOCountSpec {
 	}
 
 	goodEventsFormula := *datadogV1.NewSLOFormula(raw["good_events_formula"].(string))
-	totalEventsFormula := *datadogV1.NewSLOFormula(raw["total_events_formula"].(string))
 
 	queries := make([]datadogV1.SLODataSourceQueryDefinition, 0)
 	if rawQueries, ok := raw["queries"].([]interface{}); ok {
@@ -456,7 +464,18 @@ func buildSLOCountSpec(d []interface{}) *datadogV1.SLOCountSpec {
 		}
 	}
 
-	countDef := datadogV1.NewSLOCountDefinition(goodEventsFormula, queries, totalEventsFormula)
+	countDef := datadogV1.NewSLOCountDefinitionWithDefaults()
+	countDef.SetGoodEventsFormula(goodEventsFormula)
+	countDef.SetQueries(queries)
+
+	if totalEventsFormulaStr, ok := raw["total_events_formula"].(string); ok && totalEventsFormulaStr != "" {
+		totalEventsFormula := *datadogV1.NewSLOFormula(totalEventsFormulaStr)
+		countDef.SetTotalEventsFormula(totalEventsFormula)
+	} else if badEventsFormulaStr, ok := raw["bad_events_formula"].(string); ok && badEventsFormulaStr != "" {
+		badEventsFormula := *datadogV1.NewSLOFormula(badEventsFormulaStr)
+		countDef.SetBadEventsFormula(badEventsFormula)
+	}
+
 	return datadogV1.NewSLOCountSpec(*countDef)
 }
 
@@ -776,15 +795,19 @@ func buildTerraformCountSpecification(countSpec *datadogV1.SLOCountSpec) []map[s
 	}
 
 	goodFormula := countDef.GetGoodEventsFormula()
-	totalFormula := countDef.GetTotalEventsFormula()
 
-	return []map[string]interface{}{
-		{
-			"good_events_formula":  goodFormula.GetFormula(),
-			"total_events_formula": totalFormula.GetFormula(),
-			"queries":              rawQueries,
-		},
+	result := map[string]interface{}{
+		"good_events_formula": goodFormula.GetFormula(),
+		"queries":             rawQueries,
 	}
+
+	if totalFormula, ok := countDef.GetTotalEventsFormulaOk(); ok && totalFormula.GetFormula() != "" {
+		result["total_events_formula"] = totalFormula.GetFormula()
+	} else if badFormula, ok := countDef.GetBadEventsFormulaOk(); ok && badFormula.GetFormula() != "" {
+		result["bad_events_formula"] = badFormula.GetFormula()
+	}
+
+	return []map[string]interface{}{result}
 }
 
 // metricSLOUsesSliSpecInState chooses which metric-SLO representation to keep in state.
