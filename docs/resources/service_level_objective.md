@@ -52,7 +52,7 @@ resource "datadog_service_level_objective" "metric_count_spec_slo" {
   sli_specification {
     count {
       good_events_formula  = "query1"
-      total_events_formula = "query2"
+      bad_events_formula = "query2"
 
       queries {
         metric_query {
@@ -64,7 +64,7 @@ resource "datadog_service_level_objective" "metric_count_spec_slo" {
       queries {
         metric_query {
           name  = "query2"
-          query = "sum:my.custom.count.metric{*}.as_count()"
+          query = "sum:my.custom.count.metric{bad_events}.as_count()"
         }
       }
     }
@@ -222,7 +222,6 @@ Required:
 
 - `good_events_formula` (String) The formula that specifies how to compute the good events.
 - `queries` (Block List, Min: 1) A list of data-source-specific queries that are referenced in the formulas. (see [below for nested schema](#nestedblock--sli_specification--count--queries))
-- `total_events_formula` (String) The formula that specifies how to compute the total events.
 
 <a id="nestedblock--sli_specification--count--queries"></a>
 ### Nested Schema for `sli_specification.count.queries`
@@ -230,6 +229,8 @@ Required:
 Optional:
 
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--sli_specification--count--queries--metric_query))
+- `total_events_formula` (String) The formula that specifies how to compute the total events. Deprecated in favor of `bad_events_formula`
+- `bad_events_formula` (String) The formula that specifies how to compute the bad events.
 
 <a id="nestedblock--sli_specification--count--queries--metric_query"></a>
 ### Nested Schema for `sli_specification.count.queries.metric_query`
