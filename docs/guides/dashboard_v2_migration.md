@@ -31,9 +31,12 @@ resource "datadog_dashboard_v2" "my_dashboard" {
 }
 ```
 
-### All widget types are supported
+### Widget types
 
-Both resources support the same set of widget types: timeseries, query_value, toplist, heatmap, hostmap, change, distribution, geomap, scatterplot, sunburst, treemap, query_table, list_stream, SLO, SLO list, split graph, group, alert graph, alert value, free text, iframe, image, note, event stream, event timeline, check status, log stream, manage status, run workflow, service map, topology map, trace service, and powerpack.
+`datadog_dashboard_v2` supports all widget types from `datadog_dashboard`, plus the **funnel** widget, which was never implemented in v1:
+
+- timeseries, query_value, toplist, heatmap, hostmap, change, distribution, geomap, scatterplot, sunburst, treemap, query_table, list_stream, SLO, SLO list, split graph, group, alert graph, alert value, free text, iframe, image, note, event stream, event timeline, check status, log stream, manage status, run workflow, service map, topology map, trace service, powerpack
+- **funnel** (v2 only — see below)
 
 ### All dashboard-level attributes are supported
 
@@ -110,6 +113,106 @@ This addresses issues reported in [#2925](https://github.com/DataDog/terraform-p
 ### Correct `number_format` serialization
 
 The `number_format` block on widget formulas — which controls unit display (e.g., showing a metric in bytes, seconds, or a custom label) — is correctly serialized in `datadog_dashboard_v2`. The v1 resource has known issues with the `number_format.unit.canonical` and `number_format.unit.custom` blocks on non-query-table widgets, where the required `type` discriminator is not injected correctly.
+
+### Funnel widget support
+
+The funnel widget (`funnel_definition`) is available in `datadog_dashboard_v2` but was never implemented in `datadog_dashboard`. Dashboards with funnel widgets previously could not be imported or managed with Terraform (issue [#2579](https://github.com/DataDog/terraform-provider-datadog/issues/2579)).
+
+```terraform
+resource "datadog_dashboard_v2" "funnel_example" {
+  title       = "Checkout Funnel"
+  layout_type = "ordered"
+
+  widget {
+    funnel_definition {
+      title = "User Checkout Funnel"
+      request {
+        query {
+          query_string = "@browser.name:Chrome"
+          data_source  = "rum"
+          step {
+            facet = "@view.name"
+            value = "/home"
+          }
+          step {
+            facet = "@view.name"
+            value = "/checkout"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### Toplist sort control
+
+`datadog_dashboard_v2` adds a `sort` block to toplist widget formula requests, allowing you to control the sort direction and limit (issue [#2651](https://github.com/DataDog/terraform-provider-datadog/issues/2651)):
+
+```terraform
+widget {
+  toplist_definition {
+    request {
+      formula { formula_expression = "query1" }
+      query {
+        metric_query {
+          name        = "query1"
+          query       = "avg:system.cpu.user{*} by {host}"
+          data_source = "metrics"
+          aggregator  = "avg"
+        }
+      }
+      sort {
+        count = 10
+        order_by {
+          formula_sort {
+            index = 0
+            order = "desc"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+You can also sort by a group tag value using `group_sort { name = "host", order = "asc" }` inside `order_by`.
+
+### Flexible widget time spans
+
+In addition to the existing `live_span` enum (e.g. `live_span = "1h"`), `datadog_dashboard_v2` supports two new widget-level time configurations (issue [#2805](https://github.com/DataDog/terraform-provider-datadog/issues/2805)):
+
+**Arbitrary live span** — any duration, not limited to the fixed enum values:
+```terraform
+widget {
+  timeseries_definition {
+    time {
+      live {
+        value = 17
+        unit  = "minute"
+      }
+    }
+    # ...
+  }
+}
+```
+
+**Fixed time range** — explicit start and end timestamps:
+```terraform
+widget {
+  timeseries_definition {
+    time {
+      fixed {
+        from = 1712080128
+        to   = 1712083128
+      }
+    }
+    # ...
+  }
+}
+```
+
+The existing `live_span` field continues to work unchanged. `live_span` and `time` are mutually exclusive on a widget.
 
 ### Maintained and actively developed
 
