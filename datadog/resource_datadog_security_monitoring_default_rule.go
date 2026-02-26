@@ -595,7 +595,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 	// Compare options
 	if v, ok := d.GetOk("options"); ok {
 		tfOptionsList := v.([]interface{})
-		payloadOptions := buildPayloadOptions(tfOptionsList, d.Get("type").(string))
+		payloadOptions := buildPayloadOptions(d, tfOptionsList, d.Get("type").(string))
 		payload.SetOptions(*payloadOptions)
 
 		// Only update if options actually changed
