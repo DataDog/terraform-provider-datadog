@@ -970,6 +970,24 @@ var ToplistWidgetSpec = WidgetSpec{
 	},
 }
 
+// BarChartWidgetSpec corresponds to OpenAPI BarChartWidgetDefinition.
+// Uses scalarFormulaRequestConfig (the default) for formula requests.
+var BarChartWidgetSpec = WidgetSpec{
+	HCLKey:      "bar_chart_definition",
+	JSONType:    "bar_chart",
+	Description: "The definition for a Bar Chart widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+			Description: "The style of the bar chart widget.",
+			Children:    barChartWidgetStyleFields},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			MaxItems:    1,
+			Description: "A nested block describing the request to use when displaying the widget. Only one `request` block is allowed.",
+			Children:    barChartWidgetRequestFields},
+		widgetCustomLinkField,
+	},
+}
+
 // ScatterplotWidgetSpec corresponds to OpenAPI ScatterPlotWidgetDefinition.
 // "requests" is a JSON *object* (x + y keys), not an array.
 var scatterplotRequestOuterFields = []FieldSpec{
@@ -1380,6 +1398,7 @@ var allWidgetSpecs = []WidgetSpec{
 	HostmapWidgetSpec,
 	QueryValueWidgetSpec,
 	ToplistWidgetSpec,
+	BarChartWidgetSpec,
 	ScatterplotWidgetSpec,
 	SunburstWidgetSpec,
 	GeomapWidgetSpec,
