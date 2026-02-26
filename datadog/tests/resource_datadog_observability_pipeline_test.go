@@ -3439,7 +3439,7 @@ func TestAccDatadogObservabilityPipeline_ocsfMapperCustomMappings(t *testing.T) 
 	resourceName := "datadog_observability_pipeline.ocsf_custom"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
