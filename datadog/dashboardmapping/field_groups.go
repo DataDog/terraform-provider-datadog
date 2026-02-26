@@ -1,7 +1,5 @@
 package dashboardmapping
 
-import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 // field_groups.go
 //
 // All reusable []FieldSpec variables that mirror OpenAPI components/schemas/ entries.
@@ -30,13 +28,13 @@ import "github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 // JSON key: "custom_links" (plural, matching OpenAPI)
 var widgetCustomLinkFields = []FieldSpec{
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
-		Description: "The label for the custom link URL."},
+		Description: "The label for the custom link URL. Keep the label short and descriptive. Use metrics and tags as variables."},
 	{HCLKey: "link", Type: TypeString, OmitEmpty: false,
-		Description: "The URL of the custom link."},
+		Description: "The URL of the custom link. URL must include `http` or `https`. A relative URL must start with `/`."},
 	{HCLKey: "is_hidden", Type: TypeBool, OmitEmpty: true,
 		Description: "The flag for toggling context menu link visibility."},
 	{HCLKey: "override_label", Type: TypeString, OmitEmpty: true,
-		Description: "The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field."},
+		Description: "The label ID that refers to a context menu link. Can be `logs`, `hosts`, `traces`, `profiles`, `processes`, `containers`, or `rum`."},
 }
 
 // widgetCustomLinkField is the standard custom_link FieldSpec entry used by
@@ -68,17 +66,17 @@ var widgetTimeField = FieldSpec{
 // Used by: timeseries (yaxis + right_yaxis), distribution, heatmap, scatterplot.
 var widgetAxisFields = []FieldSpec{
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
-		Description: "The label of the axis to display on the graph."},
+		Description: "The label of the axis to display on the graph. Only usable on Scatterplot Widgets."},
 	{HCLKey: "min", Type: TypeString, OmitEmpty: true,
-		Description: "Specify the minimum value to show on the Y-axis."},
+		Description: "Specifies the minimum numeric value to show on the axis. Defaults to `auto`."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
-		Description: "Specify the maximum value to show on the Y-axis."},
+		Description: "Specifies the maximum numeric value to show on the axis. Defaults to `auto`."},
 	{HCLKey: "scale", Type: TypeString, OmitEmpty: true,
-		Description: "Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`."},
+		Description: "Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`)."},
 	// include_zero is always emitted even when false (OmitEmpty: false)
 	// confirmed by cassette: "include_zero": false appears in right_yaxis
 	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: false,
-		Description: "Always include zero or fit the axis to the data range."},
+		Description: "Set to `true` to include zero."},
 }
 
 // widgetMarkerFields corresponds to OpenAPI components/schemas/WidgetMarker.
@@ -86,11 +84,11 @@ var widgetAxisFields = []FieldSpec{
 // HCL key: "marker" (singular), JSON key: "markers" (plural).
 var widgetMarkerFields = []FieldSpec{
 	{HCLKey: "value", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "A mathematical expression describing the marker, for example: `y > 1`, `-5 < y < 0`, `y = 19`."},
+		Description: "Value to apply. Can be a single value `y = 15` or a range of values `0 < y < 10`. For Distribution widgets with `display_type` set to `percentile`, this should be a numeric percentile value (for example, `90` for P90)."},
 	{HCLKey: "display_type", Type: TypeString, OmitEmpty: true,
-		Description: "How the marker lines are displayed, options are one of {`error`, `warning`, `info`, `ok`} combined with one of {`dashed`, `solid`, `bold`}. Example: `error dashed`."},
+		Description: "Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`."},
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
-		Description: "A label for the line or range."},
+		Description: "Label to display over the marker."},
 }
 
 // widgetEventFields corresponds to OpenAPI components/schemas/WidgetEvent.
@@ -154,7 +152,7 @@ var logsQueryComputeFields = []FieldSpec{
 // HCL uses "compute_query" instead of "compute" (disambiguates from other uses); JSONKey: "compute".
 var logQueryDefinitionFields = []FieldSpec{
 	{HCLKey: "index", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "The name of the index to query."},
+		Description: "A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes)."},
 	// search_query (flat HCL) → {"search": {"query": "..."}} (nested JSON) via JSONPath
 	{HCLKey: "search_query", JSONPath: "search.query", Type: TypeString, OmitEmpty: false,
 		Description: "The search query to use."},
@@ -254,12 +252,12 @@ var formulaAndFunctionEventQueryFields = []FieldSpec{
 		Description: "The data source for event platform-based queries.",
 		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events"}},
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
-		Description: "Storage location (private beta)."},
+		Description: "Option for storage location. Feature in Private Beta."},
 	{HCLKey: "search", Type: TypeBlock, OmitEmpty: true,
 		Description: "The search options.",
 		Children:    formulaAndFunctionEventQuerySearchFields},
 	{HCLKey: "indexes", Type: TypeStringList, OmitEmpty: true,
-		Description: "An array of index names to query in the stream."},
+		Description: "An array of index names to query in the stream. Omit or use `[]` to query all indexes at once."},
 	{HCLKey: "cross_org_uuids", Type: TypeStringList, OmitEmpty: true, MaxItems: 1,
 		Description: "The source organization UUID for cross organization queries. Feature in Private Beta."},
 	{HCLKey: "compute", Type: TypeBlockList, OmitEmpty: false, Required: true,
@@ -367,7 +365,7 @@ var formulaAndFunctionSLOQueryFields = []FieldSpec{
 	{HCLKey: "cross_org_uuids", Type: TypeStringList, OmitEmpty: true, MaxItems: 1,
 		Description: "The source organization UUID for cross organization queries. Feature in Private Beta."},
 	{HCLKey: "slo_id", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "ID of an SLO to query."},
+		Description: "ID of an SLO to query measures."},
 	{HCLKey: "measure", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "SLO measures queries.",
 		ValidValues: []string{"good_events", "bad_events", "good_minutes", "bad_minutes", "slo_status", "error_budget_remaining", "burn_rate", "error_budget_burndown"}},
@@ -392,7 +390,7 @@ var formulaAndFunctionCloudCostQueryFields = []FieldSpec{
 	{HCLKey: "cross_org_uuids", Type: TypeStringList, OmitEmpty: true, MaxItems: 1,
 		Description: "The source organization UUID for cross organization queries. Feature in Private Beta."},
 	{HCLKey: "query", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "The cloud cost query definition."},
+		Description: "Query for Cloud Cost data."},
 	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
 		Description: "The aggregation methods available for cloud cost queries.",
 		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"}},
@@ -520,7 +518,7 @@ var numberFormatUnitFields = []FieldSpec{
 // numberFormatUnitScaleFields corresponds to the unit_scale block inside WidgetNumberFormat.
 var numberFormatUnitScaleFields = []FieldSpec{
 	{HCLKey: "unit_name", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: ""},
+		Description: "The name of the unit."},
 }
 
 // widgetNumberFormatFields corresponds to OpenAPI WidgetNumberFormat.
@@ -530,7 +528,7 @@ var widgetNumberFormatFields = []FieldSpec{
 		Description: "Unit of the number format. ",
 		Children:    numberFormatUnitFields},
 	{HCLKey: "unit_scale", Type: TypeBlock, OmitEmpty: true,
-		Description: "",
+		Description: "The definition of `NumberFormatUnitScale` object.",
 		Children:    numberFormatUnitScaleFields},
 }
 
@@ -717,7 +715,7 @@ var topologyQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for the Topology request ('service_map' or 'data_streams')."},
 	{HCLKey: "service", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "The ID of the service to map."},
+		Description: "Name of the service."},
 	{HCLKey: "filters", Type: TypeStringList, OmitEmpty: false, Required: true,
 		Description: "Your environment and primary tag (or `*` if enabled for your account)."},
 }
@@ -867,7 +865,7 @@ var queryTableOldRequestFields = []FieldSpec{
 	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget. The structure of this block is described below.", Children: processQueryDefinitionFields},
 	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Children: apmStatsQueryFields},
+	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Description: "The APM stats query for table and distribution widgets.", Children: apmStatsQueryFields},
 	// conditional_formats (old-style requests have these at the request level)
 	{
 		HCLKey:      "conditional_formats",
@@ -884,7 +882,7 @@ var queryTableOldRequestFields = []FieldSpec{
 		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"},
 	},
 	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "The alias for the column name (defaults to metric name)."},
-	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "The number of lines to show in the table."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "For metric queries, the number of lines to show in the table. Only one request should have this property."},
 	{
 		HCLKey:      "order",
 		Type:        TypeString,
@@ -1162,7 +1160,7 @@ var splitConfigFields = []FieldSpec{
 		Type:        TypeBlockList,
 		OmitEmpty:   true,
 		SchemaOnly:  true,
-		Description: "The property by which the graph splits",
+		Description: "Manual selection of tags making split graph widget static.",
 		Children:    staticSplitsEntryFields,
 	},
 }
@@ -1247,15 +1245,14 @@ var DashboardTopLevelFields = []FieldSpec{
 	{HCLKey: "description", Type: TypeString, OmitEmpty: true,
 		Description: "The description of the dashboard."},
 
-	// url: Computed+Optional. Always suppress diff — value is assigned by API and cannot be updated.
-	// SchemaOnly: managed by UpdateDashboardEngineState, not serialized to JSON.
+	// url: Computed+Optional. Value is assigned by API and cannot be updated.
+	// SchemaOnly: managed in flatten direction only, not serialized to JSON.
 	{HCLKey: "url", Type: TypeString, Computed: true, OmitEmpty: true, SchemaOnly: true,
-		DiffSuppress: func(_, _, _ string, _ *schema.ResourceData) bool { return true },
-		Description:  "The URL of the dashboard."},
+		Description: "The URL of the dashboard."},
 
 	{HCLKey: "restricted_roles", Type: TypeStringList, UseSet: true, OmitEmpty: true,
 		ConflictsWith: []string{"is_read_only"},
-		Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard."},
+		Description:   "A list of role identifiers. Only the author and users associated with at least one of these roles can edit this dashboard."},
 
 	// template_variable (HCL singular) → template_variables (JSON plural)
 	{HCLKey: "template_variable", JSONKey: "template_variables",

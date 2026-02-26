@@ -12,8 +12,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 // FieldType drives serialization/deserialization behavior in the engine.
@@ -86,15 +87,6 @@ type FieldSpec struct {
 	// Use instead of SDK-based enum validators.
 	ValidValues []string
 
-	// ValidateDiag: arbitrary validator (escape hatch for complex cases).
-	// Use ValidValues for simple enums; ValidateDiag for everything else.
-	ValidateDiag schema.SchemaValidateDiagFunc
-
-	// Validate: legacy-style SchemaValidateFunc. Use when the error message
-	// format must match an existing test (ValidateFunc includes the full
-	// attribute path in the error, ValidateDiag may not).
-	Validate schema.SchemaValidateFunc
-
 	// ConflictsWith: field paths this field conflicts with.
 	// Populated post-generation for the rare fields that need it.
 	ConflictsWith []string
@@ -105,9 +97,6 @@ type FieldSpec struct {
 
 	// ForceNew: when true, changing this field forces resource replacement.
 	ForceNew bool
-
-	// DiffSuppress: custom diff suppression function.
-	DiffSuppress schema.SchemaDiffSuppressFunc
 
 	// SchemaOnly: if true, this field is for schema registration only.
 	// BuildEngineJSON skips it. Use for fields like dashboard_lists
@@ -153,45 +142,157 @@ type WidgetSpec struct {
 }
 
 // ============================================================
+// Framework attr.Value helpers
+// ============================================================
+
+// getStrAttr gets a string attr, returns ("", false) if null/unknown/missing.
+func getStrAttr(attrs map[string]attr.Value, key string) (string, bool) {
+	raw, ok := attrs[key]
+	if !ok {
+		return "", false
+	}
+	sv, ok := raw.(types.String)
+	if !ok || sv.IsNull() || sv.IsUnknown() {
+		return "", false
+	}
+	return sv.ValueString(), true
+}
+
+// getBoolAttr gets a bool attr, returns (false, false) if null/unknown/missing.
+func getBoolAttr(attrs map[string]attr.Value, key string) (bool, bool) {
+	raw, ok := attrs[key]
+	if !ok {
+		return false, false
+	}
+	bv, ok := raw.(types.Bool)
+	if !ok || bv.IsNull() || bv.IsUnknown() {
+		return false, false
+	}
+	return bv.ValueBool(), true
+}
+
+// getInt64Attr gets an int64 attr, returns (0, false) if null/unknown/missing.
+func getInt64Attr(attrs map[string]attr.Value, key string) (int64, bool) {
+	raw, ok := attrs[key]
+	if !ok {
+		return 0, false
+	}
+	iv, ok := raw.(types.Int64)
+	if !ok || iv.IsNull() || iv.IsUnknown() {
+		return 0, false
+	}
+	return iv.ValueInt64(), true
+}
+
+// getFloat64Attr gets a float64 attr, returns (0, false) if null/unknown/missing.
+func getFloat64Attr(attrs map[string]attr.Value, key string) (float64, bool) {
+	raw, ok := attrs[key]
+	if !ok {
+		return 0, false
+	}
+	fv, ok := raw.(types.Float64)
+	if !ok || fv.IsNull() || fv.IsUnknown() {
+		return 0, false
+	}
+	return fv.ValueFloat64(), true
+}
+
+// getListElems returns the elements of a list/set attr, or nil if missing/null/empty.
+func getListElems(attrs map[string]attr.Value, key string) []attr.Value {
+	raw, ok := attrs[key]
+	if !ok {
+		return nil
+	}
+	switch v := raw.(type) {
+	case types.List:
+		if v.IsNull() || v.IsUnknown() {
+			return nil
+		}
+		return v.Elements()
+	case types.Set:
+		if v.IsNull() || v.IsUnknown() {
+			return nil
+		}
+		return v.Elements()
+	}
+	return nil
+}
+
+// getObjAttrs returns the attributes map of the first element of a list attr,
+// or nil if missing/null/empty.
+func getObjAttrs(attrs map[string]attr.Value, key string) map[string]attr.Value {
+	elems := getListElems(attrs, key)
+	if len(elems) == 0 {
+		return nil
+	}
+	obj, ok := elems[0].(types.Object)
+	if !ok {
+		return nil
+	}
+	return obj.Attributes()
+}
+
+// getStrListElems returns the string values from a list/set of strings attr.
+func getStrListElems(attrs map[string]attr.Value, key string) []string {
+	elems := getListElems(attrs, key)
+	if len(elems) == 0 {
+		return nil
+	}
+	result := make([]string, 0, len(elems))
+	for _, elem := range elems {
+		if sv, ok := elem.(types.String); ok && !sv.IsNull() {
+			result = append(result, sv.ValueString())
+		}
+	}
+	return result
+}
+
+// getInt64ListElems returns the int64 values from a list of int64 attrs.
+func getInt64ListElems(attrs map[string]attr.Value, key string) []int64 {
+	elems := getListElems(attrs, key)
+	if len(elems) == 0 {
+		return nil
+	}
+	result := make([]int64, 0, len(elems))
+	for _, elem := range elems {
+		if iv, ok := elem.(types.Int64); ok && !iv.IsNull() {
+			result = append(result, iv.ValueInt64())
+		}
+	}
+	return result
+}
+
+// ============================================================
 // Generic Engine: HCL → JSON (build direction)
 // ============================================================
 
-// BuildEngineJSON converts schema.ResourceData at the given HCL path prefix to a JSON map.
-// hclPrefix is the dotted path to the parent block, e.g., "widget.0.timeseries_definition.0"
-func BuildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpec) map[string]interface{} {
+// BuildEngineJSON converts a framework attrs map to a JSON map.
+func BuildEngineJSON(attrs map[string]attr.Value, fields []FieldSpec) map[string]interface{} {
 	result := map[string]interface{}{}
 	for _, f := range fields {
 		if f.SchemaOnly {
 			continue
 		}
-		var hclPath string
-		if hclPrefix == "" {
-			hclPath = f.HCLKey
-		} else {
-			hclPath = hclPrefix + "." + f.HCLKey
-		}
-
+		raw, present := attrs[f.HCLKey]
 		switch f.Type {
 		case TypeString:
-			val, ok := d.GetOk(hclPath)
-			if !ok {
-				if f.OmitEmpty {
-					continue
+			var strVal string
+			if present {
+				if sv, ok := raw.(types.String); ok && !sv.IsNull() && !sv.IsUnknown() {
+					strVal = sv.ValueString()
 				}
-				// Not OmitEmpty: include zero value
-				val = ""
 			}
-			strVal := fmt.Sprintf("%v", val)
 			if f.OmitEmpty && strVal == "" {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), strVal)
 
 		case TypeBool:
-			raw := d.Get(hclPath)
-			boolVal, ok := raw.(bool)
-			if !ok {
-				boolVal = false
+			boolVal := false
+			if present {
+				if bv, ok := raw.(types.Bool); ok && !bv.IsNull() && !bv.IsUnknown() {
+					boolVal = bv.ValueBool()
+				}
 			}
 			if f.OmitEmpty && !boolVal {
 				continue
@@ -199,13 +300,11 @@ func BuildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpe
 			setAtJSONPath(result, f.effectiveJSONPath(), boolVal)
 
 		case TypeInt:
-			raw := d.Get(hclPath)
 			var intVal int
-			switch v := raw.(type) {
-			case int:
-				intVal = v
-			case float64:
-				intVal = int(v)
+			if present {
+				if iv, ok := raw.(types.Int64); ok && !iv.IsNull() && !iv.IsUnknown() {
+					intVal = int(iv.ValueInt64())
+				}
 			}
 			if f.OmitEmpty && intVal == 0 {
 				continue
@@ -213,13 +312,11 @@ func BuildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpe
 			setAtJSONPath(result, f.effectiveJSONPath(), intVal)
 
 		case TypeFloat:
-			raw := d.Get(hclPath)
 			var floatVal float64
-			switch v := raw.(type) {
-			case float64:
-				floatVal = v
-			case int:
-				floatVal = float64(v)
+			if present {
+				if fv, ok := raw.(types.Float64); ok && !fv.IsNull() && !fv.IsUnknown() {
+					floatVal = fv.ValueFloat64()
+				}
 			}
 			if f.OmitEmpty && floatVal == 0 {
 				continue
@@ -227,21 +324,9 @@ func BuildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpe
 			setAtJSONPath(result, f.effectiveJSONPath(), floatVal)
 
 		case TypeStringList:
-			// Handle both TypeList and TypeSet of strings
-			raw := d.Get(hclPath)
 			var strs []string
-			switch v := raw.(type) {
-			case []interface{}:
-				strs = make([]string, len(v))
-				for i, s := range v {
-					strs[i] = fmt.Sprintf("%v", s)
-				}
-			case *schema.Set:
-				list := v.List()
-				strs = make([]string, len(list))
-				for i, s := range list {
-					strs[i] = fmt.Sprintf("%v", s)
-				}
+			if present {
+				strs = getStrListElems(attrs, f.HCLKey)
 			}
 			if f.OmitEmpty && len(strs) == 0 {
 				continue
@@ -251,22 +336,43 @@ func BuildEngineJSON(d *schema.ResourceData, hclPrefix string, fields []FieldSpe
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), strs)
 
-		case TypeBlock:
-			count, _ := d.Get(hclPath + ".#").(int)
-			if count == 0 {
+		case TypeIntList:
+			var ints []int64
+			if present {
+				ints = getInt64ListElems(attrs, f.HCLKey)
+			}
+			if f.OmitEmpty && len(ints) == 0 {
 				continue
 			}
-			nested := BuildEngineJSON(d, hclPath+".0", f.Children)
+			if ints == nil {
+				ints = []int64{}
+			}
+			setAtJSONPath(result, f.effectiveJSONPath(), ints)
+
+		case TypeBlock:
+			elems := getListElems(attrs, f.HCLKey)
+			if len(elems) == 0 {
+				continue
+			}
+			childObj, ok := elems[0].(types.Object)
+			if !ok {
+				continue
+			}
+			nested := BuildEngineJSON(childObj.Attributes(), f.Children)
 			if len(nested) == 0 && f.OmitEmpty {
 				continue
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), nested)
 
 		case TypeBlockList:
-			count, _ := d.Get(hclPath + ".#").(int)
-			items := make([]interface{}, count)
-			for i := 0; i < count; i++ {
-				items[i] = BuildEngineJSON(d, fmt.Sprintf("%s.%d", hclPath, i), f.Children)
+			elems := getListElems(attrs, f.HCLKey)
+			items := make([]interface{}, 0, len(elems))
+			for _, elem := range elems {
+				childObj, ok := elem.(types.Object)
+				if !ok {
+					continue
+				}
+				items = append(items, BuildEngineJSON(childObj.Attributes(), f.Children))
 			}
 			if f.OmitEmpty && len(items) == 0 {
 				continue
@@ -399,46 +505,54 @@ func toStringSliceFromInterface(raw interface{}) []string {
 // ============================================================
 
 // buildWidgetEngineJSON builds the JSON for a single widget by dispatching to the correct WidgetSpec.
-// widgetPath is the dotted HCL path to the widget block, e.g. "widget.0" or
-// "widget.0.group_definition.0.widget.2".
-func buildWidgetEngineJSON(d *schema.ResourceData, widgetPath string) map[string]interface{} {
+// attrs is the attributes map of the widget block.
+func buildWidgetEngineJSON(attrs map[string]attr.Value) map[string]interface{} {
 	for _, spec := range allWidgetSpecs {
-		defPath := fmt.Sprintf("%s.%s.#", widgetPath, spec.HCLKey)
-		count, _ := d.Get(defPath).(int)
-		if count == 0 {
+		elems := getListElems(attrs, spec.HCLKey)
+		if len(elems) == 0 {
 			continue
 		}
-		defHCLPath := fmt.Sprintf("%s.%s.0", widgetPath, spec.HCLKey)
+		defObj, ok := elems[0].(types.Object)
+		if !ok {
+			continue
+		}
+		defAttrs := defObj.Attributes()
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defJSON := BuildEngineJSON(d, defHCLPath, allFields)
+		defJSON := BuildEngineJSON(defAttrs, allFields)
 		defJSON["type"] = spec.JSONType
 
 		// Per-widget post-processing: formula/query blocks, type-specific fixups,
 		// and Batch C complex widget handling — all consolidated in one hook.
-		buildWidgetPostProcess(d, spec, defHCLPath, defJSON)
+		buildWidgetPostProcess(defAttrs, spec, defJSON)
 
 		widgetJSON := map[string]interface{}{"definition": defJSON}
 
 		// Include widget_layout if present (required for 'free' layout dashboards).
 		// HCL: widget_layout { x, y, width, height, is_column_break }
 		// JSON: layout { x, y, width, height, is_column_break }
-		layoutPath := widgetPath + ".widget_layout.#"
-		if layoutCount, _ := d.Get(layoutPath).(int); layoutCount > 0 {
-			lPath := widgetPath + ".widget_layout.0"
-			layout := map[string]interface{}{}
-			// Use d.Get (not d.GetOk) for x, y, width, height because GetOk
-			// returns ok=false for zero-valued integers (e.g., y=0), which
-			// would incorrectly omit these required layout fields.
-			layout["x"] = d.Get(lPath + ".x")
-			layout["y"] = d.Get(lPath + ".y")
-			layout["width"] = d.Get(lPath + ".width")
-			layout["height"] = d.Get(lPath + ".height")
-			if v, ok := d.Get(lPath + ".is_column_break").(bool); ok && v {
-				layout["is_column_break"] = v
+		if layoutElems := getListElems(attrs, "widget_layout"); len(layoutElems) > 0 {
+			if layoutObj, ok := layoutElems[0].(types.Object); ok {
+				layoutAttrs := layoutObj.Attributes()
+				layout := map[string]interface{}{}
+				if v, ok := getInt64Attr(layoutAttrs, "x"); ok {
+					layout["x"] = int(v)
+				}
+				if v, ok := getInt64Attr(layoutAttrs, "y"); ok {
+					layout["y"] = int(v)
+				}
+				if v, ok := getInt64Attr(layoutAttrs, "width"); ok {
+					layout["width"] = int(v)
+				}
+				if v, ok := getInt64Attr(layoutAttrs, "height"); ok {
+					layout["height"] = int(v)
+				}
+				if v, ok := getBoolAttr(layoutAttrs, "is_column_break"); ok && v {
+					layout["is_column_break"] = v
+				}
+				widgetJSON["layout"] = layout
 			}
-			widgetJSON["layout"] = layout
 		}
 
 		return widgetJSON
@@ -449,51 +563,40 @@ func buildWidgetEngineJSON(d *schema.ResourceData, widgetPath string) map[string
 // buildFormulaQueryRequestJSON builds the JSON for a new-style formula/query request.
 // These requests use `formulas`, `queries`, and `response_format` instead of the
 // old-style `q`, `log_query`, etc.
-func buildFormulaQueryRequestJSON(d *schema.ResourceData, reqPath string) map[string]interface{} {
+func buildFormulaQueryRequestJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
 
 	// on_right_yaxis is always emitted (OmitEmpty: false)
-	onRightYaxis, _ := d.Get(reqPath + ".on_right_yaxis").(bool)
+	onRightYaxis, _ := getBoolAttr(attrs, "on_right_yaxis")
 	result["on_right_yaxis"] = onRightYaxis
 
 	// display_type (optional)
-	if dt, ok := d.GetOk(reqPath + ".display_type"); ok {
-		result["display_type"] = fmt.Sprintf("%v", dt)
+	if dt, ok := getStrAttr(attrs, "display_type"); ok && dt != "" {
+		result["display_type"] = dt
 	}
 
 	// formulas — use widgetFormulaFields engine for standard fields.
 	// number_format is excluded from widgetFormulaFields (polymorphic structure);
 	// it is not present on timeseries formula requests.
-	formulaCount, _ := d.Get(reqPath + ".formula.#").(int)
-	if formulaCount > 0 {
-		formulas := make([]interface{}, formulaCount)
-		for fi := 0; fi < formulaCount; fi++ {
-			fPath := fmt.Sprintf("%s.formula.%d", reqPath, fi)
-			formulas[fi] = BuildEngineJSON(d, fPath, widgetFormulaFields)
+	formulaElems := getListElems(attrs, "formula")
+	if len(formulaElems) > 0 {
+		formulas := make([]interface{}, 0, len(formulaElems))
+		for _, elem := range formulaElems {
+			if fObj, ok := elem.(types.Object); ok {
+				formulas = append(formulas, BuildEngineJSON(fObj.Attributes(), widgetFormulaFields))
+			}
 		}
 		result["formulas"] = formulas
 	}
 
 	// queries (polymorphic: each query block has one of metric_query, event_query, etc.)
-	queryCount, _ := d.Get(reqPath + ".query.#").(int)
-	if queryCount > 0 {
-		queries := make([]interface{}, queryCount)
-		for qi := 0; qi < queryCount; qi++ {
-			qPath := fmt.Sprintf("%s.query.%d", reqPath, qi)
-			var queryJSON map[string]interface{}
-
-			if n, _ := d.Get(qPath + ".metric_query.#").(int); n > 0 {
-				queryJSON = buildMetricQueryJSON(d, qPath+".metric_query.0")
-			} else if n, _ := d.Get(qPath + ".event_query.#").(int); n > 0 {
-				queryJSON = buildEventQueryJSON(d, qPath+".event_query.0")
-			} else if n, _ := d.Get(qPath + ".process_query.#").(int); n > 0 {
-				queryJSON = buildFormulaProcessQueryJSON(d, qPath+".process_query.0")
-			} else if n, _ := d.Get(qPath + ".slo_query.#").(int); n > 0 {
-				queryJSON = buildSLOQueryJSON(d, qPath+".slo_query.0")
-			} else if n, _ := d.Get(qPath + ".cloud_cost_query.#").(int); n > 0 {
-				queryJSON = buildCloudCostQueryJSON(d, qPath+".cloud_cost_query.0")
+	queryElems := getListElems(attrs, "query")
+	if len(queryElems) > 0 {
+		queries := make([]interface{}, 0, len(queryElems))
+		for _, elem := range queryElems {
+			if qObj, ok := elem.(types.Object); ok {
+				queries = append(queries, buildQueryFromAttrs(qObj.Attributes()))
 			}
-			queries[qi] = queryJSON
 		}
 		result["queries"] = queries
 	}
@@ -501,16 +604,16 @@ func buildFormulaQueryRequestJSON(d *schema.ResourceData, reqPath string) map[st
 	// style (optional, present on timeseries formula requests at the request level)
 	// This is request-level style (palette, line_type, line_width), distinct from
 	// the per-formula style (palette, palette_index) in widgetFormulaFields.
-	if styleCount, _ := d.Get(reqPath + ".style.#").(int); styleCount > 0 {
+	if styleAttrs := getObjAttrs(attrs, "style"); styleAttrs != nil {
 		style := map[string]interface{}{}
-		if v, ok := d.GetOk(reqPath + ".style.0.palette"); ok && v != "" {
-			style["palette"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(styleAttrs, "palette"); ok && v != "" {
+			style["palette"] = v
 		}
-		if v, ok := d.GetOk(reqPath + ".style.0.line_type"); ok && v != "" {
-			style["line_type"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(styleAttrs, "line_type"); ok && v != "" {
+			style["line_type"] = v
 		}
-		if v, ok := d.GetOk(reqPath + ".style.0.line_width"); ok && v != "" {
-			style["line_width"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(styleAttrs, "line_width"); ok && v != "" {
+			style["line_width"] = v
 		}
 		if len(style) > 0 {
 			result["style"] = style
@@ -518,11 +621,31 @@ func buildFormulaQueryRequestJSON(d *schema.ResourceData, reqPath string) map[st
 	}
 
 	// response_format is always "timeseries" for formula/query requests
-	if formulaCount > 0 || queryCount > 0 {
+	if len(formulaElems) > 0 || len(queryElems) > 0 {
 		result["response_format"] = "timeseries"
 	}
 
 	return result
+}
+
+// buildQueryFromAttrs dispatches a query attrs map to the appropriate query builder.
+func buildQueryFromAttrs(attrs map[string]attr.Value) map[string]interface{} {
+	if metricAttrs := getObjAttrs(attrs, "metric_query"); metricAttrs != nil {
+		return buildMetricQueryJSON(metricAttrs)
+	}
+	if eventAttrs := getObjAttrs(attrs, "event_query"); eventAttrs != nil {
+		return buildEventQueryJSON(eventAttrs)
+	}
+	if procAttrs := getObjAttrs(attrs, "process_query"); procAttrs != nil {
+		return buildFormulaProcessQueryJSON(procAttrs)
+	}
+	if sloAttrs := getObjAttrs(attrs, "slo_query"); sloAttrs != nil {
+		return buildSLOQueryJSON(sloAttrs)
+	}
+	if ccAttrs := getObjAttrs(attrs, "cloud_cost_query"); ccAttrs != nil {
+		return buildCloudCostQueryJSON(ccAttrs)
+	}
+	return nil
 }
 
 // isFormulaCapableWidget returns true for widget types that support
@@ -558,62 +681,44 @@ func formulaResponseFormat(jsonType string) string {
 // buildScalarFormulaQueryRequestJSON builds the JSON for a new-style formula/query
 // request for scalar-response widgets (change, query_value, sunburst, geomap, treemap, toplist).
 // For timeseries, use buildFormulaQueryRequestJSON instead (response_format: "timeseries").
-func buildScalarFormulaQueryRequestJSON(d *schema.ResourceData, reqPath string, widgetType string) map[string]interface{} {
+func buildScalarFormulaQueryRequestJSON(attrs map[string]attr.Value, widgetType string) map[string]interface{} {
 	result := map[string]interface{}{}
 
 	// change widget has increase_good and show_present even in formula requests
 	if widgetType == "change" {
-		increaseGood, _ := d.Get(reqPath + ".increase_good").(bool)
+		increaseGood, _ := getBoolAttr(attrs, "increase_good")
 		result["increase_good"] = increaseGood
-		showPresent, _ := d.Get(reqPath + ".show_present").(bool)
+		showPresent, _ := getBoolAttr(attrs, "show_present")
 		result["show_present"] = showPresent
-		if v, ok := d.GetOk(reqPath + ".change_type"); ok {
-			result["change_type"] = fmt.Sprintf("%v", v)
-		}
-		if v, ok := d.GetOk(reqPath + ".compare_to"); ok {
-			result["compare_to"] = fmt.Sprintf("%v", v)
-		}
-		if v, ok := d.GetOk(reqPath + ".order_by"); ok {
-			result["order_by"] = fmt.Sprintf("%v", v)
-		}
-		if v, ok := d.GetOk(reqPath + ".order_dir"); ok {
-			result["order_dir"] = fmt.Sprintf("%v", v)
+		for _, field := range []string{"change_type", "compare_to", "order_by", "order_dir"} {
+			if v, ok := getStrAttr(attrs, field); ok && v != "" {
+				result[field] = v
+			}
 		}
 	}
 
 	// formulas — use widgetFormulaFields engine for standard fields.
 	// number_format is excluded from widgetFormulaFields (polymorphic structure);
 	// it is not present on scalar formula requests for non-query_table widgets.
-	formulaCount, _ := d.Get(reqPath + ".formula.#").(int)
-	if formulaCount > 0 {
-		formulas := make([]interface{}, formulaCount)
-		for fi := 0; fi < formulaCount; fi++ {
-			fPath := fmt.Sprintf("%s.formula.%d", reqPath, fi)
-			formulas[fi] = BuildEngineJSON(d, fPath, widgetFormulaFields)
+	formulaElems := getListElems(attrs, "formula")
+	if len(formulaElems) > 0 {
+		formulas := make([]interface{}, 0, len(formulaElems))
+		for _, elem := range formulaElems {
+			if fObj, ok := elem.(types.Object); ok {
+				formulas = append(formulas, BuildEngineJSON(fObj.Attributes(), widgetFormulaFields))
+			}
 		}
 		result["formulas"] = formulas
 	}
 
 	// queries (polymorphic)
-	queryCount, _ := d.Get(reqPath + ".query.#").(int)
-	if queryCount > 0 {
-		queries := make([]interface{}, queryCount)
-		for qi := 0; qi < queryCount; qi++ {
-			qPath := fmt.Sprintf("%s.query.%d", reqPath, qi)
-			var queryJSON map[string]interface{}
-
-			if n, _ := d.Get(qPath + ".metric_query.#").(int); n > 0 {
-				queryJSON = buildMetricQueryJSON(d, qPath+".metric_query.0")
-			} else if n, _ := d.Get(qPath + ".event_query.#").(int); n > 0 {
-				queryJSON = buildEventQueryJSON(d, qPath+".event_query.0")
-			} else if n, _ := d.Get(qPath + ".process_query.#").(int); n > 0 {
-				queryJSON = buildFormulaProcessQueryJSON(d, qPath+".process_query.0")
-			} else if n, _ := d.Get(qPath + ".slo_query.#").(int); n > 0 {
-				queryJSON = buildSLOQueryJSON(d, qPath+".slo_query.0")
-			} else if n, _ := d.Get(qPath + ".cloud_cost_query.#").(int); n > 0 {
-				queryJSON = buildCloudCostQueryJSON(d, qPath+".cloud_cost_query.0")
+	queryElems := getListElems(attrs, "query")
+	if len(queryElems) > 0 {
+		queries := make([]interface{}, 0, len(queryElems))
+		for _, elem := range queryElems {
+			if qObj, ok := elem.(types.Object); ok {
+				queries = append(queries, buildQueryFromAttrs(qObj.Attributes()))
 			}
-			queries[qi] = queryJSON
 		}
 		result["queries"] = queries
 	}
@@ -621,10 +726,10 @@ func buildScalarFormulaQueryRequestJSON(d *schema.ResourceData, reqPath string, 
 	// style (optional, present on sunburst/toplist/etc. formula requests at the request level)
 	// This is request-level style (just palette for scalar widgets), distinct from
 	// the per-formula style (palette, palette_index) in widgetFormulaFields.
-	if styleCount, _ := d.Get(reqPath + ".style.#").(int); styleCount > 0 {
+	if styleAttrs := getObjAttrs(attrs, "style"); styleAttrs != nil {
 		style := map[string]interface{}{}
-		if v, ok := d.GetOk(reqPath + ".style.0.palette"); ok && v != "" {
-			style["palette"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(styleAttrs, "palette"); ok && v != "" {
+			style["palette"] = v
 		}
 		if len(style) > 0 {
 			result["style"] = style
@@ -632,7 +737,7 @@ func buildScalarFormulaQueryRequestJSON(d *schema.ResourceData, reqPath string, 
 	}
 
 	// response_format depends on widget type
-	if formulaCount > 0 || queryCount > 0 {
+	if len(formulaElems) > 0 || len(queryElems) > 0 {
 		result["response_format"] = formulaResponseFormat(widgetType)
 	}
 
@@ -640,130 +745,115 @@ func buildScalarFormulaQueryRequestJSON(d *schema.ResourceData, reqPath string, 
 }
 
 // buildMetricQueryJSON builds the JSON for a formula metric_query block.
-func buildMetricQueryJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildMetricQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
-	if v, ok := d.GetOk(path + ".data_source"); ok {
-		result["data_source"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "data_source"); ok && v != "" {
+		result["data_source"] = v
 	} else {
 		result["data_source"] = "metrics" // default
 	}
-	if v, ok := d.GetOk(path + ".query"); ok {
-		result["query"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "query"); ok {
+		result["query"] = v
 	}
-	if v, ok := d.GetOk(path + ".name"); ok {
-		result["name"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "name"); ok {
+		result["name"] = v
 	}
-	if v, ok := d.GetOk(path + ".aggregator"); ok && v != "" {
-		result["aggregator"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "aggregator"); ok && v != "" {
+		result["aggregator"] = v
 	}
-	if v, ok := d.GetOk(path + ".semantic_mode"); ok && v != "" {
-		result["semantic_mode"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "semantic_mode"); ok && v != "" {
+		result["semantic_mode"] = v
 	}
 	// cross_org_uuids: list of one string
-	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
-		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
-			if s, ok := items[0].(string); ok && s != "" {
-				result["cross_org_uuids"] = []string{s}
-			}
+	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
+		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
+			result["cross_org_uuids"] = []string{sv.ValueString()}
 		}
 	}
 	return result
 }
 
 // buildEventQueryJSON builds the JSON for a formula event_query block.
-func buildEventQueryJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildEventQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
-	if v, ok := d.GetOk(path + ".data_source"); ok {
-		result["data_source"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "data_source"); ok {
+		result["data_source"] = v
 	}
-	if v, ok := d.GetOk(path + ".name"); ok {
-		result["name"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "name"); ok {
+		result["name"] = v
 	}
-	if v, ok := d.GetOk(path + ".storage"); ok && v != "" {
-		result["storage"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "storage"); ok && v != "" {
+		result["storage"] = v
 	}
 
 	// compute (required)
-	computeCount, _ := d.Get(path + ".compute.#").(int)
-	if computeCount > 0 {
-		cPath := path + ".compute.0"
+	if computeAttrs := getObjAttrs(attrs, "compute"); computeAttrs != nil {
 		compute := map[string]interface{}{}
-		if v, ok := d.GetOk(cPath + ".aggregation"); ok {
-			compute["aggregation"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(computeAttrs, "aggregation"); ok {
+			compute["aggregation"] = v
 		}
-		if v, ok := d.GetOk(cPath + ".interval"); ok {
-			if iv, ok := v.(int); ok && iv != 0 {
-				compute["interval"] = int64(iv)
-			}
+		if v, ok := getInt64Attr(computeAttrs, "interval"); ok && v != 0 {
+			compute["interval"] = v
 		}
-		if v, ok := d.GetOk(cPath + ".metric"); ok && v != "" {
-			compute["metric"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(computeAttrs, "metric"); ok && v != "" {
+			compute["metric"] = v
 		}
 		result["compute"] = compute
 	}
 
 	// search (optional)
-	searchCount, _ := d.Get(path + ".search.#").(int)
-	if searchCount > 0 {
-		sPath := path + ".search.0"
+	if searchAttrs := getObjAttrs(attrs, "search"); searchAttrs != nil {
 		search := map[string]interface{}{}
-		if v, ok := d.GetOk(sPath + ".query"); ok {
-			search["query"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(searchAttrs, "query"); ok {
+			search["query"] = v
 		}
 		result["search"] = search
 	}
 
 	// indexes (can be empty array)
-	rawIndexes := d.Get(path + ".indexes")
-	if items, ok := rawIndexes.([]interface{}); ok {
-		indexes := make([]string, len(items))
-		for i, item := range items {
-			indexes[i] = fmt.Sprintf("%v", item)
-		}
+	if indexes := getStrListElems(attrs, "indexes"); indexes != nil {
 		result["indexes"] = indexes
 	}
 
 	// group_by (optional)
-	groupByCount, _ := d.Get(path + ".group_by.#").(int)
-	if groupByCount > 0 {
-		groupBys := make([]interface{}, groupByCount)
-		for gi := 0; gi < groupByCount; gi++ {
-			gbPath := fmt.Sprintf("%s.group_by.%d", path, gi)
+	groupByElems := getListElems(attrs, "group_by")
+	if len(groupByElems) > 0 {
+		groupBys := make([]interface{}, 0, len(groupByElems))
+		for _, elem := range groupByElems {
+			gbObj, ok := elem.(types.Object)
+			if !ok {
+				continue
+			}
+			gbAttrs := gbObj.Attributes()
 			gb := map[string]interface{}{}
-			if v, ok := d.GetOk(gbPath + ".facet"); ok {
-				gb["facet"] = fmt.Sprintf("%v", v)
+			if v, ok := getStrAttr(gbAttrs, "facet"); ok {
+				gb["facet"] = v
 			}
-			if v, ok := d.GetOk(gbPath + ".limit"); ok {
-				if iv, ok := v.(int); ok && iv != 0 {
-					gb["limit"] = int64(iv)
-				}
+			if v, ok := getInt64Attr(gbAttrs, "limit"); ok && v != 0 {
+				gb["limit"] = v
 			}
-			sortCount, _ := d.Get(gbPath + ".sort.#").(int)
-			if sortCount > 0 {
-				sPath := gbPath + ".sort.0"
+			if sortAttrs := getObjAttrs(gbAttrs, "sort"); sortAttrs != nil {
 				sort := map[string]interface{}{}
-				if v, ok := d.GetOk(sPath + ".aggregation"); ok {
-					sort["aggregation"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(sortAttrs, "aggregation"); ok {
+					sort["aggregation"] = v
 				}
-				if v, ok := d.GetOk(sPath + ".metric"); ok && v != "" {
-					sort["metric"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(sortAttrs, "metric"); ok && v != "" {
+					sort["metric"] = v
 				}
-				if v, ok := d.GetOk(sPath + ".order"); ok && v != "" {
-					sort["order"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(sortAttrs, "order"); ok && v != "" {
+					sort["order"] = v
 				}
 				gb["sort"] = sort
 			}
-			groupBys[gi] = gb
+			groupBys = append(groupBys, gb)
 		}
 		result["group_by"] = groupBys
 	}
 
 	// cross_org_uuids
-	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
-		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
-			if s, ok := items[0].(string); ok && s != "" {
-				result["cross_org_uuids"] = []string{s}
-			}
+	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
+		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
+			result["cross_org_uuids"] = []string{sv.ValueString()}
 		}
 	}
 
@@ -771,106 +861,91 @@ func buildEventQueryJSON(d *schema.ResourceData, path string) map[string]interfa
 }
 
 // buildFormulaProcessQueryJSON builds JSON for a formula process_query block.
-func buildFormulaProcessQueryJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildFormulaProcessQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
-	if v, ok := d.GetOk(path + ".data_source"); ok {
-		result["data_source"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "data_source"); ok {
+		result["data_source"] = v
 	}
-	if v, ok := d.GetOk(path + ".name"); ok {
-		result["name"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "name"); ok {
+		result["name"] = v
 	}
-	if v, ok := d.GetOk(path + ".metric"); ok {
-		result["metric"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "metric"); ok {
+		result["metric"] = v
 	}
-	if v, ok := d.GetOk(path + ".text_filter"); ok && v != "" {
-		result["text_filter"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "text_filter"); ok && v != "" {
+		result["text_filter"] = v
 	}
-	if v, ok := d.GetOk(path + ".limit"); ok {
-		if iv, ok := v.(int); ok && iv != 0 {
-			result["limit"] = int64(iv)
-		}
+	if v, ok := getInt64Attr(attrs, "limit"); ok && v != 0 {
+		result["limit"] = v
 	}
-	if v, ok := d.GetOk(path + ".sort"); ok && v != "" {
-		result["sort"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "sort"); ok && v != "" {
+		result["sort"] = v
 	}
-	isNormalizedCPU, _ := d.Get(path + ".is_normalized_cpu").(bool)
-	if isNormalizedCPU {
+	if isNormalizedCPU, ok := getBoolAttr(attrs, "is_normalized_cpu"); ok && isNormalizedCPU {
 		result["is_normalized_cpu"] = true
 	}
-	if raw := d.Get(path + ".tag_filters"); raw != nil {
-		if items, ok := raw.([]interface{}); ok && len(items) > 0 {
-			tags := make([]string, len(items))
-			for i, item := range items {
-				tags[i] = fmt.Sprintf("%v", item)
-			}
-			result["tag_filters"] = tags
-		}
+	if tags := getStrListElems(attrs, "tag_filters"); len(tags) > 0 {
+		result["tag_filters"] = tags
 	}
 	// cross_org_uuids: list of one string
-	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
-		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
-			if s, ok := items[0].(string); ok && s != "" {
-				result["cross_org_uuids"] = []string{s}
-			}
+	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
+		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
+			result["cross_org_uuids"] = []string{sv.ValueString()}
 		}
 	}
 	return result
 }
 
 // buildSLOQueryJSON builds JSON for a formula slo_query block.
-func buildSLOQueryJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildSLOQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
-	if v, ok := d.GetOk(path + ".data_source"); ok {
-		result["data_source"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "data_source"); ok {
+		result["data_source"] = v
 	}
-	if v, ok := d.GetOk(path + ".name"); ok {
-		result["name"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "name"); ok {
+		result["name"] = v
 	}
-	if v, ok := d.GetOk(path + ".slo_id"); ok {
-		result["slo_id"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "slo_id"); ok {
+		result["slo_id"] = v
 	}
-	if v, ok := d.GetOk(path + ".measure"); ok {
-		result["measure"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "measure"); ok {
+		result["measure"] = v
 	}
-	if v, ok := d.GetOk(path + ".group_mode"); ok && v != "" {
-		result["group_mode"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "group_mode"); ok && v != "" {
+		result["group_mode"] = v
 	}
-	if v, ok := d.GetOk(path + ".slo_query_type"); ok && v != "" {
-		result["slo_query_type"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "slo_query_type"); ok && v != "" {
+		result["slo_query_type"] = v
 	}
-	if v, ok := d.GetOk(path + ".additional_query_filters"); ok && v != "" {
-		result["additional_query_filters"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "additional_query_filters"); ok && v != "" {
+		result["additional_query_filters"] = v
 	}
-	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
-		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
-			if s, ok := items[0].(string); ok && s != "" {
-				result["cross_org_uuids"] = []string{s}
-			}
+	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
+		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
+			result["cross_org_uuids"] = []string{sv.ValueString()}
 		}
 	}
 	return result
 }
 
 // buildCloudCostQueryJSON builds JSON for a formula cloud_cost_query block.
-func buildCloudCostQueryJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildCloudCostQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
-	if v, ok := d.GetOk(path + ".data_source"); ok {
-		result["data_source"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "data_source"); ok {
+		result["data_source"] = v
 	}
-	if v, ok := d.GetOk(path + ".name"); ok {
-		result["name"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "name"); ok {
+		result["name"] = v
 	}
-	if v, ok := d.GetOk(path + ".query"); ok {
-		result["query"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "query"); ok {
+		result["query"] = v
 	}
-	if v, ok := d.GetOk(path + ".aggregator"); ok && v != "" {
-		result["aggregator"] = fmt.Sprintf("%v", v)
+	if v, ok := getStrAttr(attrs, "aggregator"); ok && v != "" {
+		result["aggregator"] = v
 	}
-	if raw := d.Get(path + ".cross_org_uuids"); raw != nil {
-		if items, ok := raw.([]interface{}); ok && len(items) == 1 {
-			if s, ok := items[0].(string); ok && s != "" {
-				result["cross_org_uuids"] = []string{s}
-			}
+	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
+		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
+			result["cross_org_uuids"] = []string{sv.ValueString()}
 		}
 	}
 	return result
@@ -1036,65 +1111,64 @@ func buildToplistStyleDisplayJSON(defJSON map[string]interface{}) {
 
 // buildScatterplotTableJSON builds the "table" object within scatterplot "requests"
 // for formula/query style scatterplot_table requests.
-func buildScatterplotTableJSON(d *schema.ResourceData, defHCLPath string, defJSON map[string]interface{}) {
-	requestPath := defHCLPath + ".request"
-	if requestCount, _ := d.Get(requestPath + ".#").(int); requestCount == 0 {
+// defAttrs is the attributes map of the scatterplot definition block.
+func buildScatterplotTableJSON(defAttrs map[string]attr.Value, defJSON map[string]interface{}) {
+	requestElems := getListElems(defAttrs, "request")
+	if len(requestElems) == 0 {
 		return
 	}
-	requestInnerPath := requestPath + ".0"
-	tableCount, _ := d.Get(requestInnerPath + ".scatterplot_table.#").(int)
-	if tableCount == 0 {
+	reqObj, ok := requestElems[0].(types.Object)
+	if !ok {
 		return
 	}
-	tablePath := requestInnerPath + ".scatterplot_table.0"
+	reqAttrs := reqObj.Attributes()
+	tableAttrs := getObjAttrs(reqAttrs, "scatterplot_table")
+	if tableAttrs == nil {
+		return
+	}
 
 	tableObj := map[string]interface{}{}
 
 	// formulas (ScatterplotWidgetFormula: formula_expression → formula, plus dimension and alias)
-	formulaCount, _ := d.Get(tablePath + ".formula.#").(int)
-	if formulaCount > 0 {
-		formulas := make([]interface{}, formulaCount)
-		for fi := 0; fi < formulaCount; fi++ {
-			fPath := fmt.Sprintf("%s.formula.%d", tablePath, fi)
+	formulaElems := getListElems(tableAttrs, "formula")
+	if len(formulaElems) > 0 {
+		formulas := make([]interface{}, 0, len(formulaElems))
+		for _, fElem := range formulaElems {
+			fObj, ok := fElem.(types.Object)
+			if !ok {
+				continue
+			}
+			fAttrs := fObj.Attributes()
 			formula := map[string]interface{}{}
-			if expr, ok := d.GetOk(fPath + ".formula_expression"); ok {
-				formula["formula"] = fmt.Sprintf("%v", expr)
+			if expr, ok := getStrAttr(fAttrs, "formula_expression"); ok {
+				formula["formula"] = expr
 			}
-			if dim, ok := d.GetOk(fPath + ".dimension"); ok {
-				formula["dimension"] = fmt.Sprintf("%v", dim)
+			if dim, ok := getStrAttr(fAttrs, "dimension"); ok {
+				formula["dimension"] = dim
 			}
-			if alias, ok := d.GetOk(fPath + ".alias"); ok {
-				formula["alias"] = fmt.Sprintf("%v", alias)
+			if alias, ok := getStrAttr(fAttrs, "alias"); ok {
+				formula["alias"] = alias
 			}
-			formulas[fi] = formula
+			formulas = append(formulas, formula)
 		}
 		tableObj["formulas"] = formulas
 	}
 
 	// queries
-	queryCount, _ := d.Get(tablePath + ".query.#").(int)
-	if queryCount > 0 {
-		queries := make([]interface{}, queryCount)
-		for qi := 0; qi < queryCount; qi++ {
-			qPath := fmt.Sprintf("%s.query.%d", tablePath, qi)
-			var queryJSON map[string]interface{}
-			if n, _ := d.Get(qPath + ".metric_query.#").(int); n > 0 {
-				queryJSON = buildMetricQueryJSON(d, qPath+".metric_query.0")
-			} else if n, _ := d.Get(qPath + ".event_query.#").(int); n > 0 {
-				queryJSON = buildEventQueryJSON(d, qPath+".event_query.0")
-			} else if n, _ := d.Get(qPath + ".process_query.#").(int); n > 0 {
-				queryJSON = buildFormulaProcessQueryJSON(d, qPath+".process_query.0")
-			} else if n, _ := d.Get(qPath + ".slo_query.#").(int); n > 0 {
-				queryJSON = buildSLOQueryJSON(d, qPath+".slo_query.0")
-			} else if n, _ := d.Get(qPath + ".cloud_cost_query.#").(int); n > 0 {
-				queryJSON = buildCloudCostQueryJSON(d, qPath+".cloud_cost_query.0")
+	queryElems := getListElems(tableAttrs, "query")
+	if len(queryElems) > 0 {
+		queries := make([]interface{}, 0, len(queryElems))
+		for _, qElem := range queryElems {
+			qObj, ok := qElem.(types.Object)
+			if !ok {
+				continue
 			}
-			queries[qi] = queryJSON
+			queries = append(queries, buildQueryFromAttrs(qObj.Attributes()))
 		}
 		tableObj["queries"] = queries
 	}
 
-	if formulaCount > 0 || queryCount > 0 {
+	if len(formulaElems) > 0 || len(queryElems) > 0 {
 		tableObj["response_format"] = "scalar"
 	}
 
@@ -1485,28 +1559,32 @@ func flattenCloudCostQueryJSON(q map[string]interface{}) map[string]interface{} 
 //   - Query table requests override
 //   - Split graph source widget and static_splits
 //   - Group nested widgets
-func buildWidgetPostProcess(d *schema.ResourceData, spec WidgetSpec, defHCLPath string, defJSON map[string]interface{}) {
+func buildWidgetPostProcess(defAttrs map[string]attr.Value, spec WidgetSpec, defJSON map[string]interface{}) {
 	// ---- Formula/query blocks ----
 	if isFormulaCapableWidget(spec.JSONType) {
-		requestsPath := defHCLPath + ".request"
-		requestCount, _ := d.Get(requestsPath + ".#").(int)
-		if requestCount > 0 {
-			requests := make([]interface{}, requestCount)
-			for ri := 0; ri < requestCount; ri++ {
-				reqPath := fmt.Sprintf("%s.%d", requestsPath, ri)
-				formulaCount, _ := d.Get(reqPath + ".formula.#").(int)
-				queryCount, _ := d.Get(reqPath + ".query.#").(int)
+		requestElems := getListElems(defAttrs, "request")
+		if len(requestElems) > 0 {
+			requests := make([]interface{}, 0, len(requestElems))
+			for ri, reqElem := range requestElems {
+				reqObj, ok := reqElem.(types.Object)
+				if !ok {
+					requests = append(requests, map[string]interface{}{})
+					continue
+				}
+				reqAttrs := reqObj.Attributes()
+				formulaCount := len(getListElems(reqAttrs, "formula"))
+				queryCount := len(getListElems(reqAttrs, "query"))
 				if formulaCount > 0 || queryCount > 0 {
 					// New-style formula/query request
 					if isTimeseriesFormulaWidget(spec.JSONType) {
-						requests[ri] = buildFormulaQueryRequestJSON(d, reqPath)
+						requests = append(requests, buildFormulaQueryRequestJSON(reqAttrs))
 					} else {
-						requests[ri] = buildScalarFormulaQueryRequestJSON(d, reqPath, spec.JSONType)
+						requests = append(requests, buildScalarFormulaQueryRequestJSON(reqAttrs, spec.JSONType))
 					}
 				} else {
 					// Old-style request (already built by FieldSpec engine)
 					if existingReqs, ok := defJSON["requests"].([]interface{}); ok && ri < len(existingReqs) {
-						requests[ri] = existingReqs[ri]
+						requests = append(requests, existingReqs[ri])
 					}
 				}
 			}
@@ -1516,7 +1594,7 @@ func buildWidgetPostProcess(d *schema.ResourceData, spec WidgetSpec, defHCLPath 
 
 	// ---- Scatterplot table ----
 	if spec.JSONType == "scatterplot" {
-		buildScatterplotTableJSON(d, defHCLPath, defJSON)
+		buildScatterplotTableJSON(defAttrs, defJSON)
 	}
 
 	// ---- Toplist style display ----
@@ -1531,28 +1609,29 @@ func buildWidgetPostProcess(d *schema.ResourceData, spec WidgetSpec, defHCLPath 
 
 	// ---- Query table requests override ----
 	if spec.JSONType == "query_table" {
-		requests := buildQueryTableRequestsJSON(d, defHCLPath)
+		requests := buildQueryTableRequestsJSON(defAttrs)
 		defJSON["requests"] = requests
 	}
 
 	// ---- Split graph source widget + static_splits ----
 	if spec.JSONType == "split_group" {
-		srcDefJSON := buildSplitGraphSourceWidgetJSON(d, defHCLPath)
+		srcDefJSON := buildSplitGraphSourceWidgetJSON(defAttrs)
 		if srcDefJSON != nil {
 			defJSON["source_widget_definition"] = srcDefJSON
 		}
 		if splitConfigMap, ok := defJSON["split_config"].(map[string]interface{}); ok {
-			splitConfigPath := defHCLPath + ".split_config.0"
-			staticSplits := buildSplitConfigStaticSplitsJSON(d, splitConfigPath)
-			if len(staticSplits) > 0 {
-				splitConfigMap["static_splits"] = staticSplits
+			if splitConfigAttrs := getObjAttrs(defAttrs, "split_config"); splitConfigAttrs != nil {
+				staticSplits := buildSplitConfigStaticSplitsJSON(splitConfigAttrs)
+				if len(staticSplits) > 0 {
+					splitConfigMap["static_splits"] = staticSplits
+				}
 			}
 		}
 	}
 
 	// ---- Group nested widgets ----
 	if spec.JSONType == "group" {
-		widgets := buildGroupWidgetsJSON(d, defHCLPath)
+		widgets := buildGroupWidgetsJSON(defAttrs)
 		defJSON["widgets"] = widgets
 	}
 }
@@ -1662,26 +1741,30 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 
 // buildQueryTableRequestsJSON builds the "requests" array for query_table.
 // It handles both old-style and formula-style requests.
-func buildQueryTableRequestsJSON(d *schema.ResourceData, defHCLPath string) []interface{} {
-	requestsPath := defHCLPath + ".request"
-	requestCount, _ := d.Get(requestsPath + ".#").(int)
-	if requestCount == 0 {
+func buildQueryTableRequestsJSON(defAttrs map[string]attr.Value) []interface{} {
+	requestElems := getListElems(defAttrs, "request")
+	if len(requestElems) == 0 {
 		return []interface{}{}
 	}
-	requests := make([]interface{}, requestCount)
-	for ri := 0; ri < requestCount; ri++ {
-		reqPath := fmt.Sprintf("%s.%d", requestsPath, ri)
-		formulaCount, _ := d.Get(reqPath + ".formula.#").(int)
-		queryCount, _ := d.Get(reqPath + ".query.#").(int)
+	requests := make([]interface{}, 0, len(requestElems))
+	for _, reqElem := range requestElems {
+		reqObj, ok := reqElem.(types.Object)
+		if !ok {
+			requests = append(requests, map[string]interface{}{})
+			continue
+		}
+		reqAttrs := reqObj.Attributes()
+		formulaCount := len(getListElems(reqAttrs, "formula"))
+		queryCount := len(getListElems(reqAttrs, "query"))
 		if formulaCount > 0 || queryCount > 0 {
 			// Formula/query style request
-			requests[ri] = buildQueryTableFormulaRequestJSON(d, reqPath)
+			requests = append(requests, buildQueryTableFormulaRequestJSON(reqAttrs))
 		} else {
 			// Old-style request — build via FieldSpec engine
-			req := BuildEngineJSON(d, reqPath, queryTableOldRequestFields)
+			req := BuildEngineJSON(reqAttrs, queryTableOldRequestFields)
 			// text_formats needs custom handling (it's a 2D array)
-			buildQueryTableTextFormatsJSON(d, reqPath, req)
-			requests[ri] = req
+			buildQueryTableTextFormatsJSON(reqAttrs, req)
+			requests = append(requests, req)
 		}
 	}
 	return requests
@@ -1691,119 +1774,114 @@ func buildQueryTableRequestsJSON(d *schema.ResourceData, defHCLPath string) []in
 // Unlike the generic scalar formula handler, query_table formulas can have
 // cell_display_mode, cell_display_mode_options, conditional_formats, number_format
 // per formula.
-func buildQueryTableFormulaRequestJSON(d *schema.ResourceData, reqPath string) map[string]interface{} {
+func buildQueryTableFormulaRequestJSON(reqAttrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
 
 	// formulas
-	formulaCount, _ := d.Get(reqPath + ".formula.#").(int)
-	if formulaCount > 0 {
-		formulas := make([]interface{}, formulaCount)
-		for fi := 0; fi < formulaCount; fi++ {
-			fPath := fmt.Sprintf("%s.formula.%d", reqPath, fi)
+	formulaElems := getListElems(reqAttrs, "formula")
+	if len(formulaElems) > 0 {
+		formulas := make([]interface{}, 0, len(formulaElems))
+		for _, fElem := range formulaElems {
+			fObj, ok := fElem.(types.Object)
+			if !ok {
+				continue
+			}
+			fAttrs := fObj.Attributes()
 			formula := map[string]interface{}{}
 
 			// formula_expression → formula (JSON key)
-			if expr, ok := d.GetOk(fPath + ".formula_expression"); ok {
-				formula["formula"] = fmt.Sprintf("%v", expr)
+			if expr, ok := getStrAttr(fAttrs, "formula_expression"); ok {
+				formula["formula"] = expr
 			}
-			if alias, ok := d.GetOk(fPath + ".alias"); ok {
-				formula["alias"] = fmt.Sprintf("%v", alias)
+			if alias, ok := getStrAttr(fAttrs, "alias"); ok {
+				formula["alias"] = alias
 			}
 			// limit
-			limitCount, _ := d.Get(fPath + ".limit.#").(int)
-			if limitCount > 0 {
-				limitPath := fmt.Sprintf("%s.limit.0", fPath)
+			if limitAttrs := getObjAttrs(fAttrs, "limit"); limitAttrs != nil {
 				limitObj := map[string]interface{}{}
-				if count, ok := d.GetOk(limitPath + ".count"); ok {
-					switch v := count.(type) {
-					case int:
-						limitObj["count"] = int64(v)
-					case float64:
-						limitObj["count"] = int64(v)
-					}
+				if count, ok := getInt64Attr(limitAttrs, "count"); ok {
+					limitObj["count"] = count
 				}
-				if order, ok := d.GetOk(limitPath + ".order"); ok {
-					limitObj["order"] = fmt.Sprintf("%v", order)
+				if order, ok := getStrAttr(limitAttrs, "order"); ok {
+					limitObj["order"] = order
 				}
 				if len(limitObj) > 0 {
 					formula["limit"] = limitObj
 				}
 			}
 			// cell_display_mode (TypeString on formula)
-			if v, ok := d.GetOk(fPath + ".cell_display_mode"); ok {
-				if s := fmt.Sprintf("%v", v); s != "" {
-					formula["cell_display_mode"] = s
-				}
+			if v, ok := getStrAttr(fAttrs, "cell_display_mode"); ok && v != "" {
+				formula["cell_display_mode"] = v
 			}
 			// cell_display_mode_options (TypeBlock MaxItems:1)
-			cdmoCount, _ := d.Get(fPath + ".cell_display_mode_options.#").(int)
-			if cdmoCount > 0 {
-				optPath := fPath + ".cell_display_mode_options.0"
+			if cdmoAttrs := getObjAttrs(fAttrs, "cell_display_mode_options"); cdmoAttrs != nil {
 				opts := map[string]interface{}{}
-				if v, ok := d.GetOk(optPath + ".trend_type"); ok {
-					opts["trend_type"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(cdmoAttrs, "trend_type"); ok {
+					opts["trend_type"] = v
 				}
-				if v, ok := d.GetOk(optPath + ".y_scale"); ok {
-					opts["y_scale"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(cdmoAttrs, "y_scale"); ok {
+					opts["y_scale"] = v
 				}
 				if len(opts) > 0 {
 					formula["cell_display_mode_options"] = opts
 				}
 			}
 			// conditional_formats on the formula
-			cfCount, _ := d.Get(fPath + ".conditional_formats.#").(int)
-			if cfCount > 0 {
-				cfs := make([]interface{}, cfCount)
-				for ci := 0; ci < cfCount; ci++ {
-					cfPath := fmt.Sprintf("%s.conditional_formats.%d", fPath, ci)
-					cf := BuildEngineJSON(d, cfPath, widgetConditionalFormatFields)
-					cfs[ci] = cf
+			cfElems := getListElems(fAttrs, "conditional_formats")
+			if len(cfElems) > 0 {
+				cfs := make([]interface{}, 0, len(cfElems))
+				for _, cfElem := range cfElems {
+					if cfObj, ok := cfElem.(types.Object); ok {
+						cfs = append(cfs, BuildEngineJSON(cfObj.Attributes(), widgetConditionalFormatFields))
+					}
 				}
 				formula["conditional_formats"] = cfs
 			}
 			// number_format (TypeBlock MaxItems:1)
-			nfCount, _ := d.Get(fPath + ".number_format.#").(int)
-			if nfCount > 0 {
-				nfPath := fPath + ".number_format.0"
-				nf := buildQueryTableNumberFormatJSON(d, nfPath)
+			if nfAttrs := getObjAttrs(fAttrs, "number_format"); nfAttrs != nil {
+				nf := buildQueryTableNumberFormatJSON(nfAttrs)
 				if len(nf) > 0 {
 					formula["number_format"] = nf
 				}
 			}
-			formulas[fi] = formula
+			formulas = append(formulas, formula)
 		}
 		result["formulas"] = formulas
 	}
 
 	// queries
-	queryCount, _ := d.Get(reqPath + ".query.#").(int)
-	if queryCount > 0 {
-		queries := make([]interface{}, queryCount)
-		for qi := 0; qi < queryCount; qi++ {
-			qPath := fmt.Sprintf("%s.query.%d", reqPath, qi)
-			var queryJSON map[string]interface{}
-			if n, _ := d.Get(qPath + ".metric_query.#").(int); n > 0 {
-				queryJSON = buildMetricQueryJSON(d, qPath+".metric_query.0")
-			} else if n, _ := d.Get(qPath + ".event_query.#").(int); n > 0 {
-				queryJSON = buildEventQueryJSON(d, qPath+".event_query.0")
-			} else if n, _ := d.Get(qPath + ".process_query.#").(int); n > 0 {
-				queryJSON = buildFormulaProcessQueryJSON(d, qPath+".process_query.0")
-			} else if n, _ := d.Get(qPath + ".apm_dependency_stats_query.#").(int); n > 0 {
-				queryJSON = buildApmDependencyStatsQueryJSON(d, qPath+".apm_dependency_stats_query.0")
-			} else if n, _ := d.Get(qPath + ".apm_resource_stats_query.#").(int); n > 0 {
-				queryJSON = buildApmResourceStatsQueryJSON(d, qPath+".apm_resource_stats_query.0")
-			} else if n, _ := d.Get(qPath + ".slo_query.#").(int); n > 0 {
-				queryJSON = buildSLOQueryJSON(d, qPath+".slo_query.0")
-			} else if n, _ := d.Get(qPath + ".cloud_cost_query.#").(int); n > 0 {
-				queryJSON = buildCloudCostQueryJSON(d, qPath+".cloud_cost_query.0")
+	queryElems := getListElems(reqAttrs, "query")
+	if len(queryElems) > 0 {
+		queries := make([]interface{}, 0, len(queryElems))
+		for _, qElem := range queryElems {
+			qObj, ok := qElem.(types.Object)
+			if !ok {
+				continue
 			}
-			queries[qi] = queryJSON
+			qAttrs := qObj.Attributes()
+			var queryJSON map[string]interface{}
+			if metricAttrs := getObjAttrs(qAttrs, "metric_query"); metricAttrs != nil {
+				queryJSON = buildMetricQueryJSON(metricAttrs)
+			} else if eventAttrs := getObjAttrs(qAttrs, "event_query"); eventAttrs != nil {
+				queryJSON = buildEventQueryJSON(eventAttrs)
+			} else if procAttrs := getObjAttrs(qAttrs, "process_query"); procAttrs != nil {
+				queryJSON = buildFormulaProcessQueryJSON(procAttrs)
+			} else if apmDepAttrs := getObjAttrs(qAttrs, "apm_dependency_stats_query"); apmDepAttrs != nil {
+				queryJSON = buildApmDependencyStatsQueryJSON(apmDepAttrs)
+			} else if apmResAttrs := getObjAttrs(qAttrs, "apm_resource_stats_query"); apmResAttrs != nil {
+				queryJSON = buildApmResourceStatsQueryJSON(apmResAttrs)
+			} else if sloAttrs := getObjAttrs(qAttrs, "slo_query"); sloAttrs != nil {
+				queryJSON = buildSLOQueryJSON(sloAttrs)
+			} else if ccAttrs := getObjAttrs(qAttrs, "cloud_cost_query"); ccAttrs != nil {
+				queryJSON = buildCloudCostQueryJSON(ccAttrs)
+			}
+			queries = append(queries, queryJSON)
 		}
 		result["queries"] = queries
 	}
 
 	// response_format for query_table formulas is always "scalar"
-	if formulaCount > 0 || queryCount > 0 {
+	if len(formulaElems) > 0 || len(queryElems) > 0 {
 		result["response_format"] = "scalar"
 	}
 
@@ -1813,32 +1891,26 @@ func buildQueryTableFormulaRequestJSON(d *schema.ResourceData, reqPath string) m
 // buildQueryTableNumberFormatJSON builds the number_format JSON object for a formula.
 // The HCL structure has unit { canonical { unit_name, per_unit_name } } or unit { custom { label } }.
 // The JSON structure has unit { type, unit_name, per_unit_name } or unit { type, label }.
-func buildQueryTableNumberFormatJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildQueryTableNumberFormatJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
 	// unit block (TypeList MaxItems:1)
-	unitCount, _ := d.Get(path + ".unit.#").(int)
-	if unitCount > 0 {
-		unitPath := path + ".unit.0"
+	if unitAttrs := getObjAttrs(attrs, "unit"); unitAttrs != nil {
 		unit := map[string]interface{}{}
 		// canonical sub-block
-		canonicalCount, _ := d.Get(unitPath + ".canonical.#").(int)
-		if canonicalCount > 0 {
-			canonPath := unitPath + ".canonical.0"
+		if canonAttrs := getObjAttrs(unitAttrs, "canonical"); canonAttrs != nil {
 			unit["type"] = "canonical_unit"
-			if v, ok := d.GetOk(canonPath + ".unit_name"); ok {
-				unit["unit_name"] = fmt.Sprintf("%v", v)
+			if v, ok := getStrAttr(canonAttrs, "unit_name"); ok {
+				unit["unit_name"] = v
 			}
-			if v, ok := d.GetOk(canonPath + ".per_unit_name"); ok {
-				unit["per_unit_name"] = fmt.Sprintf("%v", v)
+			if v, ok := getStrAttr(canonAttrs, "per_unit_name"); ok {
+				unit["per_unit_name"] = v
 			}
 		}
 		// custom sub-block
-		customCount, _ := d.Get(unitPath + ".custom.#").(int)
-		if customCount > 0 {
-			customPath := unitPath + ".custom.0"
+		if customAttrs := getObjAttrs(unitAttrs, "custom"); customAttrs != nil {
 			unit["type"] = "custom_unit_label"
-			if v, ok := d.GetOk(customPath + ".label"); ok {
-				unit["label"] = fmt.Sprintf("%v", v)
+			if v, ok := getStrAttr(customAttrs, "label"); ok {
+				unit["label"] = v
 			}
 		}
 		if len(unit) > 0 {
@@ -1846,12 +1918,10 @@ func buildQueryTableNumberFormatJSON(d *schema.ResourceData, path string) map[st
 		}
 	}
 	// unit_scale block
-	unitScaleCount, _ := d.Get(path + ".unit_scale.#").(int)
-	if unitScaleCount > 0 {
-		unitScalePath := path + ".unit_scale.0"
+	if unitScaleAttrs := getObjAttrs(attrs, "unit_scale"); unitScaleAttrs != nil {
 		unitScale := map[string]interface{}{}
-		if v, ok := d.GetOk(unitScalePath + ".unit_name"); ok {
-			unitScale["unit_name"] = fmt.Sprintf("%v", v)
+		if v, ok := getStrAttr(unitScaleAttrs, "unit_name"); ok {
+			unitScale["unit_name"] = v
 		}
 		if len(unitScale) > 0 {
 			result["unit_scale"] = unitScale
@@ -1861,164 +1931,118 @@ func buildQueryTableNumberFormatJSON(d *schema.ResourceData, path string) map[st
 }
 
 // buildQueryTableTextFormatsJSON handles the text_formats 2D array for query_table
-// old-style requests. It reads text_formats from the HCL and injects them into
+// old-style requests. It reads text_formats from the HCL attrs and injects them into
 // the request JSON.
-func buildQueryTableTextFormatsJSON(d *schema.ResourceData, reqPath string, req map[string]interface{}) {
-	tfCount, _ := d.Get(reqPath + ".text_formats.#").(int)
-	if tfCount == 0 {
+func buildQueryTableTextFormatsJSON(reqAttrs map[string]attr.Value, req map[string]interface{}) {
+	tfElems := getListElems(reqAttrs, "text_formats")
+	if len(tfElems) == 0 {
 		return
 	}
-	textFormats := make([]interface{}, tfCount)
-	for i := 0; i < tfCount; i++ {
-		tfPath := fmt.Sprintf("%s.text_formats.%d", reqPath, i)
-		innerCount, _ := d.Get(tfPath + ".text_format.#").(int)
-		innerFormats := make([]interface{}, innerCount)
-		for j := 0; j < innerCount; j++ {
-			innerPath := fmt.Sprintf("%s.text_format.%d", tfPath, j)
+	textFormats := make([]interface{}, 0, len(tfElems))
+	for _, tfElem := range tfElems {
+		tfObj, ok := tfElem.(types.Object)
+		if !ok {
+			textFormats = append(textFormats, []interface{}{})
+			continue
+		}
+		tfAttrs := tfObj.Attributes()
+		innerElems := getListElems(tfAttrs, "text_format")
+		innerFormats := make([]interface{}, 0, len(innerElems))
+		for _, innerElem := range innerElems {
+			innerObj, ok := innerElem.(types.Object)
+			if !ok {
+				innerFormats = append(innerFormats, map[string]interface{}{})
+				continue
+			}
+			innerAttrs := innerObj.Attributes()
 			rule := map[string]interface{}{}
-			// match (TypeList MaxItems:1, Required)
-			matchCount, _ := d.Get(innerPath + ".match.#").(int)
-			if matchCount > 0 {
-				mPath := innerPath + ".match.0"
+			// match (TypeBlock MaxItems:1, Required)
+			if matchAttrs := getObjAttrs(innerAttrs, "match"); matchAttrs != nil {
 				match := map[string]interface{}{}
-				if v, ok := d.GetOk(mPath + ".type"); ok {
-					match["type"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(matchAttrs, "type"); ok {
+					match["type"] = v
 				}
-				if v, ok := d.GetOk(mPath + ".value"); ok {
-					match["value"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(matchAttrs, "value"); ok {
+					match["value"] = v
 				}
 				rule["match"] = match
 			}
 			// palette (optional)
-			if v, ok := d.GetOk(innerPath + ".palette"); ok {
-				if s := fmt.Sprintf("%v", v); s != "" {
-					rule["palette"] = s
-				}
+			if v, ok := getStrAttr(innerAttrs, "palette"); ok && v != "" {
+				rule["palette"] = v
 			}
 			// custom_bg_color (optional)
-			if v, ok := d.GetOk(innerPath + ".custom_bg_color"); ok {
-				if s := fmt.Sprintf("%v", v); s != "" {
-					rule["custom_bg_color"] = s
-				}
+			if v, ok := getStrAttr(innerAttrs, "custom_bg_color"); ok && v != "" {
+				rule["custom_bg_color"] = v
 			}
 			// custom_fg_color (optional)
-			if v, ok := d.GetOk(innerPath + ".custom_fg_color"); ok {
-				if s := fmt.Sprintf("%v", v); s != "" {
-					rule["custom_fg_color"] = s
-				}
+			if v, ok := getStrAttr(innerAttrs, "custom_fg_color"); ok && v != "" {
+				rule["custom_fg_color"] = v
 			}
-			// replace (TypeList MaxItems:1, Optional)
-			replaceCount, _ := d.Get(innerPath + ".replace.#").(int)
-			if replaceCount > 0 {
-				rPath := innerPath + ".replace.0"
+			// replace (TypeBlock MaxItems:1, Optional)
+			if replaceAttrs := getObjAttrs(innerAttrs, "replace"); replaceAttrs != nil {
 				replace := map[string]interface{}{}
-				if v, ok := d.GetOk(rPath + ".type"); ok {
-					replace["type"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(replaceAttrs, "type"); ok {
+					replace["type"] = v
 				}
-				if v, ok := d.GetOk(rPath + ".with"); ok {
-					replace["with"] = fmt.Sprintf("%v", v)
+				if v, ok := getStrAttr(replaceAttrs, "with"); ok {
+					replace["with"] = v
 				}
-				if v, ok := d.GetOk(rPath + ".substring"); ok {
-					if s := fmt.Sprintf("%v", v); s != "" {
-						replace["substring"] = s
-					}
+				if v, ok := getStrAttr(replaceAttrs, "substring"); ok && v != "" {
+					replace["substring"] = v
 				}
 				rule["replace"] = replace
 			}
-			innerFormats[j] = rule
+			innerFormats = append(innerFormats, rule)
 		}
-		textFormats[i] = innerFormats
+		textFormats = append(textFormats, innerFormats)
 	}
 	req["text_formats"] = textFormats
 }
 
 // buildApmDependencyStatsQueryJSON builds JSON for an apm_dependency_stats_query formula query.
-func buildApmDependencyStatsQueryJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildApmDependencyStatsQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
-	if v, ok := d.GetOk(path + ".data_source"); ok {
-		result["data_source"] = fmt.Sprintf("%v", v)
+	for _, field := range []string{"data_source", "env", "name", "operation_name", "resource_name", "service", "stat"} {
+		if v, ok := getStrAttr(attrs, field); ok {
+			result[field] = v
+		}
 	}
-	if v, ok := d.GetOk(path + ".env"); ok {
-		result["env"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".name"); ok {
-		result["name"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".operation_name"); ok {
-		result["operation_name"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".resource_name"); ok {
-		result["resource_name"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".service"); ok {
-		result["service"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".stat"); ok {
-		result["stat"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.Get(path + ".is_upstream").(bool); ok {
+	if v, ok := getBoolAttr(attrs, "is_upstream"); ok {
 		result["is_upstream"] = v
 	}
-	if v, ok := d.GetOk(path + ".primary_tag_name"); ok {
-		if s := fmt.Sprintf("%v", v); s != "" {
-			result["primary_tag_name"] = s
-		}
+	if v, ok := getStrAttr(attrs, "primary_tag_name"); ok && v != "" {
+		result["primary_tag_name"] = v
 	}
-	if v, ok := d.GetOk(path + ".primary_tag_value"); ok {
-		if s := fmt.Sprintf("%v", v); s != "" {
-			result["primary_tag_value"] = s
-		}
+	if v, ok := getStrAttr(attrs, "primary_tag_value"); ok && v != "" {
+		result["primary_tag_value"] = v
 	}
 	return result
 }
 
 // buildApmResourceStatsQueryJSON builds JSON for an apm_resource_stats_query formula query.
-func buildApmResourceStatsQueryJSON(d *schema.ResourceData, path string) map[string]interface{} {
+func buildApmResourceStatsQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	result := map[string]interface{}{}
-	if v, ok := d.GetOk(path + ".data_source"); ok {
-		result["data_source"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".env"); ok {
-		result["env"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".name"); ok {
-		result["name"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".service"); ok {
-		result["service"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".stat"); ok {
-		result["stat"] = fmt.Sprintf("%v", v)
-	}
-	if v, ok := d.GetOk(path + ".operation_name"); ok {
-		if s := fmt.Sprintf("%v", v); s != "" {
-			result["operation_name"] = s
+	for _, field := range []string{"data_source", "env", "name", "service", "stat"} {
+		if v, ok := getStrAttr(attrs, field); ok {
+			result[field] = v
 		}
 	}
-	if v, ok := d.GetOk(path + ".resource_name"); ok {
-		if s := fmt.Sprintf("%v", v); s != "" {
-			result["resource_name"] = s
-		}
+	if v, ok := getStrAttr(attrs, "operation_name"); ok && v != "" {
+		result["operation_name"] = v
 	}
-	if v, ok := d.GetOk(path + ".primary_tag_name"); ok {
-		if s := fmt.Sprintf("%v", v); s != "" {
-			result["primary_tag_name"] = s
-		}
+	if v, ok := getStrAttr(attrs, "resource_name"); ok && v != "" {
+		result["resource_name"] = v
 	}
-	if v, ok := d.GetOk(path + ".primary_tag_value"); ok {
-		if s := fmt.Sprintf("%v", v); s != "" {
-			result["primary_tag_value"] = s
-		}
+	if v, ok := getStrAttr(attrs, "primary_tag_name"); ok && v != "" {
+		result["primary_tag_name"] = v
+	}
+	if v, ok := getStrAttr(attrs, "primary_tag_value"); ok && v != "" {
+		result["primary_tag_value"] = v
 	}
 	// group_by: []string
-	if raw := d.Get(path + ".group_by"); raw != nil {
-		if items, ok := raw.([]interface{}); ok && len(items) > 0 {
-			strs := make([]string, len(items))
-			for i, item := range items {
-				strs[i] = fmt.Sprintf("%v", item)
-			}
-			result["group_by"] = strs
-		}
+	if strs := getStrListElems(attrs, "group_by"); len(strs) > 0 {
+		result["group_by"] = strs
 	}
 	return result
 }
@@ -2319,40 +2343,42 @@ func flattenQueryTableTextFormatsJSON(textFormats []interface{}) []interface{} {
 //	static_splits { split_vector { tag_key, tag_values } split_vector { ... } }
 //
 // The JSON structure is: [[{"tag_key":"...","tag_values":[...]},...],...]
-func buildSplitConfigStaticSplitsJSON(d *schema.ResourceData, splitConfigPath string) []interface{} {
-	staticSplitsPath := splitConfigPath + ".static_splits"
-	count, _ := d.Get(staticSplitsPath + ".#").(int)
-	if count == 0 {
+// splitConfigAttrs is the attributes map of the split_config block (not the outer attrs).
+func buildSplitConfigStaticSplitsJSON(splitConfigAttrs map[string]attr.Value) []interface{} {
+	staticSplitElems := getListElems(splitConfigAttrs, "static_splits")
+	if len(staticSplitElems) == 0 {
 		return nil
 	}
-	result := make([]interface{}, count)
-	for i := 0; i < count; i++ {
-		entryPath := fmt.Sprintf("%s.%d", staticSplitsPath, i)
-		vectorCount, _ := d.Get(entryPath + ".split_vector.#").(int)
-		innerArray := make([]interface{}, vectorCount)
-		for j := 0; j < vectorCount; j++ {
-			vecPath := fmt.Sprintf("%s.split_vector.%d", entryPath, j)
+	result := make([]interface{}, 0, len(staticSplitElems))
+	for _, ssElem := range staticSplitElems {
+		ssObj, ok := ssElem.(types.Object)
+		if !ok {
+			result = append(result, []interface{}{})
+			continue
+		}
+		ssAttrs := ssObj.Attributes()
+		vectorElems := getListElems(ssAttrs, "split_vector")
+		innerArray := make([]interface{}, 0, len(vectorElems))
+		for _, vElem := range vectorElems {
+			vObj, ok := vElem.(types.Object)
+			if !ok {
+				innerArray = append(innerArray, map[string]interface{}{})
+				continue
+			}
+			vAttrs := vObj.Attributes()
 			vec := map[string]interface{}{}
-			if v, ok := d.GetOk(vecPath + ".tag_key"); ok {
-				vec["tag_key"] = fmt.Sprintf("%v", v)
+			if v, ok := getStrAttr(vAttrs, "tag_key"); ok {
+				vec["tag_key"] = v
 			}
 			// tag_values: always emit (even empty array)
-			raw := d.Get(vecPath + ".tag_values")
-			var tagValues []string
-			switch v := raw.(type) {
-			case []interface{}:
-				tagValues = make([]string, len(v))
-				for k, s := range v {
-					tagValues[k] = fmt.Sprintf("%v", s)
-				}
-			}
+			tagValues := getStrListElems(vAttrs, "tag_values")
 			if tagValues == nil {
 				tagValues = []string{}
 			}
 			vec["tag_values"] = tagValues
-			innerArray[j] = vec
+			innerArray = append(innerArray, vec)
 		}
-		result[i] = innerArray
+		result = append(result, innerArray)
 	}
 	return result
 }
@@ -2399,27 +2425,30 @@ func flattenSplitConfigStaticSplitsJSON(staticSplits []interface{}) []interface{
 // This requires type dispatch since source_widget_definition can be any of several widget types.
 // It reuses allWidgetSpecs directly (no separate hardcoded list) — any widget type registered
 // in allWidgetSpecs is automatically supported as a source widget.
-func buildSplitGraphSourceWidgetJSON(d *schema.ResourceData, defHCLPath string) map[string]interface{} {
-	sourceWidgetPath := defHCLPath + ".source_widget_definition"
-	count, _ := d.Get(sourceWidgetPath + ".#").(int)
-	if count == 0 {
+// defAttrs is the attributes map of the split_graph definition block.
+func buildSplitGraphSourceWidgetJSON(defAttrs map[string]attr.Value) map[string]interface{} {
+	sourceWidgetAttrs := getObjAttrs(defAttrs, "source_widget_definition")
+	if sourceWidgetAttrs == nil {
 		return nil
 	}
-	sourcePath := sourceWidgetPath + ".0"
 	// source_widget_definition is like a miniature widget: try each registered spec.
 	for _, spec := range allWidgetSpecs {
-		cnt, _ := d.Get(sourcePath + "." + spec.HCLKey + ".#").(int)
-		if cnt == 0 {
+		innerElems := getListElems(sourceWidgetAttrs, spec.HCLKey)
+		if len(innerElems) == 0 {
 			continue
 		}
-		innerPath := sourcePath + "." + spec.HCLKey + ".0"
+		innerObj, ok := innerElems[0].(types.Object)
+		if !ok {
+			continue
+		}
+		innerAttrs := innerObj.Attributes()
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
-		defJSON := BuildEngineJSON(d, innerPath, allFields)
+		defJSON := BuildEngineJSON(innerAttrs, allFields)
 		defJSON["type"] = spec.JSONType
 		// Apply the same per-widget post-processing as the main engine
-		buildWidgetPostProcess(d, spec, innerPath, defJSON)
+		buildWidgetPostProcess(innerAttrs, spec, defJSON)
 		return defJSON
 	}
 	return nil
@@ -2447,19 +2476,17 @@ func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) map[string
 }
 
 // buildGroupWidgetsJSON builds the "widgets" array for a group widget.
-// It iterates over the child widget list and delegates to buildWidgetEngineJSON,
-// which accepts a path string and handles all widget types uniformly.
-func buildGroupWidgetsJSON(d *schema.ResourceData, defHCLPath string) []interface{} {
-	widgetsPath := defHCLPath + ".widget"
-	widgetCount, _ := d.Get(widgetsPath + ".#").(int)
-	widgets := make([]interface{}, widgetCount)
-	for i := 0; i < widgetCount; i++ {
-		childPath := fmt.Sprintf("%s.%d", widgetsPath, i)
-		w := buildWidgetEngineJSON(d, childPath)
-		if w == nil {
-			w = map[string]interface{}{}
+func buildGroupWidgetsJSON(defAttrs map[string]attr.Value) []interface{} {
+	widgetElems := getListElems(defAttrs, "widget")
+	widgets := make([]interface{}, 0, len(widgetElems))
+	for _, elem := range widgetElems {
+		if wObj, ok := elem.(types.Object); ok {
+			w := buildWidgetEngineJSON(wObj.Attributes())
+			if w == nil {
+				w = map[string]interface{}{}
+			}
+			widgets = append(widgets, w)
 		}
-		widgets[i] = w
 	}
 	return widgets
 }
@@ -2528,202 +2555,31 @@ func flattenGroupWidgetsJSON(widgets []interface{}) []interface{} {
 // DashboardAPIPath is the Datadog API path for dashboards.
 const DashboardAPIPath = "/api/v1/dashboard"
 
-// BuildDashboardEngineJSON builds the full dashboard JSON body from ResourceData.
-func BuildDashboardEngineJSON(d *schema.ResourceData) map[string]interface{} {
-	result := BuildEngineJSON(d, "", DashboardTopLevelFields)
+// BuildDashboardEngineJSON builds the full dashboard JSON body from a framework attrs map.
+func BuildDashboardEngineJSON(attrs map[string]attr.Value, id string) map[string]interface{} {
+	result := BuildEngineJSON(attrs, DashboardTopLevelFields)
 
-	// SDK sends "id": "" in POST bodies — replicate for cassette compatibility.
-	// On create d.Id() is "" (zero value), on update d.Id() is the real ID.
 	// Both POST and PUT bodies need this field set to the current ID.
-	result["id"] = d.Id()
+	result["id"] = id
 
 	// Handle widgets with type dispatch.
-	widgetCount, _ := d.Get("widget.#").(int)
-	widgets := make([]interface{}, widgetCount)
-	for i := 0; i < widgetCount; i++ {
-		widgets[i] = buildWidgetEngineJSON(d, fmt.Sprintf("widget.%d", i))
+	widgetElems := getListElems(attrs, "widget")
+	widgets := make([]interface{}, 0, len(widgetElems))
+	for _, elem := range widgetElems {
+		if wObj, ok := elem.(types.Object); ok {
+			w := buildWidgetEngineJSON(wObj.Attributes())
+			if w != nil {
+				widgets = append(widgets, w)
+			}
+		}
 	}
 	result["widgets"] = widgets
 
 	return result
 }
 
-// UpdateDashboardEngineState sets ResourceData state from the dashboard API response map.
-func UpdateDashboardEngineState(d *schema.ResourceData, resp map[string]interface{}) diag.Diagnostics {
-	// Set simple top-level fields from response
-	if v, ok := resp["title"]; ok {
-		if err := d.Set("title", fmt.Sprintf("%v", v)); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-	if v, ok := resp["layout_type"]; ok {
-		if err := d.Set("layout_type", fmt.Sprintf("%v", v)); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-	if v, ok := resp["reflow_type"]; ok {
-		if err := d.Set("reflow_type", fmt.Sprintf("%v", v)); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-	if v, ok := resp["description"]; ok {
-		desc := ""
-		if v != nil {
-			desc = fmt.Sprintf("%v", v)
-		}
-		if err := d.Set("description", desc); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-	if v, ok := resp["url"]; ok {
-		if err := d.Set("url", fmt.Sprintf("%v", v)); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	// Handle is_read_only / restricted_roles (same logic as prepResource in json resource)
-	// 'restricted_roles' takes precedence over 'is_read_only'
-	if restrictedRoles, ok := resp["restricted_roles"].([]interface{}); ok {
-		roles := make([]string, len(restrictedRoles))
-		for i, r := range restrictedRoles {
-			roles[i] = fmt.Sprintf("%v", r)
-		}
-		if err := d.Set("restricted_roles", roles); err != nil {
-			return diag.FromErr(err)
-		}
-		// Clear is_read_only when restricted_roles is set
-		if err := d.Set("is_read_only", false); err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		// is_read_only defaults to false — set it to avoid continuous diff when not set
-		isReadOnly := false
-		if v, ok := resp["is_read_only"].(bool); ok {
-			isReadOnly = v
-		}
-		if err := d.Set("is_read_only", isReadOnly); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	// Set notify_list
-	if v, ok := resp["notify_list"].([]interface{}); ok {
-		notifyList := make([]string, len(v))
-		for i, n := range v {
-			notifyList[i] = fmt.Sprintf("%v", n)
-		}
-		if err := d.Set("notify_list", notifyList); err != nil {
-			return diag.FromErr(err)
-		}
-	} else {
-		if err := d.Set("notify_list", []string{}); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	// Set tags
-	if v, ok := resp["tags"].([]interface{}); ok {
-		tags := make([]string, len(v))
-		for i, t := range v {
-			tags[i] = fmt.Sprintf("%v", t)
-		}
-		if err := d.Set("tags", tags); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	// Set template_variables
-	if v, ok := resp["template_variables"].([]interface{}); ok {
-		tvs := flattenTemplateVariables(v)
-		if err := d.Set("template_variable", tvs); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	// Set template_variable_presets
-	if v, ok := resp["template_variable_presets"].([]interface{}); ok {
-		tvps := flattenTemplateVariablePresets(v)
-		if err := d.Set("template_variable_preset", tvps); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	// Set widgets
-	if widgets, ok := resp["widgets"].([]interface{}); ok {
-		terraformWidgets := make([]interface{}, len(widgets))
-		for i, w := range widgets {
-			widgetData, ok := w.(map[string]interface{})
-			if !ok {
-				continue
-			}
-			flattened := flattenWidgetEngineJSON(widgetData)
-			if flattened == nil {
-				// Widget type not implemented yet — preserve existing state
-				// by trying to get from current state
-				existing := d.Get(fmt.Sprintf("widget.%d", i))
-				if existing != nil {
-					if existingMap, ok := existing.(map[string]interface{}); ok {
-						flattened = existingMap
-					}
-				}
-				if flattened == nil {
-					flattened = map[string]interface{}{}
-				}
-			}
-			// Widget IDs come FROM the response and are set in state
-			// The schema has widget.id as Computed TypeInt
-			if def, ok := widgetData["definition"].(map[string]interface{}); ok {
-				if widgetID, ok := def["id"]; ok {
-					switch v := widgetID.(type) {
-					case float64:
-						flattened["id"] = int(v)
-					case int:
-						flattened["id"] = v
-					}
-				}
-			}
-			// Also check top-level widget id
-			if widgetID, ok := widgetData["id"]; ok {
-				switch v := widgetID.(type) {
-				case float64:
-					flattened["id"] = int(v)
-				case int:
-					flattened["id"] = v
-				}
-			}
-			// Flatten widget_layout from JSON "layout" object.
-			// The API returns layout as {"x":5,"y":5,"width":32,"height":43}.
-			if layout, ok := widgetData["layout"].(map[string]interface{}); ok {
-				layoutState := map[string]interface{}{}
-				for _, key := range []string{"x", "y", "width", "height"} {
-					if v, ok := layout[key]; ok {
-						switch iv := v.(type) {
-						case float64:
-							layoutState[key] = int(iv)
-						case int:
-							layoutState[key] = iv
-						}
-					}
-				}
-				if v, ok := layout["is_column_break"].(bool); ok && v {
-					layoutState["is_column_break"] = v
-				}
-				if len(layoutState) > 0 {
-					flattened["widget_layout"] = []interface{}{layoutState}
-				}
-			}
-			terraformWidgets[i] = flattened
-		}
-		if err := d.Set("widget", terraformWidgets); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	return nil
-}
-
-// flattenTemplateVariables converts the JSON template_variables list to HCL state.
-func flattenTemplateVariables(tvs []interface{}) []interface{} {
+// FlattenTemplateVariables converts the JSON template_variables list to HCL state.
+func FlattenTemplateVariables(tvs []interface{}) []interface{} {
 	result := make([]interface{}, len(tvs))
 	for i, tv := range tvs {
 		m, ok := tv.(map[string]interface{})
@@ -2762,8 +2618,8 @@ func flattenTemplateVariables(tvs []interface{}) []interface{} {
 	return result
 }
 
-// flattenTemplateVariablePresets converts the JSON template_variable_presets list to HCL state.
-func flattenTemplateVariablePresets(tvps []interface{}) []interface{} {
+// FlattenTemplateVariablePresets converts the JSON template_variable_presets list to HCL state.
+func FlattenTemplateVariablePresets(tvps []interface{}) []interface{} {
 	result := make([]interface{}, len(tvps))
 	for i, tvp := range tvps {
 		m, ok := tvp.(map[string]interface{})
@@ -2806,10 +2662,9 @@ func flattenTemplateVariablePresets(tvps []interface{}) []interface{} {
 }
 
 // BuildWidgetEngineJSON is the exported entry point for building a single widget's JSON map
-// from ResourceData. widgetPath is the dotted HCL path to the widget block, e.g. "widget.0".
-// Returns nil if no recognized widget type is found at that path.
-func BuildWidgetEngineJSON(d *schema.ResourceData, widgetPath string) map[string]interface{} {
-	return buildWidgetEngineJSON(d, widgetPath)
+// from a framework attrs map. Returns nil if no recognized widget type is found.
+func BuildWidgetEngineJSON(attrs map[string]attr.Value) map[string]interface{} {
+	return buildWidgetEngineJSON(attrs)
 }
 
 // FlattenWidgetEngineJSON is the exported entry point for flattening a single widget's JSON map
@@ -2819,12 +2674,287 @@ func FlattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]inter
 	return flattenWidgetEngineJSON(widgetData)
 }
 
-// MarshalDashboardJSON marshals the dashboard JSON body from ResourceData.
+// MarshalDashboardJSON marshals the dashboard JSON body from a framework attrs map.
 // The trailing newline matches behavior of json.NewEncoder used when cassettes were recorded.
-func MarshalDashboardJSON(d *schema.ResourceData) (string, error) {
-	body, err := json.Marshal(BuildDashboardEngineJSON(d))
+func MarshalDashboardJSON(attrs map[string]attr.Value, id string) (string, error) {
+	body, err := json.Marshal(BuildDashboardEngineJSON(attrs, id))
 	if err != nil {
 		return "", fmt.Errorf("error marshaling dashboard JSON: %s", err)
 	}
 	return string(body) + "\n", nil
+}
+
+// ============================================================
+// Framework State Conversion (JSON → attr.Value)
+// ============================================================
+
+// RawToAttrValue converts a raw interface{} value from JSON to the appropriate attr.Value
+// based on the target attr.Type. Returns a null value of the correct type if v is nil.
+func RawToAttrValue(v interface{}, t attr.Type) attr.Value {
+	if v == nil {
+		return nullValue(t)
+	}
+	switch ct := t.(type) {
+	case basetypes.StringType:
+		return types.StringValue(fmt.Sprintf("%v", v))
+	case basetypes.BoolType:
+		if b, ok := v.(bool); ok {
+			return types.BoolValue(b)
+		}
+		return types.BoolNull()
+	case basetypes.Int64Type:
+		switch iv := v.(type) {
+		case float64:
+			return types.Int64Value(int64(iv))
+		case int:
+			return types.Int64Value(int64(iv))
+		case int64:
+			return types.Int64Value(iv)
+		}
+		return types.Int64Null()
+	case basetypes.Float64Type:
+		switch fv := v.(type) {
+		case float64:
+			return types.Float64Value(fv)
+		case int:
+			return types.Float64Value(float64(fv))
+		}
+		return types.Float64Null()
+	case basetypes.ListType:
+		// Handle both []interface{} (from JSON) and []string/[]int (from FlattenEngineJSON)
+		var elems []attr.Value
+		switch items := v.(type) {
+		case []interface{}:
+			elems = make([]attr.Value, len(items))
+			for i, item := range items {
+				elems[i] = RawToAttrValue(item, ct.ElemType)
+			}
+		case []string:
+			elems = make([]attr.Value, len(items))
+			for i, item := range items {
+				elems[i] = RawToAttrValue(item, ct.ElemType)
+			}
+		case []int:
+			elems = make([]attr.Value, len(items))
+			for i, item := range items {
+				elems[i] = RawToAttrValue(item, ct.ElemType)
+			}
+		default:
+			return types.ListNull(ct.ElemType)
+		}
+		lv, diags := types.ListValue(ct.ElemType, elems)
+		if diags.HasError() {
+			return types.ListNull(ct.ElemType)
+		}
+		return lv
+	case basetypes.SetType:
+		var elems []attr.Value
+		switch items := v.(type) {
+		case []interface{}:
+			elems = make([]attr.Value, len(items))
+			for i, item := range items {
+				elems[i] = RawToAttrValue(item, ct.ElemType)
+			}
+		case []string:
+			elems = make([]attr.Value, len(items))
+			for i, item := range items {
+				elems[i] = RawToAttrValue(item, ct.ElemType)
+			}
+		case []int:
+			elems = make([]attr.Value, len(items))
+			for i, item := range items {
+				elems[i] = RawToAttrValue(item, ct.ElemType)
+			}
+		default:
+			return types.SetNull(ct.ElemType)
+		}
+		sv, diags := types.SetValue(ct.ElemType, elems)
+		if diags.HasError() {
+			return types.SetNull(ct.ElemType)
+		}
+		return sv
+	case basetypes.ObjectType:
+		m, ok := v.(map[string]interface{})
+		if !ok {
+			return types.ObjectNull(ct.AttrTypes)
+		}
+		attrVals := MapToAttrValues(m, ct.AttrTypes)
+		obj, diags := types.ObjectValue(ct.AttrTypes, attrVals)
+		if diags.HasError() {
+			return types.ObjectNull(ct.AttrTypes)
+		}
+		return obj
+	}
+	return nullValue(t)
+}
+
+// nullValue returns a null attr.Value of the correct type.
+func nullValue(t attr.Type) attr.Value {
+	switch ct := t.(type) {
+	case basetypes.StringType:
+		return types.StringNull()
+	case basetypes.BoolType:
+		return types.BoolNull()
+	case basetypes.Int64Type:
+		return types.Int64Null()
+	case basetypes.Float64Type:
+		return types.Float64Null()
+	case basetypes.ListType:
+		return types.ListNull(ct.ElemType)
+	case basetypes.SetType:
+		return types.SetNull(ct.ElemType)
+	case basetypes.ObjectType:
+		return types.ObjectNull(ct.AttrTypes)
+	}
+	return types.StringNull()
+}
+
+// MapToAttrValues converts a map[string]interface{} to map[string]attr.Value
+// using the provided attrTypes for type guidance.
+// For missing keys, uses SDKv2-compatible zero values to match v1 behavior.
+func MapToAttrValues(data map[string]interface{}, attrTypes map[string]attr.Type) map[string]attr.Value {
+	result := make(map[string]attr.Value, len(attrTypes))
+	for key, t := range attrTypes {
+		if v, ok := data[key]; ok {
+			result[key] = RawToAttrValue(v, t)
+		} else {
+			result[key] = zeroValue(t)
+		}
+	}
+	return result
+}
+
+// zeroValue returns the SDKv2-compatible zero value for a type.
+// Matches TypeString default "", TypeInt default 0, TypeBool default false, TypeList default [].
+func zeroValue(t attr.Type) attr.Value {
+	switch ct := t.(type) {
+	case basetypes.StringType:
+		return types.StringValue("")
+	case basetypes.BoolType:
+		return types.BoolValue(false)
+	case basetypes.Int64Type:
+		return types.Int64Value(0)
+	case basetypes.Float64Type:
+		return types.Float64Value(0)
+	case basetypes.ListType:
+		return types.ListValueMust(ct.ElemType, []attr.Value{})
+	case basetypes.SetType:
+		return types.SetValueMust(ct.ElemType, []attr.Value{})
+	case basetypes.ObjectType:
+		attrs := make(map[string]attr.Value, len(ct.AttrTypes))
+		for k, at := range ct.AttrTypes {
+			attrs[k] = zeroValue(at)
+		}
+		obj, diags := types.ObjectValue(ct.AttrTypes, attrs)
+		if diags.HasError() {
+			return types.ObjectNull(ct.AttrTypes)
+		}
+		return obj
+	}
+	return nullValue(t)
+}
+
+// FlattenWidgetsToFW converts the "widgets" array from a dashboard API response
+// into a types.List of widget objects suitable for use with AllWidgetAttrTypes.
+// excludePowerpackOnly controls whether powerpack/split_group definitions are included.
+func FlattenWidgetsToFW(widgets []interface{}, excludePowerpackOnly bool) (types.List, error) {
+	widgetAttrTypes := AllWidgetAttrTypes(excludePowerpackOnly)
+	widgetObjType := types.ObjectType{AttrTypes: widgetAttrTypes}
+
+	if len(widgets) == 0 {
+		return types.ListValueMust(widgetObjType, []attr.Value{}), nil
+	}
+
+	elems := make([]attr.Value, 0, len(widgets))
+	for _, w := range widgets {
+		widgetData, ok := w.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		// Flatten the widget definition
+		flattened := flattenWidgetEngineJSON(widgetData)
+		if flattened == nil {
+			flattened = map[string]interface{}{}
+		}
+
+		// Handle widget ID
+		if def, ok := widgetData["definition"].(map[string]interface{}); ok {
+			if widgetID, ok := def["id"]; ok {
+				switch v := widgetID.(type) {
+				case float64:
+					flattened["id"] = int(v)
+				case int:
+					flattened["id"] = v
+				}
+			}
+		}
+		if widgetID, ok := widgetData["id"]; ok {
+			switch v := widgetID.(type) {
+			case float64:
+				flattened["id"] = int(v)
+			case int:
+				flattened["id"] = v
+			}
+		}
+
+		// Flatten widget_layout from JSON "layout" object
+		if layout, ok := widgetData["layout"].(map[string]interface{}); ok {
+			layoutState := map[string]interface{}{}
+			for _, key := range []string{"x", "y", "width", "height"} {
+				if v, ok := layout[key]; ok {
+					switch iv := v.(type) {
+					case float64:
+						layoutState[key] = int(iv)
+					case int:
+						layoutState[key] = iv
+					}
+				}
+			}
+			if v, ok := layout["is_column_break"].(bool); ok && v {
+				layoutState["is_column_break"] = v
+			}
+			if len(layoutState) > 0 {
+				flattened["widget_layout"] = []interface{}{layoutState}
+			}
+		}
+
+		// Convert flattened map to framework attr.Value map
+		attrVals := MapToAttrValues(flattened, widgetAttrTypes)
+		widgetObj, diags := types.ObjectValue(widgetAttrTypes, attrVals)
+		if diags.HasError() {
+			continue
+		}
+		elems = append(elems, widgetObj)
+	}
+
+	widgetList, diags := types.ListValue(widgetObjType, elems)
+	if diags.HasError() {
+		return types.ListNull(widgetObjType), fmt.Errorf("error creating widget list")
+	}
+	return widgetList, nil
+}
+
+// FlattenListToFW converts a []interface{} of flat maps to a types.List
+// of objects using the provided attrTypes.
+func FlattenListToFW(items []interface{}, attrTypes map[string]attr.Type) (types.List, error) {
+	objType := types.ObjectType{AttrTypes: attrTypes}
+	elems := make([]attr.Value, 0, len(items))
+	for _, item := range items {
+		m, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		attrVals := MapToAttrValues(m, attrTypes)
+		obj, diags := types.ObjectValue(attrTypes, attrVals)
+		if diags.HasError() {
+			continue
+		}
+		elems = append(elems, obj)
+	}
+	list, diags := types.ListValue(objType, elems)
+	if diags.HasError() {
+		return types.ListNull(objType), fmt.Errorf("error creating list value")
+	}
+	return list, nil
 }

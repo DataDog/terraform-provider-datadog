@@ -11,7 +11,7 @@ var dashboardTemplateVariableFields = []FieldSpec{
 	{HCLKey: "prefix", OmitEmpty: true, Type: TypeString,
 		Description: "The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown."},
 	{HCLKey: "available_values", OmitEmpty: true, Type: TypeStringList,
-		Description: "The list of values that the template variable drop-down is be limited to"},
+		Description: "The list of values that the template variable drop-down is limited to."},
 	{HCLKey: "default", OmitEmpty: true, Type: TypeString,
 		Deprecated:  "Use `defaults` instead.",
 		Description: "The default value for the template variable on dashboard load. Cannot be used in conjunction with `defaults`."},

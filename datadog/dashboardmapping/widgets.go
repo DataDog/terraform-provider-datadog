@@ -1,10 +1,5 @@
 package dashboardmapping
 
-import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-)
-
 // widgets.go
 //
 // All WidgetSpec declarations and the allWidgetSpecs registry.
@@ -41,7 +36,7 @@ var AlertGraphWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
-			Description: "Type of visualization to use when displaying the widget.",
+			Description: "Whether to display the Alert Graph as a timeseries or a top list.",
 			ValidValues: []string{"timeseries", "toplist"},
 		},
 	},
@@ -144,13 +139,13 @@ var ImageWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
-			Description: "The URL to use as a data source for the widget.",
+			Description: "URL of the image.",
 		},
 		{
 			HCLKey:      "url_dark_theme",
 			Type:        TypeString,
 			OmitEmpty:   true,
-			Description: "The URL in dark mode to use as a data source for the widget.",
+			Description: "URL of the image in dark mode.",
 		},
 		{
 			HCLKey:      "sizing",
@@ -210,9 +205,6 @@ var NoteWidgetSpec = WidgetSpec{
 			OmitEmpty:   false,
 			Required:    true,
 			Description: "The content of the note.",
-			// Use Validate (not ValidateDiag) so the error message includes the
-			// full attribute path, matching the existing test assertion.
-			Validate: validation.StringIsNotEmpty,
 		},
 		{
 			HCLKey:      "background_color",
@@ -282,13 +274,13 @@ var EventStreamWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
-			Description: "The query to use in the widget.",
+			Description: "Query to filter the event stream with.",
 		},
 		{
 			HCLKey:      "event_size",
 			Type:        TypeString,
 			OmitEmpty:   true,
-			Description: "The size to use to display an event.",
+			Description: "Size to use to display an event.",
 			ValidValues: []string{"s", "l"},
 		},
 		{
@@ -311,7 +303,7 @@ var EventTimelineWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
-			Description: "The query to use in the widget.",
+			Description: "Query to filter the event timeline with.",
 		},
 		{
 			HCLKey:      "tags_execution",
@@ -333,7 +325,7 @@ var CheckStatusWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
-			Description: "The check to use in the widget.",
+			Description: "Name of the check to use in the widget.",
 		},
 		{
 			HCLKey:      "grouping",
@@ -347,7 +339,7 @@ var CheckStatusWidgetSpec = WidgetSpec{
 			HCLKey:      "group",
 			Type:        TypeString,
 			OmitEmpty:   true,
-			Description: "The check group to use in the widget.",
+			Description: "Group reporting a single check.",
 		},
 		{
 			HCLKey:      "group_by",
@@ -359,7 +351,7 @@ var CheckStatusWidgetSpec = WidgetSpec{
 			HCLKey:      "tags",
 			Type:        TypeStringList,
 			OmitEmpty:   true,
-			Description: "A list of tags to use in the widget.",
+			Description: "A list of tags used to filter the groups reporting a cluster check.",
 		},
 	},
 }
@@ -381,7 +373,7 @@ var LogStreamWidgetSpec = WidgetSpec{
 			HCLKey:      "query",
 			Type:        TypeString,
 			OmitEmpty:   true,
-			Description: "The query to use in the widget.",
+			Description: "Query to filter the log stream with.",
 		},
 		{
 			HCLKey:      "columns",
@@ -441,7 +433,7 @@ var ManageStatusWidgetSpec = WidgetSpec{
 			Type:        TypeString,
 			OmitEmpty:   false,
 			Required:    true,
-			Description: "The query to use in the widget.",
+			Description: "Query to filter the monitors with.",
 		},
 		{
 			HCLKey:      "summary_type",
@@ -482,7 +474,7 @@ var ManageStatusWidgetSpec = WidgetSpec{
 			HCLKey:      "show_last_triggered",
 			Type:        TypeBool,
 			OmitEmpty:   false,
-			Description: "A Boolean indicating whether to show when monitors/groups last triggered.",
+			Description: "Whether to show the time that has elapsed since the monitor/group triggered.",
 		},
 		{
 			HCLKey:      "show_priority",
@@ -774,13 +766,13 @@ var distributionWidgetRequestFields = append([]FieldSpec{
 // Differs from WidgetAxis: include_zero uses OmitEmpty: true (not false).
 var distributionWidgetXAxisFields = []FieldSpec{
 	{HCLKey: "scale", Type: TypeString, OmitEmpty: true,
-		Description: "Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`."},
+		Description: "Specifies the scale type. Possible values are `linear`."},
 	{HCLKey: "min", Type: TypeString, OmitEmpty: true,
-		Description: "Specify the minimum value to show on the Y-axis."},
+		Description: "Specifies minimum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
 	{HCLKey: "max", Type: TypeString, OmitEmpty: true,
-		Description: "Specify the maximum value to show on the Y-axis."},
+		Description: "Specifies maximum value to show on the x-axis. It takes a number, percentile (p90 === 90th percentile), or auto for default behavior."},
 	{HCLKey: "include_zero", Type: TypeBool, OmitEmpty: true,
-		Description: "Always include zero or fit the axis to the data range."},
+		Description: "True includes zero."},
 }
 
 // distributionWidgetYAxisFields extends distributionWidgetXAxisFields with a label field.
@@ -870,11 +862,11 @@ var HostmapWidgetSpec = WidgetSpec{
 		{HCLKey: "no_metric_hosts", Type: TypeBool, OmitEmpty: true,
 			Description: "A Boolean indicating whether to show nodes with no metrics."},
 		{HCLKey: "no_group_hosts", Type: TypeBool, OmitEmpty: true,
-			Description: "A Boolean indicating whether to show ungrouped nodes."},
+			Description: "A Boolean indicating whether to show the hosts that don't fit in a group."},
 		{HCLKey: "group", Type: TypeStringList, OmitEmpty: true,
-			Description: "The list of tags to group nodes by."},
+			Description: "The list of tag prefixes to group by."},
 		{HCLKey: "scope", Type: TypeStringList, OmitEmpty: true,
-			Description: "The list of tags to filter nodes by."},
+			Description: "The list of tags used to filter the map."},
 		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 			Children:    hostmapStyleFields},
@@ -906,9 +898,9 @@ var QueryValueWidgetSpec = WidgetSpec{
 		{HCLKey: "autoscale", Type: TypeBool, OmitEmpty: false,
 			Description: "A Boolean indicating whether to automatically scale the tile."},
 		{HCLKey: "custom_unit", Type: TypeString, OmitEmpty: true,
-			Description: "The unit for the value displayed in the widget."},
+			Description: "Display a unit of your choice on the widget."},
 		{HCLKey: "precision", Type: TypeInt, OmitEmpty: false,
-			Description: "The precision to use when displaying the tile."},
+			Description: "Number of decimals to show. If not defined, the widget uses the raw value."},
 		{HCLKey: "text_align", Type: TypeString, OmitEmpty: true,
 			Description: "The alignment of the widget's text.",
 			ValidValues: []string{"center", "left", "right"}},
@@ -1041,11 +1033,11 @@ var geomapWidgetRequestFields = []FieldSpec{
 		Children:    logQueryDefinitionFields},
 	// FormulaAndFunction query/formula fields
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
-
-		Children: formulaAndFunctionQueryFields},
+		Description: "List of queries that can be returned directly or used in formulas.",
+		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
-
-		Children: widgetFormulaFields},
+		Description: "List of formulas that operate on queries.",
+		Children:    widgetFormulaFields},
 }
 
 var GeomapWidgetSpec = WidgetSpec{
@@ -1060,7 +1052,7 @@ var GeomapWidgetSpec = WidgetSpec{
 			Description: "The view of the world that the map should render.",
 			Children: []FieldSpec{
 				{HCLKey: "focus", Type: TypeString, OmitEmpty: false, Required: true,
-					Description: "The two-letter ISO code of a country to focus the map on (or `WORLD`)."},
+					Description: "The 2-letter ISO code of a country to focus the map on, or `WORLD` for global view, or a region (`EMEA`, `APAC`, `LATAM`), or a continent (`NORTH_AMERICA`, `SOUTH_AMERICA`, `EUROPE`, `AFRICA`, `ASIA`, `OCEANIA`)."},
 			}},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
@@ -1084,11 +1076,11 @@ var GeomapWidgetSpec = WidgetSpec{
 // Treemap only supports formula/query style — no old-style requests.
 var treemapRequestFields = []FieldSpec{
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
-
-		Children: formulaAndFunctionQueryFields},
+		Description: "List of queries that can be returned directly or used in formulas.",
+		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
-
-		Children: widgetFormulaFields},
+		Description: "List of formulas that operate on queries.",
+		Children:    widgetFormulaFields},
 }
 
 var TreemapWidgetSpec = WidgetSpec{
@@ -1401,59 +1393,6 @@ var splitGraphSourceWidgetTypes = map[string]bool{
 	"scatterplot": true, "sunburst": true, "timeseries": true, "toplist": true, "treemap": true,
 }
 
-// splitGraphSourceWidgetSchema builds the *schema.Schema for the source_widget_definition
-// block inside split_graph_definition. Only the 9 widget types supported by the API
-// as split graph sources are included (matching the original schema exactly).
-func splitGraphSourceWidgetSchema() *schema.Schema {
-	inner := make(map[string]*schema.Schema)
-	for _, spec := range allWidgetSpecs {
-		if !splitGraphSourceWidgetTypes[spec.JSONType] {
-			continue
-		}
-		inner[spec.HCLKey] = WidgetSpecToSchemaBlock(spec)
-	}
-	return &schema.Schema{
-		Type:        schema.TypeList,
-		Required:    true,
-		MaxItems:    1,
-		Description: "The original widget we are splitting on.",
-		Elem:        &schema.Resource{Schema: inner},
-	}
-}
-
-// AllWidgetSchemasMap returns the schema map for all widget definition types,
-// including widget_layout and id wrapper fields. If excludePowerpackOnly is true,
-// powerpack and split_graph definitions are excluded (for use by the powerpack resource).
-func AllWidgetSchemasMap(excludePowerpackOnly bool) map[string]*schema.Schema {
-	s := map[string]*schema.Schema{
-		"id": {
-			Type:        schema.TypeInt,
-			Computed:    true,
-			Description: "The ID of the widget.",
-		},
-		"widget_layout": {
-			Type:        schema.TypeList,
-			MaxItems:    1,
-			Optional:    true,
-			Description: "The layout of the widget on a 'free' dashboard.",
-			Elem:        &schema.Resource{Schema: FieldSpecsToSchema(widgetLayoutFieldSpecs)},
-		},
-	}
-	for _, spec := range allWidgetSpecs {
-		if excludePowerpackOnly && (spec.JSONType == "powerpack" || spec.JSONType == "split_group") {
-			continue
-		}
-		s[spec.HCLKey] = WidgetSpecToSchemaBlock(spec)
-	}
-	// Inject source_widget_definition into split_graph_definition schema.
-	// This block is dynamically generated from allWidgetSpecs (excluding group/powerpack/split_group)
-	// and cannot be expressed as a static FieldSpec.
-	if splitGraphSchema, ok := s["split_graph_definition"]; ok {
-		splitGraphSchema.Elem.(*schema.Resource).Schema["source_widget_definition"] = splitGraphSourceWidgetSchema()
-	}
-	return s
-}
-
 // timeseriesWidgetRequestStyleFields corresponds to OpenAPI
 // components/schemas/WidgetRequestStyle (inline on TimeseriesWidgetRequest).
 var timeseriesWidgetRequestStyleFields = []FieldSpec{
@@ -1547,12 +1486,12 @@ var timeseriesWidgetRequestFields = []FieldSpec{
 	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	{HCLKey: "profile_metrics_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
 	// ProcessQueryDefinition
-	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Children: processQueryDefinitionFields},
+	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget.", Children: processQueryDefinitionFields},
 	// FormulaAndFunction query/formula fields
 	{HCLKey: "query", Type: TypeBlockList, OmitEmpty: true,
-
-		Children: formulaAndFunctionQueryFields},
+		Description: "List of queries that can be returned directly or used in formulas.",
+		Children:    formulaAndFunctionQueryFields},
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
-
-		Children: widgetFormulaFields},
+		Description: "List of formulas that operate on queries.",
+		Children:    widgetFormulaFields},
 }

@@ -215,11 +215,6 @@ func Provider() *schema.Provider {
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
-			// datadog_dashboard_v2 uses the FieldSpec bidirectional mapping engine
-			// instead of the legacy build*/flatten* functions. This SDKv2 resource is
-			// an exception to the "no new SDKv2 resources" rule because it replaces
-			// and improves the existing SDKv2 datadog_dashboard implementation.
-			"datadog_dashboard_v2": resourceDatadogDashboardV2(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
 			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
@@ -244,9 +239,6 @@ func Provider() *schema.Provider {
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
 			"datadog_powerpack":                            resourceDatadogPowerpack(),
-			// datadog_powerpack_v2 uses the FieldSpec bidirectional mapping engine.
-			// Same SDKv2 exception as datadog_dashboard_v2 above.
-			"datadog_powerpack_v2":                         resourceDatadogPowerpackV2(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
