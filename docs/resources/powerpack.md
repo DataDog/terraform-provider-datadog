@@ -7127,6 +7127,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort))
 - `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
 
 <a id="nestedblock--widget--toplist_definition--request--apm_query"></a>
@@ -7772,6 +7773,29 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--sort"></a>
+### Nested Schema for `widget.toplist_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The array of items to sort the widget by in order. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--toplist_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.toplist_definition.request.sort.order_by`
+
+Required:
+
+- `order` (String) Widget sorting methods. Allowed enum values: `asc`, `desc` Valid values are `asc`, `desc`.
+- `type` (String) Set the sort type to formula. Allowed enum values: `formula` Valid values are `formula`, `group`.
+
+Optional:
+
+- `index` (Number) The index of the formula to sort by.
+- `name` (String) The name of the group.
 
 
 
