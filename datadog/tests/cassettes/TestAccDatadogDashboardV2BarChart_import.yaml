@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1291
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2BarChart_import-local-1772134915","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, 'sum', 'desc')"}],"style":{"display":{"type":"flat"}},"time":{"live_span":"1w"},"title":"Bar Chart with flat style","title_align":"right","title_size":"16","type":"bar_chart"}},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, 'sum', 'desc')"}],"style":{"display":{"legend":"automatic","type":"stacked"},"palette":"datadog16","scaling":"relative"},"time":{"live_span":"1w"},"title":"Bar Chart with stacked style","title_align":"right","title_size":"16","type":"bar_chart"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"u4j-waq-phh","title":"tf-TestAccDatadogDashboardV2BarChart_import-local-1772134915","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/u4j-waq-phh/tf-testaccdatadogdashboardv2barchartimport-local-1772134915","template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"type":"flat"}},"time":{"live_span":"1w"},"title":"Bar Chart with flat style","title_align":"right","title_size":"16","type":"bar_chart"},"id":3437277163162846},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"legend":"automatic","type":"stacked"},"palette":"datadog16","scaling":"relative"},"time":{"live_span":"1w"},"title":"Bar Chart with stacked style","title_align":"right","title_size":"16","type":"bar_chart"},"id":8824193134972149}],"notify_list":[],"created_at":"2026-02-26T19:42:05.432346+00:00","modified_at":"2026-02-26T19:42:05.432346+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 140.534167ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/u4j-waq-phh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"u4j-waq-phh","title":"tf-TestAccDatadogDashboardV2BarChart_import-local-1772134915","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/u4j-waq-phh/tf-testaccdatadogdashboardv2barchartimport-local-1772134915","template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"type":"flat"}},"time":{"live_span":"1w"},"title":"Bar Chart with flat style","title_align":"right","title_size":"16","type":"bar_chart"},"id":3437277163162846},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"legend":"automatic","type":"stacked"},"palette":"datadog16","scaling":"relative"},"time":{"live_span":"1w"},"title":"Bar Chart with stacked style","title_align":"right","title_size":"16","type":"bar_chart"},"id":8824193134972149}],"notify_list":[],"created_at":"2026-02-26T19:42:05.432346+00:00","modified_at":"2026-02-26T19:42:05.432346+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 182.111708ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/u4j-waq-phh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"u4j-waq-phh","title":"tf-TestAccDatadogDashboardV2BarChart_import-local-1772134915","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/u4j-waq-phh/tf-testaccdatadogdashboardv2barchartimport-local-1772134915","template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"type":"flat"}},"time":{"live_span":"1w"},"title":"Bar Chart with flat style","title_align":"right","title_size":"16","type":"bar_chart"},"id":3437277163162846},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"legend":"automatic","type":"stacked"},"palette":"datadog16","scaling":"relative"},"time":{"live_span":"1w"},"title":"Bar Chart with stacked style","title_align":"right","title_size":"16","type":"bar_chart"},"id":8824193134972149}],"notify_list":[],"created_at":"2026-02-26T19:42:05.432346+00:00","modified_at":"2026-02-26T19:42:05.432346+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 94.436375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/u4j-waq-phh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"u4j-waq-phh","title":"tf-TestAccDatadogDashboardV2BarChart_import-local-1772134915","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/u4j-waq-phh/tf-testaccdatadogdashboardv2barchartimport-local-1772134915","template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"type":"flat"}},"time":{"live_span":"1w"},"title":"Bar Chart with flat style","title_align":"right","title_size":"16","type":"bar_chart"},"id":3437277163162846},{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"requests":[{"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":15000}],"q":"top(avg:system.cpu.user{*} by {service}, 10, ''sum'', ''desc'')"}],"style":{"display":{"legend":"automatic","type":"stacked"},"palette":"datadog16","scaling":"relative"},"time":{"live_span":"1w"},"title":"Bar Chart with stacked style","title_align":"right","title_size":"16","type":"bar_chart"},"id":8824193134972149}],"notify_list":[],"created_at":"2026-02-26T19:42:05.432346+00:00","modified_at":"2026-02-26T19:42:05.432346+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 99.005958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/u4j-waq-phh
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"u4j-waq-phh"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 380.928792ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/u4j-waq-phh
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID u4j-waq-phh not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 79.400792ms

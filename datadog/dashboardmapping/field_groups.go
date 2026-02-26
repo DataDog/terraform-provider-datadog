@@ -808,6 +808,80 @@ var toplistWidgetStyleFields = []FieldSpec{
 		Description: "The scaling mode for the widget."},
 }
 
+// ============================================================
+// Bar Chart Widget Fields (OpenAPI: BarChartWidgetDefinition)
+// ============================================================
+
+// barChartWidgetDisplayStackedFields corresponds to OpenAPI BarChartWidgetStacked.
+// The "legend" field controls legend display behavior for stacked bar charts.
+var barChartWidgetDisplayStackedFields = []FieldSpec{
+	{HCLKey: "legend", Type: TypeString, OmitEmpty: true,
+		Description: "Legend behavior for the stacked bar chart. Valid values are `automatic`, `inline`, `none`.",
+		ValidValues: []string{"automatic", "inline", "none"}},
+}
+
+// barChartWidgetDisplayFlatFields corresponds to OpenAPI BarChartWidgetFlat.
+// Flat display has no additional fields beyond the discriminator.
+var barChartWidgetDisplayFlatFields = []FieldSpec{}
+
+// barChartWidgetStyleFields corresponds to OpenAPI BarChartWidgetStyle.
+// The "display" field is a TypeOneOf corresponding to OpenAPI BarChartWidgetDisplay,
+// which is a oneOf of BarChartWidgetStacked ("stacked") and BarChartWidgetFlat ("flat").
+// HCL: display { stacked { legend = "automatic" } } or display { flat {} }
+var barChartWidgetStyleFields = []FieldSpec{
+	{
+		HCLKey:      "display",
+		Type:        TypeOneOf,
+		OmitEmpty:   true,
+		Description: "The display mode for the bar chart widget. Use `stacked` or `flat` sub-block.",
+		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
+		Children: []FieldSpec{
+			{
+				HCLKey:        "stacked",
+				Type:          TypeBlock,
+				OmitEmpty:     true,
+				Description:   "Stacked display for the bar chart widget.",
+				Discriminator: &OneOfDiscriminator{Value: "stacked"},
+				Children:      barChartWidgetDisplayStackedFields,
+			},
+			{
+				HCLKey:        "flat",
+				Type:          TypeBlock,
+				OmitEmpty:     true,
+				Description:   "Flat display for the bar chart widget.",
+				Discriminator: &OneOfDiscriminator{Value: "flat"},
+				Children:      barChartWidgetDisplayFlatFields,
+			},
+		},
+	},
+	{HCLKey: "scaling", Type: TypeString, OmitEmpty: true,
+		Description: "The scaling mode for the bar chart widget. Valid values are `absolute`, `relative`.",
+		ValidValues: []string{"absolute", "relative"}},
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "Color palette to apply to the widget."},
+}
+
+// barChartWidgetRequestFields corresponds to OpenAPI BarChartWidgetRequest.
+// Extends standardQueryFields with q, audit_query, conditional_formats, style, and sort.
+var barChartWidgetRequestFields = append([]FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Description: "The metric query to use for this widget."},
+	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "The query to use for this widget.",
+		Children:    logQueryDefinitionFields},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
+		Children:    widgetConditionalFormatFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Define request for the widget's style.",
+		Children:    widgetRequestStyleFields},
+	// sort is SchemaOnly: the generic engine skips JSON build/flatten; custom helpers
+	// in buildScalarFormulaQueryRequestJSON / flattenScalarFormulaQueryRequestJSON handle it.
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget. Only applicable for formula-style requests.",
+		Children:    widgetSortByFields},
+}, standardQueryFields...)
+
 // topologyQueryFields corresponds to the inline query block on TopologyRequest.
 var topologyQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
