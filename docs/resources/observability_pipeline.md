@@ -582,7 +582,7 @@ Required:
 Optional:
 
 - `acl` (String) Access control list setting for objects written to the bucket.
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer))
 - `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
 - `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--metadata))
@@ -592,7 +592,7 @@ Optional:
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--destination--google_cloud_storage--buffer"></a>
@@ -639,12 +639,12 @@ Required:
 Required:
 
 - `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
-- `project` (String) The GCP project ID that owns the Pub/Sub topic.
+- `project` (String) The Google Cloud project ID that owns the Pub/Sub topic.
 - `topic` (String) The Pub/Sub topic name to publish logs to.
 
 Optional:
 
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Google Cloud Pub/Sub endpoint URL.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--tls))
@@ -654,7 +654,7 @@ Optional:
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--destination--google_pubsub--buffer"></a>
@@ -711,7 +711,7 @@ Required:
 
 Optional:
 
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_secops--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_secops--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_secops--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Google Chronicle endpoint URL.
 
@@ -720,7 +720,7 @@ Optional:
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--destination--google_secops--buffer"></a>
@@ -2151,12 +2151,12 @@ Optional:
 Required:
 
 - `decoding` (String) The decoding format used to interpret incoming logs.
-- `project` (String) The GCP project ID that owns the Pub/Sub subscription.
+- `project` (String) The Google Cloud project ID that owns the Pub/Sub subscription.
 - `subscription` (String) The Pub/Sub subscription name from which messages are consumed.
 
 Optional:
 
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--source--google_pubsub--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--source--google_pubsub--auth))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--google_pubsub--tls))
 
 <a id="nestedblock--config--source--google_pubsub--auth"></a>
@@ -2164,7 +2164,7 @@ Optional:
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--source--google_pubsub--tls"></a>

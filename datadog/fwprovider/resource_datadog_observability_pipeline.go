@@ -1090,7 +1090,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Attributes: map[string]schema.Attribute{
 												"project": schema.StringAttribute{
 													Required:    true,
-													Description: "The GCP project ID that owns the Pub/Sub subscription.",
+													Description: "The Google Cloud project ID that owns the Pub/Sub subscription.",
 												},
 												"subscription": schema.StringAttribute{
 													Required:    true,
@@ -2248,7 +2248,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Attributes: map[string]schema.Attribute{
 												"project": schema.StringAttribute{
 													Required:    true,
-													Description: "The GCP project ID that owns the Pub/Sub topic.",
+													Description: "The Google Cloud project ID that owns the Pub/Sub topic.",
 												},
 												"topic": schema.StringAttribute{
 													Required:    true,
@@ -2682,12 +2682,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 
 func gcpAuthSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
-		Description: "GCP credentials used to authenticate with Google Cloud services.",
+		Description: "Google Cloud credentials used to authenticate with Google Cloud services.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"credentials_file": schema.StringAttribute{
 					Required:    true,
-					Description: "Path to the GCP service account key file.",
+					Description: "Path to the Google Cloud service account key file.",
 				},
 			},
 		},
