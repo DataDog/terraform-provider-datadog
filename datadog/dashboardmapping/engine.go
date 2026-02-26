@@ -686,90 +686,225 @@ func buildWidgetEngineJSON(attrs map[string]attr.Value) map[string]interface{} {
 	return nil
 }
 
-// buildFormulaQueryRequestJSON builds the JSON for a new-style formula/query request.
-// These requests use `formulas`, `queries`, and `response_format` instead of the
-// old-style `q`, `log_query`, etc.
-func buildFormulaQueryRequestJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
+// ============================================================
+// Formula Request Config — unified formula/query request builder
+// ============================================================
 
-	// on_right_yaxis is always emitted (OmitEmpty: false)
-	onRightYaxis, _ := getBoolAttr(attrs, "on_right_yaxis")
-	result["on_right_yaxis"] = onRightYaxis
+// FormulaRequestConfig describes how to build and flatten a formula/query request
+// for a specific widget type. The three previously separate builders
+// (timeseries, scalar, query_table) are unified through this struct.
+type FormulaRequestConfig struct {
+	// ResponseFormat is the value injected as "response_format" in JSON.
+	ResponseFormat string
+	// StyleFields defines the request-level style block (palette, line_type, etc.).
+	// nil = no style block for this widget type.
+	StyleFields []FieldSpec
+	// ExtraFields are widget-specific request-level fields emitted before formulas.
+	// Example: on_right_yaxis + display_type for timeseries; change-widget fields.
+	ExtraFields []FieldSpec
+	// IncludeSort: when true, build/flatten the sort block (toplist, geomap, etc.).
+	IncludeSort bool
+}
 
-	// display_type (optional)
-	if dt, ok := getStrAttr(attrs, "display_type"); ok && dt != "" {
-		result["display_type"] = dt
+// Per-widget FormulaRequestConfig declarations.
+var timeseriesFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "timeseries",
+	StyleFields:    timeseriesWidgetRequestStyleFields,
+	ExtraFields: []FieldSpec{
+		{HCLKey: "on_right_yaxis", Type: TypeBool, OmitEmpty: false,
+			Description: "Boolean indicating whether to display a timeseries on the right side of the widget."},
+		{HCLKey: "display_type", Type: TypeString, OmitEmpty: true,
+			Description: "How the data points are displayed on the graph."},
+	},
+}
+
+var heatmapFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "timeseries", // heatmap uses timeseries response_format
+	StyleFields:    widgetRequestStyleFields,
+}
+
+var changeFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	ExtraFields: []FieldSpec{
+		{HCLKey: "increase_good", Type: TypeBool, OmitEmpty: false,
+			Description: "Boolean indicating whether an increase in the value is good (depicted in green) or bad (depicted in red)."},
+		{HCLKey: "show_present", Type: TypeBool, OmitEmpty: false,
+			Description: "If set to `true`, displays current value."},
+		{HCLKey: "change_type", Type: TypeString, OmitEmpty: true,
+			Description: "Whether to show absolute or relative change."},
+		{HCLKey: "compare_to", Type: TypeString, OmitEmpty: true,
+			Description: "Timeframe used for the change comparison."},
+		{HCLKey: "order_by", Type: TypeString, OmitEmpty: true,
+			Description: "What to order by."},
+		{HCLKey: "order_dir", Type: TypeString, OmitEmpty: true,
+			Description: "Widget sorting methods."},
+	},
+}
+
+var scalarFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+}
+
+var queryTableFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+}
+
+// formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
+func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
+	switch jsonType {
+	case "timeseries":
+		return timeseriesFormulaRequestConfig
+	case "heatmap":
+		return heatmapFormulaRequestConfig
+	case "change":
+		return changeFormulaRequestConfig
+	default:
+		return scalarFormulaRequestConfig
 	}
+}
 
-	// formulas — use widgetFormulaFields engine for standard fields.
-	// number_format is excluded from widgetFormulaFields (polymorphic structure);
-	// it is not present on timeseries formula requests.
+// buildFormulaRequest is the unified formula/query request builder.
+// It replaces buildFormulaQueryRequestJSON, buildScalarFormulaQueryRequestJSON,
+// and buildQueryTableFormulaRequestJSON.
+func buildFormulaRequest(attrs map[string]attr.Value, cfg FormulaRequestConfig) map[string]interface{} {
+	result := map[string]interface{}{}
+	// Widget-specific extra fields (e.g. on_right_yaxis, increase_good)
+	if len(cfg.ExtraFields) > 0 {
+		for k, v := range BuildEngineJSON(attrs, cfg.ExtraFields) {
+			result[k] = v
+		}
+	}
+	// Formulas
 	formulaElems := getListElems(attrs, "formula")
 	if len(formulaElems) > 0 {
 		formulas := make([]interface{}, 0, len(formulaElems))
-		for _, elem := range formulaElems {
-			if fObj, ok := elem.(types.Object); ok {
+		for _, fElem := range formulaElems {
+			if fObj, ok := fElem.(types.Object); ok {
 				formulas = append(formulas, BuildEngineJSON(fObj.Attributes(), widgetFormulaFields))
 			}
 		}
 		result["formulas"] = formulas
 	}
-
-	// queries (polymorphic: each query block has one of metric_query, event_query, etc.)
+	// Queries
 	queryElems := getListElems(attrs, "query")
 	if len(queryElems) > 0 {
 		queries := make([]interface{}, 0, len(queryElems))
-		for _, elem := range queryElems {
-			if qObj, ok := elem.(types.Object); ok {
+		for _, qElem := range queryElems {
+			if qObj, ok := qElem.(types.Object); ok {
 				queries = append(queries, buildQueryFromAttrs(qObj.Attributes()))
 			}
 		}
 		result["queries"] = queries
 	}
-
-	// style (optional, present on timeseries formula requests at the request level)
-	// This is request-level style (palette, line_type, line_width), distinct from
-	// the per-formula style (palette, palette_index) in widgetFormulaFields.
-	if styleAttrs := getObjAttrs(attrs, "style"); styleAttrs != nil {
-		style := map[string]interface{}{}
-		if v, ok := getStrAttr(styleAttrs, "palette"); ok && v != "" {
-			style["palette"] = v
-		}
-		if v, ok := getStrAttr(styleAttrs, "line_type"); ok && v != "" {
-			style["line_type"] = v
-		}
-		if v, ok := getStrAttr(styleAttrs, "line_width"); ok && v != "" {
-			style["line_width"] = v
-		}
-		if len(style) > 0 {
-			result["style"] = style
+	// Request-level style (palette, line_type, line_width — varies by widget)
+	if cfg.StyleFields != nil {
+		if styleAttrs := getObjAttrs(attrs, "style"); styleAttrs != nil {
+			style := BuildEngineJSON(styleAttrs, cfg.StyleFields)
+			if len(style) > 0 {
+				result["style"] = style
+			}
 		}
 	}
-
-	// response_format is always "timeseries" for formula/query requests
+	// Sort (toplist, geomap, etc.)
+	if cfg.IncludeSort {
+		if sortAttrs := getObjAttrs(attrs, "sort"); sortAttrs != nil {
+			if sortJSON := buildWidgetSortByJSON(sortAttrs); len(sortJSON) > 0 {
+				result["sort"] = sortJSON
+			}
+		}
+	}
+	// response_format
 	if len(formulaElems) > 0 || len(queryElems) > 0 {
-		result["response_format"] = "timeseries"
+		result["response_format"] = cfg.ResponseFormat
 	}
-
 	return result
 }
 
+// flattenFormulaRequest is the unified formula/query request flattener.
+// It replaces flattenFormulaQueryRequestJSON, flattenScalarFormulaQueryRequestJSON,
+// and flattenQueryTableFormulaRequestJSON.
+func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig) map[string]interface{} {
+	result := map[string]interface{}{}
+	// Widget-specific extra fields
+	if len(cfg.ExtraFields) > 0 {
+		for k, v := range FlattenEngineJSON(cfg.ExtraFields, req) {
+			result[k] = v
+		}
+	}
+	// Formulas
+	if formulas, ok := req["formulas"].([]interface{}); ok {
+		flat := make([]interface{}, len(formulas))
+		for i, f := range formulas {
+			if fm, ok := f.(map[string]interface{}); ok {
+				flat[i] = FlattenEngineJSON(widgetFormulaFields, fm)
+			} else {
+				flat[i] = map[string]interface{}{}
+			}
+		}
+		result["formula"] = flat
+	}
+	// Queries
+	if queries, ok := req["queries"].([]interface{}); ok {
+		flat := make([]interface{}, len(queries))
+		for i, q := range queries {
+			if qm, ok := q.(map[string]interface{}); ok {
+				flat[i] = flattenFormulaQueryJSON(qm)
+			} else {
+				flat[i] = map[string]interface{}{}
+			}
+		}
+		result["query"] = flat
+	}
+	// Request-level style
+	if cfg.StyleFields != nil {
+		if style, ok := req["style"].(map[string]interface{}); ok {
+			s := FlattenEngineJSON(cfg.StyleFields, style)
+			if len(s) > 0 {
+				result["style"] = []interface{}{s}
+			}
+		}
+	}
+	// Sort
+	if cfg.IncludeSort {
+		if sortObj, ok := req["sort"].(map[string]interface{}); ok {
+			if s := flattenWidgetSortByJSON(sortObj); len(s) > 0 {
+				result["sort"] = []interface{}{s}
+			}
+		}
+	}
+	return result
+}
+
+// dataSourceToQueryType maps JSON data_source values to HCL query block keys.
+// Used by flattenFormulaQueryJSON to route flattened queries to the right block.
+var dataSourceToQueryType = map[string]string{
+	"metrics":              "metric_query",
+	"logs":                 "event_query",
+	"spans":                "event_query",
+	"profiling":            "event_query",
+	"audit":                "event_query",
+	"rum":                  "event_query",
+	"process":              "process_query",
+	"slo":                  "slo_query",
+	"cloud_cost":           "cloud_cost_query",
+	"apm_dependency_stats": "apm_dependency_stats_query",
+	"apm_resource_stats":   "apm_resource_stats_query",
+}
+
 // buildQueryFromAttrs dispatches a query attrs map to the appropriate query builder.
+// event_query uses custom logic (nested compute/search/group_by); all others use
+// BuildEngineJSON with the matching FieldSpec children from formulaAndFunctionQueryFields.
 func buildQueryFromAttrs(attrs map[string]attr.Value) map[string]interface{} {
-	if metricAttrs := getObjAttrs(attrs, "metric_query"); metricAttrs != nil {
-		return buildMetricQueryJSON(metricAttrs)
-	}
-	if eventAttrs := getObjAttrs(attrs, "event_query"); eventAttrs != nil {
-		return buildEventQueryJSON(eventAttrs)
-	}
-	if procAttrs := getObjAttrs(attrs, "process_query"); procAttrs != nil {
-		return buildFormulaProcessQueryJSON(procAttrs)
-	}
-	if sloAttrs := getObjAttrs(attrs, "slo_query"); sloAttrs != nil {
-		return buildSLOQueryJSON(sloAttrs)
-	}
-	if ccAttrs := getObjAttrs(attrs, "cloud_cost_query"); ccAttrs != nil {
-		return buildCloudCostQueryJSON(ccAttrs)
+	for _, child := range formulaAndFunctionQueryFields {
+		if childAttrs := getObjAttrs(attrs, child.HCLKey); childAttrs != nil {
+			if child.HCLKey == "event_query" {
+				return buildEventQueryJSON(childAttrs)
+			}
+			return BuildEngineJSON(childAttrs, child.Children)
+		}
 	}
 	return nil
 }
@@ -782,99 +917,6 @@ func isFormulaCapableWidget(jsonType string) bool {
 		return true
 	}
 	return false
-}
-
-// isTimeseriesFormulaWidget returns true for widgets whose formula requests
-// use response_format: "timeseries" (as opposed to "scalar").
-// NOTE: only "timeseries" uses buildFormulaQueryRequestJSON (with on_right_yaxis/display_type);
-// "heatmap" uses buildScalarFormulaQueryRequestJSON with "timeseries" response_format.
-func isTimeseriesFormulaWidget(jsonType string) bool {
-	return jsonType == "timeseries"
-}
-
-// formulaResponseFormat returns the response_format string for the given widget type.
-func formulaResponseFormat(jsonType string) string {
-	switch jsonType {
-	case "timeseries":
-		return "timeseries"
-	case "heatmap":
-		return "timeseries"
-	default:
-		return "scalar"
-	}
-}
-
-// buildScalarFormulaQueryRequestJSON builds the JSON for a new-style formula/query
-// request for scalar-response widgets (change, query_value, sunburst, geomap, treemap, toplist).
-// For timeseries, use buildFormulaQueryRequestJSON instead (response_format: "timeseries").
-func buildScalarFormulaQueryRequestJSON(attrs map[string]attr.Value, widgetType string) map[string]interface{} {
-	result := map[string]interface{}{}
-
-	// change widget has increase_good and show_present even in formula requests
-	if widgetType == "change" {
-		increaseGood, _ := getBoolAttr(attrs, "increase_good")
-		result["increase_good"] = increaseGood
-		showPresent, _ := getBoolAttr(attrs, "show_present")
-		result["show_present"] = showPresent
-		for _, field := range []string{"change_type", "compare_to", "order_by", "order_dir"} {
-			if v, ok := getStrAttr(attrs, field); ok && v != "" {
-				result[field] = v
-			}
-		}
-	}
-
-	// formulas — use widgetFormulaFields engine for standard fields.
-	// number_format is excluded from widgetFormulaFields (polymorphic structure);
-	// it is not present on scalar formula requests for non-query_table widgets.
-	formulaElems := getListElems(attrs, "formula")
-	if len(formulaElems) > 0 {
-		formulas := make([]interface{}, 0, len(formulaElems))
-		for _, elem := range formulaElems {
-			if fObj, ok := elem.(types.Object); ok {
-				formulas = append(formulas, BuildEngineJSON(fObj.Attributes(), widgetFormulaFields))
-			}
-		}
-		result["formulas"] = formulas
-	}
-
-	// queries (polymorphic)
-	queryElems := getListElems(attrs, "query")
-	if len(queryElems) > 0 {
-		queries := make([]interface{}, 0, len(queryElems))
-		for _, elem := range queryElems {
-			if qObj, ok := elem.(types.Object); ok {
-				queries = append(queries, buildQueryFromAttrs(qObj.Attributes()))
-			}
-		}
-		result["queries"] = queries
-	}
-
-	// style (optional, present on sunburst/toplist/etc. formula requests at the request level)
-	// This is request-level style (just palette for scalar widgets), distinct from
-	// the per-formula style (palette, palette_index) in widgetFormulaFields.
-	if styleAttrs := getObjAttrs(attrs, "style"); styleAttrs != nil {
-		style := map[string]interface{}{}
-		if v, ok := getStrAttr(styleAttrs, "palette"); ok && v != "" {
-			style["palette"] = v
-		}
-		if len(style) > 0 {
-			result["style"] = style
-		}
-	}
-
-	// sort (optional WidgetSortBy — toplist, bar_chart, etc.)
-	if sortAttrs := getObjAttrs(attrs, "sort"); sortAttrs != nil {
-		if sortJSON := buildWidgetSortByJSON(sortAttrs); len(sortJSON) > 0 {
-			result["sort"] = sortJSON
-		}
-	}
-
-	// response_format depends on widget type
-	if len(formulaElems) > 0 || len(queryElems) > 0 {
-		result["response_format"] = formulaResponseFormat(widgetType)
-	}
-
-	return result
 }
 
 // buildWidgetSortByJSON builds the JSON for a WidgetSortBy block (sort { count, order_by { ... } }).
@@ -922,34 +964,6 @@ func buildWidgetSortByJSON(sortAttrs map[string]attr.Value) map[string]interface
 	return result
 }
 
-// buildMetricQueryJSON builds the JSON for a formula metric_query block.
-func buildMetricQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-	if v, ok := getStrAttr(attrs, "data_source"); ok && v != "" {
-		result["data_source"] = v
-	} else {
-		result["data_source"] = "metrics" // default
-	}
-	if v, ok := getStrAttr(attrs, "query"); ok {
-		result["query"] = v
-	}
-	if v, ok := getStrAttr(attrs, "name"); ok {
-		result["name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "aggregator"); ok && v != "" {
-		result["aggregator"] = v
-	}
-	if v, ok := getStrAttr(attrs, "semantic_mode"); ok && v != "" {
-		result["semantic_mode"] = v
-	}
-	// cross_org_uuids: list of one string
-	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
-		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
-			result["cross_org_uuids"] = []string{sv.ValueString()}
-		}
-	}
-	return result
-}
 
 // buildEventQueryJSON builds the JSON for a formula event_query block.
 func buildEventQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
@@ -1038,96 +1052,6 @@ func buildEventQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
 	return result
 }
 
-// buildFormulaProcessQueryJSON builds JSON for a formula process_query block.
-func buildFormulaProcessQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-	if v, ok := getStrAttr(attrs, "data_source"); ok {
-		result["data_source"] = v
-	}
-	if v, ok := getStrAttr(attrs, "name"); ok {
-		result["name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "metric"); ok {
-		result["metric"] = v
-	}
-	if v, ok := getStrAttr(attrs, "text_filter"); ok && v != "" {
-		result["text_filter"] = v
-	}
-	if v, ok := getInt64Attr(attrs, "limit"); ok && v != 0 {
-		result["limit"] = v
-	}
-	if v, ok := getStrAttr(attrs, "sort"); ok && v != "" {
-		result["sort"] = v
-	}
-	if isNormalizedCPU, ok := getBoolAttr(attrs, "is_normalized_cpu"); ok && isNormalizedCPU {
-		result["is_normalized_cpu"] = true
-	}
-	if tags := getStrListElems(attrs, "tag_filters"); len(tags) > 0 {
-		result["tag_filters"] = tags
-	}
-	// cross_org_uuids: list of one string
-	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
-		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
-			result["cross_org_uuids"] = []string{sv.ValueString()}
-		}
-	}
-	return result
-}
-
-// buildSLOQueryJSON builds JSON for a formula slo_query block.
-func buildSLOQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-	if v, ok := getStrAttr(attrs, "data_source"); ok {
-		result["data_source"] = v
-	}
-	if v, ok := getStrAttr(attrs, "name"); ok {
-		result["name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "slo_id"); ok {
-		result["slo_id"] = v
-	}
-	if v, ok := getStrAttr(attrs, "measure"); ok {
-		result["measure"] = v
-	}
-	if v, ok := getStrAttr(attrs, "group_mode"); ok && v != "" {
-		result["group_mode"] = v
-	}
-	if v, ok := getStrAttr(attrs, "slo_query_type"); ok && v != "" {
-		result["slo_query_type"] = v
-	}
-	if v, ok := getStrAttr(attrs, "additional_query_filters"); ok && v != "" {
-		result["additional_query_filters"] = v
-	}
-	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
-		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
-			result["cross_org_uuids"] = []string{sv.ValueString()}
-		}
-	}
-	return result
-}
-
-// buildCloudCostQueryJSON builds JSON for a formula cloud_cost_query block.
-func buildCloudCostQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-	if v, ok := getStrAttr(attrs, "data_source"); ok {
-		result["data_source"] = v
-	}
-	if v, ok := getStrAttr(attrs, "name"); ok {
-		result["name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "query"); ok {
-		result["query"] = v
-	}
-	if v, ok := getStrAttr(attrs, "aggregator"); ok && v != "" {
-		result["aggregator"] = v
-	}
-	if elems := getListElems(attrs, "cross_org_uuids"); len(elems) == 1 {
-		if sv, ok := elems[0].(types.String); ok && !sv.IsNull() && sv.ValueString() != "" {
-			result["cross_org_uuids"] = []string{sv.ValueString()}
-		}
-	}
-	return result
-}
 
 // flattenWidgetEngineJSON converts the JSON widget object into HCL state.
 // Returns nil if the widget type is not recognized (unimplemented widget types pass through).
@@ -1158,114 +1082,31 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]inter
 	return nil
 }
 
-// flattenFormulaQueryRequestJSON converts a JSON formula/query request into HCL state.
-func flattenFormulaQueryRequestJSON(req map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-
-	// on_right_yaxis
-	if v, ok := req["on_right_yaxis"].(bool); ok {
-		result["on_right_yaxis"] = v
-	} else {
-		result["on_right_yaxis"] = false
-	}
-
-	// display_type
-	if v, ok := req["display_type"].(string); ok && v != "" {
-		result["display_type"] = v
-	}
-
-	// formulas — use widgetFormulaFields engine for standard fields.
-	// number_format is not present on timeseries formula requests.
-	if formulas, ok := req["formulas"].([]interface{}); ok {
-		flatFormulas := make([]interface{}, len(formulas))
-		for fi, f := range formulas {
-			fm, ok := f.(map[string]interface{})
-			if !ok {
-				flatFormulas[fi] = map[string]interface{}{}
-				continue
-			}
-			flatFormulas[fi] = FlattenEngineJSON(widgetFormulaFields, fm)
-		}
-		result["formula"] = flatFormulas
-	}
-
-	// queries
-	if queries, ok := req["queries"].([]interface{}); ok {
-		flatQueries := make([]interface{}, len(queries))
-		for qi, q := range queries {
-			qm, ok := q.(map[string]interface{})
-			if !ok {
-				flatQueries[qi] = map[string]interface{}{}
-				continue
-			}
-			flatQueries[qi] = flattenFormulaQueryJSON(qm)
-		}
-		result["query"] = flatQueries
-	}
-
-	// style (present on timeseries formula requests at the request level)
-	// Includes palette, line_type, line_width (timeseries-specific style fields).
-	// This is request-level style, distinct from per-formula style in widgetFormulaFields.
-	if style, ok := req["style"].(map[string]interface{}); ok {
-		styleState := map[string]interface{}{}
-		if v, ok := style["palette"].(string); ok && v != "" {
-			styleState["palette"] = v
-		}
-		if v, ok := style["line_type"].(string); ok && v != "" {
-			styleState["line_type"] = v
-		}
-		if v, ok := style["line_width"].(string); ok && v != "" {
-			styleState["line_width"] = v
-		}
-		if len(styleState) > 0 {
-			result["style"] = []interface{}{styleState}
-		}
-	}
-
-	return result
-}
-
 // flattenFormulaQueryJSON converts a single query JSON object into the HCL query block state.
 // Returns a map with one key: the query type name (e.g., "metric_query").
+// event_query uses custom logic; all others use FlattenEngineJSON with the matching FieldSpec.
 func flattenFormulaQueryJSON(q map[string]interface{}) map[string]interface{} {
 	dataSource, _ := q["data_source"].(string)
-
-	switch dataSource {
-	case "metrics":
-		return map[string]interface{}{
-			"metric_query": []interface{}{flattenMetricQueryJSON(q)},
-		}
-	case "logs", "spans", "profiling", "audit", "rum":
-		return map[string]interface{}{
-			"event_query": []interface{}{flattenEventQueryJSON(q)},
-		}
-	case "process":
-		return map[string]interface{}{
-			"process_query": []interface{}{flattenFormulaProcessQueryFlatJSON(q)},
-		}
-	case "slo":
-		return map[string]interface{}{
-			"slo_query": []interface{}{flattenSLOQueryJSON(q)},
-		}
-	case "cloud_cost":
-		return map[string]interface{}{
-			"cloud_cost_query": []interface{}{flattenCloudCostQueryJSON(q)},
-		}
-	default:
-		// Unknown query type — check for event_query markers
+	targetKey, ok := dataSourceToQueryType[dataSource]
+	if !ok {
+		// Fallback heuristics for unknown data_source
 		if _, hasCompute := q["compute"]; hasCompute {
-			return map[string]interface{}{
-				"event_query": []interface{}{flattenEventQueryJSON(q)},
-			}
+			targetKey = "event_query"
+		} else if _, hasQuery := q["query"]; hasQuery {
+			targetKey = "metric_query"
+		} else {
+			return map[string]interface{}{}
 		}
-		// Try metric_query structure
-		if _, hasQuery := q["query"]; hasQuery {
-			return map[string]interface{}{
-				"metric_query": []interface{}{flattenMetricQueryJSON(q)},
-			}
-		}
-		return map[string]interface{}{}
 	}
+	for _, child := range formulaAndFunctionQueryFields {
+		if child.HCLKey == targetKey {
+			if child.HCLKey == "event_query" {
+				return map[string]interface{}{targetKey: []interface{}{flattenEventQueryJSON(q)}}
+			}
+			return map[string]interface{}{targetKey: []interface{}{FlattenEngineJSON(child.Children, q)}}
+		}
+	}
+	return map[string]interface{}{}
 }
 
 // buildScatterplotTableJSON builds the "table" object within scatterplot "requests"
@@ -1432,82 +1273,6 @@ func flattenSunburstLegendState(def map[string]interface{}, defState map[string]
 	}
 }
 
-// flattenScalarFormulaQueryRequestJSON flattens a scalar formula/query request
-// (for change, query_value, toplist, sunburst, geomap, treemap widgets).
-func flattenScalarFormulaQueryRequestJSON(req map[string]interface{}, widgetType string) map[string]interface{} {
-	result := map[string]interface{}{}
-
-	// change widget has widget-specific fields in the request
-	if widgetType == "change" {
-		if v, ok := req["increase_good"].(bool); ok {
-			result["increase_good"] = v
-		} else {
-			result["increase_good"] = false
-		}
-		if v, ok := req["show_present"].(bool); ok {
-			result["show_present"] = v
-		} else {
-			result["show_present"] = false
-		}
-		for _, field := range []string{"change_type", "compare_to", "order_by", "order_dir"} {
-			if v, ok := req[field].(string); ok && v != "" {
-				result[field] = v
-			}
-		}
-	}
-
-	// formulas — use widgetFormulaFields engine for standard fields.
-	// number_format is not present on scalar formula requests for non-query_table widgets.
-	if formulas, ok := req["formulas"].([]interface{}); ok {
-		flatFormulas := make([]interface{}, len(formulas))
-		for fi, f := range formulas {
-			fm, ok := f.(map[string]interface{})
-			if !ok {
-				flatFormulas[fi] = map[string]interface{}{}
-				continue
-			}
-			flatFormulas[fi] = FlattenEngineJSON(widgetFormulaFields, fm)
-		}
-		result["formula"] = flatFormulas
-	}
-
-	// queries
-	if queries, ok := req["queries"].([]interface{}); ok {
-		flatQueries := make([]interface{}, len(queries))
-		for qi, q := range queries {
-			qm, ok := q.(map[string]interface{})
-			if !ok {
-				flatQueries[qi] = map[string]interface{}{}
-				continue
-			}
-			flatQueries[qi] = flattenFormulaQueryJSON(qm)
-		}
-		result["query"] = flatQueries
-	}
-
-	// style (optional, present on sunburst/toplist/etc. formula requests at the request level)
-	// This is request-level style (just palette for scalar widgets), distinct from
-	// the per-formula style (palette, palette_index) in widgetFormulaFields.
-	if style, ok := req["style"].(map[string]interface{}); ok {
-		styleState := map[string]interface{}{}
-		if v, ok := style["palette"].(string); ok && v != "" {
-			styleState["palette"] = v
-		}
-		if len(styleState) > 0 {
-			result["style"] = []interface{}{styleState}
-		}
-	}
-
-	// sort (optional WidgetSortBy)
-	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
-		if sortState := flattenWidgetSortByJSON(sortObj); len(sortState) > 0 {
-			result["sort"] = []interface{}{sortState}
-		}
-	}
-
-	return result
-}
-
 // flattenWidgetSortByJSON flattens the WidgetSortBy JSON object into HCL state.
 func flattenWidgetSortByJSON(sortObj map[string]interface{}) map[string]interface{} {
 	result := map[string]interface{}{}
@@ -1567,28 +1332,6 @@ func flattenOldStyleRequestJSON(req map[string]interface{}, spec WidgetSpec) map
 	return map[string]interface{}{}
 }
 
-func flattenMetricQueryJSON(q map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	if v, ok := q["data_source"].(string); ok {
-		result["data_source"] = v
-	}
-	if v, ok := q["query"].(string); ok {
-		result["query"] = v
-	}
-	if v, ok := q["name"].(string); ok {
-		result["name"] = v
-	}
-	if v, ok := q["aggregator"].(string); ok && v != "" {
-		result["aggregator"] = v
-	}
-	if v, ok := q["semantic_mode"].(string); ok && v != "" {
-		result["semantic_mode"] = v
-	}
-	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
-		result["cross_org_uuids"] = uuids
-	}
-	return result
-}
 
 func flattenEventQueryJSON(q map[string]interface{}) map[string]interface{} {
 	result := map[string]interface{}{}
@@ -1680,72 +1423,6 @@ func flattenEventQueryJSON(q map[string]interface{}) map[string]interface{} {
 	return result
 }
 
-func flattenFormulaProcessQueryFlatJSON(q map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	if v, ok := q["data_source"].(string); ok {
-		result["data_source"] = v
-	}
-	if v, ok := q["name"].(string); ok {
-		result["name"] = v
-	}
-	if v, ok := q["metric"].(string); ok {
-		result["metric"] = v
-	}
-	if v, ok := q["text_filter"].(string); ok && v != "" {
-		result["text_filter"] = v
-	}
-	if v, ok := q["limit"]; ok {
-		switch lv := v.(type) {
-		case float64:
-			result["limit"] = int(lv)
-		case int:
-			result["limit"] = lv
-		}
-	}
-	if v, ok := q["sort"].(string); ok && v != "" {
-		result["sort"] = v
-	}
-	if v, ok := q["is_normalized_cpu"].(bool); ok {
-		result["is_normalized_cpu"] = v
-	}
-	if tags, ok := q["tag_filters"].([]interface{}); ok && len(tags) > 0 {
-		tagStrs := make([]string, len(tags))
-		for i, t := range tags {
-			tagStrs[i] = fmt.Sprintf("%v", t)
-		}
-		result["tag_filters"] = tagStrs
-	}
-	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
-		result["cross_org_uuids"] = uuids
-	}
-	return result
-}
-
-func flattenSLOQueryJSON(q map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	for _, field := range []string{"data_source", "name", "slo_id", "measure", "group_mode", "slo_query_type", "additional_query_filters"} {
-		if v, ok := q[field].(string); ok && v != "" {
-			result[field] = v
-		}
-	}
-	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
-		result["cross_org_uuids"] = uuids
-	}
-	return result
-}
-
-func flattenCloudCostQueryJSON(q map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	for _, field := range []string{"data_source", "name", "query", "aggregator"} {
-		if v, ok := q[field].(string); ok && v != "" {
-			result[field] = v
-		}
-	}
-	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
-		result["cross_org_uuids"] = uuids
-	}
-	return result
-}
 
 // ============================================================
 // Widget Post-Processing Hooks
@@ -1787,12 +1464,8 @@ func buildWidgetPostProcess(defAttrs map[string]attr.Value, spec WidgetSpec, def
 				formulaCount := len(getListElems(reqAttrs, "formula"))
 				queryCount := len(getListElems(reqAttrs, "query"))
 				if formulaCount > 0 || queryCount > 0 {
-					// New-style formula/query request
-					if isTimeseriesFormulaWidget(spec.JSONType) {
-						requests = append(requests, buildFormulaQueryRequestJSON(reqAttrs))
-					} else {
-						requests = append(requests, buildScalarFormulaQueryRequestJSON(reqAttrs, spec.JSONType))
-					}
+					// New-style formula/query request (unified via FormulaRequestConfig)
+					requests = append(requests, buildFormulaRequest(reqAttrs, formulaRequestConfigForWidget(spec.JSONType)))
 				} else {
 					// Old-style request (already built by FieldSpec engine)
 					if existingReqs, ok := defJSON["requests"].([]interface{}); ok && ri < len(existingReqs) {
@@ -1878,13 +1551,8 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 				_, hasFormulas := reqMap["formulas"]
 				_, hasQueries := reqMap["queries"]
 				if hasFormulas || hasQueries {
-					if isTimeseriesFormulaWidget(spec.JSONType) {
-						// Timeseries formula/query request (response_format: timeseries)
-						flatRequests[ri] = flattenFormulaQueryRequestJSON(reqMap)
-					} else {
-						// Scalar formula/query request (change, query_value, toplist, etc.)
-						flatRequests[ri] = flattenScalarFormulaQueryRequestJSON(reqMap, spec.JSONType)
-					}
+					// New-style formula/query request (unified via FormulaRequestConfig)
+					flatRequests[ri] = flattenFormulaRequest(reqMap, formulaRequestConfigForWidget(spec.JSONType))
 				} else {
 					// Old-style request — already flattened by FieldSpec engine
 					if existingRequests, ok := defState["request"].([]interface{}); ok && ri < len(existingRequests) {
@@ -1978,7 +1646,7 @@ func buildQueryTableRequestsJSON(defAttrs map[string]attr.Value) []interface{} {
 		queryCount := len(getListElems(reqAttrs, "query"))
 		if formulaCount > 0 || queryCount > 0 {
 			// Formula/query style request
-			requests = append(requests, buildQueryTableFormulaRequestJSON(reqAttrs))
+			requests = append(requests, buildFormulaRequest(reqAttrs, queryTableFormulaRequestConfig))
 		} else {
 			// Old-style request — build via FieldSpec engine
 			req := BuildEngineJSON(reqAttrs, queryTableOldRequestFields)
@@ -1988,124 +1656,6 @@ func buildQueryTableRequestsJSON(defAttrs map[string]attr.Value) []interface{} {
 		}
 	}
 	return requests
-}
-
-// buildQueryTableFormulaRequestJSON builds a formula/query request for query_table.
-// Unlike the generic scalar formula handler, query_table formulas can have
-// cell_display_mode, cell_display_mode_options, conditional_formats, number_format
-// per formula.
-func buildQueryTableFormulaRequestJSON(reqAttrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-
-	// formulas
-	formulaElems := getListElems(reqAttrs, "formula")
-	if len(formulaElems) > 0 {
-		formulas := make([]interface{}, 0, len(formulaElems))
-		for _, fElem := range formulaElems {
-			fObj, ok := fElem.(types.Object)
-			if !ok {
-				continue
-			}
-			fAttrs := fObj.Attributes()
-			formula := map[string]interface{}{}
-
-			// formula_expression → formula (JSON key)
-			if expr, ok := getStrAttr(fAttrs, "formula_expression"); ok {
-				formula["formula"] = expr
-			}
-			if alias, ok := getStrAttr(fAttrs, "alias"); ok {
-				formula["alias"] = alias
-			}
-			// limit
-			if limitAttrs := getObjAttrs(fAttrs, "limit"); limitAttrs != nil {
-				limitObj := map[string]interface{}{}
-				if count, ok := getInt64Attr(limitAttrs, "count"); ok {
-					limitObj["count"] = count
-				}
-				if order, ok := getStrAttr(limitAttrs, "order"); ok {
-					limitObj["order"] = order
-				}
-				if len(limitObj) > 0 {
-					formula["limit"] = limitObj
-				}
-			}
-			// cell_display_mode (TypeString on formula)
-			if v, ok := getStrAttr(fAttrs, "cell_display_mode"); ok && v != "" {
-				formula["cell_display_mode"] = v
-			}
-			// cell_display_mode_options (TypeBlock MaxItems:1)
-			if cdmoAttrs := getObjAttrs(fAttrs, "cell_display_mode_options"); cdmoAttrs != nil {
-				opts := map[string]interface{}{}
-				if v, ok := getStrAttr(cdmoAttrs, "trend_type"); ok {
-					opts["trend_type"] = v
-				}
-				if v, ok := getStrAttr(cdmoAttrs, "y_scale"); ok {
-					opts["y_scale"] = v
-				}
-				if len(opts) > 0 {
-					formula["cell_display_mode_options"] = opts
-				}
-			}
-			// conditional_formats on the formula
-			cfElems := getListElems(fAttrs, "conditional_formats")
-			if len(cfElems) > 0 {
-				cfs := make([]interface{}, 0, len(cfElems))
-				for _, cfElem := range cfElems {
-					if cfObj, ok := cfElem.(types.Object); ok {
-						cfs = append(cfs, BuildEngineJSON(cfObj.Attributes(), widgetConditionalFormatFields))
-					}
-				}
-				formula["conditional_formats"] = cfs
-			}
-			// number_format (TypeOneOf: canonical/custom unit + unit_scale)
-			if nfAttrs := getObjAttrs(fAttrs, "number_format"); nfAttrs != nil {
-				nf := BuildEngineJSON(nfAttrs, widgetNumberFormatFields)
-				if len(nf) > 0 {
-					formula["number_format"] = nf
-				}
-			}
-			formulas = append(formulas, formula)
-		}
-		result["formulas"] = formulas
-	}
-
-	// queries
-	queryElems := getListElems(reqAttrs, "query")
-	if len(queryElems) > 0 {
-		queries := make([]interface{}, 0, len(queryElems))
-		for _, qElem := range queryElems {
-			qObj, ok := qElem.(types.Object)
-			if !ok {
-				continue
-			}
-			qAttrs := qObj.Attributes()
-			var queryJSON map[string]interface{}
-			if metricAttrs := getObjAttrs(qAttrs, "metric_query"); metricAttrs != nil {
-				queryJSON = buildMetricQueryJSON(metricAttrs)
-			} else if eventAttrs := getObjAttrs(qAttrs, "event_query"); eventAttrs != nil {
-				queryJSON = buildEventQueryJSON(eventAttrs)
-			} else if procAttrs := getObjAttrs(qAttrs, "process_query"); procAttrs != nil {
-				queryJSON = buildFormulaProcessQueryJSON(procAttrs)
-			} else if apmDepAttrs := getObjAttrs(qAttrs, "apm_dependency_stats_query"); apmDepAttrs != nil {
-				queryJSON = buildApmDependencyStatsQueryJSON(apmDepAttrs)
-			} else if apmResAttrs := getObjAttrs(qAttrs, "apm_resource_stats_query"); apmResAttrs != nil {
-				queryJSON = buildApmResourceStatsQueryJSON(apmResAttrs)
-			} else if sloAttrs := getObjAttrs(qAttrs, "slo_query"); sloAttrs != nil {
-				queryJSON = buildSLOQueryJSON(sloAttrs)
-			} else if ccAttrs := getObjAttrs(qAttrs, "cloud_cost_query"); ccAttrs != nil {
-				queryJSON = buildCloudCostQueryJSON(ccAttrs)
-			}
-			queries = append(queries, queryJSON)
-		}
-		result["queries"] = queries
-	}
-
-	// response_format for query_table formulas is always "scalar"
-	if len(formulaElems) > 0 || len(queryElems) > 0 {
-		result["response_format"] = "scalar"
-	}
-
-	return result
 }
 
 
@@ -2179,52 +1729,6 @@ func buildQueryTableTextFormatsJSON(reqAttrs map[string]attr.Value, req map[stri
 	req["text_formats"] = textFormats
 }
 
-// buildApmDependencyStatsQueryJSON builds JSON for an apm_dependency_stats_query formula query.
-func buildApmDependencyStatsQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-	for _, field := range []string{"data_source", "env", "name", "operation_name", "resource_name", "service", "stat"} {
-		if v, ok := getStrAttr(attrs, field); ok {
-			result[field] = v
-		}
-	}
-	if v, ok := getBoolAttr(attrs, "is_upstream"); ok {
-		result["is_upstream"] = v
-	}
-	if v, ok := getStrAttr(attrs, "primary_tag_name"); ok && v != "" {
-		result["primary_tag_name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "primary_tag_value"); ok && v != "" {
-		result["primary_tag_value"] = v
-	}
-	return result
-}
-
-// buildApmResourceStatsQueryJSON builds JSON for an apm_resource_stats_query formula query.
-func buildApmResourceStatsQueryJSON(attrs map[string]attr.Value) map[string]interface{} {
-	result := map[string]interface{}{}
-	for _, field := range []string{"data_source", "env", "name", "service", "stat"} {
-		if v, ok := getStrAttr(attrs, field); ok {
-			result[field] = v
-		}
-	}
-	if v, ok := getStrAttr(attrs, "operation_name"); ok && v != "" {
-		result["operation_name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "resource_name"); ok && v != "" {
-		result["resource_name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "primary_tag_name"); ok && v != "" {
-		result["primary_tag_name"] = v
-	}
-	if v, ok := getStrAttr(attrs, "primary_tag_value"); ok && v != "" {
-		result["primary_tag_value"] = v
-	}
-	// group_by: []string
-	if strs := getStrListElems(attrs, "group_by"); len(strs) > 0 {
-		result["group_by"] = strs
-	}
-	return result
-}
 
 // flattenQueryTableRequestJSON flattens a single query_table request JSON.
 // Handles both formula-style (has "formulas"/"queries") and old-style requests.
@@ -2232,7 +1736,7 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 	_, hasFormulas := req["formulas"]
 	_, hasQueries := req["queries"]
 	if hasFormulas || hasQueries {
-		return flattenQueryTableFormulaRequestJSON(req)
+		return flattenFormulaRequest(req, queryTableFormulaRequestConfig)
 	}
 	// Old-style request
 	result := FlattenEngineJSON(queryTableOldRequestFields, req)
@@ -2243,181 +1747,6 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 	return result
 }
 
-// flattenQueryTableFormulaRequestJSON flattens a formula/query-style query_table request.
-func flattenQueryTableFormulaRequestJSON(req map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-
-	// formulas
-	if formulas, ok := req["formulas"].([]interface{}); ok {
-		flatFormulas := make([]interface{}, len(formulas))
-		for fi, f := range formulas {
-			fm, ok := f.(map[string]interface{})
-			if !ok {
-				flatFormulas[fi] = map[string]interface{}{}
-				continue
-			}
-			flatF := map[string]interface{}{}
-			// JSON "formula" → HCL "formula_expression"
-			if v, ok := fm["formula"].(string); ok {
-				flatF["formula_expression"] = v
-			}
-			if v, ok := fm["alias"].(string); ok && v != "" {
-				flatF["alias"] = v
-			}
-			// limit
-			if limitMap, ok := fm["limit"].(map[string]interface{}); ok {
-				limitState := map[string]interface{}{}
-				if v, ok := limitMap["count"]; ok {
-					switch cv := v.(type) {
-					case float64:
-						limitState["count"] = int(cv)
-					case int64:
-						limitState["count"] = int(cv)
-					case int:
-						limitState["count"] = cv
-					}
-				}
-				if v, ok := limitMap["order"].(string); ok {
-					limitState["order"] = v
-				}
-				flatF["limit"] = []interface{}{limitState}
-			}
-			// cell_display_mode (TypeString)
-			if v, ok := fm["cell_display_mode"].(string); ok && v != "" {
-				flatF["cell_display_mode"] = v
-			}
-			// cell_display_mode_options
-			if opts, ok := fm["cell_display_mode_options"].(map[string]interface{}); ok {
-				optsState := map[string]interface{}{}
-				if v, ok := opts["trend_type"].(string); ok && v != "" {
-					optsState["trend_type"] = v
-				}
-				if v, ok := opts["y_scale"].(string); ok && v != "" {
-					optsState["y_scale"] = v
-				}
-				if len(optsState) > 0 {
-					flatF["cell_display_mode_options"] = []interface{}{optsState}
-				}
-			}
-			// conditional_formats
-			if cfs, ok := fm["conditional_formats"].([]interface{}); ok && len(cfs) > 0 {
-				flatCFs := make([]interface{}, len(cfs))
-				for ci, cf := range cfs {
-					if cfMap, ok := cf.(map[string]interface{}); ok {
-						flatCFs[ci] = FlattenEngineJSON(widgetConditionalFormatFields, cfMap)
-					}
-				}
-				flatF["conditional_formats"] = flatCFs
-			}
-			// number_format (TypeOneOf: canonical/custom unit + unit_scale)
-			if nf, ok := fm["number_format"].(map[string]interface{}); ok {
-				nfState := FlattenEngineJSON(widgetNumberFormatFields, nf)
-				if len(nfState) > 0 {
-					flatF["number_format"] = []interface{}{nfState}
-				}
-			}
-			flatFormulas[fi] = flatF
-		}
-		result["formula"] = flatFormulas
-	}
-
-	// queries
-	if queries, ok := req["queries"].([]interface{}); ok {
-		flatQueries := make([]interface{}, len(queries))
-		for qi, q := range queries {
-			qm, ok := q.(map[string]interface{})
-			if !ok {
-				flatQueries[qi] = map[string]interface{}{}
-				continue
-			}
-			flatQueries[qi] = flattenQueryTableQueryJSON(qm)
-		}
-		result["query"] = flatQueries
-	}
-
-	return result
-}
-
-// flattenQueryTableQueryJSON converts a single query JSON object into the HCL query block state.
-// Handles apm_dependency_stats and apm_resource_stats in addition to the standard query types.
-func flattenQueryTableQueryJSON(q map[string]interface{}) map[string]interface{} {
-	dataSource, _ := q["data_source"].(string)
-	switch dataSource {
-	case "metrics":
-		return map[string]interface{}{
-			"metric_query": []interface{}{flattenMetricQueryJSON(q)},
-		}
-	case "logs", "spans", "profiling", "audit", "rum":
-		return map[string]interface{}{
-			"event_query": []interface{}{flattenEventQueryJSON(q)},
-		}
-	case "process":
-		return map[string]interface{}{
-			"process_query": []interface{}{flattenFormulaProcessQueryFlatJSON(q)},
-		}
-	case "slo":
-		return map[string]interface{}{
-			"slo_query": []interface{}{flattenSLOQueryJSON(q)},
-		}
-	case "cloud_cost":
-		return map[string]interface{}{
-			"cloud_cost_query": []interface{}{flattenCloudCostQueryJSON(q)},
-		}
-	case "apm_dependency_stats":
-		return map[string]interface{}{
-			"apm_dependency_stats_query": []interface{}{flattenApmDependencyStatsQueryJSON(q)},
-		}
-	case "apm_resource_stats":
-		return map[string]interface{}{
-			"apm_resource_stats_query": []interface{}{flattenApmResourceStatsQueryJSON(q)},
-		}
-	default:
-		// fallback to generic
-		if _, hasCompute := q["compute"]; hasCompute {
-			return map[string]interface{}{
-				"event_query": []interface{}{flattenEventQueryJSON(q)},
-			}
-		}
-		if _, hasQuery := q["query"]; hasQuery {
-			return map[string]interface{}{
-				"metric_query": []interface{}{flattenMetricQueryJSON(q)},
-			}
-		}
-		return map[string]interface{}{}
-	}
-}
-
-// flattenApmDependencyStatsQueryJSON flattens an apm_dependency_stats_query JSON object.
-func flattenApmDependencyStatsQueryJSON(q map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	for _, field := range []string{"data_source", "env", "name", "operation_name", "resource_name", "service", "stat", "primary_tag_name", "primary_tag_value"} {
-		if v, ok := q[field].(string); ok && v != "" {
-			result[field] = v
-		}
-	}
-	if v, ok := q["is_upstream"].(bool); ok {
-		result["is_upstream"] = v
-	}
-	return result
-}
-
-// flattenApmResourceStatsQueryJSON flattens an apm_resource_stats_query JSON object.
-func flattenApmResourceStatsQueryJSON(q map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	for _, field := range []string{"data_source", "env", "name", "service", "stat", "operation_name", "resource_name", "primary_tag_name", "primary_tag_value"} {
-		if v, ok := q[field].(string); ok && v != "" {
-			result[field] = v
-		}
-	}
-	if groupBy, ok := q["group_by"].([]interface{}); ok && len(groupBy) > 0 {
-		strs := make([]string, len(groupBy))
-		for i, g := range groupBy {
-			strs[i] = fmt.Sprintf("%v", g)
-		}
-		result["group_by"] = strs
-	}
-	return result
-}
 
 
 // flattenQueryTableTextFormatsJSON flattens the 2D text_formats array.
