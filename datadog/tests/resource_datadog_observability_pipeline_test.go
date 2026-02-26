@@ -1973,7 +1973,7 @@ resource "datadog_observability_pipeline" "sds" {
 
             pattern {
               library {
-                id = "ip_address"
+                id = "imTliuhXT5GAeRNhqChXQQ"
                 use_recommended_keywords = true
               }
             }
@@ -2017,7 +2017,7 @@ resource "datadog_observability_pipeline" "sds" {
 
             pattern {
               library {
-                id = "email_address"
+                id = "imTliuhXT5GAeRNhqChXQQ"
                 description = "email address"
               }
             }
@@ -2088,7 +2088,7 @@ resource "datadog_observability_pipeline" "sds" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.name", "Library Hash"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.tags.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.tags.0", "pii"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.pattern.0.library.0.id", "ip_address"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.pattern.0.library.0.id", "imTliuhXT5GAeRNhqChXQQ"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.pattern.0.library.0.use_recommended_keywords", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.scope.0.all", "true"),
 
@@ -2104,7 +2104,7 @@ resource "datadog_observability_pipeline" "sds" {
 					// Rule 3 - Library pattern + no keywords + empty tags + exclude scope + partial_redact (last)
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.name", "Library Empty Tags No Keywords Last Direction"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.tags.#", "0"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.pattern.0.library.0.id", "email_address"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.pattern.0.library.0.id", "imTliuhXT5GAeRNhqChXQQ"),
 					resource.TestCheckNoResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.pattern.0.library.0.use_recommended_keywords"),
 					resource.TestCheckNoResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.keyword_options.#"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.scope.0.exclude.0.fields.#", "1"),
