@@ -35,7 +35,7 @@ jobs:
       - name: Select tests and build args
         id: build-args
         run: |
-          RUN_REGEX=$(cat /tmp/changed_files.txt | bash scripts/select-pr-tests.sh)
+          RUN_REGEX=$(bash scripts/select-pr-tests.sh < /tmp/changed_files.txt)
 
           if [ -z "$RUN_REGEX" ]; then
             echo "should_run=false" >> "$GITHUB_OUTPUT"
