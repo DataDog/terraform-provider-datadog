@@ -132,6 +132,11 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 		params = append(params, "with_restricted_roles=false")
 	}
 
+	// only query for monitor restriction policy if they are explicitly defined in the JSON
+	if _, ok := attrMap["restriction_policy"]; ok {
+		params = append(params, "with_restriction_policy=true")
+	}
+
 	// only query for monitor assets if they are explicitly defined in the JSON
 	if _, ok := attrMap["assets"]; ok {
 		params = append(params, "with_assets=true")
