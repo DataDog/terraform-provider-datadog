@@ -19,5 +19,5 @@ if [ -z "$TESTS" ]; then
   exit 0
 fi
 
-# Output as pipe-separated regex
-echo "$TESTS" | paste -sd '|' -
+# Output as pipe-separated regex with anchors to prevent substring matches
+echo "$TESTS" | sed 's/.*/^&$/' | paste -sd '|' -
