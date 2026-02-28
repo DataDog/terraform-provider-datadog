@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 795
+        content_length: 787
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -34,20 +34,20 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 395.217417ms
+        duration: 124.747708ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 795
+        content_length: 787
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -68,20 +68,20 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 375.162416ms
+        duration: 129.44125ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 795
+        content_length: 787
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","createdAt":1765474110378,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"qx6-gj3-gbl","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","createdAt":1768557584575,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"7pv-pzq-7jd","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 272.806708ms
+        duration: 150.653583ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,26 +131,26 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","createdAt":1765474110378,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"qx6-gj3-gbl","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","createdAt":1768557584575,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"7pv-pzq-7jd","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 341.017125ms
+        duration: 117.057042ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 795
+        content_length: 787
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 148.660042ms
+        duration: 137.949208ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,26 +198,26 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","createdAt":1765474110378,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"qx6-gj3-gbl","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","createdAt":1768557584575,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"7pv-pzq-7jd","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 191.162875ms
+        duration: 119.361042ms
     - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 795
+        content_length: 787
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 114.696208ms
+        duration: 176.310333ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: GET
       response:
         proto: HTTP/1.1
@@ -265,26 +265,26 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107","createdAt":1765474110378,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"qx6-gj3-gbl","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581","createdAt":1768557584575,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"7pv-pzq-7jd","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 130.760708ms
+        duration: 128.353ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 815
+        content_length: 807
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -305,20 +305,20 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 150.555167ms
+        duration: 142.794ms
     - id: 9
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 815
+        content_length: 807
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -339,27 +339,27 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 192.695375ms
+        duration: 117.401125ms
     - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 845
+        content_length: 837
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"filters":[],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"schedulingOptions":null,"tags":["u:tomato","i:tomato"]}
+            {"calculatedFields":[],"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"filters":[],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"schedulingOptions":null,"tags":["u:tomato","i:tomato"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: PUT
       response:
         proto: HTTP/1.1
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","isEnabled":true,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"id":"qx6-gj3-gbl","version":2,"createdAt":1765474110378,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1765474113298,"isDefault":false,"blocking":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","isEnabled":true,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"id":"7pv-pzq-7jd","version":2,"createdAt":1768557584575,"creationAuthorId":65094071,"updateAuthorId":65094071,"updatedAt":1768557586678,"isDefault":false,"blocking":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 267.540709ms
+        duration: 166.081375ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -392,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: GET
       response:
         proto: HTTP/1.1
@@ -402,26 +402,26 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","createdAt":1765474110378,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"qx6-gj3-gbl","updatedAt":1765474113298,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","createdAt":1768557584575,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"7pv-pzq-7jd","updatedAt":1768557586678,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"updateAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 233.218291ms
+        duration: 123.559208ms
     - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 815
+        content_length: 807
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -442,7 +442,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 155.040125ms
+        duration: 122.782708ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -459,7 +459,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: GET
       response:
         proto: HTTP/1.1
@@ -469,26 +469,26 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","createdAt":1765474110378,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"qx6-gj3-gbl","updatedAt":1765474113298,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","createdAt":1768557584575,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"7pv-pzq-7jd","updatedAt":1768557586678,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"updateAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.432783083s
+        duration: 120.66725ms
     - id: 14
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 815
+        content_length: 807
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1765474107 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200},"type":"block_ip"},{"options":{},"type":"block_user"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1768557581 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"spans","distinctFields":[],"groupByFields":["service","env"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -509,7 +509,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 126.102584ms
+        duration: 169.0985ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -526,7 +526,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -540,7 +540,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 2.038094625s
+        duration: 151.753208ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -557,7 +557,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/qx6-gj3-gbl
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7pv-pzq-7jd
         method: GET
       response:
         proto: HTTP/1.1
@@ -567,10 +567,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: qx6-gj3-gbl"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: 7pv-pzq-7jd"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 1.128204458s
+        duration: 125.545083ms
