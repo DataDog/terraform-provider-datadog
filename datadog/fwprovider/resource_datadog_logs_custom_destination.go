@@ -37,10 +37,11 @@ type logsCustomDestinationModel struct {
 	ForwardTagsRestrictionList     types.List   `tfsdk:"forward_tags_restriction_list"`
 	ForwardTagsRestrictionListType types.String `tfsdk:"forward_tags_restriction_list_type"`
 
-	HttpDestination              []HttpDestination              `tfsdk:"http_destination"`
-	SplunkDestination            []SplunkDestination            `tfsdk:"splunk_destination"`
-	ElasticsearchDestination     []ElasticsearchDestination     `tfsdk:"elasticsearch_destination"`
-	MicrosoftSentinelDestination []MicrosoftSentinelDestination `tfsdk:"microsoft_sentinel_destination"`
+	HttpDestination                     []HttpDestination                     `tfsdk:"http_destination"`
+	SplunkDestination                   []SplunkDestination                   `tfsdk:"splunk_destination"`
+	ElasticsearchDestination            []ElasticsearchDestination            `tfsdk:"elasticsearch_destination"`
+	MicrosoftSentinelDestination        []MicrosoftSentinelDestination        `tfsdk:"microsoft_sentinel_destination"`
+	GoogleSecurityOperationsDestination []GoogleSecurityOperationsDestination `tfsdk:"google_security_operations_destination"`
 }
 
 type HttpDestination struct {
@@ -84,6 +85,21 @@ type MicrosoftSentinelDestination struct {
 	DataCollectionEndpoint types.String `tfsdk:"data_collection_endpoint"`
 	DataCollectionRuleId   types.String `tfsdk:"data_collection_rule_id"`
 	StreamName             types.String `tfsdk:"stream_name"`
+}
+
+type GoogleSecurityOperationsDestination struct {
+	CustomerId       types.String                              `tfsdk:"customer_id"`
+	RegionalEndpoint types.String                              `tfsdk:"regional_endpoint"`
+	Namespace        types.String                              `tfsdk:"namespace"`
+	Auth             []GoogleSecurityOperationsDestinationAuth `tfsdk:"auth"`
+}
+
+type GoogleSecurityOperationsDestinationAuth struct {
+	ProjectId    types.String `tfsdk:"project_id"`
+	PrivateKeyId types.String `tfsdk:"private_key_id"`
+	ClientEmail  types.String `tfsdk:"client_email"`
+	ClientId     types.String `tfsdk:"client_id"`
+	PrivateKey   types.String `tfsdk:"private_key"`
 }
 
 func NewLogsCustomDestinationResource() resource.Resource {
@@ -320,6 +336,52 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 					listvalidator.SizeAtMost(1),
 				},
 			},
+			"google_security_operations_destination": schema.ListNestedBlock{
+				Description: "The Google Security Operations destination.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"customer_id": schema.StringAttribute{
+							Description: "The customer ID of the Google Security Operations account.",
+							Required:    true,
+						},
+						"regional_endpoint": schema.StringAttribute{
+							Description: "The `CustomDestinationForwardDestinationGoogleSecurityOperations` `regional_endpoint`",
+							Required:    true,
+						},
+						"namespace": schema.StringAttribute{
+							Description: "The namespace of the Google Security Operations account.",
+							Required:    true,
+						},
+						"auth": schema.ListNestedBlock{
+							Description: "Google Security Operations destination authentication.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"project_id": schema.StringAttribute{
+										Description: "Google Security Operations project ID.",
+										Required:    true,
+									},
+									"private_key_id": schema.StringAttribute{
+										Description: "The Google Security Operations private key ID. This field is not returned by the API.",
+										Required:    true,
+									},
+									"private_key": schema.StringAttribute{
+										Description: "The Google Security Operations private key. This field is not returned by the API.",
+										Required:    true,
+									},
+									"client_email": schema.StringAttribute{
+										Description: "The Google Security Operations client email.",
+										Required:    true,
+									},
+									"client_id": schema.StringAttribute{
+										Description: "The Google Security Operations client ID. This field is not returned by the API.",
+										Required:    true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -542,6 +604,50 @@ func (r *logsCustomDestinationResource) updateState(ctx context.Context, state *
 			state.MicrosoftSentinelDestination[0].StreamName = types.StringValue(*streamName)
 		}
 	}
+  
+	if googleSecurityOperationsDestination := forwarderDestination.CustomDestinationResponseForwardDestinationGoogleSecurityOperations; googleSecurityOperationsDestination != nil {
+		if len(state.GoogleSecurityOperationsDestination) != 1 {
+			state.GoogleSecurityOperationsDestination = []GoogleSecurityOperationsDestination{{}}
+		}
+
+		if customerId, ok := googleSecurityOperationsDestination.GetCustomerIdOk(); ok {
+			state.GoogleSecurityOperationsDestination[0].CustomerId = types.StringValue(*customerId)
+		}
+
+		if regionalEndpoint, ok := googleSecurityOperationsDestination.GetRegionalEndpointOk(); ok {
+			state.GoogleSecurityOperationsDestination[0].RegionalEndpoint = types.StringValue(*regionalEndpoint)
+		}
+
+		if namespace, ok := googleSecurityOperationsDestination.GetNamespaceOk(); ok {
+			state.GoogleSecurityOperationsDestination[0].Namespace = types.StringValue(*namespace)
+		}
+
+		if auth, ok := googleSecurityOperationsDestination.GetAuthOk(); ok {
+			if len(state.GoogleSecurityOperationsDestination[0].Auth) != 1 {
+				state.GoogleSecurityOperationsDestination[0].Auth = []GoogleSecurityOperationsDestinationAuth{{}}
+			}
+
+			if projectId, ok := auth.GetProjectIdOk(); ok {
+				state.GoogleSecurityOperationsDestination[0].Auth[0].ProjectId = types.StringValue(*projectId)
+			}
+
+			if privateKeyId, ok := auth.GetPrivateKeyIdOk(); ok {
+				state.GoogleSecurityOperationsDestination[0].Auth[0].PrivateKeyId = types.StringValue(*privateKeyId)
+			}
+
+			if clientEmail, ok := auth.GetClientEmailOk(); ok {
+				state.GoogleSecurityOperationsDestination[0].Auth[0].ClientEmail = types.StringValue(*clientEmail)
+			}
+
+			if clientId, ok := auth.GetClientIdOk(); ok {
+				state.GoogleSecurityOperationsDestination[0].Auth[0].ClientId = types.StringValue(*clientId)
+			}
+
+			if privateKey, ok := auth.GetPrivateKeyOk(); ok {
+				state.GoogleSecurityOperationsDestination[0].Auth[0].PrivateKey = types.StringValue(*privateKey)
+			}
+		}
+	}
 }
 
 func (r *logsCustomDestinationResource) buildLogsCustomDestinationCreateRequestBody(ctx context.Context, state *logsCustomDestinationModel) (*datadogV2.CustomDestinationCreateRequest, diag.Diagnostics) {
@@ -691,6 +797,27 @@ func (r *logsCustomDestinationResource) buildLogsCustomDestinationForwarderDesti
 		microsoftSentinel.SetStreamName(microsoftSentinelDestination[0].StreamName.ValueString())
 		microsoftSentinelOut := datadogV2.CustomDestinationForwardDestinationMicrosoftSentinelAsCustomDestinationForwardDestination(microsoftSentinel)
 		return &microsoftSentinelOut
+	}
+
+	if googleSecurityOperationsDestination := state.GoogleSecurityOperationsDestination; len(googleSecurityOperationsDestination) == 1 {
+		googleSecurityOperations := datadogV2.NewCustomDestinationForwardDestinationGoogleSecurityOperationsWithDefaults()
+		googleSecurityOperations.SetCustomerId(googleSecurityOperationsDestination[0].CustomerId.ValueString())
+		googleSecurityOperations.SetRegionalEndpoint(googleSecurityOperationsDestination[0].RegionalEndpoint.ValueString())
+		googleSecurityOperations.SetNamespace(googleSecurityOperationsDestination[0].Namespace.ValueString())
+
+		if auth := googleSecurityOperationsDestination[0].Auth; len(auth) == 1 {
+			authOut := datadogV2.NewCustomDestinationGoogleSecurityOperationsDestinationAuthWithDefaults()
+			authOut.SetProjectId(auth[0].ProjectId.ValueString())
+			authOut.SetPrivateKeyId(auth[0].PrivateKeyId.ValueString())
+			authOut.SetClientEmail(auth[0].ClientEmail.ValueString())
+			authOut.SetClientId(auth[0].ClientId.ValueString())
+			authOut.SetPrivateKey(auth[0].PrivateKey.ValueString())
+
+			googleSecurityOperations.SetAuth(*authOut)
+		}
+
+		googleSecurityOperationsOut := datadogV2.CustomDestinationForwardDestinationGoogleSecurityOperationsAsCustomDestinationForwardDestination(googleSecurityOperations)
+		return &googleSecurityOperationsOut
 	}
 
 	return nil
