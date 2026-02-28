@@ -361,7 +361,8 @@ func resourceDatadogIntegrationAwsImport(ctx context.Context, d *schema.Resource
 	if d.Id() == "" {
 		return nil, fmt.Errorf("error importing aws integration resource. Resource with id `%s` does not exist", originalId)
 	}
-
-	d.Set("external_id", os.Getenv("EXTERNAL_ID"))
+	if v, ok := os.LookupEnv("EXTERNAL_ID"); ok {
+		d.Set("external_id", v)
+	}
 	return []*schema.ResourceData{d}, nil
 }
