@@ -39,6 +39,7 @@ var Resources = []func() resource.Resource{
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
 	NewIntegrationAwsAccountResource,
+	NewIntegrationAwsAccountCcmConfigResource,
 	NewCatalogEntityResource,
 	NewDashboardListResource,
 	NewDatasetResource,
