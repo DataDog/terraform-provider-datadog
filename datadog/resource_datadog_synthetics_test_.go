@@ -3143,7 +3143,11 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 		request.SetCompressedJsonDescriptor(compressAndEncodeValue(attr.(string)))
 	}
 	if attr, ok := d.GetOk("request_definition.0.plain_proto_file"); ok {
-		request.SetCompressedProtoFile(compressAndEncodeValue(attr.(string)))
+		bytes, err := json.Marshal(compressAndEncodeValue(attr.(string)))
+		if err != nil {
+			log.Printf("[ERROR] Error marshaling plain_proto_file: %v", err)
+		}
+		request.SetCompressedProtoFile(string(bytes))
 	}
 
 	if attr, ok := d.GetOk("request_client_certificate"); ok {
