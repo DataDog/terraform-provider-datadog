@@ -31,6 +31,7 @@ type teamModel struct {
 	Summary     types.String `tfsdk:"summary"`
 	UserCount   types.Int64  `tfsdk:"user_count"`
 	Name        types.String `tfsdk:"name"`
+	Avatar      types.String `tfsdk:"avatar"`
 }
 
 func NewTeamResource() resource.Resource {
@@ -74,6 +75,10 @@ func (r *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, respo
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "The name of the team.",
+			},
+			"avatar": schema.StringAttribute{
+				Required:    false,
+				Description: "The avatar of the team.",
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -229,6 +234,11 @@ func (r *teamResource) buildTeamRequestBody(ctx context.Context, state *teamMode
 	if !state.Description.IsNull() {
 		attributes.SetDescription(state.Description.ValueString())
 	}
+
+	if !state.Avatar.IsNull() {
+		attributes.SetAvatar(state.Avatar.ValueString())
+	}
+
 	attributes.SetHandle(state.Handle.ValueString())
 
 	attributes.SetName(state.Name.ValueString())
@@ -246,6 +256,10 @@ func (r *teamResource) buildTeamUpdateRequestBody(ctx context.Context, state *te
 
 	if !state.Description.IsNull() {
 		attributes.SetDescription(state.Description.ValueString())
+	}
+
+	if !state.Avatar.IsNull() {
+		attributes.SetAvatar(state.Avatar.ValueString())
 	}
 
 	attributes.SetHandle(state.Handle.ValueString())
