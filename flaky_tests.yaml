@@ -1,6 +1,332 @@
-skipped_tests: []
-# Example entry:
-# - test: TestAccDatadogSomeFlaky_Basic
-#   reason: "Intermittent 429 from API - APIR-XXXX"
-#   added: "2026-02-27"
-#   author: fpighi
+skipped_tests:
+  # Synthetics quota — 402 Payment Required (33 tests)
+  - test: TestAccDatadogSyntheticsAPITest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsAPITest_Updated
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsAPITest_BasicTargetAndTargetValueCanBeNumberOrString
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsAPITest_UpdatedTargetAndTargetValueCanBeNumberOrString
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsAPITest_AdvancedScheduling
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsAPITest_importBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsApiTest_FileUpload
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsGRPCTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsGRPCTest_importBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsDNSTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsDNSTest_Updated
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsDNSTest_importBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsTCPTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsTCPTest_Updated
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsTCPTest_importBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsSSLTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsSSLTest_Updated
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsSSLTest_importBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsICMPTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsUDPTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsWebsocketTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsWebsocketTest_Base64Message
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsSuite_WithTests
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsGlobalVariableFromTest_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsTest
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSyntheticsTestWithUrl
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccMonitor_Fwprovider_ComposeWithSyntheticsTest
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMonitor_ComposeWithSyntheticsTest
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Missing cloud integrations — AWS/Azure/GCP not configured (11 tests)
+  - test: TestAccAwsCurConfigBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAwsCurConfigImport
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAwsCurConfigWithAccountFilters
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAzureUcConfigBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAzureUcConfigImport
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccGcpUcConfigBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccGcpUcConfigImport
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Update
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningGcpScanOptions_Update
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # User/Team datasource — Eventual consistency (9 tests)
+  - test: TestAccDatadogUserDatasourceExactMatch
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExactMatch
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExactMatchError
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExcludeServiceAccounts
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithError
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogTeamMembershipsDatasourceExactMatch
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUsersDatasourceFilter
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUsersDatasourceFilterStatus
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Reference Tables — Cloud storage not configured (6 tests)
+  - test: TestAccReferenceTable_Import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccReferenceTable_SchemaOnCreate
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccReferenceTable_UpdateSyncEnabled
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccReferenceTableS3_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogReferenceTableDataSource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogReferenceTableRowsDataSource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Metric datasource/TagConfig — Metrics don't exist in org (6 tests)
+  - test: TestAccDatadogMetricsDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricTagsDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricActiveTagsAndAggregationsDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricTagConfiguration_GaugeBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricTagConfiguration_Import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricTagConfiguration_CountBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # AWS OpsWorks EOL — API rejects OpsWorks (2 tests)
+  - test: TestAccDatadogIntegrationAWS
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogIntegrationAWSAccessKey
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # External service config missing (3 tests)
+  - test: TestAccMSTeamsWorkflowsWebhookHandlesBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogIntegrationAWSExternalIDDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAppKeyRegistrationResource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # User/ServiceAccount state issues (2 tests)
+  - test: TestAccDatadogUser_ReEnableRoleUpdate
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogServiceAccountDatasourceMatchFilter
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Dataset/IncidentNotificationRule — Rate limiting (2 tests)
+  - test: TestAccDatadogDataset_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogIncidentNotificationRule_Updated
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Provider bugs (4 tests)
+  - test: TestAccDatadogApmRetentionFilterOrder
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccServiceAccountApplicationKeyBasic_import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogActionConnectionResource_HTTP_TokenAuth
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccRumRetentionFiltersDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
