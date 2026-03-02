@@ -14,11 +14,12 @@ import (
 
 // SocketDestinationModel represents the Terraform model for socket destination configuration
 type SocketDestinationModel struct {
-	Mode     types.String         `tfsdk:"mode"`
-	Encoding types.String         `tfsdk:"encoding"`
-	Framing  []SocketFramingModel `tfsdk:"framing"`
-	Tls      []TlsModel           `tfsdk:"tls"`
-	Buffer   []BufferOptionsModel `tfsdk:"buffer"`
+	AddressKey types.String         `tfsdk:"address_key"`
+	Mode       types.String         `tfsdk:"mode"`
+	Encoding   types.String         `tfsdk:"encoding"`
+	Framing    []SocketFramingModel `tfsdk:"framing"`
+	Tls        []TlsModel           `tfsdk:"tls"`
+	Buffer     []BufferOptionsModel `tfsdk:"buffer"`
 }
 
 // ExpandSocketDestination converts the Terraform model to the Datadog API model
@@ -31,6 +32,9 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 	inputs.ElementsAs(ctx, &inputsList, false)
 	s.SetInputs(inputsList)
 
+	if !src.AddressKey.IsNull() {
+		s.SetAddressKey(src.AddressKey.ValueString())
+	}
 	s.SetMode(datadogV2.ObservabilityPipelineSocketDestinationMode(src.Mode.ValueString()))
 	s.SetEncoding(datadogV2.ObservabilityPipelineSocketDestinationEncoding(src.Encoding.ValueString()))
 
@@ -85,6 +89,9 @@ func FlattenSocketDestination(ctx context.Context, src *datadogV2.ObservabilityP
 		Mode:     types.StringValue(string(src.GetMode())),
 		Encoding: types.StringValue(string(src.GetEncoding())),
 	}
+	if v, ok := src.GetAddressKeyOk(); ok {
+		out.AddressKey = types.StringValue(*v)
+	}
 
 	if src.Tls != nil {
 		out.Tls = FlattenTls(src.Tls)
@@ -120,6 +127,10 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 		Description: "The `socket` destination sends logs over TCP or UDP to a remote server.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
+				"address_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the socket address (host:port).",
+				},
 				"mode": schema.StringAttribute{
 					Required:    true,
 					Description: "The protocol used to send logs.",

@@ -77,6 +77,92 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 	})
 }
 
+// TestAccDatadogObservabilityPipeline_secretKeyFields verifies that the new secret/key
+// fields (e.g. address_key, key_pass_key in tls) are accepted by the schema and round-trip
+// correctly through expand/flatten.
+func TestAccDatadogObservabilityPipeline_secretKeyFields(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.secret_keys"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineSecretKeyFieldsConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "pipeline secret key fields"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "socket-src"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.address_key", "SOCKET_LISTEN_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "socket-dest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.address_key", "SOCKET_SEND_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineSecretKeyFieldsConfig() string {
+	return `
+resource "datadog_observability_pipeline" "secret_keys" {
+  name = "pipeline secret key fields"
+
+  config {
+    source {
+      id = "socket-src"
+      socket {
+        address_key = "SOCKET_LISTEN_ADDRESS"
+        mode        = "tcp"
+        framing {
+          method = "newline_delimited"
+        }
+        tls {
+          crt_file    = "/path/to/cert.pem"
+          key_pass_key = "TLS_KEY_PASSPHRASE"
+        }
+      }
+    }
+
+    processor_group {
+      id      = "pg1"
+      enabled = true
+      include = "*"
+      inputs  = ["socket-src"]
+      processor {
+        id      = "p1"
+        enabled = true
+        include = "*"
+        parse_json {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "socket-dest"
+      inputs = ["pg1"]
+      socket {
+        address_key = "SOCKET_SEND_ADDRESS"
+        mode        = "tcp"
+        encoding    = "json"
+        framing {
+          method = "newline_delimited"
+        }
+        tls {
+          crt_file     = "/path/to/cert.pem"
+          key_pass_key = "TLS_KEY_PASSPHRASE"
+        }
+      }
+    }
+  }
+}`
+}
+
 func testAccObservabilityPipelineBasicConfig() string {
 	return `
 resource "datadog_observability_pipeline" "basic" {
