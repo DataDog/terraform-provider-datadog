@@ -13,6 +13,7 @@ import (
 
 // KafkaDestinationModel represents the Terraform model for kafka destination configuration
 type KafkaDestinationModel struct {
+	BootstrapServersKey   types.String            `tfsdk:"bootstrap_servers_key"`
 	Encoding              types.String            `tfsdk:"encoding"`
 	Topic                 types.String            `tfsdk:"topic"`
 	Compression           types.String            `tfsdk:"compression"`
@@ -29,7 +30,9 @@ type KafkaDestinationModel struct {
 
 // KafkaSaslModel represents SASL configuration
 type KafkaSaslModel struct {
-	Mechanism types.String `tfsdk:"mechanism"`
+	Mechanism   types.String `tfsdk:"mechanism"`
+	UsernameKey types.String `tfsdk:"username_key"`
+	PasswordKey types.String `tfsdk:"password_key"`
 }
 
 // LibrdkafkaOptionModel represents a librdkafka configuration option
@@ -50,6 +53,9 @@ func ExpandKafkaDestination(ctx context.Context, id string, inputs types.List, s
 	// Required fields
 	d.SetEncoding(datadogV2.ObservabilityPipelineKafkaDestinationEncoding(src.Encoding.ValueString()))
 	d.SetTopic(src.Topic.ValueString())
+	if !src.BootstrapServersKey.IsNull() {
+		d.SetBootstrapServersKey(src.BootstrapServersKey.ValueString())
+	}
 
 	// Optional string fields
 	if !src.HeadersKey.IsNull() {
@@ -85,6 +91,12 @@ func ExpandKafkaDestination(ctx context.Context, id string, inputs types.List, s
 		if mechanism != nil {
 			saslConfig := datadogV2.ObservabilityPipelineKafkaSasl{}
 			saslConfig.SetMechanism(*mechanism)
+			if !sasl.UsernameKey.IsNull() {
+				saslConfig.SetUsernameKey(sasl.UsernameKey.ValueString())
+			}
+			if !sasl.PasswordKey.IsNull() {
+				saslConfig.SetPasswordKey(sasl.PasswordKey.ValueString())
+			}
 			d.SetSasl(saslConfig)
 		}
 	}
@@ -121,6 +133,9 @@ func FlattenKafkaDestination(ctx context.Context, src *datadogV2.ObservabilityPi
 		Encoding: types.StringValue(string(src.GetEncoding())),
 		Topic:    types.StringValue(src.GetTopic()),
 	}
+	if v, ok := src.GetBootstrapServersKeyOk(); ok {
+		out.BootstrapServersKey = types.StringValue(*v)
+	}
 
 	// Optional string fields
 	if v, ok := src.GetHeadersKeyOk(); ok {
@@ -151,11 +166,16 @@ func FlattenKafkaDestination(ctx context.Context, src *datadogV2.ObservabilityPi
 
 	// SASL configuration
 	if sasl, ok := src.GetSaslOk(); ok {
-		out.Sasl = []KafkaSaslModel{
-			{
-				Mechanism: types.StringValue(string(sasl.GetMechanism())),
-			},
+		saslModel := KafkaSaslModel{
+			Mechanism: types.StringValue(string(sasl.GetMechanism())),
 		}
+		if v, ok := sasl.GetUsernameKeyOk(); ok {
+			saslModel.UsernameKey = types.StringValue(*v)
+		}
+		if v, ok := sasl.GetPasswordKeyOk(); ok {
+			saslModel.PasswordKey = types.StringValue(*v)
+		}
+		out.Sasl = []KafkaSaslModel{saslModel}
 	}
 
 	// Librdkafka options
@@ -180,6 +200,10 @@ func KafkaDestinationSchema() schema.ListNestedBlock {
 		Description: "The `kafka` destination sends logs to Apache Kafka topics.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
+				"bootstrap_servers_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the Kafka bootstrap servers.",
+				},
 				"encoding": schema.StringAttribute{
 					Required:    true,
 					Description: "Encoding format for log events.",
@@ -234,6 +258,14 @@ func KafkaDestinationSchema() schema.ListNestedBlock {
 								Validators: []validator.String{
 									stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
 								},
+							},
+							"username_key": schema.StringAttribute{
+								Optional:    true,
+								Description: "Name of the environment variable or secret that holds the SASL username.",
+							},
+							"password_key": schema.StringAttribute{
+								Optional:    true,
+								Description: "Name of the environment variable or secret that holds the SASL password.",
 							},
 						},
 					},
