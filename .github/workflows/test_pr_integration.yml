@@ -45,11 +45,15 @@ jobs:
 
           echo "should_run=true" >> "$GITHUB_OUTPUT"
 
-          ARGS="-run '${RUN_REGEX}'"
+          # Escape $ as $$ so Make's recursive variable expansion doesn't consume
+          # the closing single-quote (e.g. $' → Make eats it → unterminated string).
+          RUN_REGEX_ESCAPED=$(printf '%s' "${RUN_REGEX}" | sed 's/[$]/&&/g')
+          ARGS="-run '${RUN_REGEX_ESCAPED}'"
 
           SKIP_REGEX=$(bash scripts/build-skip-regex.sh)
           if [ -n "$SKIP_REGEX" ]; then
-            ARGS="${ARGS} -skip '${SKIP_REGEX}'"
+            SKIP_REGEX_ESCAPED=$(printf '%s' "${SKIP_REGEX}" | sed 's/[$]/&&/g')
+            ARGS="${ARGS} -skip '${SKIP_REGEX_ESCAPED}'"
           fi
 
           echo "test_args=${ARGS}" >> "$GITHUB_OUTPUT"
