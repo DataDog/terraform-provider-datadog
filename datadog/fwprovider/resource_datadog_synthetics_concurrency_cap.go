@@ -1,5 +1,7 @@
 package fwprovider
 
+// no-op: validate PR-scoped integration test workflow with Python scripts
+
 import (
 	"context"
 	"fmt"
