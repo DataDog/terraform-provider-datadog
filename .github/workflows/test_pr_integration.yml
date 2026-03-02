@@ -35,7 +35,7 @@ jobs:
       - name: Select tests and build args
         id: build-args
         run: |
-          RUN_REGEX=$(bash scripts/select-pr-tests.sh < /tmp/changed_files.txt)
+          RUN_REGEX=$(python3 scripts/select_pr_tests.py --escape-for-make < /tmp/changed_files.txt)
 
           if [ -z "$RUN_REGEX" ]; then
             echo "should_run=false" >> "$GITHUB_OUTPUT"
@@ -45,15 +45,11 @@ jobs:
 
           echo "should_run=true" >> "$GITHUB_OUTPUT"
 
-          # Escape $ as $$ so Make's recursive variable expansion doesn't consume
-          # the closing single-quote (e.g. $' → Make eats it → unterminated string).
-          RUN_REGEX_ESCAPED=$(printf '%s' "${RUN_REGEX}" | sed 's/[$]/&&/g')
-          ARGS="-run '${RUN_REGEX_ESCAPED}'"
+          ARGS="-run '${RUN_REGEX}'"
 
-          SKIP_REGEX=$(bash scripts/build-skip-regex.sh)
+          SKIP_REGEX=$(python3 scripts/build_skip_regex.py --escape-for-make)
           if [ -n "$SKIP_REGEX" ]; then
-            SKIP_REGEX_ESCAPED=$(printf '%s' "${SKIP_REGEX}" | sed 's/[$]/&&/g')
-            ARGS="${ARGS} -skip '${SKIP_REGEX_ESCAPED}'"
+            ARGS="${ARGS} -skip '${SKIP_REGEX}'"
           fi
 
           echo "test_args=${ARGS}" >> "$GITHUB_OUTPUT"
