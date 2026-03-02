@@ -143,6 +143,17 @@ to encourage users to migrate and manage monitor permissions through the `datado
 
 **Note:** Migrating off `restricted_roles` is not required. This field is still supported by the monitor provider. However, we
 strongly recommend migrating to `datadog_restriction_policy` as the preferred way to manage monitor permissions going forward.
+Additionally, this change to `restricted_roles` may cause a one-time diff during a resource update, even if the client does 
+not apply any changes to the monitor.
+```
+# module.datadog_monitor.foo will be updated in-place
+~ resource "datadog_monitor" "foo" {
+      id               = "12345678"
+      name             = "Test monitor"
+    + restricted_roles = (known after apply)
+      # (1 unchanged block hidden)
+  }
+```
 
 **Before (v3.x):**
 
