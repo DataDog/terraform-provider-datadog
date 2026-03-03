@@ -748,8 +748,28 @@ var scalarFormulaRequestConfig = FormulaRequestConfig{
 	IncludeSort:    true,
 }
 
+// conditionalFormatsExtraFields are the request-level extra fields for widgets
+// that support conditional_formats in formula-style requests (query_value, toplist).
+var conditionalFormatsExtraFields = []FieldSpec{
+	{
+		HCLKey:      "conditional_formats",
+		Type:        TypeBlockList,
+		OmitEmpty:   true,
+		Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data.",
+		Children:    widgetConditionalFormatFields,
+	},
+}
+
+var scalarWithConditionalFormatsConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+	ExtraFields:    conditionalFormatsExtraFields,
+}
+
 var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
+	ExtraFields:    queryTableRequestExtraFields,
 }
 
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
@@ -761,6 +781,8 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
+	case "query_value", "toplist":
+		return scalarWithConditionalFormatsConfig
 	default:
 		return scalarFormulaRequestConfig
 	}
@@ -1642,7 +1664,10 @@ func buildQueryTableRequestsJSON(defAttrs map[string]attr.Value) []interface{} {
 		queryCount := len(getListElems(reqAttrs, "query"))
 		if formulaCount > 0 || queryCount > 0 {
 			// Formula/query style request
-			requests = append(requests, buildFormulaRequest(reqAttrs, queryTableFormulaRequestConfig))
+			req := buildFormulaRequest(reqAttrs, queryTableFormulaRequestConfig)
+			// text_formats needs custom handling (it's a 2D array)
+			buildQueryTableTextFormatsJSON(reqAttrs, req)
+			requests = append(requests, req)
 		} else {
 			// Old-style request — build via FieldSpec engine
 			req := BuildEngineJSON(reqAttrs, queryTableOldRequestFields)
@@ -1730,7 +1755,12 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 	_, hasFormulas := req["formulas"]
 	_, hasQueries := req["queries"]
 	if hasFormulas || hasQueries {
-		return flattenFormulaRequest(req, queryTableFormulaRequestConfig)
+		result := flattenFormulaRequest(req, queryTableFormulaRequestConfig)
+		// text_formats (2D array) needs special handling
+		if textFormats, ok := req["text_formats"].([]interface{}); ok && len(textFormats) > 0 {
+			result["text_formats"] = flattenQueryTableTextFormatsJSON(textFormats)
+		}
+		return result
 	}
 	// Old-style request
 	result := FlattenEngineJSON(queryTableOldRequestFields, req)

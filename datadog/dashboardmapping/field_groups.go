@@ -951,20 +951,10 @@ var tableWidgetTextFormatsFields = []FieldSpec{
 		Children:    tableWidgetTextFormatRuleFields},
 }
 
-// queryTableOldRequestFields corresponds to OpenAPI
-// components/schemas/TableWidgetRequest for the old-style (non-formula) requests.
-// Includes: q, apm_query, log_query, rum_query, security_query, apm_stats_query,
-// process_query, conditional_formats, aggregator, alias, limit, order, cell_display_mode.
-// Formula requests are handled via post-processing (buildQueryTableFormulaRequestJSON).
-var queryTableOldRequestFields = []FieldSpec{
-	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Description: "The metric query to use for this widget."},
-	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget. The structure of this block is described below.", Children: processQueryDefinitionFields},
-	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Description: "The APM stats query for table and distribution widgets.", Children: apmStatsQueryFields},
-	// conditional_formats (old-style requests have these at the request level)
+// queryTableRequestExtraFields are request-level fields shared by both old-style
+// and formula-style query_table requests: conditional_formats, limit, order,
+// and cell_display_mode.
+var queryTableRequestExtraFields = []FieldSpec{
 	{
 		HCLKey:      "conditional_formats",
 		Type:        TypeBlockList,
@@ -972,14 +962,6 @@ var queryTableOldRequestFields = []FieldSpec{
 		Description: "Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 		Children:    widgetConditionalFormatFields,
 	},
-	{
-		HCLKey:      "aggregator",
-		Type:        TypeString,
-		OmitEmpty:   true,
-		Description: "The aggregator to use for time aggregation.",
-		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"},
-	},
-	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "The alias for the column name (defaults to metric name)."},
 	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true, Description: "For metric queries, the number of lines to show in the table. Only one request should have this property."},
 	{
 		HCLKey:      "order",
@@ -988,13 +970,36 @@ var queryTableOldRequestFields = []FieldSpec{
 		Description: "The sort order for the rows.",
 		ValidValues: []string{"asc", "desc"},
 	},
-	// cell_display_mode is a []string in old-style requests
 	{
 		HCLKey:      "cell_display_mode",
 		Type:        TypeStringList,
 		OmitEmpty:   true,
 		Description: "A list of display modes for each table cell. Valid values are `number`, `bar`.",
 	},
+}
+
+// queryTableOldRequestFields corresponds to OpenAPI
+// components/schemas/TableWidgetRequest for the old-style (non-formula) requests.
+// Includes: q, apm_query, log_query, rum_query, security_query, apm_stats_query,
+// process_query, aggregator, alias, plus the shared queryTableRequestExtraFields.
+// Formula requests use queryTableRequestExtraFields via FormulaRequestConfig.ExtraFields.
+var queryTableOldRequestFields = append(append([]FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Description: "The metric query to use for this widget."},
+	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget. The structure of this block is described below.", Children: processQueryDefinitionFields},
+	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Description: "The APM stats query for table and distribution widgets.", Children: apmStatsQueryFields},
+	{
+		HCLKey:      "aggregator",
+		Type:        TypeString,
+		OmitEmpty:   true,
+		Description: "The aggregator to use for time aggregation.",
+		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"},
+	},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "The alias for the column name (defaults to metric name)."},
+}, queryTableRequestExtraFields...), []FieldSpec{
 	// text_formats: each element is a list of text_format blocks
 	{HCLKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
 		Description: "Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change.",
@@ -1006,7 +1011,7 @@ var queryTableOldRequestFields = []FieldSpec{
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
 		Description: "A list of formulas to use in the widget.",
 		Children:    widgetFormulaFields},
-}
+}...)
 
 // listStreamColumnFields corresponds to OpenAPI
 // components/schemas/ListStreamColumn.
