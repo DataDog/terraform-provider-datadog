@@ -44,12 +44,12 @@ type secureEmbedViewingPreferences struct {
 }
 
 type secureEmbedAttributes struct {
-	Title                 string                          `json:"title"`
-	Status                string                          `json:"status,omitempty"`
-	GlobalTime            *secureEmbedGlobalTime          `json:"global_time,omitempty"`
-	GlobalTimeSelectable  *bool                           `json:"global_time_selectable,omitempty"`
+	Title                  string                         `json:"title"`
+	Status                 string                         `json:"status,omitempty"`
+	GlobalTime             *secureEmbedGlobalTime         `json:"global_time,omitempty"`
+	GlobalTimeSelectable   *bool                          `json:"global_time_selectable,omitempty"`
 	SelectableTemplateVars []secureEmbedTemplateVar       `json:"selectable_template_vars,omitempty"`
-	ViewingPreferences    *secureEmbedViewingPreferences  `json:"viewing_preferences,omitempty"`
+	ViewingPreferences     *secureEmbedViewingPreferences `json:"viewing_preferences,omitempty"`
 }
 
 type secureEmbedData struct {
@@ -63,20 +63,20 @@ type secureEmbedRequest struct {
 
 // Response types (GET/POST/PATCH return the same shape)
 type secureEmbedResponseAttributes struct {
-	Title                 string                          `json:"title"`
-	Status                string                          `json:"status"`
-	Token                 string                          `json:"token"`
-	URL                   string                          `json:"url"`
-	Credential            string                          `json:"credential,omitempty"` // only in POST response
-	GlobalTime            *secureEmbedGlobalTime          `json:"global_time,omitempty"`
-	GlobalTimeSelectable  bool                            `json:"global_time_selectable"`
+	Title                  string                         `json:"title"`
+	Status                 string                         `json:"status"`
+	Token                  string                         `json:"token"`
+	URL                    string                         `json:"url"`
+	Credential             string                         `json:"credential,omitempty"` // only in POST response
+	GlobalTime             *secureEmbedGlobalTime         `json:"global_time,omitempty"`
+	GlobalTimeSelectable   bool                           `json:"global_time_selectable"`
 	SelectableTemplateVars []secureEmbedTemplateVar       `json:"selectable_template_vars,omitempty"`
-	ViewingPreferences    *secureEmbedViewingPreferences  `json:"viewing_preferences,omitempty"`
+	ViewingPreferences     *secureEmbedViewingPreferences `json:"viewing_preferences,omitempty"`
 }
 
 type secureEmbedResponseData struct {
-	Type       string                         `json:"type"`
-	Attributes secureEmbedResponseAttributes  `json:"attributes"`
+	Type       string                        `json:"type"`
+	Attributes secureEmbedResponseAttributes `json:"attributes"`
 }
 
 type secureEmbedResponse struct {
@@ -94,14 +94,15 @@ type secureEmbedTemplateVarModel struct {
 }
 
 type secureEmbedModel struct {
-	ID                    types.String `tfsdk:"id"`
-	DashboardID           types.String `tfsdk:"dashboard_id"`
-	Title                 types.String `tfsdk:"title"`
-	Status                types.String `tfsdk:"status"`
-	GlobalTimeLiveSpan    types.String `tfsdk:"global_time_live_span"`
-	GlobalTimeSelectable  types.Bool   `tfsdk:"global_time_selectable"`
-	ViewingPrefsTheme     types.String `tfsdk:"viewing_preferences_theme"`
-	ViewingPrefsHighDensity types.Bool `tfsdk:"viewing_preferences_high_density"`
+	ID                      types.String                  `tfsdk:"id"`
+	DashboardID             types.String                  `tfsdk:"dashboard_id"`
+	Title                   types.String                  `tfsdk:"title"`
+	Status                  types.String                  `tfsdk:"status"`
+	GlobalTimeLiveSpan      types.String                  `tfsdk:"global_time_live_span"`
+	GlobalTimeSelectable    types.Bool                    `tfsdk:"global_time_selectable"`
+	SelectableTemplateVars  []secureEmbedTemplateVarModel `tfsdk:"selectable_template_vars"`
+	ViewingPrefsTheme       types.String                  `tfsdk:"viewing_preferences_theme"`
+	ViewingPrefsHighDensity types.Bool                    `tfsdk:"viewing_preferences_high_density"`
 	// Computed
 	Token      types.String `tfsdk:"token"`
 	URL        types.String `tfsdk:"url"`
@@ -198,6 +199,43 @@ func (r *dashboardSecureEmbedResource) Schema(_ context.Context, _ resource.Sche
 				},
 			},
 		},
+		Blocks: map[string]schema.Block{
+			"selectable_template_vars": schema.ListNestedBlock{
+				Description: "Template variables that viewers can filter by.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Required:    true,
+							Description: "The name of the template variable.",
+						},
+						"prefix": schema.StringAttribute{
+							Optional:    true,
+							Computed:    true,
+							Default:     stringdefault.StaticString(""),
+							Description: "The tag prefix for this template variable.",
+						},
+						"type": schema.StringAttribute{
+							Optional:    true,
+							Computed:    true,
+							Default:     stringdefault.StaticString(""),
+							Description: "The type of the template variable.",
+						},
+						"default_values": schema.ListAttribute{
+							Optional:    true,
+							Computed:    true,
+							ElementType: types.StringType,
+							Description: "The default values for this template variable.",
+						},
+						"visible_tags": schema.ListAttribute{
+							Optional:    true,
+							Computed:    true,
+							ElementType: types.StringType,
+							Description: "The visible tag values for this template variable.",
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -209,9 +247,35 @@ func (r *dashboardSecureEmbedResource) apiPathWithToken(dashboardID, token strin
 	return fmt.Sprintf("/api/v2/dashboard/%s/shared/secure-embed/%s", dashboardID, token)
 }
 
+// stringListFromTypes extracts []string from a types.List of strings.
+func stringListFromTypes(l types.List) []string {
+	if l.IsNull() || l.IsUnknown() {
+		return nil
+	}
+	elems := l.Elements()
+	result := make([]string, 0, len(elems))
+	for _, e := range elems {
+		if s, ok := e.(types.String); ok {
+			result = append(result, s.ValueString())
+		}
+	}
+	return result
+}
+
 func (r *dashboardSecureEmbedResource) buildRequest(plan secureEmbedModel, reqType string) secureEmbedRequest {
 	globalTimeSelectable := plan.GlobalTimeSelectable.ValueBool()
 	highDensity := plan.ViewingPrefsHighDensity.ValueBool()
+
+	var templateVars []secureEmbedTemplateVar
+	for _, tv := range plan.SelectableTemplateVars {
+		templateVars = append(templateVars, secureEmbedTemplateVar{
+			Name:          tv.Name.ValueString(),
+			Prefix:        tv.Prefix.ValueString(),
+			Type:          tv.Type.ValueString(),
+			DefaultValues: stringListFromTypes(tv.DefaultValues),
+			VisibleTags:   stringListFromTypes(tv.VisibleTags),
+		})
+	}
 
 	return secureEmbedRequest{
 		Data: secureEmbedData{
@@ -222,7 +286,8 @@ func (r *dashboardSecureEmbedResource) buildRequest(plan secureEmbedModel, reqTy
 				GlobalTime: &secureEmbedGlobalTime{
 					LiveSpan: plan.GlobalTimeLiveSpan.ValueString(),
 				},
-				GlobalTimeSelectable: &globalTimeSelectable,
+				GlobalTimeSelectable:   &globalTimeSelectable,
+				SelectableTemplateVars: templateVars,
 				ViewingPreferences: &secureEmbedViewingPreferences{
 					Theme:       plan.ViewingPrefsTheme.ValueString(),
 					HighDensity: highDensity,
@@ -232,7 +297,7 @@ func (r *dashboardSecureEmbedResource) buildRequest(plan secureEmbedModel, reqTy
 	}
 }
 
-func (r *dashboardSecureEmbedResource) updateModelFromResponse(model *secureEmbedModel, resp secureEmbedResponse) {
+func (r *dashboardSecureEmbedResource) updateModelFromResponse(ctx context.Context, model *secureEmbedModel, resp secureEmbedResponse) {
 	attr := resp.Data.Attributes
 	model.Token = types.StringValue(attr.Token)
 	model.URL = types.StringValue(attr.URL)
@@ -246,6 +311,21 @@ func (r *dashboardSecureEmbedResource) updateModelFromResponse(model *secureEmbe
 		model.ViewingPrefsTheme = types.StringValue(attr.ViewingPreferences.Theme)
 		model.ViewingPrefsHighDensity = types.BoolValue(attr.ViewingPreferences.HighDensity)
 	}
+
+	tvModels := make([]secureEmbedTemplateVarModel, 0, len(attr.SelectableTemplateVars))
+	for _, tv := range attr.SelectableTemplateVars {
+		defaultValues, _ := types.ListValueFrom(ctx, types.StringType, tv.DefaultValues)
+		visibleTags, _ := types.ListValueFrom(ctx, types.StringType, tv.VisibleTags)
+		tvModels = append(tvModels, secureEmbedTemplateVarModel{
+			Name:          types.StringValue(tv.Name),
+			Prefix:        types.StringValue(tv.Prefix),
+			Type:          types.StringValue(tv.Type),
+			DefaultValues: defaultValues,
+			VisibleTags:   visibleTags,
+		})
+	}
+	model.SelectableTemplateVars = tvModels
+
 	// Only set credential if present (POST response only)
 	if attr.Credential != "" {
 		model.Credential = types.StringValue(attr.Credential)
@@ -275,7 +355,7 @@ func (r *dashboardSecureEmbedResource) Create(ctx context.Context, req resource.
 		return
 	}
 
-	r.updateModelFromResponse(&plan, apiResp)
+	r.updateModelFromResponse(ctx, &plan, apiResp)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
@@ -303,7 +383,7 @@ func (r *dashboardSecureEmbedResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	r.updateModelFromResponse(&state, apiResp)
+	r.updateModelFromResponse(ctx, &state, apiResp)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -337,7 +417,7 @@ func (r *dashboardSecureEmbedResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	r.updateModelFromResponse(&plan, apiResp)
+	r.updateModelFromResponse(ctx, &plan, apiResp)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
