@@ -215,6 +215,7 @@ func Provider() *schema.Provider {
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
+			"datadog_dashboard_v2_sdk2":                    resourceDatadogDashboardV2SDK2(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
