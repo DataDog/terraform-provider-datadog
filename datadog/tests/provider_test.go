@@ -186,6 +186,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_sort_test":                              "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_display_test":                           "dashboards",
+	"tests/resource_datadog_dashboard_v2_query_value_conditional_formats_test":           "dashboards",
+	"tests/resource_datadog_dashboard_v2_timeseries_legend_columns_test":                 "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
 	"tests/resource_datadog_datastore_test":                                              "datastores",
 	"tests/resource_datadog_datastore_item_test":                                         "datastores",
