@@ -85,7 +85,7 @@ func TestAccDatadogObservabilityPipeline_secretKeyFields(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.secret_keys"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
