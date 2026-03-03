@@ -300,6 +300,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -347,6 +348,10 @@ Optional:
 <a id="nestedblock--config--destination--cloud_prem"></a>
 ### Nested Schema for `config.destination.cloud_prem`
 
+Optional:
+
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
+
 
 <a id="nestedblock--config--destination--crowdstrike_next_gen_siem"></a>
 ### Nested Schema for `config.destination.crowdstrike_next_gen_siem`
@@ -359,7 +364,9 @@ Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--buffer))
 - `compression` (Block List) Compression configuration for log events. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--compression))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the authentication token.
 
 <a id="nestedblock--config--destination--crowdstrike_next_gen_siem--buffer"></a>
 ### Nested Schema for `config.destination.crowdstrike_next_gen_siem.buffer`
@@ -412,6 +419,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -505,9 +513,24 @@ Optional:
 Optional:
 
 - `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect.
+- `auth` (Block List) Authentication settings for the Elasticsearch destination. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to in Elasticsearch.
 - `data_stream` (Block List) Configuration options for writing to Elasticsearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--data_stream))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Elasticsearch endpoint URL.
+
+<a id="nestedblock--config--destination--elasticsearch--auth"></a>
+### Nested Schema for `config.destination.elasticsearch.auth`
+
+Required:
+
+- `strategy` (String) The authentication strategy. Use `basic` for username/password. Valid values are `basic`, `aws`.
+
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the Elasticsearch password (used when strategy is `basic`).
+- `username_key` (String) Name of the environment variable or secret that holds the Elasticsearch username (used when strategy is `basic`).
+
 
 <a id="nestedblock--config--destination--elasticsearch--buffer"></a>
 ### Nested Schema for `config.destination.elasticsearch.buffer`
@@ -559,7 +582,7 @@ Required:
 Optional:
 
 - `acl` (String) Access control list setting for objects written to the bucket.
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--buffer))
 - `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
 - `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage--metadata))
@@ -569,7 +592,7 @@ Optional:
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--destination--google_cloud_storage--buffer"></a>
@@ -616,13 +639,14 @@ Required:
 Required:
 
 - `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
-- `project` (String) The GCP project ID that owns the Pub/Sub topic.
+- `project` (String) The Google Cloud project ID that owns the Pub/Sub topic.
 - `topic` (String) The Pub/Sub topic name to publish logs to.
 
 Optional:
 
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--buffer))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Google Cloud Pub/Sub endpoint URL.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--google_pubsub--tls))
 
 <a id="nestedblock--config--destination--google_pubsub--auth"></a>
@@ -630,7 +654,7 @@ Optional:
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--destination--google_pubsub--buffer"></a>
@@ -672,6 +696,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -686,15 +711,16 @@ Required:
 
 Optional:
 
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_secops--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--destination--google_secops--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--google_secops--buffer))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Google Chronicle endpoint URL.
 
 <a id="nestedblock--config--destination--google_secops--auth"></a>
 ### Nested Schema for `config.destination.google_secops.auth`
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--destination--google_secops--buffer"></a>
@@ -737,7 +763,11 @@ Optional:
 
 - `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`.
 - `compression` (Block List) Compression configuration for HTTP requests. (see [below for nested schema](#nestedblock--config--destination--http_client--compression))
+- `password_key` (String) Name of the environment variable or secret that holds the password.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the authentication token.
+- `uri_key` (String) Name of the environment variable or secret that holds the request URI.
+- `username_key` (String) Name of the environment variable or secret that holds the username.
 
 <a id="nestedblock--config--destination--http_client--compression"></a>
 ### Nested Schema for `config.destination.http_client.compression`
@@ -758,6 +788,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -771,6 +802,7 @@ Required:
 
 Optional:
 
+- `bootstrap_servers_key` (String) Name of the environment variable or secret that holds the Kafka bootstrap servers.
 - `compression` (String) Compression codec for Kafka messages. Valid values are `none`, `gzip`, `snappy`, `lz4`, `zstd`.
 - `headers_key` (String) The field name to use for Kafka message headers.
 - `key_field` (String) The field name to use as the Kafka message key.
@@ -798,6 +830,11 @@ Required:
 
 - `mechanism` (String) SASL authentication mechanism. Valid values are `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.
 
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the SASL password.
+- `username_key` (String) Name of the environment variable or secret that holds the SASL username.
+
 
 <a id="nestedblock--config--destination--kafka--tls"></a>
 ### Nested Schema for `config.destination.kafka.tls`
@@ -810,6 +847,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -826,6 +864,8 @@ Required:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--microsoft_sentinel--buffer))
+- `client_secret_key` (String) Name of the environment variable or secret that holds the Azure AD client secret.
+- `dce_uri_key` (String) Name of the environment variable or secret that holds the Data Collection Endpoint (DCE) URI.
 
 <a id="nestedblock--config--destination--microsoft_sentinel--buffer"></a>
 ### Nested Schema for `config.destination.microsoft_sentinel.buffer`
@@ -865,7 +905,9 @@ Required:
 
 Optional:
 
+- `account_id_key` (String) Name of the environment variable or secret that holds the New Relic account ID.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--new_relic--buffer))
+- `license_key_key` (String) Name of the environment variable or secret that holds the New Relic license key.
 
 <a id="nestedblock--config--destination--new_relic--buffer"></a>
 ### Nested Schema for `config.destination.new_relic.buffer`
@@ -950,6 +992,7 @@ Optional:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--rsyslog--buffer))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the rsyslog endpoint URL.
 - `keepalive` (Number) Optional socket keepalive duration in milliseconds.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--rsyslog--tls))
 
@@ -992,6 +1035,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -1005,6 +1049,7 @@ Required:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--sentinel_one--buffer))
+- `token_key` (String) Name of the environment variable or secret that holds the SentinelOne API token.
 
 <a id="nestedblock--config--destination--sentinel_one--buffer"></a>
 ### Nested Schema for `config.destination.sentinel_one.buffer`
@@ -1045,6 +1090,7 @@ Required:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the socket address (host:port).
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--socket--buffer))
 - `framing` (Block List) Defines the framing method for outgoing messages. (see [below for nested schema](#nestedblock--config--destination--socket--framing))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--socket--tls))
@@ -1108,6 +1154,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -1122,8 +1169,10 @@ Optional:
 
 - `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Splunk HEC endpoint URL.
 - `index` (String) Optional name of the Splunk index where logs are written.
 - `sourcetype` (String) The Splunk sourcetype to assign to log events.
+- `token_key` (String) Name of the environment variable or secret that holds the Splunk HEC token.
 
 <a id="nestedblock--config--destination--splunk_hec--buffer"></a>
 ### Nested Schema for `config.destination.splunk_hec.buffer`
@@ -1161,6 +1210,7 @@ Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--sumo_logic--buffer))
 - `encoding` (String) The output encoding format.
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Sumo Logic endpoint URL.
 - `header_custom_field` (Block List) A list of custom headers to include in the request to Sumo Logic. (see [below for nested schema](#nestedblock--config--destination--sumo_logic--header_custom_field))
 - `header_host_name` (String) Optional override for the host name header.
 - `header_source_category` (String) Optional override for the source category header.
@@ -1210,6 +1260,7 @@ Optional:
 Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--buffer))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the syslog-ng endpoint URL.
 - `keepalive` (Number) Optional socket keepalive duration in milliseconds.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--tls))
 
@@ -1252,6 +1303,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -1449,6 +1501,7 @@ Required:
 
 Optional:
 
+- `app_key_key` (String) Name of the environment variable or secret that holds the Datadog application key for the reference table.
 - `columns` (List of String) List of column names to include from the reference table. If not provided, all columns are included.
 
 
@@ -1938,7 +1991,7 @@ Optional:
 - `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption. (see [below for nested schema](#nestedblock--config--source--amazon_s3))
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--source--datadog_agent))
 - `fluent_bit` (Block List) The `fluent_bit` source ingests logs from Fluent Bit. (see [below for nested schema](#nestedblock--config--source--fluent_bit))
-- `fluentd` (Block List) The `fluentd source ingests logs from a Fluentd-compatible service. (see [below for nested schema](#nestedblock--config--source--fluentd))
+- `fluentd` (Block List) The `fluentd` source ingests logs from a Fluentd-compatible service. (see [below for nested schema](#nestedblock--config--source--fluentd))
 - `google_pubsub` (Block List) The `google_pubsub` source ingests logs from a Google Cloud Pub/Sub subscription. (see [below for nested schema](#nestedblock--config--source--google_pubsub))
 - `http_client` (Block List) The `http_client` source scrapes logs from HTTP endpoints at regular intervals. (see [below for nested schema](#nestedblock--config--source--http_client))
 - `http_server` (Block List) The `http_server` source collects logs over HTTP POST from external services. (see [below for nested schema](#nestedblock--config--source--http_server))
@@ -1957,6 +2010,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--source--amazon_data_firehose--auth))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--amazon_data_firehose--tls))
 
@@ -1981,6 +2035,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -1995,6 +2050,7 @@ Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--source--amazon_s3--auth))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--amazon_s3--tls))
+- `url_key` (String) Name of the environment variable or secret that holds the S3 bucket URL.
 
 <a id="nestedblock--config--source--amazon_s3--auth"></a>
 ### Nested Schema for `config.source.amazon_s3.auth`
@@ -2017,6 +2073,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2038,6 +2095,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2046,6 +2104,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--fluent_bit--tls))
 
 <a id="nestedblock--config--source--fluent_bit--tls"></a>
@@ -2059,6 +2118,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2067,6 +2127,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--fluentd--tls))
 
 <a id="nestedblock--config--source--fluentd--tls"></a>
@@ -2080,6 +2141,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2089,12 +2151,12 @@ Optional:
 Required:
 
 - `decoding` (String) The decoding format used to interpret incoming logs.
-- `project` (String) The GCP project ID that owns the Pub/Sub subscription.
+- `project` (String) The Google Cloud project ID that owns the Pub/Sub subscription.
 - `subscription` (String) The Pub/Sub subscription name from which messages are consumed.
 
 Optional:
 
-- `auth` (Block List) GCP credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--source--google_pubsub--auth))
+- `auth` (Block List) Google Cloud credentials used to authenticate with Google Cloud services. (see [below for nested schema](#nestedblock--config--source--google_pubsub--auth))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--google_pubsub--tls))
 
 <a id="nestedblock--config--source--google_pubsub--auth"></a>
@@ -2102,7 +2164,7 @@ Optional:
 
 Required:
 
-- `credentials_file` (String) Path to the GCP service account key file.
+- `credentials_file` (String) Path to the Google Cloud service account key file.
 
 
 <a id="nestedblock--config--source--google_pubsub--tls"></a>
@@ -2116,6 +2178,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2129,9 +2192,14 @@ Required:
 Optional:
 
 - `auth_strategy` (String) Optional authentication strategy for HTTP requests. Valid values are `none`, `basic`, `bearer`, `custom`.
+- `custom_key` (String) Name of the environment variable or secret that holds a custom header value (used with custom auth strategies).
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the HTTP endpoint URL.
+- `password_key` (String) Name of the environment variable or secret that holds the password.
 - `scrape_interval_secs` (Number) The interval (in seconds) between HTTP scrape requests.
 - `scrape_timeout_secs` (Number) The timeout (in seconds) for each scrape request.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_client--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the authentication token.
+- `username_key` (String) Name of the environment variable or secret that holds the username.
 
 <a id="nestedblock--config--source--http_client--tls"></a>
 ### Nested Schema for `config.source.http_client.tls`
@@ -2144,6 +2212,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2157,7 +2226,10 @@ Required:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
+- `password_key` (String) Name of the environment variable or secret that holds the password.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
+- `username_key` (String) Name of the environment variable or secret that holds the username.
 
 <a id="nestedblock--config--source--http_server--tls"></a>
 ### Nested Schema for `config.source.http_server.tls`
@@ -2170,6 +2242,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2183,6 +2256,7 @@ Required:
 
 Optional:
 
+- `bootstrap_servers_key` (String) Name of the environment variable or secret that holds the Kafka bootstrap servers connection string.
 - `librdkafka_option` (Block List) Advanced librdkafka client configuration options. (see [below for nested schema](#nestedblock--config--source--kafka--librdkafka_option))
 - `sasl` (Block List) SASL authentication settings. (see [below for nested schema](#nestedblock--config--source--kafka--sasl))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--kafka--tls))
@@ -2203,6 +2277,11 @@ Required:
 
 - `mechanism` (String) SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512). Valid values are `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.
 
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the SASL password.
+- `username_key` (String) Name of the environment variable or secret that holds the SASL username.
+
 
 <a id="nestedblock--config--source--kafka--tls"></a>
 ### Nested Schema for `config.source.kafka.tls`
@@ -2215,6 +2294,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2223,6 +2303,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--logstash--tls))
 
 <a id="nestedblock--config--source--logstash--tls"></a>
@@ -2236,6 +2317,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2244,6 +2326,8 @@ Optional:
 
 Optional:
 
+- `grpc_address_key` (String) Environment variable name containing the gRPC server address for receiving OTLP data.
+- `http_address_key` (String) Environment variable name containing the HTTP server address for receiving OTLP data.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
 
 <a id="nestedblock--config--source--opentelemetry--tls"></a>
@@ -2257,6 +2341,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2265,6 +2350,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `mode` (String) Protocol used by the syslog source to receive messages.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--rsyslog--tls))
 
@@ -2279,6 +2365,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2291,6 +2378,7 @@ Required:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the socket.
 - `framing` (Block List) Defines the framing method for incoming messages. (see [below for nested schema](#nestedblock--config--source--socket--framing))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--socket--tls))
 
@@ -2325,6 +2413,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2333,6 +2422,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>
@@ -2346,6 +2436,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2354,6 +2445,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
 
 <a id="nestedblock--config--source--splunk_tcp--tls"></a>
@@ -2367,11 +2459,16 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
 <a id="nestedblock--config--source--sumo_logic"></a>
 ### Nested Schema for `config.source.sumo_logic`
+
+Optional:
+
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
 
 
 <a id="nestedblock--config--source--syslog_ng"></a>
@@ -2379,6 +2476,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `mode` (String) Protocol used by the syslog source to receive messages.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--syslog_ng--tls))
 
@@ -2393,6 +2491,7 @@ Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 ## Import
 

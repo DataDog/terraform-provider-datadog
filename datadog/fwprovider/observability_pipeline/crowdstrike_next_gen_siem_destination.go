@@ -12,10 +12,12 @@ import (
 
 // CrowdStrikeNextGenSiemDestinationModel represents the Terraform model for the CrowdStrikeNextGenSiemDestination
 type CrowdStrikeNextGenSiemDestinationModel struct {
-	Encoding    types.String         `tfsdk:"encoding"`
-	Compression []compressionModel   `tfsdk:"compression"`
-	Tls         []TlsModel           `tfsdk:"tls"`
-	Buffer      []BufferOptionsModel `tfsdk:"buffer"`
+	EndpointUrlKey types.String         `tfsdk:"endpoint_url_key"`
+	TokenKey       types.String         `tfsdk:"token_key"`
+	Encoding       types.String         `tfsdk:"encoding"`
+	Compression    []compressionModel   `tfsdk:"compression"`
+	Tls            []TlsModel           `tfsdk:"tls"`
+	Buffer         []BufferOptionsModel `tfsdk:"buffer"`
 }
 
 // CrowdStrikeNextGenSiemDestinationSchema returns the schema for the CrowdStrikeNextGenSiemDestination
@@ -24,6 +26,14 @@ func CrowdStrikeNextGenSiemDestinationSchema() schema.ListNestedBlock {
 		Description: "The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
+				"endpoint_url_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the endpoint URL.",
+				},
+				"token_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the authentication token.",
+				},
 				"encoding": schema.StringAttribute{
 					Required:    true,
 					Description: "Encoding format for log events.",
@@ -51,6 +61,12 @@ func ExpandCrowdStrikeNextGenSiemDestination(ctx context.Context, id string, inp
 	dest.SetInputs(inputsList)
 
 	dest.SetEncoding(datadogV2.ObservabilityPipelineCrowdStrikeNextGenSiemDestinationEncoding(src.Encoding.ValueString()))
+	if !src.EndpointUrlKey.IsNull() {
+		dest.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
+	}
+	if !src.TokenKey.IsNull() {
+		dest.SetTokenKey(src.TokenKey.ValueString())
+	}
 
 	// Handle compression configuration
 	if len(src.Compression) > 0 {
@@ -80,6 +96,12 @@ func FlattenCrowdStrikeNextGenSiemDestination(ctx context.Context, src *datadogV
 
 	out := &CrowdStrikeNextGenSiemDestinationModel{
 		Encoding: types.StringValue(string(src.GetEncoding())),
+	}
+	if v, ok := src.GetEndpointUrlKeyOk(); ok {
+		out.EndpointUrlKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetTokenKeyOk(); ok {
+		out.TokenKey = types.StringValue(*v)
 	}
 
 	if src.Tls != nil {

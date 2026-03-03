@@ -12,9 +12,10 @@ import (
 
 // SocketSourceModel represents the Terraform model for socket source configuration
 type SocketSourceModel struct {
-	Mode    types.String         `tfsdk:"mode"`
-	Framing []SocketFramingModel `tfsdk:"framing"`
-	Tls     []TlsModel           `tfsdk:"tls"`
+	AddressKey types.String         `tfsdk:"address_key"`
+	Mode       types.String         `tfsdk:"mode"`
+	Framing    []SocketFramingModel `tfsdk:"framing"`
+	Tls        []TlsModel           `tfsdk:"tls"`
 }
 
 // ExpandSocketSource converts the Terraform model to the Datadog API model
@@ -22,6 +23,9 @@ func ExpandSocketSource(src *SocketSourceModel, id string) (datadogV2.Observabil
 	var diags diag.Diagnostics
 	s := datadogV2.NewObservabilityPipelineSocketSourceWithDefaults()
 	s.SetId(id)
+	if !src.AddressKey.IsNull() {
+		s.SetAddressKey(src.AddressKey.ValueString())
+	}
 	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
 
 	switch src.Framing[0].Method.ValueString() {
@@ -77,6 +81,9 @@ func FlattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *Sock
 	out := &SocketSourceModel{
 		Mode: types.StringValue(string(src.GetMode())),
 	}
+	if v, ok := src.GetAddressKeyOk(); ok {
+		out.AddressKey = types.StringValue(*v)
+	}
 
 	if src.Tls != nil {
 		out.Tls = FlattenTls(src.Tls)
@@ -109,6 +116,10 @@ func SocketSourceSchema() schema.ListNestedBlock {
 		Description: "The `socket` source ingests logs over TCP or UDP.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
+				"address_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the listen address for the socket.",
+				},
 				"mode": schema.StringAttribute{
 					Required:    true,
 					Description: "The protocol used to receive logs.",

@@ -1,31 +1,64 @@
-name: Run Integration Tests
+name: PR Integration Tests
 
 permissions:
   contents: read
 
 on: # yamllint disable-line rule:truthy
   pull_request:
-    types:
-      - labeled
-      - unlabeled
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-  schedule:
-    - cron: "0 */12 * * *"
+    branches: [master, 4.x]
+    types: [opened, synchronize, reopened]
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}-test-integration
+  group: ${{ github.head_ref || github.run_id }}-pr-integration
   cancel-in-progress: true
 
 env:
   TERRAFORM_VERSION: "1.13.1"
 
 jobs:
-  integration_tests:
+  determine-tests:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
+    outputs:
+      test_args: ${{ steps.build-args.outputs.test_args }}
+      should_run: ${{ steps.build-args.outputs.should_run }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          fetch-depth: 0
+      - name: Get changed files
+        id: changed
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > /tmp/changed_files.txt
+          echo "Changed files:"
+          cat /tmp/changed_files.txt
+      - name: Select tests and build args
+        id: build-args
+        run: |
+          RUN_REGEX=$(python3 scripts/select_pr_tests.py --escape-for-make < /tmp/changed_files.txt)
+
+          if [ -z "$RUN_REGEX" ]; then
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "No resource/datasource changes detected, skipping integration tests"
+            exit 0
+          fi
+
+          echo "should_run=true" >> "$GITHUB_OUTPUT"
+
+          ARGS="-run '${RUN_REGEX}'"
+
+          SKIP_REGEX=$(python3 scripts/build_skip_regex.py --escape-for-make)
+          if [ -n "$SKIP_REGEX" ]; then
+            ARGS="${ARGS} -skip '${SKIP_REGEX}'"
+          fi
+
+          echo "test_args=${ARGS}" >> "$GITHUB_OUTPUT"
+          echo "Test args: ${ARGS}"
+
+  integration-tests:
+    needs: determine-tests
+    if: needs.determine-tests.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
     steps:
       - name: Start the Datadog Agent locally
         uses: datadog/agent-github-action@8240b406d73cb84cd5085a3919a78f59c258da3a
@@ -54,18 +87,7 @@ jobs:
         env:
           DD_TEST_CLIENT_API_KEY: ${{ secrets.DD_CLIENT_API_KEY }}
           DD_TEST_CLIENT_APP_KEY: ${{ secrets.DD_CLIENT_APP_KEY }}
-      - name: Build skip list for label-triggered runs
-        id: skip-list
-        if: github.event_name == 'pull_request'
-        run: |
-          SKIP_REGEX=$(bash scripts/build-skip-regex.sh)
-          if [ -n "$SKIP_REGEX" ]; then
-            echo "test_args=-skip '${SKIP_REGEX}'" >> "$GITHUB_OUTPUT"
-            echo "Skipping flaky tests: ${SKIP_REGEX}"
-          else
-            echo "test_args=" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Run integration tests
+      - name: Run selected integration tests
         run: make testacc
         env:
           RECORD: "none"
@@ -81,4 +103,4 @@ jobs:
           DD_TAGS: "team:integrations-tools-and-libraries"
           TF_ACC_TERRAFORM_PATH: "/home/runner/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"
-          TESTARGS: ${{ steps.skip-list.outputs.test_args }}
+          TESTARGS: ${{ needs.determine-tests.outputs.test_args }}
