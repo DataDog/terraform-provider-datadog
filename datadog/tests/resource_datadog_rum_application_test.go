@@ -20,7 +20,7 @@ func TestAccDatadogRUMApplication_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRUMApplicationDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -56,7 +56,7 @@ func TestAccDatadogRUMApplication_ProductScales(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRUMApplicationDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
