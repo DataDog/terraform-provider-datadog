@@ -1,3 +1,17 @@
+## 3.91.0 (March 4, 2026)
+
+### BUGFIXES
+* [datadog_monitor_json] add with_restriction_policy to the request by @darnellshumpert in https://github.com/DataDog/terraform-provider-datadog/pull/3541
+### FEATURES
+* [datadog_observability_pipeline] Adding support for OCSF Mapper custom rules in oberservability pipelines provider by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3528
+* [datadog_security_monitoring_rule] Add instantaneous_baseline to anomaly detection by @hachem-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3534
+* [datadog_observability_pipeline] Adding Observability Pipelines secret management support by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3545
+
+## New Contributors
+* @darnellshumpert made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3541
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.90.0...v3.91.0
+
 ## 3.90.0 (February 24, 2026)
 
 ### BUGFIXES
