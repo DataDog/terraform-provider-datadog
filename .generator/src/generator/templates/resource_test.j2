@@ -27,7 +27,7 @@ func TestAcc{{ name|camel_case }}Basic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:      		  testAccCheckDatadog{{ name|camel_case }}Destroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

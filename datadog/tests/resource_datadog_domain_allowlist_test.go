@@ -23,7 +23,7 @@ func TestAccDatadogDomainAllowlist_CreateUpdate(t *testing.T) {
 	// The endpoint has a zonal cache with a ttl of 2 second
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDomainAllowlistDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

@@ -3,6 +3,7 @@
 
 # Add here the files to be excluded from the doc generation
 exclude_files=(
+  "docs/guides/v4-upgrade-guide.md"
   "docs/resources/integration_aws_account.md"
   "docs/resources/compliance_custom_framework.md"
   "docs/resources/on_call_schedule.md"

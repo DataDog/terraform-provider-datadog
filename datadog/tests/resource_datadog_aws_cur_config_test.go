@@ -19,7 +19,7 @@ func TestAccAwsCurConfigBasic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAwsCurConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -68,7 +68,7 @@ func TestAccAwsCurConfigWithAccountFilters(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAwsCurConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -107,7 +107,7 @@ func TestAccAwsCurConfigImport(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAwsCurConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
