@@ -21,7 +21,7 @@ func TestAccRestrictionPolicyBasic(t *testing.T) {
 	resourceType := "security-rule"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRestrictionPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -41,7 +41,7 @@ func TestAccRestrictionPolicyUpdate(t *testing.T) {
 	resourceType := "security-rule"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRestrictionPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -73,7 +73,7 @@ func TestAccRestrictionPolicyInvalidInput(t *testing.T) {
 	invalidPrincipalError, _ := regexp.Compile("PrincipalTypeInvalidForRelation")
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRestrictionPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

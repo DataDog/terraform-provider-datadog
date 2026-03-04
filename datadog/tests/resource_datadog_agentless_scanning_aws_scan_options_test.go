@@ -20,7 +20,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -45,7 +45,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID(t *testing.T
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -63,7 +63,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -95,7 +95,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

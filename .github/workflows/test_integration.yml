@@ -54,6 +54,17 @@ jobs:
         env:
           DD_TEST_CLIENT_API_KEY: ${{ secrets.DD_CLIENT_API_KEY }}
           DD_TEST_CLIENT_APP_KEY: ${{ secrets.DD_CLIENT_APP_KEY }}
+      - name: Build skip list for label-triggered runs
+        id: skip-list
+        if: github.event_name == 'pull_request'
+        run: |
+          SKIP_REGEX=$(bash scripts/build-skip-regex.sh)
+          if [ -n "$SKIP_REGEX" ]; then
+            echo "test_args=-skip '${SKIP_REGEX}'" >> "$GITHUB_OUTPUT"
+            echo "Skipping flaky tests: ${SKIP_REGEX}"
+          else
+            echo "test_args=" >> "$GITHUB_OUTPUT"
+          fi
       - name: Run integration tests
         run: make testacc
         env:
@@ -70,3 +81,4 @@ jobs:
           DD_TAGS: "team:integrations-tools-and-libraries"
           TF_ACC_TERRAFORM_PATH: "/home/runner/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"
+          TESTARGS: ${{ steps.skip-list.outputs.test_args }}

@@ -21,7 +21,7 @@ func TestAccCloudInventorySyncConfigBasic(t *testing.T) {
 	_ = uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCloudInventorySyncConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

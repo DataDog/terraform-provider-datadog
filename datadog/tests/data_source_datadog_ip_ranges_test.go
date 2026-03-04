@@ -13,7 +13,7 @@ func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	nonZeroRe := regexp.MustCompile(`[1-9]+`)
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `

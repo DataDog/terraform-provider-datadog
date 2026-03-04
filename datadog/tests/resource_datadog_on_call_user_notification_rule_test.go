@@ -39,7 +39,7 @@ func TestOnCallUserEmailNotificationRule(t *testing.T) {
 	).Replace(OnCallUserEmailNotificationRuleTest)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOnCallUserNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -75,7 +75,7 @@ func TestOnCallUserPhoneNotificationRule(t *testing.T) {
 	).Replace(OnCallUserPhoneNotificationRuleTest)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOnCallUserNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

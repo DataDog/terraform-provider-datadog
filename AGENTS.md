@@ -62,5 +62,5 @@ Some docs are manually maintained and excluded from auto generation. Check `scri
 
 ## PR Labels
 
-- Changelog: `improvement`, `feature`, `bugfix`, `note`, or `no-changelog`
+- Changelog: `changelog/improvement`, `changelog/feature`, `changelog/bugfix`, `changelog/note`, `changelog/documentation` or `changelog/no-changelog`
 - Title prefix: `[datadog_resource_name] Description`
