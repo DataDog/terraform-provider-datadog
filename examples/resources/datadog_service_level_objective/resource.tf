@@ -36,8 +36,8 @@ resource "datadog_service_level_objective" "metric_count_spec_slo" {
   description = "My custom metric count spec SLO"
   sli_specification {
     count {
-      good_events_formula  = "query1"
-      bad_events_formula = "query2"
+      good_events_formula = "query1"
+      bad_events_formula  = "query2"
 
       queries {
         metric_query {
