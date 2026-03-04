@@ -801,10 +801,10 @@ func buildTerraformCountSpecification(countSpec *datadogV1.SLOCountSpec) []map[s
 		"queries":             rawQueries,
 	}
 
-	if totalFormula, ok := countDef.GetTotalEventsFormulaOk(); ok && totalFormula.GetFormula() != "" {
-		result["total_events_formula"] = totalFormula.GetFormula()
-	} else if badFormula, ok := countDef.GetBadEventsFormulaOk(); ok && badFormula.GetFormula() != "" {
+	if badFormula, ok := countDef.GetBadEventsFormulaOk(); ok && badFormula.GetFormula() != "" {
 		result["bad_events_formula"] = badFormula.GetFormula()
+	} else if totalFormula, ok := countDef.GetTotalEventsFormulaOk(); ok && totalFormula.GetFormula() != "" {
+		result["total_events_formula"] = totalFormula.GetFormula()
 	}
 
 	return []map[string]interface{}{result}

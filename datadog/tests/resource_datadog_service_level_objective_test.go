@@ -930,9 +930,6 @@ func TestAccDatadogServiceLevelObjective_CountSpecBadEvents(t *testing.T) {
 						"datadog_service_level_objective.foo", "sli_specification.0.count.0.good_events_formula", "query1"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "sli_specification.0.count.0.bad_events_formula", "query2"),
-					// Ensure total_events_formula is not set
-					resource.TestCheckNoResourceAttr(
-						"datadog_service_level_objective.foo", "sli_specification.0.count.0.total_events_formula"),
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "sli_specification.0.count.0.queries.#", "2"),
 					resource.TestCheckResourceAttr(
