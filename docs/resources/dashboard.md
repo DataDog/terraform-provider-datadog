@@ -1240,6 +1240,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -1275,6 +1276,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -2208,6 +2235,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -2243,6 +2271,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.geomap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--geomap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.geomap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -2854,6 +2908,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -2889,6 +2944,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -3822,6 +3903,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -3857,6 +3939,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -4387,6 +4495,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -4422,6 +4531,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -5907,6 +6042,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -5942,6 +6078,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -6646,6 +6808,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -6681,6 +6844,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -7085,6 +7274,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -7120,6 +7310,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -8282,6 +8498,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -8317,6 +8534,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -8817,6 +9060,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -8852,6 +9096,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -9434,6 +9704,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -9469,6 +9740,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -10173,6 +10470,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -10208,6 +10506,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -10574,6 +10898,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -10609,6 +10934,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -11797,6 +12148,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -11832,6 +12184,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -12587,6 +12965,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -12622,6 +13001,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -13312,6 +13717,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -13347,6 +13753,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -13789,6 +14221,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -13824,6 +14257,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -14484,6 +14943,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -14519,6 +14979,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -15274,6 +15760,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -15309,6 +15796,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -15999,6 +16512,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -16034,6 +16548,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -16544,6 +17084,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -16579,6 +17120,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -17053,6 +17620,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -17088,6 +17656,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--heatmap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.heatmap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--heatmap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.heatmap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -18573,6 +19167,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -18608,6 +19203,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--query_table_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.query_table_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--query_table_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.query_table_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -19312,6 +19933,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -19347,6 +19969,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.query_value_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--query_value_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.query_value_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -19751,6 +20399,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -19786,6 +20435,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -20948,6 +21623,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -20983,6 +21659,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -21483,6 +22185,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -21518,6 +22221,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -22100,6 +22829,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -22135,6 +22865,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -22839,6 +23595,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -22874,6 +23631,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -23240,6 +24023,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -23275,6 +24059,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -24463,6 +25273,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -24498,6 +25309,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -25253,6 +26090,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -25288,6 +26126,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -25978,6 +26842,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -26013,6 +26878,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -26455,6 +27346,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -26490,6 +27382,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -27150,6 +28068,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -27185,6 +28104,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--sunburst_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -27940,6 +28885,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -27975,6 +28921,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--timeseries_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -28665,6 +29637,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -28700,6 +29673,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.toplist_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--toplist_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.toplist_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
@@ -29210,6 +30209,7 @@ Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--search))
 - `storage` (String) Storage location (private beta).
@@ -29245,6 +30245,32 @@ Optional:
 Required:
 
 - `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--treemap_definition--request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.treemap_definition.request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--treemap_definition--request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.treemap_definition.request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation method for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
 
 Optional:
 
