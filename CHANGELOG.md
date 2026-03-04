@@ -1,5 +1,17 @@
 ## 4.0.0 (March 4, 2026)
 
+This release includes breaking changes in some resources.
+It also changes the required minimum version of the Terraform CLI, which is now 1.1.5.
+
+Detailed upgrade and migration guides are available at https://github.com/DataDog/terraform-provider-datadog/blob/master/docs/guides/v4-upgrade-guide.md .
+
+### BREAKING CHANGES
+* [provider] Minimum supported version of Terraform is now 1.1.5 to support the upgrade to Terraform protocol v6 by @LiuVII https://github.com/DataDog/terraform-provider-datadog/pull/3412
+* [datadog_application_key] Remove previously deprecated import functionality by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3461
+* [datadog_application_key] Remove previously deprecated data source by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3464
+* [datadog_integration_aws] Remove deprecated resources by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3450
+* [datadog_integration_aws_event_bridge] Upgrade eventbridge to use v2 API by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3487
+* [datadog_monitor] Removed 'locked' and deprecated 'restricted_roles' field in favor of restriction policy by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3449
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.91.0...v4.0.0
 
