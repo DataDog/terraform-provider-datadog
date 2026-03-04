@@ -1,3 +1,17 @@
+## 3.91.0 (March 4, 2026)
+
+### BUGFIXES
+* [datadog_monitor_json] add with_restriction_policy to the request by @darnellshumpert in https://github.com/DataDog/terraform-provider-datadog/pull/3541
+### FEATURES
+* [datadog_observability_pipeline] Adding support for OCSF Mapper custom rules in oberservability pipelines provider by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3528
+* [datadog_security_monitoring_rule] Add instantaneous_baseline to anomaly detection by @hachem-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3534
+* [datadog_observability_pipeline] Adding Observability Pipelines secret management support by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3545
+
+## New Contributors
+* @darnellshumpert made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3541
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.90.0...v3.91.0
+
 ## 4.0.0-rc.1 (February 25, 2026)
 
 ### IMPROVEMENTS
@@ -7,7 +21,6 @@
 * [datadog_application_key] Remove previously deprecated import functionality by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3461
 * [AWSCORE-663] Remove deprecated resources by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3450
 * [datadog_application_key] Remove previously deprecated data source by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/3464
-
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.90.0...v4.0.0-rc.1
 
