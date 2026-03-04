@@ -1,3 +1,8 @@
+## 4.0.0 (March 4, 2026)
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.91.0...v4.0.0
+
 ## 3.91.0 (March 4, 2026)
 
 ### BUGFIXES
