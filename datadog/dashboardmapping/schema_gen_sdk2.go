@@ -60,9 +60,10 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 		}
 	}
 
-	if len(f.ConflictsWith) > 0 {
-		s.ConflictsWith = f.ConflictsWith
-	}
+	// ConflictsWith is omitted: SDKv2 InternalValidate rejects paths that
+	// reference sibling attributes inside nested blocks, which breaks for
+	// all widget definition fields. Mutual-exclusivity is enforced at the
+	// API level and is validated by the framework version of this resource.
 
 	switch f.Type {
 	case TypeString:
