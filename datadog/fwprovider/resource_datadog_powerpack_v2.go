@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -556,4 +557,24 @@ func (r *powerpackV2Resource) flattenPowerpackWidgets(ppkWidgets []datadogV2.Pow
 
 	list, _ := types.ListValue(widgetObjType, elems)
 	return list
+}
+
+// retryContextDashboard retries fn up to 3 times, stopping on context cancellation,
+// deadline, or a "non-retryable:" error prefix.
+func retryContextDashboard(ctx context.Context, fn func() error) error {
+	var lastErr error
+	for i := 0; i < 3; i++ {
+		err := fn()
+		if err == nil {
+			return nil
+		}
+		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+			return err
+		}
+		if len(err.Error()) > 14 && err.Error()[:14] == "non-retryable:" {
+			return err
+		}
+		lastErr = err
+	}
+	return lastErr
 }
