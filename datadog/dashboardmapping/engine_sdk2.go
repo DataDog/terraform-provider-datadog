@@ -24,6 +24,21 @@ import (
 // Map Helpers — read SDKv2 native types from map[string]interface{}
 // ============================================================
 
+// toSlice converts a value to []interface{}. Handles:
+//   - []interface{} (TypeList from d.Get)
+//   - *schema.Set (TypeSet from d.Get) via the List() interface
+func toSlice(v interface{}) []interface{} {
+	if items, ok := v.([]interface{}); ok {
+		return items
+	}
+	// *schema.Set implements List() []interface{} — use interface assertion
+	// to avoid importing the schema package.
+	if lister, ok := v.(interface{ List() []interface{} }); ok {
+		return lister.List()
+	}
+	return nil
+}
+
 // getStringFromMap returns a string value from a SDKv2 data map.
 // SDKv2 stores TypeString as string (never nil in ResourceData).
 func getStringFromMap(data map[string]interface{}, key string) string {
@@ -88,8 +103,7 @@ func getFloat64FromMap(data map[string]interface{}, key string) float64 {
 
 // getStringListFromMap returns a []string from a SDKv2 TypeList/TypeSet of strings.
 // SDKv2 stores TypeList of strings as []interface{} where each element is string.
-// TypeSet values arrive as *schema.Set; call .List() before passing to this function
-// or use the raw []interface{} path from d.Get().
+// TypeSet values arrive as *schema.Set (which implements List() []interface{}).
 func getStringListFromMap(data map[string]interface{}, key string) []string {
 	if data == nil {
 		return nil
@@ -98,13 +112,7 @@ func getStringListFromMap(data map[string]interface{}, key string) []string {
 	if !ok || v == nil {
 		return nil
 	}
-	var items []interface{}
-	switch tv := v.(type) {
-	case []interface{}:
-		items = tv
-	default:
-		return nil
-	}
+	items := toSlice(v)
 	result := make([]string, 0, len(items))
 	for _, item := range items {
 		if s, ok := item.(string); ok {
@@ -125,11 +133,8 @@ func getIntListFromMap(data map[string]interface{}, key string) []int {
 	if !ok || v == nil {
 		return nil
 	}
-	var items []interface{}
-	switch tv := v.(type) {
-	case []interface{}:
-		items = tv
-	default:
+	items := toSlice(v)
+	if len(items) == 0 {
 		return nil
 	}
 	result := make([]int, 0, len(items))
@@ -154,8 +159,8 @@ func getBlockFromMap(data map[string]interface{}, key string) map[string]interfa
 	if !ok || v == nil {
 		return nil
 	}
-	items, ok := v.([]interface{})
-	if !ok || len(items) == 0 {
+	items := toSlice(v)
+	if len(items) == 0 {
 		return nil
 	}
 	if m, ok := items[0].(map[string]interface{}); ok {
@@ -173,14 +178,19 @@ func getBlockListFromMap(data map[string]interface{}, key string) []map[string]i
 	if !ok || v == nil {
 		return nil
 	}
-	items, ok := v.([]interface{})
-	if !ok || len(items) == 0 {
+	items := toSlice(v)
+	if len(items) == 0 {
 		return nil
 	}
 	result := make([]map[string]interface{}, 0, len(items))
 	for _, item := range items {
-		if m, ok := item.(map[string]interface{}); ok {
-			result = append(result, m)
+		switch v := item.(type) {
+		case map[string]interface{}:
+			result = append(result, v)
+		case nil:
+			// SDKv2 returns nil for blocks where all fields are at their zero value.
+			// Treat as an empty map so Required fields are still serialized.
+			result = append(result, map[string]interface{}{})
 		}
 	}
 	return result
