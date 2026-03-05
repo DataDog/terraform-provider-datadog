@@ -169,9 +169,10 @@ func doSweepSyntheticsGlobalVariables(t *testing.T) {
 }
 
 // isSyntheticsTestResource returns true if the name looks like it was created by tests.
-// Test names from uniqueEntityName() start with "tf-" and global variable names
-// from getUniqueVariableName() start with "TF_".
+// Test names from uniqueEntityName() start with "tf-", global variable names
+// from getUniqueVariableName() start with "TF_", and Datadog example tests
+// start with "Example-".
 func isSyntheticsTestResource(name string) bool {
 	lower := strings.ToLower(name)
-	return strings.HasPrefix(lower, "tf-") || strings.HasPrefix(lower, "tf_")
+	return strings.HasPrefix(lower, "tf-") || strings.HasPrefix(lower, "tf_") || strings.HasPrefix(lower, "example-")
 }
