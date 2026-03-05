@@ -409,13 +409,10 @@ Optional:
 <a id="nestedblock--widget--change_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.change_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--change_definition--request--formula--number_format--unit--custom"></a>
@@ -1120,13 +1117,10 @@ Optional:
 <a id="nestedblock--widget--distribution_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.distribution_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--distribution_definition--request--formula--number_format--unit--custom"></a>
@@ -1934,13 +1928,10 @@ Optional:
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom"></a>
@@ -2698,13 +2689,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit--custom"></a>
@@ -3409,13 +3397,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.distribution_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--formula--number_format--unit--custom"></a>
@@ -4223,13 +4208,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit--custom"></a>
@@ -4818,13 +4800,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit--custom"></a>
@@ -5498,13 +5477,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--formula--number_format--unit--custom"></a>
@@ -6083,13 +6059,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--formula--number_format--unit--custom"></a>
@@ -7144,13 +7117,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit--custom"></a>
@@ -7915,13 +7885,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit--custom"></a>
@@ -8868,13 +8835,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--formula--number_format--unit--custom"></a>
@@ -9454,13 +9418,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--formula--number_format--unit--custom"></a>
@@ -10390,13 +10351,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit--custom"></a>
@@ -11269,13 +11227,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit--custom"></a>
@@ -12170,13 +12125,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit--custom"></a>
@@ -12942,13 +12894,10 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit--custom"></a>
@@ -13409,13 +13358,10 @@ Optional:
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom"></a>
@@ -14089,13 +14035,10 @@ Optional:
 <a id="nestedblock--widget--hostmap_definition--request--fill--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.hostmap_definition.request.fill.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--formula--number_format--unit--custom"></a>
@@ -14674,13 +14617,10 @@ Optional:
 <a id="nestedblock--widget--hostmap_definition--request--size--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--formula--number_format--unit--custom"></a>
@@ -15735,13 +15675,10 @@ Optional:
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom"></a>
@@ -16506,13 +16443,10 @@ Optional:
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom"></a>
@@ -17459,13 +17393,10 @@ Optional:
 <a id="nestedblock--widget--scatterplot_definition--request--x--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.x.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--formula--number_format--unit--custom"></a>
@@ -18045,13 +17976,10 @@ Optional:
 <a id="nestedblock--widget--scatterplot_definition--request--y--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--formula--number_format--unit--custom"></a>
@@ -18981,13 +18909,10 @@ Optional:
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom"></a>
@@ -19860,13 +19785,10 @@ Optional:
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom"></a>
@@ -20761,13 +20683,10 @@ Optional:
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom"></a>
@@ -21533,13 +21452,10 @@ Optional:
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit.canonical`
 
-Required:
-
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
 Optional:
 
 - `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
 
 
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom"></a>

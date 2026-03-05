@@ -717,7 +717,8 @@ var TimeseriesWidgetSpec = WidgetSpec{
 // ChangeWidgetSpec corresponds to OpenAPI ChangeWidgetDefinition.
 var changeWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
-		Description: "The metric query to use for this widget."},
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
 	{HCLKey: "change_type", Type: TypeString, OmitEmpty: true,
 		Description: "Whether to show absolute or relative change.",
 		ValidValues: []string{"absolute", "relative"}},
@@ -752,7 +753,8 @@ var ChangeWidgetSpec = WidgetSpec{
 // DistributionWidgetSpec corresponds to OpenAPI DistributionWidgetDefinition.
 var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
-		Description: "The metric query to use for this widget."},
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 		Children:    widgetRequestStyleFields},
@@ -818,7 +820,8 @@ var DistributionWidgetSpec = WidgetSpec{
 // HeatmapWidgetSpec corresponds to OpenAPI HeatMapWidgetDefinition.
 var heatmapWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
-		Description: "The metric query to use for this widget."},
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 		Children:    widgetRequestStyleFields},
@@ -898,7 +901,8 @@ var HostmapWidgetSpec = WidgetSpec{
 // QueryValueWidgetSpec corresponds to OpenAPI QueryValueWidgetDefinition.
 var queryValueRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
-		Description: "The metric query to use for this widget."},
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
 	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
@@ -938,7 +942,8 @@ var QueryValueWidgetSpec = WidgetSpec{
 // ToplistWidgetSpec corresponds to OpenAPI ToplistWidgetDefinition.
 var toplistWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
-		Description: "The metric query to use for this widget."},
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
 	{HCLKey: "audit_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
@@ -1011,7 +1016,8 @@ var ScatterplotWidgetSpec = WidgetSpec{
 // The JSON "legend" field is polymorphic; HCL uses separate legend_inline and legend_table blocks.
 var sunburstWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
-		Description: "The metric query to use for this widget."},
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
 	{HCLKey: "network_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
@@ -1052,7 +1058,8 @@ var SunburstWidgetSpec = WidgetSpec{
 // GeomapWidgetSpec corresponds to OpenAPI GeomapWidgetDefinition.
 var geomapWidgetRequestFields = []FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
-		Description: "The metric query to use for this widget."},
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
 	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
@@ -1491,7 +1498,7 @@ var timeseriesWidgetMetadataFields = []FieldSpec{
 // components/schemas/TimeseriesWidgetRequest.
 // HCL key: "request" (singular), JSON key: "requests" (plural).
 var timeseriesWidgetRequestFields = []FieldSpec{
-	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Description: "The metric query to use for this widget."},
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true, ConflictsWith: []string{"query", "formula"}, Description: "The metric query to use for this widget."},
 	{
 		HCLKey:      "display_type",
 		Type:        TypeString,

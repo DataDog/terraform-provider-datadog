@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 
+	"strings"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -40,6 +42,13 @@ func resourceDatadogDashboardV2SDK2() *schema.Resource {
 					return err
 				}
 			}
+
+			// Validate ConflictsWith constraints on widget request fields (e.g., "q" vs "query"/"formula")
+			widgetData := map[string]interface{}{"widget": diff.Get("widget")}
+			if errs := dashboardmapping.ValidateWidgetConflicts(widgetData); len(errs) > 0 {
+				return fmt.Errorf("%s", strings.Join(errs, "\n"))
+			}
+
 			return nil
 		},
 		SchemaFunc: buildDashboardV2SDK2Schema,
