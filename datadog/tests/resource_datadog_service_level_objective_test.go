@@ -316,7 +316,7 @@ resource "datadog_service_level_objective" "foo" {
 
   warning_threshold = 99.5
 
-  tags = ["env:prod", "type:count"]
+  tags = ["foo:bar", "baz"]
 }`, uniq)
 }
 
@@ -366,7 +366,7 @@ resource "datadog_service_level_objective" "foo" {
 
   warning_threshold = 99.8
 
-  tags = ["env:prod", "type:count"]
+  tags = ["foo:bar", "baz"]
 }`, uniq)
 }
 
@@ -954,9 +954,9 @@ func TestAccDatadogServiceLevelObjective_CountSpecBadEvents(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_service_level_objective.foo", "tags.*", "env:prod"),
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_service_level_objective.foo", "tags.*", "type:count"),
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
 				),
 			},
 			{
@@ -1003,9 +1003,9 @@ func TestAccDatadogServiceLevelObjective_CountSpecBadEvents(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_service_level_objective.foo", "tags.*", "env:prod"),
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_service_level_objective.foo", "tags.*", "type:count"),
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
 				),
 			},
 		},
