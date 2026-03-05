@@ -163,8 +163,12 @@ func getBlockFromMap(data map[string]interface{}, key string) map[string]interfa
 	if len(items) == 0 {
 		return nil
 	}
-	if m, ok := items[0].(map[string]interface{}); ok {
-		return m
+	switch item := items[0].(type) {
+	case map[string]interface{}:
+		return item
+	case nil:
+		// SDKv2 returns nil for blocks where all fields are zero-valued.
+		return map[string]interface{}{}
 	}
 	return nil
 }
