@@ -39,7 +39,7 @@ type secureEmbedTemplateVar struct {
 }
 
 type secureEmbedViewingPreferences struct {
-	HighDensity bool   `json:"high_density,omitempty"`
+	HighDensity bool   `json:"high_density"`
 	Theme       string `json:"theme,omitempty"`
 }
 
@@ -48,7 +48,7 @@ type secureEmbedAttributes struct {
 	Status                 string                         `json:"status,omitempty"`
 	GlobalTime             *secureEmbedGlobalTime         `json:"global_time,omitempty"`
 	GlobalTimeSelectable   *bool                          `json:"global_time_selectable,omitempty"`
-	SelectableTemplateVars []secureEmbedTemplateVar       `json:"selectable_template_vars,omitempty"`
+	SelectableTemplateVars []secureEmbedTemplateVar       `json:"selectable_template_vars"`
 	ViewingPreferences     *secureEmbedViewingPreferences `json:"viewing_preferences,omitempty"`
 }
 
@@ -266,7 +266,7 @@ func (r *dashboardSecureEmbedResource) buildRequest(plan secureEmbedModel, reqTy
 	globalTimeSelectable := plan.GlobalTimeSelectable.ValueBool()
 	highDensity := plan.ViewingPrefsHighDensity.ValueBool()
 
-	var templateVars []secureEmbedTemplateVar
+	templateVars := make([]secureEmbedTemplateVar, 0, len(plan.SelectableTemplateVars))
 	for _, tv := range plan.SelectableTemplateVars {
 		templateVars = append(templateVars, secureEmbedTemplateVar{
 			Name:          tv.Name.ValueString(),
@@ -348,8 +348,11 @@ func (r *dashboardSecureEmbedResource) Create(ctx context.Context, req resource.
 		if httpResp != nil {
 			statusCode = httpResp.StatusCode
 		}
-		resp.Diagnostics.AddError("Error creating secure embed",
-			fmt.Sprintf("API error (status %d): %s", statusCode, err.Error()))
+		errMsg := fmt.Sprintf("API error (status %d): %s", statusCode, err.Error())
+		if apiErr, ok := err.(utils.CustomRequestAPIError); ok {
+			errMsg = fmt.Sprintf("API error (status %d): %s — %s", statusCode, err.Error(), string(apiErr.Body()))
+		}
+		resp.Diagnostics.AddError("Error creating secure embed", errMsg)
 		return
 	}
 
@@ -414,8 +417,11 @@ func (r *dashboardSecureEmbedResource) Update(ctx context.Context, req resource.
 		if httpResp != nil {
 			statusCode = httpResp.StatusCode
 		}
-		resp.Diagnostics.AddError("Error updating secure embed",
-			fmt.Sprintf("API error (status %d): %s", statusCode, err.Error()))
+		errMsg := fmt.Sprintf("API error (status %d): %s", statusCode, err.Error())
+		if apiErr, ok := err.(utils.CustomRequestAPIError); ok {
+			errMsg = fmt.Sprintf("API error (status %d): %s — %s", statusCode, err.Error(), string(apiErr.Body()))
+		}
+		resp.Diagnostics.AddError("Error updating secure embed", errMsg)
 		return
 	}
 
