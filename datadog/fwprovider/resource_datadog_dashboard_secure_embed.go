@@ -344,8 +344,12 @@ func (r *dashboardSecureEmbedResource) Create(ctx context.Context, req resource.
 	body := r.buildRequest(plan, "secure_embed_request")
 	respBytes, httpResp, err := utils.SendRequest(r.Auth, r.Api, "POST", r.apiPath(plan.DashboardID.ValueString()), &body)
 	if err != nil {
+		statusCode := 0
+		if httpResp != nil {
+			statusCode = httpResp.StatusCode
+		}
 		resp.Diagnostics.AddError("Error creating secure embed",
-			fmt.Sprintf("API error (status %d): %s", httpResp.StatusCode, err.Error()))
+			fmt.Sprintf("API error (status %d): %s", statusCode, err.Error()))
 		return
 	}
 
@@ -406,8 +410,12 @@ func (r *dashboardSecureEmbedResource) Update(ctx context.Context, req resource.
 	respBytes, httpResp, err := utils.SendRequest(r.Auth, r.Api, "PATCH",
 		r.apiPathWithToken(plan.DashboardID.ValueString(), plan.Token.ValueString()), &body)
 	if err != nil {
+		statusCode := 0
+		if httpResp != nil {
+			statusCode = httpResp.StatusCode
+		}
 		resp.Diagnostics.AddError("Error updating secure embed",
-			fmt.Sprintf("API error (status %d): %s", httpResp.StatusCode, err.Error()))
+			fmt.Sprintf("API error (status %d): %s", statusCode, err.Error()))
 		return
 	}
 
