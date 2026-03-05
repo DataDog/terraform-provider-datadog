@@ -858,6 +858,7 @@ func TestAccMonitor_Fwprovider_ThresholdWindows(t *testing.T) {
 }
 
 func TestAccMonitor_Fwprovider_ComposeWithSyntheticsTest(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
