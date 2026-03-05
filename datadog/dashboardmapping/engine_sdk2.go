@@ -975,3 +975,100 @@ func FlattenWidgetsForSDKv2(apiWidgets []interface{}) []interface{} {
 	}
 	return result
 }
+
+// ============================================================
+// Validation — check FieldSpec ConflictsWith at plan time
+// ============================================================
+
+// ValidateWidgetConflicts walks the widget tree and checks ConflictsWith
+// constraints on request-level fields. Returns a list of human-readable
+// error strings for any violations found.
+//
+// This is driven by the ConflictsWith annotations on FieldSpec declarations
+// (e.g., the "q" field conflicts with "query" and "formula").
+func ValidateWidgetConflicts(data map[string]interface{}) []string {
+	widgetList, ok := data["widget"].([]interface{})
+	if !ok {
+		return nil
+	}
+	var errs []string
+	for wi, w := range widgetList {
+		wMap, ok := w.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		for _, spec := range allWidgetSpecs {
+			defList, ok := wMap[spec.HCLKey].([]interface{})
+			if !ok || len(defList) == 0 {
+				continue
+			}
+			defMap, ok := defList[0].(map[string]interface{})
+			if !ok {
+				continue
+			}
+
+			// Check ConflictsWith constraints on request fields
+			var requestFields []FieldSpec
+			for _, f := range spec.Fields {
+				if f.HCLKey == "request" {
+					requestFields = f.Children
+					break
+				}
+			}
+			if requestFields != nil {
+				reqList := getBlockListFromMap(defMap, "request")
+				for ri, reqMap := range reqList {
+					for _, f := range requestFields {
+						if len(f.ConflictsWith) == 0 {
+							continue
+						}
+						if !fieldIsSetInMap(reqMap, f) {
+							continue
+						}
+						for _, conflicting := range f.ConflictsWith {
+							for _, cf := range requestFields {
+								if cf.HCLKey == conflicting && fieldIsSetInMap(reqMap, cf) {
+									errs = append(errs, fmt.Sprintf(
+										"widget[%d].%s.request[%d]: %q conflicts with %q — use one query style per request, not both",
+										wi, spec.HCLKey, ri, f.HCLKey, cf.HCLKey,
+									))
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// Recurse into group/split_graph nested widgets
+			if spec.HCLKey == "group_definition" || spec.HCLKey == "split_graph_definition" {
+				if nestedErrs := ValidateWidgetConflicts(defMap); len(nestedErrs) > 0 {
+					for _, e := range nestedErrs {
+						errs = append(errs, fmt.Sprintf("widget[%d].%s.%s", wi, spec.HCLKey, e))
+					}
+				}
+			}
+		}
+	}
+	return errs
+}
+
+// fieldIsSetInMap returns true if the field has a non-zero value in the map.
+func fieldIsSetInMap(data map[string]interface{}, f FieldSpec) bool {
+	v, ok := data[f.HCLKey]
+	if !ok || v == nil {
+		return false
+	}
+	switch f.Type {
+	case TypeString:
+		return v.(string) != ""
+	case TypeBlockList:
+		if list, ok := v.([]interface{}); ok {
+			return len(list) > 0
+		}
+	case TypeBlock:
+		if list, ok := v.([]interface{}); ok {
+			return len(list) > 0
+		}
+	}
+	return false
+}
