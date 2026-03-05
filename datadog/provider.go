@@ -216,6 +216,7 @@ func Provider() *schema.Provider {
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
 			"datadog_dashboard_v2":                         resourceDatadogDashboardV2SDK2(),
+			"datadog_powerpack_v2":                         resourceDatadogPowerpackV2(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
