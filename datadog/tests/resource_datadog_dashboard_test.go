@@ -1406,6 +1406,9 @@ func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config
 	if os.Getenv("TF_ACC") == "" {
 		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
 	}
+	if os.Getenv("RECORD") == "none" {
+		t.Skip("datadog_dashboard_v2 tests require cassettes; skipped when RECORD=none")
+	}
 	t.Parallel()
 	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, v1TestName)
 	accProvider := testAccProvider(t, accProviders)
@@ -1435,6 +1438,9 @@ func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config
 func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, config string, name string) {
 	if os.Getenv("TF_ACC") == "" {
 		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
+	if os.Getenv("RECORD") == "none" {
+		t.Skip("datadog_dashboard_v2 tests require cassettes; skipped when RECORD=none")
 	}
 	t.Parallel()
 	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, v1TestName)

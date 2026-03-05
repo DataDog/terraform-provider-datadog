@@ -2,11 +2,8 @@ package datadog
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
-	"net/http"
-
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -116,22 +113,6 @@ func resourceDatadogDashboardV2SDK2Create(ctx context.Context, d *schema.Resourc
 	d.SetId(dashboardID)
 
 	layoutType, _ := respMap["layout_type"].(string)
-
-	// Retry GET until the dashboard is available
-	var httpResponse *http.Response
-	retryErr := retryDashboardV2SDK2(ctx, func() error {
-		_, httpResponse, err = utils.SendRequest(auth, apiInstances.HttpClient, "GET", dashboardmapping.DashboardAPIPath+"/"+dashboardID, nil)
-		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
-				return fmt.Errorf("dashboard not created yet")
-			}
-			return fmt.Errorf("non-retryable error: %w", err)
-		}
-		return nil
-	})
-	if retryErr != nil {
-		return diag.Errorf("error waiting for dashboard: %s", retryErr)
-	}
 
 	// Update dashboard lists (side-effect)
 	updateDashboardListsSDKv2(d, providerConf, dashboardID, layoutType)
@@ -348,23 +329,4 @@ func updateDashboardListsSDKv2(d *schema.ResourceData, providerConf *ProviderCon
 			}
 		}
 	}
-}
-
-// retryDashboardV2SDK2 retries fn up to 3 times with a simple loop, returning the last error.
-func retryDashboardV2SDK2(ctx context.Context, fn func() error) error {
-	var lastErr error
-	for i := 0; i < 3; i++ {
-		err := fn()
-		if err == nil {
-			return nil
-		}
-		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
-			return err
-		}
-		if len(err.Error()) > 14 && err.Error()[:14] == "non-retryable:" {
-			return err
-		}
-		lastErr = err
-	}
-	return lastErr
 }

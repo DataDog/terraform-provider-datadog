@@ -702,6 +702,12 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 
 	matched := b.String() == "" || b.String() == i.Body
 
+	// Normalize JSON bodies so key ordering differences don't cause mismatches.
+	// This allows v1 (struct serialization) and v2 (map serialization) to share cassettes.
+	if !matched && isJSONBody(b.String()) && isJSONBody(i.Body) {
+		matched = jsonEquivalent(b.String(), i.Body)
+	}
+
 	// Ignore boundary differences for multipart/form-data content
 	if !matched && strings.HasPrefix(r.Header["Content-Type"][0], "multipart/form-data") {
 		rl := strings.Split(strings.TrimSpace(b.String()), "\n")
@@ -721,6 +727,106 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 		log.Printf("full request info: %v", *r)
 	}
 	return matched
+}
+
+// jsonEquivalent compares two JSON strings for semantic equality, ignoring:
+//   - key ordering (Go map vs struct serialization)
+//   - absent vs zero-value fields ("id":"" vs no "id" key)
+//
+// This allows v1 (typed struct serialization) and v2 (map serialization) request
+// bodies to match against the same cassette.
+func jsonEquivalent(a, b string) bool {
+	var va, vb interface{}
+	if err := json.Unmarshal([]byte(a), &va); err != nil {
+		return false
+	}
+	if err := json.Unmarshal([]byte(b), &vb); err != nil {
+		return false
+	}
+	return deepEquivalent(va, vb)
+}
+
+// deepEquivalent recursively compares two JSON values, treating absent keys
+// as equivalent to zero values (empty string, empty array, nil, false, 0).
+func deepEquivalent(a, b interface{}) bool {
+	// Both nil
+	if a == nil && b == nil {
+		return true
+	}
+
+	// One nil, the other must be a zero value
+	if a == nil {
+		return isZeroValue(b)
+	}
+	if b == nil {
+		return isZeroValue(a)
+	}
+
+	switch av := a.(type) {
+	case map[string]interface{}:
+		bv, ok := b.(map[string]interface{})
+		if !ok {
+			return false
+		}
+		// Check all keys from both maps
+		allKeys := make(map[string]bool)
+		for k := range av {
+			allKeys[k] = true
+		}
+		for k := range bv {
+			allKeys[k] = true
+		}
+		for k := range allKeys {
+			if !deepEquivalent(av[k], bv[k]) {
+				return false
+			}
+		}
+		return true
+
+	case []interface{}:
+		bv, ok := b.([]interface{})
+		if !ok {
+			return false
+		}
+		if len(av) != len(bv) {
+			return false
+		}
+		for i := range av {
+			if !deepEquivalent(av[i], bv[i]) {
+				return false
+			}
+		}
+		return true
+
+	default:
+		return fmt.Sprintf("%v", a) == fmt.Sprintf("%v", b)
+	}
+}
+
+// isZeroValue returns true if v is a JSON zero value (empty string, empty array, 0, false, nil).
+func isZeroValue(v interface{}) bool {
+	switch tv := v.(type) {
+	case nil:
+		return true
+	case string:
+		return tv == ""
+	case float64:
+		return tv == 0
+	case bool:
+		return !tv
+	case []interface{}:
+		return len(tv) == 0
+	case map[string]interface{}:
+		return len(tv) == 0
+	}
+	return false
+}
+
+// isJSONBody returns true if s looks like a JSON object or array.
+func isJSONBody(s string) bool {
+	s = strings.TrimSpace(s)
+	return (strings.HasPrefix(s, "{") && strings.HasSuffix(s, "}")) ||
+		(strings.HasPrefix(s, "[") && strings.HasSuffix(s, "]"))
 }
 
 func testSpan(ctx context.Context, t *testing.T) context.Context {
