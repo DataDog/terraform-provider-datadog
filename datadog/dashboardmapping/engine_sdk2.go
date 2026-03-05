@@ -318,6 +318,13 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 // Widget Build — SDKv2 map → JSON
 // ============================================================
 
+// BuildWidgetEngineJSONFromMap builds the JSON for a single widget from a SDKv2 data map.
+// This is the exported entry point for callers outside the dashboardmapping package
+// (e.g., the powerpack SDKv2 resource).
+func BuildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]interface{} {
+	return buildWidgetEngineJSONFromMap(widget)
+}
+
 // buildWidgetEngineJSONFromMap builds the JSON for a single widget from a SDKv2 map.
 // Parallel to buildWidgetEngineJSON but reads from map[string]interface{}.
 func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]interface{} {

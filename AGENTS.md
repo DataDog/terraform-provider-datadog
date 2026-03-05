@@ -31,6 +31,7 @@ All schema attributes MUST have `Description` fields - required for `make docs` 
 
 - `datadog/fwprovider/` - Framework resources, search here for new resource patterns
 - `datadog/*.go` - SDKv2 resources (legacy), do NOT use for new resources
+  - **Exception**: `datadog_dashboard_v2` and `datadog_powerpack_v2` are intentionally implemented as SDKv2 resources for performance reasons (~75× faster plan times). These are the only approved SDKv2 exceptions in the provider.
 - `datadog/internal/` - Shared utilities: validators, customtypes, fwutils, planmodifiers
 - `datadog/tests/` - Acceptance tests
 - `examples/` - HCL examples used by docs generation
