@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772572429","widgets":[{"definition":{"legend_columns":["avg","max","min","sum","value"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}}}]}
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772745211","widgets":[{"definition":{"legend_columns":["value","avg","sum","min","max"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}}}]}
         form: {}
         headers:
             Content-Type:
@@ -29,13 +29,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"dqj-8v3-jva","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772572429","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/dqj-8v3-jva/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772572429","template_variables":[],"widgets":[{"definition":{"legend_columns":["avg","max","min","sum","value"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":7391902554322282}],"notify_list":[],"created_at":"2026-03-03T21:13:55.808198+00:00","modified_at":"2026-03-03T21:13:55.808198+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"kcw-ypa-56h","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772745211","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kcw-ypa-56h/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772745211","template_variables":[],"widgets":[{"definition":{"legend_columns":["value","avg","sum","min","max"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":8922865763734466}],"notify_list":[],"created_at":"2026-03-05T21:13:33.048519+00:00","modified_at":"2026-03-05T21:13:33.048519+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 121.929333ms
+        duration: 139.751333ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -52,7 +52,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/dqj-8v3-jva
+        url: https://api.datadoghq.com/api/v1/dashboard/kcw-ypa-56h
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"dqj-8v3-jva","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772572429","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/dqj-8v3-jva/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772572429","template_variables":[],"widgets":[{"definition":{"legend_columns":["avg","max","min","sum","value"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":7391902554322282}],"notify_list":[],"created_at":"2026-03-03T21:13:55.808198+00:00","modified_at":"2026-03-03T21:13:55.808198+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"kcw-ypa-56h","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772745211","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kcw-ypa-56h/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772745211","template_variables":[],"widgets":[{"definition":{"legend_columns":["value","avg","sum","min","max"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":8922865763734466}],"notify_list":[],"created_at":"2026-03-05T21:13:33.048519+00:00","modified_at":"2026-03-05T21:13:33.048519+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 109.454458ms
+        duration: 95.093667ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/dqj-8v3-jva
+        url: https://api.datadoghq.com/api/v1/dashboard/kcw-ypa-56h
         method: GET
       response:
         proto: HTTP/1.1
@@ -97,13 +97,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"dqj-8v3-jva","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772572429","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/dqj-8v3-jva/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772572429","template_variables":[],"widgets":[{"definition":{"legend_columns":["avg","max","min","sum","value"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":7391902554322282}],"notify_list":[],"created_at":"2026-03-03T21:13:55.808198+00:00","modified_at":"2026-03-03T21:13:55.808198+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"kcw-ypa-56h","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772745211","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kcw-ypa-56h/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772745211","template_variables":[],"widgets":[{"definition":{"legend_columns":["value","avg","sum","min","max"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":8922865763734466}],"notify_list":[],"created_at":"2026-03-05T21:13:33.048519+00:00","modified_at":"2026-03-05T21:13:33.048519+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 100.141292ms
+        duration: 151.91075ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -120,7 +120,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/dqj-8v3-jva
+        url: https://api.datadoghq.com/api/v1/dashboard/kcw-ypa-56h
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"dqj-8v3-jva","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772572429","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/dqj-8v3-jva/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772572429","template_variables":[],"widgets":[{"definition":{"legend_columns":["avg","max","min","sum","value"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":7391902554322282}],"notify_list":[],"created_at":"2026-03-03T21:13:55.808198+00:00","modified_at":"2026-03-03T21:13:55.808198+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"kcw-ypa-56h","title":"tf-TestAccDatadogDashboardV2TimeseriesLegendColumns-local-1772745211","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kcw-ypa-56h/tf-testaccdatadogdashboardv2timeserieslegendcolumns-local-1772745211","template_variables":[],"widgets":[{"definition":{"legend_columns":["value","avg","sum","min","max"],"legend_layout":"auto","requests":[{"display_type":"bars","formulas":[{"formula":"query1"}],"on_right_yaxis":false,"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"line_type":"solid","line_width":"normal","palette":"dog_classic"}}],"show_legend":true,"title":"CPU Utilization with legend columns","type":"timeseries","yaxis":{"include_zero":true,"max":"auto","min":"auto","scale":"linear"}},"id":8922865763734466}],"notify_list":[],"created_at":"2026-03-05T21:13:33.048519+00:00","modified_at":"2026-03-05T21:13:33.048519+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 107.097334ms
+        duration: 95.262083ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -154,7 +154,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/dqj-8v3-jva
+        url: https://api.datadoghq.com/api/v1/dashboard/kcw-ypa-56h
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"dqj-8v3-jva"}'
+        body: '{"deleted_dashboard_id":"kcw-ypa-56h"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 433.074708ms
+        duration: 499.253ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/dqj-8v3-jva
+        url: https://api.datadoghq.com/api/v1/dashboard/kcw-ypa-56h
         method: GET
       response:
         proto: HTTP/1.1
@@ -199,10 +199,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID dqj-8v3-jva not found"]}'
+        body: '{"errors":["Dashboard with ID kcw-ypa-56h not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 90.430042ms
+        duration: 155.316417ms
