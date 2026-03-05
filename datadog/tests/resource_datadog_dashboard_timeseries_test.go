@@ -799,6 +799,67 @@ func TestAccDatadogDashboardFormula_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardFormulaConfig, "datadog_dashboard.timeseries_dashboard")
 }
 
+const datadogDashboardGroupByFieldsConfig = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					event_query {
+						data_source = "logs"
+						indexes = ["days-3"]
+						name = "my_event_query"
+						compute {
+							aggregation = "count"
+						}
+						search {
+							query = "abc"
+						}
+						group_by_fields {
+							fields = ["hostname", "service"]
+							limit = 10
+							sort {
+								aggregation = "count"
+								order = "desc"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+var datadogDashboardGroupByFieldsAsserts = []string{
+	"title = {{uniq}}",
+	"layout_type = ordered",
+	"description = Created using the Datadog provider in Terraform",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.data_source = logs",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.indexes.# = 1",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.indexes.0 = days-3",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.name = my_event_query",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.compute.0.aggregation = count",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.search.0.query = abc",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.group_by_fields.0.fields.# = 2",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.group_by_fields.0.fields.0 = hostname",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.group_by_fields.0.fields.1 = service",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.group_by_fields.0.limit = 10",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.group_by_fields.0.sort.0.aggregation = count",
+	"widget.0.timeseries_definition.0.request.0.query.0.event_query.0.group_by_fields.0.sort.0.order = desc",
+}
+
+func TestAccDatadogDashboardTimeseriesGroupByFields(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardGroupByFieldsConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardGroupByFieldsAsserts)
+}
+
+func TestAccDatadogDashboardTimeseriesGroupByFields_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardGroupByFieldsConfig, "datadog_dashboard.timeseries_dashboard")
+}
+
 const datadogDashboardTimeseriesMultiComputeConfig = `
 resource "datadog_dashboard" "timeseries_dashboard" {
 	title         = "{{uniq}}"
