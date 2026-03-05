@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"regexp"
@@ -1227,13 +1228,14 @@ resource "datadog_synthetics_test" "foo" {
 }
 
 func createSyntheticsAPIRequestFileStruct(fileName string, originalFileName string, fileContent string, fileType string) datadogV1.SyntheticsTestRequestBodyFile {
+	encodedContent := b64.StdEncoding.EncodeToString([]byte(fileContent))
 	fileSize := int64(len(fileContent))
 	encoding := "base64"
 
 	return datadogV1.SyntheticsTestRequestBodyFile{
 		Name:             &fileName,
 		OriginalFileName: &originalFileName,
-		Content:          &fileContent,
+		Content:          &encodedContent,
 		Type:             &fileType,
 		Size:             &fileSize,
 		Encoding:         &encoding,
