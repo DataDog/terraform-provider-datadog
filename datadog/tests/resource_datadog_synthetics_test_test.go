@@ -1228,6 +1228,7 @@ resource "datadog_synthetics_test" "foo" {
 
 func createSyntheticsAPIRequestFileStruct(fileName string, originalFileName string, fileContent string, fileType string) datadogV1.SyntheticsTestRequestBodyFile {
 	fileSize := int64(len(fileContent))
+	encoding := "base64"
 
 	return datadogV1.SyntheticsTestRequestBodyFile{
 		Name:             &fileName,
@@ -1235,19 +1236,28 @@ func createSyntheticsAPIRequestFileStruct(fileName string, originalFileName stri
 		Content:          &fileContent,
 		Type:             &fileType,
 		Size:             &fileSize,
+		Encoding:         &encoding,
 	}
 }
 
 func createSyntheticsAPIRequestFileBlock(file datadogV1.SyntheticsTestRequestBodyFile) string {
-	return fmt.Sprintf(`
+	block := fmt.Sprintf(`
 	request_file {
 		content = "%s"
 		name = "%s"
 		original_file_name = "%s"
 		size = "%d"
-		type = "%s"
+		type = "%s"`, *file.Content, *file.Name, *file.OriginalFileName, *file.Size, *file.Type)
+
+	if file.Encoding != nil {
+		block += fmt.Sprintf(`
+		encoding = "%s"`, *file.Encoding)
 	}
-`, *file.Content, *file.Name, *file.OriginalFileName, *file.Size, *file.Type)
+
+	block += `
+	}
+`
+	return block
 }
 
 var bucketKeyRegex, _ = regexp.Compile("^api-upload-file/[a-z0-9]{3}-[a-z0-9]{3}-[a-z0-9]{3}/[-:._0-9Ta-z]*\\.json$")
@@ -1287,6 +1297,8 @@ func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider *schema.
 				"datadog_synthetics_test.foo", "request_file.0.type", *files[0].Type),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_file.0.content", *files[0].Content),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.encoding", "base64"),
 			resource.TestMatchResourceAttr(
 				"datadog_synthetics_test.foo", "request_file.0.bucket_key", bucketKeyRegex),
 			resource.TestCheckResourceAttrSet(
@@ -6621,6 +6633,8 @@ func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider
 				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.type", *files[0].Type),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.content", *files[0].Content),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.encoding", "base64"),
 			resource.TestMatchResourceAttr(
 				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.bucket_key", bucketKeyRegex),
 			resource.TestCheckResourceAttrSet(
