@@ -372,10 +372,6 @@ resource "datadog_service_level_objective" "foo" {
 
 func testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfig(uniq string) string {
 	return fmt.Sprintf(`
-provider "datadog" {
-  api_url  = "https://dd.datad0g.com"
-  validate = false
-}
 
 resource "datadog_service_level_objective" "foo" {
   name = "%s"
@@ -409,10 +405,6 @@ resource "datadog_service_level_objective" "foo" {
 
 func testAccCheckDatadogServiceLevelObjectiveMetricTransitionQueryConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
-provider "datadog" {
-  api_url  = "https://dd.datad0g.com"
-  validate = false
-}
 
 resource "datadog_service_level_objective" "foo" {
   name = "%s"
@@ -446,10 +438,6 @@ resource "datadog_service_level_objective" "foo" {
 
 func testAccCheckDatadogServiceLevelObjectiveMetricTransitionCountSpecConfig(uniq string) string {
 	return fmt.Sprintf(`
-provider "datadog" {
-  api_url  = "https://dd.datad0g.com"
-  validate = false
-}
 
 resource "datadog_service_level_objective" "foo" {
   name = "%s"
