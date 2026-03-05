@@ -546,7 +546,7 @@ var widgetFormulaCellDisplayModeOptionsFields = []FieldSpec{
 var numberFormatUnitCanonicalFields = []FieldSpec{
 	{HCLKey: "per_unit_name", Type: TypeString, OmitEmpty: true,
 		Description: "per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'"},
-	{HCLKey: "unit_name", Type: TypeString, OmitEmpty: false, Required: true,
+	{HCLKey: "unit_name", Type: TypeString, OmitEmpty: true,
 		Description: "Unit name. It should be in singular form ('megabyte' and not 'megabytes')"},
 }
 
