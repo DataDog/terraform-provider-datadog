@@ -14,16 +14,15 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-// resourceDatadogDashboardV2SDK2 returns the SDKv2 resource for datadog_dashboard_v2_sdk2.
-// This is a performance-benchmarking parallel of the framework-based datadog_dashboard_v2.
+// resourceDatadogDashboardV2 returns the SDKv2 resource for datadog_dashboard_v2.
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
-func resourceDatadogDashboardV2SDK2() *schema.Resource {
+func resourceDatadogDashboardV2() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog dashboard resource (SDKv2 implementation for performance comparison).",
-		CreateContext: resourceDatadogDashboardV2SDK2Create,
-		ReadContext:   resourceDatadogDashboardV2SDK2Read,
-		UpdateContext: resourceDatadogDashboardV2SDK2Update,
-		DeleteContext: resourceDatadogDashboardV2SDK2Delete,
+		CreateContext: resourceDatadogDashboardV2Create,
+		ReadContext:   resourceDatadogDashboardV2Read,
+		UpdateContext: resourceDatadogDashboardV2Update,
+		DeleteContext: resourceDatadogDashboardV2Delete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -48,13 +47,13 @@ func resourceDatadogDashboardV2SDK2() *schema.Resource {
 
 			return nil
 		},
-		SchemaFunc: buildDashboardV2SDK2Schema,
+		SchemaFunc: buildDashboardV2Schema,
 	}
 }
 
-// buildDashboardV2SDK2Schema builds the schema map for datadog_dashboard_v2_sdk2.
+// buildDashboardV2Schema builds the schema map for datadog_dashboard_v2_sdk2.
 // Derives all fields from shared FieldSpec/WidgetSpec declarations.
-func buildDashboardV2SDK2Schema() map[string]*schema.Schema {
+func buildDashboardV2Schema() map[string]*schema.Schema {
 	// Generate top-level fields from FieldSpec declarations (excluding SchemaOnly)
 	topSchema := dashboardmapping.FieldSpecsToSDKv2Schema(dashboardmapping.DashboardTopLevelFields)
 
@@ -83,8 +82,8 @@ func buildDashboardV2SDK2Schema() map[string]*schema.Schema {
 	return topSchema
 }
 
-// resourceDatadogDashboardV2SDK2Create creates a new dashboard via the Datadog API.
-func resourceDatadogDashboardV2SDK2Create(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+// resourceDatadogDashboardV2Create creates a new dashboard via the Datadog API.
+func resourceDatadogDashboardV2Create(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -117,11 +116,11 @@ func resourceDatadogDashboardV2SDK2Create(ctx context.Context, d *schema.Resourc
 	// Update dashboard lists (side-effect)
 	updateDashboardListsSDKv2(d, providerConf, dashboardID, layoutType)
 
-	return resourceDatadogDashboardV2SDK2Read(ctx, d, meta)
+	return resourceDatadogDashboardV2Read(ctx, d, meta)
 }
 
-// resourceDatadogDashboardV2SDK2Read reads a dashboard from the Datadog API and sets state.
-func resourceDatadogDashboardV2SDK2Read(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+// resourceDatadogDashboardV2Read reads a dashboard from the Datadog API and sets state.
+func resourceDatadogDashboardV2Read(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -144,8 +143,8 @@ func resourceDatadogDashboardV2SDK2Read(_ context.Context, d *schema.ResourceDat
 	return setDashboardStateSDKv2(d, respMap)
 }
 
-// resourceDatadogDashboardV2SDK2Update updates an existing dashboard via the Datadog API.
-func resourceDatadogDashboardV2SDK2Update(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+// resourceDatadogDashboardV2Update updates an existing dashboard via the Datadog API.
+func resourceDatadogDashboardV2Update(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -173,8 +172,8 @@ func resourceDatadogDashboardV2SDK2Update(ctx context.Context, d *schema.Resourc
 	return setDashboardStateSDKv2(d, respMap)
 }
 
-// resourceDatadogDashboardV2SDK2Delete deletes a dashboard from the Datadog API.
-func resourceDatadogDashboardV2SDK2Delete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+// resourceDatadogDashboardV2Delete deletes a dashboard from the Datadog API.
+func resourceDatadogDashboardV2Delete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
