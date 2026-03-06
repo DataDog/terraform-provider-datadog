@@ -81,7 +81,8 @@ interactions:
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"data":{"type":"secure_embed_request","attributes":{"title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"high_density":false,"theme":"system"}}}}
         form: {}
         headers:
             Accept:
