@@ -333,7 +333,7 @@ func syntheticsTestRequestHeaders() *schema.Schema {
 		Description:  "Header name and value map.",
 		Type:         schema.TypeMap,
 		Optional:     true,
-		ValidateFunc: validators.ValidateHttpRequestHeader,
+		ValidateFunc: validators.ValidateHttpRequestHeaders,
 	}
 }
 
