@@ -9,10 +9,10 @@ import (
 
 func TestResourceHeaderTransport(t *testing.T) {
 	tests := []struct {
-		name           string
-		resourceName   string // empty means no context value set
-		wantHeader     string
-		checkNoMutate  bool
+		name          string
+		resourceName  string // empty means no context value set
+		wantHeader    string
+		checkNoMutate bool
 	}{
 		{
 			name:         "sets header from context",
