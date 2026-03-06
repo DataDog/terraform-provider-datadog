@@ -259,4 +259,3 @@ func AllWidgetSDKv2Schema(excludePowerpackOnly bool) map[string]*schema.Schema {
 	}
 	return result
 }
-
