@@ -179,7 +179,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                                      "dashboards",
-	"tests/resource_datadog_dashboard_secure_embed_dashboard_test":                                 "dashboards",
+	"tests/resource_datadog_dashboard_secure_embed_dashboard_test":                       "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
 	"tests/resource_datadog_datastore_test":                                              "datastores",
 	"tests/resource_datadog_datastore_item_test":                                         "datastores",
