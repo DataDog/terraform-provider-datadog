@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"}}]}
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"}}]}
         form: {}
         headers:
             Accept:
@@ -30,7 +30,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -63,7 +63,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -82,7 +82,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"type":"secure_embed_request","attributes":{"title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"high_density":false,"theme":"system"}}}}
+            {"data":{"type":"secure_embed_request","attributes":{"title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"high_density":false,"theme":"system"}}}}
         form: {}
         headers:
             Accept:
@@ -99,7 +99,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","credential":"hmac-credential-update-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","credential":"hmac-credential-update-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -132,7 +132,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -165,7 +165,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -198,7 +198,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"type":"secure_embed_update_request","attributes":{"title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"high_density":false,"theme":"dark"}}}}
+            {"data":{"type":"secure_embed_update_request","attributes":{"title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"high_density":false,"theme":"dark"}}}}
         form: {}
         headers:
             Accept:
@@ -234,7 +234,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"dark","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"dark","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -267,7 +267,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"dark","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"dark","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -300,7 +300,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"dark","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenUpdate01","url":"https://app.datadoghq.com/sb/SecureEmbedTokenUpdate01","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837-updated","status":"paused","global_time":{"live_span":"4h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"dark","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -333,7 +333,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -366,7 +366,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-456-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_Update-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-456-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json

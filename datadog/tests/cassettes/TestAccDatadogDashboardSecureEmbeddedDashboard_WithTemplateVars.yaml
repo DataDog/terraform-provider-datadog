@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"}}]}
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"}}]}
         form: {}
         headers:
             Accept:
@@ -30,7 +30,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-123-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-123-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/abc-123-xyz
+        url: https://api.datadoghq.com/api/v1/dashboard/abc-789-xyz
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,7 +63,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-123-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-123-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -82,14 +82,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"type":"secure_embed_request","attributes":{"title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"high_density":false,"theme":"system"}}}}
+            {"data":{"type":"secure_embed_request","attributes":{"title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[{"name":"env","prefix":"env","default_values":["prod"],"visible_tags":["prod","staging"]}],"viewing_preferences":{"high_density":false,"theme":"system"}}}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/dashboard/abc-123-xyz/shared/secure-embed
+        url: https://api.datadoghq.com/api/v2/dashboard/abc-789-xyz/shared/secure-embed
         method: POST
       response:
         proto: HTTP/1.1
@@ -99,7 +99,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedToken123456789","url":"https://app.datadoghq.com/sb/SecureEmbedToken123456789","credential":"hmac-credential-abc123xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenTmplVar1","url":"https://app.datadoghq.com/sb/SecureEmbedTokenTmplVar1","credential":"hmac-credential-tmplvar-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[{"name":"env","prefix":"env","default_values":["prod"],"visible_tags":["prod","staging"]}],"viewing_preferences":{"theme":"system","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/dashboard/abc-123-xyz/shared/secure-embed/SecureEmbedToken123456789
+        url: https://api.datadoghq.com/api/v2/dashboard/abc-789-xyz/shared/secure-embed/SecureEmbedTokenTmplVar1
         method: GET
       response:
         proto: HTTP/1.1
@@ -132,7 +132,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedToken123456789","url":"https://app.datadoghq.com/sb/SecureEmbedToken123456789","title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenTmplVar1","url":"https://app.datadoghq.com/sb/SecureEmbedTokenTmplVar1","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[{"name":"env","prefix":"env","default_values":["prod"],"visible_tags":["prod","staging"]}],"viewing_preferences":{"theme":"system","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/dashboard/abc-123-xyz/shared/secure-embed/SecureEmbedToken123456789
+        url: https://api.datadoghq.com/api/v2/dashboard/abc-789-xyz/shared/secure-embed/SecureEmbedTokenTmplVar1
         method: GET
       response:
         proto: HTTP/1.1
@@ -165,7 +165,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedToken123456789","url":"https://app.datadoghq.com/sb/SecureEmbedToken123456789","title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[],"viewing_preferences":{"theme":"system","high_density":false}}}}'
+        body: '{"data":{"type":"secure_embed","attributes":{"token":"SecureEmbedTokenTmplVar1","url":"https://app.datadoghq.com/sb/SecureEmbedTokenTmplVar1","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","status":"active","global_time":{"live_span":"1h"},"global_time_selectable":true,"selectable_template_vars":[{"name":"env","prefix":"env","default_values":["prod"],"visible_tags":["prod","staging"]}],"viewing_preferences":{"theme":"system","high_density":false}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/abc-123-xyz
+        url: https://api.datadoghq.com/api/v1/dashboard/abc-789-xyz
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-123-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_Basic-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-123-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbeddedDashboard_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/dashboard/abc-123-xyz/shared/secure-embed/SecureEmbedToken123456789
+        url: https://api.datadoghq.com/api/v2/dashboard/abc-789-xyz/shared/secure-embed/SecureEmbedTokenTmplVar1
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -252,7 +252,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/dashboard/abc-123-xyz
+        url: https://api.datadoghq.com/api/v1/dashboard/abc-789-xyz
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -262,7 +262,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"abc-123-xyz"}'
+        body: '{"deleted_dashboard_id":"abc-789-xyz"}'
         headers:
             Content-Type:
                 - application/json
@@ -285,7 +285,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/dashboard/abc-123-xyz/shared/secure-embed/SecureEmbedToken123456789
+        url: https://api.datadoghq.com/api/v2/dashboard/abc-789-xyz/shared/secure-embed/SecureEmbedTokenTmplVar1
         method: GET
       response:
         proto: HTTP/1.1

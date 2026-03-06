@@ -127,7 +127,7 @@ func (r *dashboardSecureEmbedResource) Configure(_ context.Context, req resource
 }
 
 func (r *dashboardSecureEmbedResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "dashboard_secure_embed"
+	resp.TypeName = "dashboard_secure_embedded_dashboard"
 }
 
 func (r *dashboardSecureEmbedResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -453,7 +453,7 @@ func (r *dashboardSecureEmbedResource) Delete(ctx context.Context, req resource.
 	}
 }
 
-// ImportState supports `terraform import datadog_dashboard_secure_embed.x <dashboard_id>:<token>`
+// ImportState supports `terraform import datadog_dashboard_secure_embedded_dashboard.x <dashboard_id>:<token>`
 func (r *dashboardSecureEmbedResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	parts := strings.SplitN(req.ID, ":", 2)
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
