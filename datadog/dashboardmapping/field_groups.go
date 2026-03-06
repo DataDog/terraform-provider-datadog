@@ -318,6 +318,17 @@ var formulaAndFunctionEventQueryFields = []FieldSpec{
 	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
 		Description: "Group by options.",
 		Children:    formulaAndFunctionEventQueryGroupByFields},
+	{HCLKey: "group_by_fields", Type: TypeBlock, OmitEmpty: true,
+		Description: "Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both.",
+		Children: []FieldSpec{
+			{HCLKey: "fields", Type: TypeStringList, OmitEmpty: false, Required: true,
+				Description: "List of event facets to group by."},
+			{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+				Description: "The number of groups to return."},
+			{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+				Description: "The options for sorting group by results.",
+				Children:    formulaAndFunctionEventQueryGroupBySortFields},
+		}},
 	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The name of query for use in formulas."},
 }
