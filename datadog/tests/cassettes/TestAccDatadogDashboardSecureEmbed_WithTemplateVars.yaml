@@ -12,7 +12,8 @@ interactions:
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardSecureEmbed_WithTemplateVars-local-1748004837","widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","type":"note"}}]}
         form: {}
         headers:
             Accept:
@@ -29,7 +30,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","tick_edge":"left","tick_pos":"50%","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2026-03-03T23:51:33+00:00","modified_at":"2026-03-03T23:51:33+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","tick_edge":"left","tick_pos":"50%","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -62,7 +63,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","tick_edge":"left","tick_pos":"50%","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2026-03-03T23:51:33+00:00","modified_at":"2026-03-03T23:51:33+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","tick_edge":"left","tick_pos":"50%","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
@@ -196,7 +197,7 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","tick_edge":"left","tick_pos":"50%","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2026-03-03T23:51:33+00:00","modified_at":"2026-03-03T23:51:33+00:00","template_variable_presets":[]}'
+        body: '{"id":"abc-789-xyz","title":"tf-TestAccDatadogDashboardSecureEmbed_WithTemplateVars-local-1748004837","description":"","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/abc-789-xyz","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"background_color":"white","content":"placeholder","font_size":"14","has_padding":true,"show_tick":false,"text_align":"left","tick_edge":"left","tick_pos":"50%","type":"note"},"id":1234567890}],"notify_list":[],"tags":[],"created_at":"2025-05-23T12:53:57+00:00","modified_at":"2025-05-23T12:53:57+00:00","template_variable_presets":[]}'
         headers:
             Content-Type:
                 - application/json
