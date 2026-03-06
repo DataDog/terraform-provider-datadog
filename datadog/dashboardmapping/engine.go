@@ -818,6 +818,40 @@ func flattenEventQueryJSON(q map[string]interface{}) map[string]interface{} {
 		}
 		result["group_by"] = flatGBs
 	}
+	// group_by_fields: API returns group_by as a map when group_by_fields variant is used
+	if gbf, ok := q["group_by"].(map[string]interface{}); ok {
+		flat := map[string]interface{}{}
+		if fields, ok := gbf["fields"].([]interface{}); ok {
+			strs := make([]string, len(fields))
+			for i, f := range fields {
+				strs[i] = fmt.Sprintf("%v", f)
+			}
+			flat["fields"] = strs
+		}
+		if v, ok := gbf["limit"]; ok {
+			switch lv := v.(type) {
+			case float64:
+				flat["limit"] = int(lv)
+			case int:
+				flat["limit"] = lv
+			}
+		}
+		if sort, ok := gbf["sort"].(map[string]interface{}); ok {
+			s := map[string]interface{}{}
+			if v, ok := sort["aggregation"].(string); ok {
+				s["aggregation"] = v
+			}
+			if v, ok := sort["metric"].(string); ok && v != "" {
+				s["metric"] = v
+			}
+			if v, ok := sort["order"].(string); ok && v != "" {
+				s["order"] = v
+			}
+			flat["sort"] = []interface{}{s}
+		}
+		result["group_by_fields"] = []interface{}{flat}
+	}
+
 	if uuids, ok := q["cross_org_uuids"].([]interface{}); ok && len(uuids) > 0 {
 		result["cross_org_uuids"] = uuids
 	}
@@ -1756,6 +1790,31 @@ func buildEventQueryJSONFromMap(attrs map[string]interface{}) map[string]interfa
 			groupBys = append(groupBys, gb)
 		}
 		result["group_by"] = groupBys
+	}
+
+	// group_by_fields (alternative to group_by — groups by multiple facets)
+	if gbfMap := getBlockFromMap(attrs, "group_by_fields"); gbfMap != nil {
+		gbf := map[string]interface{}{}
+		if fields := getStringListFromMap(gbfMap, "fields"); len(fields) > 0 {
+			gbf["fields"] = fields
+		}
+		if v := getIntFromMap(gbfMap, "limit"); v != 0 {
+			gbf["limit"] = v
+		}
+		if sortMap := getBlockFromMap(gbfMap, "sort"); sortMap != nil {
+			sort := map[string]interface{}{}
+			if v := getStringFromMap(sortMap, "aggregation"); v != "" {
+				sort["aggregation"] = v
+			}
+			if v := getStringFromMap(sortMap, "metric"); v != "" {
+				sort["metric"] = v
+			}
+			if v := getStringFromMap(sortMap, "order"); v != "" {
+				sort["order"] = v
+			}
+			gbf["sort"] = sort
+		}
+		result["group_by"] = gbf
 	}
 
 	// cross_org_uuids
