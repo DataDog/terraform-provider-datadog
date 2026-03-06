@@ -209,7 +209,6 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	return ctx, httpClient
 }
 
-
 func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov6.ProviderServer, error) {
 	return func() (tfprotov6.ProviderServer, error) {
 		providers.frameworkProvider.DefaultTags = defaultTags
