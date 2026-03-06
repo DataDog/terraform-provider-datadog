@@ -1,80 +1,34 @@
 package dashboardmapping
 
 import (
-	"encoding/json"
 	"testing"
-
-	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// makeStrAttr builds a types.String attr.Value from a Go string.
-func makeStrAttr(s string) attr.Value {
-	return types.StringValue(s)
-}
-
-// makeListAttr builds a types.List holding a single types.Object with the given attrs.
-func makeListAttr(attrTypes map[string]attr.Type, objAttrs map[string]attr.Value) attr.Value {
-	objType := types.ObjectType{AttrTypes: attrTypes}
-	obj, _ := types.ObjectValue(attrTypes, objAttrs)
-	lst, _ := types.ListValue(objType, []attr.Value{obj})
-	return lst
-}
-
-// makeEmptyListAttr builds an empty types.List with the given element type.
-func makeEmptyListAttr(attrTypes map[string]attr.Type) attr.Value {
-	objType := types.ObjectType{AttrTypes: attrTypes}
-	lst, _ := types.ListValue(objType, nil)
-	return lst
-}
-
-// TestTypeOneOf_Build_NumberFormatUnit_Canonical verifies that BuildEngineJSON
+// TestTypeOneOf_Build_NumberFormatUnit_Canonical verifies that BuildEngineJSONFromMap
 // correctly handles a TypeOneOf field (unit) by injecting the discriminator
 // and serializing the matched variant's children.
 func TestTypeOneOf_Build_NumberFormatUnit_Canonical(t *testing.T) {
-	// Build the canonical variant attrs:
-	// unit { canonical { unit_name = "byte" } }
-	canonAttrTypes := FieldSpecsToAttrTypes(numberFormatUnitCanonicalFields)
-	customAttrTypes := FieldSpecsToAttrTypes(numberFormatUnitCustomFields)
-
-	canonAttrs := map[string]attr.Value{
-		"unit_name":     makeStrAttr("byte"),
-		"per_unit_name": makeStrAttr(""),
-	}
-	canonBlock := makeListAttr(canonAttrTypes, canonAttrs)
-	customBlock := makeEmptyListAttr(customAttrTypes)
-
-	// The TypeOneOf "unit" block object
-	unitAttrTypes := FieldSpecsToAttrTypes(widgetNumberFormatFields[0].Children)
-	unitAttrs := map[string]attr.Value{
-		"canonical": canonBlock,
-		"custom":    customBlock,
-	}
-	unitBlock := makeListAttr(unitAttrTypes, unitAttrs)
-
-	// Build the number_format block attrs (unit + unit_scale)
-	unitScaleAttrTypes := FieldSpecsToAttrTypes(numberFormatUnitScaleFields)
-	emptyUnitScale := makeEmptyListAttr(unitScaleAttrTypes)
-
-	nfAttrTypes := FieldSpecsToAttrTypes(widgetNumberFormatFields)
-	nfAttrs := map[string]attr.Value{
-		"unit":       unitBlock,
-		"unit_scale": emptyUnitScale,
+	// Simulate SDKv2 map: unit { canonical { unit_name = "byte" } }
+	nfData := map[string]interface{}{
+		"unit": []interface{}{
+			map[string]interface{}{
+				"canonical": []interface{}{
+					map[string]interface{}{
+						"unit_name":     "byte",
+						"per_unit_name": "",
+					},
+				},
+				"custom": []interface{}{},
+			},
+		},
+		"unit_scale": []interface{}{},
 	}
 
-	_ = nfAttrTypes // used for construction verification
-
-	result := BuildEngineJSON(nfAttrs, widgetNumberFormatFields)
-
-	// Verify JSON output
-	got, err := json.Marshal(result)
-	if err != nil {
-		t.Fatalf("marshal error: %v", err)
-	}
+	result := BuildEngineJSONFromMap(nfData, widgetNumberFormatFields)
 
 	unitJSON, ok := result["unit"].(map[string]interface{})
 	if !ok {
-		t.Fatalf("expected result[\"unit\"] to be map, got: %s", got)
+		t.Fatalf("expected result[\"unit\"] to be map, got: %T", result["unit"])
 	}
 	if unitJSON["type"] != "canonical_unit" {
 		t.Errorf("expected type=canonical_unit, got %v", unitJSON["type"])
@@ -89,31 +43,21 @@ func TestTypeOneOf_Build_NumberFormatUnit_Canonical(t *testing.T) {
 
 // TestTypeOneOf_Build_NumberFormatUnit_Custom verifies the custom variant.
 func TestTypeOneOf_Build_NumberFormatUnit_Custom(t *testing.T) {
-	canonAttrTypes := FieldSpecsToAttrTypes(numberFormatUnitCanonicalFields)
-	customAttrTypes := FieldSpecsToAttrTypes(numberFormatUnitCustomFields)
-
-	customAttrs := map[string]attr.Value{
-		"label": makeStrAttr("bytes"),
-	}
-	customBlock := makeListAttr(customAttrTypes, customAttrs)
-	canonBlock := makeEmptyListAttr(canonAttrTypes)
-
-	unitAttrTypes := FieldSpecsToAttrTypes(widgetNumberFormatFields[0].Children)
-	unitAttrs := map[string]attr.Value{
-		"canonical": canonBlock,
-		"custom":    customBlock,
-	}
-	unitBlock := makeListAttr(unitAttrTypes, unitAttrs)
-
-	unitScaleAttrTypes := FieldSpecsToAttrTypes(numberFormatUnitScaleFields)
-	emptyUnitScale := makeEmptyListAttr(unitScaleAttrTypes)
-
-	nfAttrs := map[string]attr.Value{
-		"unit":       unitBlock,
-		"unit_scale": emptyUnitScale,
+	nfData := map[string]interface{}{
+		"unit": []interface{}{
+			map[string]interface{}{
+				"canonical": []interface{}{},
+				"custom": []interface{}{
+					map[string]interface{}{
+						"label": "bytes",
+					},
+				},
+			},
+		},
+		"unit_scale": []interface{}{},
 	}
 
-	result := BuildEngineJSON(nfAttrs, widgetNumberFormatFields)
+	result := BuildEngineJSONFromMap(nfData, widgetNumberFormatFields)
 
 	unitJSON, ok := result["unit"].(map[string]interface{})
 	if !ok {
@@ -273,33 +217,20 @@ func TestTypeOneOf_Flatten_MultiValue(t *testing.T) {
 // the discriminator "type":"stacked" and includes the optional "legend" field.
 func TestTypeOneOf_Build_ToplistDisplay_Stacked(t *testing.T) {
 	// display { stacked { legend = "automatic" } }
-	stackedAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayStackedFields)
-	flatAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayFlatFields)
-
-	stackedAttrs := map[string]attr.Value{
-		"legend": makeStrAttr("automatic"),
-	}
-	stackedBlock := makeListAttr(stackedAttrTypes, stackedAttrs)
-	flatBlock := makeEmptyListAttr(flatAttrTypes)
-
-	displayField := toplistWidgetStyleFields[0] // the TypeOneOf "display" field
-	displayAttrTypes := FieldSpecsToAttrTypes(displayField.Children)
-	displayAttrs := map[string]attr.Value{
-		"stacked": stackedBlock,
-		"flat":    flatBlock,
-	}
-	displayBlock := makeListAttr(displayAttrTypes, displayAttrs)
-
-	styleFields := toplistWidgetStyleFields
-	styleAttrTypes := FieldSpecsToAttrTypes(styleFields)
-	_ = styleAttrTypes
-	styleAttrs := map[string]attr.Value{
-		"display": displayBlock,
-		"palette": makeStrAttr(""),
-		"scaling": makeStrAttr(""),
+	styleData := map[string]interface{}{
+		"display": []interface{}{
+			map[string]interface{}{
+				"stacked": []interface{}{
+					map[string]interface{}{"legend": "automatic"},
+				},
+				"flat": []interface{}{},
+			},
+		},
+		"palette": "",
+		"scaling": "",
 	}
 
-	result := BuildEngineJSON(styleAttrs, styleFields)
+	result := BuildEngineJSONFromMap(styleData, toplistWidgetStyleFields)
 	displayJSON, ok := result["display"].(map[string]interface{})
 	if !ok {
 		t.Fatalf("expected display to be a map, got: %T (%v)", result["display"], result["display"])
@@ -316,28 +247,20 @@ func TestTypeOneOf_Build_ToplistDisplay_Stacked(t *testing.T) {
 // the discriminator "type":"flat" and emits no other fields.
 func TestTypeOneOf_Build_ToplistDisplay_Flat(t *testing.T) {
 	// display { flat {} }
-	stackedAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayStackedFields)
-	flatAttrTypes := FieldSpecsToAttrTypes(toplistWidgetDisplayFlatFields)
-
-	stackedBlock := makeEmptyListAttr(stackedAttrTypes)
-	flatAttrs := map[string]attr.Value{}
-	flatBlock := makeListAttr(flatAttrTypes, flatAttrs)
-
-	displayField := toplistWidgetStyleFields[0]
-	displayAttrTypes := FieldSpecsToAttrTypes(displayField.Children)
-	displayAttrs := map[string]attr.Value{
-		"stacked": stackedBlock,
-		"flat":    flatBlock,
-	}
-	displayBlock := makeListAttr(displayAttrTypes, displayAttrs)
-
-	styleAttrs := map[string]attr.Value{
-		"display": displayBlock,
-		"palette": makeStrAttr(""),
-		"scaling": makeStrAttr(""),
+	styleData := map[string]interface{}{
+		"display": []interface{}{
+			map[string]interface{}{
+				"stacked": []interface{}{},
+				"flat": []interface{}{
+					map[string]interface{}{},
+				},
+			},
+		},
+		"palette": "",
+		"scaling": "",
 	}
 
-	result := BuildEngineJSON(styleAttrs, toplistWidgetStyleFields)
+	result := BuildEngineJSONFromMap(styleData, toplistWidgetStyleFields)
 	displayJSON, ok := result["display"].(map[string]interface{})
 	if !ok {
 		t.Fatalf("expected display to be a map, got: %T", result["display"])
