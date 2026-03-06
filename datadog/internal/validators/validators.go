@@ -307,23 +307,24 @@ func Float64Between(min, max float64) validator.String {
 	}
 }
 
-func ValidateHttpRequestHeader(v interface{}, k string) (ws []string, errors []error) {
-	value := v.(map[string]interface{})
-	for headerField, headerValue := range value {
-		if !isValidToken(headerField) && !isRequestPseudoHeader(headerField) {
+func ValidateHttpRequestHeaders(v interface{}, k string) (ws []string, errors []error) {
+	headersMap := v.(map[string]interface{})
+	for headerField, headerValue := range headersMap {
+		if !isValidToken(headerField) && !isRequestPseudoHeader(headerField) && !containsDatadogVariableSyntax(headerField) {
 			errors = append(errors, fmt.Errorf("invalid value for %s (header field must be a valid token or a http/2 request pseudo-header)", k))
 			return
 		}
+
 		headerStringValue, ok := headerValue.(string)
 		if !ok {
 			errors = append(errors, fmt.Errorf("expected type of %s to be string", k))
 			return
-		} else {
-			for _, r := range headerStringValue {
-				if (unicode.IsControl(r) && r != '\t') || (r == '\r' || r == '\n') {
-					errors = append(errors, fmt.Errorf("invalid value for %s (header value must not contain invisible characters)", k))
-					return
-				}
+		}
+
+		for _, r := range headerStringValue {
+			if (unicode.IsControl(r) && r != '\t') || (r == '\r' || r == '\n') {
+				errors = append(errors, fmt.Errorf("invalid value for %s (header value must not contain invisible characters)", k))
+				return
 			}
 		}
 	}
@@ -333,6 +334,10 @@ func ValidateHttpRequestHeader(v interface{}, k string) (ws []string, errors []e
 func isRequestPseudoHeader(header string) bool {
 	// :status is a response pseudo-header, and :protocol may only be used internally in websockets
 	return header == ":method" || header == ":scheme" || header == ":authority" || header == ":path"
+}
+
+func containsDatadogVariableSyntax(header string) bool {
+	return regexp.MustCompile(`{{\s*([^{}]*?)\s*}}`).MatchString(header)
 }
 
 func isValidToken(token string) bool {
