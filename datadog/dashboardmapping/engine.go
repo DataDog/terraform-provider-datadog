@@ -15,7 +15,6 @@ import (
 	"strings"
 )
 
-
 // FieldType drives serialization/deserialization behavior in the engine.
 type FieldType int
 
@@ -172,7 +171,6 @@ type WidgetSpec struct {
 // ============================================================
 // Framework attr.Value helpers
 // ============================================================
-
 
 // setAtJSONPath sets a value at a dotted path within a nested map.
 // Example: setAtJSONPath(m, "time.live_span", "5m") sets m["time"]["live_span"] = "5m"
@@ -340,7 +338,6 @@ func toStringSliceFromInterface(raw interface{}) []string {
 	}
 	return result
 }
-
 
 // ============================================================
 // Formula Request Config — unified formula/query request builder
@@ -518,7 +515,6 @@ var dataSourceToQueryType = map[string]string{
 	"apm_dependency_stats": "apm_dependency_stats_query",
 	"apm_resource_stats":   "apm_resource_stats_query",
 }
-
 
 // isFormulaCapableWidget returns true for widget types that support
 // formula/query-style requests (response_format: "scalar" or "timeseries").
@@ -828,7 +824,6 @@ func flattenEventQueryJSON(q map[string]interface{}) map[string]interface{} {
 	return result
 }
 
-
 func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defState map[string]interface{}) {
 	// ---- Formula/query request flattening ----
 	if isFormulaCapableWidget(spec.JSONType) {
@@ -914,7 +909,6 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 		}
 	}
 }
-
 
 func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interface{} {
 	_, hasFormulas := req["formulas"]
@@ -1034,7 +1028,6 @@ func flattenSplitConfigStaticSplitsJSON(staticSplits []interface{}) []interface{
 	}
 	return result
 }
-
 
 // flattenSplitGraphSourceWidgetJSON flattens the source_widget_definition JSON
 // for a split_graph widget response.
@@ -1206,14 +1199,12 @@ func FlattenTemplateVariablePresets(tvps []interface{}) []interface{} {
 	return result
 }
 
-
 // FlattenWidgetEngineJSON is the exported entry point for flattening a single widget's JSON map
 // into HCL state suitable for setting on a TypeList field in schema.ResourceData.
 // Returns nil if the widget type is not recognized.
 func FlattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]interface{} {
 	return flattenWidgetEngineJSON(widgetData)
 }
-
 
 // ============================================================
 // SDKv2 Build Direction (map[string]interface{} input)
