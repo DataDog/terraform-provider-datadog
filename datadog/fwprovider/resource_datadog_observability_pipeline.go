@@ -484,8 +484,9 @@ type httpServerSourceModel struct {
 }
 
 type splunkHecSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+	AddressKey     types.String                      `tfsdk:"address_key"`
+	Tls            []observability_pipeline.TlsModel `tfsdk:"tls"`              // TLS encryption settings for secure ingestion.
+	ValidTokensKey types.String                      `tfsdk:"valid_tokens_key"` // Env var name for comma-separated valid HEC tokens.
 }
 
 type generateMetricsProcessorModel struct {
@@ -952,6 +953,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"address_key": schema.StringAttribute{
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the listen address for the HEC API.",
+												},
+												"valid_tokens_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "The name of the environment variable that contains the comma-separated list of valid Splunk HEC tokens. Defaults to `SOURCE_SPLUNK_HEC_VALID_TOKENS`.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -5269,6 +5274,10 @@ func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.Obser
 		s.Tls = observability_pipeline.ExpandTls(src.Tls)
 	}
 
+	if !src.ValidTokensKey.IsNull() && !src.ValidTokensKey.IsUnknown() {
+		s.SetValidTokensKey(src.ValidTokensKey.ValueString())
+	}
+
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSplunkHecSource: s,
 	}
@@ -5285,6 +5294,10 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
+
+	if v, ok := src.GetValidTokensKeyOk(); ok {
+		out.ValidTokensKey = types.StringValue(*v)
 	}
 
 	return out
