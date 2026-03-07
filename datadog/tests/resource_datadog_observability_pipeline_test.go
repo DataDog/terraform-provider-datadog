@@ -4236,6 +4236,191 @@ resource "datadog_observability_pipeline" "opentelemetry_update" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics" {
+  name = "opentelemetry-metrics-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-1"
+      opentelemetry {
+        tls {
+          crt_file = "/etc/ssl/certs/opentelemetry.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/opentelemetry.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/opentelemetry.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/opentelemetry.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "opentelemetry-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics_noTls(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_no_tls"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_no_tls" {
+  name = "opentelemetry-metrics-pipeline-no-tls"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-2"
+      opentelemetry {
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-2"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline-no-tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "opentelemetry-source-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics_update(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_update"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_update" {
+  name = "opentelemetry-metrics-pipeline-update"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-3"
+      opentelemetry {
+        tls {
+          crt_file = "/etc/ssl/certs/old.crt"
+          ca_file  = "/etc/ssl/certs/old-ca.crt"
+          key_file = "/etc/ssl/private/old.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-3"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline-update"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-3"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/old.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/old-ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/old.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_update" {
+  name = "opentelemetry-metrics-pipeline-updated"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-3"
+      opentelemetry {
+        tls {
+          crt_file = "/etc/ssl/certs/new.crt"
+          ca_file  = "/etc/ssl/certs/new-ca.crt"
+          key_file = "/etc/ssl/private/new.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-3"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline-updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-3"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/new.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/new-ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/new.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_socketSource_tcp(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
