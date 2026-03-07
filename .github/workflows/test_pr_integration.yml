@@ -5,7 +5,7 @@ permissions:
 
 on: # yamllint disable-line rule:truthy
   pull_request:
-    branches: [master, 4.x]
+    branches: [master, v3]
     types: [opened, synchronize, reopened]
 
 concurrency:
