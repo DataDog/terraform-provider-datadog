@@ -1354,10 +1354,18 @@ func buildRootQueryPayload(rootQuery map[string]interface{}) *datadogV2.Security
 }
 
 func parseStringArray(array []interface{}) []string {
-	parsed := make([]string, len(array))
+	// Pre-allocate with capacity but zero length to filter out invalid values
+	parsed := make([]string, 0, len(array))
 
-	for idx, value := range array {
-		parsed[idx] = value.(string)
+	for _, value := range array {
+		// Skip nil values to prevent panic
+		if value == nil {
+			continue
+		}
+		// Use safe type assertion to prevent panic on non-string values
+		if strVal, ok := value.(string); ok {
+			parsed = append(parsed, strVal)
+		}
 	}
 
 	return parsed
