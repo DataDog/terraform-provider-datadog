@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -71,6 +72,26 @@ func NewOnCallScheduleResource() resource.Resource {
 
 func (m *onCallScheduleModel) Validate() diag.Diagnostics {
 	diags := diag.Diagnostics{}
+
+	layerNames := make(map[string]int)
+	for i, layer := range m.Layers {
+		name := layer.Name.ValueString()
+		if name == "" {
+			diags.AddAttributeError(
+				frameworkPath.Root("layer").AtListIndex(i).AtName("name"),
+				"missing layer name",
+				"layer name must not be empty",
+			)
+		} else if firstIdx, seen := layerNames[name]; seen {
+			diags.AddAttributeError(
+				frameworkPath.Root("layer").AtListIndex(i).AtName("name"),
+				"duplicate layer name",
+				fmt.Sprintf("layer name %q is already used at index %d; layer names must be unique within a schedule", name, firstIdx),
+			)
+		} else {
+			layerNames[name] = i
+		}
+	}
 
 	for i, layer := range m.Layers {
 		root := frameworkPath.Root("layer").AtListIndex(i)
