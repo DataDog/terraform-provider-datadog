@@ -254,12 +254,17 @@ func (r *SecurityNotificationRuleResource) Read(ctx context.Context, req resourc
 			return
 		}
 
+		var httpResponse *http.Response
 		if *triggerSource == datadogV2.TRIGGERSOURCE_SECURITY_SIGNALS {
-			response, _, err = r.api.GetSignalNotificationRule(r.auth, state.ID.ValueString())
+			response, httpResponse, err = r.api.GetSignalNotificationRule(r.auth, state.ID.ValueString())
 		} else {
-			response, _, err = r.api.GetVulnerabilityNotificationRule(r.auth, state.ID.ValueString())
+			response, httpResponse, err = r.api.GetVulnerabilityNotificationRule(r.auth, state.ID.ValueString())
 		}
 		if err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				resp.State.RemoveResource(ctx)
+				return
+			}
 			resp.Diagnostics.AddError("Error reading notification rule", err.Error())
 			return
 		}
@@ -271,9 +276,13 @@ func (r *SecurityNotificationRuleResource) Read(ctx context.Context, req resourc
 
 		response, httpResponse, err = r.api.GetSignalNotificationRule(r.auth, state.ID.ValueString())
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
-			response, _, err = r.api.GetVulnerabilityNotificationRule(r.auth, state.ID.ValueString())
+			response, httpResponse, err = r.api.GetVulnerabilityNotificationRule(r.auth, state.ID.ValueString())
 		}
 		if err != nil {
+			if httpResponse != nil && httpResponse.StatusCode == 404 {
+				resp.State.RemoveResource(ctx)
+				return
+			}
 			resp.Diagnostics.AddError("Error reading notification rule", err.Error())
 			return
 		}
