@@ -1271,6 +1271,12 @@ func syntheticsTestRequestFile() *schema.Schema {
 					Required:     true,
 					ValidateFunc: validation.StringLenBetween(1, 1500),
 				},
+				"encoding": {
+					Type:         schema.TypeString,
+					Description:  "Encoding of the file content. Must be `base64` when content contains base64-encoded data.",
+					Optional:     true,
+					ValidateFunc: validation.StringInSlice([]string{"base64"}, false),
+				},
 			},
 		},
 	}
@@ -4396,6 +4402,10 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 			file.SetContent(content.(string))
 		}
 
+		if encoding, ok := fileMap["encoding"]; ok && encoding != "" {
+			file.SetEncoding(encoding.(string))
+		}
+
 		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
 		// Hence, the provider is uploading the file every time the resource is modified.
 		// Always adding the bucket key to the request would prevent updating the file content.
@@ -4459,6 +4469,14 @@ func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestB
 
 		if bucket_key, ok := file.GetBucketKeyOk(); ok {
 			localFile["bucket_key"] = bucket_key
+		}
+
+		// Preserve encoding from user config to avoid drift
+		// (backend strips encoding for text file types after decoding)
+		if i < len(oldLocalBodyFiles) && oldLocalBodyFiles[i] != nil {
+			if encoding, ok := oldLocalBodyFiles[i]["encoding"]; ok && encoding != "" {
+				localFile["encoding"] = encoding
+			}
 		}
 
 		localBodyFiles[i] = localFile
