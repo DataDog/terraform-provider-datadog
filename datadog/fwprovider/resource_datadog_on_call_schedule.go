@@ -73,28 +73,26 @@ func NewOnCallScheduleResource() resource.Resource {
 func (m *onCallScheduleModel) Validate() diag.Diagnostics {
 	diags := diag.Diagnostics{}
 
-	layerNames := make(map[string]int)
+	layerNames := make(map[string]bool)
 	for i, layer := range m.Layers {
+		root := frameworkPath.Root("layer").AtListIndex(i)
+
 		name := layer.Name.ValueString()
 		if name == "" {
 			diags.AddAttributeError(
-				frameworkPath.Root("layer").AtListIndex(i).AtName("name"),
+				root.AtName("name"),
 				"missing layer name",
 				"layer name must not be empty",
 			)
-		} else if firstIdx, seen := layerNames[name]; seen {
+		} else if layerNames[name] {
 			diags.AddAttributeError(
-				frameworkPath.Root("layer").AtListIndex(i).AtName("name"),
+				root.AtName("name"),
 				"duplicate layer name",
-				fmt.Sprintf("layer name %q is already used at index %d; layer names must be unique within a schedule", name, firstIdx),
+				fmt.Sprintf("layer name %q must be unique within a schedule", name),
 			)
 		} else {
-			layerNames[name] = i
+			layerNames[name] = true
 		}
-	}
-
-	for i, layer := range m.Layers {
-		root := frameworkPath.Root("layer").AtListIndex(i)
 
 		if layer.Interval == nil {
 			diags.AddAttributeError(root.AtName("interval"), "missing interval", "schedules must specify an interval")
