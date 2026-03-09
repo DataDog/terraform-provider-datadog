@@ -339,7 +339,8 @@ func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*
 	}
 
 	for _, integration := range resp {
-		if integration.GetProjectId() == state.ProjectID.ValueString() && integration.GetClientEmail() == state.ClientEmail.ValueString() {
+		if integration.GetProjectId() == state.ProjectID.ValueString() &&
+			(state.ClientEmail.IsNull() || state.ClientEmail.IsUnknown() || state.ClientEmail.ValueString() == "" || integration.GetClientEmail() == state.ClientEmail.ValueString()) {
 			if err := utils.CheckForUnparsed(integration); err != nil {
 				return nil, err
 			}
