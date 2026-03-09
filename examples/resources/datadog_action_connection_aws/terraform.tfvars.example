@@ -1,0 +1,6 @@
+# Optional: copy to terraform.tfvars to override connection name / account / role.
+# Credentials come from env: export DD_API_KEY and DD_APP_KEY
+
+connection_name  = "My AWS Connection"
+aws_account_id   = "087496745774"
+aws_role_name    = "datadog-aws-integration-role-zeina"
