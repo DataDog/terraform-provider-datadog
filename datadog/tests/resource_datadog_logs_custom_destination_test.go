@@ -34,7 +34,7 @@ func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: destinationWithRequiredFieldsOnly,
@@ -108,7 +108,7 @@ func TestAccDatadogLogsCustomDestination_forwarder_types(t *testing.T) {
 			testAccPreCheck(t)
 			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
 		},
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCreateLogsCustomDestination(name, httpWithBasicAuth),
