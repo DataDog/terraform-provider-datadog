@@ -98,6 +98,66 @@ func TestAccDatadogSecurityNotificationRuleVulnerabilityRuleSimple(t *testing.T)
 	})
 }
 
+func TestAccDatadogSecurityNotificationRuleSignalRecreateAfterOutOfBandDeletion(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccNotificationRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: simpleSignalResourceConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccNotificationRuleExists(providers.frameworkProvider, signalResourcePath),
+					deleteSignalNotificationRuleExternally(providers.frameworkProvider, signalResourcePath),
+				),
+			},
+			// After the out-of-band deletion, Read should detect 404, remove the resource from
+			// state, and Terraform should recreate it cleanly on the next apply.
+			{
+				Config: simpleSignalResourceConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccNotificationRuleExists(providers.frameworkProvider, signalResourcePath),
+					checkSimpleSignalNotificationRuleContent(name),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogSecurityNotificationRuleVulnerabilityRecreateAfterOutOfBandDeletion(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccNotificationRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: simpleVulnerabilityResourceConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccNotificationRuleExists(providers.frameworkProvider, vulnerabilityResourcePath),
+					deleteVulnerabilityNotificationRuleExternally(providers.frameworkProvider, vulnerabilityResourcePath),
+				),
+			},
+			// After the out-of-band deletion, Read should detect 404, remove the resource from
+			// state, and Terraform should recreate it cleanly on the next apply.
+			{
+				Config: simpleVulnerabilityResourceConfig(name),
+				Check: resource.ComposeTestCheckFunc(
+					testAccNotificationRuleExists(providers.frameworkProvider, vulnerabilityResourcePath),
+					checkSimpleVulnerabilityNotificationRuleContent(name),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSecurityNotificationRuleFull(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -256,6 +316,32 @@ func checkUpdatedVulnerabilityNotificationRuleContent(name string) resource.Test
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "targets.0", "updated_email@datad0g.com"),
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "version", "2"),
 	)
+}
+
+func deleteSignalNotificationRuleExternally(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		r, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("resource '%s' not found in the state", resourceName)
+		}
+		auth := accProvider.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		_, err := apiInstances.GetSecurityMonitoringApiV2().DeleteSignalNotificationRule(auth, r.Primary.ID)
+		return err
+	}
+}
+
+func deleteVulnerabilityNotificationRuleExternally(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		r, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("resource '%s' not found in the state", resourceName)
+		}
+		auth := accProvider.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		_, err := apiInstances.GetSecurityMonitoringApiV2().DeleteVulnerabilityNotificationRule(auth, r.Primary.ID)
+		return err
+	}
 }
 
 func formatSlice(slice []string) string {
