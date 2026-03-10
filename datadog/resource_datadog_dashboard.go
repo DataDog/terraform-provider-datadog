@@ -19,6 +19,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+const dashboardResourceName = "datadog_dashboard"
+
 func resourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.\n\n!> The `is_read_only` field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
@@ -154,7 +156,7 @@ func resourceDatadogDashboard() *schema.Resource {
 func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
+	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
 	dashboardPayload, err := buildDatadogDashboard(d)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
@@ -198,7 +200,7 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
+	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
 	id := d.Id()
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
@@ -365,7 +367,7 @@ func checkForUnparsedDashboard(dashboard datadogV1.Dashboard) error {
 func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
+	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
 	id := d.Id()
 	dashboard, httpresp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, id)
 	if err != nil {
@@ -384,7 +386,7 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
+	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
 	id := d.Id()
 	if _, httpresp, err := apiInstances.GetDashboardsApiV1().DeleteDashboard(auth, id); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard")
@@ -7245,6 +7247,54 @@ func getFormulaQuerySchema() *schema.Schema {
 									},
 								},
 							},
+							"group_by_fields": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"fields": {
+											Type:        schema.TypeList,
+											Required:    true,
+											Description: "List of event facets to group by.",
+											Elem:        &schema.Schema{Type: schema.TypeString},
+										},
+										"limit": {
+											Type:        schema.TypeInt,
+											Optional:    true,
+											Description: "The number of groups to return.",
+										},
+										"sort": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											MaxItems:    1,
+											Description: "The options for sorting group by results.",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"aggregation": {
+														Type:             schema.TypeString,
+														Required:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+														Description:      "The aggregation method for the event platform queries.",
+													},
+													"metric": {
+														Type:        schema.TypeString,
+														Optional:    true,
+														Description: "The metric used for sorting group by results.",
+													},
+													"order": {
+														Type:             schema.TypeString,
+														Optional:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+														Description:      "Direction of sort.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 							"name": {
 								Type:        schema.TypeString,
 								Required:    true,
@@ -7783,7 +7833,41 @@ func buildDatadogEventQuery(data map[string]interface{}) *datadogV1.FormulaAndFu
 
 			datadogGroupBys[i] = *datadogGroupBy
 		}
-		eventQuery.SetGroupBy(datadogGroupBys)
+		groupByConfig := datadogV1.FormulaAndFunctionEventQueryGroupByListAsFormulaAndFunctionEventQueryGroupByConfig(&datadogGroupBys)
+		eventQuery.SetGroupBy(groupByConfig)
+	} else if terraformGroupByFields, ok := data["group_by_fields"].([]interface{}); ok && len(terraformGroupByFields) > 0 {
+		groupByFieldsMap := terraformGroupByFields[0].(map[string]interface{})
+		fieldsRaw := groupByFieldsMap["fields"].([]interface{})
+		fields := make([]string, len(fieldsRaw))
+		for i, f := range fieldsRaw {
+			fields[i] = f.(string)
+		}
+		datadogGroupByFields := datadogV1.NewFormulaAndFunctionEventQueryGroupByFields(fields)
+
+		if v, ok := groupByFieldsMap["limit"].(int); ok && v != 0 {
+			datadogGroupByFields.SetLimit(int64(v))
+		}
+
+		if v, ok := groupByFieldsMap["sort"].([]interface{}); ok && len(v) > 0 {
+			if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
+				sortMap := &datadogV1.FormulaAndFunctionEventQueryGroupBySort{}
+				if aggr, ok := v["aggregation"].(string); ok && len(aggr) > 0 {
+					aggregation := datadogV1.FormulaAndFunctionEventAggregation(aggr)
+					sortMap.SetAggregation(aggregation)
+				}
+				if order, ok := v["order"].(string); ok && len(order) > 0 {
+					eventSort := datadogV1.QuerySortOrder(order)
+					sortMap.SetOrder(eventSort)
+				}
+				if metric, ok := v["metric"].(string); ok && len(metric) > 0 {
+					sortMap.SetMetric(metric)
+				}
+				datadogGroupByFields.SetSort(*sortMap)
+			}
+		}
+
+		groupByConfig := datadogV1.FormulaAndFunctionEventQueryGroupByFieldsAsFormulaAndFunctionEventQueryGroupByConfig(datadogGroupByFields)
+		eventQuery.SetGroupBy(groupByConfig)
 	}
 
 	definition := datadogV1.FormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
@@ -10196,19 +10280,43 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 				terraformComputeList := []map[string]interface{}{terraformCompute}
 				terraformQuery["compute"] = terraformComputeList
 			}
-			if terraformEventQuery, ok := terraformEventQueryDefinition.GetGroupByOk(); ok {
-				terraformGroupBys := make([]map[string]interface{}, len(*terraformEventQuery))
-				for i, groupBy := range *terraformEventQuery {
-					// Facet
-					terraformGroupBy := map[string]interface{}{
-						"facet": groupBy.GetFacet(),
+			if groupByConfig, ok := terraformEventQueryDefinition.GetGroupByOk(); ok {
+				if groupByList := groupByConfig.FormulaAndFunctionEventQueryGroupByList; groupByList != nil {
+					terraformGroupBys := make([]map[string]interface{}, len(*groupByList))
+					for i, groupBy := range *groupByList {
+						// Facet
+						terraformGroupBy := map[string]interface{}{
+							"facet": groupBy.GetFacet(),
+						}
+						// Limit
+						if v, ok := groupBy.GetLimitOk(); ok {
+							terraformGroupBy["limit"] = *v
+						}
+						// Sort
+						if v, ok := groupBy.GetSortOk(); ok {
+							terraformSort := map[string]interface{}{}
+							if metric, ok := v.GetMetricOk(); ok {
+								terraformSort["metric"] = metric
+							}
+							if order, ok := v.GetOrderOk(); ok {
+								terraformSort["order"] = order
+							}
+							if aggregation, ok := v.GetAggregationOk(); ok {
+								terraformSort["aggregation"] = aggregation
+							}
+							terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+						}
+						terraformGroupBys[i] = terraformGroupBy
 					}
-					// Limit
-					if v, ok := groupBy.GetLimitOk(); ok {
-						terraformGroupBy["limit"] = *v
+					terraformQuery["group_by"] = &terraformGroupBys
+				} else if groupByFields := groupByConfig.FormulaAndFunctionEventQueryGroupByFields; groupByFields != nil {
+					terraformGroupByFieldsMap := map[string]interface{}{
+						"fields": groupByFields.GetFields(),
 					}
-					// Sort
-					if v, ok := groupBy.GetSortOk(); ok {
+					if v, ok := groupByFields.GetLimitOk(); ok {
+						terraformGroupByFieldsMap["limit"] = *v
+					}
+					if v, ok := groupByFields.GetSortOk(); ok {
 						terraformSort := map[string]interface{}{}
 						if metric, ok := v.GetMetricOk(); ok {
 							terraformSort["metric"] = metric
@@ -10219,11 +10327,10 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 						if aggregation, ok := v.GetAggregationOk(); ok {
 							terraformSort["aggregation"] = aggregation
 						}
-						terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+						terraformGroupByFieldsMap["sort"] = []map[string]interface{}{terraformSort}
 					}
-					terraformGroupBys[i] = terraformGroupBy
+					terraformQuery["group_by_fields"] = []map[string]interface{}{terraformGroupByFieldsMap}
 				}
-				terraformQuery["group_by"] = &terraformGroupBys
 			}
 			terraformQueries := []map[string]interface{}{terraformQuery}
 			terraformEventQuery := map[string]interface{}{}

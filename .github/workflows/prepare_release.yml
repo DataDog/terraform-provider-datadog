@@ -18,7 +18,7 @@ on:
         type: choice
         options:
           - master
-          - "4.x"
+          - v3
 
 jobs:
   prepare_release:
