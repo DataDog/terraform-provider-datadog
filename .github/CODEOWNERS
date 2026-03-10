@@ -67,7 +67,7 @@ datadog/**/*datadog_api_key*                     @DataDog/credentials-management
 datadog/**/*datadog_apm_retention_filter*        @DataDog/apm-trace-intake
 datadog/**/*datadog_application_key*             @DataDog/credentials-management
 datadog/**/*datadog_hosts*                       @DataDog/redapl-storage @DataDog/redapl-ingest
-datadog/**/*datadog_integration_aws*             @DataDog/aws-ints-core
+datadog/**/*datadog_integration_aws*             @DataDog/aws-integrations
 datadog/**/*datadog_integration_azure*           @DataDog/azure-integrations
 datadog/**/*datadog_integration_cloudflare*      @DataDog/saas-integrations
 datadog/**/*datadog_integration_confluent*       @DataDog/saas-integrations
