@@ -4242,7 +4242,7 @@ func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics(t *testing.
 	resourceName := "datadog_observability_pipeline.opentelemetry_metrics"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4294,7 +4294,7 @@ func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics_noTls(t *te
 	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_no_tls"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4338,7 +4338,7 @@ func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics_update(t *t
 	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_update"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
