@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - master
-      - 4.x
+      - v3
 
 jobs:
   check-sdkv2:
