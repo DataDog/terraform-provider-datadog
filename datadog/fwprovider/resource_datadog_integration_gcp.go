@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -338,16 +339,34 @@ func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*
 		return nil, err
 	}
 
+	var matches []datadogV1.GCPAccount
 	for _, integration := range resp {
-		if integration.GetProjectId() == state.ProjectID.ValueString() && integration.GetClientEmail() == state.ClientEmail.ValueString() {
-			if err := utils.CheckForUnparsed(integration); err != nil {
-				return nil, err
-			}
-			return &integration, nil
+		if integration.GetProjectId() != state.ProjectID.ValueString() {
+			continue
 		}
+		if err := utils.CheckForUnparsed(integration); err != nil {
+			return nil, err
+		}
+		matches = append(matches, integration)
 	}
 
-	return nil, nil // Leave handling of how to deal with nil account to the caller
+	switch len(matches) {
+	case 0:
+		return nil, nil // Leave handling of how to deal with nil account to the caller
+	case 1:
+		return &matches[0], nil
+	default:
+		// Multiple service accounts for the same project — fall back to exact match on client_email
+		for i, m := range matches {
+			if m.GetClientEmail() == state.ClientEmail.ValueString() {
+				return &matches[i], nil
+			}
+		}
+		return nil, fmt.Errorf(
+			"multiple GCP integrations found for project %q; no exact match on client_email %q",
+			state.ProjectID.ValueString(), state.ClientEmail.ValueString(),
+		)
+	}
 }
 
 func (r *integrationGcpResource) buildIntegrationGcpRequestBodyBase(state integrationGcpModel) *datadogV1.GCPAccount {
