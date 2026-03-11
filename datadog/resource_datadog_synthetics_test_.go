@@ -3370,11 +3370,17 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 				}
 			} else if stepSubtype == "wait" {
 				step.SyntheticsAPIWaitStep = datadogV1.NewSyntheticsAPIWaitStepWithDefaults()
+				if len(stepMap["id"].(string)) > 0 {
+					step.SyntheticsAPIWaitStep.SetId(stepMap["id"].(string))
+				}
 				step.SyntheticsAPIWaitStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPIWaitStep.SetSubtype(datadogV1.SyntheticsAPIWaitStepSubtype(stepMap["subtype"].(string)))
 				step.SyntheticsAPIWaitStep.SetValue(int32(stepMap["value"].(int)))
 			} else if stepSubtype == "playSubTest" {
 				step.SyntheticsAPISubtestStep = datadogV1.NewSyntheticsAPISubtestStepWithDefaults()
+				if len(stepMap["id"].(string)) > 0 {
+					step.SyntheticsAPISubtestStep.SetId(stepMap["id"].(string))
+				}
 				step.SyntheticsAPISubtestStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPISubtestStep.SetSubtype(datadogV1.SyntheticsAPISubtestStepSubtype(stepMap["subtype"].(string)))
 				if subtestPublicID, ok := stepMap["subtest_public_id"].(string); ok && subtestPublicID != "" {

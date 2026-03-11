@@ -816,6 +816,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes(t *testing.T) {
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITestAllStepSubtypes(ctx, accProvider, t),
+			updateSyntheticsMultistepAPITestAllStepSubtypes(ctx, accProvider, t),
 		},
 	})
 }
@@ -7156,6 +7157,297 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 
 			api_step {
 				name              = "Subtest step"
+				subtype           = "playSubTest"
+				subtest_public_id = datadog_synthetics_test.single_api.id
+			}
+		}
+	`, testName)
+}
+
+func updateSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+
+	return resource.TestStep{
+		Config: updateSyntheticsMultistepAPITestConfigAllStepSubtypes(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			// Verify test metadata
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "subtype", "multi"),
+			// HTTP step - updated name
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.0.name", "Updated Request on github.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.0.subtype", "http"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.0.id"),
+			// Wait step - updated name and value
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.1.name", "Wait 20 seconds"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.1.subtype", "wait"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.1.value", "20"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.1.id"),
+			// gRPC step - same
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.2.subtype", "grpc"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.2.id"),
+			// SSL step - same
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.3.subtype", "ssl"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.3.id"),
+			// DNS step - same
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.subtype", "dns"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.4.id"),
+			// WebSocket step - same
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.5.subtype", "websocket"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.5.id"),
+			// TCP step - same
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.6.subtype", "tcp"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.6.id"),
+			// UDP step - same
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.7.subtype", "udp"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.7.id"),
+			// Subtest step - updated name
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.name", "Updated Subtest step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.subtype", "playSubTest"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.id"),
+		),
+	}
+}
+
+func updateSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) string {
+	return fmt.Sprintf(`
+		resource "datadog_synthetics_test" "single_api" {
+			type = "api"
+			subtype = "http"
+
+			request_definition {
+				method = "GET"
+				url = "https://www.datadoghq.com"
+			}
+
+			assertion {
+				type = "statusCode"
+				operator = "is"
+				target = "200"
+			}
+			locations = ["aws:us-east-1"]
+
+			options_list {
+				tick_every = 60
+			}
+
+			name = "%[1]s"
+			message = "Notify @datadog.user"
+			tags = ["foo:bar", "baz"]
+
+			status = "paused"
+		}
+
+		resource "datadog_synthetics_test" "test_all_api_subtypes" {
+			name      = "%[1]s"
+			type      = "api"
+			subtype   = "multi"
+			status    = "paused"
+			locations = ["aws:us-east-1"]
+			tags      = ["env:sandbox"]
+
+			options_list {
+				tick_every = 900
+				min_failure_duration = 0
+				min_location_failed = 1
+			}
+
+			api_step {
+				is_critical = true
+				name        = "Updated Request on github.com"
+				subtype     = "http"
+				value       = 0
+
+				assertion {
+					operator = "is"
+					target   = "200"
+					type     = "statusCode"
+				}
+
+				request_definition {
+					allow_insecure          = false
+					follow_redirects        = false
+					http_version            = "any"
+					method                  = "GET"
+					no_saving_response_body = false
+					number_of_packets       = 0
+					persist_cookies         = false
+					should_track_hops       = false
+					timeout                 = 0
+					url                     = "https://github.com"
+				}
+
+				retry {
+					count    = 0
+					interval = 300
+				}
+			}
+
+			api_step {
+				name    = "Wait 20 seconds"
+				subtype = "wait"
+				value   = 20
+			}
+
+			api_step {
+				allow_failure = false
+				is_critical   = true
+				name          = "Test on grpcb.in"
+				request_definition {
+					host      = "grpcb.in"
+					port      = 9000
+					service   = "addsvc.Add"
+					method    = "Concat"
+					message   = "{\n    \"a\": \"Lorem Ipsum\",\n    \"b\": \"Lorem Ipsum\"\n}"
+					call_type = "unary"
+				}
+				retry {
+					count    = 0
+					interval = 300
+				}
+				subtype = "grpc"
+			}
+
+			api_step {
+				allow_failure = false
+				is_critical   = true
+				name          = "Test on google.fr"
+				subtype       = "ssl"
+
+				assertion {
+					operator = "moreThanOrEqual"
+					type     = "tlsVersion"
+					target   = 1.3
+				}
+
+				request_definition {
+					host                         = "example.org"
+					port                         = "443"
+					check_certificate_revocation = true
+					disable_aia_intermediate_fetching = true
+				}
+				retry {
+					count    = 0
+					interval = 300
+				}
+			}
+
+			api_step {
+				allow_failure = false
+				subtype = "dns"
+				is_critical = true
+				name        = "Test on troisdizaines.com"
+
+				assertion {
+					type     = "recordSome"
+					operator = "is"
+					property = "A"
+					target   = "213.186.33.19"
+				}
+				request_definition {
+					host       = "troisdizaines.com"
+					dns_server = "8.8.8.8"
+					dns_server_port = "53"
+				}
+				retry {
+					count    = 0
+					interval = 300
+				}
+			}
+
+			api_step {
+				allow_failure = false
+				is_critical   = true
+				name          = "Test on ws://34.95.79.70/web-socket"
+				subtype       = "websocket"
+
+				assertion {
+					operator = "lessThan"
+					type     = "responseTime"
+					target   = 1000
+				}
+				request_definition {
+					url                       = "ws://34.95.79.70/web-socket"
+					message                   = "My message"
+					is_message_base64_encoded = true
+				}
+				retry {
+					count    = 0
+					interval = 300
+				}
+			}
+
+			api_step {
+				allow_failure = false
+				is_critical   = true
+				name          = "Test on 34.95.79.70"
+				subtype       = "tcp"
+
+				assertion {
+					operator = "lessThan"
+					type     = "responseTime"
+					target   = 1000
+				}
+				request_definition {
+					host              = "34.95.79.70"
+					port              = 80
+					should_track_hops = true
+					timeout           = 32
+				}
+				retry {
+					count    = 0
+					interval = 300
+				}
+			}
+
+			api_step {
+				allow_failure = false
+				is_critical   = true
+				name          = "Test on udp.shopist.io"
+				subtype       = "udp"
+
+				assertion {
+					operator = "lessThan"
+					type     = "responseTime"
+					target   = 1000
+				}
+				request_definition {
+					host    = "8.8.8.8"
+					port    = 53
+					message = "A image.google.com"
+				}
+				retry {
+					count    = 0
+					interval = 300
+				}
+			}
+
+			api_step {
+				name              = "Updated Subtest step"
 				subtype           = "playSubTest"
 				subtest_public_id = datadog_synthetics_test.single_api.id
 			}
