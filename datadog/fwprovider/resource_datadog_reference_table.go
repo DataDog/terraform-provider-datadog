@@ -348,9 +348,15 @@ func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resourc
 	// Check if schema is being modified on an existing resource
 	if state.Schema != nil && plan.Schema != nil {
 		// Compare primary keys using slices.Equal
+		if plan.Schema.PrimaryKeys.IsUnknown() {
+			return
+		}
 		var statePKs, planPKs []string
-		state.Schema.PrimaryKeys.ElementsAs(ctx, &statePKs, false)
-		plan.Schema.PrimaryKeys.ElementsAs(ctx, &planPKs, false)
+		response.Diagnostics.Append(state.Schema.PrimaryKeys.ElementsAs(ctx, &statePKs, false)...)
+		response.Diagnostics.Append(plan.Schema.PrimaryKeys.ElementsAs(ctx, &planPKs, false)...)
+		if response.Diagnostics.HasError() {
+			return
+		}
 		if !slices.Equal(statePKs, planPKs) {
 			response.Diagnostics.AddError(
 				"Primary key modification not supported",
@@ -361,6 +367,9 @@ func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resourc
 		}
 
 		// Compare fields
+		if plan.Schema.Fields.IsUnknown() {
+			return
+		}
 		stateFields, diags := getFieldsFromList(ctx, state.Schema.Fields)
 		response.Diagnostics.Append(diags...)
 		planFields, diags := getFieldsFromList(ctx, plan.Schema.Fields)
