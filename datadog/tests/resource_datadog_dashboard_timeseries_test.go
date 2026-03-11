@@ -1201,3 +1201,47 @@ func TestAccDatadogDashboardTimeseriesOrderBy(t *testing.T) {
 func TestAccDatadogDashboardTimeseriesOrderBy_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesOrderByConfig, "datadog_dashboard.timeseries_dashboard")
 }
+
+const datadogDashboardTimeseriesHasValueLabelsConfig = `
+resource "datadog_dashboard" "timeseries_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	widget {
+		timeseries_definition {
+			title = "Timeseries With Value Labels"
+			request {
+				q = "avg:system.cpu.user{*} by {host}"
+				style {
+					palette = "dog_classic"
+					line_type = "solid"
+					line_width = "normal"
+					has_value_labels = true
+				}
+				display_type = "line"
+			}
+		}
+	}
+}
+`
+
+var datadogDashboardTimeseriesHasValueLabelsAsserts = []string{
+	"title = {{uniq}}",
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"widget.0.timeseries_definition.0.title = Timeseries With Value Labels",
+	"widget.0.timeseries_definition.0.request.0.q = avg:system.cpu.user{*} by {host}",
+	"widget.0.timeseries_definition.0.request.0.style.0.palette = dog_classic",
+	"widget.0.timeseries_definition.0.request.0.style.0.line_type = solid",
+	"widget.0.timeseries_definition.0.request.0.style.0.line_width = normal",
+	"widget.0.timeseries_definition.0.request.0.style.0.has_value_labels = true",
+	"widget.0.timeseries_definition.0.request.0.display_type = line",
+}
+
+func TestAccDatadogDashboardTimeseriesHasValueLabels(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTimeseriesHasValueLabelsConfig, "datadog_dashboard.timeseries_dashboard", datadogDashboardTimeseriesHasValueLabelsAsserts)
+}
+
+func TestAccDatadogDashboardTimeseriesHasValueLabels_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTimeseriesHasValueLabelsConfig, "datadog_dashboard.timeseries_dashboard")
+}
