@@ -1,0 +1,467 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 249
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"level":2,"name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-other","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"type":"rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 552
+        uncompressed: false
+        body: '{"data":{"id":"83etm8i554kenfv1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard","created_at":"2026-03-11T21:49:44.337683702Z","custom":true,"enabled":true,"level":2,"modified_at":"2026-03-11T21:49:44.337683702Z","name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-other","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"relationships":{"scorecard":{"data":{"id":"-JWsh-V9c-I0","type":"scorecard"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 178.49375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"level":1,"name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"type":"rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 555
+        uncompressed: false
+        body: '{"data":{"id":"tb0rpc5kb6jkxm48","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard","created_at":"2026-03-11T21:49:44.335266106Z","custom":true,"enabled":true,"level":1,"modified_at":"2026-03-11T21:49:44.335266106Z","name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"relationships":{"scorecard":{"data":{"id":"-JWsh-V9c-I0","type":"scorecard"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 186.908083ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching&page%5Boffset%5D=0&page%5Bsize%5D=100
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 775
+        uncompressed: false
+        body: '{"data":[{"id":"tb0rpc5kb6jkxm48","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard","created_at":"2026-03-11T21:49:44.335266Z","custom":true,"enabled":true,"level":1,"modified_at":"2026-03-11T21:49:44.335266Z","name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"relationships":{"scorecard":{"data":{"id":"-JWsh-V9c-I0","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=100\u0026page%5Bsize%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 50.529709ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching&page%5Boffset%5D=1&page%5Bsize%5D=100
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 235
+        uncompressed: false
+        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=101\u0026page%5Bsize%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.906875ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching&page%5Boffset%5D=0&page%5Bsize%5D=100
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 775
+        uncompressed: false
+        body: '{"data":[{"id":"tb0rpc5kb6jkxm48","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard","created_at":"2026-03-11T21:49:44.335266Z","custom":true,"enabled":true,"level":1,"modified_at":"2026-03-11T21:49:44.335266Z","name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"relationships":{"scorecard":{"data":{"id":"-JWsh-V9c-I0","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=100\u0026page%5Bsize%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 40.957042ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching&page%5Boffset%5D=1&page%5Bsize%5D=100
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 235
+        uncompressed: false
+        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=101\u0026page%5Bsize%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 38.102041ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=tb0rpc5kb6jkxm48&page%5Bsize%5D=1
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 705
+        uncompressed: false
+        body: '{"data":[{"id":"tb0rpc5kb6jkxm48","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard","created_at":"2026-03-11T21:49:44.335266Z","custom":true,"enabled":true,"level":1,"modified_at":"2026-03-11T21:49:44.335266Z","name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"relationships":{"scorecard":{"data":{"id":"-JWsh-V9c-I0","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=tb0rpc5kb6jkxm48\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1\u0026page%5Bsize%5D=1"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 34.397625ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=83etm8i554kenfv1&page%5Bsize%5D=1
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 702
+        uncompressed: false
+        body: '{"data":[{"id":"83etm8i554kenfv1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard","created_at":"2026-03-11T21:49:44.337683Z","custom":true,"enabled":true,"level":2,"modified_at":"2026-03-11T21:49:44.337683Z","name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-other","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"relationships":{"scorecard":{"data":{"id":"-JWsh-V9c-I0","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=83etm8i554kenfv1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1\u0026page%5Bsize%5D=1"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 34.374625ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching&page%5Boffset%5D=0&page%5Bsize%5D=100
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 775
+        uncompressed: false
+        body: '{"data":[{"id":"tb0rpc5kb6jkxm48","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard","created_at":"2026-03-11T21:49:44.335266Z","custom":true,"enabled":true,"level":1,"modified_at":"2026-03-11T21:49:44.335266Z","name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching","scorecard_name":"tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-scorecard"},"relationships":{"scorecard":{"data":{"id":"-JWsh-V9c-I0","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=100\u0026page%5Bsize%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 47.5005ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching&page%5Boffset%5D=1&page%5Bsize%5D=100
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 235
+        uncompressed: false
+        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bname%5D=tf-TestAccDatadogScorecardRulesDataSource_FilterName-local-1773265782-matching\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=101\u0026page%5Bsize%5D=100"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 33.201ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/scorecard/rules/83etm8i554kenfv1
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 607.301834ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/scorecard/rules/tb0rpc5kb6jkxm48
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 868.536459ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=tb0rpc5kb6jkxm48&page%5Bsize%5D=1
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 165
+        uncompressed: false
+        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=tb0rpc5kb6jkxm48\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1\u0026page%5Bsize%5D=1"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 29.070833ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=83etm8i554kenfv1&page%5Bsize%5D=1
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 165
+        uncompressed: false
+        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=83etm8i554kenfv1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1\u0026page%5Bsize%5D=1"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 31.064208ms
