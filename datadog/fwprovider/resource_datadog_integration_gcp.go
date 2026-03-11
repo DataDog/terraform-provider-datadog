@@ -17,6 +17,32 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+// requiresReplaceIfKnown is a plan modifier that requires replacement only when
+// the prior state value was known (non-null). This handles write-only credential
+// fields that the API never returns: after import the state is null, so we don't
+// force recreation just because the user has the value in their config. Once the
+// value is known in state (after create or a subsequent apply), a change will
+// correctly trigger replacement.
+type requiresReplaceIfKnown struct{}
+
+func (r requiresReplaceIfKnown) Description(_ context.Context) string {
+	return "Requires replacement if the previous state value was known (non-null)."
+}
+
+func (r requiresReplaceIfKnown) MarkdownDescription(_ context.Context) string {
+	return "Requires replacement if the previous state value was known (non-null)."
+}
+
+func (r requiresReplaceIfKnown) PlanModifyString(_ context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	// If there is no prior state value (e.g. during import), don't require replacement.
+	if req.StateValue.IsNull() || req.StateValue.IsUnknown() {
+		return
+	}
+	if !req.PlanValue.Equal(req.StateValue) {
+		resp.RequiresReplace = true
+	}
+}
+
 const (
 	defaultType                    = "service_account"
 	defaultAuthURI                 = "https://accounts.google.com/o/oauth2/auth"
@@ -86,7 +112,7 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "Your private key ID found in your JSON service account key.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+					requiresReplaceIfKnown{},
 				},
 			},
 			"private_key": schema.StringAttribute{
@@ -94,7 +120,7 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Required:    true,
 				Sensitive:   true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+					requiresReplaceIfKnown{},
 				},
 			},
 			"client_email": schema.StringAttribute{
@@ -108,7 +134,7 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "Your ID found in your JSON service account key.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+					requiresReplaceIfKnown{},
 				},
 			},
 			"host_filters": schema.StringAttribute{
@@ -338,8 +364,14 @@ func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*
 		return nil, err
 	}
 
+	// During import, only state.ID is set (via ImportStatePassthroughID); state.ProjectID is null.
+	projectId := state.ProjectID.ValueString()
+	if projectId == "" {
+		projectId = state.ID.ValueString()
+	}
+
 	for _, integration := range resp {
-		if integration.GetProjectId() == state.ProjectID.ValueString() &&
+		if integration.GetProjectId() == projectId &&
 			(state.ClientEmail.IsNull() || state.ClientEmail.IsUnknown() || state.ClientEmail.ValueString() == "" || integration.GetClientEmail() == state.ClientEmail.ValueString()) {
 			if err := utils.CheckForUnparsed(integration); err != nil {
 				return nil, err
