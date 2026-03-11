@@ -1,3 +1,19 @@
+## 4.1.0 (March 11, 2026)
+
+### BUGFIXES
+* [datadog_agentless_scanning_gcp_scan_options] Handle 404 in Read for out-of-band deletion by @k3nz0 in https://github.com/DataDog/terraform-provider-datadog/pull/3558
+* [datadog_dashboard] Support group_by_fields in event_query by @archana-asokan in https://github.com/DataDog/terraform-provider-datadog/pull/3571
+* [datadog_synthetics_test] Accept variables in header names and/or values by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/3566
+### FEATURES
+* [datadog_dashboard_secure_embed_dashboard] Add resource for secure embed dashboards by @michlee1337 in https://github.com/DataDog/terraform-provider-datadog/pull/3564
+### NOTES
+* [REDRES-6000] Add REDAPL Ingest CODEOWNERS by @annxiesun in https://github.com/DataDog/terraform-provider-datadog/pull/3563
+
+## New Contributors
+* @annxiesun made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3563
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.0.0...v4.1.0
+
 ## 4.0.0 (March 4, 2026)
 
 This release includes breaking changes in some resources.
