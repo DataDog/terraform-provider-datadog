@@ -279,10 +279,15 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"http_version": {
-				Description: "HTTP version to use for an HTTP request in an API test or step.",
-				Deprecated:  "Use `http_version` in the `options_list` field instead.",
-				Type:        schema.TypeString,
-				Optional:    true,
+				Description:  "HTTP version to use for an HTTP request in an API test or step.",
+				Deprecated:   "Use `http_version` in the `options_list` field instead.",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Computed:     true,
+				DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+					// This field is deprecated and silently ignored; suppress all diffs.
+					return true
+				},
 			},
 			"is_message_base64_encoded": {
 				Description: "For Websocket tests, whether the message is treated as a base64-encoded string in the server.",

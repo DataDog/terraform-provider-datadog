@@ -198,6 +198,60 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsAPITest_DeprecatedHttpVersion(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsAPITestConfigDeprecatedHttpVersion(testName),
+				Check: resource.ComposeTestCheckFunc(
+					testSyntheticsTestExists(accProvider),
+				),
+			},
+		},
+	})
+}
+
+func createSyntheticsAPITestConfigDeprecatedHttpVersion(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "foo" {
+	type = "api"
+	subtype = "http"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		http_version = "http2"
+	}
+
+	assertion {
+		type = "statusCode"
+		operator = "is"
+		target = "200"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+
+	options_list {
+		tick_every = 60
+		min_location_failed = 1
+	}
+
+	name = "%s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar"]
+
+	status = "paused"
+}`, uniq)
+}
+
 func TestAccDatadogSyntheticsAPITest_EmptyLocations(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -1350,7 +1404,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provid
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_proxy.0.headers.%", "2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request_proxy.0.headers.Accept", "application/json"),
+				"datadog_synthetics_test.foo", "requ est_proxy.0.headers.Accept", "application/json"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
 			resource.TestCheckResourceAttr(
