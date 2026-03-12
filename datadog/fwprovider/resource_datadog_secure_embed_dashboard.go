@@ -20,8 +20,8 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &dashboardSecureEmbedResource{}
-	_ resource.ResourceWithImportState = &dashboardSecureEmbedResource{}
+	_ resource.ResourceWithConfigure   = &secureEmbedDashboardResource{}
+	_ resource.ResourceWithImportState = &secureEmbedDashboardResource{}
 )
 
 // --- Go structs for the JSONAPI payloads ---
@@ -111,26 +111,26 @@ type secureEmbedModel struct {
 
 // --- Resource ---
 
-type dashboardSecureEmbedResource struct {
+type secureEmbedDashboardResource struct {
 	Api  *datadog.APIClient
 	Auth context.Context
 }
 
-func NewDashboardSecureEmbedResource() resource.Resource {
-	return &dashboardSecureEmbedResource{}
+func NewSecureEmbedDashboardResource() resource.Resource {
+	return &secureEmbedDashboardResource{}
 }
 
-func (r *dashboardSecureEmbedResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *secureEmbedDashboardResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	providerData := req.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.HttpClient
 	r.Auth = providerData.Auth
 }
 
-func (r *dashboardSecureEmbedResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "dashboard_secure_embed_dashboard"
+func (r *secureEmbedDashboardResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "secure_embed_dashboard"
 }
 
-func (r *dashboardSecureEmbedResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *secureEmbedDashboardResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manages a Datadog secure embed shared dashboard. " +
 			"NOTE: The HMAC `credential` is only returned by the API once on creation and is stored in Terraform state. " +
@@ -239,11 +239,11 @@ func (r *dashboardSecureEmbedResource) Schema(_ context.Context, _ resource.Sche
 	}
 }
 
-func (r *dashboardSecureEmbedResource) apiPath(dashboardID string) string {
+func (r *secureEmbedDashboardResource) apiPath(dashboardID string) string {
 	return fmt.Sprintf("/api/v2/dashboard/%s/shared/secure-embed", dashboardID)
 }
 
-func (r *dashboardSecureEmbedResource) apiPathWithToken(dashboardID, token string) string {
+func (r *secureEmbedDashboardResource) apiPathWithToken(dashboardID, token string) string {
 	return fmt.Sprintf("/api/v2/dashboard/%s/shared/secure-embed/%s", dashboardID, token)
 }
 
@@ -262,7 +262,7 @@ func stringListFromTypes(l types.List) []string {
 	return result
 }
 
-func (r *dashboardSecureEmbedResource) buildRequest(plan secureEmbedModel, reqType string) secureEmbedRequest {
+func (r *secureEmbedDashboardResource) buildRequest(plan secureEmbedModel, reqType string) secureEmbedRequest {
 	globalTimeSelectable := plan.GlobalTimeSelectable.ValueBool()
 	highDensity := plan.ViewingPrefsHighDensity.ValueBool()
 
@@ -297,7 +297,7 @@ func (r *dashboardSecureEmbedResource) buildRequest(plan secureEmbedModel, reqTy
 	}
 }
 
-func (r *dashboardSecureEmbedResource) updateModelFromResponse(ctx context.Context, model *secureEmbedModel, resp secureEmbedResponse) {
+func (r *secureEmbedDashboardResource) updateModelFromResponse(ctx context.Context, model *secureEmbedModel, resp secureEmbedResponse) {
 	attr := resp.Data.Attributes
 	model.Token = types.StringValue(attr.Token)
 	model.URL = types.StringValue(attr.URL)
@@ -334,7 +334,7 @@ func (r *dashboardSecureEmbedResource) updateModelFromResponse(ctx context.Conte
 	model.ID = types.StringValue(model.DashboardID.ValueString() + ":" + attr.Token)
 }
 
-func (r *dashboardSecureEmbedResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *secureEmbedDashboardResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan secureEmbedModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -366,7 +366,7 @@ func (r *dashboardSecureEmbedResource) Create(ctx context.Context, req resource.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *dashboardSecureEmbedResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *secureEmbedDashboardResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state secureEmbedModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -394,7 +394,7 @@ func (r *dashboardSecureEmbedResource) Read(ctx context.Context, req resource.Re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *dashboardSecureEmbedResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *secureEmbedDashboardResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan secureEmbedModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
@@ -435,7 +435,7 @@ func (r *dashboardSecureEmbedResource) Update(ctx context.Context, req resource.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }
 
-func (r *dashboardSecureEmbedResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *secureEmbedDashboardResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state secureEmbedModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -453,8 +453,8 @@ func (r *dashboardSecureEmbedResource) Delete(ctx context.Context, req resource.
 	}
 }
 
-// ImportState supports `terraform import datadog_dashboard_secure_embed_dashboard.x <dashboard_id>:<token>`
-func (r *dashboardSecureEmbedResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+// ImportState supports `terraform import datadog_secure_embed_dashboard.x <dashboard_id>:<token>`
+func (r *secureEmbedDashboardResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	parts := strings.SplitN(req.ID, ":", 2)
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
 		resp.Diagnostics.AddError(
