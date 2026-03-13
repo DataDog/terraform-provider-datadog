@@ -105,9 +105,9 @@ datadog/**/*datadog_cost_budget*                 @DataDog/cloud-cost-management
 datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/cloud-cost-management
 datadog/**/*datadog_deployment_gate*             @DataDog/ci-app-backend
 datadog/**/*observability_pipeline*              @DataDog/observability-pipelines
-datadog/**/*datadog_dashboard_secure_embed*      @DataDog/api-reliability @DataDog/reporting-and-sharing
+datadog/**/*datadog_secure_embed_dashboard*      @DataDog/api-reliability @DataDog/reporting-and-sharing
 
 # Team-specific
 docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
 scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management
-docs/resources/dashboard_secure_embed_dashboard.md @DataDog/api-reliability @DataDog/reporting-and-sharing
+docs/resources/secure_embed_dashboard.md         @DataDog/api-reliability @DataDog/reporting-and-sharing
