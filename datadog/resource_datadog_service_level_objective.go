@@ -464,19 +464,19 @@ func buildSLOCountSpec(d []interface{}) *datadogV1.SLOCountSpec {
 		}
 	}
 
-	countDef := datadogV1.NewSLOCountDefinitionWithDefaults()
-	countDef.SetGoodEventsFormula(goodEventsFormula)
-	countDef.SetQueries(queries)
-
 	if totalEventsFormulaStr, ok := raw["total_events_formula"].(string); ok && totalEventsFormulaStr != "" {
 		totalEventsFormula := *datadogV1.NewSLOFormula(totalEventsFormulaStr)
-		countDef.SetTotalEventsFormula(totalEventsFormula)
+		totalCountDef := datadogV1.NewSLOCountDefinitionWithTotalEventsFormula(goodEventsFormula, queries, totalEventsFormula)
+		countDef := datadogV1.SLOCountDefinitionWithTotalEventsFormulaAsSLOCountDefinition(totalCountDef)
+		return datadogV1.NewSLOCountSpec(countDef)
 	} else if badEventsFormulaStr, ok := raw["bad_events_formula"].(string); ok && badEventsFormulaStr != "" {
 		badEventsFormula := *datadogV1.NewSLOFormula(badEventsFormulaStr)
-		countDef.SetBadEventsFormula(badEventsFormula)
+		badCountDef := datadogV1.NewSLOCountDefinitionWithBadEventsFormula(badEventsFormula, goodEventsFormula, queries)
+		countDef := datadogV1.SLOCountDefinitionWithBadEventsFormulaAsSLOCountDefinition(badCountDef)
+		return datadogV1.NewSLOCountSpec(countDef)
 	}
 
-	return datadogV1.NewSLOCountSpec(*countDef)
+	return nil
 }
 
 func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest, error) {
@@ -740,17 +740,7 @@ func buildTerraformSliSpecification(sliSpec *datadogV1.SLOSliSpec) []map[string]
 			rawFormula := map[string]interface{}{"formula_expression": formula.GetFormula()}
 			rawFormulas = append(rawFormulas, rawFormula)
 		}
-		rawQueries := make([]map[string]interface{}, 0)
-		for _, q := range query.GetQueries() {
-			rawMetricQueries := make([]map[string]interface{}, 0)
-			rawQuery := map[string]interface{}{
-				"name":        q.FormulaAndFunctionMetricQueryDefinition.GetName(),
-				"data_source": q.FormulaAndFunctionMetricQueryDefinition.GetDataSource(),
-				"query":       q.FormulaAndFunctionMetricQueryDefinition.GetQuery(),
-			}
-			rawMetricQueries = append(rawMetricQueries, rawQuery)
-			rawQueries = append(rawQueries, map[string]interface{}{"metric_query": rawMetricQueries})
-		}
+		rawQueries := buildTerraformCountQueries(query.GetQueries())
 		rawQuery := make([]map[string]interface{}, 0)
 		rawQuery = append(rawQuery, map[string]interface{}{
 			"formula": rawFormulas,
@@ -782,32 +772,44 @@ func buildTerraformSliSpecification(sliSpec *datadogV1.SLOSliSpec) []map[string]
 func buildTerraformCountSpecification(countSpec *datadogV1.SLOCountSpec) []map[string]interface{} {
 	countDef := countSpec.GetCount()
 
-	rawQueries := make([]map[string]interface{}, 0)
-	for _, q := range countDef.GetQueries() {
-		rawMetricQueries := make([]map[string]interface{}, 0)
+	if badCountDef := countDef.SLOCountDefinitionWithBadEventsFormula; badCountDef != nil {
+		goodFormula := badCountDef.GetGoodEventsFormula()
+		badFormula := badCountDef.GetBadEventsFormula()
+		return []map[string]interface{}{
+			{
+				"good_events_formula": goodFormula.Formula,
+				"bad_events_formula":  badFormula.Formula,
+				"queries":             buildTerraformCountQueries(badCountDef.GetQueries()),
+			},
+		}
+	}
+
+	if totalCountDef := countDef.SLOCountDefinitionWithTotalEventsFormula; totalCountDef != nil {
+		goodFormula := totalCountDef.GetGoodEventsFormula()
+		totalFormula := totalCountDef.GetTotalEventsFormula()
+		return []map[string]interface{}{
+			{
+				"good_events_formula":  goodFormula.Formula,
+				"total_events_formula": totalFormula.Formula,
+				"queries":              buildTerraformCountQueries(totalCountDef.GetQueries()),
+			},
+		}
+	}
+
+	return []map[string]interface{}{}
+}
+
+func buildTerraformCountQueries(queries []datadogV1.SLODataSourceQueryDefinition) []map[string]interface{} {
+	rawQueries := make([]map[string]interface{}, 0, len(queries))
+	for _, q := range queries {
 		rawQuery := map[string]interface{}{
 			"name":        q.FormulaAndFunctionMetricQueryDefinition.GetName(),
 			"data_source": q.FormulaAndFunctionMetricQueryDefinition.GetDataSource(),
 			"query":       q.FormulaAndFunctionMetricQueryDefinition.GetQuery(),
 		}
-		rawMetricQueries = append(rawMetricQueries, rawQuery)
-		rawQueries = append(rawQueries, map[string]interface{}{"metric_query": rawMetricQueries})
+		rawQueries = append(rawQueries, map[string]interface{}{"metric_query": []map[string]interface{}{rawQuery}})
 	}
-
-	goodFormula := countDef.GetGoodEventsFormula()
-
-	result := map[string]interface{}{
-		"good_events_formula": goodFormula.GetFormula(),
-		"queries":             rawQueries,
-	}
-
-	if badFormula, ok := countDef.GetBadEventsFormulaOk(); ok && badFormula.GetFormula() != "" {
-		result["bad_events_formula"] = badFormula.GetFormula()
-	} else if totalFormula, ok := countDef.GetTotalEventsFormulaOk(); ok && totalFormula.GetFormula() != "" {
-		result["total_events_formula"] = totalFormula.GetFormula()
-	}
-
-	return []map[string]interface{}{result}
+	return rawQueries
 }
 
 // metricSLOUsesSliSpecInState chooses which metric-SLO representation to keep in state.
