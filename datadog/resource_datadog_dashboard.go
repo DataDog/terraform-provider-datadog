@@ -8132,7 +8132,7 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
-				datadogTimeseriesRequest.Style = buildDatadogWidgetRequestStyle(v)
+				datadogTimeseriesRequest.Style = buildDatadogTimeseriesRequestStyle(v)
 			}
 		}
 		// Metadata
@@ -8199,7 +8199,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		}
 
 		if v, ok := datadogRequest.GetStyleOk(); ok {
-			style := buildTerraformWidgetRequestStyle(*v)
+			style := buildTerraformTimeseriesRequestStyle(*v)
 			terraformRequest["style"] = []map[string]interface{}{style}
 		}
 		// Metadata
@@ -11181,6 +11181,40 @@ func buildDatadogWidgetRequestStyle(terraformStyle map[string]interface{}) *data
 	return datadogStyle
 }
 func buildTerraformWidgetRequestStyle(datadogStyle datadogV1.WidgetRequestStyle) map[string]interface{} {
+	terraformStyle := map[string]interface{}{}
+	if v, ok := datadogStyle.GetPaletteOk(); ok {
+		terraformStyle["palette"] = v
+	}
+	if v, ok := datadogStyle.GetLineTypeOk(); ok {
+		terraformStyle["line_type"] = v
+	}
+	if v, ok := datadogStyle.GetLineWidthOk(); ok {
+		terraformStyle["line_width"] = v
+	}
+	if v, ok := datadogStyle.GetOrderByOk(); ok {
+		terraformStyle["order_by"] = v
+	}
+	return terraformStyle
+}
+
+func buildDatadogTimeseriesRequestStyle(terraformStyle map[string]interface{}) *datadogV1.TimeseriesRequestStyle {
+	datadogStyle := &datadogV1.TimeseriesRequestStyle{}
+	if v, ok := terraformStyle["palette"].(string); ok && len(v) != 0 {
+		datadogStyle.SetPalette(v)
+	}
+	if v, ok := terraformStyle["line_type"].(string); ok && len(v) != 0 {
+		datadogStyle.SetLineType(datadogV1.WidgetLineType(v))
+	}
+	if v, ok := terraformStyle["line_width"].(string); ok && len(v) != 0 {
+		datadogStyle.SetLineWidth(datadogV1.WidgetLineWidth(v))
+	}
+	if v, ok := terraformStyle["order_by"].(string); ok && len(v) != 0 {
+		datadogStyle.SetOrderBy(datadogV1.WidgetStyleOrderBy(v))
+	}
+	return datadogStyle
+}
+
+func buildTerraformTimeseriesRequestStyle(datadogStyle datadogV1.TimeseriesRequestStyle) map[string]interface{} {
 	terraformStyle := map[string]interface{}{}
 	if v, ok := datadogStyle.GetPaletteOk(); ok {
 		terraformStyle["palette"] = v
