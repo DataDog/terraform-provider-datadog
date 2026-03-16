@@ -459,7 +459,7 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		}
 		if shouldSaveMatch, ok := tR.GetShouldSaveMatchOk(); ok {
 			if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
-				textReplacement["should_save_match"] = shouldSaveMatch
+				textReplacement["should_save_match"] = *shouldSaveMatch
 			}
 		}
 		if replacementType, ok := tR.GetTypeOk(); ok {
