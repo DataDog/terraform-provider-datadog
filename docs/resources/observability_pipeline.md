@@ -1221,7 +1221,7 @@ Optional:
 
 Required:
 
-- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
+- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`. Valid values are `json`, `raw_message`.
 
 Optional:
 
@@ -1229,6 +1229,7 @@ Optional:
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Splunk HEC endpoint URL.
 - `index` (String) Optional name of the Splunk index where logs are written.
+- `indexed_fields` (List of String) List of log field names to send as indexed fields to Splunk HEC. Available only when `encoding` is `json`.
 - `sourcetype` (String) The Splunk sourcetype to assign to log events.
 - `token_key` (String) Name of the environment variable or secret that holds the Splunk HEC token.
 
