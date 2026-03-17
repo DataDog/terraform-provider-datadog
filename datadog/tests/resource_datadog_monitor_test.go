@@ -602,8 +602,8 @@ func TestAccDatadogMonitor_Log(t *testing.T) {
 						"datadog_monitor.foo", "query", "logs(\"service:foo AND type:error\").index(\"main\").rollup(\"count\").by(\"source\").last(\"5m\") > 2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "notify_no_data", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "on_missing_data", ""),
+					resource.TestCheckNoResourceAttr(
+						"datadog_monitor.foo", "on_missing_data"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "group_retention_duration", ""),
 					resource.TestCheckResourceAttr(

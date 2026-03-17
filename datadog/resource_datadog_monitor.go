@@ -170,7 +170,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description:   "A boolean indicating whether this monitor will notify when data stops reporting.",
 					Type:          schema.TypeBool,
 					Optional:      true,
-					Default:       false,
+					Computed:      true,
 					ConflictsWith: []string{"on_missing_data"},
 				},
 				"on_missing_data": {
@@ -215,7 +215,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description: "The number of minutes before a monitor will notify when data stops reporting.\n\nWe recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
 					Type:        schema.TypeInt,
 					Optional:    true,
-					Default:     defaultNoDataTimeframeMinutes,
+					Computed:    true,
 					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 						if !d.Get("notify_no_data").(bool) {
 							if newVal != oldVal {
@@ -832,9 +832,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if onMissingDataOk {
 		o.SetOnMissingData(datadogV1.OnMissingDataOption(attr.(string)))
 	}
-	// no_data_timeframe cannot be combined with on_missing_data. This provider
-	// defaults no_data_timeframe to 10, so we need this extra logic to exclude
-	// no_data_timeframe from the monitor definition when on_missing_data is set.
+	// no_data_timeframe cannot be combined with on_missing_data.
 	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk && !hasCustomSchedule {
 		o.SetNoDataTimeframe(int64(attr.(int)))
 	}
@@ -1341,16 +1339,22 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("evaluation_delay", m.Options.GetEvaluationDelay()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("notify_no_data", m.Options.GetNotifyNoData()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("on_missing_data", m.Options.GetOnMissingData()); err != nil {
-		return diag.FromErr(err)
+	// on_missing_data and notify_no_data/no_data_timeframe are mutually exclusive
+	// per ConflictsWith in the schema. Only populate the group actually in use.
+	onMissingData := m.Options.GetOnMissingData()
+	if onMissingData != "" {
+		if err := d.Set("on_missing_data", onMissingData); err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		if err := d.Set("notify_no_data", m.Options.GetNotifyNoData()); err != nil {
+			return diag.FromErr(err)
+		}
+		if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("group_retention_duration", m.Options.GetGroupRetentionDuration()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("renotify_interval", m.Options.GetRenotifyInterval()); err != nil {
