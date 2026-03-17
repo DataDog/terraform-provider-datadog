@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -877,13 +878,14 @@ func buildDatadogTabs(terraformTabs *[]interface{}) []map[string]interface{} {
 	tabs := make([]map[string]interface{}, len(*terraformTabs))
 	for i, t := range *terraformTabs {
 		tab := t.(map[string]interface{})
+		id := uuid.NewSHA1(uuid.Nil, []byte(fmt.Sprintf("tab-%d", i))).String()
+		if v, ok := tab["id"].(string); ok && v != "" {
+			id = v
+		}
 		ddTab := map[string]interface{}{
+			"id":         id,
 			"name":       tab["name"].(string),
 			"widget_ids": tab["widget_ids"].([]interface{}),
-		}
-		// Only include ID if it's set (computed field from prior state)
-		if id, ok := tab["id"].(string); ok && id != "" {
-			ddTab["id"] = id
 		}
 		tabs[i] = ddTab
 	}
