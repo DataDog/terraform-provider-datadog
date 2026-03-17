@@ -34,6 +34,8 @@ var monitorComputedFields = []string{
 	"overall_state_modified",
 	"url",
 	"draft_status",
+	"restricted",
+	"run_as",
 }
 
 const monitorPath = "/api/v1/monitor"
