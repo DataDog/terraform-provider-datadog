@@ -24,7 +24,7 @@ var indexSchema = map[string]*schema.Schema{
 		ForceNew:    true,
 	},
 	"disable_daily_limit": {
-		Description: "If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.",
+		Description: "If true, disables the daily limit and sets `daily_limit` to null. If false, enables the daily limit. When creating an index, if this attribute is omitted, the daily limit is enabled by default. When updating an index, if this attribute is omitted, the existing value is preserved. Providing a `daily_limit` value does not re-enable the limit if it was previously disabled unless `disable_daily_limit` is explicitly set to false.",
 		Type:        schema.TypeBool,
 		Optional:    true,
 		Computed:    true,
