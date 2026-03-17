@@ -1,3 +1,18 @@
+## 4.2.0 (March 17, 2026)
+
+### BUGFIXES
+* [datadog_reference_table] fix schema fields unknown values by @g-brizolier in https://github.com/DataDog/terraform-provider-datadog/pull/3443
+* [datadog_secure_embed_dashboard] Rename resource to datadog_secure_embed_dashboard by @michlee1337 in https://github.com/DataDog/terraform-provider-datadog/pull/3601
+### IMPROVEMENTS
+* [datadog_synthetics_test] Wait and subtest steps multistep api tests keep their id by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/3590
+* [datadog_dashboard] Add has_value_labels to timeseries widget style by @beccajellinek in https://github.com/DataDog/terraform-provider-datadog/pull/3594
+
+## New Contributors
+* @ClairePhi made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3598
+* @beccajellinek made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3594
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.1.0...v4.2.0
+
 ## 4.1.0 (March 11, 2026)
 
 ### BUGFIXES
