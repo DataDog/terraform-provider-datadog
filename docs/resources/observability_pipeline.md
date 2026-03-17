@@ -2082,6 +2082,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the Datadog Agent source.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--datadog_agent--tls))
 
 <a id="nestedblock--config--source--datadog_agent--tls"></a>
