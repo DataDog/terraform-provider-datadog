@@ -4909,7 +4909,7 @@ resource "datadog_observability_pipeline" "amazon_s3_generic" {
         }
 
         compression {
-          type  = "gzip"
+          algorithm  = "gzip"
           level = 6
         }
 
@@ -4937,7 +4937,7 @@ resource "datadog_observability_pipeline" "amazon_s3_generic" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.key_prefix", "logs/"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.storage_class", "STANDARD"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.encoding.0.type", "parquet"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.type", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.algorithm", "gzip"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.level", "6"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.auth.0.assume_role", "arn:aws:iam::123456789012:role/example-role"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.auth.0.external_id", "external-id-123"),
@@ -4985,7 +4985,7 @@ resource "datadog_observability_pipeline" "amazon_s3_generic_basic" {
         }
 
         compression {
-          type = "snappy"
+          algorithm = "snappy"
         }
       }
     }
@@ -5000,7 +5000,7 @@ resource "datadog_observability_pipeline" "amazon_s3_generic_basic" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.region", "us-east-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.storage_class", "STANDARD"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.encoding.0.type", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.type", "snappy"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.algorithm", "snappy"),
 				),
 			},
 		},

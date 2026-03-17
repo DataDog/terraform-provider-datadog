@@ -30,8 +30,8 @@ type AmazonS3GenericEncodingModel struct {
 
 // AmazonS3GenericCompressionModel represents the compression algorithm applied to encoded logs.
 type AmazonS3GenericCompressionModel struct {
-	Type  types.String `tfsdk:"type"`
-	Level types.Int64  `tfsdk:"level"`
+	Algorithm types.String `tfsdk:"algorithm"`
+	Level     types.Int64  `tfsdk:"level"`
 }
 
 // AmazonS3GenericBatchSettingsModel represents event batching settings.
@@ -86,19 +86,19 @@ func AmazonS3GenericDestinationSchema() schema.ListNestedBlock {
 					},
 				},
 				"compression": schema.ListNestedBlock{
-					Description: "Compression algorithm applied to encoded logs.",
+					Description: "Compression configuration.",
 					NestedObject: schema.NestedBlockObject{
 						Attributes: map[string]schema.Attribute{
-							"type": schema.StringAttribute{
+							"algorithm": schema.StringAttribute{
 								Required:    true,
-								Description: "The compression type. Use `gzip` or `zstd` with a `level`, or `snappy` without.",
+								Description: "Compression algorithm.",
 								Validators: []validator.String{
 									stringvalidator.OneOf("gzip", "zstd", "snappy"),
 								},
 							},
 							"level": schema.Int64Attribute{
 								Optional:    true,
-								Description: "Compression level. Required for `gzip` and `zstd`; not used for `snappy`.",
+								Description: "Compression level.",
 							},
 						},
 					},
@@ -107,7 +107,7 @@ func AmazonS3GenericDestinationSchema() schema.ListNestedBlock {
 						listvalidator.IsRequired(),
 					},
 				},
-				"auth":          AwsAuthSchema(),
+				"auth": AwsAuthSchema(),
 				"batch_settings": schema.ListNestedBlock{
 					Description: "Event batching settings.",
 					NestedObject: schema.NestedBlockObject{
@@ -186,7 +186,7 @@ func expandS3GenericEncoding(m AmazonS3GenericEncodingModel) datadogV2.Observabi
 }
 
 func expandS3GenericCompression(m AmazonS3GenericCompressionModel) datadogV2.ObservabilityPipelineAmazonS3GenericCompression {
-	switch m.Type.ValueString() {
+	switch m.Algorithm.ValueString() {
 	case "gzip":
 		c := datadogV2.NewObservabilityPipelineAmazonS3GenericCompressionGzipWithDefaults()
 		if !m.Level.IsNull() {
@@ -259,18 +259,18 @@ func flattenS3GenericCompression(src datadogV2.ObservabilityPipelineAmazonS3Gene
 	switch {
 	case src.ObservabilityPipelineAmazonS3GenericCompressionGzip != nil:
 		return []AmazonS3GenericCompressionModel{{
-			Type:  types.StringValue("gzip"),
-			Level: types.Int64Value(src.ObservabilityPipelineAmazonS3GenericCompressionGzip.GetLevel()),
+			Algorithm: types.StringValue("gzip"),
+			Level:     types.Int64Value(src.ObservabilityPipelineAmazonS3GenericCompressionGzip.GetLevel()),
 		}}
 	case src.ObservabilityPipelineAmazonS3GenericCompressionZstd != nil:
 		return []AmazonS3GenericCompressionModel{{
-			Type:  types.StringValue("zstd"),
-			Level: types.Int64Value(src.ObservabilityPipelineAmazonS3GenericCompressionZstd.GetLevel()),
+			Algorithm: types.StringValue("zstd"),
+			Level:     types.Int64Value(src.ObservabilityPipelineAmazonS3GenericCompressionZstd.GetLevel()),
 		}}
 	default: // snappy
 		return []AmazonS3GenericCompressionModel{{
-			Type:  types.StringValue("snappy"),
-			Level: types.Int64Null(),
+			Algorithm: types.StringValue("snappy"),
+			Level:     types.Int64Null(),
 		}}
 	}
 }
