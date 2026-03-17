@@ -6,7 +6,6 @@ import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -25,8 +24,7 @@ type SplunkHECDestinationModel struct {
 }
 
 // ExpandSplunkHECDestination converts the Terraform model to the Datadog API model
-func ExpandSplunkHECDestination(ctx context.Context, id string, inputs types.List, src *SplunkHECDestinationModel) (datadogV2.ObservabilityPipelineConfigDestinationItem, diag.Diagnostics) {
-	var diags diag.Diagnostics
+func ExpandSplunkHECDestination(ctx context.Context, id string, inputs types.List, src *SplunkHECDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
 	s := datadogV2.NewObservabilityPipelineSplunkHecDestinationWithDefaults()
 	s.SetId(id)
 
@@ -68,7 +66,7 @@ func ExpandSplunkHECDestination(ctx context.Context, id string, inputs types.Lis
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineSplunkHecDestination: s,
-	}, diags
+	}
 }
 
 // FlattenSplunkHECDestination converts the Datadog API model to the Terraform model

@@ -2901,12 +2901,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Destinations = append(config.Destinations, expandHttpClientDestination(ctx, dest, d))
 		}
 		for _, d := range dest.SplunkHecDestination {
-			item, hecDiags := observability_pipeline.ExpandSplunkHECDestination(ctx, dest.Id.ValueString(), dest.Inputs, d)
-			diags.Append(hecDiags...)
-			if hecDiags.HasError() {
-				return nil, diags
-			}
-			config.Destinations = append(config.Destinations, item)
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSplunkHECDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 		for _, d := range dest.GoogleCloudStorageDestination {
 			config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, dest, d))
