@@ -210,7 +210,8 @@ type metricTagsProcessorRuleModel struct {
 }
 
 type ocsfMapperProcessorModel struct {
-	Mapping []ocsfMappingModel `tfsdk:"mapping"`
+	Mapping       []ocsfMappingModel `tfsdk:"mapping"`
+	KeepUnmatched types.Bool         `tfsdk:"keep_unmatched"`
 }
 
 type ocsfMappingModel struct {
@@ -4085,6 +4086,9 @@ func flattenOcsfMapperProcessor(ctx context.Context, src *datadogV2.Observabilit
 	}
 	model := createProcessorModel(src)
 	ocsf := &ocsfMapperProcessorModel{}
+	if val, ok := src.GetKeepUnmatchedOk(); ok {
+		ocsf.KeepUnmatched = types.BoolPointerValue(val)
+	}
 	for _, mapping := range src.GetMappings() {
 		m := ocsfMappingModel{
 			Include: types.StringValue(mapping.GetInclude()),
@@ -4483,6 +4487,10 @@ func expandOcsfMapperProcessorItem(ctx context.Context, common observability_pip
 		})
 	}
 	proc.SetMappings(mappings)
+
+	if !src.KeepUnmatched.IsNull() && !src.KeepUnmatched.IsUnknown() {
+		proc.SetKeepUnmatched(src.KeepUnmatched.ValueBool())
+	}
 
 	return datadogV2.ObservabilityPipelineOcsfMapperProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }

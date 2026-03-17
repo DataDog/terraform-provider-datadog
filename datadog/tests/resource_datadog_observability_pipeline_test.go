@@ -3488,6 +3488,7 @@ resource "datadog_observability_pipeline" "ocsf" {
         include = "*"
 
         ocsf_mapper {
+          keep_unmatched = true
           mapping {
             include         = "source:lib"
             library_mapping = "CloudTrail Account Change"
@@ -3511,6 +3512,7 @@ resource "datadog_observability_pipeline" "ocsf" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "ocsf-mapper"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.keep_unmatched", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.include", "source:lib"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.library_mapping", "CloudTrail Account Change"),
 				),
@@ -3598,6 +3600,7 @@ resource "datadog_observability_pipeline" "ocsf_custom" {
         include = "*"
 
         ocsf_mapper {
+          keep_unmatched = false
           mapping {
             include = "source:custom"
             custom_mapping {
@@ -3646,6 +3649,7 @@ resource "datadog_observability_pipeline" "ocsf_custom" {
 }`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.keep_unmatched", "false"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.include", "source:custom"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.version", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.metadata.0.class", "Device Inventory Info"),
