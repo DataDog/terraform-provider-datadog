@@ -107,6 +107,7 @@ Optional:
 
 - `amazon_opensearch` (Block List) The `amazon_opensearch` destination writes logs to Amazon OpenSearch. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch))
 - `amazon_s3` (Block List) The `amazon_s3` destination sends your logs in Datadog-rehydratable format to an Amazon S3 bucket for archiving. (see [below for nested schema](#nestedblock--config--destination--amazon_s3))
+- `amazon_s3_generic` (Block List) The `amazon_s3_generic` destination sends your logs to an Amazon S3 bucket. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic))
 - `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
 - `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
@@ -233,6 +234,63 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic"></a>
+### Nested Schema for `config.destination.amazon_s3_generic`
+
+Required:
+
+- `bucket` (String) S3 bucket name.
+- `region` (String) AWS region of the S3 bucket.
+- `storage_class` (String) S3 storage class. Valid values are `STANDARD`, `REDUCED_REDUNDANCY`, `INTELLIGENT_TIERING`, `STANDARD_IA`, `EXPRESS_ONEZONE`, `ONEZONE_IA`, `GLACIER`, `GLACIER_IR`, `DEEP_ARCHIVE`.
+
+Optional:
+
+- `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--auth))
+- `batch_settings` (Block List) Event batching settings. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--batch_settings))
+- `compression` (Block List) Compression configuration. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--compression))
+- `encoding` (Block List) Encoding format for the destination. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--encoding))
+- `key_prefix` (String) Optional prefix for object keys.
+
+<a id="nestedblock--config--destination--amazon_s3_generic--auth"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.auth`
+
+Optional:
+
+- `assume_role` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `external_id` (String) A unique identifier for cross-account role assumption.
+- `session_name` (String) A session identifier used for logging and tracing the assumed role session.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--batch_settings"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.batch_settings`
+
+Optional:
+
+- `batch_size` (Number) Maximum batch size in bytes.
+- `timeout_secs` (Number) Maximum number of seconds to wait before flushing the batch.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--compression"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. Valid values are `gzip`, `zstd`, `snappy`.
+
+Optional:
+
+- `level` (Number) Compression level.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--encoding"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.encoding`
+
+Required:
+
+- `type` (String) The encoding type. Valid values are `json`, `parquet`.
 
 
 
