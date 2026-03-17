@@ -7271,6 +7271,7 @@ Optional:
 
 Optional:
 
+- `has_value_labels` (Boolean) If true, the value is displayed as a label relative to the data point.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
 - `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.

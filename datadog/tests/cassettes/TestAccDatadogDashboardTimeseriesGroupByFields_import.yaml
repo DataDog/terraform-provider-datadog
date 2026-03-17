@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1772653153","widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1773418630","widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}}]}
         form: {}
         headers:
             Accept:
@@ -31,13 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"njm-pfd-6r5","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1772653153","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/njm-pfd-6r5/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1772653153","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4970998579211117}],"notify_list":[],"created_at":"2026-03-04T19:39:14.822003+00:00","modified_at":"2026-03-04T19:39:14.822003+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"2r3-s8d-mv4","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1773418630","description":"Created using the Datadog provider in Terraform","author_handle":"becca.jellinek@datadoghq.com","author_name":"Becca Jellinek","layout_type":"ordered","url":"/dashboard/2r3-s8d-mv4/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1773418630","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6758228229654554}],"notify_list":[],"created_at":"2026-03-13T16:17:12.649851+00:00","modified_at":"2026-03-13T16:17:12.649851+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 159.9125ms
+        duration: 265.118708ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/njm-pfd-6r5
+        url: https://api.datadoghq.com/api/v1/dashboard/2r3-s8d-mv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"njm-pfd-6r5","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1772653153","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/njm-pfd-6r5/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1772653153","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4970998579211117}],"notify_list":[],"created_at":"2026-03-04T19:39:14.822003+00:00","modified_at":"2026-03-04T19:39:14.822003+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"2r3-s8d-mv4","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1773418630","description":"Created using the Datadog provider in Terraform","author_handle":"becca.jellinek@datadoghq.com","author_name":"Becca Jellinek","layout_type":"ordered","url":"/dashboard/2r3-s8d-mv4/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1773418630","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6758228229654554}],"notify_list":[],"created_at":"2026-03-13T16:17:12.649851+00:00","modified_at":"2026-03-13T16:17:12.649851+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 103.693959ms
+        duration: 89.982583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/njm-pfd-6r5
+        url: https://api.datadoghq.com/api/v1/dashboard/2r3-s8d-mv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"njm-pfd-6r5","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1772653153","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/njm-pfd-6r5/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1772653153","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4970998579211117}],"notify_list":[],"created_at":"2026-03-04T19:39:14.822003+00:00","modified_at":"2026-03-04T19:39:14.822003+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"2r3-s8d-mv4","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1773418630","description":"Created using the Datadog provider in Terraform","author_handle":"becca.jellinek@datadoghq.com","author_name":"Becca Jellinek","layout_type":"ordered","url":"/dashboard/2r3-s8d-mv4/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1773418630","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6758228229654554}],"notify_list":[],"created_at":"2026-03-13T16:17:12.649851+00:00","modified_at":"2026-03-13T16:17:12.649851+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 88.856625ms
+        duration: 98.216833ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/njm-pfd-6r5
+        url: https://api.datadoghq.com/api/v1/dashboard/2r3-s8d-mv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -133,13 +133,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"njm-pfd-6r5","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1772653153","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/njm-pfd-6r5/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1772653153","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4970998579211117}],"notify_list":[],"created_at":"2026-03-04T19:39:14.822003+00:00","modified_at":"2026-03-04T19:39:14.822003+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"2r3-s8d-mv4","title":"tf-TestAccDatadogDashboardTimeseriesGroupByFields_import-local-1773418630","description":"Created using the Datadog provider in Terraform","author_handle":"becca.jellinek@datadoghq.com","author_name":"Becca Jellinek","layout_type":"ordered","url":"/dashboard/2r3-s8d-mv4/tf-testaccdatadogdashboardtimeseriesgroupbyfieldsimport-local-1773418630","template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"data_source":"logs","group_by":{"fields":["hostname","service"],"limit":10,"sort":{"aggregation":"count","order":"desc"}},"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6758228229654554}],"notify_list":[],"created_at":"2026-03-13T16:17:12.649851+00:00","modified_at":"2026-03-13T16:17:12.649851+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 113.476333ms
+        duration: 97.179792ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -156,7 +156,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/njm-pfd-6r5
+        url: https://api.datadoghq.com/api/v1/dashboard/2r3-s8d-mv4
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -167,13 +167,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"njm-pfd-6r5"}'
+        body: '{"deleted_dashboard_id":"2r3-s8d-mv4"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 325.579875ms
+        duration: 339.037333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -190,7 +190,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/njm-pfd-6r5
+        url: https://api.datadoghq.com/api/v1/dashboard/2r3-s8d-mv4
         method: GET
       response:
         proto: HTTP/1.1
@@ -201,10 +201,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID njm-pfd-6r5 not found"]}'
+        body: '{"errors":["Dashboard with ID 2r3-s8d-mv4 not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 71.087667ms
+        duration: 174.553042ms
