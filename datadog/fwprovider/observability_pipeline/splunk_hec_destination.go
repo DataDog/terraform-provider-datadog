@@ -119,7 +119,7 @@ func SplunkHECDestinationSchema() schema.ListNestedBlock {
 				},
 				"encoding": schema.StringAttribute{
 					Required:    true,
-					Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
+					Description: "Encoding format for log events.",
 					Validators: []validator.String{
 						stringvalidator.OneOf("json", "raw_message"),
 					},

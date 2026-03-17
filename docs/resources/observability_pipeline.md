@@ -1221,7 +1221,7 @@ Optional:
 
 Required:
 
-- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`. Valid values are `json`, `raw_message`.
+- `encoding` (String) Encoding format for log events. Valid values are `json`, `raw_message`.
 
 Optional:
 
