@@ -339,12 +339,13 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 
-	// Set tabs
+	// Set tabs — always call d.Set so stale state is cleared when tabs are removed
+	var terraformTabs []map[string]interface{}
 	if tabsRaw, ok := dashboard.AdditionalProperties["tabs"]; ok && tabsRaw != nil {
-		terraformTabs := buildTerraformTabs(tabsRaw, &dashboard.Widgets)
-		if err := d.Set("tab", terraformTabs); err != nil {
-			return diag.FromErr(err)
-		}
+		terraformTabs = buildTerraformTabs(tabsRaw, &dashboard.Widgets)
+	}
+	if err := d.Set("tab", terraformTabs); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return nil
@@ -909,13 +910,15 @@ func buildTerraformTabs(tabsRaw interface{}, widgets *[]datadogV1.Widget) []map[
 		tab := t.(map[string]interface{})
 		widgetIDs := tab["widget_ids"].([]interface{})
 
-		// Reverse-map integer widget IDs to @N positional references
-		refs := make([]string, len(widgetIDs))
-		for j, wid := range widgetIDs {
+		// Reverse-map integer widget IDs to @N positional references.
+		// Skip any IDs that don't map to a known widget position rather than
+		// emitting an empty string which would corrupt state.
+		refs := make([]string, 0, len(widgetIDs))
+		for _, wid := range widgetIDs {
 			// widget_ids come as float64 from JSON
 			widgetID := int64(wid.(float64))
 			if pos, ok := widgetIDToPosition[widgetID]; ok {
-				refs[j] = fmt.Sprintf("@%d", pos)
+				refs = append(refs, fmt.Sprintf("@%d", pos))
 			}
 		}
 
