@@ -298,6 +298,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_team_test":                                                   "team",
 	"tests/resource_datadog_team_hierarchy_links_test":                                   "team",
 	"tests/resource_datadog_team_notification_rule_test":                                 "team",
+	"tests/resource_datadog_team_connection_test":                                        "team",
+	"tests/resource_datadog_team_sync_test":                                              "team",
 	"tests/data_source_datadog_team_notification_rule_test":                              "team",
 	"tests/data_source_datadog_team_notification_rules_test":                             "team",
 	"tests/resource_datadog_timeboard_test":                                              "dashboards",
