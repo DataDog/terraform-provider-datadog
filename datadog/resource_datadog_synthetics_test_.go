@@ -811,6 +811,21 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
 							},
+							"notify_audit": {
+								Description: "Whether or not Datadog sends an audit notification when the monitor is modified.",
+								Type:        schema.TypeBool,
+								Optional:    true,
+							},
+							"new_host_delay": {
+								Description: "Time (in seconds) to allow a host to boot and applications to fully start before it starts evaluating monitor results. Should be a non-negative integer. Defaults to `300`.",
+								Type:        schema.TypeInt,
+								Optional:    true,
+							},
+							"include_tags": {
+								Description: "Whether or not notifications from the monitor automatically inserts its triggering tags into the title.",
+								Type:        schema.TypeBool,
+								Optional:    true,
+							},
 						},
 					},
 				},
@@ -981,6 +996,21 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 								Type:             schema.TypeString,
 								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
+							},
+							"notify_audit": {
+								Description: "Whether or not Datadog sends an audit notification when the monitor is modified.",
+								Type:        schema.TypeBool,
+								Optional:    true,
+							},
+							"new_host_delay": {
+								Description: "Time (in seconds) to allow a host to boot and applications to fully start before it starts evaluating monitor results. Should be a non-negative integer. Defaults to `300`.",
+								Type:        schema.TypeInt,
+								Optional:    true,
+							},
+							"include_tags": {
+								Description: "Whether or not notifications from the monitor automatically inserts its triggering tags into the title.",
+								Type:        schema.TypeBool,
+								Optional:    true,
 							},
 						},
 					},
@@ -4761,6 +4791,24 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok && notificationPresetName.(string) != "" {
 				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
 			}
+			if notifyAudit, ok := monitorOptions.(map[string]interface{})["notify_audit"]; ok {
+				if optionsMonitorOptions.AdditionalProperties == nil {
+					optionsMonitorOptions.AdditionalProperties = make(map[string]interface{})
+				}
+				optionsMonitorOptions.AdditionalProperties["notify_audit"] = notifyAudit.(bool)
+			}
+			if newHostDelay, ok := monitorOptions.(map[string]interface{})["new_host_delay"]; ok {
+				if optionsMonitorOptions.AdditionalProperties == nil {
+					optionsMonitorOptions.AdditionalProperties = make(map[string]interface{})
+				}
+				optionsMonitorOptions.AdditionalProperties["new_host_delay"] = newHostDelay.(int)
+			}
+			if includeTags, ok := monitorOptions.(map[string]interface{})["include_tags"]; ok {
+				if optionsMonitorOptions.AdditionalProperties == nil {
+					optionsMonitorOptions.AdditionalProperties = make(map[string]interface{})
+				}
+				optionsMonitorOptions.AdditionalProperties["include_tags"] = includeTags.(bool)
+			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
 
@@ -4938,6 +4986,18 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
 			shouldUpdate = true
 		}
+		if v, ok := actualMonitorOptions.AdditionalProperties["notify_audit"]; ok {
+			optionsListMonitorOptions["notify_audit"] = v
+			shouldUpdate = true
+		}
+		if v, ok := actualMonitorOptions.AdditionalProperties["new_host_delay"]; ok {
+			optionsListMonitorOptions["new_host_delay"] = v
+			shouldUpdate = true
+		}
+		if v, ok := actualMonitorOptions.AdditionalProperties["include_tags"]; ok {
+			optionsListMonitorOptions["include_tags"] = v
+			shouldUpdate = true
+		}
 		if shouldUpdate {
 			localOptionsList["monitor_options"] = []interface{}{optionsListMonitorOptions}
 		}
@@ -5077,6 +5137,24 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 			}
 			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok && notificationPresetName.(string) != "" {
 				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
+			}
+			if notifyAudit, ok := monitorOptions.(map[string]interface{})["notify_audit"]; ok {
+				if optionsMonitorOptions.AdditionalProperties == nil {
+					optionsMonitorOptions.AdditionalProperties = make(map[string]interface{})
+				}
+				optionsMonitorOptions.AdditionalProperties["notify_audit"] = notifyAudit.(bool)
+			}
+			if newHostDelay, ok := monitorOptions.(map[string]interface{})["new_host_delay"]; ok {
+				if optionsMonitorOptions.AdditionalProperties == nil {
+					optionsMonitorOptions.AdditionalProperties = make(map[string]interface{})
+				}
+				optionsMonitorOptions.AdditionalProperties["new_host_delay"] = newHostDelay.(int)
+			}
+			if includeTags, ok := monitorOptions.(map[string]interface{})["include_tags"]; ok {
+				if optionsMonitorOptions.AdditionalProperties == nil {
+					optionsMonitorOptions.AdditionalProperties = make(map[string]interface{})
+				}
+				optionsMonitorOptions.AdditionalProperties["include_tags"] = includeTags.(bool)
 			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
@@ -5226,6 +5304,18 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 		}
 		if actualMonitorOptions.HasNotificationPresetName() {
 			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
+			shouldUpdate = true
+		}
+		if v, ok := actualMonitorOptions.AdditionalProperties["notify_audit"]; ok {
+			optionsListMonitorOptions["notify_audit"] = v
+			shouldUpdate = true
+		}
+		if v, ok := actualMonitorOptions.AdditionalProperties["new_host_delay"]; ok {
+			optionsListMonitorOptions["new_host_delay"] = v
+			shouldUpdate = true
+		}
+		if v, ok := actualMonitorOptions.AdditionalProperties["include_tags"]; ok {
+			optionsListMonitorOptions["include_tags"] = v
 			shouldUpdate = true
 		}
 
