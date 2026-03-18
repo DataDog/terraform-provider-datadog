@@ -3875,9 +3875,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 				assertionOperator := v.(string)
 				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
 					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+					targetJSONSchema, _ := assertionMap["targetjsonschema"].([]interface{})
+					if len(targetJSONSchema) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetJSONSchema[0].(map[string]interface{})
 						if v, ok := targetMap["jsonschema"]; ok {
 							subTarget.SetJsonSchema(v.(string))
 						}
@@ -3893,7 +3894,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionJSONSchemaTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetJSONSchema) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesJSONSchema` operator. It will be ignored, use `assertion.targetjsonschema` instead.",
@@ -3905,9 +3906,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionJSONPathTarget.SetProperty(v)
 					}
-					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+					targetJSONPath, _ := assertionMap["targetjsonpath"].([]interface{})
+					if len(targetJSONPath) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetJSONPath[0].(map[string]interface{})
 						if v, ok := targetMap["jsonpath"]; ok {
 							subTarget.SetJsonPath(v.(string))
 						}
@@ -3941,7 +3943,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetJSONPath) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesJSONPath` operator. It will be ignored, use `assertion.targetjsonpath` instead.",
@@ -3953,9 +3955,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionXPathTarget.SetProperty(v)
 					}
-					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
+					targetXPath, _ := assertionMap["targetxpath"].([]interface{})
+					if len(targetXPath) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionXPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetXPath[0].(map[string]interface{})
 						if v, ok := targetMap["xpath"]; ok {
 							subTarget.SetXPath(v.(string))
 						}
@@ -3983,7 +3986,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionXPathTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetXPath) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesXPath` operator. It will be ignored, use `assertion.targetxpath` instead.",
