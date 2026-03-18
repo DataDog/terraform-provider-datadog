@@ -1,3 +1,16 @@
+## 4.3.0 (March 18, 2026)
+
+### BUGFIXES
+* [MA] Remove run_as and restricted from response by @darnellshumpert in https://github.com/DataDog/terraform-provider-datadog/pull/3615
+### FEATURES
+* [datadog_observability_pipeline] add amazon S3 generic destination by @tessneau in https://github.com/DataDog/terraform-provider-datadog/pull/3606
+
+## New Contributors
+* @bscaspar made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3602
+* @apatruddog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3576
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.2.0...v4.3.0
+
 ## 4.2.0 (March 17, 2026)
 
 ### BUGFIXES
