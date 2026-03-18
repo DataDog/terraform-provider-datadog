@@ -1443,7 +1443,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			Description: "A name identifying the rule.",
 																		},
 																		"tags": schema.ListAttribute{
-																			Required:    true,
+																			Optional:    true,
 																			ElementType: types.StringType,
 																			Description: "Tags assigned to this rule for filtering and classification.",
 																		},
@@ -1491,7 +1491,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																					},
 																					"library": schema.ListNestedBlock{
-																						Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																						Description:         "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																						MarkdownDescription: "Pattern detection using a predefined pattern from the Sensitive Data Scanner library. For Terraform setup (standard pattern data source and library rules), see the [Sensitive Data Scanner processor documentation](https://docs.datadoghq.com/observability_pipelines/processors/sensitive_data_scanner/?tab=libraryrules#set-up-the-processor-using-terraform).",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"id": schema.StringAttribute{
