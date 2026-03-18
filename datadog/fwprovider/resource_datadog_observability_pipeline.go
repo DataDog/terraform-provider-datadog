@@ -73,6 +73,7 @@ type destinationModel struct {
 	AmazonOpenSearchDestination       []*amazonOpenSearchDestinationModel                              `tfsdk:"amazon_opensearch"`
 	SocketDestination                 []*observability_pipeline.SocketDestinationModel                 `tfsdk:"socket"`
 	AmazonS3Destination               []*observability_pipeline.AmazonS3DestinationModel               `tfsdk:"amazon_s3"`
+	AmazonS3GenericDestination        []*observability_pipeline.AmazonS3GenericDestinationModel        `tfsdk:"amazon_s3_generic"`
 	AmazonSecurityLakeDestination     []*observability_pipeline.AmazonSecurityLakeDestinationModel     `tfsdk:"amazon_security_lake"`
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
@@ -2662,6 +2663,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									"socket":                    observability_pipeline.SocketDestinationSchema(),
 									"amazon_s3":                 observability_pipeline.AmazonS3DestinationSchema(),
+									"amazon_s3_generic":         observability_pipeline.AmazonS3GenericDestinationSchema(),
 									"amazon_security_lake":      observability_pipeline.AmazonSecurityLakeDestinationSchema(),
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
@@ -2994,6 +2996,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, d := range dest.AmazonS3Destination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3Destination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
+		for _, d := range dest.AmazonS3GenericDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandAmazonS3GenericDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
 		for _, d := range dest.AmazonSecurityLakeDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandObservabilityPipelinesAmazonSecurityLakeDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
@@ -3216,6 +3221,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonS3Destination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonS3Destination.GetInputs())
 			destBlock.AmazonS3Destination = append(destBlock.AmazonS3Destination, s3)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if s3g := observability_pipeline.FlattenAmazonS3GenericDestination(d.ObservabilityPipelineAmazonS3GenericDestination); s3g != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonS3GenericDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineAmazonS3GenericDestination.GetInputs())
+			destBlock.AmazonS3GenericDestination = append(destBlock.AmazonS3GenericDestination, s3g)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if securitylake := observability_pipeline.FlattenObservabilityPipelinesAmazonSecurityLakeDestination(ctx, d.ObservabilityPipelineAmazonSecurityLakeDestination); securitylake != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineAmazonSecurityLakeDestination.GetId())
