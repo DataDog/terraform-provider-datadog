@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -147,6 +148,31 @@ func resourceDatadogDashboard() *schema.Resource {
 					MaxItems:    5,
 					Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"tab": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "The list of tabs for organizing widgets on the dashboard.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"id": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The UUID of the tab.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the tab.",
+							},
+							"widget_ids": {
+								Type:        schema.TypeList,
+								Required:    true,
+								Description: "List of widget references for this tab. Use @N format to reference widgets by position (1-indexed).",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+						},
+					},
 				},
 			}
 		},
@@ -313,6 +339,15 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 
+	// Set tabs — always call d.Set so stale state is cleared when tabs are removed
+	var terraformTabs []map[string]interface{}
+	if tabsRaw, ok := dashboard.AdditionalProperties["tabs"]; ok && tabsRaw != nil {
+		terraformTabs = buildTerraformTabs(tabsRaw, &dashboard.Widgets)
+	}
+	if err := d.Set("tab", terraformTabs); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return nil
 }
 
@@ -442,6 +477,16 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	// Build TemplateVariablePresets
 	templateVariablePresets := d.Get("template_variable_preset").([]interface{})
 	dashboard.TemplateVariablePresets = *buildDatadogTemplateVariablePresets(&templateVariablePresets)
+
+	// Build Tabs
+	if v, ok := d.GetOk("tab"); ok {
+		terraformTabs := v.([]interface{})
+		tabs := buildDatadogTabs(&terraformTabs)
+		if dashboard.AdditionalProperties == nil {
+			dashboard.AdditionalProperties = make(map[string]interface{})
+		}
+		dashboard.AdditionalProperties["tabs"] = tabs
+	}
 
 	return &dashboard, nil
 }
@@ -824,6 +869,66 @@ func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
 		terraformNotifyList[i] = authorHandle
 	}
 	return &terraformNotifyList
+}
+
+//
+// Tab helpers
+//
+
+func buildDatadogTabs(terraformTabs *[]interface{}) []map[string]interface{} {
+	tabs := make([]map[string]interface{}, len(*terraformTabs))
+	for i, t := range *terraformTabs {
+		tab := t.(map[string]interface{})
+		id := uuid.NewSHA1(uuid.Nil, []byte(fmt.Sprintf("tab-%d", i))).String()
+		if v, ok := tab["id"].(string); ok && v != "" {
+			id = v
+		}
+		ddTab := map[string]interface{}{
+			"id":         id,
+			"name":       tab["name"].(string),
+			"widget_ids": tab["widget_ids"].([]interface{}),
+		}
+		tabs[i] = ddTab
+	}
+	return tabs
+}
+
+func buildTerraformTabs(tabsRaw interface{}, widgets *[]datadogV1.Widget) []map[string]interface{} {
+	tabs, ok := tabsRaw.([]interface{})
+	if !ok {
+		return nil
+	}
+
+	// Build widget ID → position map for reverse-mapping
+	widgetIDToPosition := make(map[int64]int)
+	for i, w := range *widgets {
+		widgetIDToPosition[w.GetId()] = i + 1 // 1-indexed
+	}
+
+	terraformTabs := make([]map[string]interface{}, len(tabs))
+	for i, t := range tabs {
+		tab := t.(map[string]interface{})
+		widgetIDs := tab["widget_ids"].([]interface{})
+
+		// Reverse-map integer widget IDs to @N positional references.
+		// Skip any IDs that don't map to a known widget position rather than
+		// emitting an empty string which would corrupt state.
+		refs := make([]string, 0, len(widgetIDs))
+		for _, wid := range widgetIDs {
+			// widget_ids come as float64 from JSON
+			widgetID := int64(wid.(float64))
+			if pos, ok := widgetIDToPosition[widgetID]; ok {
+				refs = append(refs, fmt.Sprintf("@%d", pos))
+			}
+		}
+
+		terraformTabs[i] = map[string]interface{}{
+			"id":         tab["id"],
+			"name":       tab["name"],
+			"widget_ids": refs,
+		}
+	}
+	return terraformTabs
 }
 
 //

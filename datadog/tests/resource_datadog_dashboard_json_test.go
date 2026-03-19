@@ -2065,3 +2065,51 @@ EOF
    ]
 }`, uniq)
 }
+
+func TestAccDatadogDashboardJSONTab(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDashboardJSONTab(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_dashboard_json.with_tabs", "dashboard",
+						fmt.Sprintf(`{"description":"Created using the Datadog provider in Terraform","is_read_only":false,"layout_type":"ordered","notify_list":[],"tabs":[{"name":"Overview","widget_ids":["@1","@2"]},{"name":"Details","widget_ids":["@3"]}],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"%s","widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"}},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"}},{"definition":{"content":"Widget 3","has_padding":true,"show_tick":false,"type":"note"}}]}`, uniq)),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDashboardJSONTab(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_json" "with_tabs" {
+  dashboard = jsonencode({
+    title       = "%s"
+    description = "Created using the Datadog provider in Terraform"
+    layout_type = "ordered"
+    widgets = [
+      { definition = { type = "note", content = "Widget 1", show_tick = false, has_padding = true } },
+      { definition = { type = "note", content = "Widget 2", show_tick = false, has_padding = true } },
+      { definition = { type = "note", content = "Widget 3", show_tick = false, has_padding = true } },
+    ]
+    tabs = [
+      { name = "Overview", widget_ids = ["@1", "@2"] },
+      { name = "Details",  widget_ids = ["@3"] },
+    ]
+    notify_list               = []
+    tags                      = []
+    template_variables        = []
+    template_variable_presets = []
+  })
+}`, uniq)
+}
