@@ -118,6 +118,11 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 				),
 			},
 			{
+				// Verify no perpetual diff on should_save_match after re-read
+				Config:   testAccCheckDatadogSensitiveDataScannerRuleReplacementString(uniq),
+				PlanOnly: true,
+			},
+			{
 				Config: testAccCheckDatadogSensitiveDataScannerRuleChangedGroupNone(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name),
