@@ -310,7 +310,7 @@ func testAccCheckDatadogReferenceTableDestroy(accProvider *fwprovider.FrameworkP
 func ReferenceTableDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_reference_table" {
+			if r.Type != "datadog_reference_table" {
 				continue
 			}
 			id := r.Primary.ID
@@ -343,7 +343,7 @@ func testAccCheckDatadogReferenceTableExists(accProvider *fwprovider.FrameworkPr
 
 func referenceTableExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_reference_table" {
+		if r.Type != "datadog_reference_table" {
 			continue
 		}
 		id := r.Primary.ID
