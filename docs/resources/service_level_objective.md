@@ -212,7 +212,7 @@ Required:
 
 Optional:
 
-- `count` (Block List, Max: 1) A count-based (metric) SLI specification. Composed of a good events formula, a total events formula or bad events formula, and the underlying metric queries. (see [below for nested schema](#nestedblock--sli_specification--count))
+- `count` (Block List, Max: 1) A count-based (metric) SLI specification. Composed of a good events formula, either a total events formula or a bad events formula (but not both), and the underlying metric queries. (see [below for nested schema](#nestedblock--sli_specification--count))
 - `time_slice` (Block List, Max: 1) The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided. (see [below for nested schema](#nestedblock--sli_specification--time_slice))
 
 <a id="nestedblock--sli_specification--count"></a>
