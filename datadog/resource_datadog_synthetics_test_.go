@@ -1237,10 +1237,15 @@ func syntheticsTestRequestFile() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"content": {
-					Type:         schema.TypeString,
-					Description:  "Content of the file.",
-					Optional:     true,
-					ValidateFunc: validation.StringLenBetween(1, 3145728),
+					Type:        schema.TypeString,
+					Description: "Content of the file.",
+					Optional:    true,
+					// The backend enforces a 3 MB (3,145,728 byte) limit on the decoded file size.
+					// Content is always base64-encoded, which inflates the string length by ~33%
+					// (every 3 raw bytes become 4 base64 characters).
+					// The upper bound here is therefore ceil(3,145,728 * 4/3) = 4,194,304 bytes,
+					// giving the provider room for the largest base64 string that decodes to <=3 MB.
+					ValidateFunc: validation.StringLenBetween(1, 4194304),
 				},
 				"bucket_key": {
 					Type:        schema.TypeString,
@@ -4409,10 +4414,15 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 
 		if content, ok := fileMap["content"]; ok && content != "" {
 			file.SetContent(content.(string))
-		}
-
-		if encoding, ok := fileMap["encoding"]; ok && encoding != "" {
-			file.SetEncoding(encoding.(string))
+			// When content is provided it is always base64-encoded (Terraform's
+			// local_file data source exposes content_base64 for binary files).
+			// Auto-set encoding so the backend and worker both know to decode it;
+			// without this the worker sends base64 text to S3 instead of binary.
+			encoding, _ := fileMap["encoding"].(string)
+			if encoding == "" {
+				encoding = "base64"
+			}
+			file.SetEncoding(encoding)
 		}
 
 		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
