@@ -30,6 +30,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				"case": {
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					Description: "Cases of the rule, this is used to update notifications.",
 					MaxItems:    10,
 					Elem: &schema.Resource{
@@ -59,6 +60,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				"query": {
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					Description: "Queries for selecting logs which are part of the rule.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
