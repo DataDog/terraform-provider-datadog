@@ -1,7 +1,11 @@
 package test
 
 import (
+	"context"
+	"strings"
 	"testing"
+
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 const datadogDashboardTabConfig = `
@@ -61,4 +65,116 @@ func TestAccDatadogDashboardTab(t *testing.T) {
 
 func TestAccDatadogDashboardTab_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTabConfig, "datadog_dashboard.tab_dashboard")
+}
+
+// TestAccDatadogDashboardTabUpdate exercises tab update and removal, specifically
+// covering the stale-state fix where d.Set("tab", nil) must be called when tabs
+// are absent from the API response.
+func TestAccDatadogDashboardTabUpdate(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	accProvider := testAccProvider(t, accProviders)
+
+	// Step 1: create with two tabs
+	configCreate := replacer.Replace(`
+resource "datadog_dashboard" "tab_dashboard" {
+	title       = "{{uniq}}"
+	description = "Created using the Datadog provider in Terraform"
+	layout_type = "ordered"
+	widget {
+		note_definition { content = "Widget 1" }
+	}
+	widget {
+		note_definition { content = "Widget 2" }
+	}
+	widget {
+		note_definition { content = "Widget 3" }
+	}
+	tab {
+		name       = "Overview"
+		widget_ids = ["@1", "@2"]
+	}
+	tab {
+		name       = "Details"
+		widget_ids = ["@3"]
+	}
+}`)
+
+	// Step 2: rename a tab and move a widget between tabs
+	configUpdate := replacer.Replace(`
+resource "datadog_dashboard" "tab_dashboard" {
+	title       = "{{uniq}}"
+	description = "Created using the Datadog provider in Terraform"
+	layout_type = "ordered"
+	widget {
+		note_definition { content = "Widget 1" }
+	}
+	widget {
+		note_definition { content = "Widget 2" }
+	}
+	widget {
+		note_definition { content = "Widget 3" }
+	}
+	tab {
+		name       = "Overview (renamed)"
+		widget_ids = ["@1"]
+	}
+	tab {
+		name       = "Details"
+		widget_ids = ["@2", "@3"]
+	}
+}`)
+
+	// Step 3: remove all tabs — exercises the stale-state fix
+	configRemove := replacer.Replace(`
+resource "datadog_dashboard" "tab_dashboard" {
+	title       = "{{uniq}}"
+	description = "Created using the Datadog provider in Terraform"
+	layout_type = "ordered"
+	widget {
+		note_definition { content = "Widget 1" }
+	}
+	widget {
+		note_definition { content = "Widget 2" }
+	}
+	widget {
+		note_definition { content = "Widget 3" }
+	}
+}`)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: configCreate,
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.0.name", "Overview"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.1.name", "Details"),
+				),
+			},
+			{
+				Config: configUpdate,
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.0.name", "Overview (renamed)"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.0.widget_ids.#", "1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.1.widget_ids.#", "2"),
+				),
+			},
+			{
+				Config: configRemove,
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.#", "0"),
+				),
+			},
+		},
+	})
 }
