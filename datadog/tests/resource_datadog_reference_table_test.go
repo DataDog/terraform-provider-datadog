@@ -362,7 +362,7 @@ func testAccCheckDatadogReferenceTableStatusDone(accProvider *fwprovider.Framewo
 		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_reference_table" {
+			if r.Type != "datadog_reference_table" {
 				continue
 			}
 			id := r.Primary.ID
@@ -406,7 +406,7 @@ func testAccCheckDatadogReferenceTableSchemaUpdated(accProvider *fwprovider.Fram
 		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_reference_table" {
+			if r.Type != "datadog_reference_table" {
 				continue
 			}
 			id := r.Primary.ID
