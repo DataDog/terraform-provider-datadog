@@ -279,7 +279,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 								Type:        schema.TypeList,
 								MaxItems:    1,
 								Optional:    true,
-								Description: "A count-based (metric) SLI specification. Composed of a good events formula, a total events formula or bad events formula, and the underlying metric queries.",
+								Description: "A count-based (metric) SLI specification. Composed of a good events formula, either a total events formula or a bad events formula (but not both), and the underlying metric queries.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"good_events_formula": {
