@@ -84,6 +84,7 @@ func FlattenSplunkHECDestination(ctx context.Context, src *datadogV2.Observabili
 		AutoExtractTimestamp: autoExtractTimestamp,
 		Sourcetype:           types.StringPointerValue(src.Sourcetype),
 		Index:                types.StringPointerValue(src.Index),
+		IndexedFields:        types.ListNull(types.StringType),
 	}
 	if enc, ok := src.GetEncodingOk(); ok && enc != nil {
 		out.Encoding = types.StringValue(string(*enc))
