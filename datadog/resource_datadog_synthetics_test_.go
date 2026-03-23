@@ -1237,10 +1237,15 @@ func syntheticsTestRequestFile() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"content": {
-					Type:         schema.TypeString,
-					Description:  "Content of the file.",
-					Optional:     true,
-					ValidateFunc: validation.StringLenBetween(1, 3145728),
+					Type:        schema.TypeString,
+					Description: "Content of the file.",
+					Optional:    true,
+					// The backend enforces a 3 MB (3,145,728 byte) limit on the decoded file size.
+					// Content is always base64-encoded, which inflates the string length by ~33%
+					// (every 3 raw bytes become 4 base64 characters).
+					// The upper bound here is therefore ceil(3,145,728 * 4/3) = 4,194,304 bytes,
+					// giving the provider room for the largest base64 string that decodes to <=3 MB.
+					ValidateFunc: validation.StringLenBetween(1, 4194304),
 				},
 				"bucket_key": {
 					Type:        schema.TypeString,
@@ -3875,9 +3880,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 				assertionOperator := v.(string)
 				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
 					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+					targetJSONSchema, _ := assertionMap["targetjsonschema"].([]interface{})
+					if len(targetJSONSchema) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetJSONSchema[0].(map[string]interface{})
 						if v, ok := targetMap["jsonschema"]; ok {
 							subTarget.SetJsonSchema(v.(string))
 						}
@@ -3893,7 +3899,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionJSONSchemaTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetJSONSchema) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesJSONSchema` operator. It will be ignored, use `assertion.targetjsonschema` instead.",
@@ -3905,9 +3911,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionJSONPathTarget.SetProperty(v)
 					}
-					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+					targetJSONPath, _ := assertionMap["targetjsonpath"].([]interface{})
+					if len(targetJSONPath) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetJSONPath[0].(map[string]interface{})
 						if v, ok := targetMap["jsonpath"]; ok {
 							subTarget.SetJsonPath(v.(string))
 						}
@@ -3941,7 +3948,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetJSONPath) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesJSONPath` operator. It will be ignored, use `assertion.targetjsonpath` instead.",
@@ -3953,9 +3960,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionXPathTarget.SetProperty(v)
 					}
-					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
+					targetXPath, _ := assertionMap["targetxpath"].([]interface{})
+					if len(targetXPath) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionXPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetXPath[0].(map[string]interface{})
 						if v, ok := targetMap["xpath"]; ok {
 							subTarget.SetXPath(v.(string))
 						}
@@ -3983,7 +3991,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionXPathTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetXPath) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesXPath` operator. It will be ignored, use `assertion.targetxpath` instead.",
@@ -4406,10 +4414,15 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 
 		if content, ok := fileMap["content"]; ok && content != "" {
 			file.SetContent(content.(string))
-		}
-
-		if encoding, ok := fileMap["encoding"]; ok && encoding != "" {
-			file.SetEncoding(encoding.(string))
+			// When content is provided it is always base64-encoded (Terraform's
+			// local_file data source exposes content_base64 for binary files).
+			// Auto-set encoding so the backend and worker both know to decode it;
+			// without this the worker sends base64 text to S3 instead of binary.
+			encoding, _ := fileMap["encoding"].(string)
+			if encoding == "" {
+				encoding = "base64"
+			}
+			file.SetEncoding(encoding)
 		}
 
 		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
