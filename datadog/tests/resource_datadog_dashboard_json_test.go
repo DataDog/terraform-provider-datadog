@@ -2090,7 +2090,6 @@ func TestAccDatadogDashboardJSONTab(t *testing.T) {
 	})
 }
 
-
 // TestAccDatadogDashboardJSONTabIntegerWidgetIds verifies that dashboard_json
 // accepts integer widget_ids in tab configs (not just @N references).
 func TestAccDatadogDashboardJSONTabIntegerWidgetIds(t *testing.T) {
