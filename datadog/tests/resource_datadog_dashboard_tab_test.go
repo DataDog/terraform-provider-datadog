@@ -67,6 +67,53 @@ func TestAccDatadogDashboardTab_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTabConfig, "datadog_dashboard.tab_dashboard")
 }
 
+// TestAccDatadogDashboardTabSingleTab verifies a dashboard with one tab containing
+// all widgets. This exercises a different topology than the multi-tab tests and
+// ensures the @N reverse-mapping works when all widgets belong to one tab.
+func TestAccDatadogDashboardTabSingleTab(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	accProvider := testAccProvider(t, accProviders)
+
+	config := replacer.Replace(`
+resource "datadog_dashboard" "tab_dashboard" {
+	title       = "{{uniq}}"
+	description = "Created using the Datadog provider in Terraform"
+	layout_type = "ordered"
+	widget {
+		note_definition { content = "Widget 1" }
+	}
+	widget {
+		note_definition { content = "Widget 2" }
+	}
+	tab {
+		name       = "All Widgets"
+		widget_ids = ["@1", "@2"]
+	}
+}`)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.#", "1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.0.name", "All Widgets"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.0.widget_ids.#", "2"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.0.widget_ids.0", "@1"),
+					resource.TestCheckResourceAttr("datadog_dashboard.tab_dashboard", "tab.0.widget_ids.1", "@2"),
+				),
+			},
+		},
+	})
+}
+
 // TestAccDatadogDashboardTabUpdate exercises tab update and removal, specifically
 // covering the stale-state fix where d.Set("tab", nil) must be called when tabs
 // are absent from the API response.

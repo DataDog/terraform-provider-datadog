@@ -1,0 +1,210 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 537
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"All Widgets","widget_ids":["@1","@2"]}],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTabSingleTab-local-1774283264","widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"}},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xzq-egp-b42","title":"tf-TestAccDatadogDashboardTabSingleTab-local-1774283264","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xzq-egp-b42/tf-testaccdatadogdashboardtabsingletab-local-1774283264","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":8557302688036139},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":767439594811650}],"notify_list":[],"created_at":"2026-03-23T16:27:46.230289+00:00","modified_at":"2026-03-23T16:27:46.230289+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"All Widgets","widget_ids":[8557302688036139,767439594811650]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 187.841458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xzq-egp-b42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xzq-egp-b42","title":"tf-TestAccDatadogDashboardTabSingleTab-local-1774283264","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xzq-egp-b42/tf-testaccdatadogdashboardtabsingletab-local-1774283264","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":8557302688036139},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":767439594811650}],"notify_list":[],"created_at":"2026-03-23T16:27:46.230289+00:00","modified_at":"2026-03-23T16:27:46.230289+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"All Widgets","widget_ids":[8557302688036139,767439594811650]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 178.988375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xzq-egp-b42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xzq-egp-b42","title":"tf-TestAccDatadogDashboardTabSingleTab-local-1774283264","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xzq-egp-b42/tf-testaccdatadogdashboardtabsingletab-local-1774283264","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":8557302688036139},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":767439594811650}],"notify_list":[],"created_at":"2026-03-23T16:27:46.230289+00:00","modified_at":"2026-03-23T16:27:46.230289+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"All Widgets","widget_ids":[8557302688036139,767439594811650]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 93.646583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xzq-egp-b42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"xzq-egp-b42","title":"tf-TestAccDatadogDashboardTabSingleTab-local-1774283264","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/xzq-egp-b42/tf-testaccdatadogdashboardtabsingletab-local-1774283264","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":8557302688036139},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":767439594811650}],"notify_list":[],"created_at":"2026-03-23T16:27:46.230289+00:00","modified_at":"2026-03-23T16:27:46.230289+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"All Widgets","widget_ids":[8557302688036139,767439594811650]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 97.728625ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xzq-egp-b42
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"xzq-egp-b42"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 310.007334ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/xzq-egp-b42
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID xzq-egp-b42 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 98.224792ms

@@ -2090,6 +2090,135 @@ func TestAccDatadogDashboardJSONTab(t *testing.T) {
 	})
 }
 
+// TestAccDatadogDashboardJSONTabUpdate exercises tab modification in dashboard_json,
+// specifically verifying that integer widget_ids returned by the API are normalized
+// back to @N references so there is no perpetual diff.
+func TestAccDatadogDashboardJSONTabUpdate(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				// Step 1: create with tabs using @N references
+				Config: testAccCheckDatadogDashboardJSONTabCreate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+				),
+			},
+			{
+				// Step 2: rename a tab and move a widget between tabs —
+				// the API returns integer widget_ids, prepResource must normalize
+				// them back to @N so the plan is empty after apply.
+				Config: testAccCheckDatadogDashboardJSONTabModify(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDashboardJSONTabCreate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_json" "json_tabs" {
+  dashboard = jsonencode({
+    title       = "%s"
+    description = "Created using the Datadog provider in Terraform"
+    layout_type = "ordered"
+    widgets = [
+      { definition = { type = "note", content = "Widget 1", show_tick = false, has_padding = true } },
+      { definition = { type = "note", content = "Widget 2", show_tick = false, has_padding = true } },
+      { definition = { type = "note", content = "Widget 3", show_tick = false, has_padding = true } },
+    ]
+    tabs = [
+      { name = "Overview", widget_ids = ["@1", "@2"] },
+      { name = "Details",  widget_ids = ["@3"] },
+    ]
+    notify_list               = []
+    tags                      = []
+    template_variables        = []
+    template_variable_presets = []
+  })
+}`, uniq)
+}
+
+func testAccCheckDatadogDashboardJSONTabModify(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_json" "json_tabs" {
+  dashboard = jsonencode({
+    title       = "%s"
+    description = "Created using the Datadog provider in Terraform"
+    layout_type = "ordered"
+    widgets = [
+      { definition = { type = "note", content = "Widget 1", show_tick = false, has_padding = true } },
+      { definition = { type = "note", content = "Widget 2", show_tick = false, has_padding = true } },
+      { definition = { type = "note", content = "Widget 3", show_tick = false, has_padding = true } },
+    ]
+    tabs = [
+      { name = "Overview (renamed)", widget_ids = ["@1"] },
+      { name = "Details",            widget_ids = ["@2", "@3"] },
+    ]
+    notify_list               = []
+    tags                      = []
+    template_variables        = []
+    template_variable_presets = []
+  })
+}`, uniq)
+}
+
+// TestAccDatadogDashboardJSONTabIntegerWidgetIds verifies that dashboard_json
+// accepts integer widget_ids in tab configs (not just @N references).
+func TestAccDatadogDashboardJSONTabIntegerWidgetIds(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDashboardJSONTabIntegerWidgetIds(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					checkDashboardExists(accProvider),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDashboardJSONTabIntegerWidgetIds(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_dashboard_json" "int_tabs" {
+  dashboard = jsonencode({
+    title       = "%s"
+    description = "Created using the Datadog provider in Terraform"
+    layout_type = "ordered"
+    widgets = [
+      { id = 1234567890123456, definition = { type = "note", content = "Widget 1", show_tick = false, has_padding = true } },
+      { id = 9876543210987654, definition = { type = "note", content = "Widget 2", show_tick = false, has_padding = true } },
+      { id = 5555555555555555, definition = { type = "note", content = "Widget 3", show_tick = false, has_padding = true } },
+    ]
+    tabs = [
+      { name = "Overview", widget_ids = [1234567890123456, 9876543210987654] },
+      { name = "Details",  widget_ids = [5555555555555555] },
+    ]
+    notify_list               = []
+    tags                      = []
+    template_variables        = []
+    template_variable_presets = []
+  })
+}`, uniq)
+}
+
 func testAccCheckDatadogDashboardJSONTab(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard_json" "with_tabs" {
