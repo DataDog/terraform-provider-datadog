@@ -1627,6 +1627,7 @@ Required:
 
 Optional:
 
+- `keep_unmatched` (Boolean) Whether to keep an event that does not match any of the mapping filters.
 - `mapping` (Block List) List of OCSF mapping entries. Each entry uses either a library mapping or a custom mapping. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping))
 
 <a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping"></a>
