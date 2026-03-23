@@ -11,9 +11,9 @@ import (
 func TestBuildTerraformTabs_IntegerWidgetIds(t *testing.T) {
 	// Simulate API response with arbitrary integer widget IDs
 	widgets := []datadogV1.Widget{
-		{Id: pointerInt64(1234567890123456)},
-		{Id: pointerInt64(9876543210987654)},
-		{Id: pointerInt64(5555555555555555)},
+		{Id: Ptr[int64](1234567890123456)},
+		{Id: Ptr[int64](9876543210987654)},
+		{Id: Ptr[int64](5555555555555555)},
 	}
 
 	tabs := []datadogV1.DashboardTab{
@@ -61,9 +61,9 @@ func TestBuildTerraformTabs_IntegerWidgetIds(t *testing.T) {
 
 func TestBuildTerraformTabs_SingleTabAllWidgets(t *testing.T) {
 	widgets := []datadogV1.Widget{
-		{Id: pointerInt64(1111111111111111)},
-		{Id: pointerInt64(2222222222222222)},
-		{Id: pointerInt64(3333333333333333)},
+		{Id: Ptr[int64](1111111111111111)},
+		{Id: Ptr[int64](2222222222222222)},
+		{Id: Ptr[int64](3333333333333333)},
 	}
 
 	tabs := []datadogV1.DashboardTab{
@@ -87,7 +87,7 @@ func TestBuildTerraformTabs_SingleTabAllWidgets(t *testing.T) {
 
 func TestBuildTerraformTabs_UnknownWidgetIdSkipped(t *testing.T) {
 	widgets := []datadogV1.Widget{
-		{Id: pointerInt64(1111111111111111)},
+		{Id: Ptr[int64](1111111111111111)},
 	}
 
 	tabs := []datadogV1.DashboardTab{
@@ -109,7 +109,7 @@ func TestBuildTerraformTabs_UnknownWidgetIdSkipped(t *testing.T) {
 
 func TestBuildTerraformTabs_EmptyTabs(t *testing.T) {
 	widgets := []datadogV1.Widget{
-		{Id: pointerInt64(1111111111111111)},
+		{Id: Ptr[int64](1111111111111111)},
 	}
 
 	result := buildTerraformTabs([]datadogV1.DashboardTab{}, &widgets)
@@ -118,6 +118,3 @@ func TestBuildTerraformTabs_EmptyTabs(t *testing.T) {
 	}
 }
 
-func pointerInt64(v int64) *int64 {
-	return &v
-}

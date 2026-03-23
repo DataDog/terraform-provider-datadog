@@ -894,7 +894,6 @@ func buildDatadogTabs(terraformTabs *[]interface{}) []map[string]interface{} {
 }
 
 func buildTerraformTabs(tabs []datadogV1.DashboardTab, widgets *[]datadogV1.Widget) []map[string]interface{} {
-	// Build widget ID → position map for reverse-mapping
 	widgetIDToPosition := make(map[int64]int)
 	for i, w := range *widgets {
 		widgetIDToPosition[w.GetId()] = i + 1 // 1-indexed
