@@ -1567,15 +1567,45 @@ resource "datadog_observability_pipeline" "splunk_hec_dest" {
       datadog_agent {
       }
     }
-    
+
     destination {
-      id = "splunk-hec-1"
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding = "json"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_dest" {
+  name = "splunk-hec-destination-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
       inputs = ["source-1"]
       splunk_hec {
         auto_extract_timestamp = true
         encoding               = "json"
         sourcetype             = "custom_sourcetype"
         index                  = "main"
+        indexed_fields         = ["service", "host"]
       }
     }
   }
@@ -1589,6 +1619,8 @@ resource "datadog_observability_pipeline" "splunk_hec_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.sourcetype", "custom_sourcetype"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.index", "main"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.indexed_fields.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.indexed_fields.1", "host"),
 				),
 			},
 		},
