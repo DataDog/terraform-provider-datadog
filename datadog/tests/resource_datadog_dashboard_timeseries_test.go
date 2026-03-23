@@ -13,6 +13,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 		timeseries_definition {
 			title_size = "16"
 			title_align = "left"
+			description = "CPU usage across production by application."
 			show_legend = "true"
 			title = "system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d..."
 			legend_size = "2"
@@ -578,6 +579,7 @@ var datadogDashboardTimeseriesAsserts = []string{
 	"widget.0.timeseries_definition.0.legend_size = 2",
 	"widget.0.timeseries_definition.0.live_span = 5m",
 	"widget.0.timeseries_definition.0.title_align = left",
+	"widget.0.timeseries_definition.0.description = CPU usage across production by application.",
 	"widget.0.timeseries_definition.0.title = system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...",
 	"widget.0.timeseries_definition.0.title_size = 16",
 	"widget.0.timeseries_definition.0.event.0.q = sources:test tags:1",
