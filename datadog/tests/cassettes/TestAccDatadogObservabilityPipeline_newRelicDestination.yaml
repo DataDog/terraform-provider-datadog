@@ -31,13 +31,13 @@ interactions:
         content_length: 336
         uncompressed: false
         body: |
-            {"data":{"id":"29f059b4-2204-11f1-aff3-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"f56d121e-26a8-11f1-bb39-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 445.096875ms
+        duration: 410.382208ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/29f059b4-2204-11f1-aff3-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f56d121e-26a8-11f1-bb39-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 336
         uncompressed: false
         body: |
-            {"data":{"id":"29f059b4-2204-11f1-aff3-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"f56d121e-26a8-11f1-bb39-da7ad0900002","type":"pipelines","attributes":{"name":"newrelic pipeline","config":{"destinations":[{"id":"destination-1","inputs":["source-1"],"region":"us","type":"new_relic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 298.214334ms
+        duration: 289.139416ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/29f059b4-2204-11f1-aff3-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/f56d121e-26a8-11f1-bb39-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 403.959542ms
+        duration: 727.350958ms

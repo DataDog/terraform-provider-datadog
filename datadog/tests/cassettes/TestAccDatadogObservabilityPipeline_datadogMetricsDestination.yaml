@@ -31,13 +31,13 @@ interactions:
         content_length: 665
         uncompressed: false
         body: |
-            {"data":{"id":"83794f40-2204-11f1-b015-da7ad0900002","type":"pipelines","attributes":{"name":"datadog metrics destination test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["filter-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"55cedc5a-26a9-11f1-93e0-da7ad0900002","type":"pipelines","attributes":{"name":"datadog metrics destination test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["filter-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 497.825125ms
+        duration: 459.189958ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/83794f40-2204-11f1-b015-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/55cedc5a-26a9-11f1-93e0-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 665
         uncompressed: false
         body: |
-            {"data":{"id":"83794f40-2204-11f1-b015-da7ad0900002","type":"pipelines","attributes":{"name":"datadog metrics destination test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["filter-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"55cedc5a-26a9-11f1-93e0-da7ad0900002","type":"pipelines","attributes":{"name":"datadog metrics destination test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["filter-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"*","type":"filter"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 307.934042ms
+        duration: 350.460625ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/83794f40-2204-11f1-b015-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/55cedc5a-26a9-11f1-93e0-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 460.104208ms
+        duration: 484.777416ms

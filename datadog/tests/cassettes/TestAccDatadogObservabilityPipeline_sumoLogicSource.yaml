@@ -31,13 +31,13 @@ interactions:
         content_length: 340
         uncompressed: false
         body: |
-            {"data":{"id":"069af49c-2204-11f1-9ce8-da7ad0900002","type":"pipelines","attributes":{"name":"sumo-source-pipeline","config":{"destinations":[{"id":"logs-1","inputs":["sumo-logic-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"sumo-logic-source-1","type":"sumo_logic"}]}}}}
+            {"data":{"id":"d37bdda2-26a8-11f1-bb1f-da7ad0900002","type":"pipelines","attributes":{"name":"sumo-source-pipeline","config":{"destinations":[{"id":"logs-1","inputs":["sumo-logic-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"sumo-logic-source-1","type":"sumo_logic"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 551.3585ms
+        duration: 478.271542ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/069af49c-2204-11f1-9ce8-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d37bdda2-26a8-11f1-bb1f-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 340
         uncompressed: false
         body: |
-            {"data":{"id":"069af49c-2204-11f1-9ce8-da7ad0900002","type":"pipelines","attributes":{"name":"sumo-source-pipeline","config":{"destinations":[{"id":"logs-1","inputs":["sumo-logic-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"sumo-logic-source-1","type":"sumo_logic"}]}}}}
+            {"data":{"id":"d37bdda2-26a8-11f1-bb1f-da7ad0900002","type":"pipelines","attributes":{"name":"sumo-source-pipeline","config":{"destinations":[{"id":"logs-1","inputs":["sumo-logic-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"sumo-logic-source-1","type":"sumo_logic"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 299.137709ms
+        duration: 291.829292ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/069af49c-2204-11f1-9ce8-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d37bdda2-26a8-11f1-bb1f-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 587.221084ms
+        duration: 459.194292ms

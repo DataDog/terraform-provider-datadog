@@ -31,13 +31,13 @@ interactions:
         content_length: 456
         uncompressed: false
         body: |
-            {"data":{"id":"d9d53d8c-2203-11f1-afcd-da7ad0900002","type":"pipelines","attributes":{"name":"fluent-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["fluent-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"fluent-source-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/fluent.crt","key_file":"/etc/ssl/private/fluent.key"},"type":"fluent_bit"}]}}}}
+            {"data":{"id":"a714959c-26a8-11f1-aadf-da7ad0900002","type":"pipelines","attributes":{"name":"fluent-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["fluent-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"fluent-source-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/fluent.crt","key_file":"/etc/ssl/private/fluent.key"},"type":"fluent_bit"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 607.248792ms
+        duration: 502.275375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d9d53d8c-2203-11f1-afcd-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a714959c-26a8-11f1-aadf-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 456
         uncompressed: false
         body: |
-            {"data":{"id":"d9d53d8c-2203-11f1-afcd-da7ad0900002","type":"pipelines","attributes":{"name":"fluent-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["fluent-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"fluent-source-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/fluent.crt","key_file":"/etc/ssl/private/fluent.key"},"type":"fluent_bit"}]}}}}
+            {"data":{"id":"a714959c-26a8-11f1-aadf-da7ad0900002","type":"pipelines","attributes":{"name":"fluent-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["fluent-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"fluent-source-1","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/fluent.crt","key_file":"/etc/ssl/private/fluent.key"},"type":"fluent_bit"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 446.354417ms
+        duration: 271.399333ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d9d53d8c-2203-11f1-afcd-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a714959c-26a8-11f1-aadf-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 503.816ms
+        duration: 481.582333ms

@@ -31,13 +31,13 @@ interactions:
         content_length: 663
         uncompressed: false
         body: |
-            {"data":{"id":"70768c14-2204-11f1-b00b-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"43dd9356-26a9-11f1-bb77-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 551.462583ms
+        duration: 519.925459ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/70768c14-2204-11f1-b00b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/43dd9356-26a9-11f1-bb77-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 663
         uncompressed: false
         body: |
-            {"data":{"id":"70768c14-2204-11f1-b00b-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"43dd9356-26a9-11f1-bb77-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 288.697459ms
+        duration: 325.783833ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/70768c14-2204-11f1-b00b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/43dd9356-26a9-11f1-bb77-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         content_length: 663
         uncompressed: false
         body: |
-            {"data":{"id":"70768c14-2204-11f1-b00b-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"43dd9356-26a9-11f1-bb77-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"add-hostname-proc","include":"service:test","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 330.402417ms
+        duration: 339.567125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/70768c14-2204-11f1-b00b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/43dd9356-26a9-11f1-bb77-da7ad0900002
         method: PUT
       response:
         proto: HTTP/1.1
@@ -136,13 +136,13 @@ interactions:
         content_length: 757
         uncompressed: false
         body: |
-            {"data":{"id":"70768c14-2204-11f1-b00b-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"43dd9356-26a9-11f1-bb77-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 590.357834ms
+        duration: 693.434084ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -159,7 +159,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/70768c14-2204-11f1-b00b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/43dd9356-26a9-11f1-bb77-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -170,13 +170,13 @@ interactions:
         content_length: 757
         uncompressed: false
         body: |
-            {"data":{"id":"70768c14-2204-11f1-b00b-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"43dd9356-26a9-11f1-bb77-da7ad0900002","type":"pipelines","attributes":{"name":"add_hostname pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"display_name":"Add Hostname Processor","enabled":true,"id":"add-hostname-proc","include":"service:updated","type":"add_hostname"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 319.318792ms
+        duration: 254.353959ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/70768c14-2204-11f1-b00b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/43dd9356-26a9-11f1-bb77-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -209,4 +209,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 580.480625ms
+        duration: 541.977625ms

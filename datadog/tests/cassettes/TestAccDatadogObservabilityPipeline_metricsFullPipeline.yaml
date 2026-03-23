@@ -31,13 +31,13 @@ interactions:
         content_length: 1314
         uncompressed: false
         body: |
-            {"data":{"id":"8a4772f2-2204-11f1-b01b-da7ad0900002","type":"pipelines","attributes":{"name":"metrics full pipeline test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["metric-tags-group-1"],"type":"datadog_metrics"},{"auth_strategy":"none","encoding":"json","id":"http-dest-1","inputs":["metric-tags-group-1"],"type":"http_client"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"5c61dc20-26a9-11f1-bb83-da7ad0900002","type":"pipelines","attributes":{"name":"metrics full pipeline test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["metric-tags-group-1"],"type":"datadog_metrics"},{"auth_strategy":"none","encoding":"json","id":"http-dest-1","inputs":["metric-tags-group-1"],"type":"http_client"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 563.122167ms
+        duration: 709.907667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/8a4772f2-2204-11f1-b01b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/5c61dc20-26a9-11f1-bb83-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 1314
         uncompressed: false
         body: |
-            {"data":{"id":"8a4772f2-2204-11f1-b01b-da7ad0900002","type":"pipelines","attributes":{"name":"metrics full pipeline test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["metric-tags-group-1"],"type":"datadog_metrics"},{"auth_strategy":"none","encoding":"json","id":"http-dest-1","inputs":["metric-tags-group-1"],"type":"http_client"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"5c61dc20-26a9-11f1-bb83-da7ad0900002","type":"pipelines","attributes":{"name":"metrics full pipeline test","config":{"destinations":[{"id":"datadog-metrics-dest-1","inputs":["metric-tags-group-1"],"type":"datadog_metrics"},{"auth_strategy":"none","encoding":"json","id":"http-dest-1","inputs":["metric-tags-group-1"],"type":"http_client"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"processors":[{"enabled":true,"id":"filter-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"filter-1","include":"env:prod","type":"filter"}]},{"enabled":true,"id":"metric-tags-group-1","include":"*","inputs":["filter-group-1"],"processors":[{"enabled":true,"id":"metric-tags-1","include":"*","rules":[{"action":"include","include":"*","keys":["env","service"],"mode":"filter"}],"type":"metric_tags"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 273.904834ms
+        duration: 300.30225ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/8a4772f2-2204-11f1-b01b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/5c61dc20-26a9-11f1-bb83-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 441.27625ms
+        duration: 401.360917ms

@@ -31,13 +31,13 @@ interactions:
         content_length: 430
         uncompressed: false
         body: |
-            {"data":{"id":"5310a178-2204-11f1-b598-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline-udp","config":{"destinations":[{"encoding":"raw_message","framing":{"delimiter":"|","method":"character_delimited"},"id":"socket-dest-2","inputs":["source-1"],"mode":"udp","type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"246785d6-26a9-11f1-93de-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline-udp","config":{"destinations":[{"encoding":"raw_message","framing":{"delimiter":"|","method":"character_delimited"},"id":"socket-dest-2","inputs":["source-1"],"mode":"udp","type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 475.361667ms
+        duration: 438.440416ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/5310a178-2204-11f1-b598-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/246785d6-26a9-11f1-93de-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 430
         uncompressed: false
         body: |
-            {"data":{"id":"5310a178-2204-11f1-b598-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline-udp","config":{"destinations":[{"encoding":"raw_message","framing":{"delimiter":"|","method":"character_delimited"},"id":"socket-dest-2","inputs":["source-1"],"mode":"udp","type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"246785d6-26a9-11f1-93de-da7ad0900002","type":"pipelines","attributes":{"name":"socket-destination-pipeline-udp","config":{"destinations":[{"encoding":"raw_message","framing":{"delimiter":"|","method":"character_delimited"},"id":"socket-dest-2","inputs":["source-1"],"mode":"udp","type":"socket"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 274.626583ms
+        duration: 257.288708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/5310a178-2204-11f1-b598-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/246785d6-26a9-11f1-93de-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 413.044666ms
+        duration: 408.012541ms
