@@ -341,8 +341,8 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 
 	// Set tabs — always call d.Set so stale state is cleared when tabs are removed
 	var terraformTabs []map[string]interface{}
-	if tabsRaw, ok := dashboard.AdditionalProperties["tabs"]; ok && tabsRaw != nil {
-		terraformTabs = buildTerraformTabs(tabsRaw, &dashboard.Widgets)
+	if tabs := dashboard.GetTabs(); len(tabs) > 0 {
+		terraformTabs = buildTerraformTabs(tabs, &dashboard.Widgets)
 	}
 	if err := d.Set("tab", terraformTabs); err != nil {
 		return diag.FromErr(err)
@@ -893,12 +893,7 @@ func buildDatadogTabs(terraformTabs *[]interface{}) []map[string]interface{} {
 	return tabs
 }
 
-func buildTerraformTabs(tabsRaw interface{}, widgets *[]datadogV1.Widget) []map[string]interface{} {
-	tabs, ok := tabsRaw.([]interface{})
-	if !ok {
-		return nil
-	}
-
+func buildTerraformTabs(tabs []datadogV1.DashboardTab, widgets *[]datadogV1.Widget) []map[string]interface{} {
 	// Build widget ID → position map for reverse-mapping
 	widgetIDToPosition := make(map[int64]int)
 	for i, w := range *widgets {
@@ -906,25 +901,22 @@ func buildTerraformTabs(tabsRaw interface{}, widgets *[]datadogV1.Widget) []map[
 	}
 
 	terraformTabs := make([]map[string]interface{}, len(tabs))
-	for i, t := range tabs {
-		tab := t.(map[string]interface{})
-		widgetIDs := tab["widget_ids"].([]interface{})
+	for i, tab := range tabs {
+		widgetIDs := tab.GetWidgetIds()
 
 		// Reverse-map integer widget IDs to @N positional references.
 		// Skip any IDs that don't map to a known widget position rather than
 		// emitting an empty string which would corrupt state.
 		refs := make([]string, 0, len(widgetIDs))
-		for _, wid := range widgetIDs {
-			// widget_ids come as float64 from JSON
-			widgetID := int64(wid.(float64))
+		for _, widgetID := range widgetIDs {
 			if pos, ok := widgetIDToPosition[widgetID]; ok {
 				refs = append(refs, fmt.Sprintf("@%d", pos))
 			}
 		}
 
 		terraformTabs[i] = map[string]interface{}{
-			"id":         tab["id"],
-			"name":       tab["name"],
+			"id":         tab.GetId().String(),
+			"name":       tab.GetName(),
 			"widget_ids": refs,
 		}
 	}
