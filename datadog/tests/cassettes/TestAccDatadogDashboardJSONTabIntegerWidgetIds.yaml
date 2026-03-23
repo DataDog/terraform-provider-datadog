@@ -1,0 +1,207 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 810
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: '{"description":"Created using the Datadog provider in Terraform","layout_type":"ordered","notify_list":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"Overview","widget_ids":[1234567890123456,9876543210987654]},{"id":"6318d812-2dcb-56c6-b0cc-13cc860c4d38","name":"Details","widget_ids":[5555555555555555]}],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardJSONTabIntegerWidgetIds-local-1774283230","widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":1234567890123456},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":9876543210987654},{"definition":{"content":"Widget 3","has_padding":true,"show_tick":false,"type":"note"},"id":5555555555555555}]}'
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"br5-qu4-7xw","title":"tf-TestAccDatadogDashboardJSONTabIntegerWidgetIds-local-1774283230","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/br5-qu4-7xw/tf-testaccdatadogdashboardjsontabintegerwidgetids-local-1774283230","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":1234567890123456},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":9876543210987654},{"definition":{"content":"Widget 3","has_padding":true,"show_tick":false,"type":"note"},"id":5555555555555555}],"notify_list":[],"created_at":"2026-03-23T16:27:12.552984+00:00","modified_at":"2026-03-23T16:27:12.552984+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"Overview","widget_ids":[1234567890123456,9876543210987654]},{"id":"6318d812-2dcb-56c6-b0cc-13cc860c4d38","name":"Details","widget_ids":[5555555555555555]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 180.364417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/br5-qu4-7xw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"br5-qu4-7xw","title":"tf-TestAccDatadogDashboardJSONTabIntegerWidgetIds-local-1774283230","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/br5-qu4-7xw/tf-testaccdatadogdashboardjsontabintegerwidgetids-local-1774283230","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":1234567890123456},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":9876543210987654},{"definition":{"content":"Widget 3","has_padding":true,"show_tick":false,"type":"note"},"id":5555555555555555}],"notify_list":[],"created_at":"2026-03-23T16:27:12.552984+00:00","modified_at":"2026-03-23T16:27:12.552984+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"Overview","widget_ids":[1234567890123456,9876543210987654]},{"id":"6318d812-2dcb-56c6-b0cc-13cc860c4d38","name":"Details","widget_ids":[5555555555555555]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 97.573791ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/br5-qu4-7xw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"br5-qu4-7xw","title":"tf-TestAccDatadogDashboardJSONTabIntegerWidgetIds-local-1774283230","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/br5-qu4-7xw/tf-testaccdatadogdashboardjsontabintegerwidgetids-local-1774283230","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":1234567890123456},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":9876543210987654},{"definition":{"content":"Widget 3","has_padding":true,"show_tick":false,"type":"note"},"id":5555555555555555}],"notify_list":[],"created_at":"2026-03-23T16:27:12.552984+00:00","modified_at":"2026-03-23T16:27:12.552984+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"Overview","widget_ids":[1234567890123456,9876543210987654]},{"id":"6318d812-2dcb-56c6-b0cc-13cc860c4d38","name":"Details","widget_ids":[5555555555555555]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 93.612583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/br5-qu4-7xw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"br5-qu4-7xw","title":"tf-TestAccDatadogDashboardJSONTabIntegerWidgetIds-local-1774283230","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/br5-qu4-7xw/tf-testaccdatadogdashboardjsontabintegerwidgetids-local-1774283230","template_variables":[],"widgets":[{"definition":{"content":"Widget 1","has_padding":true,"show_tick":false,"type":"note"},"id":1234567890123456},{"definition":{"content":"Widget 2","has_padding":true,"show_tick":false,"type":"note"},"id":9876543210987654},{"definition":{"content":"Widget 3","has_padding":true,"show_tick":false,"type":"note"},"id":5555555555555555}],"notify_list":[],"created_at":"2026-03-23T16:27:12.552984+00:00","modified_at":"2026-03-23T16:27:12.552984+00:00","template_variable_presets":[],"tags":[],"tabs":[{"id":"5b153b9e-f858-5650-9ad0-34d241bfd781","name":"Overview","widget_ids":[1234567890123456,9876543210987654]},{"id":"6318d812-2dcb-56c6-b0cc-13cc860c4d38","name":"Details","widget_ids":[5555555555555555]}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 94.657917ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/br5-qu4-7xw
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"br5-qu4-7xw"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 348.593833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/br5-qu4-7xw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID br5-qu4-7xw not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 161.117459ms
