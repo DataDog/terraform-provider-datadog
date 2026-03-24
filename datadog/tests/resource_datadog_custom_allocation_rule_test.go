@@ -19,7 +19,7 @@ func TestAccDatadogCustomAllocationRuleBasic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -48,7 +48,7 @@ func TestAccDatadogCustomAllocationRuleUpdate(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -89,7 +89,7 @@ func TestAccDatadogCustomAllocationRuleImport(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -114,7 +114,7 @@ func TestAccDatadogCustomAllocationRuleMultipleFilters(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

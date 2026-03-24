@@ -1,0 +1,336 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 542
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test data source for rows","file_metadata":{"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}},"sync_enabled":true},"schema":{"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}],"primary_keys":["a"]},"source":"S3","table_name":"tf_test_ds_rows_tf_testaccdatadogreferencetablerowsdatasource_local_1764614254","tags":["test:datasource-rows"]},"type":"reference_table"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 735.095625ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables?filter%5Btable_name%5D%5Bexact%5D=tf_test_ds_rows_tf_testaccdatadogreferencetablerowsdatasource_local_1764614254
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 955
+        uncompressed: false
+        body: '{"data":[{"id":"28bf6ce7-266b-4614-929d-9dbfef3f61a0","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source for rows","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_rows_tf_testaccdatadogreferencetablerowsdatasource_local_1764614254","tags":["test:datasource-rows"],"updated_at":"2025-12-01T18:37:35Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 264.096667ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 806
+        uncompressed: false
+        body: '{"data":{"id":"28bf6ce7-266b-4614-929d-9dbfef3f61a0","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source for rows","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_rows_tf_testaccdatadogreferencetablerowsdatasource_local_1764614254","tags":["test:datasource-rows"],"updated_at":"2025-12-01T18:37:35Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 59.693375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 806
+        uncompressed: false
+        body: '{"data":{"id":"28bf6ce7-266b-4614-929d-9dbfef3f61a0","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source for rows","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_ds_rows_tf_testaccdatadogreferencetablerowsdatasource_local_1764614254","tags":["test:datasource-rows"],"updated_at":"2025-12-01T18:37:35Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 101.586ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0/rows?row_id=1&row_id=2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 78
+        uncompressed: false
+        body: '{"data":[],"meta":{"requested_count":2,"found_count":0,"not_found":["1","2"]}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 57.45975ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0/rows?row_id=1&row_id=2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 218
+        uncompressed: false
+        body: '{"data":[{"id":"1","type":"row","attributes":{"values":{"a":"1","b":"2","c":"3"}}},{"id":"2","type":"row","attributes":{"values":{"a":"2","b":"3","c":"4"}}}],"meta":{"requested_count":2,"found_count":2,"not_found":[]}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 125.338166ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0/rows?row_id=1&row_id=2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 218
+        uncompressed: false
+        body: '{"data":[{"id":"1","type":"row","attributes":{"values":{"a":"1","b":"2","c":"3"}}},{"id":"2","type":"row","attributes":{"values":{"a":"2","b":"3","c":"4"}}}],"meta":{"requested_count":2,"found_count":2,"not_found":[]}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 61.509041ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 799
+        uncompressed: false
+        body: '{"data":{"id":"28bf6ce7-266b-4614-929d-9dbfef3f61a0","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test data source for rows","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":4,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"DONE","table_name":"tf_test_ds_rows_tf_testaccdatadogreferencetablerowsdatasource_local_1764614254","tags":["test:datasource-rows"],"updated_at":"2025-12-01T18:37:40Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 132.67375ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0/rows?row_id=1&row_id=2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 218
+        uncompressed: false
+        body: '{"data":[{"id":"1","type":"row","attributes":{"values":{"a":"1","b":"2","c":"3"}}},{"id":"2","type":"row","attributes":{"values":{"a":"2","b":"3","c":"4"}}}],"meta":{"requested_count":2,"found_count":2,"not_found":[]}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 57.550458ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/28bf6ce7-266b-4614-929d-9dbfef3f61a0
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 362.891083ms

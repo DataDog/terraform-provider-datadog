@@ -13,13 +13,29 @@ Provides a Datadog MonitorNotificationRule resource.
 ## Example Usage
 
 ```terraform
-# Create new monitor_notification_rule resource
-
-resource "datadog_monitor_notification_rule" "foo" {
-  name       = "A notification rule name"
-  recipients = ["slack-test-channel", "jira-test"]
+resource "datadog_monitor_notification_rule" "team_checkout_notification_rule" {
+  name       = "Route alerts from checkout team"
+  recipients = ["slack-checkout-ops", "jira-checkout"]
   filter {
-    tags = ["env:foo"]
+    tags = ["team:payment"]
+  }
+}
+
+resource "datadog_monitor_notification_rule" "team_payment_notification_rule" {
+  name = "Routing logic for team payment"
+  filter {
+    scope = "team:payment AND NOT env:dev AND service:(payment-processing OR payment-gateway)"
+  }
+  conditional_recipients {
+    conditions {
+      scope      = "priority:p1"
+      recipients = ["oncall-payment", "slack-payment"]
+    }
+    conditions {
+      scope      = "priority:p5"
+      recipients = ["slack-payment"]
+    }
+    fallback_recipients = ["slack-payment"]
   }
 }
 ```
@@ -30,22 +46,42 @@ resource "datadog_monitor_notification_rule" "foo" {
 ### Required
 
 - `name` (String) The name of the monitor notification rule.
-- `recipients` (Set of String) List of recipients to notify.
 
 ### Optional
 
-- `filter` (Block, Optional) (see [below for nested schema](#nestedblock--filter))
+- `conditional_recipients` (Block, Optional) Use conditional recipients to define different recipients for different situations. Cannot be used with `recipients`. (see [below for nested schema](#nestedblock--conditional_recipients))
+- `filter` (Block, Optional) Specifies the matching criteria for monitor notifications. (see [below for nested schema](#nestedblock--filter))
+- `recipients` (Set of String) List of recipients to notify. Cannot be used with `conditional_recipients`.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--filter"></a>
-### Nested Schema for `filter`
+<a id="nestedblock--conditional_recipients"></a>
+### Nested Schema for `conditional_recipients`
+
+Optional:
+
+- `conditions` (Block List) Conditions of the notification rule. (see [below for nested schema](#nestedblock--conditional_recipients--conditions))
+- `fallback_recipients` (Set of String) If none of the `conditions` applied, `fallback_recipients` will get notified.
+
+<a id="nestedblock--conditional_recipients--conditions"></a>
+### Nested Schema for `conditional_recipients.conditions`
 
 Required:
 
-- `tags` (Set of String) All tags that target monitors must match.
+- `recipients` (Set of String) A list of recipients to notify. Uses the same format as the monitor message field. Must not start with an '@'.
+- `scope` (String) Defines the condition under which the recipients are notified. Supported formats: Monitor status condition using `transition_type:<status>` (for example `transition_type:is_alert`) or a single tag `key:value pair` (for example `env:prod`).
+
+
+
+<a id="nestedblock--filter"></a>
+### Nested Schema for `filter`
+
+Optional:
+
+- `scope` (String) A scope expression composed of `key:value` pairs (such as `env:prod`) with boolean operators (AND, OR, NOT) and parentheses for grouping.
+- `tags` (Set of String) A list of tag key:value pairs (e.g. team:product). All tags must match (AND semantics).
 
 ## Import
 

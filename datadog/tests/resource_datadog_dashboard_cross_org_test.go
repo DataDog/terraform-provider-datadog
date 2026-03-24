@@ -9,7 +9,6 @@ resource "datadog_dashboard" "cross_org_dashboard" {
   title        = "{{uniq}}"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
   widget {
     timeseries_definition {
       request {
@@ -139,7 +138,6 @@ resource "datadog_dashboard" "cross_org_dashboard" {
 `
 
 var datadogDashboardCrossOrgAsserts = []string{
-	"is_read_only = true",
 	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.cross_org_uuids.0 = 6434abde-xxxx-yyyy-zzzz-da7ad0900001",

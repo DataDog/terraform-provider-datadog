@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	datasourceSchema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	ephemeralSchema "github.com/hashicorp/terraform-plugin-framework/ephemeral/schema"
 	resourceSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -118,6 +119,58 @@ func enrichDatasourceDescription(r any) datasourceSchema.Attribute {
 }
 
 // =============================================================================
+// EPHEMERAL SCHEMA ENRICHMENT FUNCTIONS
+// =============================================================================
+
+func EnrichFrameworkEphemeralResourceSchema(s *ephemeralSchema.Schema) {
+	for i, attr := range s.Attributes {
+		s.Attributes[i] = enrichEphemeralDescription(attr)
+	}
+	enrichEphemeralMapBlocks(s.Blocks)
+}
+
+func enrichEphemeralMapBlocks(blocks map[string]ephemeralSchema.Block) {
+	for _, block := range blocks {
+		switch v := block.(type) {
+		case ephemeralSchema.ListNestedBlock:
+			for i, attr := range v.NestedObject.Attributes {
+				v.NestedObject.Attributes[i] = enrichEphemeralDescription(attr)
+			}
+			enrichEphemeralMapBlocks(v.NestedObject.Blocks)
+		case ephemeralSchema.SingleNestedBlock:
+			for i, attr := range v.Attributes {
+				v.Attributes[i] = enrichEphemeralDescription(attr)
+			}
+			enrichEphemeralMapBlocks(v.Blocks)
+		case ephemeralSchema.SetNestedBlock:
+			for i, attr := range v.NestedObject.Attributes {
+				v.NestedObject.Attributes[i] = enrichEphemeralDescription(attr)
+			}
+			enrichEphemeralMapBlocks(v.NestedObject.Blocks)
+		}
+	}
+}
+
+func enrichEphemeralDescription(r any) ephemeralSchema.Attribute {
+	switch v := r.(type) {
+	case ephemeralSchema.StringAttribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case ephemeralSchema.Int64Attribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case ephemeralSchema.Float64Attribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	case ephemeralSchema.BoolAttribute:
+		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
+		return v
+	default:
+		return r.(ephemeralSchema.Attribute)
+	}
+}
+
+// =============================================================================
 // REUSABLE CORE FUNCTIONS (TYPE-AGNOSTIC VIA REFLECTION)
 // =============================================================================
 
@@ -176,12 +229,24 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 				break
 			}
 
-			// Int64 validators
+			// Float64 and Int64 validators (both use "betweenValidator" and "atLeastValidator" names)
+			// Try Float64 first, then fall back to Int64
 			if strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "betweenValidator") ||
 				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "atLeastValidator") {
-				validationMessage := rv_validators.Index(i).Elem().Interface().(validator.Int64).Description(context.Background())
-				currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
-				break
+
+				// Try Float64 validator first
+				if float64Val, ok := rv_validators.Index(i).Elem().Interface().(validator.Float64); ok {
+					validationMessage := float64Val.Description(context.Background())
+					currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
+					break
+				}
+
+				// Fall back to Int64 validator
+				if int64Val, ok := rv_validators.Index(i).Elem().Interface().(validator.Int64); ok {
+					validationMessage := int64Val.Description(context.Background())
+					currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
+					break
+				}
 			}
 
 		}

@@ -5,7 +5,6 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
-	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -17,8 +16,7 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &applicationKeyResource{}
-	_ resource.ResourceWithImportState = &applicationKeyResource{}
+	_ resource.ResourceWithConfigure = &applicationKeyResource{}
 )
 
 func NewApplicationKeyResource() resource.Resource {
@@ -37,17 +35,9 @@ type applicationKeyResource struct {
 	Auth context.Context
 }
 
-func (r *applicationKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	response.Diagnostics.AddWarning(
-		"Deprecated",
-		"The import functionality for datadog_application_key resources is deprecated and will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use the datadog_application_key resource to create and manage new application keys.",
-	)
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
-}
-
 func (r *applicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use this resource to create and manage new application keys.",
+		Description: "Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys. Import is not supported for this resource. Securely store your application keys using a secret management system or use this resource to create and manage new application keys.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name for Application Key.",

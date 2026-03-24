@@ -14,8 +14,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
-	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
+	"github.com/hashicorp/terraform-plugin-mux/tf5to6server"
+	"github.com/hashicorp/terraform-plugin-mux/tf6muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
@@ -40,16 +41,18 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
 	config.SetUnstableOperationEnabled("v2.ListAWSLogsServices", true)
-	config.SetUnstableOperationEnabled("v2.ListAWSNamespaces", true)
-	config.SetUnstableOperationEnabled("v2.CreateAWSAccount", true)
-	config.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
-	config.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
-	config.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
-	config.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 	config.SetUnstableOperationEnabled("v2.GetDataset", true)
 	config.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	config.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	config.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+
+	// Enable Logs Restriction Queries
+	config.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.UpdateRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.DeleteRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.AddRoleToRestrictionQuery", true)
+	config.SetUnstableOperationEnabled("v2.RemoveRoleFromRestrictionQuery", true)
 
 	// Enable Observability Pipelines
 	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)
@@ -83,6 +86,18 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
 
+	// Enable DeploymentGates
+	config.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
+	config.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
+
+	config.SetUnstableOperationEnabled("v2.CreateDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
+	config.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
@@ -114,16 +129,24 @@ func initAccTestApiClients(ctx context.Context, t *testing.T, httpClient *http.C
 	return ctx, apiInstances, communityClient
 }
 
-func testAccFrameworkMuxProvidersServer(ctx context.Context, sdkV2Provider *schema.Provider, frameworkProvider *fwprovider.FrameworkProvider) map[string]func() (tfprotov5.ProviderServer, error) {
-	return map[string]func() (tfprotov5.ProviderServer, error){
-		"datadog": func() (tfprotov5.ProviderServer, error) {
-			muxServer, err := tf5muxserver.NewMuxServer(ctx, providerserver.NewProtocol5(frameworkProvider), sdkV2Provider.GRPCProvider)
+func testAccFrameworkMuxProvidersServer(ctx context.Context, sdkV2Provider *schema.Provider, frameworkProvider *fwprovider.FrameworkProvider) map[string]func() (tfprotov6.ProviderServer, error) {
+	return map[string]func() (tfprotov6.ProviderServer, error){
+		"datadog": func() (tfprotov6.ProviderServer, error) {
+			upgradedSdkProvider, err := tf5to6server.UpgradeServer(ctx, sdkV2Provider.GRPCProvider)
+			if err != nil {
+				return nil, err
+			}
+
+			muxServer, err := tf6muxserver.NewMuxServer(ctx,
+				providerserver.NewProtocol6(frameworkProvider),
+				func() tfprotov6.ProviderServer { return upgradedSdkProvider },
+			)
 			return muxServer, err
 		},
 	}
 }
 
-func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Context, *compositeProviderStruct, map[string]func() (tfprotov5.ProviderServer, error)) {
+func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Context, *compositeProviderStruct, map[string]func() (tfprotov6.ProviderServer, error)) {
 	ctx, httpClient := initHttpClient(ctx, t)
 	ctx, apiInstances, communityClient := initAccTestApiClients(ctx, t, httpClient)
 
@@ -186,11 +209,21 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	return ctx, httpClient
 }
 
-func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov5.ProviderServer, error) {
-	return func() (tfprotov5.ProviderServer, error) {
+func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov6.ProviderServer, error) {
+	return func() (tfprotov6.ProviderServer, error) {
 		providers.frameworkProvider.DefaultTags = defaultTags
-		muxServer, err := tf5muxserver.NewMuxServer(ctx,
-			providerserver.NewProtocol5(providers.frameworkProvider), providers.sdkV2Provider.GRPCProvider)
+
+		upgradedSdkProvider, err := tf5to6server.UpgradeServer(
+			ctx,
+			providers.sdkV2Provider.GRPCProvider,
+		)
+		if err != nil {
+			return nil, err
+		}
+		muxServer, err := tf6muxserver.NewMuxServer(ctx,
+			providerserver.NewProtocol6(providers.frameworkProvider),
+			func() tfprotov6.ProviderServer { return upgradedSdkProvider },
+		)
 		return muxServer, err
 	}
 }

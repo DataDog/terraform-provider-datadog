@@ -54,6 +54,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
+	NewCloudInventorySyncConfigResource,
 	NewIpAllowListResource,
 	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
@@ -68,16 +69,21 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsConcurrencyCapResource,
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
+	NewSyntheticsSuiteResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
+	NewTeamNotificationRuleResource,
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
+	NewTeamHierarchyLinksResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
+	NewSecurityMonitoringCriticalAssetResource,
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
+	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
 	NewAppsecWafExclusionFilterResource,
 	NewAppsecWafCustomRuleResource,
@@ -89,6 +95,8 @@ var Resources = []func() resource.Resource{
 	NewOnCallEscalationPolicyResource,
 	NewOnCallScheduleResource,
 	NewOnCallTeamRoutingRulesResource,
+	NewOnCallUserNotificationChannelResource,
+	NewOnCallUserNotificationRuleResource,
 	NewOrgConnectionResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
@@ -96,6 +104,7 @@ var Resources = []func() resource.Resource{
 	NewCostBudgetResource,
 	NewTagPipelineRulesetResource,
 	NewTagPipelineRulesetsResource,
+	NewSecureEmbedDashboardResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
@@ -107,15 +116,19 @@ var Resources = []func() resource.Resource{
 	NewDatadogCustomAllocationRuleResource,
 	NewCustomAllocationRulesResource,
 	NewAzureUcConfigResource,
+	NewDeploymentGateResource,
+	NewReferenceTableResource,
+	NewDatastoreResource,
+	NewDatastoreItemResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
-	NewApplicationKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
 	NewAwsIntegrationIAMPermissionsStandardDataSource,
+	NewAwsIntegrationIAMPermissionsResourceCollectionDataSource,
 	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
@@ -128,7 +141,10 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogServiceAccountDatasource,
 	NewDatadogSoftwareCatalogDataSource,
 	NewDatadogTeamDataSource,
+	NewDatadogTeamHierarchyLinksDataSource,
 	NewDatadogTeamMembershipsDataSource,
+	NewDatadogTeamNotificationRuleDataSource,
+	NewDatadogTeamNotificationRulesDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
@@ -137,6 +153,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
+	NewSecurityMonitoringCriticalAssetDataSource,
+	NewSecurityMonitoringCriticalAssetsDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
@@ -155,6 +173,11 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogGcpUcConfigDataSource,
 	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
+	NewDatadogReferenceTableDataSource,
+	NewDatadogReferenceTableRowsDataSource,
+	NewOrganizationSettingsDataSource,
+	NewDatadogDatastoreDataSource,
+	NewDatastoreItemDataSource,
 }
 
 // FrameworkProvider struct
@@ -304,13 +327,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -571,16 +594,18 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSLogsServices", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSNamespaces", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+
+	// Enable Logs Restriction Queries
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.AddRoleToRestrictionQuery", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.RemoveRoleFromRestrictionQuery", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
@@ -619,6 +644,17 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListCostAWSCURConfigs", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateCostAWSCURConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCostAWSCURConfig", true)
+
+	// Enable Deployment Gates & Rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGate", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
@@ -665,7 +701,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 
 		if !config.HttpClientRetryBackoffBase.IsNull() {
-			ddClientConfig.RetryConfiguration.BackOffBase = float64(config.HttpClientRetryBackoffMultiplier.ValueInt64())
+			ddClientConfig.RetryConfiguration.BackOffBase = float64(config.HttpClientRetryBackoffBase.ValueInt64())
 		}
 
 		if !config.HttpClientRetryMaxRetries.IsNull() {

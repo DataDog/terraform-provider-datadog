@@ -2,11 +2,13 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -45,6 +47,7 @@ type layersModel struct {
 	EffectiveDate timetypes.RFC3339    `tfsdk:"effective_date"`
 	EndDate       timetypes.RFC3339    `tfsdk:"end_date"`
 	Name          types.String         `tfsdk:"name"`
+	TimeZone      types.String         `tfsdk:"time_zone"`
 	RotationStart timetypes.RFC3339    `tfsdk:"rotation_start"`
 	Users         []types.String       `tfsdk:"users"`
 	Restrictions  []*restrictionsModel `tfsdk:"restriction"`
@@ -70,8 +73,26 @@ func NewOnCallScheduleResource() resource.Resource {
 func (m *onCallScheduleModel) Validate() diag.Diagnostics {
 	diags := diag.Diagnostics{}
 
+	layerNames := make(map[string]bool)
 	for i, layer := range m.Layers {
 		root := frameworkPath.Root("layer").AtListIndex(i)
+
+		name := layer.Name.ValueString()
+		if name == "" {
+			diags.AddAttributeError(
+				root.AtName("name"),
+				"missing layer name",
+				"layer name must not be empty",
+			)
+		} else if layerNames[name] {
+			diags.AddAttributeError(
+				root.AtName("name"),
+				"duplicate layer name",
+				fmt.Sprintf("layer name %q must be unique within a schedule", name),
+			)
+		} else {
+			layerNames[name] = true
+		}
 
 		if layer.Interval == nil {
 			diags.AddAttributeError(root.AtName("interval"), "missing interval", "schedules must specify an interval")
@@ -158,9 +179,14 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 							Description: "The date/time when the rotation for this layer starts (in ISO 8601).",
 							Validators:  []validator.String{validators.TimeFormatValidator(time.RFC3339)},
 						},
+						"time_zone": schema.StringAttribute{
+							Optional:    true,
+							Description: "The time zone for this layer.",
+							Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
+						},
 						"users": schema.ListAttribute{
 							Required:    true,
-							Description: "List of user IDs for the layer. Can either be a valid user id or null",
+							Description: "List of user IDs for the layer. Can either be a valid user id or `null` to represent No-one.",
 							ElementType: types.StringType,
 							Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 						},
@@ -471,11 +497,18 @@ func newLayerModel(layer *datadogV2.Layer, membersByID map[string]*datadogV2.Sch
 	}
 	rotationStart := keepCurrentTimezone(currentRotationStart, layer.Attributes.GetRotationStart())
 
+	timeZone, ok := layer.Attributes.GetTimeZoneOk()
+	timeZoneValue := types.StringNull()
+	if ok {
+		timeZoneValue = types.StringValue(*timeZone)
+	}
+
 	return &layersModel{
 		Id:            types.StringValue(layer.GetId()),
 		EffectiveDate: effectiveDate,
 		EndDate:       endDate,
 		Name:          types.StringValue(layer.Attributes.GetName()),
+		TimeZone:      timeZoneValue,
 		RotationStart: rotationStart,
 		Users:         memberIds,
 		Restrictions:  restrictionsModels,
@@ -545,6 +578,10 @@ func (r *onCallScheduleResource) buildOnCallScheduleRequestBody(ctx context.Cont
 		if layersTFItem.Interval != nil {
 			layersDDItem.Interval.Days = layersTFItem.Interval.Days.ValueInt32Pointer()
 			layersDDItem.Interval.Seconds = layersTFItem.Interval.Seconds.ValueInt64Pointer()
+		}
+
+		if !layersTFItem.TimeZone.IsNull() {
+			layersDDItem.TimeZone = layersTFItem.TimeZone.ValueStringPointer()
 		}
 
 		if !layersTFItem.EndDate.IsNull() {
@@ -734,6 +771,10 @@ func (r *onCallScheduleResource) buildOnCallScheduleUpdateRequestBody(
 					interval.SetSeconds(layersTFItem.Interval.Seconds.ValueInt64())
 				}
 				layersDDItem.SetInterval(interval)
+			}
+
+			if !layersTFItem.TimeZone.IsNull() {
+				layersDDItem.TimeZone = layersTFItem.TimeZone.ValueStringPointer()
 			}
 
 			layers = append(layers, *layersDDItem)

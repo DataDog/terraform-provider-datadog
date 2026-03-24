@@ -1,0 +1,204 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 528
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Test schema evolution","file_metadata":{"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}},"sync_enabled":true},"schema":{"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}],"primary_keys":["a"]},"source":"S3","table_name":"tf_test_evolution_tf_testaccreferencetable_schemaoncreate_local_1764614215","tags":["test:terraform"]},"type":"reference_table"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 511.674542ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables?filter%5Btable_name%5D%5Bexact%5D=tf_test_evolution_tf_testaccreferencetable_schemaoncreate_local_1764614215
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 941
+        uncompressed: false
+        body: '{"data":[{"id":"0426b3a9-0981-45c8-bd5f-953d189de932","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test schema evolution","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_evolution_tf_testaccreferencetable_schemaoncreate_local_1764614215","tags":["test:terraform"],"updated_at":"2025-12-01T18:36:56Z"}}],"meta":{"page":{"type":"offset_limit","offset":0,"limit":15,"total":null,"first_offset":0,"prev_offset":null,"next_offset":15,"last_offset":null}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 257.724667ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/0426b3a9-0981-45c8-bd5f-953d189de932
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 792
+        uncompressed: false
+        body: '{"data":{"id":"0426b3a9-0981-45c8-bd5f-953d189de932","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test schema evolution","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_evolution_tf_testaccreferencetable_schemaoncreate_local_1764614215","tags":["test:terraform"],"updated_at":"2025-12-01T18:36:56Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 47.427667ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/0426b3a9-0981-45c8-bd5f-953d189de932
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 792
+        uncompressed: false
+        body: '{"data":{"id":"0426b3a9-0981-45c8-bd5f-953d189de932","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test schema evolution","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_evolution_tf_testaccreferencetable_schemaoncreate_local_1764614215","tags":["test:terraform"],"updated_at":"2025-12-01T18:36:56Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 48.491792ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/0426b3a9-0981-45c8-bd5f-953d189de932
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 792
+        uncompressed: false
+        body: '{"data":{"id":"0426b3a9-0981-45c8-bd5f-953d189de932","type":"reference_table","attributes":{"created_by":"51bca672-7464-11ea-ad29-6762102f9f58","description":"Test schema evolution","file_metadata":{"error_row_count":0,"error_message":"","sync_enabled":true,"access_details":{"aws_detail":{"aws_account_id":"924305315327","aws_bucket_name":"dd-reference-tables-dev-staging","file_path":"test.csv"}}},"last_updated_by":"51bca672-7464-11ea-ad29-6762102f9f58","row_count":0,"schema":{"primary_keys":["a"],"fields":[{"name":"a","type":"STRING"},{"name":"b","type":"STRING"},{"name":"c","type":"STRING"}]},"source":"S3","status":"INITIALIZED","table_name":"tf_test_evolution_tf_testaccreferencetable_schemaoncreate_local_1764614215","tags":["test:terraform"],"updated_at":"2025-12-01T18:36:56Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 51.973375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/reference-tables/tables/0426b3a9-0981-45c8-bd5f-953d189de932
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 407.743084ms

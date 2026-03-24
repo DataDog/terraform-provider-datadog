@@ -15,6 +15,7 @@ import (
 )
 
 func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -105,6 +106,18 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 				),
 			},
 			{
+				Config: testAccCheckDatadogSensitiveDataScannerRuleReplacementString(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name),
+					resource.TestCheckResourceAttr(
+						resource_name, "text_replacement.0.type", "replacement_string"),
+					resource.TestCheckResourceAttr(
+						resource_name, "text_replacement.0.replacement_string", "REDACTED"),
+					resource.TestCheckResourceAttr(
+						resource_name, "text_replacement.0.should_save_match", "true"),
+				),
+			},
+			{
 				Config: testAccCheckDatadogSensitiveDataScannerRuleChangedGroupNone(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name),
@@ -127,18 +140,18 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 }
 
 func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
 	t.Parallel()
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniq1 := uniqueEntityName(ctx, t)
-	uniq2 := uniqueEntityName(ctx, t)
+	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource_name_1 := "datadog_sensitive_data_scanner_rule.sp_rule_1"
 	resource_name_2 := "datadog_sensitive_data_scanner_rule.sp_rule_2"
+	sp_data_source := "data.datadog_sensitive_data_scanner_standard_pattern.sample_sp"
 
 	value_true := true
 	value_false := false
@@ -149,15 +162,15 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(uniq1, uniq2),
+				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name_1),
-					resource.TestCheckResourceAttr(
-						resource_name_1, "description", "a description"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_1, "name", sp_data_source, "name"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_1, "description", sp_data_source, "description"),
 					resource.TestCheckResourceAttr(
 						resource_name_1, "is_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						resource_name_1, "name", uniq1),
 					resource.TestCheckResourceAttr(
 						resource_name_1, "excluded_namespaces.0", "username"),
 					resource.TestCheckResourceAttr(
@@ -173,12 +186,12 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_1, &value_false),
 					// assertions on resource 2
 					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name_2),
-					resource.TestCheckResourceAttr(
-						resource_name_2, "description", "a description"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_2, "name", sp_data_source, "name"),
+					resource.TestCheckResourceAttrPair(
+						resource_name_2, "description", sp_data_source, "description"),
 					resource.TestCheckResourceAttr(
 						resource_name_2, "is_enabled", "true"),
-					resource.TestCheckResourceAttr(
-						resource_name_2, "name", uniq2),
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_2, &value_true),
 				),
 			},
@@ -208,6 +221,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
 	pattern = "regex"
 	tags = ["sensitive_data:true"]
+	included_keyword_configuration {
+		keywords = []
+		character_count = 30
+	}
 }
 `, name)
 }
@@ -327,12 +344,57 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	group_id = datadog_sensitive_data_scanner_group.new_group.id
 	pattern = "regex"
 	tags = ["sensitive_data:true"]
+	included_keyword_configuration {
+		keywords = []
+		character_count = 30
+	}
 }
 `, name)
 }
 
-func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(name1, name2 string) string {
+func testAccCheckDatadogSensitiveDataScannerRuleReplacementString(name string) string {
 	return fmt.Sprintf(`
+resource "datadog_sensitive_data_scanner_group" "sample_group" {
+	name = "my group"
+	is_enabled = false
+	product_list = ["logs"]
+	filter {
+		query = "*"
+	}
+	samplings {
+		product = "logs"
+		rate    = 100
+	}
+}
+
+resource "datadog_sensitive_data_scanner_group" "new_group" {
+	name = "another group"
+	is_enabled = false
+	product_list = ["apm"]
+	filter {
+		query = "*"
+	}
+}
+
+resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
+	name = "%s"
+	description = "another description"
+	excluded_namespaces = ["email"]
+	is_enabled = true
+	group_id = datadog_sensitive_data_scanner_group.new_group.id
+	pattern = "regex"
+	tags = ["sensitive_data:true"]
+	text_replacement {
+		replacement_string = "REDACTED"
+		type = "replacement_string"
+		should_save_match = true
+	}
+}
+`, name)
+}
+
+func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern() string {
+	return `
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	name = "my group"
 	is_enabled = true
@@ -351,8 +413,8 @@ data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sp_rule_1" {
-	name = "%s"
-	description = "a description"
+	name = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.name
+	description = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.description
 	excluded_namespaces = ["username"]
 	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
@@ -369,14 +431,14 @@ resource "datadog_sensitive_data_scanner_rule" "sp_rule_1" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "sp_rule_2" {
-	name = "%s"
-	description = "a description"
+	name = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.name
+	description = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.description
 	excluded_namespaces = ["username"]
 	is_enabled = true
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
 	standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.id
 }
-`, name1, name2)
+`
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
@@ -461,4 +523,70 @@ func testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider 
 
 		return nil
 	}
+}
+
+func TestAccSensitiveDataScannerRule_DeleteAlreadyDeleted(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	cleanupSensitiveDataScannerGroups(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	var ruleId string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSensitiveDataScannerRule(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, "datadog_sensitive_data_scanner_rule.sample_rule"),
+					// Capture the rule ID for deletion
+					func(s *terraform.State) error {
+						ruleId = s.RootModule().Resources["datadog_sensitive_data_scanner_rule.sample_rule"].Primary.ID
+						return nil
+					},
+				),
+			},
+			{
+				// Delete the rule via API before Terraform tries to destroy it
+				PreConfig: func() {
+					provider, _ := accProvider()
+					providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+					apiInstances := providerConf.DatadogApiInstances
+					auth := providerConf.Auth
+
+					body := datadogV2.NewSensitiveDataScannerRuleDeleteRequestWithDefaults()
+					_, _, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningRule(auth, ruleId, *body)
+					if err != nil {
+						t.Logf("Warning: failed to delete rule via API: %v", err)
+					}
+				},
+				// Empty config to trigger destroy - should succeed even though resource is already deleted
+				Config: testAccCheckDatadogSensitiveDataScannerGroupOnly(uniq),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogSensitiveDataScannerGroupOnly(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_sensitive_data_scanner_group" "sample_group" {
+	name = "my group %s"
+	is_enabled = true
+	product_list = ["logs"]
+	filter {
+		query = "*"
+	}
+	samplings {
+		product = "logs"
+		rate    = 100
+	}
+}
+`, name)
 }

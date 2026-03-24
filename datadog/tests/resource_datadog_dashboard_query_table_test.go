@@ -9,7 +9,6 @@ resource "datadog_dashboard" "query_table_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		query_table_definition {
@@ -81,7 +80,6 @@ resource "datadog_dashboard" "query_table_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 	widget {
 		query_table_definition {
 		  request {
@@ -170,7 +168,6 @@ resource "datadog_dashboard" "query_table_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		query_table_definition {
@@ -331,7 +328,6 @@ var datadogDashboardQueryTableAsserts = []string{
 	"widget.0.query_table_definition.0.request.1.conditional_formats.0.custom_bg_color =",
 	"widget.0.query_table_definition.0.request.1.conditional_formats.0.image_url =",
 	"widget.0.query_table_definition.0.request.1.conditional_formats.0.hide_value = false",
-	"is_read_only = true",
 	"widget.0.query_table_definition.0.request.0.limit = 25",
 	"widget.0.query_table_definition.0.request.0.conditional_formats.1.timeframe =",
 	"widget.0.query_table_definition.0.request.0.conditional_formats.1.custom_fg_color =",
@@ -357,7 +353,6 @@ var datadogDashboardQueryTableAsserts = []string{
 
 var datadogDashboardQueryTableFormulaAsserts = []string{
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.query_table_definition.0.request.0.formula.0.formula_expression = query1",

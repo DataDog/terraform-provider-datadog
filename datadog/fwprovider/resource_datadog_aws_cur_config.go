@@ -368,6 +368,15 @@ func (r *awsCurConfigResource) buildAwsCurConfigRequestBody(ctx context.Context,
 	req.Data = *datadogV2.NewAwsCURConfigPostDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
+	// Set metadata to indicate this request is coming from Terraform
+	// Use AdditionalProperties to add meta field to the JSON request
+	if req.AdditionalProperties == nil {
+		req.AdditionalProperties = make(map[string]interface{})
+	}
+	req.AdditionalProperties["meta"] = map[string]interface{}{
+		"setup_method": "terraform",
+	}
+
 	return req, diags
 }
 

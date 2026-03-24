@@ -9,7 +9,6 @@ resource "datadog_dashboard" "query_value_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		query_value_definition {
@@ -59,7 +58,6 @@ resource "datadog_dashboard" "query_value_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		query_value_definition {
@@ -104,7 +102,6 @@ resource "datadog_dashboard" "query_value_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 	widget {
 		query_value_definition {
 		  request {
@@ -191,7 +188,6 @@ var datadogDashboardQueryValueAsserts = []string{
 	"widget.0.query_value_definition.0.request.0.conditional_formats.# = 2",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.query_value_definition.0.request.0.conditional_formats.0.custom_fg_color =",
-	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.query_value_definition.0.custom_link.# = 2",
 	"widget.0.query_value_definition.0.custom_link.0.label = Test Custom Link label",
@@ -205,7 +201,6 @@ var datadogDashboardQueryValueAsserts = []string{
 
 var datadogDashboardQueryValueFormulaAsserts = []string{
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.query_value_definition.0.request.0.formula.0.formula_expression = query1 + query2",

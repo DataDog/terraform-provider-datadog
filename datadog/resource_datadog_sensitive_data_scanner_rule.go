@@ -80,8 +80,8 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				"included_keyword_configuration": {
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					MaxItems:    1,
-					ForceNew:    true, // If the attribute is removed, we need to recreate the rule.
 					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. If the rule has the `standard_pattern_id` field, then discarding this field will apply the recommended keywords. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
@@ -319,10 +319,7 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 		if shouldSaveMatch, ok := d.GetOk("text_replacement.0.should_save_match"); ok {
 			if typeVar, ok := d.GetOk("text_replacement.0.type"); ok && typeVar.(string) == "replacement_string" {
-				if textReplacement.AdditionalProperties == nil {
-					textReplacement.AdditionalProperties = map[string]interface{}{}
-				}
-				textReplacement.AdditionalProperties["should_save_match"] = shouldSaveMatch.(bool)
+				textReplacement.SetShouldSaveMatch(shouldSaveMatch.(bool))
 			}
 		}
 
@@ -354,7 +351,6 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 			// If the user creates a rule derived from a standard rule, let's add that the rule is not using the recommended keywords.
 			includedKeywordConfiguration.SetUseRecommendedKeywords(false)
 		}
-		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 	} else if hasSp {
 		// The user is creating / updating a rule derived from a standard rule, without specifying an included keyword configuration.
 		// Let's use the recommended keywords here by default.
@@ -362,9 +358,12 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		includedKeywordConfiguration.SetKeywords(keywords)
 		includedKeywordConfiguration.SetCharacterCount(int64(30))
 		includedKeywordConfiguration.SetUseRecommendedKeywords(true)
-
-		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
+	} else {
+		includedKeywordConfiguration.SetKeywords(make([]string, 0))
+		includedKeywordConfiguration.SetCharacterCount(int64(30))
+		includedKeywordConfiguration.SetUseRecommendedKeywords(false)
 	}
+	attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 
 	if priority, ok := d.GetOk("priority"); ok {
 		attributes.SetPriority(int64(priority.(int)))
@@ -415,7 +414,10 @@ func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schem
 
 	_, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningRule(auth, id, *body)
 	if err != nil {
-		// The resource is assumed to still exist, and all prior state is preserved.
+		// API returns 404 when the specific rule id doesn't exist through DELETE request.
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			return nil
+		}
 		return utils.TranslateClientErrorDiag(err, httpResp, "error deleting SensitiveDataScannerRule")
 	}
 

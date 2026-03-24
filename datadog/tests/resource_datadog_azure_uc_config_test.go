@@ -19,7 +19,7 @@ func TestAccAzureUcConfigBasic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAzureUcConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -92,7 +92,7 @@ func TestAccAzureUcConfigImport(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAzureUcConfigDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

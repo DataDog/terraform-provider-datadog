@@ -264,7 +264,6 @@ func (r *csmThreatsPolicyResource) updateStateFromResponse(ctx context.Context, 
 	state.Id = types.StringValue(res.Data.GetId())
 
 	attributes := res.Data.Attributes
-
 	state.Name = types.StringValue(attributes.GetName())
 	state.Description = types.StringValue(attributes.GetDescription())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())

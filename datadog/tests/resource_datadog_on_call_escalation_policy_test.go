@@ -37,13 +37,15 @@ func TestAccOnCallEscalationPolicyCreateAndUpdate(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOnCallEscalationPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallEscalationPolicyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_escalation_policy.policy_test", "step.1.target.0.position", "next"),
 				),
 			},
 		},

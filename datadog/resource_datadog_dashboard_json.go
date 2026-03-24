@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
+	"github.com/google/uuid"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -99,6 +100,34 @@ func deleteWidgetID(widgets []interface{}) {
 	}
 }
 
+// stripDeprecatedFields removes fields that are no longer accepted by the API
+// but are still returned for backward compatibility, and injects required tab IDs.
+func stripDeprecatedFields(dashboardJSON string) (string, error) {
+	dashboardMap, err := structure.ExpandJsonFromString(dashboardJSON)
+	if err != nil {
+		return "", err
+	}
+
+	// Remove is_read_only as it's no longer accepted by the API
+	// (though still returned for backward compatibility)
+	delete(dashboardMap, "is_read_only")
+
+	// Tabs require an `id` field. Inject a deterministic UUID for any tab that
+	// doesn't already have one so that dashboard_json works without the user
+	// having to manually supply UUIDs.
+	if tabs, ok := dashboardMap["tabs"].([]interface{}); ok {
+		for i, t := range tabs {
+			if tab, ok := t.(map[string]interface{}); ok {
+				if v, _ := tab["id"].(string); v == "" {
+					tab["id"] = uuid.NewSHA1(uuid.Nil, []byte(fmt.Sprintf("tab-%d", i))).String()
+				}
+			}
+		}
+	}
+
+	return structure.FlattenJsonToString(dashboardMap)
+}
+
 func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -130,7 +159,13 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 
 	dashboard := d.Get("dashboard").(string)
 
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &dashboard)
+	// Strip deprecated fields before sending to API
+	dashboardToSend, err := stripDeprecatedFields(dashboard)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("error preparing dashboard for API: %s", err))
+	}
+
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", path, &dashboardToSend)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error creating resource")
 	}
@@ -183,7 +218,13 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 	dashboard := d.Get("dashboard").(string)
 	id := d.Id()
 
-	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", path+"/"+id, &dashboard)
+	// Strip deprecated fields before sending to API
+	dashboardToSend, err := stripDeprecatedFields(dashboard)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("error preparing dashboard for API: %s", err))
+	}
+
+	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "PUT", path+"/"+id, &dashboardToSend)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating dashboard")
 	}
@@ -249,6 +290,41 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 	for _, f := range computedFields {
 		delete(attrMap, f)
 	}
+
+	// Build widget ID → @N position map before deleting widget IDs.
+	// This lets us normalize tab widget_ids from server-returned integers back
+	// to @N references so the dashboard_json resource doesn't produce a perpetual diff.
+	widgetIDToPosition := make(map[int64]int)
+	if widgets, ok := attrMap["widgets"].([]interface{}); ok {
+		for i, w := range widgets {
+			if widget, ok := w.(map[string]interface{}); ok {
+				if id, ok := widget["id"].(float64); ok {
+					widgetIDToPosition[int64(id)] = i + 1
+				}
+			}
+		}
+	}
+	if tabs, ok := attrMap["tabs"].([]interface{}); ok {
+		for _, t := range tabs {
+			if tab, ok := t.(map[string]interface{}); ok {
+				// Tab id is computed — strip it so config and state compare equal.
+				delete(tab, "id")
+				// Convert integer widget_ids to @N when we have position info.
+				if len(widgetIDToPosition) > 0 {
+					if widgetIDs, ok := tab["widget_ids"].([]interface{}); ok {
+						for j, wid := range widgetIDs {
+							if id, ok := wid.(float64); ok {
+								if pos, found := widgetIDToPosition[int64(id)]; found {
+									widgetIDs[j] = fmt.Sprintf("@%d", pos)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	// Remove every widget id too
 	if widgets, ok := attrMap["widgets"].([]interface{}); ok {
 		deleteWidgetID(widgets)

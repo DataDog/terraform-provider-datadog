@@ -6,7 +6,9 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	sdkdiag "github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
 func TestAccountAndLambdaArnFromID(t *testing.T) {
@@ -189,6 +191,10 @@ func (r *mockResourceData) Get(key string) interface{} {
 func (r *mockResourceData) GetOk(key string) (interface{}, bool) {
 	v, ok := r.values[key]
 	return v, ok
+}
+
+func (r *mockResourceData) GetRawConfigAt(cty.Path) (cty.Value, sdkdiag.Diagnostics) {
+	return cty.NilVal, nil
 }
 
 var testMetricNames = map[string]string{

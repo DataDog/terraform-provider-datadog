@@ -9,7 +9,6 @@ resource "datadog_dashboard" "hostmap_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		hostmap_definition {
@@ -65,7 +64,6 @@ var datadogDashboardHostMapAsserts = []string{
 	"widget.0.hostmap_definition.0.style.0.fill_min = 10",
 	"widget.0.hostmap_definition.0.no_group_hosts = true",
 	"widget.0.hostmap_definition.0.request.0.size.0.q = max:system.cpu.user{env:prod} by {host}",
-	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.hostmap_definition.0.group.0 = region",
 	"widget.0.hostmap_definition.0.custom_link.# = 2",

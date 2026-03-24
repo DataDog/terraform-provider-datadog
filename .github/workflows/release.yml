@@ -10,6 +10,7 @@ on:
     types: [closed]
     branches:
       - master
+      - v3
 
 jobs:
   create_release:

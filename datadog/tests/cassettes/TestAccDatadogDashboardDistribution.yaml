@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 750
+        content_length: 730
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardDistribution-local-1728677714","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardDistribution-local-1767988505","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}}}]}
         form: {}
         headers:
             Accept:
@@ -31,14 +31,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ip3-gcj-cta","title":"tf-TestAccDatadogDashboardDistribution-local-1728677714","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ip3-gcj-cta/tf-testaccdatadogdashboarddistribution-local-1728677714","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":3550811698999843}],"notify_list":[],"created_at":"2024-10-11T20:15:17.081031+00:00","modified_at":"2024-10-11T20:15:17.081031+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"snq-crn-nfr","title":"tf-TestAccDatadogDashboardDistribution-local-1767988505","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/snq-crn-nfr/tf-testaccdatadogdashboarddistribution-local-1767988505","template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":2280746896727933}],"notify_list":[],"created_at":"2026-01-09T19:55:06.920896+00:00","modified_at":"2026-01-09T19:55:06.920896+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 332.835042ms
+        duration: 134.742084ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ip3-gcj-cta
+        url: https://api.datadoghq.com/api/v1/dashboard/snq-crn-nfr
         method: GET
       response:
         proto: HTTP/1.1
@@ -66,14 +65,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ip3-gcj-cta","title":"tf-TestAccDatadogDashboardDistribution-local-1728677714","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ip3-gcj-cta/tf-testaccdatadogdashboarddistribution-local-1728677714","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":3550811698999843}],"notify_list":[],"created_at":"2024-10-11T20:15:17.081031+00:00","modified_at":"2024-10-11T20:15:17.081031+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"snq-crn-nfr","title":"tf-TestAccDatadogDashboardDistribution-local-1767988505","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/snq-crn-nfr/tf-testaccdatadogdashboarddistribution-local-1767988505","template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":2280746896727933}],"notify_list":[],"created_at":"2026-01-09T19:55:06.920896+00:00","modified_at":"2026-01-09T19:55:06.920896+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 79.595ms
+        duration: 95.316458ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ip3-gcj-cta
+        url: https://api.datadoghq.com/api/v1/dashboard/snq-crn-nfr
         method: GET
       response:
         proto: HTTP/1.1
@@ -101,14 +99,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ip3-gcj-cta","title":"tf-TestAccDatadogDashboardDistribution-local-1728677714","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ip3-gcj-cta/tf-testaccdatadogdashboarddistribution-local-1728677714","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":3550811698999843}],"notify_list":[],"created_at":"2024-10-11T20:15:17.081031+00:00","modified_at":"2024-10-11T20:15:17.081031+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"snq-crn-nfr","title":"tf-TestAccDatadogDashboardDistribution-local-1767988505","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/snq-crn-nfr/tf-testaccdatadogdashboarddistribution-local-1767988505","template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":2280746896727933}],"notify_list":[],"created_at":"2026-01-09T19:55:06.920896+00:00","modified_at":"2026-01-09T19:55:06.920896+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 93.489792ms
+        duration: 95.681583ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ip3-gcj-cta
+        url: https://api.datadoghq.com/api/v1/dashboard/snq-crn-nfr
         method: GET
       response:
         proto: HTTP/1.1
@@ -136,14 +133,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"ip3-gcj-cta","title":"tf-TestAccDatadogDashboardDistribution-local-1728677714","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ip3-gcj-cta/tf-testaccdatadogdashboarddistribution-local-1728677714","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":3550811698999843}],"notify_list":[],"created_at":"2024-10-11T20:15:17.081031+00:00","modified_at":"2024-10-11T20:15:17.081031+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"id":"snq-crn-nfr","title":"tf-TestAccDatadogDashboardDistribution-local-1767988505","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/snq-crn-nfr/tf-testaccdatadogdashboarddistribution-local-1767988505","template_variables":[],"widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"time":{"live_span":"1h"},"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution","xaxis":{"include_zero":true,"max":"100","min":"10","scale":"linear"},"yaxis":{"include_zero":true,"label":"cpu (%)","max":"50","min":"0","scale":"linear"}},"id":2280746896727933}],"notify_list":[],"created_at":"2026-01-09T19:55:06.920896+00:00","modified_at":"2026-01-09T19:55:06.920896+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 81.189541ms
+        duration: 101.751958ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +156,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ip3-gcj-cta
+        url: https://api.datadoghq.com/api/v1/dashboard/snq-crn-nfr
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -171,14 +167,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"deleted_dashboard_id":"ip3-gcj-cta"}
+        body: '{"deleted_dashboard_id":"snq-crn-nfr"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 130.290917ms
+        duration: 353.825333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +190,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/ip3-gcj-cta
+        url: https://api.datadoghq.com/api/v1/dashboard/snq-crn-nfr
         method: GET
       response:
         proto: HTTP/1.1
@@ -206,10 +201,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID ip3-gcj-cta not found"]}'
+        body: '{"errors":["Dashboard with ID snq-crn-nfr not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 67.323875ms
+        duration: 85.5465ms

@@ -1,0 +1,340 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 361
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"rules":[{"enabled":true,"mapping":{"destination_key":"env","if_tag_exists":"replace","source_keys":["environment","stage"]},"name":"mapping-rule","query":null,"reference_table":null}]},"id":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","type":"create_ruleset"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 637
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242281,"nanos":765633000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242281,"nanos":765633000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":false,"if_tag_exists":"replace"},"reference_table":null,"metadata":null}],"version":3657224}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 98.2305ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 637
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242281,"nanos":765633000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242281,"nanos":765633000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":false,"if_tag_exists":"replace"},"reference_table":null,"metadata":null}],"version":3657224}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 46.760083ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 637
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242281,"nanos":765633000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242281,"nanos":765633000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":false,"if_tag_exists":"replace"},"reference_table":null,"metadata":null}],"version":3657224}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 40.593583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 385
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"last_version":3657224,"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","rules":[{"enabled":true,"mapping":{"destination_key":"env","if_tag_exists":"append","source_keys":["environment","stage"]},"name":"mapping-rule","query":null,"reference_table":null}]},"type":"update_ruleset"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 636
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242282,"nanos":837589000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242282,"nanos":837589000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":false,"if_tag_exists":"append"},"reference_table":null,"metadata":null}],"version":3657225}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 121.358333ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 636
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242282,"nanos":837589000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242282,"nanos":837589000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":false,"if_tag_exists":"append"},"reference_table":null,"metadata":null}],"version":3657225}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 42.847292ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 636
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242282,"nanos":837589000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242282,"nanos":837589000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":false,"if_tag_exists":"append"},"reference_table":null,"metadata":null}],"version":3657225}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 55.973917ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 391
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"last_version":3657225,"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","rules":[{"enabled":true,"mapping":{"destination_key":"env","if_tag_exists":"do_not_apply","source_keys":["environment","stage"]},"name":"mapping-rule","query":null,"reference_table":null}]},"type":"update_ruleset"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 641
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242283,"nanos":917062000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242283,"nanos":917062000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":true,"if_tag_exists":"do_not_apply"},"reference_table":null,"metadata":null}],"version":3657226}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.777833ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 641
+        uncompressed: false
+        body: '{"data":{"id":"fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec","type":"ruleset","attributes":{"created":{"seconds":1770242283,"nanos":917062000},"enabled":true,"last_modified_user_uuid":"8aa9beab-3c2a-11ef-8a8f-56d598d478b5","modified":{"seconds":1770242283,"nanos":917062000},"name":"tf-test-mapping-ite-ruleset-tf-TestAccDatadogTagPipelineRuleset_MappingRuleIfTagExists-local-1770242280","position":20,"rules":[{"name":"mapping-rule","enabled":true,"query":null,"mapping":{"source_keys":["environment","stage"],"destination_key":"env","if_not_exists":true,"if_tag_exists":"do_not_apply"},"reference_table":null,"metadata":null}],"version":3657226}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 51.023042ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 50.911917ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/tags/enrichment/fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 115
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"ruleset fa5fb20f-ecd0-4cf3-a9e9-9d234451d7ec not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 45.3205ms

@@ -2,7 +2,9 @@ package observability_pipeline
 
 import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -13,19 +15,19 @@ type compressionModel struct {
 }
 
 // ExpandCompression converts the Terraform compression model to the Datadog API model
-func ExpandCompression(compressionTF *compressionModel) *datadogV2.ObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompression {
-	if compressionTF == nil {
+func ExpandCompression(compressionTF []compressionModel) *datadogV2.ObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompression {
+	if len(compressionTF) == 0 {
 		return nil
 	}
 
 	compression := datadogV2.NewObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompressionWithDefaults()
 
-	if !compressionTF.Algorithm.IsNull() {
-		compression.SetAlgorithm(datadogV2.ObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompressionAlgorithm(compressionTF.Algorithm.ValueString()))
+	if !compressionTF[0].Algorithm.IsNull() {
+		compression.SetAlgorithm(datadogV2.ObservabilityPipelineCrowdStrikeNextGenSiemDestinationCompressionAlgorithm(compressionTF[0].Algorithm.ValueString()))
 	}
 
-	if !compressionTF.Level.IsNull() {
-		compression.SetLevel(compressionTF.Level.ValueInt64())
+	if !compressionTF[0].Level.IsNull() {
+		compression.SetLevel(compressionTF[0].Level.ValueInt64())
 	}
 	return compression
 }
@@ -43,18 +45,23 @@ func FlattenCompression(src *datadogV2.ObservabilityPipelineCrowdStrikeNextGenSi
 }
 
 // CompressionSchema returns the schema for compression configuration
-func CompressionSchema() schema.SingleNestedBlock {
-	return schema.SingleNestedBlock{
+func CompressionSchema() schema.ListNestedBlock {
+	return schema.ListNestedBlock{
 		Description: "Compression configuration for log events.",
-		Attributes: map[string]schema.Attribute{
-			"algorithm": schema.StringAttribute{
-				Optional:    true, // must be optional to make the block optional
-				Description: "Compression algorithm for log events.",
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"algorithm": schema.StringAttribute{
+					Required:    true,
+					Description: "Compression algorithm for log events.",
+				},
+				"level": schema.Int64Attribute{
+					Optional:    true,
+					Description: "Compression level.",
+				},
 			},
-			"level": schema.Int64Attribute{
-				Optional:    true,
-				Description: "Compression level.",
-			},
+		},
+		Validators: []validator.List{
+			listvalidator.SizeAtMost(1),
 		},
 	}
 }

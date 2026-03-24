@@ -3,10 +3,13 @@
 
 # Add here the files to be excluded from the doc generation
 exclude_files=(
+  "docs/guides/v4-upgrade-guide.md"
   "docs/resources/integration_aws_account.md"
   "docs/resources/compliance_custom_framework.md"
   "docs/resources/on_call_schedule.md"
   "docs/resources/on_call_team_routing_rules.md"
+  "docs/resources/on_call_user_notification_channel.md"
+  "docs/resources/on_call_user_notification_rule.md"
 )
 
 # Check if manual changes were made to any excluded files and exit
