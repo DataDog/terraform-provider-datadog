@@ -282,9 +282,19 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 	}
 
 	// widgets
+	var apiWidgets []interface{}
 	if v, ok := resp["widgets"].([]interface{}); ok {
+		apiWidgets = v
 		flatWidgets := dashboardmapping.FlattenWidgetsForSDKv2(v)
 		if err := d.Set("widget", flatWidgets); err != nil {
+			diags = append(diags, diag.FromErr(err)...)
+		}
+	}
+
+	// tabs — flatten after widgets so we can reverse-map widget IDs to @N references
+	if v, ok := resp["tabs"].([]interface{}); ok && len(v) > 0 {
+		flatTabs := dashboardmapping.FlattenTabs(v, apiWidgets)
+		if err := d.Set("tab", flatTabs); err != nil {
 			diags = append(diags, diag.FromErr(err)...)
 		}
 	}

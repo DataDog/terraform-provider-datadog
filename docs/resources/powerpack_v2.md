@@ -142,6 +142,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--alert_graph_definition--time))
@@ -186,6 +187,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
@@ -230,6 +232,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
@@ -254,19 +257,19 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
 - `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
 - `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
 - `show_present` (Boolean) If set to `true`, displays the current value.
 
 <a id="nestedblock--widget--change_definition--request--apm_query"></a>
@@ -905,6 +908,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `group` (String) Group reporting a single check.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
@@ -948,6 +952,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -965,15 +970,15 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style))
 
 <a id="nestedblock--widget--distribution_definition--request--apm_query"></a>
@@ -1609,6 +1614,7 @@ Optional:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -1674,6 +1680,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `event_size` (String) Size to use to display an event. Valid values are `s`, `l`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -1720,6 +1727,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
@@ -1766,6 +1774,7 @@ Required:
 Optional:
 
 - `color` (String) The color of the text in the widget.
+- `description` (String) The description of the widget.
 - `font_size` (String) The size of the text in the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -1808,6 +1817,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Only one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--funnel_definition--request))
@@ -1880,6 +1890,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
@@ -1907,10 +1918,10 @@ Optional:
 Optional:
 
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula`
@@ -2424,6 +2435,7 @@ Optional:
 
 - `background_color` (String) The background color of the group title, options: `vivid_blue`, `vivid_purple`, `vivid_pink`, `vivid_orange`, `vivid_yellow`, `vivid_green`, `blue`, `purple`, `pink`, `orange`, `yellow`, `green`, `gray` or `white`
 - `banner_img` (String) The image URL to display as a banner for the group.
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_title` (Boolean) Whether to show the title or not. Defaults to `true`.
@@ -2509,6 +2521,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--alert_graph_definition--time))
@@ -2553,6 +2566,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
@@ -2597,6 +2611,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
@@ -2621,19 +2636,19 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--apm_query))
 - `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
 - `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula))
 - `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--log_query))
 - `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
 - `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--security_query))
 - `show_present` (Boolean) If set to `true`, displays the current value.
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--apm_query"></a>
@@ -3272,6 +3287,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `group` (String) Group reporting a single check.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
@@ -3315,6 +3331,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -3332,15 +3349,15 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query"></a>
@@ -3976,6 +3993,7 @@ Optional:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -4041,6 +4059,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `event_size` (String) Size to use to display an event. Valid values are `s`, `l`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -4087,6 +4106,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
@@ -4133,6 +4153,7 @@ Required:
 Optional:
 
 - `color` (String) The color of the text in the widget.
+- `description` (String) The description of the widget.
 - `font_size` (String) The size of the text in the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -4175,6 +4196,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Only one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request))
@@ -4247,6 +4269,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
@@ -4274,10 +4297,10 @@ Optional:
 Optional:
 
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula`
@@ -4786,6 +4809,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--event))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -4827,14 +4851,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query"></a>
@@ -5439,6 +5463,7 @@ Optional:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -5497,6 +5522,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `group` (List of String) The list of tag prefixes to group by.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -5535,14 +5561,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.apm_query`
@@ -6147,14 +6173,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.apm_query`
@@ -6803,6 +6829,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--iframe_definition--time))
@@ -6847,6 +6874,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `has_background` (Boolean) Whether to display a background or not. Defaults to `true`.
 - `has_border` (Boolean) Whether to display a border or not. Defaults to `true`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
@@ -6898,6 +6926,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--time))
@@ -6993,6 +7022,7 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -7053,6 +7083,7 @@ Required:
 Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
+- `description` (String) The description of the widget.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
@@ -7104,6 +7135,7 @@ Required:
 Optional:
 
 - `background_color` (String) The background color of the note.
+- `description` (String) The description of the widget.
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
@@ -7152,6 +7184,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--custom_link))
+- `description` (String) The description of the widget.
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -7179,19 +7212,19 @@ Optional:
 
 - `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
-- `apm_stats_query` (Block List, Max: 1) The APM stats query for table and distribution widgets. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
+- `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query))
 - `text_formats` (Block List) Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query"></a>
@@ -7923,6 +7956,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--custom_link))
 - `custom_unit` (String) Display a unit of your choice on the widget.
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
@@ -7951,16 +7985,16 @@ Optional:
 Optional:
 
 - `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.query_value_definition.request.apm_query`
@@ -8705,6 +8739,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -8768,6 +8803,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
@@ -9043,14 +9079,14 @@ Optional:
 Optional:
 
 - `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.apm_query`
@@ -9656,14 +9692,14 @@ Optional:
 Optional:
 
 - `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.apm_query`
@@ -10329,6 +10365,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `description` (String) The description of the widget.
 - `global_time_target` (String) The global time target of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -10377,6 +10414,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--servicemap_definition--time))
@@ -10432,6 +10470,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--slo_list_definition--time))
@@ -10504,6 +10543,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
@@ -10552,16 +10592,16 @@ Required:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--audit_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query))
-- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--log_query))
+- `network_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--network_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query"></a>
@@ -11294,6 +11334,7 @@ Optional:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -11332,6 +11373,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
+- `description` (String) The description of the widget.
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
@@ -11389,21 +11431,21 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
-- `event_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query))
+- `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--metadata))
-- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query))
+- `network_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--network_query))
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--process_query))
-- `profile_metrics_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--profile_metrics_query))
-- `q` (String) The metric query to use for this widget.
+- `profile_metrics_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--profile_metrics_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--apm_query"></a>
@@ -12276,6 +12318,7 @@ Optional:
 
 Optional:
 
+- `has_value_labels` (Boolean) Whether to display value labels on the timeseries.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
 - `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
@@ -12341,6 +12384,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
@@ -12366,16 +12410,16 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--sort))
 - `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--style))
 
@@ -13100,6 +13144,7 @@ Required:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -13169,6 +13214,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--group_definition--widget--topology_map_definition--request))
@@ -13249,6 +13295,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -13298,6 +13345,7 @@ Required:
 Optional:
 
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--custom_links))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request))
@@ -13704,6 +13752,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
@@ -13745,14 +13794,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style))
 
 <a id="nestedblock--widget--heatmap_definition--request--apm_query"></a>
@@ -14357,6 +14406,7 @@ Optional:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -14415,6 +14465,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `group` (List of String) The list of tag prefixes to group by.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -14453,14 +14504,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--security_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--apm_query"></a>
 ### Nested Schema for `widget.hostmap_definition.request.fill.apm_query`
@@ -15065,14 +15116,14 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--security_query))
 
 <a id="nestedblock--widget--hostmap_definition--request--size--apm_query"></a>
 ### Nested Schema for `widget.hostmap_definition.request.size.apm_query`
@@ -15721,6 +15772,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--iframe_definition--time))
@@ -15765,6 +15817,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `has_background` (Boolean) Whether to display a background or not. Defaults to `true`.
 - `has_border` (Boolean) Whether to display a border or not. Defaults to `true`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
@@ -15816,6 +15869,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--list_stream_definition--time))
@@ -15911,6 +15965,7 @@ Required:
 Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `indexes` (List of String) An array of index names to query in the stream.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -15971,6 +16026,7 @@ Required:
 Optional:
 
 - `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
+- `description` (String) The description of the widget.
 - `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
@@ -16022,6 +16078,7 @@ Required:
 Optional:
 
 - `background_color` (String) The background color of the note.
+- `description` (String) The description of the widget.
 - `font_size` (String) The size of the text.
 - `has_padding` (Boolean) Whether to add padding or not. Defaults to `true`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
@@ -16070,6 +16127,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
+- `description` (String) The description of the widget.
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -16097,19 +16155,19 @@ Optional:
 
 - `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `alias` (String) The alias for the column name (defaults to metric name).
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
-- `apm_stats_query` (Block List, Max: 1) The APM stats query for table and distribution widgets. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
+- `apm_stats_query` (Block List, Max: 1, Deprecated) The APM stats query for table and distribution widgets. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) For metric queries, the number of lines to show in the table. Only one request should have this property.
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
 - `order` (String) The sort order for the rows. Valid values are `asc`, `desc`.
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
 - `text_formats` (Block List) Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
@@ -16841,6 +16899,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
 - `custom_unit` (String) Display a unit of your choice on the widget.
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) Number of decimals to show. If not defined, the widget uses the raw value.
@@ -16869,16 +16928,16 @@ Optional:
 Optional:
 
 - `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
 
 <a id="nestedblock--widget--query_value_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_value_definition.request.apm_query`
@@ -17623,6 +17682,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -17686,6 +17746,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
@@ -17961,14 +18022,14 @@ Optional:
 Optional:
 
 - `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--security_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--apm_query"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.x.apm_query`
@@ -18574,14 +18635,14 @@ Optional:
 Optional:
 
 - `aggregator` (String) Aggregator used for the request. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--security_query))
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--apm_query"></a>
 ### Nested Schema for `widget.scatterplot_definition.request.y.apm_query`
@@ -19247,6 +19308,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `description` (String) The description of the widget.
 - `global_time_target` (String) The global time target of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -19295,6 +19357,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--servicemap_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--servicemap_definition--time))
@@ -19350,6 +19413,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--slo_list_definition--time))
@@ -19422,6 +19486,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
@@ -19470,16 +19535,16 @@ Required:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--audit_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query))
-- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--log_query))
+- `network_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--network_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--sunburst_definition--request--apm_query"></a>
@@ -20212,6 +20277,7 @@ Optional:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -20250,6 +20316,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
+- `description` (String) The description of the widget.
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
@@ -20307,21 +20374,21 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--audit_query))
 - `display_type` (String) How to display the marker lines. Valid values are `area`, `bars`, `line`, `overlay`.
-- `event_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query))
+- `event_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--event_query))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--log_query))
 - `metadata` (Block List) Used to define expression aliases. Multiple `metadata` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--metadata))
-- `network_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
+- `network_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--network_query))
 - `on_right_yaxis` (Boolean) A Boolean indicating whether the request uses the right or left Y-Axis.
 - `process_query` (Block List, Max: 1) The process query to use in the widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--process_query))
-- `profile_metrics_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--profile_metrics_query))
-- `q` (String) The metric query to use for this widget.
+- `profile_metrics_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--profile_metrics_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. Exactly one `style` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--style))
 
 <a id="nestedblock--widget--timeseries_definition--request--apm_query"></a>
@@ -21194,6 +21261,7 @@ Optional:
 
 Optional:
 
+- `has_value_labels` (Boolean) Whether to display value labels on the timeseries.
 - `line_type` (String) The type of lines displayed. Valid values are `dashed`, `dotted`, `solid`.
 - `line_width` (String) The width of line displayed. Valid values are `normal`, `thick`, `thin`.
 - `order_by` (String) How to order series in timeseries visualizations. Valid values are `tags`, `values`.
@@ -21259,6 +21327,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
@@ -21284,16 +21353,16 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
-- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query))
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula))
-- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
-- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--process_query))
-- `q` (String) The metric query to use for this widget.
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query))
-- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
-- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
 - `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--sort))
 - `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
 
@@ -22018,6 +22087,7 @@ Required:
 
 Optional:
 
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
@@ -22087,6 +22157,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--topology_map_definition--custom_link))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (`query` and `request_type` are required within the request). (see [below for nested schema](#nestedblock--widget--topology_map_definition--request))
@@ -22167,6 +22238,7 @@ Required:
 
 Optional:
 
+- `description` (String) The description of the widget.
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
@@ -22216,6 +22288,7 @@ Required:
 Optional:
 
 - `custom_links` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--custom_links))
+- `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--treemap_definition--request))

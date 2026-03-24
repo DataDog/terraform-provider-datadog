@@ -32,6 +32,17 @@ var dashboardTemplateVariablePresetValueFields = []FieldSpec{
 		Description: "The value that should be assumed by the template variable in this preset. Cannot be used in conjunction with `values`."},
 }
 
+// dashboardTabFields corresponds to OpenAPI DashboardTab.
+// HCL: "tab" (singular) → JSON: "tabs" (plural).
+var dashboardTabFields = []FieldSpec{
+	{HCLKey: "id", Type: TypeString, Computed: true, OmitEmpty: true,
+		Description: "The UUID of the tab."},
+	{HCLKey: "name", Type: TypeString, Required: true, OmitEmpty: false,
+		Description: "The name of the tab."},
+	{HCLKey: "widget_ids", Type: TypeStringList, Required: true, OmitEmpty: false,
+		Description: "List of widget references using @N format (1-indexed)."},
+}
+
 // dashboardTemplateVariablePresetFields corresponds to OpenAPI DashboardTemplateVariablePreset.
 // HCL: "template_variable" (singular) → JSON: "template_variables" (plural).
 var dashboardTemplateVariablePresetFields = []FieldSpec{

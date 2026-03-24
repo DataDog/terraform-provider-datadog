@@ -12,7 +12,10 @@ package dashboardmapping
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 // FieldType drives serialization/deserialization behavior in the engine.
@@ -2162,9 +2165,50 @@ func BuildDashboardEngineJSONFromMap(data map[string]interface{}, id string) map
 	result["id"] = id
 
 	// Build widgets with type dispatch.
-	result["widgets"] = buildWidgetsJSONFromMap(data)
+	widgets := buildWidgetsJSONFromMap(data)
+	result["widgets"] = widgets
+
+	// Build tabs with @N → widget ID resolution.
+	if tabs := buildTabsJSONFromMap(data, widgets, id); len(tabs) > 0 {
+		result["tabs"] = tabs
+	}
 
 	return result
+}
+
+// buildTabsJSONFromMap builds the "tabs" array from HCL tab blocks.
+// Passes @N widget references through to the API (the API resolves them server-side).
+// Generates deterministic UUID v5 IDs for tabs that don't have one (matching v1 behavior).
+func buildTabsJSONFromMap(data map[string]interface{}, builtWidgets []interface{}, dashID string) []interface{} {
+	tabList := getBlockListFromMap(data, "tab")
+	if len(tabList) == 0 {
+		return nil
+	}
+
+	tabs := make([]interface{}, 0, len(tabList))
+	for i, tabMap := range tabList {
+		tab := map[string]interface{}{}
+
+		// Tab name (required)
+		if name, ok := tabMap["name"].(string); ok && name != "" {
+			tab["name"] = name
+		}
+
+		// Tab ID: use existing or generate deterministic UUID v5 (matches v1 behavior)
+		if id, ok := tabMap["id"].(string); ok && id != "" {
+			tab["id"] = id
+		} else {
+			tab["id"] = uuid.NewSHA1(uuid.Nil, []byte(fmt.Sprintf("tab-%d", i))).String()
+		}
+
+		// Pass @N widget references through as-is — the API resolves them server-side
+		if widgetIDs, ok := tabMap["widget_ids"].([]interface{}); ok {
+			tab["widget_ids"] = widgetIDs
+		}
+
+		tabs = append(tabs, tab)
+	}
+	return tabs
 }
 
 // MarshalDashboardJSONFromMap marshals the dashboard JSON body from a SDKv2 data map.
@@ -2244,6 +2288,83 @@ func FlattenWidgetsForSDKv2(apiWidgets []interface{}) []interface{} {
 		result = append(result, flattened)
 	}
 	return result
+}
+
+// ============================================================
+// Flatten Tabs — reverse-map widget IDs to @N positional references
+// ============================================================
+
+// FlattenTabs converts the "tabs" array from a dashboard API response
+// into a []interface{} suitable for d.Set("tab", ...).
+// Widget IDs in each tab are reverse-mapped to @N positional references
+// based on the order of widgets in the flattened widget list.
+func FlattenTabs(apiTabs []interface{}, apiWidgets []interface{}) []interface{} {
+	// Build widgetID → 1-indexed position map.
+	// Widget IDs are large integers that arrive as float64 from JSON;
+	// normalize to int64 strings for consistent lookup.
+	widgetIDToPosition := map[string]int{}
+	for i, w := range apiWidgets {
+		wMap, ok := w.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		// Widget IDs can be at the top level or inside definition.
+		var wID interface{}
+		if id, ok := wMap["id"]; ok {
+			wID = id
+		} else if def, ok := wMap["definition"].(map[string]interface{}); ok {
+			wID = def["id"]
+		}
+		if wID != nil {
+			widgetIDToPosition[normalizeNumericID(wID)] = i + 1
+		}
+	}
+
+	result := make([]interface{}, 0, len(apiTabs))
+	for _, t := range apiTabs {
+		tabData, ok := t.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		flattened := map[string]interface{}{}
+
+		if id, ok := tabData["id"].(string); ok {
+			flattened["id"] = id
+		}
+		if name, ok := tabData["name"].(string); ok {
+			flattened["name"] = name
+		}
+
+		// Convert widget IDs to @N references.
+		if widgetIDs, ok := tabData["widget_ids"].([]interface{}); ok {
+			refs := make([]interface{}, 0, len(widgetIDs))
+			for _, wID := range widgetIDs {
+				if pos, ok := widgetIDToPosition[normalizeNumericID(wID)]; ok {
+					refs = append(refs, fmt.Sprintf("@%d", pos))
+				}
+			}
+			flattened["widget_ids"] = refs
+		}
+
+		result = append(result, flattened)
+	}
+	return result
+}
+
+// normalizeNumericID converts a JSON numeric value (typically float64) to a
+// consistent integer string representation for use as a map key.
+func normalizeNumericID(v interface{}) string {
+	switch id := v.(type) {
+	case float64:
+		return strconv.FormatInt(int64(id), 10)
+	case int:
+		return strconv.Itoa(id)
+	case int64:
+		return strconv.FormatInt(id, 10)
+	default:
+		return fmt.Sprintf("%v", v)
+	}
 }
 
 // ============================================================

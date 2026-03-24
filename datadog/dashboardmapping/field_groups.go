@@ -492,18 +492,23 @@ var formulaAndFunctionQueryFields = []FieldSpec{
 // Used by: change, distribution, heatmap, query_value, toplist, sunburst requests.
 var standardQueryFields = []FieldSpec{
 	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true,
+		Deprecated:  "Use queries and formulas instead.",
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true,
+		Deprecated:  "Use queries and formulas instead.",
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true,
+		Deprecated:  "Use queries and formulas instead.",
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true,
+		Deprecated:  "Use queries and formulas instead.",
 		Description: "The query to use for this widget.",
 		Children:    logQueryDefinitionFields},
 	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true,
+		Deprecated:  "Use queries and formulas instead.",
 		Description: "The process query to use in the widget. The structure of this block is described below.",
 		Children:    processQueryDefinitionFields},
 	// FormulaAndFunction query/formula fields
@@ -684,12 +689,16 @@ var widgetConditionalFormatFields = []FieldSpec{
 var widgetRequestStyleFields = []FieldSpec{
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
 		Description: "A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance."},
+	{HCLKey: "order_by", Type: TypeString, OmitEmpty: true,
+		Description: "How to order series.",
+		ValidValues: []string{"tags", "values"}},
 }
 
 // hostmapRequestFillSizeFields corresponds to OpenAPI HostMapRequest.
 // Used by: hostmap fill and size sub-blocks.
 var hostmapRequestFillSizeFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Deprecated:  "Use queries and formulas instead.",
 		Description: "The metric query to use for this widget."},
 }, standardQueryFields...)
 
@@ -742,6 +751,7 @@ var timeseriesBackgroundFields = []FieldSpec{
 // Used by: scatterplot x and y sub-blocks.
 var scatterplotXYRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Deprecated:  "Use queries and formulas instead.",
 		Description: "The metric query to use for this widget."},
 	{HCLKey: "aggregator", Type: TypeString, OmitEmpty: true,
 		Description: "Aggregator used for the request.",
@@ -995,13 +1005,13 @@ var queryTableRequestExtraFields = []FieldSpec{
 // process_query, aggregator, alias, plus the shared queryTableRequestExtraFields.
 // Formula requests use queryTableRequestExtraFields via FormulaRequestConfig.ExtraFields.
 var queryTableOldRequestFields = append(append([]FieldSpec{
-	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Description: "The metric query to use for this widget."},
-	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Description: "The process query to use in the widget. The structure of this block is described below.", Children: processQueryDefinitionFields},
-	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
-	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Description: "The APM stats query for table and distribution widgets.", Children: apmStatsQueryFields},
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true, Deprecated: "Use queries and formulas instead.", Description: "The metric query to use for this widget."},
+	{HCLKey: "apm_query", Type: TypeBlock, OmitEmpty: true, Deprecated: "Use queries and formulas instead.", Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "log_query", Type: TypeBlock, OmitEmpty: true, Deprecated: "Use queries and formulas instead.", Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "process_query", Type: TypeBlock, OmitEmpty: true, Deprecated: "Use queries and formulas instead.", Description: "The process query to use in the widget. The structure of this block is described below.", Children: processQueryDefinitionFields},
+	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, Deprecated: "Use queries and formulas instead.", Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "security_query", Type: TypeBlock, OmitEmpty: true, Deprecated: "Use queries and formulas instead.", Description: "The query to use for this widget.", Children: logQueryDefinitionFields},
+	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true, Deprecated: "Use queries and formulas instead.", Description: "The APM stats query for table and distribution widgets.", Children: apmStatsQueryFields},
 	{
 		HCLKey:      "aggregator",
 		Type:        TypeString,
@@ -1401,6 +1411,8 @@ var CommonWidgetFields = []FieldSpec{
 	{HCLKey: "title_align", Type: TypeString, OmitEmpty: true,
 		Description: "The alignment of the widget's title.",
 		ValidValues: []string{"center", "left", "right"}},
+	{HCLKey: "description", Type: TypeString, OmitEmpty: true,
+		Description: "The description of the widget."},
 	// WidgetTime new-style (TypeOneOf): time { live { value=4, unit="hour" } } or time { fixed { from=X, to=Y } }
 	// Must come BEFORE live_span so the TypeOneOf sets result["time"] before the JSONPath field merges into it.
 	widgetTimeOneOfField,
@@ -1462,6 +1474,13 @@ var DashboardTopLevelFields = []FieldSpec{
 		Type: TypeBlockList, OmitEmpty: false,
 		Description: "The list of selectable template variable presets for this dashboard.",
 		Children:    dashboardTemplateVariablePresetFields},
+
+	// tab (HCL singular) → tabs (JSON plural)
+	// SchemaOnly: custom build/flatten handles @N widget reference resolution.
+	{HCLKey: "tab", JSONKey: "tabs",
+		Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
+		Description: "List of tabs for organizing widgets.",
+		Children:    dashboardTabFields},
 
 	// notify_list: always send [], never omit (OmitEmpty: false)
 	{HCLKey: "notify_list", Type: TypeStringList, UseSet: true, OmitEmpty: false,
