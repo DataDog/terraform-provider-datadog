@@ -121,10 +121,11 @@ func NewTransport() *http.Transport {
 	}
 }
 
-// NewHTTPClient returns new http.Client
+// NewHTTPClient returns a new http.Client that appends the Terraform resource
+// type to the User-Agent comment section when present in the request context.
 func NewHTTPClient() *http.Client {
 	return &http.Client{
-		Transport: NewTransport(),
+		Transport: WrapTransportWithResourceUserAgent(NewTransport()),
 	}
 }
 
