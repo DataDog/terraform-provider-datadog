@@ -14,7 +14,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-
 // resourceDatadogDashboardV2 returns the SDKv2 resource for datadog_dashboard_v2.
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
 func resourceDatadogDashboardV2() *schema.Resource {
