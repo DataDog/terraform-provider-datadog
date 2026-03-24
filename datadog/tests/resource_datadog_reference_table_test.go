@@ -24,7 +24,7 @@ func TestAccReferenceTableS3_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -69,7 +69,7 @@ func TestAccReferenceTable_SchemaOnCreate(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -114,7 +114,7 @@ func TestAccReferenceTable_UpdateSyncEnabled(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -148,7 +148,7 @@ func TestAccReferenceTable_Import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

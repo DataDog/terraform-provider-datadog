@@ -80,6 +80,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				"included_keyword_configuration": {
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					MaxItems:    1,
 					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. If the rule has the `standard_pattern_id` field, then discarding this field will apply the recommended keywords. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
 					Elem: &schema.Resource{
@@ -318,10 +319,7 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 		if shouldSaveMatch, ok := d.GetOk("text_replacement.0.should_save_match"); ok {
 			if typeVar, ok := d.GetOk("text_replacement.0.type"); ok && typeVar.(string) == "replacement_string" {
-				if textReplacement.AdditionalProperties == nil {
-					textReplacement.AdditionalProperties = map[string]interface{}{}
-				}
-				textReplacement.AdditionalProperties["should_save_match"] = shouldSaveMatch.(bool)
+				textReplacement.SetShouldSaveMatch(shouldSaveMatch.(bool))
 			}
 		}
 
@@ -416,7 +414,10 @@ func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schem
 
 	_, httpResp, err := apiInstances.GetSensitiveDataScannerApiV2().DeleteScanningRule(auth, id, *body)
 	if err != nil {
-		// The resource is assumed to still exist, and all prior state is preserved.
+		// API returns 404 when the specific rule id doesn't exist through DELETE request.
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			return nil
+		}
 		return utils.TranslateClientErrorDiag(err, httpResp, "error deleting SensitiveDataScannerRule")
 	}
 
@@ -456,13 +457,9 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		if replacementString, ok := tR.GetReplacementStringOk(); ok {
 			textReplacement["replacement_string"] = replacementString
 		}
-		if tR.AdditionalProperties != nil {
-			// `should_save_match` should be supported starting in `datadog-api-client-go` v2.45
-			// Additional properties is used until then.
-			if shouldSaveMatch, ok := tR.AdditionalProperties["should_save_match"]; ok {
-				if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
-					textReplacement["should_save_match"] = shouldSaveMatch
-				}
+		if shouldSaveMatch, ok := tR.GetShouldSaveMatchOk(); ok {
+			if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
+				textReplacement["should_save_match"] = shouldSaveMatch
 			}
 		}
 		if replacementType, ok := tR.GetTypeOk(); ok {

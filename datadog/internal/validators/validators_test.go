@@ -218,7 +218,7 @@ func TestValidateFloat64Between(t *testing.T) {
 	}
 }
 
-func TestValidateHttpRequestHeader(t *testing.T) {
+func TestValidateHttpRequestHeaders(t *testing.T) {
 	cases := []struct {
 		Value    map[string]interface{}
 		ErrCount int
@@ -255,10 +255,22 @@ func TestValidateHttpRequestHeader(t *testing.T) {
 			Value:    map[string]interface{}{"foo": "\n"},
 			ErrCount: 1,
 		},
+		{
+			Value:    map[string]interface{}{"{{ VAR_HEADER_NAME }}": "value"},
+			ErrCount: 0,
+		},
+		{
+			Value:    map[string]interface{}{"foo": "{{ VAR_HEADER_VALUE }}"},
+			ErrCount: 0,
+		},
+		{
+			Value:    map[string]interface{}{"{{ VAR_HEADER_NAME }}": "{{ VAR_HEADER_VALUE }}"},
+			ErrCount: 0,
+		},
 	}
 
 	for _, tc := range cases {
-		_, errors := ValidateHttpRequestHeader(tc.Value, "request_headers")
+		_, errors := ValidateHttpRequestHeaders(tc.Value, "request_headers")
 
 		if len(errors) != tc.ErrCount {
 			t.Fatalf("Expected http request header validation to trigger %d error(s) for value %q - instead saw %d",

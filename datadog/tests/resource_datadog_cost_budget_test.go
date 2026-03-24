@@ -19,7 +19,7 @@ func TestAccDatadogCostBudget_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -50,7 +50,7 @@ func TestAccDatadogCostBudget_WithTagFilters(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -86,7 +86,7 @@ func TestAccDatadogCostBudget_Update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -135,6 +135,68 @@ func testAccCheckDatadogCostBudgetDestroy(provider *fwprovider.FrameworkProvider
 		}
 		return nil
 	}
+}
+
+// TestAccDatadogCostBudget_BudgetLine tests CRUD operations with the new budget_line schema
+func TestAccDatadogCostBudget_BudgetLine(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	budgetName := uniqueEntityName(ctx, t)
+	budgetNameUpdated := budgetName + " Updated"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCostBudgetBudgetLine(budgetName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "name", budgetName),
+					resource.TestCheckResourceAttrSet(
+						"datadog_cost_budget.foo", "id"),
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "budget_line.#", "2"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogCostBudgetBudgetLineUpdated(budgetNameUpdated),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "name", budgetNameUpdated),
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "budget_line.#", "2"),
+				),
+			},
+		},
+	})
+}
+
+// TestAccDatadogCostBudget_BudgetLineHierarchical tests hierarchical budgets with budget_line schema
+func TestAccDatadogCostBudget_BudgetLineHierarchical(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	budgetName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCostBudgetDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCostBudgetBudgetLineHierarchical(budgetName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "name", budgetName),
+					resource.TestCheckResourceAttrSet(
+						"datadog_cost_budget.foo", "id"),
+					resource.TestCheckResourceAttr(
+						"datadog_cost_budget.foo", "budget_line.#", "2"),
+				),
+			},
+		},
+	})
 }
 
 func testAccCheckDatadogCostBudgetBasic(uniq string) string {
@@ -359,6 +421,114 @@ resource "datadog_cost_budget" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogCostBudgetBudgetLine(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_cost_budget" "foo" {
+  name = "%s"
+  metrics_query = "sum:aws.cost.amortized{*} by {environment}"
+  start_month = 202601
+  end_month = 202603
+
+  budget_line {
+    amounts = {
+      "202601" = 1000
+      "202602" = 1100
+      "202603" = 1200
+    }
+    tag_filters {
+      tag_key = "environment"
+      tag_value = "production"
+    }
+  }
+
+  budget_line {
+    amounts = {
+      "202601" = 500
+      "202602" = 550
+      "202603" = 600
+    }
+    tag_filters {
+      tag_key = "environment"
+      tag_value = "staging"
+    }
+  }
+}`, uniq)
+}
+
+func testAccCheckDatadogCostBudgetBudgetLineUpdated(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_cost_budget" "foo" {
+  name = "%s"
+  metrics_query = "sum:aws.cost.amortized{*} by {environment}"
+  start_month = 202601
+  end_month = 202603
+
+  budget_line {
+    amounts = {
+      "202601" = 2000
+      "202602" = 2100
+      "202603" = 2200
+    }
+    tag_filters {
+      tag_key = "environment"
+      tag_value = "production"
+    }
+  }
+
+  budget_line {
+    amounts = {
+      "202601" = 1000
+      "202602" = 1050
+      "202603" = 1100
+    }
+    tag_filters {
+      tag_key = "environment"
+      tag_value = "staging"
+    }
+  }
+}`, uniq)
+}
+
+func testAccCheckDatadogCostBudgetBudgetLineHierarchical(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_cost_budget" "foo" {
+  name = "%s"
+  metrics_query = "sum:aws.cost.amortized{*} by {team,environment}"
+  start_month = 202601
+  end_month = 202602
+
+  budget_line {
+    amounts = {
+      "202601" = 1000
+      "202602" = 1100
+    }
+    parent_tag_filters {
+      tag_key = "team"
+      tag_value = "backend"
+    }
+    child_tag_filters {
+      tag_key = "environment"
+      tag_value = "production"
+    }
+  }
+
+  budget_line {
+    amounts = {
+      "202601" = 500
+      "202602" = 550
+    }
+    parent_tag_filters {
+      tag_key = "team"
+      tag_value = "frontend"
+    }
+    child_tag_filters {
+      tag_key = "environment"
+      tag_value = "staging"
+    }
+  }
+}`, uniq)
+}
+
 // TestAccDatadogCostBudget_Validation verifies client-side validation catches errors during terraform plan
 func TestAccDatadogCostBudget_Validation(t *testing.T) {
 	t.Parallel()
@@ -396,7 +566,7 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "tags must have 0, 1 or 2 elements",
+			expectError: `tags\s+must have 0, 1 or 2 elements`,
 		},
 		// Validate tags are unique
 		{
@@ -420,7 +590,7 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "tags must be unique",
+			expectError: `tags\s+must be unique`,
 		},
 		// Validate start_month > 0
 		{
@@ -436,7 +606,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "start_month must be greater than 0",
+			expectError: `start_month\s+must be greater than 0`,
 		},
 		// Validate end_month > 0
 		{
@@ -452,7 +622,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "end_month must be greater than 0",
+			expectError: `end_month\s+must be greater than 0`,
 		},
 		// Validate end_month >= start_month
 		{
@@ -468,7 +638,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "end_month must be greater than or equal to start_month",
+			expectError: `end_month\s+must be greater than or equal to start_month`,
 		},
 		// Validate entry month in range
 		{
@@ -484,7 +654,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202506
   }
 }`,
-			expectError: "entry month must be between start_month and end_month",
+			expectError: `entry\s+month must be between start_month and end_month`,
 		},
 		// Validate entry amount >= 0
 		{
@@ -500,7 +670,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "entry amount must be greater than or equal to 0",
+			expectError: `entry\s+amount must be greater than or equal to 0`,
 		},
 		// Validate tag_filters count matches tags
 		{
@@ -520,7 +690,7 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "entry tag_filters must include all group by tags",
+			expectError: `entry\s+tag_filters must include all group by tags`,
 		},
 		// Validate tag_key is in metrics_query tags
 		{
@@ -540,9 +710,9 @@ resource "datadog_cost_budget" "foo" {
     }
   }
 }`,
-			expectError: "tag_key must be one of the values inside the tags array",
+			expectError: `tag_key\s+must be one of the values inside the tags array`,
 		},
-		// Validate entries exist
+		// Validate entries or budget_line exist
 		{
 			name: "NoEntries",
 			config: `
@@ -552,7 +722,7 @@ resource "datadog_cost_budget" "foo" {
   start_month = 202501
   end_month = 202501
 }`,
-			expectError: "entries are required",
+			expectError: `Either 'entries' or 'budget_line' must be specified`,
 		},
 		// Validate all tag combinations have entries for all months
 		{
@@ -568,7 +738,7 @@ resource "datadog_cost_budget" "foo" {
     month = 202501
   }
 }`,
-			expectError: "missing entries for tag value pair",
+			expectError: `missing\s+entries for one or more tag combinations`,
 		},
 	}
 
@@ -576,7 +746,7 @@ resource "datadog_cost_budget" "foo" {
 		t.Run(tc.name, func(t *testing.T) {
 			resource.Test(t, resource.TestCase{
 				PreCheck:                 func() { testAccPreCheck(t) },
-				ProtoV5ProviderFactories: accProviders,
+				ProtoV6ProviderFactories: accProviders,
 				Steps: []resource.TestStep{
 					{
 						Config:      tc.config,

@@ -20,7 +20,7 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -43,7 +43,7 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_InvalidProjectID(t *testing.T
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -61,7 +61,7 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Update(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -91,7 +91,7 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Import(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

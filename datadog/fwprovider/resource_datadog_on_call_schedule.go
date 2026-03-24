@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -72,8 +73,26 @@ func NewOnCallScheduleResource() resource.Resource {
 func (m *onCallScheduleModel) Validate() diag.Diagnostics {
 	diags := diag.Diagnostics{}
 
+	layerNames := make(map[string]bool)
 	for i, layer := range m.Layers {
 		root := frameworkPath.Root("layer").AtListIndex(i)
+
+		name := layer.Name.ValueString()
+		if name == "" {
+			diags.AddAttributeError(
+				root.AtName("name"),
+				"missing layer name",
+				"layer name must not be empty",
+			)
+		} else if layerNames[name] {
+			diags.AddAttributeError(
+				root.AtName("name"),
+				"duplicate layer name",
+				fmt.Sprintf("layer name %q must be unique within a schedule", name),
+			)
+		} else {
+			layerNames[name] = true
+		}
 
 		if layer.Interval == nil {
 			diags.AddAttributeError(root.AtName("interval"), "missing interval", "schedules must specify an interval")
@@ -167,7 +186,7 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 						},
 						"users": schema.ListAttribute{
 							Required:    true,
-							Description: "List of user IDs for the layer. Can either be a valid user id or null",
+							Description: "List of user IDs for the layer. Can either be a valid user id or `null` to represent No-one.",
 							ElementType: types.StringType,
 							Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 						},

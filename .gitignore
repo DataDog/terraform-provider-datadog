@@ -34,3 +34,9 @@ website/vendor
 
 # python
 *.pyc
+
+# Claude for individual users
+CLAUDE.local.md
+
+# envrc
+.envrc

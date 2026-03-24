@@ -25,7 +25,7 @@ func TestAccDatadogActionConnectionDatasource_AWS_AssumeRole(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, "datadog_action_connection.aws_assume_role_conn"),
 		Steps: []resource.TestStep{
 			{

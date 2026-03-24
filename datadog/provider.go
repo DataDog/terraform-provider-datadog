@@ -192,14 +192,14 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tags": {
 							Type:        schema.TypeMap,
 							Optional:    true,
 							Elem:        &schema.Schema{Type: schema.TypeString},
-							Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -216,10 +216,6 @@ func Provider() *schema.Provider {
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
-			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
-			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
-			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
-			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),

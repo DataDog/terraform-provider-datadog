@@ -49,6 +49,9 @@ func DatadogTagsProcessorSchema() schema.ListNestedBlock {
 				"keys": schema.ListAttribute{
 					ElementType: types.StringType,
 					Required:    true,
+					Validators: []validator.List{
+						listvalidator.SizeAtLeast(1),
+					},
 				},
 			},
 		},

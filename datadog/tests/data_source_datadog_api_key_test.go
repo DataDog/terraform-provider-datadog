@@ -19,7 +19,7 @@ func TestAccDatadogApiKeyDatasource_matchId(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -45,7 +45,7 @@ func TestAccDatadogApiKeyDatasource_matchName(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -71,7 +71,7 @@ func TestAccDatadogApiKeyDatasource_exactMatchName(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -97,7 +97,7 @@ func TestAccDatadogApiKeyDatasource_matchIdError(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -117,7 +117,7 @@ func TestAccDatadogApiKeyDatasource_matchNameError(t *testing.T) {
 	apiKeyName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -136,7 +136,7 @@ func TestAccDatadogApiKeyDatasource_missingParametersError(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

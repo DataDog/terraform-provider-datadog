@@ -3,14 +3,14 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogObservabilityPipelineImport(t *testing.T) {
@@ -20,7 +20,7 @@ func TestAccDatadogObservabilityPipelineImport(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -41,7 +41,7 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.basic"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -75,6 +75,92 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 			},
 		},
 	})
+}
+
+// TestAccDatadogObservabilityPipeline_secretKeyFields verifies that the new secret/key
+// fields (e.g. address_key, key_pass_key in tls) are accepted by the schema and round-trip
+// correctly through expand/flatten.
+func TestAccDatadogObservabilityPipeline_secretKeyFields(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.secret_keys"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineSecretKeyFieldsConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "pipeline secret key fields"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "socket-src"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.address_key", "SOCKET_LISTEN_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "socket-dest"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.address_key", "SOCKET_SEND_ADDRESS"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineSecretKeyFieldsConfig() string {
+	return `
+resource "datadog_observability_pipeline" "secret_keys" {
+  name = "pipeline secret key fields"
+
+  config {
+    source {
+      id = "socket-src"
+      socket {
+        address_key = "SOCKET_LISTEN_ADDRESS"
+        mode        = "tcp"
+        framing {
+          method = "newline_delimited"
+        }
+        tls {
+          crt_file    = "/path/to/cert.pem"
+          key_pass_key = "TLS_KEY_PASSPHRASE"
+        }
+      }
+    }
+
+    processor_group {
+      id      = "pg1"
+      enabled = true
+      include = "*"
+      inputs  = ["socket-src"]
+      processor {
+        id      = "p1"
+        enabled = true
+        include = "*"
+        parse_json {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "socket-dest"
+      inputs = ["pg1"]
+      socket {
+        address_key = "SOCKET_SEND_ADDRESS"
+        mode        = "tcp"
+        encoding    = "json"
+        framing {
+          method = "newline_delimited"
+        }
+        tls {
+          crt_file     = "/path/to/cert.pem"
+          key_pass_key = "TLS_KEY_PASSPHRASE"
+        }
+      }
+    }
+  }
+}`
 }
 
 func testAccObservabilityPipelineBasicConfig() string {
@@ -228,7 +314,7 @@ func TestAccDatadogObservabilityPipeline_kafka(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.kafka_test"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -286,7 +372,7 @@ func TestAccDatadogObservabilityPipeline_datadogAgentWithTLS(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.agent_tls"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -338,7 +424,7 @@ func TestAccDatadogObservabilityPipeline_filterProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.filter"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -399,7 +485,7 @@ func TestAccDatadogObservabilityPipeline_renameFieldsProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.rename_fields"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -466,7 +552,7 @@ func TestAccDatadogObservabilityPipeline_removeFieldsProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.remove_fields"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -529,7 +615,7 @@ func TestAccDatadogObservabilityPipeline_quotaProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.quota"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -643,7 +729,7 @@ func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.parse_json"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -706,7 +792,7 @@ func TestAccDatadogObservabilityPipeline_addFieldsProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.add_fields"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -776,7 +862,7 @@ func TestAccDatadogObservabilityPipeline_parseGrokProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.parse_grok"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -874,7 +960,7 @@ func TestAccDatadogObservabilityPipeline_sampleProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.sample"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -903,6 +989,7 @@ resource "datadog_observability_pipeline" "sample" {
         
         sample {
           percentage = 10
+          group_by   = ["service", "host"]
         }
       }
     }
@@ -942,11 +1029,15 @@ resource "datadog_observability_pipeline" "sample" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.percentage", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.group_by.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.group_by.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sample.0.group_by.1", "host"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.id", "sample-group-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.enabled", "false"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.id", "sample-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.enabled", "false"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.sample.0.percentage", "4.99"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.processor.0.sample.0.group_by.#", "0"),
 				),
 			},
 		},
@@ -959,7 +1050,7 @@ func TestAccDatadogObservabilityPipeline_fluentdSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.fluentd"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1010,7 +1101,7 @@ func TestAccDatadogObservabilityPipeline_fluentBitSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.fluent_bit"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1061,7 +1152,7 @@ func TestAccDatadogObservabilityPipeline_httpServerSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.http_server"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1117,7 +1208,7 @@ func TestAccDatadogObservabilityPipeline_amazonS3Source(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.s3_source"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1178,7 +1269,7 @@ func TestAccDatadogObservabilityPipeline_splunkHecSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.splunk_hec"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1227,7 +1318,7 @@ func TestAccDatadogObservabilityPipeline_splunkTcpSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.splunk_tcp"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1276,7 +1367,7 @@ func TestAccDatadogObservabilityPipeline_generateMetricsProcessor(t *testing.T) 
 	resourceName := "datadog_observability_pipeline.generate_metrics"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1357,7 +1448,7 @@ func TestAccDatadogObservabilityPipeline_googleCloudStorageDestination(t *testin
 	resourceName := "datadog_observability_pipeline.gcs_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1421,7 +1512,7 @@ func TestAccDatadogObservabilityPipeline_googleCloudStorageDestinationMinimal(t 
 	resourceName := "datadog_observability_pipeline.gcs_dest_minimal"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1462,7 +1553,7 @@ func TestAccDatadogObservabilityPipeline_splunkHecDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.splunk_hec_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1476,15 +1567,45 @@ resource "datadog_observability_pipeline" "splunk_hec_dest" {
       datadog_agent {
       }
     }
-    
+
     destination {
-      id = "splunk-hec-1"
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding = "json"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_dest" {
+  name = "splunk-hec-destination-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
       inputs = ["source-1"]
       splunk_hec {
         auto_extract_timestamp = true
         encoding               = "json"
         sourcetype             = "custom_sourcetype"
         index                  = "main"
+        indexed_fields         = ["service", "host"]
       }
     }
   }
@@ -1498,6 +1619,8 @@ resource "datadog_observability_pipeline" "splunk_hec_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.sourcetype", "custom_sourcetype"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.index", "main"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.indexed_fields.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.indexed_fields.1", "host"),
 				),
 			},
 		},
@@ -1509,7 +1632,7 @@ func TestAccDatadogObservabilityPipeline_sumoLogicDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.sumo"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1573,7 +1696,7 @@ func TestAccDatadogObservabilityPipeline_rsyslogSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.rsyslog_source"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1622,7 +1745,7 @@ func TestAccDatadogObservabilityPipeline_syslogNgSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.syslogng_source"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1670,7 +1793,7 @@ func TestAccDatadogObservabilityPipeline_rsyslogDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.rsyslog_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1718,7 +1841,7 @@ func TestAccDatadogObservabilityPipeline_syslogNgDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.syslogng_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1766,7 +1889,7 @@ func TestAccDatadogObservabilityPipeline_elasticsearchDestination(t *testing.T) 
 	resourceName := "datadog_observability_pipeline.elasticsearch_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1811,7 +1934,7 @@ func TestAccDatadogObservabilityPipeline_azureStorageDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.azure_storage_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1856,7 +1979,7 @@ func TestAccDatadogObservabilityPipeline_microsoftSentinelDestination(t *testing
 	resourceName := "datadog_observability_pipeline.sentinel"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1905,7 +2028,7 @@ func TestAccDatadogObservabilityPipeline_sensitiveDataScannerProcessor(t *testin
 	resourceName := "datadog_observability_pipeline.sds"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -1968,7 +2091,7 @@ resource "datadog_observability_pipeline" "sds" {
 
             pattern {
               library {
-                id = "ip_address"
+                id = "imTliuhXT5GAeRNhqChXQQ"
                 use_recommended_keywords = true
               }
             }
@@ -2012,7 +2135,7 @@ resource "datadog_observability_pipeline" "sds" {
 
             pattern {
               library {
-                id = "email_address"
+                id = "imTliuhXT5GAeRNhqChXQQ"
                 description = "email address"
               }
             }
@@ -2083,7 +2206,7 @@ resource "datadog_observability_pipeline" "sds" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.name", "Library Hash"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.tags.#", "1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.tags.0", "pii"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.pattern.0.library.0.id", "ip_address"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.pattern.0.library.0.id", "imTliuhXT5GAeRNhqChXQQ"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.pattern.0.library.0.use_recommended_keywords", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.1.scope.0.all", "true"),
 
@@ -2099,7 +2222,7 @@ resource "datadog_observability_pipeline" "sds" {
 					// Rule 3 - Library pattern + no keywords + empty tags + exclude scope + partial_redact (last)
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.name", "Library Empty Tags No Keywords Last Direction"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.tags.#", "0"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.pattern.0.library.0.id", "email_address"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.pattern.0.library.0.id", "imTliuhXT5GAeRNhqChXQQ"),
 					resource.TestCheckNoResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.pattern.0.library.0.use_recommended_keywords"),
 					resource.TestCheckNoResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.keyword_options.#"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.sensitive_data_scanner.0.rule.3.scope.0.exclude.0.fields.#", "1"),
@@ -2123,7 +2246,7 @@ func TestAccDatadogObservabilityPipeline_multipleProcessorGroups(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.multi_groups"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2353,7 +2476,7 @@ func TestAccDatadogObservabilityPipeline_sumoLogicSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.sumo_source"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2393,7 +2516,7 @@ func TestAccDatadogObservabilityPipeline_amazonDataFirehoseSource(t *testing.T) 
 	resourceName := "datadog_observability_pipeline.firehose_test"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2444,7 +2567,7 @@ func TestAccDatadogObservabilityPipeline_httpClientSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.http_client"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2494,7 +2617,7 @@ func TestAccDatadogObservabilityPipeline_googlePubSubSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.pubsub"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2548,7 +2671,7 @@ func TestAccDatadogObservabilityPipeline_googlePubSubSourceMinimal(t *testing.T)
 	resourceName := "datadog_observability_pipeline.pubsub_minimal"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2592,7 +2715,7 @@ func TestAccDatadogObservabilityPipeline_logstashSource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.logstash"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2634,7 +2757,7 @@ func TestAccDatadogObservabilityPipeline_dedupeProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.dedupe"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2721,7 +2844,7 @@ func TestAccDatadogObservabilityPipeline_reduceProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.reduce"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2804,7 +2927,7 @@ func TestAccDatadogObservabilityPipeline_throttleProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.throttle"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2892,7 +3015,7 @@ func TestAccDatadogObservabilityPipeline_addEnvVarsProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.add_env_vars"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2958,7 +3081,7 @@ func TestAccDatadogObservabilityPipeline_enrichmentTableProcessor(t *testing.T) 
 	resourceName := "datadog_observability_pipeline.enrichment"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -2994,16 +3117,6 @@ resource "datadog_observability_pipeline" "enrichment" {
                 type             = "csv"
                 delimiter        = ","
                 includes_headers = true
-              }
-
-              schema {
-                column = "region"
-                type   = "string"
-              }
-
-              schema {
-                column = "city"
-                type   = "string"
               }
 
               key {
@@ -3058,10 +3171,6 @@ resource "datadog_observability_pipeline" "enrichment" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.encoding.0.type", "csv"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.encoding.0.delimiter", ","),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.encoding.0.includes_headers", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.0.column", "region"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.0.type", "string"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.1.column", "city"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.schema.1.type", "string"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.column", "user_id"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.comparison", "equals"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.field", "log.user.id"),
@@ -3086,7 +3195,7 @@ func TestAccDatadogObservabilityPipeline_enrichmentTableReferenceTable(t *testin
 	resourceName := "datadog_observability_pipeline.reference_table_enrichment"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3203,19 +3312,19 @@ resource "datadog_observability_pipeline" "reference_table_enrichment" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_googleChronicleDestination(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_googleSecOpsDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.chronicle"
+	resourceName := "datadog_observability_pipeline.secops"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "chronicle" {
-  name = "chronicle pipeline"
+resource "datadog_observability_pipeline" "secops" {
+  name = "secops pipeline"
 
   config {
     source {
@@ -3227,7 +3336,7 @@ resource "datadog_observability_pipeline" "chronicle" {
     destination {
       id = "destination-1"
       inputs = ["source-1"]
-      google_chronicle {
+      google_secops {
         customer_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         encoding    = "json"
         log_type    = "nginx_logs"
@@ -3242,29 +3351,29 @@ resource "datadog_observability_pipeline" "chronicle" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.encoding", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.log_type", "nginx_logs"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.auth.0.credentials_file", "/secrets/gcp.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.log_type", "nginx_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.auth.0.credentials_file", "/secrets/gcp.json"),
 				),
 			},
 		},
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_googleChronicleDestinationMinimal(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_googleSecOpsDestinationMinimal(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.chronicle_minimal"
+	resourceName := "datadog_observability_pipeline.secops_minimal"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: `
-resource "datadog_observability_pipeline" "chronicle_minimal" {
-  name = "chronicle minimal pipeline"
+resource "datadog_observability_pipeline" "secops_minimal" {
+  name = "secops minimal pipeline"
 
   config {
     source {
@@ -3276,7 +3385,7 @@ resource "datadog_observability_pipeline" "chronicle_minimal" {
     destination {
       id = "chronicle-dest-1"
       inputs = ["source-1"]
-      google_chronicle {
+      google_secops {
         customer_id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         encoding    = "json"
         log_type    = "nginx_logs"
@@ -3288,9 +3397,9 @@ resource "datadog_observability_pipeline" "chronicle_minimal" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "chronicle-dest-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.encoding", "json"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_chronicle.0.log_type", "nginx_logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.customer_id", "3fa85f64-5717-4562-b3fc-2c963f66afa6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.google_secops.0.log_type", "nginx_logs"),
 				),
 			},
 		},
@@ -3303,7 +3412,7 @@ func TestAccDatadogObservabilityPipeline_newRelicDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.newrelic"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3343,7 +3452,7 @@ func TestAccDatadogObservabilityPipeline_sentinelOneDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.sentinelone"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3384,7 +3493,7 @@ func TestAccDatadogObservabilityPipeline_ocsfMapperLibraryOnly(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.ocsf"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3442,13 +3551,152 @@ resource "datadog_observability_pipeline" "ocsf" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_ocsfMapperCustomMappings(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.ocsf_custom"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "ocsf_custom" {
+  name = "ocsf mapper custom (minimal)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "ocsf-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "ocsf-mapper"
+        enabled = true
+        include = "*"
+
+        ocsf_mapper {
+          mapping {
+            include         = "source:custom"
+            library_mapping = "CloudTrail Account Change"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ocsf-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.include", "source:custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.library_mapping", "CloudTrail Account Change"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "ocsf_custom" {
+  name = "ocsf mapper custom (full)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "ocsf-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "ocsf-mapper"
+        enabled = true
+        include = "*"
+
+        ocsf_mapper {
+          mapping {
+            include = "source:custom"
+            custom_mapping {
+              version = 1
+              metadata {
+                class    = "Device Inventory Info"
+                version  = "1.3.0"
+                profiles = ["container"]
+              }
+              mapping {
+                dest   = "device.type"
+                source = "host.type"
+              }
+              mapping {
+                dest  = "event.type"
+                value = "static_value"
+              }
+              mapping {
+                dest   = "device.name"
+                source = "hostname"
+                lookup {
+                  default = "unknown"
+                  table {
+                    equals = "desktop"
+                    value  = "desktop"
+                  }
+                  table {
+                    contains = "Mobile"
+                    value    = "mobile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ocsf-group-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.include", "source:custom"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.version", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.metadata.0.class", "Device Inventory Info"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.metadata.0.version", "1.3.0"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.mapping.0.dest", "device.type"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.ocsf_mapper.0.mapping.0.custom_mapping.0.mapping.0.source", "host.type"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_opensearchDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.opensearch"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3483,13 +3731,97 @@ resource "datadog_observability_pipeline" "opensearch" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opensearchDestinationDataStream(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.opensearch_datastream"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// Minimal config - only data_stream with dtype
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_datastream" {
+  name = "opensearch-datastream-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+        data_stream {
+          dtype = "logs"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opensearch-datastream-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opensearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.dtype", "logs"),
+				),
+			},
+			{
+				// Full config - data_stream with all fields
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_datastream" {
+  name = "opensearch-datastream-pipeline-updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-application"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opensearch-datastream-pipeline-updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "opensearch-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.dtype", "logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.dataset", "my-application"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.opensearch.0.data_stream.0.namespace", "production"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.amazon_opensearch"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3546,7 +3878,7 @@ func TestAccDatadogObservabilityPipeline_amazonOpenSearchDestination_basic(t *te
 	resourceName := "datadog_observability_pipeline.amazon_opensearch_basic"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3589,7 +3921,7 @@ func TestAccDatadogObservabilityPipeline_datadogTagsProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.datadog_tags"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3703,7 +4035,7 @@ func TestAccDatadogObservabilityPipeline_quotaProcessor_overflowAction(t *testin
 	resourceName := "datadog_observability_pipeline.quota"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3773,7 +4105,7 @@ func TestAccDatadogObservabilityPipeline_opentelemetrySource(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.opentelemetry"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3821,7 +4153,7 @@ func TestAccDatadogObservabilityPipeline_opentelemetrySource_noTls(t *testing.T)
 	resourceName := "datadog_observability_pipeline.opentelemetry_no_tls"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3861,7 +4193,7 @@ func TestAccDatadogObservabilityPipeline_opentelemetrySource_update(t *testing.T
 	resourceName := "datadog_observability_pipeline.opentelemetry_update"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3936,13 +4268,198 @@ resource "datadog_observability_pipeline" "opentelemetry_update" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics" {
+  name = "opentelemetry-metrics-pipeline"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-1"
+      opentelemetry {
+        tls {
+          crt_file = "/etc/ssl/certs/opentelemetry.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/opentelemetry.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/opentelemetry.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/opentelemetry.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "opentelemetry-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics_noTls(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_no_tls"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_no_tls" {
+  name = "opentelemetry-metrics-pipeline-no-tls"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-2"
+      opentelemetry {
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-2"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline-no-tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "opentelemetry-source-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_opentelemetrySource_metrics_update(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.opentelemetry_metrics_update"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_update" {
+  name = "opentelemetry-metrics-pipeline-update"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-3"
+      opentelemetry {
+        tls {
+          crt_file = "/etc/ssl/certs/old.crt"
+          ca_file  = "/etc/ssl/certs/old-ca.crt"
+          key_file = "/etc/ssl/private/old.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-3"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline-update"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-3"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/old.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/old-ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/old.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "opentelemetry_metrics_update" {
+  name = "opentelemetry-metrics-pipeline-updated"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "opentelemetry-source-3"
+      opentelemetry {
+        tls {
+          crt_file = "/etc/ssl/certs/new.crt"
+          ca_file  = "/etc/ssl/certs/new-ca.crt"
+          key_file = "/etc/ssl/private/new.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["opentelemetry-source-3"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "opentelemetry-metrics-pipeline-updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.pipeline_type", "metrics"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "opentelemetry-source-3"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.crt_file", "/etc/ssl/certs/new.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.ca_file", "/etc/ssl/certs/new-ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.opentelemetry.0.tls.0.key_file", "/etc/ssl/private/new.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_metrics.#", "1"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_socketSource_tcp(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.socket_tcp"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -3998,7 +4515,7 @@ func TestAccDatadogObservabilityPipeline_socketSource_udp(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.socket_udp"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4049,7 +4566,7 @@ func TestAccDatadogObservabilityPipeline_socketDestination_basic(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.socket_dest_basic"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4103,7 +4620,7 @@ func TestAccDatadogObservabilityPipeline_socketDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.socket_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4155,13 +4672,77 @@ resource "datadog_observability_pipeline" "socket_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_socketSource_framingValidation(t *testing.T) {
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket_no_framing" {
+  name = "socket-pipeline-no-framing"
+
+  config {
+    source {
+      id = "socket-source-1"
+      socket {
+        mode = "tcp"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["socket-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				ExpectError: regexp.MustCompile(`must have a configuration value`),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "socket_invalid_framing" {
+  name = "socket-pipeline-invalid-framing"
+
+  config {
+    source {
+      id = "socket-source-1"
+      socket {
+        mode = "tcp"
+
+        framing {
+          method = "newline_delimited"
+
+          character_delimited {
+            delimiter = ","
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["socket-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				ExpectError: regexp.MustCompile(`The 'character_delimited' block must not be specified`),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_cloudPremDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.cloud_prem_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4201,7 +4782,7 @@ func TestAccDatadogObservabilityPipeline_kafkaDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.kafka_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4320,7 +4901,7 @@ func TestAccDatadogObservabilityPipeline_customProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.custom_processor"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4408,7 +4989,7 @@ func TestAccDatadogObservabilityPipeline_amazonS3Destination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.amazon_s3"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4467,7 +5048,7 @@ func TestAccDatadogObservabilityPipeline_amazonS3Destination_basic(t *testing.T)
 	resourceName := "datadog_observability_pipeline.amazon_s3_basic"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4509,11 +5090,145 @@ resource "datadog_observability_pipeline" "amazon_s3_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonS3GenericDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_generic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_generic" {
+  name = "amazon s3 generic pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "s3-generic-dest-1"
+      inputs = ["source-1"]
+
+      amazon_s3_generic {
+        bucket        = "my-generic-bucket"
+        region        = "us-east-1"
+        key_prefix    = "logs/"
+        storage_class = "STANDARD"
+
+        encoding {
+          type = "parquet"
+        }
+
+        compression {
+          algorithm  = "gzip"
+          level = 6
+        }
+
+        auth {
+          assume_role  = "arn:aws:iam::123456789012:role/example-role"
+          external_id  = "external-id-123"
+          session_name = "s3-generic-session"
+        }
+
+        batch_settings {
+          batch_size   = 100000000
+          timeout_secs = 900
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-generic-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.bucket", "my-generic-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.encoding.0.type", "parquet"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.auth.0.assume_role", "arn:aws:iam::123456789012:role/example-role"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.auth.0.external_id", "external-id-123"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.auth.0.session_name", "s3-generic-session"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.batch_settings.0.batch_size", "100000000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.batch_settings.0.timeout_secs", "900"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_amazonS3GenericDestination_basic(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_generic_basic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_generic_basic" {
+  name = "amazon s3 generic pipeline (minimal)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "s3-generic-dest-basic-1"
+      inputs = ["source-1"]
+
+      amazon_s3_generic {
+        bucket        = "my-generic-bucket"
+        region        = "us-east-1"
+        storage_class = "STANDARD"
+
+        encoding {
+          type = "json"
+        }
+
+        compression {
+          algorithm = "snappy"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-generic-dest-basic-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.bucket", "my-generic-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.encoding.0.type", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.algorithm", "snappy"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_AmazonSecurityLakeDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.amazon_security_lake_dest"
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4572,7 +5287,7 @@ func TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination(t *te
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.crowdstrike_next_gen_siem_dest"
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4625,7 +5340,7 @@ func TestAccDatadogObservabilityPipeline_crowdstrikeNextGenSiemDestination_basic
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.crowdstrike_next_gen_siem_dest_basic"
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4665,7 +5380,7 @@ func TestAccDatadogObservabilityPipeline_googlePubSubDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.pubsub_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4722,7 +5437,7 @@ func TestAccDatadogObservabilityPipeline_googlePubSubDestinationMinimal(t *testi
 	resourceName := "datadog_observability_pipeline.pubsub_dest_minimal"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4765,7 +5480,7 @@ func TestAccDatadogObservabilityPipeline_AddHostname(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.add_hostname_test"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4864,7 +5579,7 @@ func TestAccDatadogObservabilityPipeline_ParseXML(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.parse_xml_test"
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -4979,7 +5694,7 @@ func TestAccDatadogObservabilityPipeline_SplitArray(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.split_array_test"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5098,7 +5813,7 @@ func TestAccDatadogObservabilityPipeline_metricsPipelineType(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.metrics_pipeline"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5172,7 +5887,7 @@ func TestAccDatadogObservabilityPipeline_metricTagsProcessor(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.metric_tags"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5259,7 +5974,7 @@ func TestAccDatadogObservabilityPipeline_datadogMetricsDestination(t *testing.T)
 	resourceName := "datadog_observability_pipeline.datadog_metrics"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5320,7 +6035,7 @@ func TestAccDatadogObservabilityPipeline_httpClientDestination(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.http_client_dest"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5380,7 +6095,7 @@ func TestAccDatadogObservabilityPipeline_httpClientDestinationMinimal(t *testing
 	resourceName := "datadog_observability_pipeline.http_client_dest_minimal"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5423,7 +6138,7 @@ func TestAccDatadogObservabilityPipeline_metricsFullPipeline(t *testing.T) {
 	resourceName := "datadog_observability_pipeline.metrics_full"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5522,7 +6237,7 @@ func TestAccDatadogObservabilityPipeline_logsPipelineTypeExplicit(t *testing.T) 
 	resourceName := "datadog_observability_pipeline.logs_explicit"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5585,7 +6300,7 @@ func TestAccDatadogObservabilityPipeline_elasticsearchDestinationDataStream(t *t
 	resourceName := "datadog_observability_pipeline.elasticsearch_datastream"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -5663,6 +6378,212 @@ resource "datadog_observability_pipeline" "elasticsearch_datastream" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.data_stream.0.dataset", "my-application"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.data_stream.0.namespace", "production"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_datadogLogsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.datadog_logs_routes_test"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineDatadogLogsDestinationMinimal(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog logs routes pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "destination-logs-routes"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "group-logs-routes"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.#", "1"),
+					resource.TestCheckNoResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.#"),
+				),
+			},
+			{
+				Config: testAccObservabilityPipelineDatadogLogsDestinationFull(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "datadog logs routes pipeline updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "group-logs-routes"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.route_id", "route-us1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.include", "service:api"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.site", "us1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.datadog_logs.0.routes.0.api_key_key", "API_KEY_IDENT"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineDatadogLogsDestinationMinimal() string {
+	return `
+resource "datadog_observability_pipeline" "datadog_logs_routes_test" {
+  name = "datadog logs routes pipeline"
+
+  config {
+    source {
+      id = "source-logs-routes"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-logs-routes"
+      enabled = true
+      include = "*"
+      inputs  = ["source-logs-routes"]
+
+      processor {
+        id      = "processor-logs-routes"
+        enabled = true
+        include = "*"
+
+        parse_json {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-logs-routes"
+      inputs = ["group-logs-routes"]
+
+      datadog_logs {}
+    }
+  }
+}
+`
+}
+
+func testAccObservabilityPipelineDatadogLogsDestinationFull() string {
+	return `
+resource "datadog_observability_pipeline" "datadog_logs_routes_test" {
+  name = "datadog logs routes pipeline updated"
+
+  config {
+    source {
+      id = "source-logs-routes"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "group-logs-routes"
+      enabled = true
+      include = "*"
+      inputs  = ["source-logs-routes"]
+
+      processor {
+        id      = "processor-logs-routes"
+        enabled = true
+        include = "*"
+
+        parse_json {
+          field = "message"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-logs-routes"
+      inputs = ["group-logs-routes"]
+
+      datadog_logs {
+        routes {
+          route_id   = "route-us1"
+          include    = "service:api"
+          site       = "us1"
+          api_key_key = "API_KEY_IDENT"
+        }
+      }
+    }
+  }
+}
+`
+}
+
+func TestAccDatadogObservabilityPipeline_elasticsearchValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Both bulk_index and data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_validation" {
+  name = "elasticsearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "elasticsearch-destination-1"
+      inputs = ["source-1"]
+            
+      elasticsearch {
+        api_version = "v7"
+        bulk_index  = "logs-index"
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-app"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_opensearchValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Both bulk_index and data_stream specified
+				Config: `
+resource "datadog_observability_pipeline" "opensearch_validation" {
+  name = "opensearch-validation-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+    
+    destination {
+      id     = "opensearch-destination-1"
+      inputs = ["source-1"]
+            
+      opensearch {
+        bulk_index = "logs-index"
+        data_stream {
+          dtype     = "logs"
+          dataset   = "my-app"
+          namespace = "production"
+        }
+      }
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
 			},
 		},
 	})

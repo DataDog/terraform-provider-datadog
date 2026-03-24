@@ -61,8 +61,7 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 					"* [List of supported resources](https://docs.datadoghq.com/account_management/rbac/granular_access)\n" +
 					"* [Resource type definition](https://docs.datadoghq.com/api/latest/restriction-policies/#supported-resources)\n" +
 					"\nRestrictions :\n" +
-					"* Dashboards : support is in private beta. Reach out to your Datadog contact or support to enable this.\n" +
-					"* Monitors : Management of restriction policy through terraform is now available in Preview. Please request access via https://docs.datadoghq.com/help",
+					"* Dashboards : support is in private beta. Reach out to your Datadog contact or support to enable this.\n",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

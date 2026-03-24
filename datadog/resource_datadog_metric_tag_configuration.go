@@ -48,23 +48,13 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				if !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) {
 					return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
 				}
-				diff.SetNew("aggregations", nil)
-			} else {
-				// Always add the default aggregation regardless of if the user manually added it or not
-				var defaultAggrCombo map[string]interface{}
-				if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
-					// the avg/avg combo is the default aggregation for gauge metrics
-					defaultAggrCombo = map[string]interface{}{"time": "avg", "space": "avg"}
-				} else {
-					// the sum/sum combo is the default aggregation for count/rates metrics
-					defaultAggrCombo = map[string]interface{}{"time": "sum", "space": "sum"}
-				}
+			}
 
-				newAggrs.(*schema.Set).Add(defaultAggrCombo)
-
-				if err := diff.SetNew("aggregations", newAggrs); err != nil {
-					return err
-				}
+			// Clear aggregations from diff to prevent state flapping.
+			// The aggregations field is deprecated and ignored - the schema's Deprecated field
+			// will show a warning to users who still have it configured.
+			if err := diff.Clear("aggregations"); err != nil {
+				return err
 			}
 
 			return nil
@@ -108,6 +98,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					Type:        schema.TypeSet,
 					Optional:    true,
 					Computed:    true,
+					Deprecated:  "The 'aggregations' field is no longer supported by the Datadog API and will be ignored. This field will be removed in a future version of the provider.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"time": {
@@ -303,9 +294,9 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 						aggregationsMap["space"] = aggregation.GetSpace()
 						aggregationsMapArray = append(aggregationsMapArray, aggregationsMap)
 					}
-					if err := d.Set("aggregations", aggregationsMapArray); err != nil {
-						return diag.FromErr(err)
-					}
+				}
+				if err := d.Set("aggregations", aggregationsMapArray); err != nil {
+					return diag.FromErr(err)
 				}
 			}
 		}
@@ -329,8 +320,6 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 	}
 
 	d.SetId(metricName)
-	// we do not care about the created_at nor modified_at fields
-
 	return nil
 }
 

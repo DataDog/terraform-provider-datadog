@@ -45,7 +45,8 @@ Read-Only:
 Read-Only:
 
 - `destination_key` (String) The destination key for the mapping.
-- `if_not_exists` (Boolean) Whether to apply the mapping only if the destination key doesn't exist.
+- `if_not_exists` (Boolean, Deprecated) Whether to apply the mapping only if the destination key doesn't exist.
+- `if_tag_exists` (String) Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists). Valid values are `append`, `replace`, `do_not_apply`.
 - `source_keys` (List of String) The source keys for the mapping.
 
 
@@ -56,7 +57,8 @@ Read-Only:
 
 - `addition` (Block, Read-only) The addition configuration for the query. (see [below for nested schema](#nestedblock--rules--query--addition))
 - `case_insensitivity` (Boolean) Whether the query matching is case insensitive.
-- `if_not_exists` (Boolean) Whether to apply the query only if the key doesn't exist.
+- `if_not_exists` (Boolean, Deprecated) Whether to apply the query only if the key doesn't exist.
+- `if_tag_exists` (String) Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists). Valid values are `append`, `replace`, `do_not_apply`.
 - `query` (String) The query string.
 
 <a id="nestedblock--rules--query--addition"></a>
@@ -76,7 +78,8 @@ Read-Only:
 
 - `case_insensitivity` (Boolean) Whether the reference table lookup is case insensitive.
 - `field_pairs` (Block List) The field pairs for the reference table. (see [below for nested schema](#nestedblock--rules--reference_table--field_pairs))
-- `if_not_exists` (Boolean) Whether to apply the reference table only if the key doesn't exist.
+- `if_not_exists` (Boolean, Deprecated) Whether to apply the reference table only if the key doesn't exist.
+- `if_tag_exists` (String) Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists). Valid values are `append`, `replace`, `do_not_apply`.
 - `source_keys` (List of String) The source keys for the reference table lookup.
 - `table_name` (String) The name of the reference table.
 

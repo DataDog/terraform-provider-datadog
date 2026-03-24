@@ -22,7 +22,7 @@ func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
 
 	t.Run("when mrcs never specified in create and update, uses default", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			ProtoV5ProviderFactories: accProviders,
+			ProtoV6ProviderFactories: accProviders,
 			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 			Steps: []resource.TestStep{
 				{
@@ -64,7 +64,7 @@ func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
 
 	t.Run("when mrcs never specified in create, but specified on update, overwrites default", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			ProtoV5ProviderFactories: accProviders,
+			ProtoV6ProviderFactories: accProviders,
 			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 			Steps: []resource.TestStep{
 				{
@@ -112,7 +112,7 @@ func TestAccIntGcpStsMetricNamespaceConfigs(t *testing.T) {
 
 	t.Run("when mrcs specified in create, but omitted on update, initial configs kept", func(t *testing.T) {
 		resource.Test(t, resource.TestCase{
-			ProtoV5ProviderFactories: accProviders,
+			ProtoV6ProviderFactories: accProviders,
 			CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 			Steps: []resource.TestStep{
 				{
@@ -175,7 +175,7 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 		knownvalue.StringExact("host:three"),
 	})
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -203,6 +203,8 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					  ]
 					  cloud_run_revision_filters            = ["rev:one", "rev:two"]
 					  host_filters                          = ["host:one"]
+					  is_global_location_enabled            = "false"
+					  region_filter_configs 				= ["booboi", "lushy"]
 					}`, uniq),
 				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
 				ConfigStateChecks: []statecheck.StateCheck{
@@ -245,6 +247,10 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 							"filters": hostFilters,
 						}),
 					})),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_global_location_enabled"), knownvalue.Bool(false)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("region_filter_configs"), knownvalue.SetExact([]knownvalue.Check{
+						knownvalue.StringExact("booboi"),
+						knownvalue.StringExact("lushy")})),
 				},
 			},
 			{
@@ -274,6 +280,7 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						  filters = ["host:three"]
 						},
 					  ]
+					  is_global_location_enabled            = "true"
 					}`, uniq),
 				Check: resource.ComposeTestCheckFunc(testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider)),
 				ConfigStateChecks: []statecheck.StateCheck{
@@ -310,6 +317,8 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 							"filters": updatedHostFilters,
 						}),
 					})),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_global_location_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("region_filter_configs"), knownvalue.Null()),
 				},
 			},
 		},
@@ -322,7 +331,7 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -350,6 +359,8 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("cloud_run_revision_filters"), knownvalue.SetExact(nil)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("host_filters"), knownvalue.SetExact(nil)),
 					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("monitored_resource_configs"), knownvalue.SetExact(nil)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("is_global_location_enabled"), knownvalue.Bool(true)),
+					statecheck.ExpectKnownValue("datadog_integration_gcp_sts.foo", tfjsonpath.New("region_filter_configs"), knownvalue.Null()),
 				},
 			},
 		},
