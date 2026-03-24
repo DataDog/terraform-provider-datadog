@@ -14,7 +14,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const dashboardV2ResourceName = "datadog_dashboard_v2"
 
 // resourceDatadogDashboardV2 returns the SDKv2 resource for datadog_dashboard_v2.
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
@@ -88,7 +87,7 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 func resourceDatadogDashboardV2Create(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardV2ResourceName)
+	auth := providerConf.Auth
 
 	data := collectDashboardData(d)
 	bodyStr, err := dashboardmapping.MarshalDashboardJSONFromMap(data, "")
@@ -125,7 +124,7 @@ func resourceDatadogDashboardV2Create(ctx context.Context, d *schema.ResourceDat
 func resourceDatadogDashboardV2Read(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardV2ResourceName)
+	auth := providerConf.Auth
 
 	dashboardID := d.Id()
 	respByte, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", dashboardmapping.DashboardAPIPath+"/"+dashboardID, nil)
@@ -149,7 +148,7 @@ func resourceDatadogDashboardV2Read(_ context.Context, d *schema.ResourceData, m
 func resourceDatadogDashboardV2Update(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardV2ResourceName)
+	auth := providerConf.Auth
 
 	dashboardID := d.Id()
 	data := collectDashboardData(d)
@@ -178,7 +177,7 @@ func resourceDatadogDashboardV2Update(ctx context.Context, d *schema.ResourceDat
 func resourceDatadogDashboardV2Delete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardV2ResourceName)
+	auth := providerConf.Auth
 
 	dashboardID := d.Id()
 	_, httpresp, err := utils.SendRequest(auth, apiInstances.HttpClient, "DELETE", dashboardmapping.DashboardAPIPath+"/"+dashboardID, nil)
@@ -317,7 +316,7 @@ func updateDashboardListsSDKv2(d *schema.ResourceData, providerConf *ProviderCon
 	dashType := datadogV2.DashboardType(dashTypeString)
 	itemsRequest := []datadogV2.DashboardListItemRequest{*datadogV2.NewDashboardListItemRequest(dashboardID, dashType)}
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardV2ResourceName)
+	auth := providerConf.Auth
 
 	if v, ok := d.GetOk("dashboard_lists"); ok && v.(*schema.Set).Len() > 0 {
 		items := datadogV2.NewDashboardListAddItemsRequest()
