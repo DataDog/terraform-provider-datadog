@@ -121,12 +121,10 @@ func NewTransport() *http.Transport {
 	}
 }
 
-// NewHTTPClient returns new http.Client with the resource-header transport
-// installed so that any request whose context carries a Terraform resource
-// name (set via WithTerraformResource) gets a DD-Terraform-Resource header.
+// NewHTTPClient returns new http.Client
 func NewHTTPClient() *http.Client {
 	return &http.Client{
-		Transport: WrapTransportWithResourceHeader(NewTransport()),
+		Transport: NewTransport(),
 	}
 }
 
