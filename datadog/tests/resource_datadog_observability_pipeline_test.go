@@ -1282,6 +1282,7 @@ resource "datadog_observability_pipeline" "splunk_hec" {
       id = "splunk-hec-source-1"
       
       splunk_hec {
+        store_hec_token = true
         tls {
           crt_file = "/etc/ssl/certs/splunk.crt"
           ca_file  = "/etc/ssl/certs/ca.crt"
@@ -1303,6 +1304,7 @@ resource "datadog_observability_pipeline" "splunk_hec" {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-hec-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.store_hec_token", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.crt_file", "/etc/ssl/certs/splunk.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.key_file", "/etc/ssl/private/splunk.key"),

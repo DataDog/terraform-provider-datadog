@@ -485,8 +485,9 @@ type httpServerSourceModel struct {
 }
 
 type splunkHecSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+	AddressKey    types.String                      `tfsdk:"address_key"`
+	StoreHecToken types.Bool                        `tfsdk:"store_hec_token"`
+	Tls           []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
 }
 
 type generateMetricsProcessorModel struct {
@@ -943,6 +944,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"address_key": schema.StringAttribute{
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the listen address for the HEC API.",
+												},
+												"store_hec_token": schema.BoolAttribute{
+													Optional:    true,
+													Description: "If `true`, the HEC token is stored in the event's metadata and made available to the enrichment table processor and the `splunk_hec` destination for token-based routing or enrichment. Defaults to `false`.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -5232,6 +5237,9 @@ func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.Obser
 	if !src.AddressKey.IsNull() {
 		s.SetAddressKey(src.AddressKey.ValueString())
 	}
+	if !src.StoreHecToken.IsNull() {
+		s.SetStoreHecToken(src.StoreHecToken.ValueBool())
+	}
 	if src.Tls != nil {
 		s.Tls = observability_pipeline.ExpandTls(src.Tls)
 	}
@@ -5249,6 +5257,9 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 	out := &splunkHecSourceModel{}
 	if v, ok := src.GetAddressKeyOk(); ok {
 		out.AddressKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetStoreHecTokenOk(); ok {
+		out.StoreHecToken = types.BoolValue(*v)
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)

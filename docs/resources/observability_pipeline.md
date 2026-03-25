@@ -2482,6 +2482,7 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
+- `store_hec_token` (Boolean) If `true`, the HEC token is stored in the event's metadata and made available to the enrichment table processor and the `splunk_hec` destination for token-based routing or enrichment. Defaults to `false`.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>
