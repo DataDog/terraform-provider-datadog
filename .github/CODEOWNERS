@@ -11,6 +11,9 @@ datadog/tests/cassettes/
 
 /docs/                                    @DataDog/api-reliability @DataDog/documentation
 
+# Dashboard mapping engine (shared by dashboard_v2 and powerpack_v2)
+datadog/dashboardmapping/                 @DataDog/dashboards-backend
+
 # Terraform SDKv2 resources/data-sources
 datadog/*datadog_dashboard*                @DataDog/dashboards-backend
 datadog/*datadog_downtime*                 @DataDog/monitor-app
