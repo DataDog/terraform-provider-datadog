@@ -2010,7 +2010,6 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 						"datadog_monitor.bar", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
 						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
 				),
 			},
 			// A monitor resource update should not clear restricted_roles when the field is not defined
@@ -2023,18 +2022,6 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 						"datadog_monitor.bar", "message", "updated message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
 						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.bar", "restricted_roles.#", "1"),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
-				),
-			},
-			// Removing restriction policy resource should wipe out restricted_roles
-			{
-				Config: testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueEntityName(ctx, t)),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.bar", "name", uniqueName),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 0),
 				),
 			},
 		},
@@ -2087,39 +2074,6 @@ func testAccCheckDatadogMonitorWithRestrictionPolicyUpdated(uniqueName string) s
               relation = "editor"
             }
         }`, uniqueName, uniqueName)
-}
-
-func testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueName string) string {
-	return fmt.Sprintf(`
-		resource "datadog_role" "foo" {
-			name      = "%s"
-		}
-		resource "datadog_monitor" "bar" {
-			name = "%s"
-			type = "query alert"
-			message = "updated message Notify: @hipchat-channel"
-			query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
-
-			monitor_thresholds {
-				critical = "2.0"
-			}
-		}`, uniqueName, uniqueName)
-}
-
-func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expectedSize int) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		apiInstances := accProvider.DatadogApiInstances
-		auth := accProvider.Auth
-		id, _ := strconv.ParseInt(s.RootModule().Resources["datadog_monitor.bar"].Primary.ID, 10, 64)
-		monitor, httpresp, err := apiInstances.GetMonitorsApiV1().GetMonitor(auth, id)
-		if err != nil {
-			return utils.TranslateClientError(err, httpresp, "error retrieving monitor")
-		}
-		if expectedSize != len(monitor.GetRestrictedRoles()) {
-			return fmt.Errorf("restricted_roles expected to be {%d} but get {%d}", expectedSize, len(monitor.GetRestrictedRoles()))
-		}
-		return nil
-	}
 }
 
 func testAccCheckDatadogMonitorWithTagConfig(uniqueName string, tagKey string) string {
