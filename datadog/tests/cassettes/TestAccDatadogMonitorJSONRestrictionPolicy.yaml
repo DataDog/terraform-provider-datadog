@@ -1,0 +1,174 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 824
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {
+                "name": "tf-TestAccDatadogMonitorJSONRestrictionPolicy-local-1774540745",
+                "type": "service check",
+                "query": "\"ntp.in_sync\".by(\"*\").last(2).count_by_status()",
+                "message": "Test monitor with restriction policy",
+                "tags": [],
+                "multi": true,
+                "options": {
+                    "include_tags": true,
+                    "new_host_delay": 150,
+                    "notify_audit": false,
+                    "notify_no_data": false,
+                    "thresholds": {
+                        "warning": 1,
+                        "ok": 1,
+                        "critical": 1
+                    }
+                },
+                "priority": null,
+                "classification": "custom",
+                "restriction_policy": {
+                    "bindings": [
+                        {
+                            "relation": "editor",
+                            "principals": [
+                                "org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"
+                            ]
+                        }
+                    ]
+                }
+            }
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":269400711,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONRestrictionPolicy-local-1774540745","message":"Test monitor with restriction policy","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1774540747000,"created":"2026-03-26T15:59:07.692223+00:00","modified":"2026-03-26T15:59:07.692223+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"]}]},"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","id":21235577}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 665.075667ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/269400711?with_restricted_roles=false&with_restriction_policy=true
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":269400711,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONRestrictionPolicy-local-1774540745","message":"Test monitor with restriction policy","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1774540747000,"created":"2026-03-26T15:59:07.692223+00:00","modified":"2026-03-26T15:59:07.692223+00:00","deleted":null,"priority":null,"restriction_policy":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"]}]},"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","email":"francesco.pighi@datadoghq.com","handle":"francesco.pighi@datadoghq.com","id":21235577}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 182.162834ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/269400711?with_restricted_roles=false&with_restriction_policy=true
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":269400711,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONRestrictionPolicy-local-1774540745","message":"Test monitor with restriction policy","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1774540747000,"created":"2026-03-26T15:59:07.692223+00:00","modified":"2026-03-26T15:59:07.692223+00:00","deleted":null,"priority":null,"restriction_policy":{"bindings":[{"relation":"editor","principals":["org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"]}]},"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","email":"francesco.pighi@datadoghq.com","handle":"francesco.pighi@datadoghq.com","id":21235577}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 177.332167ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/monitor/269400711
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_monitor_id":269400711}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 305.385667ms

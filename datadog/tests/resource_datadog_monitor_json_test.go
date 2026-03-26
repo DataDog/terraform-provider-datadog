@@ -65,6 +65,68 @@ func TestAccDatadogMonitorJSONBasic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitorJSONRestrictionPolicy(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorJSONWithRestrictionPolicy(uniq),
+			},
+			{
+				ResourceName:      "datadog_monitor_json.monitor_json",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorJSONWithRestrictionPolicy(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor_json" "monitor_json" {
+  monitor =<<-EOF
+{
+    "name": "%s",
+    "type": "service check",
+    "query": "\"ntp.in_sync\".by(\"*\").last(2).count_by_status()",
+    "message": "Test monitor with restriction policy",
+    "tags": [],
+    "multi": true,
+    "options": {
+        "include_tags": true,
+        "new_host_delay": 150,
+        "notify_audit": false,
+        "notify_no_data": false,
+        "thresholds": {
+            "warning": 1,
+            "ok": 1,
+            "critical": 1
+        }
+    },
+    "priority": null,
+    "classification": "custom",
+    "restriction_policy": {
+        "bindings": [
+            {
+                "relation": "editor",
+                "principals": [
+                    "org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"
+                ]
+            }
+        ]
+    }
+}
+EOF
+}`, uniq)
+}
+
 func testAccCheckDatadogMonitorJSON(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor_json" "monitor_json" {

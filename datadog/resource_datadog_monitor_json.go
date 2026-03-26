@@ -134,10 +134,10 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 		params = append(params, "with_restricted_roles=false")
 	}
 
-	// only query for monitor restriction policy if they are explicitly defined in the JSON
-	if _, ok := attrMap["restriction_policy"]; ok {
-		params = append(params, "with_restriction_policy=true")
-	}
+	// Always query for restriction policy so it is present in state after import
+	// or any read where state starts empty. We strip it in updateMonitorJSONState
+	// if the user's config does not include it.
+	params = append(params, "with_restriction_policy=true")
 
 	// only query for monitor assets if they are explicitly defined in the JSON
 	if _, ok := attrMap["assets"]; ok {
@@ -245,8 +245,16 @@ func updateMonitorJSONState(d *schema.ResourceData, monitor map[string]interface
 	if val := reflect.ValueOf(monitor["restricted_roles"]); !val.IsValid() {
 		utils.DeleteKeyInMap(monitor, []string{"restricted_roles"})
 	}
+	// Strip restriction_policy if it is null or has empty bindings. The API
+	// returns {"bindings": []} for monitors with no policy when queried with
+	// with_restriction_policy=true; treat that the same as null so it does not
+	// create a phantom diff for configs that omit restriction_policy.
 	if val := reflect.ValueOf(monitor["restriction_policy"]); !val.IsValid() {
 		utils.DeleteKeyInMap(monitor, []string{"restriction_policy"})
+	} else if rp, ok := monitor["restriction_policy"].(map[string]interface{}); ok {
+		if bindings, ok := rp["bindings"].([]interface{}); ok && len(bindings) == 0 {
+			utils.DeleteKeyInMap(monitor, []string{"restriction_policy"})
+		}
 	}
 	// In addition to checking the API response, we check to see if the user
 	// specified restricted_roles in the config. Note: the value returned

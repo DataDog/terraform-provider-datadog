@@ -14,7 +14,7 @@ interactions:
         request_uri: ""
         body: |
             {
-                "name": "tf-TestAccDatadogMonitorJSONImport-local-1765465764",
+                "name": "tf-TestAccDatadogMonitorJSONImport-local-1774540745",
                 "type": "service check",
                 "query": "\"ntp.in_sync\".by(\"*\").last(2).count_by_status()",
                 "message": "Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.",
@@ -50,13 +50,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":243450754,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONImport-local-1765465764","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1765465771000,"created":"2025-12-11T15:09:31.022803+00:00","modified":"2025-12-11T15:09:31.022803+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","handle":"kevin.pombo@datadoghq.com","email":"kevin.pombo@datadoghq.com","id":64038290}}
+            {"id":269400713,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONImport-local-1774540745","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1774540747000,"created":"2026-03-26T15:59:07.663436+00:00","modified":"2026-03-26T15:59:07.663436+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","id":21235577}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 6.461523292s
+        duration: 612.967917ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -73,7 +73,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/243450754?with_restricted_roles=false
+        url: https://api.datadoghq.com/api/v1/monitor/269400713?with_restricted_roles=false&with_restriction_policy=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -85,13 +85,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":243450754,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONImport-local-1765465764","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1765465771000,"created":"2025-12-11T15:09:31.022803+00:00","modified":"2025-12-11T15:09:31.022803+00:00","deleted":null,"priority":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":64038290}}
+            {"id":269400713,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONImport-local-1774540745","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1774540747000,"created":"2026-03-26T15:59:07.663436+00:00","modified":"2026-03-26T15:59:07.663436+00:00","deleted":null,"priority":null,"restriction_policy":{"bindings":[]},"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","email":"francesco.pighi@datadoghq.com","handle":"francesco.pighi@datadoghq.com","id":21235577}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 174.112542ms
+        duration: 173.953334ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -108,7 +108,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/243450754?with_restricted_roles=false
+        url: https://api.datadoghq.com/api/v1/monitor/269400713?with_restricted_roles=false&with_restriction_policy=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -120,13 +120,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":243450754,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONImport-local-1765465764","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1765465771000,"created":"2025-12-11T15:09:31.022803+00:00","modified":"2025-12-11T15:09:31.022803+00:00","deleted":null,"priority":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Kevin Pombo","email":"kevin.pombo@datadoghq.com","handle":"kevin.pombo@datadoghq.com","id":64038290}}
+            {"id":269400713,"org_id":321813,"type":"service check","name":"tf-TestAccDatadogMonitorJSONImport-local-1774540745","message":"Change the message triggers if any host's clock goes out of sync with the time given by NTP. The offset threshold is configured in the Agent's 'ntp.yaml' file.\n\nSee [Troubleshooting NTP Offset issues](https://docs.datadoghq.com/agent/troubleshooting/ntp for more details on cause and resolution.","tags":[],"query":"\"ntp.in_sync\".by(\"*\").last(2).count_by_status()","options":{"include_tags":true,"new_host_delay":150,"notify_audit":false,"notify_no_data":false,"thresholds":{"warning":1,"ok":1,"critical":1},"silenced":{}},"multi":true,"created_at":1774540747000,"created":"2026-03-26T15:59:07.663436+00:00","modified":"2026-03-26T15:59:07.663436+00:00","deleted":null,"priority":null,"restriction_policy":{"bindings":[]},"draft_status":"published","overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Francesco Pighi","email":"francesco.pighi@datadoghq.com","handle":"francesco.pighi@datadoghq.com","id":21235577}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 185.322792ms
+        duration: 174.314375ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -143,7 +143,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/243450754
+        url: https://api.datadoghq.com/api/v1/monitor/269400713
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -155,10 +155,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":243450754}
+            {"deleted_monitor_id":269400713}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 209.792959ms
+        duration: 283.935916ms
