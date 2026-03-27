@@ -163,6 +163,36 @@ func TestAccReferenceTable_Import(t *testing.T) {
 	})
 }
 
+// TestAccReferenceTable_ImportNoDescription tests that importing a reference table with no
+// description does not cause a "Provider produced inconsistent result after apply" error.
+// This is a regression test for the bug where the API returns "" for an absent description
+// but Terraform expects null for an unset Optional attribute.
+func TestAccReferenceTable_ImportNoDescription(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogReferenceTableDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogReferenceTableS3NoDescription(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogReferenceTableExists(providers.frameworkProvider),
+					resource.TestCheckNoResourceAttr("datadog_reference_table.no_desc_table", "description"),
+				),
+			},
+			{
+				ResourceName:      "datadog_reference_table.no_desc_table",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogReferenceTableS3(uniq string) string {
 	// Sanitize: replace dashes with underscores and convert to lowercase
 	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
@@ -204,6 +234,36 @@ resource "datadog_reference_table" "s3_table" {
   }
 
   tags = ["test:terraform", "env:test"]
+}`, sanitized)
+}
+
+func testAccCheckDatadogReferenceTableS3NoDescription(uniq string) string {
+	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
+	return fmt.Sprintf(`
+resource "datadog_reference_table" "no_desc_table" {
+  table_name = "tf_test_nodesc_%s"
+  source     = "S3"
+
+  file_metadata {
+    sync_enabled = true
+
+    access_details {
+      aws_detail {
+        aws_account_id  = "924305315327"
+        aws_bucket_name = "dd-reference-tables-dev-staging"
+        file_path       = "test.csv"
+      }
+    }
+  }
+
+  schema {
+    primary_keys = ["a"]
+
+    fields {
+      name = "a"
+      type = "STRING"
+    }
+  }
 }`, sanitized)
 }
 
