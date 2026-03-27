@@ -1269,10 +1269,18 @@ func TestAccMonitor_Fwprovider_WithRestrictionPolicy(t *testing.T) {
 						"datadog_monitor.bar", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
 				),
 			},
-			{ // A monitor resource update should not clear restricted_roles when the field is not defined
+			// Refresh state to capture restricted_roles created by restriction policy
+			{
+				RefreshState: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "restricted_roles.#", "1"),
+				),
+			},
+			// A monitor resource update should not clear restricted_roles when the field is not defined
+			{
 				Config: testAccCheckDatadogMonitorWithRestrictionPolicyUpdated(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
@@ -1282,16 +1290,23 @@ func TestAccMonitor_Fwprovider_WithRestrictionPolicy(t *testing.T) {
 						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "restricted_roles.#", "1"),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
 				),
 			},
-			{ // Removing restriction policy resource should wipe out restricted_roles
+			// Removing restriction policy resource should wipe out restricted_roles
+			{
 				Config: testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "name", monitorName),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 0),
+				),
+			},
+			// Refresh state to capture restricted_roles deleted by restriction policy
+			{
+				RefreshState: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "restricted_roles.#", "0"),
 				),
 			},
 		},
