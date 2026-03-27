@@ -59,7 +59,7 @@ type destinationModel struct {
 	DatadogLogsDestination            []*datadogLogsDestinationModel                                   `tfsdk:"datadog_logs"`
 	GoogleCloudStorageDestination     []*gcsDestinationModel                                           `tfsdk:"google_cloud_storage"`
 	GooglePubSubDestination           []*googlePubSubDestinationModel                                  `tfsdk:"google_pubsub"`
-	SplunkHecDestination              []*splunkHecDestinationModel                                     `tfsdk:"splunk_hec"`
+	SplunkHecDestination              []*observability_pipeline.SplunkHECDestinationModel              `tfsdk:"splunk_hec"`
 	SumoLogicDestination              []*sumoLogicDestinationModel                                     `tfsdk:"sumo_logic"`
 	RsyslogDestination                []*rsyslogDestinationModel                                       `tfsdk:"rsyslog"`
 	SyslogNgDestination               []*syslogNgDestinationModel                                      `tfsdk:"syslog_ng"`
@@ -510,16 +510,6 @@ type generatedMetricValue struct {
 type splunkTcpSourceModel struct {
 	AddressKey types.String                      `tfsdk:"address_key"`
 	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure transmission.
-}
-
-type splunkHecDestinationModel struct {
-	AutoExtractTimestamp types.Bool                                  `tfsdk:"auto_extract_timestamp"`
-	Encoding             types.String                                `tfsdk:"encoding"`
-	EndpointUrlKey       types.String                                `tfsdk:"endpoint_url_key"`
-	TokenKey             types.String                                `tfsdk:"token_key"`
-	Sourcetype           types.String                                `tfsdk:"sourcetype"`
-	Index                types.String                                `tfsdk:"index"`
-	Buffer               []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type gcsDestinationModel struct {
@@ -2272,40 +2262,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 									},
-									"splunk_hec": schema.ListNestedBlock{
-										Description: "The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC).",
-										NestedObject: schema.NestedBlockObject{
-											Attributes: map[string]schema.Attribute{
-												"auto_extract_timestamp": schema.BoolAttribute{
-													Optional:    true,
-													Description: "If `true`, Splunk tries to extract timestamps from incoming log events.",
-												},
-												"encoding": schema.StringAttribute{
-													Required:    true,
-													Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
-												},
-												"endpoint_url_key": schema.StringAttribute{
-													Optional:    true,
-													Description: "Name of the environment variable or secret that holds the Splunk HEC endpoint URL.",
-												},
-												"token_key": schema.StringAttribute{
-													Optional:    true,
-													Description: "Name of the environment variable or secret that holds the Splunk HEC token.",
-												},
-												"sourcetype": schema.StringAttribute{
-													Optional:    true,
-													Description: "The Splunk sourcetype to assign to log events.",
-												},
-												"index": schema.StringAttribute{
-													Optional:    true,
-													Description: "Optional name of the Splunk index where logs are written.",
-												},
-											},
-											Blocks: map[string]schema.Block{
-												"buffer": observability_pipeline.BufferOptionsSchema(),
-											},
-										},
-									},
+									"splunk_hec": observability_pipeline.SplunkHECDestinationSchema(),
 									"sumo_logic": schema.ListNestedBlock{
 										Description: "The `sumo_logic` destination forwards logs to Sumo Logic.",
 										NestedObject: schema.NestedBlockObject{
@@ -2945,7 +2902,7 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 			config.Destinations = append(config.Destinations, expandHttpClientDestination(ctx, dest, d))
 		}
 		for _, d := range dest.SplunkHecDestination {
-			config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, dest, d))
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSplunkHECDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 		for _, d := range dest.GoogleCloudStorageDestination {
 			config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, dest, d))
@@ -3158,7 +3115,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSentinelOneDestination.GetInputs())
 			destBlock.SentinelOneDestination = append(destBlock.SentinelOneDestination, sentinelone)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
-		} else if hec := flattenSplunkHecDestination(ctx, d.ObservabilityPipelineSplunkHecDestination); hec != nil {
+		} else if hec := observability_pipeline.FlattenSplunkHECDestination(ctx, d.ObservabilityPipelineSplunkHecDestination); hec != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineSplunkHecDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecDestination.GetInputs())
 			destBlock.SplunkHecDestination = append(destBlock.SplunkHecDestination, hec)
@@ -5485,78 +5442,6 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
-	return out
-}
-
-func expandSplunkHecDestination(ctx context.Context, dest *destinationModel, d *splunkHecDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
-	splunk := datadogV2.NewObservabilityPipelineSplunkHecDestinationWithDefaults()
-
-	splunk.SetId(dest.Id.ValueString())
-
-	var inputs []string
-	dest.Inputs.ElementsAs(ctx, &inputs, false)
-	splunk.SetInputs(inputs)
-
-	if !d.AutoExtractTimestamp.IsNull() {
-		splunk.SetAutoExtractTimestamp(d.AutoExtractTimestamp.ValueBool())
-	}
-	if !d.Encoding.IsNull() {
-		splunk.SetEncoding(datadogV2.ObservabilityPipelineSplunkHecDestinationEncoding(d.Encoding.ValueString()))
-	}
-	if !d.Sourcetype.IsNull() {
-		splunk.SetSourcetype(d.Sourcetype.ValueString())
-	}
-	if !d.Index.IsNull() {
-		splunk.SetIndex(d.Index.ValueString())
-	}
-	if !d.EndpointUrlKey.IsNull() {
-		splunk.SetEndpointUrlKey(d.EndpointUrlKey.ValueString())
-	}
-	if !d.TokenKey.IsNull() {
-		splunk.SetTokenKey(d.TokenKey.ValueString())
-	}
-
-	if len(d.Buffer) > 0 {
-		buffer := observability_pipeline.ExpandBufferOptions(d.Buffer[0])
-		if buffer != nil {
-			splunk.SetBuffer(*buffer)
-		}
-	}
-
-	return datadogV2.ObservabilityPipelineConfigDestinationItem{
-		ObservabilityPipelineSplunkHecDestination: splunk,
-	}
-}
-
-func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineSplunkHecDestination) *splunkHecDestinationModel {
-	if src == nil {
-		return nil
-	}
-
-	autoExtractTimestamp := types.BoolNull()
-	if src.HasAutoExtractTimestamp() {
-		autoExtractTimestamp = types.BoolValue(src.GetAutoExtractTimestamp())
-	}
-
-	out := &splunkHecDestinationModel{
-		AutoExtractTimestamp: autoExtractTimestamp,
-		Encoding:             types.StringValue(string(*src.Encoding)),
-		Sourcetype:           types.StringPointerValue(src.Sourcetype),
-		Index:                types.StringPointerValue(src.Index),
-	}
-	if v, ok := src.GetEndpointUrlKeyOk(); ok {
-		out.EndpointUrlKey = types.StringValue(*v)
-	}
-	if v, ok := src.GetTokenKeyOk(); ok {
-		out.TokenKey = types.StringValue(*v)
-	}
-	if buffer, ok := src.GetBufferOk(); ok {
-		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
-		if outBuffer != nil {
-			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
-		}
-	}
-
 	return out
 }
 
