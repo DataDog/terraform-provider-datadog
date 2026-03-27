@@ -163,7 +163,6 @@ func TestAccReferenceTable_Import(t *testing.T) {
 	})
 }
 
-
 func testAccCheckDatadogReferenceTableS3(uniq string) string {
 	// Sanitize: replace dashes with underscores and convert to lowercase
 	sanitized := strings.ToLower(strings.ReplaceAll(uniq, "-", "_"))
@@ -207,7 +206,6 @@ resource "datadog_reference_table" "s3_table" {
   tags = ["test:terraform", "env:test"]
 }`, sanitized)
 }
-
 
 func testAccCheckDatadogReferenceTableSchemaInitial(uniq string) string {
 	// Sanitize: replace dashes with underscores and convert to lowercase
