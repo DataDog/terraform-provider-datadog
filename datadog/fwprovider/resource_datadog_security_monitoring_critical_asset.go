@@ -72,7 +72,7 @@ func (r *securityMonitoringCriticalAssetResource) Schema(_ context.Context, _ re
 				Required:    true,
 				Description: "The severity change applied to signals matching this critical asset.",
 				Validators: []validator.String{
-					stringvalidator.OneOf("critical", "high", "medium", "low", "info", "increase", "decrease"),
+					stringvalidator.OneOf("critical", "high", "medium", "low", "info", "increase", "decrease", "no-op"),
 				},
 			},
 			"tags": schema.ListAttribute{
