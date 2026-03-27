@@ -98,7 +98,7 @@ func (r *ipAllowListResource) Read(ctx context.Context, request resource.ReadReq
 
 	resp, httpResp, err := r.Api.GetIPAllowlist(r.Auth)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error getting team permission setting"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error getting IP allowlist"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -129,7 +129,7 @@ func (r *ipAllowListResource) Create(ctx context.Context, request resource.Creat
 	ipAllowlistReq, _ := buildIPAllowlistUpdateRequest(state)
 	resp, httpResp, err := r.Api.UpdateIPAllowlist(r.Auth, *ipAllowlistReq)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error updating IP allowlist"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error creating IP allowlist"))
 		return
 	}
 
@@ -158,7 +158,7 @@ func (r *ipAllowListResource) Update(ctx context.Context, request resource.Updat
 	}
 	resp, httpResp, err := r.Api.UpdateIPAllowlist(r.Auth, *ipAllowlistReq)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, " error updating IP allowlist"), ""))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, "error updating IP allowlist"), ""))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
