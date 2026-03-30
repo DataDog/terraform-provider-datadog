@@ -18,7 +18,12 @@ func OcsfMapperProcessorSchema() schema.ListNestedBlock {
 			listvalidator.SizeAtMost(1),
 		},
 		NestedObject: schema.NestedBlockObject{
-			Attributes: map[string]schema.Attribute{},
+			Attributes: map[string]schema.Attribute{
+				"keep_unmatched": schema.BoolAttribute{
+					Optional:    true,
+					Description: "Whether to keep an event that does not match any of the mapping filters.",
+				},
+			},
 			Blocks: map[string]schema.Block{
 				"mapping": schema.ListNestedBlock{
 					Description: "List of OCSF mapping entries. Each entry uses either a library mapping or a custom mapping.",
