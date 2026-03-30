@@ -7,7 +7,9 @@ description: |-
 
 ### Migrating from datadog_dashboard to datadog_dashboard_v2
 
-The [`datadog_dashboard_v2`](../resources/dashboard_v2.md) resource is the successor to `datadog_dashboard`. It provides the same dashboard management capabilities with a more maintainable implementation built on the Terraform Plugin Framework. Both resources can coexist in the same Terraform configuration, so you can migrate dashboards incrementally.
+~> **Beta Resource** `datadog_dashboard_v2` is currently in beta and may be subject to changes. We recommend testing in non-production environments before adopting it for critical infrastructure.
+
+The [`datadog_dashboard_v2`](../resources/dashboard_v2.md) resource is an updated version of `datadog_dashboard` that improves compliance with Datadog's dashboard API spec. Both resources can coexist in the same Terraform configuration, so you can migrate dashboards incrementally.
 
 ## What's different
 

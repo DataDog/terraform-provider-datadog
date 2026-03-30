@@ -7,7 +7,9 @@ description: |-
 
 ### Migrating from datadog_powerpack to datadog_powerpack_v2
 
-The [`datadog_powerpack_v2`](../resources/powerpack_v2.md) resource is the successor to `datadog_powerpack`. It uses the same FieldSpec-based widget engine as [`datadog_dashboard_v2`](../resources/dashboard_v2.md), giving it the same widget coverage improvements and consistent serialization behavior. Both resources can coexist in the same Terraform configuration, so you can migrate incrementally.
+~> **Beta Resource** `datadog_powerpack_v2` is currently in beta and may be subject to changes. We recommend testing in non-production environments before adopting it for critical infrastructure.
+
+The [`datadog_powerpack_v2`](../resources/powerpack_v2.md) resource is an updated version of `datadog_powerpack` that improves compliance with Datadog's powerpack API spec. It shares the same widget support as [`datadog_dashboard_v2`](../resources/dashboard_v2.md), giving it consistent widget coverage and serialization behavior. Both resources can coexist in the same Terraform configuration, so you can migrate incrementally.
 
 ## What's different
 

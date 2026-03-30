@@ -16,7 +16,7 @@ import (
 
 func resourceDatadogPowerpackV2() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog powerpack resource.",
+		Description:   "[BETA] Provides an updated version of the Datadog powerpack resource which improves compliance with Datadog's powerpack API spec. This version is currently experimental and prone to changes.",
 		CreateContext: resourceDatadogPowerpackV2Create,
 		ReadContext:   resourceDatadogPowerpackV2Read,
 		UpdateContext: resourceDatadogPowerpackV2Update,

@@ -18,7 +18,7 @@ import (
 // It shares all FieldSpec/WidgetSpec declarations via the dashboardmapping package.
 func resourceDatadogDashboardV2() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog dashboard resource (SDKv2 implementation for performance comparison).",
+		Description:   "[BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.",
 		CreateContext: resourceDatadogDashboardV2Create,
 		ReadContext:   resourceDatadogDashboardV2Read,
 		UpdateContext: resourceDatadogDashboardV2Update,
