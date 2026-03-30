@@ -3,12 +3,12 @@
 page_title: "datadog_dashboard_v2 Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog dashboard resource (SDKv2 implementation for performance comparison).
+  [BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.
 ---
 
 # datadog_dashboard_v2 (Resource)
 
-Provides a Datadog dashboard resource (SDKv2 implementation for performance comparison).
+[BETA] Provides an updated version of the Datadog dashboard resource which improves compliance with Datadog's dashboard API spec. This version is currently experimental and prone to changes.
 
 ## Example Usage
 

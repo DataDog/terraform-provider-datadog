@@ -3,12 +3,12 @@
 page_title: "datadog_powerpack_v2 Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog powerpack resource.
+  [BETA] Provides an updated version of the Datadog powerpack resource which improves compliance with Datadog's powerpack API spec. This version is currently experimental and prone to changes.
 ---
 
 # datadog_powerpack_v2 (Resource)
 
-Provides a Datadog powerpack resource.
+[BETA] Provides an updated version of the Datadog powerpack resource which improves compliance with Datadog's powerpack API spec. This version is currently experimental and prone to changes.
 
 ## Example Usage
 
