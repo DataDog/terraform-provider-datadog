@@ -3,7 +3,7 @@
 page_title: "datadog_sensitive_data_scanner_standard_pattern Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern directly by its stable standard pattern ID or by exact name.
+  Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern by its stable standard pattern ID or by name.
 ---
 
 # datadog_sensitive_data_scanner_standard_pattern (Data Source)
@@ -27,7 +27,7 @@ data "datadog_sensitive_data_scanner_standard_pattern" "aws_access_key_by_id" {
 
 ### Optional
 
-- `filter` (String) Case-insensitive substring of the Datadog standard pattern name to retrieve.
+- `filter` (String) Filter all the Datadog standard patterns by name.
 - `standard_pattern_id` (String) Stable ID of the Datadog standard pattern to retrieve. This can be set directly to avoid Terraform configs breaking when Datadog renames a standard pattern.
 
 ### Read-Only
