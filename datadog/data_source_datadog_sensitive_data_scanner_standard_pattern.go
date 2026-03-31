@@ -14,7 +14,7 @@ import (
 
 func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern. Standard pattern IDs are listed by the Datadog Sensitive Data Scanner standard patterns API and can be looked up here by either exact name or ID.",
+		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern directly by its stable standard pattern ID or by exact name.",
 		ReadContext: dataSourceDatadogSensitiveDataScannerStandardPatternRead,
 
 		SchemaFunc: func() map[string]*schema.Schema {
@@ -26,7 +26,7 @@ func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 					ExactlyOneOf: []string{"filter", "standard_pattern_id"},
 				},
 				"standard_pattern_id": {
-					Description:  "ID of the Datadog standard pattern to retrieve. Standard pattern IDs are returned by the Datadog Sensitive Data Scanner standard patterns API.",
+					Description:  "Stable ID of the Datadog standard pattern to retrieve. This can be set directly to avoid Terraform configs breaking when Datadog renames a standard pattern.",
 					Type:         schema.TypeString,
 					Optional:     true,
 					ExactlyOneOf: []string{"filter", "standard_pattern_id"},

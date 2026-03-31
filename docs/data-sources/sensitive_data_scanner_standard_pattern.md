@@ -3,12 +3,12 @@
 page_title: "datadog_sensitive_data_scanner_standard_pattern Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing sensitive data scanner standard pattern. Standard pattern IDs are listed by the Datadog Sensitive Data Scanner standard patterns API and can be looked up here by either exact name or ID.
+  Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern directly by its stable standard pattern ID or by exact name.
 ---
 
 # datadog_sensitive_data_scanner_standard_pattern (Data Source)
 
-Use this data source to retrieve information about an existing sensitive data scanner standard pattern. Standard pattern IDs are listed by the Datadog Sensitive Data Scanner standard patterns API and can be looked up here by either exact name or ID.
+Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern directly by its stable standard pattern ID or by exact name.
 
 ## Example Usage
 
@@ -18,7 +18,7 @@ data "datadog_sensitive_data_scanner_standard_pattern" "aws_access_key_by_name" 
 }
 
 data "datadog_sensitive_data_scanner_standard_pattern" "aws_access_key_by_id" {
-  standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.aws_access_key_by_name.id
+  standard_pattern_id = "OfGqX8R9TRqAcorxenl2fQ"
 }
 ```
 
@@ -28,7 +28,7 @@ data "datadog_sensitive_data_scanner_standard_pattern" "aws_access_key_by_id" {
 ### Optional
 
 - `filter` (String) Case-insensitive exact name of the Datadog standard pattern to retrieve.
-- `standard_pattern_id` (String) ID of the Datadog standard pattern to retrieve. Standard pattern IDs are returned by the Datadog Sensitive Data Scanner standard patterns API.
+- `standard_pattern_id` (String) Stable ID of the Datadog standard pattern to retrieve. This can be set directly to avoid Terraform configs breaking when Datadog renames a standard pattern.
 
 ### Read-Only
 
