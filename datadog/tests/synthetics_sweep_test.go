@@ -47,25 +47,27 @@ func doSweepSyntheticsTests(t *testing.T) {
 	api := datadogV1.NewSyntheticsApi(client)
 
 	// Collect all test IDs to delete by paginating through all tests.
+	// Use SearchTests instead of ListTests because ListTests does not return
+	// all tests in the org (e.g. paused tests or example tests are excluded).
 	var toDelete []string
-	var pageNumber int64
-	const pageSize int64 = 100
+	var start int64
+	const count int64 = 100
 	var totalSeen int
 
 	for {
-		opts := datadogV1.NewListTestsOptionalParameters().
-			WithPageSize(pageSize).
-			WithPageNumber(pageNumber)
+		opts := datadogV1.NewSearchTestsOptionalParameters().
+			WithCount(count).
+			WithStart(start)
 
-		resp, _, err := api.ListTests(ctx, *opts)
+		resp, _, err := api.SearchTests(ctx, *opts)
 		if err != nil {
-			t.Logf("Synthetics sweep: failed to list tests (page %d): %v", pageNumber, err)
+			t.Logf("Synthetics sweep: failed to search tests (start %d): %v", start, err)
 			return
 		}
 
 		tests := resp.GetTests()
 		totalSeen += len(tests)
-		t.Logf("Synthetics sweep: page %d returned %d tests", pageNumber, len(tests))
+		t.Logf("Synthetics sweep: page at offset %d returned %d tests", start, len(tests))
 
 		for _, test := range tests {
 			name := test.GetName()
@@ -78,10 +80,10 @@ func doSweepSyntheticsTests(t *testing.T) {
 			}
 		}
 
-		if int64(len(tests)) < pageSize {
+		if int64(len(tests)) < count {
 			break
 		}
-		pageNumber++
+		start += count
 	}
 
 	t.Logf("Synthetics sweep: found %d total tests, %d to delete", totalSeen, len(toDelete))
@@ -179,8 +181,11 @@ func doSweepSyntheticsGlobalVariables(t *testing.T) {
 // isSyntheticsTestResource returns true if the name looks like it was created by tests.
 // Test names from uniqueEntityName() start with "tf-", global variable names
 // from getUniqueVariableName() start with "TF_", and Datadog example tests
-// start with "Example-".
+// start with "Example-". Go SDK integration tests use "Test-Go-".
 func isSyntheticsTestResource(name string) bool {
 	lower := strings.ToLower(name)
-	return strings.HasPrefix(lower, "tf-") || strings.HasPrefix(lower, "tf_") || strings.HasPrefix(lower, "example-")
+	return strings.HasPrefix(lower, "tf-") ||
+		strings.HasPrefix(lower, "tf_") ||
+		strings.HasPrefix(lower, "example-") ||
+		strings.HasPrefix(lower, "test-go-")
 }
