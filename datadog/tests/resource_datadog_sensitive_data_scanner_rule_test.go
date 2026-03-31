@@ -71,6 +71,8 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.character_count", "20"),
 					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.ends_with", "@datadoghq.com"),
+					resource.TestCheckResourceAttr(
 						resource_name, "priority", "1"),
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name, nil),
 				),
@@ -101,6 +103,12 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.character_count", "20"),
+					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.starts_with", "arthur"),
+					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.ends_with", "@datadoghq.com"),
+					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.exact_match", "admin@datadoghq.com"),
 					resource.TestCheckResourceAttr(
 						resource_name, "priority", "1"),
 				),
@@ -261,6 +269,9 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		keywords = ["credit card", "cc"]
 		character_count = 20
 	}
+	suppressions {
+		ends_with = ["@datadoghq.com"]
+	}
 	priority = 1
 }
 `, name)
@@ -306,6 +317,11 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	included_keyword_configuration {
 		keywords = ["credit card", "cc"]
 		character_count = 20
+	}
+	suppressions {
+		starts_with = ["arthur"]
+		ends_with = ["@datadoghq.com"]
+		exact_match = ["admin@datadoghq.com"]
 	}
 	priority = 1
 }

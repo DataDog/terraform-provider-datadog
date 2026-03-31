@@ -147,6 +147,31 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Description:  "Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).",
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
+				"suppressions": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "Object defining a set of suppressions to skip matches based on a set of rules. The available suppression types are `starts_with`, `ends_with`, and `exact_match`.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"starts_with": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Any match that starts with a value in this list will be suppressed.",
+							},
+							"ends_with": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Any match that ends with a value in this list will be suppressed.",
+							},
+							"exact_match": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Any match that appears in this list will be suppressed.",
+							},
+						},
+					},
+				},
 			}
 		},
 	}
