@@ -49,7 +49,7 @@ func TestAccDatadogStandardPatternDatasourceErrorMultiple(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceStandardPatternConfig("aws"),
-				ExpectError: regexp.MustCompile("Couldn't find the standard pattern with name aws"),
+				ExpectError: regexp.MustCompile("Your query returned more than one result, please try a more specific search criteria"),
 			},
 		},
 	})
@@ -83,40 +83,17 @@ func TestAccDatadogStandardPatternDatasourceIDFilter(t *testing.T) {
 
 	_, accProviders := testAccProviders(context.Background(), t)
 
-	datasourceName := "data.datadog_sensitive_data_scanner_standard_pattern.by_id"
+	datasourceName := "data.datadog_sensitive_data_scanner_standard_pattern.sample_sp"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceStandardPatternConfigByIDReference("AWS Access Key ID Scanner"),
+				Config: testAccDatasourceStandardPatternConfigByID("OfGqX8R9TRqAcorxenl2fQ"),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(datasourceName, "name", "AWS Access Key ID Scanner"),
-				),
-			},
-		},
-	})
-}
-
-func TestAccDatadogStandardPatternDatasourceExactNameFilter(t *testing.T) {
-	t.Parallel()
-	if isRecording() || isReplaying() {
-		t.Skip("This test doesn't support recording or replaying")
-	}
-
-	_, accProviders := testAccProviders(context.Background(), t)
-	datasourceName := "data.datadog_sensitive_data_scanner_standard_pattern.sample_sp"
-	fullName := "US Tax Identification Number Scanner"
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: testAccDatasourceStandardPatternConfig(fullName),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr(datasourceName, "name", fullName),
+					resource.TestCheckResourceAttr(datasourceName, "id", "OfGqX8R9TRqAcorxenl2fQ"),
 				),
 			},
 		},
@@ -135,15 +112,4 @@ func testAccDatasourceStandardPatternConfigByID(id string) string {
 data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
   standard_pattern_id = "%s"
 }`, id)
-}
-
-func testAccDatasourceStandardPatternConfigByIDReference(name string) string {
-	return fmt.Sprintf(`
-data "datadog_sensitive_data_scanner_standard_pattern" "by_name" {
-  filter = "%s"
-}
-
-data "datadog_sensitive_data_scanner_standard_pattern" "by_id" {
-  standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.by_name.id
-}`, name)
 }

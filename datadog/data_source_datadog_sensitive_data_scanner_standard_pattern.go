@@ -20,7 +20,7 @@ func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"filter": {
-					Description:  "Case-insensitive exact name of the Datadog standard pattern to retrieve.",
+					Description:  "Case-insensitive substring of the Datadog standard pattern name to retrieve.",
 					Type:         schema.TypeString,
 					Optional:     true,
 					ExactlyOneOf: []string{"filter", "standard_pattern_id"},
@@ -92,7 +92,7 @@ func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Contex
 			if resource.Attributes == nil || resource.Attributes.Name == nil {
 				continue
 			}
-			if strings.EqualFold(resource.Attributes.GetName(), searchedName) {
+			if strings.Contains(strings.ToLower(resource.Attributes.GetName()), strings.ToLower(searchedName)) {
 				foundStandardPatterns = append(foundStandardPatterns, resource)
 			}
 		}

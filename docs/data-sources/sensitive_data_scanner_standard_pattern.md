@@ -27,7 +27,7 @@ data "datadog_sensitive_data_scanner_standard_pattern" "aws_access_key_by_id" {
 
 ### Optional
 
-- `filter` (String) Case-insensitive exact name of the Datadog standard pattern to retrieve.
+- `filter` (String) Case-insensitive substring of the Datadog standard pattern name to retrieve.
 - `standard_pattern_id` (String) Stable ID of the Datadog standard pattern to retrieve. This can be set directly to avoid Terraform configs breaking when Datadog renames a standard pattern.
 
 ### Read-Only
