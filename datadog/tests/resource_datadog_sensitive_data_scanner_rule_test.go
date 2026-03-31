@@ -71,7 +71,7 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.character_count", "20"),
 					resource.TestCheckResourceAttr(
-						resource_name, "suppressions.0.ends_with", "@datadoghq.com"),
+						resource_name, "suppressions.0.ends_with.0", "@datadoghq.com"),
 					resource.TestCheckResourceAttr(
 						resource_name, "priority", "1"),
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name, nil),
@@ -104,11 +104,11 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.character_count", "20"),
 					resource.TestCheckResourceAttr(
-						resource_name, "suppressions.0.starts_with", "arthur"),
+						resource_name, "suppressions.0.starts_with.0", "arthur"),
 					resource.TestCheckResourceAttr(
-						resource_name, "suppressions.0.ends_with", "@datadoghq.com"),
+						resource_name, "suppressions.0.ends_with.0", "@datadoghq.com"),
 					resource.TestCheckResourceAttr(
-						resource_name, "suppressions.0.exact_match", "admin@datadoghq.com"),
+						resource_name, "suppressions.0.exact_match.0", "admin@datadoghq.com"),
 					resource.TestCheckResourceAttr(
 						resource_name, "priority", "1"),
 				),

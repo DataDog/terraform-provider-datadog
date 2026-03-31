@@ -155,18 +155,21 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"starts_with": {
-								Type:        schema.TypeString,
+								Type:        schema.TypeList,
 								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
 								Description: "Any match that starts with a value in this list will be suppressed.",
 							},
 							"ends_with": {
-								Type:        schema.TypeString,
+								Type:        schema.TypeList,
 								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
 								Description: "Any match that ends with a value in this list will be suppressed.",
 							},
 							"exact_match": {
-								Type:        schema.TypeString,
+								Type:        schema.TypeList,
 								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
 								Description: "Any match that appears in this list will be suppressed.",
 							},
 						},
@@ -394,7 +397,40 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		attributes.SetPriority(int64(priority.(int)))
 	}
 
+	if suppressionsRaw, ok := d.GetOk("suppressions"); ok {
+		suppressionsList := suppressionsRaw.([]interface{})
+		if len(suppressionsList) > 0 && suppressionsList[0] != nil {
+			suppressionsMap := suppressionsList[0].(map[string]interface{})
+			suppressions := datadogV2.NewSensitiveDataScannerSuppressions()
+
+			if startsWith, ok := suppressionsMap["starts_with"].([]interface{}); ok && len(startsWith) > 0 {
+				suppressions.SetStartsWith(buildSensitiveDataScannerStringList(startsWith))
+			}
+			if endsWith, ok := suppressionsMap["ends_with"].([]interface{}); ok && len(endsWith) > 0 {
+				suppressions.SetEndsWith(buildSensitiveDataScannerStringList(endsWith))
+			}
+			if exactMatch, ok := suppressionsMap["exact_match"].([]interface{}); ok && len(exactMatch) > 0 {
+				suppressions.SetExactMatch(buildSensitiveDataScannerStringList(exactMatch))
+			}
+
+			if suppressions.HasStartsWith() || suppressions.HasEndsWith() || suppressions.HasExactMatch() {
+				attributes.SetSuppressions(*suppressions)
+			}
+		}
+	}
+
 	return attributes
+}
+
+func buildSensitiveDataScannerStringList(items []interface{}) []string {
+	values := make([]string, 0, len(items))
+	for _, item := range items {
+		if item == nil {
+			continue
+		}
+		values = append(values, item.(string))
+	}
+	return values
 }
 
 func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -520,6 +556,26 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 
 	if err := d.Set("priority", ruleAttributes.GetPriority()); err != nil {
 		return diag.FromErr(err)
+	}
+
+	if suppressions, ok := ruleAttributes.GetSuppressionsOk(); ok && suppressions != nil {
+		suppressionsState := make(map[string]interface{})
+		suppressionsList := make([]map[string]interface{}, 0, 1)
+
+		if startsWith, ok := suppressions.GetStartsWithOk(); ok {
+			suppressionsState["starts_with"] = *startsWith
+		}
+		if endsWith, ok := suppressions.GetEndsWithOk(); ok {
+			suppressionsState["ends_with"] = *endsWith
+		}
+		if exactMatch, ok := suppressions.GetExactMatchOk(); ok {
+			suppressionsState["exact_match"] = *exactMatch
+		}
+
+		suppressionsList = append(suppressionsList, suppressionsState)
+		if err := d.Set("suppressions", suppressionsList); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	return nil
