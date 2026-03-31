@@ -50,6 +50,7 @@ func doSweepSyntheticsTests(t *testing.T) {
 	var toDelete []string
 	var pageNumber int64
 	const pageSize int64 = 100
+	var totalSeen int
 
 	for {
 		opts := datadogV1.NewListTestsOptionalParameters().
@@ -63,12 +64,17 @@ func doSweepSyntheticsTests(t *testing.T) {
 		}
 
 		tests := resp.GetTests()
+		totalSeen += len(tests)
+		t.Logf("Synthetics sweep: page %d returned %d tests", pageNumber, len(tests))
+
 		for _, test := range tests {
 			name := test.GetName()
 			id := test.GetPublicId()
 			if isSyntheticsTestResource(name) {
 				t.Logf("Synthetics sweep: will delete test %q (id=%s)", name, id)
 				toDelete = append(toDelete, id)
+			} else {
+				t.Logf("Synthetics sweep: skipping test %q (id=%s)", name, id)
 			}
 		}
 
@@ -77,6 +83,8 @@ func doSweepSyntheticsTests(t *testing.T) {
 		}
 		pageNumber++
 	}
+
+	t.Logf("Synthetics sweep: found %d total tests, %d to delete", totalSeen, len(toDelete))
 
 	if len(toDelete) == 0 {
 		t.Log("Synthetics sweep: no stale tests found")
