@@ -5,7 +5,7 @@ data "datadog_permissions" "dd_perms" {}
 # This key inherits all permissions of the service account that owns the key
 resource "datadog_service_account_application_key" "unrestricted_key" {
   service_account_id = "00000000-0000-1234-0000-000000000000"
-  name               = "Application key for managing dashboards"
+  name               = "Unrestricted Service Account Key"
   # scopes unset - inherits all service account permissions
 }
 

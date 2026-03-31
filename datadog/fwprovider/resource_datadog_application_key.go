@@ -32,9 +32,8 @@ type applicationKeyResourceModel struct {
 }
 
 type applicationKeyResource struct {
-	Api       *datadogV2.KeyManagementApi
-	ActionApi *datadogV2.ActionConnectionApi
-	Auth      context.Context
+	Api  *datadogV2.KeyManagementApi
+	Auth context.Context
 }
 
 func (r *applicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
