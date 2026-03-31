@@ -14,13 +14,13 @@ import (
 
 func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern directly by its stable standard pattern ID or by exact name.",
+		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern by its stable standard pattern ID or by name.",
 		ReadContext: dataSourceDatadogSensitiveDataScannerStandardPatternRead,
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"filter": {
-					Description:  "Case-insensitive substring of the Datadog standard pattern name to retrieve.",
+					Description:  "Filter all the Datadog standard patterns by name.",
 					Type:         schema.TypeString,
 					Optional:     true,
 					ExactlyOneOf: []string{"filter", "standard_pattern_id"},
@@ -102,7 +102,7 @@ func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Contex
 		return diag.Errorf("Couldn't find the standard pattern with %s", matchDescription)
 	}
 	if len(foundStandardPatterns) > 1 {
-		return diag.Errorf("Found more than one standard pattern with %s", matchDescription)
+		return diag.Errorf("Your query returned more than one result, please try a more specific search criteria")
 	}
 	d.SetId(foundStandardPatterns[0].GetId())
 
