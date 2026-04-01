@@ -66,6 +66,8 @@ resource "datadog_synthetics_global_variable" "automated_rotation" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `description` (String) Description of the global variable. Defaults to `""`.
 - `is_fido` (Boolean) If set to true, the global variable is a FIDO variable. Defaults to `false`.
 - `is_totp` (Boolean) If set to true, the global variable is a TOTP variable. Defaults to `false`.
@@ -76,7 +78,7 @@ resource "datadog_synthetics_global_variable" "automated_rotation" {
 - `secure` (Boolean) If set to true, the value of the global variable is hidden. This setting is automatically set to `true` if `is_totp` or `is_fido` is set to `true`. Defaults to `false`.
 - `tags` (List of String) A list of tags to associate with your synthetics global variable.
 - `value` (String, Sensitive) The value of the global variable. Required unless `is_fido` is set to `true` or `value_wo` is used
-- `value_wo` (String, Sensitive) Write-only value of the global variable. Must be used with `value_wo_version`.
+- `value_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only value of the global variable. Must be used with `value_wo_version`.
 - `value_wo_version` (String) Version associated with the write-only value. Changing this triggers an update. Can be any string (e.g., '1', 'v2.1', '2024-Q1'). String length must be at least 1.
 
 ### Read-Only
