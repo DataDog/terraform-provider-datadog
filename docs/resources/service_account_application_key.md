@@ -52,7 +52,7 @@ resource "datadog_service_account_application_key" "actions_enabled" {
 
 ### Optional
 
-- `enable_actions_api_access` (Boolean) (Preview) Enable Actions API access for this service account application key. When true, the key will be automatically registered for use with Action Connection, App Builder, and Workflow Automation.
+- `enable_actions_api_access` (Boolean) (Preview) Enable Actions API access for this service account application key. When set to `true`, the key is automatically registered for use with Action Connection, App Builder, and Workflow Automation.
 - `scopes` (Set of String) Authorization scopes for the Application Key. Application Keys configured with no scopes have full access.
 
 ### Read-Only
