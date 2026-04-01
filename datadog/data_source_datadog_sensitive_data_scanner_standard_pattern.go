@@ -89,10 +89,7 @@ func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Contex
 		searchedName := d.Get("filter").(string)
 		matchDescription = fmt.Sprintf("name %s", searchedName)
 		for _, resource := range resp.GetData() {
-			if resource.Attributes == nil || resource.Attributes.Name == nil {
-				continue
-			}
-			if strings.Contains(strings.ToLower(resource.Attributes.GetName()), strings.ToLower(searchedName)) {
+			if strings.Contains(strings.ToLower(*resource.Attributes.Name), strings.ToLower(searchedName)) {
 				foundStandardPatterns = append(foundStandardPatterns, resource)
 			}
 		}
