@@ -1,3 +1,27 @@
+## 4.4.0 (April 1, 2026)
+
+### BUGFIXES
+* [datadog_synthetics_test] increase upper bound and set content encoding for base64 encoded file upload by @hongkai in https://github.com/DataDog/terraform-provider-datadog/pull/3620
+* [datadog_security_monitoring_default_rule] Fix phantom diffs on query/case blocks when omitted from config by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3612
+* [resource_datadog_dashboard] Fix dashboard tab tests broken by API client upgrade by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3632
+### IMPROVEMENTS
+* [datadog_synthetics_test] Only display warning for invalid field is the valid field is missing by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3619
+* [datadog_security_monitoring_rule] Emit deprecation warning for app_sec_spans datasource by @TanguyLichau in https://github.com/DataDog/terraform-provider-datadog/pull/3427
+* [datadog_synthetics_test] Ignore deprecated http_version in test_request by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/3600
+### FEATURES
+* [resource_datadog_dashboard] Add dashboard tab support with @N reverse-mapping by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3522
+* [datadog_service_level_objective] Add bad_events_formula support for count SLOs by @mfu00 in https://github.com/DataDog/terraform-provider-datadog/pull/3550
+* [datadog_observability_pipeline] add keep unmatched field to ocsf processor by @dd-sebastien-lb in https://github.com/DataDog/terraform-provider-datadog/pull/3624
+
+## New Contributors
+* @hongkai made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3620
+* @lisaqvu made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3599
+* @dd-sebastien-lb made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3624
+* @TanguyLichau made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3427
+* @Comonut made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3647
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.3.0...v4.4.0
+
 ## 4.3.0 (March 18, 2026)
 
 ### BUGFIXES
