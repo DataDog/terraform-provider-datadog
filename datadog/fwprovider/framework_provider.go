@@ -787,6 +787,7 @@ func NewFrameworkResourceWrapper(i *resource.Resource) resource.Resource {
 
 type FrameworkResourceWrapper struct {
 	innerResource *resource.Resource
+	typeName      string
 }
 
 func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -795,10 +796,17 @@ func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.C
 		if req.ProviderData == nil {
 			return
 		}
-		_, ok := req.ProviderData.(*FrameworkProvider)
+		fp, ok := req.ProviderData.(*FrameworkProvider)
 		if !ok {
 			resp.Diagnostics.AddError("Unexpected Resource Configure Type", "")
 			return
+		}
+
+		// Annotate the auth context with the resource type name.
+		if r.typeName != "" {
+			annotatedFP := *fp
+			annotatedFP.Auth = utils.WithTerraformResource(fp.Auth, r.typeName)
+			req.ProviderData = &annotatedFP
 		}
 
 		rCasted.Configure(ctx, req, resp)
@@ -808,6 +816,7 @@ func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.C
 func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	(*r.innerResource).Metadata(ctx, req, resp)
 	resp.TypeName = req.ProviderTypeName + resp.TypeName
+	r.typeName = resp.TypeName
 }
 
 func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {

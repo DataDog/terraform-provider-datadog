@@ -20,8 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-const dashboardResourceName = "datadog_dashboard"
-
 func resourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.\n\n!> The `is_read_only` field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
@@ -182,7 +180,7 @@ func resourceDatadogDashboard() *schema.Resource {
 func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	dashboardPayload, err := buildDatadogDashboard(d)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
@@ -226,7 +224,7 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	id := d.Id()
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
@@ -402,7 +400,7 @@ func checkForUnparsedDashboard(dashboard datadogV1.Dashboard) error {
 func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	id := d.Id()
 	dashboard, httpresp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, id)
 	if err != nil {
@@ -421,7 +419,7 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	id := d.Id()
 	if _, httpresp, err := apiInstances.GetDashboardsApiV1().DeleteDashboard(auth, id); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard")

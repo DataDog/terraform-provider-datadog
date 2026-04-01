@@ -276,6 +276,11 @@ func Provider() *schema.Provider {
 		ConfigureContextFunc: providerConfigure,
 	}
 
+	// Annotate each SDKv2 resource's auth context with its type name.
+	for name, r := range utils.DatadogProvider.ResourcesMap {
+		annotateSDKv2ResourceCRUD(r, name)
+	}
+
 	if utils.UseMonitorFrameworkProvider() {
 		delete(utils.DatadogProvider.ResourcesMap, "datadog_monitor")
 	}
@@ -292,6 +297,39 @@ type ProviderConfiguration struct {
 	DefaultTags         map[string]interface{}
 
 	Now func() time.Time
+}
+
+// annotateSDKv2ResourceCRUD wraps the CRUD functions of an SDKv2 resource to
+// add the resource type name to the auth context.
+func annotateSDKv2ResourceCRUD(r *schema.Resource, name string) {
+	if orig := r.CreateContext; orig != nil {
+		r.CreateContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+	if orig := r.ReadContext; orig != nil {
+		r.ReadContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+	if orig := r.UpdateContext; orig != nil {
+		r.UpdateContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+	if orig := r.DeleteContext; orig != nil {
+		r.DeleteContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+}
+
+// withResourceName returns a shallow copy of the ProviderConfiguration with
+// the auth context annotated with the given resource name.
+func withResourceName(meta interface{}, name string) interface{} {
+	pc := *meta.(*ProviderConfiguration)
+	pc.Auth = utils.WithTerraformResource(pc.Auth, name)
+	return &pc
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
