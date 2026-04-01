@@ -444,6 +444,11 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	id := d.Id()
 
 	attributes := buildSensitiveDataScannerRuleAttributes(d)
+	if !attributes.HasSuppressions() {
+		// The SDS API preserves existing suppressions when the field is omitted on update,
+		// so we must send an explicit empty object to clear previously configured values.
+		attributes.SetSuppressions(*datadogV2.NewSensitiveDataScannerSuppressions())
+	}
 
 	req := datadogV2.NewSensitiveDataScannerRuleUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewSensitiveDataScannerRuleUpdateWithDefaults()
