@@ -592,7 +592,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"],"starts_with":["arthur"]},"tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
