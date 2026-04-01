@@ -562,20 +562,26 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		suppressionsState := make(map[string]interface{})
 		suppressionsList := make([]map[string]interface{}, 0, 1)
 
-		if startsWith, ok := suppressions.GetStartsWithOk(); ok {
+		if startsWith, ok := suppressions.GetStartsWithOk(); ok && len(*startsWith) > 0 {
 			suppressionsState["starts_with"] = *startsWith
 		}
-		if endsWith, ok := suppressions.GetEndsWithOk(); ok {
+		if endsWith, ok := suppressions.GetEndsWithOk(); ok && len(*endsWith) > 0 {
 			suppressionsState["ends_with"] = *endsWith
 		}
-		if exactMatch, ok := suppressions.GetExactMatchOk(); ok {
+		if exactMatch, ok := suppressions.GetExactMatchOk(); ok && len(*exactMatch) > 0 {
 			suppressionsState["exact_match"] = *exactMatch
 		}
 
-		suppressionsList = append(suppressionsList, suppressionsState)
-		if err := d.Set("suppressions", suppressionsList); err != nil {
+		if len(suppressionsState) > 0 {
+			suppressionsList = append(suppressionsList, suppressionsState)
+			if err := d.Set("suppressions", suppressionsList); err != nil {
+				return diag.FromErr(err)
+			}
+		} else if err := d.Set("suppressions", nil); err != nil {
 			return diag.FromErr(err)
 		}
+	} else if err := d.Set("suppressions", nil); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return nil
