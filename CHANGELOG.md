@@ -3,7 +3,7 @@
 ### BUGFIXES
 * [datadog_synthetics_test] increase upper bound and set content encoding for base64 encoded file upload by @hongkai in https://github.com/DataDog/terraform-provider-datadog/pull/3620
 * [datadog_security_monitoring_default_rule] Fix phantom diffs on query/case blocks when omitted from config by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3612
-* [resource_datadog_dashboard] Fix dashboard tab tests broken by API client upgrade by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3632
+* [datadog_dashboard] Fix dashboard tab tests broken by API client upgrade by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/3632
 ### IMPROVEMENTS
 * [datadog_synthetics_test] Only display warning for invalid field is the valid field is missing by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/3619
 * [datadog_security_monitoring_rule] Emit deprecation warning for app_sec_spans datasource by @TanguyLichau in https://github.com/DataDog/terraform-provider-datadog/pull/3427
