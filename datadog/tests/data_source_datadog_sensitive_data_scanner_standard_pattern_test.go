@@ -100,6 +100,26 @@ func TestAccDatadogStandardPatternDatasourceIDFilter(t *testing.T) {
 	})
 }
 
+func TestAccDatadogStandardPatternDatasourceIDFilterErrorNotFound(t *testing.T) {
+	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccDatasourceStandardPatternConfigByID("nonexistent-standard-pattern-id"),
+				ExpectError: regexp.MustCompile("Couldn't find the standard pattern with id nonexistent-standard-pattern-id"),
+			},
+		},
+	})
+}
+
 func testAccDatasourceStandardPatternConfig(name string) string {
 	return fmt.Sprintf(`
 data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
