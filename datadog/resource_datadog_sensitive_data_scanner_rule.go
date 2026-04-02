@@ -397,8 +397,8 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		attributes.SetPriority(int64(priority.(int)))
 	}
 
-	if suppressionsRaw, ok := d.GetOk("suppressions"); ok {
-		suppressionsList := suppressionsRaw.([]interface{})
+	if isSensitiveDataScannerRuleBlockConfigured(d, "suppressions") {
+		suppressionsList := d.Get("suppressions").([]interface{})
 		if len(suppressionsList) > 0 && suppressionsList[0] != nil {
 			suppressionsMap := suppressionsList[0].(map[string]interface{})
 			suppressions := datadogV2.NewSensitiveDataScannerSuppressions()
