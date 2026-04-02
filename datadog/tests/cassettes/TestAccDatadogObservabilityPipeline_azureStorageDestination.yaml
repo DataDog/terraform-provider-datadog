@@ -31,13 +31,13 @@ interactions:
         content_length: 406
         uncompressed: false
         body: |
-            {"data":{"id":"c60c7528-26a8-11f1-bb17-da7ad0900002","type":"pipelines","attributes":{"name":"azure-storage-dest-pipeline","config":{"destinations":[{"blob_prefix":"logs/","container_name":"logs-container","id":"azure-storage-destination-1","inputs":["source-1"],"type":"azure_storage"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"db7d0c7e-2ea0-11f1-9c21-da7ad0900002","type":"pipelines","attributes":{"name":"azure-storage-dest-pipeline","config":{"destinations":[{"blob_prefix":"logs/","container_name":"logs-container","id":"azure-storage-destination-1","inputs":["source-1"],"type":"azure_storage"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 691.035167ms
+        duration: 465.526125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c60c7528-26a8-11f1-bb17-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/db7d0c7e-2ea0-11f1-9c21-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 406
         uncompressed: false
         body: |
-            {"data":{"id":"c60c7528-26a8-11f1-bb17-da7ad0900002","type":"pipelines","attributes":{"name":"azure-storage-dest-pipeline","config":{"destinations":[{"blob_prefix":"logs/","container_name":"logs-container","id":"azure-storage-destination-1","inputs":["source-1"],"type":"azure_storage"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"db7d0c7e-2ea0-11f1-9c21-da7ad0900002","type":"pipelines","attributes":{"name":"azure-storage-dest-pipeline","config":{"destinations":[{"blob_prefix":"logs/","container_name":"logs-container","id":"azure-storage-destination-1","inputs":["source-1"],"type":"azure_storage"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 246.339209ms
+        duration: 376.837208ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c60c7528-26a8-11f1-bb17-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/db7d0c7e-2ea0-11f1-9c21-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 504.318833ms
+        duration: 379.738958ms

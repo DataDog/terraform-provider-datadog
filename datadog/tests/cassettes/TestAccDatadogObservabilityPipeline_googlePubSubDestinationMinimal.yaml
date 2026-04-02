@@ -31,13 +31,13 @@ interactions:
         content_length: 417
         uncompressed: false
         body: |
-            {"data":{"id":"41cecb8e-26a9-11f1-bb75-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub-destination-minimal-pipeline","config":{"destinations":[{"encoding":"json","id":"pubsub-destination-1","inputs":["source-1"],"project":"my-gcp-project","topic":"logs-topic","type":"google_pubsub"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"575f9208-2ea1-11f1-b856-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub-destination-minimal-pipeline","config":{"destinations":[{"encoding":"json","id":"pubsub-destination-1","inputs":["source-1"],"project":"my-gcp-project","topic":"logs-topic","type":"google_pubsub"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 460.908ms
+        duration: 702.012084ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/41cecb8e-26a9-11f1-bb75-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/575f9208-2ea1-11f1-b856-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 417
         uncompressed: false
         body: |
-            {"data":{"id":"41cecb8e-26a9-11f1-bb75-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub-destination-minimal-pipeline","config":{"destinations":[{"encoding":"json","id":"pubsub-destination-1","inputs":["source-1"],"project":"my-gcp-project","topic":"logs-topic","type":"google_pubsub"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"575f9208-2ea1-11f1-b856-da7ad0900002","type":"pipelines","attributes":{"name":"pubsub-destination-minimal-pipeline","config":{"destinations":[{"encoding":"json","id":"pubsub-destination-1","inputs":["source-1"],"project":"my-gcp-project","topic":"logs-topic","type":"google_pubsub"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 258.854792ms
+        duration: 379.168542ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/41cecb8e-26a9-11f1-bb75-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/575f9208-2ea1-11f1-b856-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 526.505208ms
+        duration: 508.008875ms

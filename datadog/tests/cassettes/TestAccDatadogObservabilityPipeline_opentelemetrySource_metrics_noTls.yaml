@@ -31,13 +31,13 @@ interactions:
         content_length: 379
         uncompressed: false
         body: |
-            {"data":{"id":"1ad1a3c6-26a9-11f1-bb55-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-metrics-pipeline-no-tls","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-2"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-2","type":"opentelemetry"}]}}}}
+            {"data":{"id":"307cb3aa-2ea1-11f1-b834-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-metrics-pipeline-no-tls","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-2"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-2","type":"opentelemetry"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 450.196333ms
+        duration: 545.738375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1ad1a3c6-26a9-11f1-bb55-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/307cb3aa-2ea1-11f1-b834-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 379
         uncompressed: false
         body: |
-            {"data":{"id":"1ad1a3c6-26a9-11f1-bb55-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-metrics-pipeline-no-tls","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-2"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-2","type":"opentelemetry"}]}}}}
+            {"data":{"id":"307cb3aa-2ea1-11f1-b834-da7ad0900002","type":"pipelines","attributes":{"name":"opentelemetry-metrics-pipeline-no-tls","config":{"destinations":[{"id":"destination-1","inputs":["opentelemetry-source-2"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[],"processors":[],"sources":[{"id":"opentelemetry-source-2","type":"opentelemetry"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 266.90075ms
+        duration: 286.835583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1ad1a3c6-26a9-11f1-bb55-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/307cb3aa-2ea1-11f1-b834-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 451.200208ms
+        duration: 479.747208ms

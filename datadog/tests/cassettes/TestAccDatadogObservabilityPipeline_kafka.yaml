@@ -31,13 +31,13 @@ interactions:
         content_length: 456
         uncompressed: false
         body: |
-            {"data":{"id":"8e6757b4-26a8-11f1-aac9-da7ad0900002","type":"pipelines","attributes":{"name":"kafka pipeline","config":{"destinations":[{"id":"destination-1","inputs":["kafka-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"group_id":"consumer-group-1","id":"kafka-source-1","sasl":{"mechanism":"PLAIN"},"tls":{"crt_file":"/path/to/kafka.crt"},"topics":["topic-a","topic-b"],"type":"kafka"}]}}}}
+            {"data":{"id":"63acca9a-2ea0-11f1-b7c8-da7ad0900002","type":"pipelines","attributes":{"name":"kafka pipeline","config":{"destinations":[{"id":"destination-1","inputs":["kafka-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"group_id":"consumer-group-1","id":"kafka-source-1","sasl":{"mechanism":"PLAIN"},"tls":{"crt_file":"/path/to/kafka.crt"},"topics":["topic-a","topic-b"],"type":"kafka"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 516.940708ms
+        duration: 371.79225ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/8e6757b4-26a8-11f1-aac9-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/63acca9a-2ea0-11f1-b7c8-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 456
         uncompressed: false
         body: |
-            {"data":{"id":"8e6757b4-26a8-11f1-aac9-da7ad0900002","type":"pipelines","attributes":{"name":"kafka pipeline","config":{"destinations":[{"id":"destination-1","inputs":["kafka-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"group_id":"consumer-group-1","id":"kafka-source-1","sasl":{"mechanism":"PLAIN"},"tls":{"crt_file":"/path/to/kafka.crt"},"topics":["topic-a","topic-b"],"type":"kafka"}]}}}}
+            {"data":{"id":"63acca9a-2ea0-11f1-b7c8-da7ad0900002","type":"pipelines","attributes":{"name":"kafka pipeline","config":{"destinations":[{"id":"destination-1","inputs":["kafka-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"group_id":"consumer-group-1","id":"kafka-source-1","sasl":{"mechanism":"PLAIN"},"tls":{"crt_file":"/path/to/kafka.crt"},"topics":["topic-a","topic-b"],"type":"kafka"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 324.33875ms
+        duration: 377.417083ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/8e6757b4-26a8-11f1-aac9-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/63acca9a-2ea0-11f1-b7c8-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 606.360709ms
+        duration: 613.849917ms

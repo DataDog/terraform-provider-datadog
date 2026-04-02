@@ -31,13 +31,13 @@ interactions:
         content_length: 371
         uncompressed: false
         body: |
-            {"data":{"id":"0889d5f8-26a9-11f1-bb47-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"1cd12a2a-2ea1-11f1-b826-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 601.050333ms
+        duration: 445.661792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/0889d5f8-26a9-11f1-bb47-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1cd12a2a-2ea1-11f1-b826-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 371
         uncompressed: false
         body: |
-            {"data":{"id":"0889d5f8-26a9-11f1-bb47-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"1cd12a2a-2ea1-11f1-b826-da7ad0900002","type":"pipelines","attributes":{"name":"amazon opensearch (basic auth)","config":{"destinations":[{"auth":{"strategy":"basic"},"id":"destination-1","inputs":["source-1"],"type":"amazon_opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 265.578333ms
+        duration: 303.353084ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/0889d5f8-26a9-11f1-bb47-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1cd12a2a-2ea1-11f1-b826-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 465.970875ms
+        duration: 549.462125ms
