@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -420,6 +421,11 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 	}
 
 	return attributes
+}
+
+func isSensitiveDataScannerRuleBlockConfigured(d *schema.ResourceData, attr string) bool {
+	val, diags := d.GetRawConfigAt(cty.GetAttrPath(attr))
+	return !diags.HasError() && !val.IsNull()
 }
 
 func buildSensitiveDataScannerStringList(items []interface{}) []string {
