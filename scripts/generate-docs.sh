@@ -20,7 +20,7 @@ if [ "${#exclude_files[@]}" -ne 0 ] && [ "$(git status --porcelain "${exclude_fi
   exit 1
 fi
 
-tfplugindocs
+tfplugindocs generate --provider-name datadog --rendered-provider-name "terraform-provider-datadog"
 
 # Remove the changes to files we don't autogenerate
 git checkout HEAD -- "${exclude_files[@]}"

@@ -20,8 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-const dashboardResourceName = "datadog_dashboard"
-
 func resourceDatadogDashboard() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.\n\n!> The `is_read_only` field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
@@ -182,7 +180,7 @@ func resourceDatadogDashboard() *schema.Resource {
 func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	dashboardPayload, err := buildDatadogDashboard(d)
 	if err != nil {
 		return diag.Errorf("failed to parse resource configuration: %s", err.Error())
@@ -226,7 +224,7 @@ func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData,
 func resourceDatadogDashboardUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	id := d.Id()
 	dashboard, err := buildDatadogDashboard(d)
 	if err != nil {
@@ -341,8 +339,8 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 
 	// Set tabs — always call d.Set so stale state is cleared when tabs are removed
 	var terraformTabs []map[string]interface{}
-	if tabsRaw, ok := dashboard.AdditionalProperties["tabs"]; ok && tabsRaw != nil {
-		terraformTabs = buildTerraformTabs(tabsRaw, &dashboard.Widgets)
+	if tabs := dashboard.GetTabs(); len(tabs) > 0 {
+		terraformTabs = buildTerraformTabs(tabs, &dashboard.Widgets)
 	}
 	if err := d.Set("tab", terraformTabs); err != nil {
 		return diag.FromErr(err)
@@ -402,7 +400,7 @@ func checkForUnparsedDashboard(dashboard datadogV1.Dashboard) error {
 func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	id := d.Id()
 	dashboard, httpresp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, id)
 	if err != nil {
@@ -421,7 +419,7 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 func resourceDatadogDashboardDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	auth := utils.WithTerraformResource(providerConf.Auth, dashboardResourceName)
+	auth := providerConf.Auth
 	id := d.Id()
 	if _, httpresp, err := apiInstances.GetDashboardsApiV1().DeleteDashboard(auth, id); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error deleting dashboard")
@@ -893,38 +891,29 @@ func buildDatadogTabs(terraformTabs *[]interface{}) []map[string]interface{} {
 	return tabs
 }
 
-func buildTerraformTabs(tabsRaw interface{}, widgets *[]datadogV1.Widget) []map[string]interface{} {
-	tabs, ok := tabsRaw.([]interface{})
-	if !ok {
-		return nil
-	}
-
-	// Build widget ID → position map for reverse-mapping
+func buildTerraformTabs(tabs []datadogV1.DashboardTab, widgets *[]datadogV1.Widget) []map[string]interface{} {
 	widgetIDToPosition := make(map[int64]int)
 	for i, w := range *widgets {
 		widgetIDToPosition[w.GetId()] = i + 1 // 1-indexed
 	}
 
 	terraformTabs := make([]map[string]interface{}, len(tabs))
-	for i, t := range tabs {
-		tab := t.(map[string]interface{})
-		widgetIDs := tab["widget_ids"].([]interface{})
+	for i, tab := range tabs {
+		widgetIDs := tab.GetWidgetIds()
 
 		// Reverse-map integer widget IDs to @N positional references.
 		// Skip any IDs that don't map to a known widget position rather than
 		// emitting an empty string which would corrupt state.
 		refs := make([]string, 0, len(widgetIDs))
-		for _, wid := range widgetIDs {
-			// widget_ids come as float64 from JSON
-			widgetID := int64(wid.(float64))
+		for _, widgetID := range widgetIDs {
 			if pos, ok := widgetIDToPosition[widgetID]; ok {
 				refs = append(refs, fmt.Sprintf("@%d", pos))
 			}
 		}
 
 		terraformTabs[i] = map[string]interface{}{
-			"id":         tab["id"],
-			"name":       tab["name"],
+			"id":         tab.GetId().String(),
+			"name":       tab.GetName(),
 			"widget_ids": refs,
 		}
 	}
