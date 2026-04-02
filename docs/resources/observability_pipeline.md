@@ -1901,7 +1901,6 @@ Optional:
 Required:
 
 - `name` (String) A name identifying the rule.
-- `tags` (List of String) Tags assigned to this rule for filtering and classification.
 
 Optional:
 
@@ -1909,6 +1908,7 @@ Optional:
 - `on_match` (Block List) The action to take when a sensitive value is found. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match))
 - `pattern` (Block List) Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern))
 - `scope` (Block List) Field-level targeting options that determine where the scanner should operate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope))
+- `tags` (List of String) Tags assigned to this rule for filtering and classification.
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--keyword_options"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.keyword_options`
@@ -1956,7 +1956,7 @@ Optional:
 Optional:
 
 - `custom` (Block List) Pattern detection using a custom regular expression. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom))
-- `library` (Block List) Pattern detection using a predefined pattern from the sensitive data scanner pattern library. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
+- `library` (Block List) Pattern detection using a predefined pattern from the Sensitive Data Scanner library. For Terraform setup (standard pattern data source and library rules), see the [Sensitive Data Scanner processor documentation](https://docs.datadoghq.com/observability_pipelines/processors/sensitive_data_scanner/?tab=libraryrules#set-up-the-processor-using-terraform). (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.pattern.custom`
