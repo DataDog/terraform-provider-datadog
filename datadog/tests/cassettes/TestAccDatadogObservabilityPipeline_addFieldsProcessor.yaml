@@ -31,13 +31,13 @@ interactions:
         content_length: 839
         uncompressed: false
         body: |
-            {"data":{"id":"b133c44e-2ea0-11f1-9c1b-da7ad0900002","type":"pipelines","attributes":{"name":"add-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-fields-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"2240bac2-2ea9-11f1-8551-da7ad0900002","type":"pipelines","attributes":{"name":"add-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-fields-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 460.637917ms
+        duration: 422.520084ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b133c44e-2ea0-11f1-9c1b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2240bac2-2ea9-11f1-8551-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 839
         uncompressed: false
         body: |
-            {"data":{"id":"b133c44e-2ea0-11f1-9c1b-da7ad0900002","type":"pipelines","attributes":{"name":"add-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-fields-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"2240bac2-2ea9-11f1-8551-da7ad0900002","type":"pipelines","attributes":{"name":"add-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["add-fields-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"processors":[{"enabled":true,"id":"add-fields-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":[{"name":"custom.field","value":"hello-world"},{"name":"env","value":"prod"}],"id":"add-fields-1","include":"*","type":"add_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 285.678041ms
+        duration: 318.095375ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/b133c44e-2ea0-11f1-9c1b-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2240bac2-2ea9-11f1-8551-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 411.463417ms
+        duration: 485.900125ms

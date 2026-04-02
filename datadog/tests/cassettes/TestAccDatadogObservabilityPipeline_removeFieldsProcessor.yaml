@@ -31,13 +31,13 @@ interactions:
         content_length: 742
         uncompressed: false
         body: |
-            {"data":{"id":"aa04f22e-2ea0-11f1-b7d0-da7ad0900002","type":"pipelines","attributes":{"name":"remove-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remove-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"processors":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"18840ef8-2ea9-11f1-854b-da7ad0900002","type":"pipelines","attributes":{"name":"remove-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remove-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"processors":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 436.385958ms
+        duration: 551.401125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/aa04f22e-2ea0-11f1-b7d0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/18840ef8-2ea9-11f1-854b-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 742
         uncompressed: false
         body: |
-            {"data":{"id":"aa04f22e-2ea0-11f1-b7d0-da7ad0900002","type":"pipelines","attributes":{"name":"remove-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remove-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"processors":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"18840ef8-2ea9-11f1-854b-da7ad0900002","type":"pipelines","attributes":{"name":"remove-fields-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["remove-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"processors":[{"enabled":true,"id":"remove-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"fields":["temp.debug","internal.trace_id"],"id":"remove-1","include":"*","type":"remove_fields"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 258.788875ms
+        duration: 304.532083ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/aa04f22e-2ea0-11f1-b7d0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/18840ef8-2ea9-11f1-854b-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 569.793709ms
+        duration: 509.681ms

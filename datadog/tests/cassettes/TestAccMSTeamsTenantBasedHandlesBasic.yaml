@@ -33,4 +33,4 @@ interactions:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 276.673708ms
+        duration: 213.534917ms

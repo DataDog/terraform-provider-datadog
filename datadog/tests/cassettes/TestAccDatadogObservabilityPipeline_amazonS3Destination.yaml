@@ -31,13 +31,13 @@ interactions:
         content_length: 543
         uncompressed: false
         body: |
-            {"data":{"id":"46ff3e5e-2ea1-11f1-b846-da7ad0900002","type":"pipelines","attributes":{"name":"amazon s3 pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/example-role","external_id":"external-id-123","session_name":"s3-session"},"bucket":"my-logs-bucket","id":"s3-dest-1","inputs":["source-1"],"key_prefix":"logs/","region":"us-east-1","storage_class":"STANDARD","type":"amazon_s3"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ae4918b6-2ea9-11f1-85ad-da7ad0900002","type":"pipelines","attributes":{"name":"amazon s3 pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/example-role","external_id":"external-id-123","session_name":"s3-session"},"bucket":"my-logs-bucket","id":"s3-dest-1","inputs":["source-1"],"key_prefix":"logs/","region":"us-east-1","storage_class":"STANDARD","type":"amazon_s3"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 576.278791ms
+        duration: 509.735ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/46ff3e5e-2ea1-11f1-b846-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ae4918b6-2ea9-11f1-85ad-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 543
         uncompressed: false
         body: |
-            {"data":{"id":"46ff3e5e-2ea1-11f1-b846-da7ad0900002","type":"pipelines","attributes":{"name":"amazon s3 pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/example-role","external_id":"external-id-123","session_name":"s3-session"},"bucket":"my-logs-bucket","id":"s3-dest-1","inputs":["source-1"],"key_prefix":"logs/","region":"us-east-1","storage_class":"STANDARD","type":"amazon_s3"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"ae4918b6-2ea9-11f1-85ad-da7ad0900002","type":"pipelines","attributes":{"name":"amazon s3 pipeline","config":{"destinations":[{"auth":{"assume_role":"arn:aws:iam::123456789012:role/example-role","external_id":"external-id-123","session_name":"s3-session"},"bucket":"my-logs-bucket","id":"s3-dest-1","inputs":["source-1"],"key_prefix":"logs/","region":"us-east-1","storage_class":"STANDARD","type":"amazon_s3"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 267.526ms
+        duration: 281.960625ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/46ff3e5e-2ea1-11f1-b846-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ae4918b6-2ea9-11f1-85ad-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 422.231375ms
+        duration: 404.606584ms

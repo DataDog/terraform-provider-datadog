@@ -31,13 +31,13 @@ interactions:
         content_length: 720
         uncompressed: false
         body: |
-            {"data":{"id":"62dddc66-2ea1-11f1-b85a-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c93a90d2-2ea9-11f1-85cd-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 408.10725ms
+        duration: 422.426375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/62dddc66-2ea1-11f1-b85a-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c93a90d2-2ea9-11f1-85cd-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 720
         uncompressed: false
         body: |
-            {"data":{"id":"62dddc66-2ea1-11f1-b85a-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c93a90d2-2ea9-11f1-85cd-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 294.128417ms
+        duration: 246.22175ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/62dddc66-2ea1-11f1-b85a-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c93a90d2-2ea9-11f1-85cd-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         content_length: 720
         uncompressed: false
         body: |
-            {"data":{"id":"62dddc66-2ea1-11f1-b85a-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c93a90d2-2ea9-11f1-85cd-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"tags","include":"*"}],"enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 536.629709ms
+        duration: 229.644833ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/62dddc66-2ea1-11f1-b85a-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c93a90d2-2ea9-11f1-85cd-da7ad0900002
         method: PUT
       response:
         proto: HTTP/1.1
@@ -136,13 +136,13 @@ interactions:
         content_length: 906
         uncompressed: false
         body: |
-            {"data":{"id":"62dddc66-2ea1-11f1-b85a-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c93a90d2-2ea9-11f1-85cd-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 621.422125ms
+        duration: 618.440458ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -159,7 +159,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/62dddc66-2ea1-11f1-b85a-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c93a90d2-2ea9-11f1-85cd-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -170,13 +170,13 @@ interactions:
         content_length: 906
         uncompressed: false
         body: |
-            {"data":{"id":"62dddc66-2ea1-11f1-b85a-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c93a90d2-2ea9-11f1-85cd-da7ad0900002","type":"pipelines","attributes":{"name":"split_array pipeline updated","config":{"destinations":[{"id":"dest-1","inputs":["group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"processors":[{"enabled":true,"id":"group-1","include":"*","inputs":["source-1"],"processors":[{"arrays":[{"field":"items","include":"source:prod"},{"field":"events","include":"source:staging"}],"display_name":"Array Splitter","enabled":true,"id":"split-array-proc","include":"*","type":"split_array"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 249.684959ms
+        duration: 273.705292ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/62dddc66-2ea1-11f1-b85a-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c93a90d2-2ea9-11f1-85cd-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -209,4 +209,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 379.59225ms
+        duration: 381.372875ms
