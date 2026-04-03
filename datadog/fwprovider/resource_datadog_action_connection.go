@@ -736,15 +736,23 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 		return nil, err
 	}
 
-	// The API response does not include the token value, so this code gets it from the state.
-	// This is used to determine whether the token value changed since the last update.
-	if currentState.HTTP != nil {
-		for _, stateToken := range currentState.HTTP.TokenAuth.Tokens {
-			for _, responseToken := range connModel.HTTP.TokenAuth.Tokens {
-				if stateToken.Name.Equal(responseToken.Name) {
-					responseToken.Value = stateToken.Value
+	// The API does not return SECRET token values, and may omit tokens entirely
+	// from the GET response. Since token values are write-only (sensitive), we
+	// must preserve token information from the prior state.
+	if currentState.HTTP != nil && currentState.HTTP.TokenAuth != nil &&
+		connModel.HTTP != nil && connModel.HTTP.TokenAuth != nil {
+		if len(connModel.HTTP.TokenAuth.Tokens) > 0 {
+			// API returned tokens — copy values from state for matching tokens
+			for _, stateToken := range currentState.HTTP.TokenAuth.Tokens {
+				for _, responseToken := range connModel.HTTP.TokenAuth.Tokens {
+					if stateToken.Name.Equal(responseToken.Name) {
+						responseToken.Value = stateToken.Value
+					}
 				}
 			}
+		} else {
+			// API did not return tokens — preserve them entirely from state
+			connModel.HTTP.TokenAuth.Tokens = currentState.HTTP.TokenAuth.Tokens
 		}
 	}
 

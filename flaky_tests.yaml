@@ -320,10 +320,6 @@ skipped_tests:
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestAccDatadogActionConnectionResource_HTTP_TokenAuth
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
   - test: TestAccRumRetentionFiltersDatasource
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
