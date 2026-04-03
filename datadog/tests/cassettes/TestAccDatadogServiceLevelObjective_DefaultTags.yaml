@@ -1,3 +1,651 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 523
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["default_key:default_value","foo:bar","foo:double_bar","baz"],"target_threshold":99,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d","warning":99.5},{"target":99,"timeframe":"90d"}],"timeframe":"30d","type":"metric","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:double_bar","default_key:default_value","baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897515}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 543.680417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:bar","default_key:default_value","baz","foo:double_bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897515},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 163.001417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["default_key:default_value","baz","foo:double_bar","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897515},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.715083ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 535
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","foo:double_bar","baz"],"target_threshold":99,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d","warning":99.5},{"target":99,"timeframe":"90d"}],"timeframe":"30d","type":"metric","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["baz","foo:double_bar","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897516}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 277.018042ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:double_bar","foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897516},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 138.054125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["baz","foo:double_bar","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897516},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.547833ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 538
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["new_tag:new_value","foo:bar","baz"],"target_threshold":99,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d","warning":99.5},{"target":99,"timeframe":"90d"}],"timeframe":"30d","type":"metric","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:bar","new_tag:new_value","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897518}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 250.540125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["baz","new_tag:new_value","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897518},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 197.445875ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["new_tag:new_value","baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897518},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 141.029167ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 529
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["no_value","foo:bar","baz"],"target_threshold":99,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d","warning":99.5},{"target":99,"timeframe":"90d"}],"timeframe":"30d","type":"metric","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["no_value","baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897519}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 298.302417ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:bar","no_value","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897519},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 132.921958ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["baz","no_value","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897519},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.742458ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 558
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"target_threshold":99,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d","warning":99.5},{"target":99,"timeframe":"90d"}],"timeframe":"30d","type":"metric","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:bar","baz","repo_url:https://github.com/repo/path"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897520}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 226.213958ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["baz","foo:bar","repo_url:https://github.com/repo/path"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897520},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 266.262667ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:bar","repo_url:https://github.com/repo/path","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897520},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.58125ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 586
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"target_threshold":99,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":99,"timeframe":"30d","warning":99.5},{"target":99,"timeframe":"90d"}],"timeframe":"30d","type":"metric","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["default_key:default_value","foo:bar","baz","repo_url:https://github.com/repo/path"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897522}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 362.966584ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"4f6e1fde7e8c5e24b1086c92da117edb","name":"tf-TestAccDatadogServiceLevelObjective_DefaultTags-local-1744897514","tags":["foo:bar","default_key:default_value","baz","repo_url:https://github.com/repo/path"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"},{"timeframe":"90d","target":99.0,"target_display":"99."}],"type":"metric","type_id":1,"description":"some description about foo SLO","timeframe":"30d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Thibault Viennot","handle":"thibault.viennot@datadoghq.com","email":"thibault.viennot@datadoghq.com"},"created_at":1744897515,"modified_at":1744897522},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.3605ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/4f6e1fde7e8c5e24b1086c92da117edb
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":["4f6e1fde7e8c5e24b1086c92da117edb"],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 285.759334ms

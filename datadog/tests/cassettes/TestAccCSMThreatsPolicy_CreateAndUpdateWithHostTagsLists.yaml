@@ -1,3 +1,306 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 197
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"name":"dyhborjulf"},"type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 463
+        uncompressed: false
+        body: '{"data":{"id":"hmy-7du-ra9","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":7,"name":"dyhborjulf","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":8,"updateDate":1766482712071,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 611.665942ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 463
+        uncompressed: false
+        body: '{"data":{"id":"hmy-7du-ra9","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"dyhborjulf","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766482712071,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 354.639894ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 463
+        uncompressed: false
+        body: '{"data":{"id":"hmy-7du-ra9","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"dyhborjulf","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766482712071,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 284.269825ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 463
+        uncompressed: false
+        body: '{"data":{"id":"hmy-7du-ra9","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host","env:prod"],["host_name:test_host2","env:staging"]],"monitoringRulesCount":0,"name":"dyhborjulf","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766482712071,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 369.580667ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"updated policy for terraform provider test","enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"name":"dyhborjulf"},"id":"hmy-7du-ra9","type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 486
+        uncompressed: false
+        body: '{"data":{"id":"hmy-7du-ra9","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"dyhborjulf","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766482714434,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 986.031711ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 486
+        uncompressed: false
+        body: '{"data":{"id":"hmy-7du-ra9","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"dyhborjulf","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766482714434,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 534.626467ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 486
+        uncompressed: false
+        body: '{"data":{"id":"hmy-7du-ra9","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"updated policy for terraform provider test","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test","env:prod"],["host_name:test_host2","env:test"]],"monitoringRulesCount":0,"name":"dyhborjulf","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":0,"updateDate":1766482714434,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 433.754566ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 816.584964ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hmy-7du-ra9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 34
+        uncompressed: false
+        body: '{"errors":[{"title":"Not Found"}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 328.091649ms

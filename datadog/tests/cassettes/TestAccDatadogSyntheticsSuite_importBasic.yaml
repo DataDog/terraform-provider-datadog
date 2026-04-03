@@ -1,3 +1,183 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"message":"This is a test suite","name":"tf-TestAccDatadogSyntheticsSuite_importBasic-local-1769177372","options":{"alerting_threshold":0.5},"tags":["env:test","team:synthetics"],"tests":[],"type":"suite"},"type":"suites"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"suites","attributes":{"public_id":"3vb-f6r-38i","name":"tf-TestAccDatadogSyntheticsSuite_importBasic-local-1769177372","tags":["env:test","team:synthetics"],"modified_at":"2026-01-23T14:09:34.503952+00:00","monitor_id":253217925,"message":"This is a test suite","options":{"alerting_threshold":0.5},"type":"suite","tests":[],"org_id":569509,"modified_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"},"created_at":"2026-01-23T14:09:34.503952+00:00","created_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"}},"id":"3vb-f6r-38i"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 270.062459ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/3vb-f6r-38i
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"suites","attributes":{"message":"This is a test suite","version":1,"version_uuid":"250da532-f865-11f0-b0c4-da7ad0901002","created_at":"2026-01-23T14:09:34.503952+00:00","type":"suite","modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"public_id":"3vb-f6r-38i","name":"tf-TestAccDatadogSyntheticsSuite_importBasic-local-1769177372","options":{"alerting_threshold":0.5},"created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"tags":["env:test","team:synthetics"],"tests":[],"monitor_id":253217925,"modified_at":"2026-01-23T14:09:34.503952+00:00","org_id":569509},"id":"3vb-f6r-38i"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 307.395875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/3vb-f6r-38i
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"suites","attributes":{"options":{"alerting_threshold":0.5},"version_uuid":"250da532-f865-11f0-b0c4-da7ad0901002","message":"This is a test suite","monitor_id":253217925,"type":"suite","version":1,"created_at":"2026-01-23T14:09:34.503952+00:00","name":"tf-TestAccDatadogSyntheticsSuite_importBasic-local-1769177372","tests":[],"public_id":"3vb-f6r-38i","modified_at":"2026-01-23T14:09:34.503952+00:00","org_id":569509,"tags":["env:test","team:synthetics"],"modified_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"},"created_by":{"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":"Frog"}},"id":"3vb-f6r-38i"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 205.22725ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 86
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"public_ids":["3vb-f6r-38i"]},"type":"delete_suites_request"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/bulk-delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"suites","attributes":{"deleted_at":"2026-01-23 14:09:36.724654","public_id":"3vb-f6r-38i"},"id":"3vb-f6r-38i"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 510.271042ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/synthetics/suites/3vb-f6r-38i
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 431.352083ms

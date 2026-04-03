@@ -31,13 +31,13 @@ interactions:
         content_length: 1187
         uncompressed: false
         body: |
-            {"data":{"id":"248108dc-2ea9-11f1-8557-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"processors":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c9fba11c-f20b-11f0-a38c-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"processors":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 413.6905ms
+        duration: 532.62675ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/248108dc-2ea9-11f1-8557-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c9fba11c-f20b-11f0-a38c-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 1187
         uncompressed: false
         body: |
-            {"data":{"id":"248108dc-2ea9-11f1-8557-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"processors":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"c9fba11c-f20b-11f0-a38c-da7ad0900002","type":"pipelines","attributes":{"name":"parse-grok-test","config":{"destinations":[{"id":"destination-1","inputs":["parse-grok-group-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"processors":[{"enabled":true,"id":"parse-grok-group-1","include":"*","inputs":["source-1"],"processors":[{"disable_library_rules":true,"enabled":true,"id":"parse-grok-1","include":"*","rules":[{"match_rules":[{"name":"match_user","rule":"%{word:user.name}"},{"name":"match_action","rule":"%{word:action}"}],"source":"message","support_rules":[{"name":"word","rule":"\\w+"},{"name":"custom_word","rule":"[a-zA-Z]+"}]}],"type":"parse_grok"}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 261.599042ms
+        duration: 242.14425ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/248108dc-2ea9-11f1-8557-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/c9fba11c-f20b-11f0-a38c-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 478.0775ms
+        duration: 329.523625ms

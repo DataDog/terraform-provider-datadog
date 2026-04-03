@@ -1,3 +1,288 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1111
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedProtoFile":"eJx0kL1uwjAUhXc/xRVLy5Ko6hgxl6FDVSoxRq45BFPHdu91KBHi3SsHwk+lTpGc75zz2dL7pPc0o0nkkMLzpFIqxGSDp63e6brtXLLRoV5bB6EZJe5Q3SFRmy/dIHfYUDQcTYG9bqODFBs4F34Cu9XkPhS6BK6N0yJet0N4ntllZt+yyjUQPrfmhNaRsbaD7vx1mV3H8etQpVRZ0scG1DCQrG9IwDtrQCusrbe5s1Dj2UuGwHRQRGVJC/iVkL5kFRFHQwvdD3r0OHze8d1B0pQYqWMvl+Po+ikdjup4keATSi1EsqgJPmnrs1bagDoBPwjlNyjUyNxuDGKSOAfOL/VU3fVLDF7w38B4EfnbHl1/2z3+Pdf/BgAA//+/J7pb","host":"google.com","metadata":{"header":"value"},"method":"GET","port":"50050","service":"Hello"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsGRPCTest_importBasic-local-1739872119","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"grpc","tags":["foo:bar","baz"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4g8-sgn-f6z","name":"tf-TestAccDatadogSyntheticsGRPCTest_importBasic-local-1739872119","status":"paused","type":"api","subtype":"grpc","tags":["foo:bar","baz"],"created_at":"2025-02-18T09:48:42.336560+00:00","modified_at":"2025-02-18T09:48:42.336560+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedProtoFile":"eJx0kL1uwjAUhXc/xRVLy5Ko6hgxl6FDVSoxRq45BFPHdu91KBHi3SsHwk+lTpGc75zz2dL7pPc0o0nkkMLzpFIqxGSDp63e6brtXLLRoV5bB6EZJe5Q3SFRmy/dIHfYUDQcTYG9bqODFBs4F34Cu9XkPhS6BK6N0yJet0N4ntllZt+yyjUQPrfmhNaRsbaD7vx1mV3H8etQpVRZ0scG1DCQrG9IwDtrQCusrbe5s1Dj2UuGwHRQRGVJC/iVkL5kFRFHQwvdD3r0OHze8d1B0pQYqWMvl+Po+ikdjup4keATSi1EsqgJPmnrs1bagDoBPwjlNyjUyNxuDGKSOAfOL/VU3fVLDF7w38B4EfnbHl1/2z3+Pdf/BgAA//+/J7pb","host":"google.com","metadata":{"header":"value"},"method":"GET","port":"50050","service":"Hello"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":164880844,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 508.289333ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/4g8-sgn-f6z
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4g8-sgn-f6z","name":"tf-TestAccDatadogSyntheticsGRPCTest_importBasic-local-1739872119","status":"paused","type":"api","subtype":"grpc","tags":["foo:bar","baz"],"created_at":"2025-02-18T09:48:42.336560+00:00","modified_at":"2025-02-18T09:48:42.336560+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedProtoFile":"eJx0kL1uwjAUhXc/xRVLy5Ko6hgxl6FDVSoxRq45BFPHdu91KBHi3SsHwk+lTpGc75zz2dL7pPc0o0nkkMLzpFIqxGSDp63e6brtXLLRoV5bB6EZJe5Q3SFRmy/dIHfYUDQcTYG9bqODFBs4F34Cu9XkPhS6BK6N0yJet0N4ntllZt+yyjUQPrfmhNaRsbaD7vx1mV3H8etQpVRZ0scG1DCQrG9IwDtrQCusrbe5s1Dj2UuGwHRQRGVJC/iVkL5kFRFHQwvdD3r0OHze8d1B0pQYqWMvl+Po+ikdjup4keATSi1EsqgJPmnrs1bagDoBPwjlNyjUyNxuDGKSOAfOL/VU3fVLDF7w38B4EfnbHl1/2z3+Pdf/BgAA//+/J7pb","host":"google.com","metadata":{"header":"value"},"method":"GET","port":"50050","service":"Hello"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":164880844,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 169.623ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/4g8-sgn-f6z
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4g8-sgn-f6z","name":"tf-TestAccDatadogSyntheticsGRPCTest_importBasic-local-1739872119","status":"paused","type":"api","subtype":"grpc","tags":["foo:bar","baz"],"created_at":"2025-02-18T09:48:42.336560+00:00","modified_at":"2025-02-18T09:48:42.336560+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedProtoFile":"eJx0kL1uwjAUhXc/xRVLy5Ko6hgxl6FDVSoxRq45BFPHdu91KBHi3SsHwk+lTpGc75zz2dL7pPc0o0nkkMLzpFIqxGSDp63e6brtXLLRoV5bB6EZJe5Q3SFRmy/dIHfYUDQcTYG9bqODFBs4F34Cu9XkPhS6BK6N0yJet0N4ntllZt+yyjUQPrfmhNaRsbaD7vx1mV3H8etQpVRZ0scG1DCQrG9IwDtrQCusrbe5s1Dj2UuGwHRQRGVJC/iVkL5kFRFHQwvdD3r0OHze8d1B0pQYqWMvl+Po+ikdjup4keATSi1EsqgJPmnrs1bagDoBPwjlNyjUyNxuDGKSOAfOL/VU3fVLDF7w38B4EfnbHl1/2z3+Pdf/BgAA//+/J7pb","host":"google.com","metadata":{"header":"value"},"method":"GET","port":"50050","service":"Hello"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":164880844,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 410.5655ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/4g8-sgn-f6z
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4g8-sgn-f6z","name":"tf-TestAccDatadogSyntheticsGRPCTest_importBasic-local-1739872119","status":"paused","type":"api","subtype":"grpc","tags":["foo:bar","baz"],"created_at":"2025-02-18T09:48:42.336560+00:00","modified_at":"2025-02-18T09:48:42.336560+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedProtoFile":"eJx0kL1uwjAUhXc/xRVLy5Ko6hgxl6FDVSoxRq45BFPHdu91KBHi3SsHwk+lTpGc75zz2dL7pPc0o0nkkMLzpFIqxGSDp63e6brtXLLRoV5bB6EZJe5Q3SFRmy/dIHfYUDQcTYG9bqODFBs4F34Cu9XkPhS6BK6N0yJet0N4ntllZt+yyjUQPrfmhNaRsbaD7vx1mV3H8etQpVRZ0scG1DCQrG9IwDtrQCusrbe5s1Dj2UuGwHRQRGVJC/iVkL5kFRFHQwvdD3r0OHze8d1B0pQYqWMvl+Po+ikdjup4keATSi1EsqgJPmnrs1bagDoBPwjlNyjUyNxuDGKSOAfOL/VU3fVLDF7w38B4EfnbHl1/2z3+Pdf/BgAA//+/J7pb","host":"google.com","metadata":{"header":"value"},"method":"GET","port":"50050","service":"Hello"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":164880844,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 165.025333ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/4g8-sgn-f6z
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4g8-sgn-f6z","name":"tf-TestAccDatadogSyntheticsGRPCTest_importBasic-local-1739872119","status":"paused","type":"api","subtype":"grpc","tags":["foo:bar","baz"],"created_at":"2025-02-18T09:48:42.336560+00:00","modified_at":"2025-02-18T09:48:42.336560+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedProtoFile":"eJx0kL1uwjAUhXc/xRVLy5Ko6hgxl6FDVSoxRq45BFPHdu91KBHi3SsHwk+lTpGc75zz2dL7pPc0o0nkkMLzpFIqxGSDp63e6brtXLLRoV5bB6EZJe5Q3SFRmy/dIHfYUDQcTYG9bqODFBs4F34Cu9XkPhS6BK6N0yJet0N4ntllZt+yyjUQPrfmhNaRsbaD7vx1mV3H8etQpVRZ0scG1DCQrG9IwDtrQCusrbe5s1Dj2UuGwHRQRGVJC/iVkL5kFRFHQwvdD3r0OHze8d1B0pQYqWMvl+Po+ikdjup4keATSi1EsqgJPmnrs1bagDoBPwjlNyjUyNxuDGKSOAfOL/VU3fVLDF7w38B4EfnbHl1/2z3+Pdf/BgAA//+/J7pb","host":"google.com","metadata":{"header":"value"},"method":"GET","port":"50050","service":"Hello"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":164880844,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 233.389834ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/4g8-sgn-f6z
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"4g8-sgn-f6z","name":"tf-TestAccDatadogSyntheticsGRPCTest_importBasic-local-1739872119","status":"paused","type":"api","subtype":"grpc","tags":["foo:bar","baz"],"created_at":"2025-02-18T09:48:42.336560+00:00","modified_at":"2025-02-18T09:48:42.336560+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedProtoFile":"eJx0kL1uwjAUhXc/xRVLy5Ko6hgxl6FDVSoxRq45BFPHdu91KBHi3SsHwk+lTpGc75zz2dL7pPc0o0nkkMLzpFIqxGSDp63e6brtXLLRoV5bB6EZJe5Q3SFRmy/dIHfYUDQcTYG9bqODFBs4F34Cu9XkPhS6BK6N0yJet0N4ntllZt+yyjUQPrfmhNaRsbaD7vx1mV3H8etQpVRZ0scG1DCQrG9IwDtrQCusrbe5s1Dj2UuGwHRQRGVJC/iVkL5kFRFHQwvdD3r0OHze8d1B0pQYqWMvl+Po+ikdjup4keATSi1EsqgJPmnrs1bagDoBPwjlNyjUyNxuDGKSOAfOL/VU3fVLDF7w38B4EfnbHl1/2z3+Pdf/BgAA//+/J7pb","host":"google.com","metadata":{"header":"value"},"method":"GET","port":"50050","service":"Hello"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":164880844,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 333.412333ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["4g8-sgn-f6z"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"4g8-sgn-f6z","deleted_at":"2025-02-18T09:48:49.053785+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.123015125s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/4g8-sgn-f6z
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 131.838833ms

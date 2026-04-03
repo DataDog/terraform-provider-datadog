@@ -31,13 +31,13 @@ interactions:
         content_length: 365
         uncompressed: false
         body: |
-            {"data":{"id":"a7d1177c-2ea9-11f1-85a5-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 481.7035ms
+        duration: 565.126542ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a7d1177c-2ea9-11f1-85a5-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 365
         uncompressed: false
         body: |
-            {"data":{"id":"a7d1177c-2ea9-11f1-85a5-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 247.390583ms
+        duration: 236.228375ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a7d1177c-2ea9-11f1-85a5-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         content_length: 365
         uncompressed: false
         body: |
-            {"data":{"id":"a7d1177c-2ea9-11f1-85a5-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"encoding":"json","id":"kafka-dest-1","inputs":["source-1"],"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 278.479042ms
+        duration: 227.72325ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a7d1177c-2ea9-11f1-85a5-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
         method: PUT
       response:
         proto: HTTP/1.1
@@ -136,13 +136,13 @@ interactions:
         content_length: 821
         uncompressed: false
         body: |
-            {"data":{"id":"a7d1177c-2ea9-11f1-85a5-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"compression":"gzip","encoding":"json","headers_key":"headers","id":"kafka-dest-1","inputs":["source-1"],"key_field":"message_key","librdkafka_options":[{"name":"client.id","value":"observability-pipeline"},{"name":"queue.buffering.max.messages","value":"15"}],"message_timeout_ms":30000,"rate_limit_duration_secs":1,"rate_limit_num":1000,"sasl":{"mechanism":"PLAIN"},"socket_timeout_ms":60000,"tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/client.crt","key_file":"/etc/ssl/private/client.key"},"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"compression":"gzip","encoding":"json","headers_key":"headers","id":"kafka-dest-1","inputs":["source-1"],"key_field":"message_key","librdkafka_options":[{"name":"client.id","value":"observability-pipeline"},{"name":"queue.buffering.max.messages","value":"15"}],"message_timeout_ms":30000,"rate_limit_duration_secs":1,"rate_limit_num":1000,"sasl":{"mechanism":"PLAIN"},"socket_timeout_ms":60000,"tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/client.crt","key_file":"/etc/ssl/private/client.key"},"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 679.809208ms
+        duration: 474.344167ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -159,7 +159,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a7d1177c-2ea9-11f1-85a5-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -170,13 +170,13 @@ interactions:
         content_length: 821
         uncompressed: false
         body: |
-            {"data":{"id":"a7d1177c-2ea9-11f1-85a5-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"compression":"gzip","encoding":"json","headers_key":"headers","id":"kafka-dest-1","inputs":["source-1"],"key_field":"message_key","librdkafka_options":[{"name":"client.id","value":"observability-pipeline"},{"name":"queue.buffering.max.messages","value":"15"}],"message_timeout_ms":30000,"rate_limit_duration_secs":1,"rate_limit_num":1000,"sasl":{"mechanism":"PLAIN"},"socket_timeout_ms":60000,"tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/client.crt","key_file":"/etc/ssl/private/client.key"},"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"032947ae-f20d-11f0-9e02-da7ad0900002","type":"pipelines","attributes":{"name":"kafka-destination-pipeline","config":{"destinations":[{"compression":"gzip","encoding":"json","headers_key":"headers","id":"kafka-dest-1","inputs":["source-1"],"key_field":"message_key","librdkafka_options":[{"name":"client.id","value":"observability-pipeline"},{"name":"queue.buffering.max.messages","value":"15"}],"message_timeout_ms":30000,"rate_limit_duration_secs":1,"rate_limit_num":1000,"sasl":{"mechanism":"PLAIN"},"socket_timeout_ms":60000,"tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/client.crt","key_file":"/etc/ssl/private/client.key"},"topic":"logs-topic","type":"kafka"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 262.060292ms
+        duration: 283.042834ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/a7d1177c-2ea9-11f1-85a5-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/032947ae-f20d-11f0-9e02-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -209,4 +209,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 414.751083ms
+        duration: 616.448167ms

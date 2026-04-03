@@ -1,3 +1,775 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 140
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"im a policy","enabled":true,"hostTags":["host_name:test_host"],"name":"xdanfvgaxg"},"type":"policy"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":1,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":7,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":8,"updateDate":1766482693465,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 544.238308ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766482693465,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 358.456044ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766482693465,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 445.070555ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":0,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"1","ruleCount":0,"updateDate":1766482693465,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 339.678032ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 385
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"actions":[{"set":{"append":false,"field":"open.file.path","name":"test_action","scope":"process"}},{"hash":{"field":"open.file"}}],"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"xdanfvgaxg","policy_id":"hgk-suq-aqm","product_tags":["compliance_framework:PCI-DSS"],"silent":false},"type":"agent_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 670
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"open.file.path","scope":"process"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:PCI-DSS"],"silent":false,"updateDate":1766482695765,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 925.225426ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 670
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"open.file.path","scope":"process"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:PCI-DSS"],"silent":false,"updateDate":1766482695765,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 430.874975ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":1,"updateDate":1766482695765,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 357.935422ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 670
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"open.file.path","scope":"process"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:PCI-DSS"],"silent":false,"updateDate":1766482695765,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 487.954208ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"2","ruleCount":1,"updateDate":1766482695765,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 483.400139ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 670
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"test_action","field":"open.file.path","scope":"process"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:PCI-DSS"],"silent":false,"updateDate":1766482695765,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 308.055487ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 422
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"actions":[{"set":{"append":true,"name":"updated_action","scope":"container","value":"new_value"}},{"hash":{"field":"open.file"}}],"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","policy_id":"hgk-suq-aqm","product_tags":["compliance_framework:ISO-27799"],"silent":false},"id":"mtg-6jh-tky","type":"agent_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 723
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","value":"new_value","append":true,"scope":"container"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:ISO-27799"],"silent":false,"updateDate":1766482699542,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 558.798103ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 723
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","value":"new_value","append":true,"scope":"container"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:ISO-27799"],"silent":false,"updateDate":1766482699542,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 324.797566ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"4","ruleCount":1,"updateDate":1766482699542,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 278.083101ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 723
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","value":"new_value","append":true,"scope":"container"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:ISO-27799"],"silent":false,"updateDate":1766482699542,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 655.265787ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"4","ruleCount":1,"updateDate":1766482699542,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 304.676119ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 723
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","value":"new_value","append":true,"scope":"container"},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:ISO-27799"],"silent":false,"updateDate":1766482699542,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 278.441627ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 468
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"actions":[{"set":{"default_value":"abc","expression":"\"value_${builtins.uuid4}\"","inherited":true,"name":"updated_action","scope":"process"}},{"hash":{"field":"open.file"}}],"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","policy_id":"hgk-suq-aqm","product_tags":["compliance_framework:ISO-27799"],"silent":false},"id":"mtg-6jh-tky","type":"agent_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 769
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","default_value":"abc","expression":"\"value_${builtins.uuid4}\"","scope":"process","inherited":true},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:ISO-27799"],"silent":false,"updateDate":1766482702686,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 612.900148ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 769
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","default_value":"abc","expression":"\"value_${builtins.uuid4}\"","scope":"process","inherited":true},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:ISO-27799"],"silent":false,"updateDate":1766482702686,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 342.320132ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 413
+        uncompressed: false
+        body: '{"data":{"id":"hgk-suq-aqm","type":"policy","attributes":{"blockingRulesCount":0,"datadogManaged":false,"description":"im a policy","disabledRulesCount":0,"enabled":true,"hostTagsLists":[["host_name:test_host"]],"monitoringRulesCount":1,"name":"xdanfvgaxg","pinned":false,"policyType":"policy","policyVersion":"6","ruleCount":1,"updateDate":1766482702686,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 457.255439ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 769
+        uncompressed: false
+        body: '{"data":{"id":"mtg-6jh-tky","type":"agent_rule","attributes":{"actions":[{"set":{"name":"updated_action","default_value":"abc","expression":"\"value_${builtins.uuid4}\"","scope":"process","inherited":true},"disabled":false},{"hash":{"field":"open.file"},"disabled":false}],"category":"File Activity","creationDate":1766482695765,"creator":{"name":"frog","handle":"frog@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"monitoring":["hgk-suq-aqm"],"name":"xdanfvgaxg","product_tags":["compliance_framework:ISO-27799"],"silent":false,"updateDate":1766482702686,"updater":{"name":"frog","handle":"frog@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 255.095697ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 423.017043ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/policy/hgk-suq-aqm
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 552.46881ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/mtg-6jh-tky?policy_id=hgk-suq-aqm
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 44
+        uncompressed: false
+        body: |
+            {"errors":[{"title":"failed to get rule"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 266.704913ms

@@ -1,3 +1,574 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 331
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"daily_limit":200000,"daily_limit_reset":{"reset_time":"10:00","reset_utc_offset":"+02:00"},"daily_limit_warning_threshold_percentage":70,"exclusion_filters":[],"filter":{"query":"non-existent-query"},"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","num_flex_logs_retention_days":180,"num_retention_days":15,"tags":[]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"non-existent-query"},"num_retention_days":15,"daily_limit":200000,"is_rate_limited":false,"daily_limit_reset":{"reset_time":"10:00","reset_utc_offset":"+02:00"},"daily_limit_warning_threshold_percentage":70.0,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 658.881333ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"non-existent-query"},"num_retention_days":15,"daily_limit":200000,"is_rate_limited":false,"daily_limit_reset":{"reset_time":"10:00","reset_utc_offset":"+02:00"},"daily_limit_warning_threshold_percentage":70.0,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 902.233667ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"non-existent-query"},"num_retention_days":15,"daily_limit":200000,"is_rate_limited":false,"daily_limit_reset":{"reset_time":"10:00","reset_utc_offset":"+02:00"},"daily_limit_warning_threshold_percentage":70.0,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.310708ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 366
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"daily_limit":20000,"daily_limit_reset":{"reset_time":"12:00","reset_utc_offset":"-02:00"},"daily_limit_warning_threshold_percentage":99.99,"exclusion_filters":[{"filter":{"query":"app:coredns","sample_rate":0.97},"is_enabled":true,"name":"Filter coredns logs"}],"filter":{"query":"test:query"},"num_flex_logs_retention_days":180,"num_retention_days":15,"tags":[]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":15,"daily_limit":20000,"is_rate_limited":false,"daily_limit_reset":{"reset_time":"12:00","reset_utc_offset":"-02:00"},"daily_limit_warning_threshold_percentage":99.99,"exclusion_filters":[{"name":"Filter coredns logs","is_enabled":true,"filter":{"query":"app:coredns","sample_rate":0.97}}],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.178610125s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":15,"daily_limit":20000,"is_rate_limited":false,"daily_limit_reset":{"reset_time":"12:00","reset_utc_offset":"-02:00"},"daily_limit_warning_threshold_percentage":99.99,"exclusion_filters":[{"name":"Filter coredns logs","is_enabled":true,"filter":{"query":"app:coredns","sample_rate":0.97}}],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 807.201041ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":15,"daily_limit":20000,"is_rate_limited":false,"daily_limit_reset":{"reset_time":"12:00","reset_utc_offset":"-02:00"},"daily_limit_warning_threshold_percentage":99.99,"exclusion_filters":[{"name":"Filter coredns logs","is_enabled":true,"filter":{"query":"app:coredns","sample_rate":0.97}}],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.069168042s
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 293
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"daily_limit":20000,"daily_limit_reset":{"reset_time":"12:00","reset_utc_offset":"-02:00"},"daily_limit_warning_threshold_percentage":99.99,"disable_daily_limit":true,"exclusion_filters":[],"filter":{"query":"test:query"},"num_flex_logs_retention_days":180,"num_retention_days":15,"tags":[]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.623539375s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.036904917s
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":180}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 964.042625ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 152
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"disable_daily_limit":true,"exclusion_filters":[],"filter":{"query":"test:query"},"num_flex_logs_retention_days":360,"num_retention_days":0,"tags":[]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":0,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":360}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 319.639791ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":0,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":360}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 869.058666ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264","filter":{"query":"test:query"},"num_retention_days":0,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":360}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 972.456709ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 202 Accepted
+        code: 202
+        duration: 1.053770125s
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"exclusion_filters":[],"filter":{"query":"non-existent-flex-query"},"name":"tf-testaccdatadoglogsindex-basic-local-1771493264-flex","num_flex_logs_retention_days":360,"num_retention_days":0,"tags":[]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264-flex","filter":{"query":"non-existent-flex-query"},"num_retention_days":0,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":360}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 317.770125ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264-flex
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"name":"tf-testaccdatadoglogsindex-basic-local-1771493264-flex","filter":{"query":"non-existent-flex-query"},"num_retention_days":0,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[],"tags":[],"num_flex_logs_retention_days":360}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.02674675s
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1771493264-flex
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 202 Accepted
+        code: 202
+        duration: 939.683042ms

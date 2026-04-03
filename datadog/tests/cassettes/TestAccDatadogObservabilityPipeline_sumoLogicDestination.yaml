@@ -31,13 +31,13 @@ interactions:
         content_length: 565
         uncompressed: false
         body: |
-            {"data":{"id":"3df16faa-2ea9-11f1-96f0-da7ad0900002","type":"pipelines","attributes":{"name":"sumo pipeline","config":{"destinations":[{"encoding":"json","header_custom_fields":[{"name":"X-Sumo-Category","value":"my-app-logs"},{"name":"X-Custom-Header","value":"debug=true"}],"header_host_name":"host-123","header_source_category":"source-category","header_source_name":"source-name","id":"sumo-dest-1","inputs":["source-1"],"type":"sumo_logic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"dde97fb4-f20b-11f0-a3a4-da7ad0900002","type":"pipelines","attributes":{"name":"sumo pipeline","config":{"destinations":[{"encoding":"json","header_custom_fields":[{"name":"X-Sumo-Category","value":"my-app-logs"},{"name":"X-Custom-Header","value":"debug=true"}],"header_host_name":"host-123","header_source_category":"source-category","header_source_name":"source-name","id":"sumo-dest-1","inputs":["source-1"],"type":"sumo_logic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 573.525792ms
+        duration: 403.321ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3df16faa-2ea9-11f1-96f0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/dde97fb4-f20b-11f0-a3a4-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 565
         uncompressed: false
         body: |
-            {"data":{"id":"3df16faa-2ea9-11f1-96f0-da7ad0900002","type":"pipelines","attributes":{"name":"sumo pipeline","config":{"destinations":[{"encoding":"json","header_custom_fields":[{"name":"X-Sumo-Category","value":"my-app-logs"},{"name":"X-Custom-Header","value":"debug=true"}],"header_host_name":"host-123","header_source_category":"source-category","header_source_name":"source-name","id":"sumo-dest-1","inputs":["source-1"],"type":"sumo_logic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"dde97fb4-f20b-11f0-a3a4-da7ad0900002","type":"pipelines","attributes":{"name":"sumo pipeline","config":{"destinations":[{"encoding":"json","header_custom_fields":[{"name":"X-Sumo-Category","value":"my-app-logs"},{"name":"X-Custom-Header","value":"debug=true"}],"header_host_name":"host-123","header_source_category":"source-category","header_source_name":"source-name","id":"sumo-dest-1","inputs":["source-1"],"type":"sumo_logic"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 278.159417ms
+        duration: 222.719458ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/3df16faa-2ea9-11f1-96f0-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/dde97fb4-f20b-11f0-a3a4-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 415.802375ms
+        duration: 346.045708ms

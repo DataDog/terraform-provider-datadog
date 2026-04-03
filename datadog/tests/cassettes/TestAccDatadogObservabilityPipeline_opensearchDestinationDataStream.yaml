@@ -31,13 +31,13 @@ interactions:
         content_length: 378
         uncompressed: false
         body: |
-            {"data":{"id":"812cbdec-2ea9-11f1-970c-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline","config":{"destinations":[{"data_stream":{"dtype":"logs"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d560fe18-fdc2-11f0-8c5d-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline","config":{"destinations":[{"data_stream":{"dtype":"logs"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 401.372584ms
+        duration: 462.165542ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/812cbdec-2ea9-11f1-970c-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d560fe18-fdc2-11f0-8c5d-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 378
         uncompressed: false
         body: |
-            {"data":{"id":"812cbdec-2ea9-11f1-970c-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline","config":{"destinations":[{"data_stream":{"dtype":"logs"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d560fe18-fdc2-11f0-8c5d-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline","config":{"destinations":[{"data_stream":{"dtype":"logs"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 257.157ms
+        duration: 337.391ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/812cbdec-2ea9-11f1-970c-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d560fe18-fdc2-11f0-8c5d-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         content_length: 378
         uncompressed: false
         body: |
-            {"data":{"id":"812cbdec-2ea9-11f1-970c-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline","config":{"destinations":[{"data_stream":{"dtype":"logs"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d560fe18-fdc2-11f0-8c5d-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline","config":{"destinations":[{"data_stream":{"dtype":"logs"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 254.5845ms
+        duration: 250.92675ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/812cbdec-2ea9-11f1-970c-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d560fe18-fdc2-11f0-8c5d-da7ad0900002
         method: PUT
       response:
         proto: HTTP/1.1
@@ -136,13 +136,13 @@ interactions:
         content_length: 438
         uncompressed: false
         body: |
-            {"data":{"id":"812cbdec-2ea9-11f1-970c-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline-updated","config":{"destinations":[{"data_stream":{"dataset":"my-application","dtype":"logs","namespace":"production"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d560fe18-fdc2-11f0-8c5d-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline-updated","config":{"destinations":[{"data_stream":{"dataset":"my-application","dtype":"logs","namespace":"production"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 491.792625ms
+        duration: 485.70425ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -159,7 +159,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/812cbdec-2ea9-11f1-970c-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d560fe18-fdc2-11f0-8c5d-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -170,13 +170,13 @@ interactions:
         content_length: 438
         uncompressed: false
         body: |
-            {"data":{"id":"812cbdec-2ea9-11f1-970c-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline-updated","config":{"destinations":[{"data_stream":{"dataset":"my-application","dtype":"logs","namespace":"production"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"d560fe18-fdc2-11f0-8c5d-da7ad0900002","type":"pipelines","attributes":{"name":"opensearch-datastream-pipeline-updated","config":{"destinations":[{"data_stream":{"dataset":"my-application","dtype":"logs","namespace":"production"},"id":"opensearch-destination-1","inputs":["source-1"],"type":"opensearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 275.540042ms
+        duration: 334.022958ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -193,7 +193,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/812cbdec-2ea9-11f1-970c-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/d560fe18-fdc2-11f0-8c5d-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -209,4 +209,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 442.508166ms
+        duration: 532.321042ms

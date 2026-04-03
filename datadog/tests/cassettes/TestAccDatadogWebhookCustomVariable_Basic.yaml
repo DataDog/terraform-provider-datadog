@@ -1,3 +1,324 @@
----
 version: 2
-interactions: []
+interactions:
+- request:
+    body: |
+      {"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295","value":"test-value"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables
+    method: POST
+    id: 0
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+      Location:
+      - https://app.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295
+    status: 201 Created
+    code: 201
+    duration: "0ms"
+- request:
+    body: |
+      {"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952","value":"test-value"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables
+    method: POST
+    id: 1
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+      Location:
+      - https://app.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952
+    status: 201 Created
+    code: 201
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295
+    method: GET
+    id: 2
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952
+    method: GET
+    id: 3
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295
+    method: GET
+    id: 4
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952
+    method: GET
+    id: 5
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952
+    method: GET
+    id: 6
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295
+    method: GET
+    id: 7
+  response:
+    body: '{"is_secret":false,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295","value":"test-value"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: |
+      {"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED","value":"test-value-updated"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295
+    method: PUT
+    id: 8
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: |
+      {"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED","value":"test-value-updated"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952
+    method: PUT
+    id: 9
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED
+    method: GET
+    id: 10
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED
+    method: GET
+    id: 11
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED
+    method: GET
+    id: 12
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED
+    method: GET
+    id: 13
+  response:
+    body: '{"is_secret":true,"name":"TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED
+    method: DELETE
+    id: 14
+  response:
+    body: '{}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED
+    method: DELETE
+    id: 15
+  response:
+    body: '{}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_1637237295UPDATED
+    method: GET
+    id: 16
+  response:
+    body: '{"errors": ["Custom variable does not exist"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/integration/webhooks/configuration/custom-variables/TF_TESTACCDATADOGWEBHOOKCUSTOMVARIABLE_BASIC_LOCAL_16372372952UPDATED
+    method: GET
+    id: 17
+  response:
+    body: '{"errors": ["Custom variable does not exist"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

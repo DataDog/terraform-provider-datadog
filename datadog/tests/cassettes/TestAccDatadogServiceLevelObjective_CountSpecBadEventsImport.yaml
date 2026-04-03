@@ -1,3 +1,250 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 687
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"metric SLO using bad events formula","name":"tf-TestAccDatadogServiceLevelObjective_CountSpecBadEventsImport-local-1772677644","sli_specification":{"count":{"bad_events_formula":{"formula":"query2"},"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count()"}]}},"tags":["foo:bar","baz"],"target_threshold":99,"thresholds":[{"target":99,"timeframe":"7d","warning":99.5}],"timeframe":"7d","type":"metric","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"c72706e316d35aa9bdef92fd52f5d22f","name":"tf-TestAccDatadogServiceLevelObjective_CountSpecBadEventsImport-local-1772677644","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"metric","type_id":1,"description":"metric SLO using bad events formula","timeframe":"7d","warning_threshold":99.5,"target_threshold":99,"query":{"numerator":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()","denominator":"(sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()) + (sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count())"},"creator":{"name":"May Fu","handle":"may.fu@datadoghq.com","email":"may.fu@datadoghq.com"},"created_at":1772677646,"modified_at":1772677646,"sli_specification":{"count":{"bad_events_formula":{"formula":"query2"},"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count()"}]}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 192.755041ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/c72706e316d35aa9bdef92fd52f5d22f
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"c72706e316d35aa9bdef92fd52f5d22f","name":"tf-TestAccDatadogServiceLevelObjective_CountSpecBadEventsImport-local-1772677644","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"metric","type_id":1,"description":"metric SLO using bad events formula","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"(sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()) + (sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count())","numerator":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},"creator":{"name":"May Fu","handle":"may.fu@datadoghq.com","email":"may.fu@datadoghq.com"},"created_at":1772677646,"modified_at":1772677646,"sli_specification":{"count":{"bad_events_formula":{"formula":"query2"},"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count()"}]}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 84.530458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/c72706e316d35aa9bdef92fd52f5d22f
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"c72706e316d35aa9bdef92fd52f5d22f","name":"tf-TestAccDatadogServiceLevelObjective_CountSpecBadEventsImport-local-1772677644","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"metric","type_id":1,"description":"metric SLO using bad events formula","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"(sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()) + (sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count())","numerator":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},"creator":{"name":"May Fu","handle":"may.fu@datadoghq.com","email":"may.fu@datadoghq.com"},"created_at":1772677646,"modified_at":1772677646,"sli_specification":{"count":{"bad_events_formula":{"formula":"query2"},"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count()"}]}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 69.31175ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/c72706e316d35aa9bdef92fd52f5d22f
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"c72706e316d35aa9bdef92fd52f5d22f","name":"tf-TestAccDatadogServiceLevelObjective_CountSpecBadEventsImport-local-1772677644","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"metric","type_id":1,"description":"metric SLO using bad events formula","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"(sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()) + (sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count())","numerator":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},"creator":{"name":"May Fu","handle":"may.fu@datadoghq.com","email":"may.fu@datadoghq.com"},"created_at":1772677646,"modified_at":1772677646,"sli_specification":{"count":{"bad_events_formula":{"formula":"query2"},"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count()"}]}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 73.411417ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/c72706e316d35aa9bdef92fd52f5d22f
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"c72706e316d35aa9bdef92fd52f5d22f","name":"tf-TestAccDatadogServiceLevelObjective_CountSpecBadEventsImport-local-1772677644","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"metric","type_id":1,"description":"metric SLO using bad events formula","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"query":{"denominator":"(sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()) + (sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count())","numerator":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},"creator":{"name":"May Fu","handle":"may.fu@datadoghq.com","email":"may.fu@datadoghq.com"},"created_at":1772677646,"modified_at":1772677646,"sli_specification":{"count":{"bad_events_formula":{"formula":"query2"},"good_events_formula":{"formula":"query1"},"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.servlet.request.hits{http.status_code:2*} by {env}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:trace.servlet.request.hits{http.status_code:5*} by {env}.as_count()"}]}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 70.592333ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/c72706e316d35aa9bdef92fd52f5d22f
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":["c72706e316d35aa9bdef92fd52f5d22f"],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.895742917s
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/c72706e316d35aa9bdef92fd52f5d22f
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["SLO not found: c72706e316d35aa9bdef92fd52f5d22f not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 106.876459ms

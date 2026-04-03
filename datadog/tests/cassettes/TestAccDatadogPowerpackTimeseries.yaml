@@ -1,3 +1,144 @@
 ---
 version: 2
-interactions: []
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 3444
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"sources:test tags:1","tags_execution":"and"}],"legend_columns":["value","min","max"],"legend_layout":"horizontal","legend_size":"2","markers":[{"display_type":"error dashed","label":"y=500000","value":"y=500000"},{"display_type":"warning dashed","label":"y=400000","value":"y=400000"}],"requests":[{"display_type":"line","metadata":[{"expression":""}],"on_right_yaxis":true,"q":"avg:system.cpu.user{env:prod} by {app}","style":{"has_value_labels":false,"line_type":"solid","line_width":"thin","palette":"dog_classic"}},{"display_type":"line","log_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"on_right_yaxis":false,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"cool"}},{"apm_query":{"compute":{"aggregation":"cardinality","facet":"env","interval":1000},"group_by":[{"facet":"status","limit":10,"sort":{"aggregation":"cardinality","facet":"env","order":"desc"}}],"index":"trace-search","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"dashed","line_width":"thick","palette":"warm"}},{"display_type":"line","on_right_yaxis":true,"process_query":{"filter_by":["account:prod"],"limit":10,"metric":"process.stat.cpu.total_pct"},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"purple"}},{"display_type":"area","network_query":{"compute":{"aggregation":"sum","facet":"network.bytes_read"},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""}},"on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"orange"}},{"display_type":"area","on_right_yaxis":true,"rum_query":{"compute":{"aggregation":"avg","facet":"@duration","interval":10},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"avg","facet":"@duration","order":"desc"}}],"index":"*","search":{"query":""}},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"grey"}},{"audit_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"@metadata.api_key.id","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"green"}}],"right_yaxis":{"include_zero":false,"max":"599998","min":"1"},"show_legend":true,"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","title_size":"16","type":"timeseries","yaxis":{"include_zero":true,"max":"599999","min":"0"}}}]}},"name":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"92c7d5c2-2144-11f1-9a6a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"sources:test tags:1","tags_execution":"and"}],"legend_columns":["value","min","max"],"legend_layout":"horizontal","legend_size":"2","markers":[{"display_type":"error dashed","label":"y=500000","value":"y=500000"},{"display_type":"warning dashed","label":"y=400000","value":"y=400000"}],"requests":[{"display_type":"line","metadata":[{"expression":""}],"on_right_yaxis":true,"q":"avg:system.cpu.user{env:prod} by {app}","style":{"has_value_labels":false,"line_type":"solid","line_width":"thin","palette":"dog_classic"}},{"display_type":"line","log_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"on_right_yaxis":false,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"cool"}},{"apm_query":{"compute":{"aggregation":"cardinality","facet":"env","interval":1000},"group_by":[{"facet":"status","limit":10,"sort":{"aggregation":"cardinality","facet":"env","order":"desc"}}],"index":"trace-search","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"dashed","line_width":"thick","palette":"warm"}},{"display_type":"line","on_right_yaxis":true,"process_query":{"filter_by":["account:prod"],"limit":10,"metric":"process.stat.cpu.total_pct"},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"purple"}},{"display_type":"area","network_query":{"compute":{"aggregation":"sum","facet":"network.bytes_read"},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""}},"on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"orange"}},{"display_type":"area","on_right_yaxis":true,"rum_query":{"compute":{"aggregation":"avg","facet":"@duration","interval":10},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"avg","facet":"@duration","order":"desc"}}],"index":"*","search":{"query":""}},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"grey"}},{"audit_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"@metadata.api_key.id","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"green"}}],"right_yaxis":{"include_zero":false,"max":"599998","min":"1"},"show_legend":true,"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","title_size":"16","type":"timeseries","yaxis":{"include_zero":true,"max":"599999","min":"0"}},"id":2212297409197654}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"d7d86fa8-1cff-4616-ac9e-90b7e9b729ed"}}}},"included":[{"type":"users","id":"d7d86fa8-1cff-4616-ac9e-90b7e9b729ed","attributes":{"name":"Becca Jellinek","email":"becca.jellinek@datadoghq.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 350.273709ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/92c7d5c2-2144-11f1-9a6a-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"92c7d5c2-2144-11f1-9a6a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"sources:test tags:1","tags_execution":"and"}],"legend_columns":["value","min","max"],"legend_layout":"horizontal","legend_size":"2","markers":[{"display_type":"error dashed","label":"y=500000","value":"y=500000"},{"display_type":"warning dashed","label":"y=400000","value":"y=400000"}],"requests":[{"display_type":"line","metadata":[{"expression":""}],"on_right_yaxis":true,"q":"avg:system.cpu.user{env:prod} by {app}","style":{"has_value_labels":false,"line_type":"solid","line_width":"thin","palette":"dog_classic"}},{"display_type":"line","log_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"on_right_yaxis":false,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"cool"}},{"apm_query":{"compute":{"aggregation":"cardinality","facet":"env","interval":1000},"group_by":[{"facet":"status","limit":10,"sort":{"aggregation":"cardinality","facet":"env","order":"desc"}}],"index":"trace-search","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"dashed","line_width":"thick","palette":"warm"}},{"display_type":"line","on_right_yaxis":true,"process_query":{"filter_by":["account:prod"],"limit":10,"metric":"process.stat.cpu.total_pct"},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"purple"}},{"display_type":"area","network_query":{"compute":{"aggregation":"sum","facet":"network.bytes_read"},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""}},"on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"orange"}},{"display_type":"area","on_right_yaxis":true,"rum_query":{"compute":{"aggregation":"avg","facet":"@duration","interval":10},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"avg","facet":"@duration","order":"desc"}}],"index":"*","search":{"query":""}},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"grey"}},{"audit_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"@metadata.api_key.id","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"green"}}],"right_yaxis":{"include_zero":false,"max":"599998","min":"1"},"show_legend":true,"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","title_size":"16","type":"timeseries","yaxis":{"include_zero":true,"max":"599999","min":"0"}},"id":2212297409197654}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"d7d86fa8-1cff-4616-ac9e-90b7e9b729ed"}}}},"included":[{"type":"users","id":"d7d86fa8-1cff-4616-ac9e-90b7e9b729ed","attributes":{"name":"Becca Jellinek","email":"becca.jellinek@datadoghq.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 81.401791ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/92c7d5c2-2144-11f1-9a6a-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"92c7d5c2-2144-11f1-9a6a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackTimeseries-local-1773671381","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"sources:test tags:1","tags_execution":"and"}],"legend_columns":["value","min","max"],"legend_layout":"horizontal","legend_size":"2","markers":[{"display_type":"error dashed","label":"y=500000","value":"y=500000"},{"display_type":"warning dashed","label":"y=400000","value":"y=400000"}],"requests":[{"display_type":"line","metadata":[{"expression":""}],"on_right_yaxis":true,"q":"avg:system.cpu.user{env:prod} by {app}","style":{"has_value_labels":false,"line_type":"solid","line_width":"thin","palette":"dog_classic"}},{"display_type":"line","log_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"on_right_yaxis":false,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"cool"}},{"apm_query":{"compute":{"aggregation":"cardinality","facet":"env","interval":1000},"group_by":[{"facet":"status","limit":10,"sort":{"aggregation":"cardinality","facet":"env","order":"desc"}}],"index":"trace-search","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"dashed","line_width":"thick","palette":"warm"}},{"display_type":"line","on_right_yaxis":true,"process_query":{"filter_by":["account:prod"],"limit":10,"metric":"process.stat.cpu.total_pct"},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"purple"}},{"display_type":"area","network_query":{"compute":{"aggregation":"sum","facet":"network.bytes_read"},"group_by":[{"facet":"source_region"},{"facet":"dest_environment"}],"index":"netflow-search","search":{"query":"network.transport:udp network.destination.ip:\"*\""}},"on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"orange"}},{"display_type":"area","on_right_yaxis":true,"rum_query":{"compute":{"aggregation":"avg","facet":"@duration","interval":10},"group_by":[{"facet":"service","limit":10,"sort":{"aggregation":"avg","facet":"@duration","order":"desc"}}],"index":"*","search":{"query":""}},"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"grey"}},{"audit_query":{"compute":{"aggregation":"count"},"group_by":[{"facet":"@metadata.api_key.id","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"index":"*","search":{"query":""}},"display_type":"line","on_right_yaxis":true,"style":{"has_value_labels":false,"line_type":"solid","line_width":"normal","palette":"green"}}],"right_yaxis":{"include_zero":false,"max":"599998","min":"1"},"show_legend":true,"title":"system.cpu.user, env, process.stat.cpu.total_pct, network.bytes_read, @d...","title_align":"left","title_size":"16","type":"timeseries","yaxis":{"include_zero":true,"max":"599999","min":"0"}},"id":2212297409197654}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"d7d86fa8-1cff-4616-ac9e-90b7e9b729ed"}}}},"included":[{"type":"users","id":"d7d86fa8-1cff-4616-ac9e-90b7e9b729ed","attributes":{"name":"Becca Jellinek","email":"becca.jellinek@datadoghq.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 78.70425ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/powerpacks/92c7d5c2-2144-11f1-9a6a-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 125.478167ms

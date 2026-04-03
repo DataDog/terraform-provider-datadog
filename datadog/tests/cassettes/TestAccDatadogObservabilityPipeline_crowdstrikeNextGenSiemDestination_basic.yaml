@@ -31,13 +31,13 @@ interactions:
         content_length: 409
         uncompressed: false
         body: |
-            {"data":{"id":"ba78028c-2ea9-11f1-85bb-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-next-gen-siem-destination-pipeline-basic","config":{"destinations":[{"encoding":"raw_message","id":"crowdstrike-dest-basic-1","inputs":["source-1"],"type":"crowdstrike_next_gen_siem"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"0ffaa8a6-f20d-11f0-9e0e-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-next-gen-siem-destination-pipeline-basic","config":{"destinations":[{"encoding":"raw_message","id":"crowdstrike-dest-basic-1","inputs":["source-1"],"type":"crowdstrike_next_gen_siem"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 420.357167ms
+        duration: 488.207625ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ba78028c-2ea9-11f1-85bb-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/0ffaa8a6-f20d-11f0-9e0e-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -65,13 +65,13 @@ interactions:
         content_length: 409
         uncompressed: false
         body: |
-            {"data":{"id":"ba78028c-2ea9-11f1-85bb-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-next-gen-siem-destination-pipeline-basic","config":{"destinations":[{"encoding":"raw_message","id":"crowdstrike-dest-basic-1","inputs":["source-1"],"type":"crowdstrike_next_gen_siem"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"0ffaa8a6-f20d-11f0-9e0e-da7ad0900002","type":"pipelines","attributes":{"name":"crowdstrike-next-gen-siem-destination-pipeline-basic","config":{"destinations":[{"encoding":"raw_message","id":"crowdstrike-dest-basic-1","inputs":["source-1"],"type":"crowdstrike_next_gen_siem"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 537.30775ms
+        duration: 238.9045ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ba78028c-2ea9-11f1-85bb-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/0ffaa8a6-f20d-11f0-9e0e-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 364.606667ms
+        duration: 374.368625ms
