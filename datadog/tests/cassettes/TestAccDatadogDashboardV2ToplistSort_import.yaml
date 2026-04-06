@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 532
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2ToplistSort_import-local-1772139241","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zkc-qhe-hhr","title":"tf-TestAccDatadogDashboardV2ToplistSort_import-local-1772139241","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zkc-qhe-hhr/tf-testaccdatadogdashboardv2toplistsortimport-local-1772139241","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":4044406110857349}],"notify_list":[],"created_at":"2026-02-26T20:54:05.548982+00:00","modified_at":"2026-02-26T20:54:05.548982+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 139.253875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zkc-qhe-hhr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zkc-qhe-hhr","title":"tf-TestAccDatadogDashboardV2ToplistSort_import-local-1772139241","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zkc-qhe-hhr/tf-testaccdatadogdashboardv2toplistsortimport-local-1772139241","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":4044406110857349}],"notify_list":[],"created_at":"2026-02-26T20:54:05.548982+00:00","modified_at":"2026-02-26T20:54:05.548982+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 115.632792ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zkc-qhe-hhr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zkc-qhe-hhr","title":"tf-TestAccDatadogDashboardV2ToplistSort_import-local-1772139241","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zkc-qhe-hhr/tf-testaccdatadogdashboardv2toplistsortimport-local-1772139241","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":4044406110857349}],"notify_list":[],"created_at":"2026-02-26T20:54:05.548982+00:00","modified_at":"2026-02-26T20:54:05.548982+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 135.147625ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zkc-qhe-hhr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"zkc-qhe-hhr","title":"tf-TestAccDatadogDashboardV2ToplistSort_import-local-1772139241","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zkc-qhe-hhr/tf-testaccdatadogdashboardv2toplistsortimport-local-1772139241","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":4044406110857349}],"notify_list":[],"created_at":"2026-02-26T20:54:05.548982+00:00","modified_at":"2026-02-26T20:54:05.548982+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 127.429542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zkc-qhe-hhr
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"zkc-qhe-hhr"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 342.905083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/zkc-qhe-hhr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID zkc-qhe-hhr not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 98.76525ms
