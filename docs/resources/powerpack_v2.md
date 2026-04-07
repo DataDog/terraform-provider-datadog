@@ -956,6 +956,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `distribution_definition` block. (see [below for nested schema](#nestedblock--widget--distribution_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--distribution_definition--time))
@@ -964,6 +965,20 @@ Optional:
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--xaxis))
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--yaxis))
+
+<a id="nestedblock--widget--distribution_definition--marker"></a>
+### Nested Schema for `widget.distribution_definition.marker`
+
+Required:
+
+- `value` (String) Value to apply. Can be a single value `y = 15` or a range of values `0 < y < 10`. For Distribution widgets with `display_type` set to `percentile`, this should be a numeric percentile value (for example, `90` for P90).
+
+Optional:
+
+- `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
+- `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
+
 
 <a id="nestedblock--widget--distribution_definition--request"></a>
 ### Nested Schema for `widget.distribution_definition.request`
@@ -1773,6 +1788,7 @@ Required:
 
 Optional:
 
+- `background_color` (String) The background color of the text widget.
 - `color` (String) The color of the text in the widget.
 - `description` (String) The description of the widget.
 - `font_size` (String) The size of the text in the widget.
@@ -3335,6 +3351,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `distribution_definition` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--time))
@@ -3343,6 +3360,20 @@ Optional:
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--xaxis))
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--yaxis))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--marker"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.marker`
+
+Required:
+
+- `value` (String) Value to apply. Can be a single value `y = 15` or a range of values `0 < y < 10`. For Distribution widgets with `display_type` set to `percentile`, this should be a numeric percentile value (for example, `90` for P90).
+
+Optional:
+
+- `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
+- `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
+
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request"></a>
 ### Nested Schema for `widget.group_definition.widget.distribution_definition.request`
@@ -4152,6 +4183,7 @@ Required:
 
 Optional:
 
+- `background_color` (String) The background color of the text widget.
 - `color` (String) The color of the text in the widget.
 - `description` (String) The description of the widget.
 - `font_size` (String) The size of the text in the widget.
@@ -4814,6 +4846,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--time))
@@ -4844,6 +4877,20 @@ Required:
 Optional:
 
 - `tags_execution` (String) The execution method for multi-value filters.
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--marker"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.marker`
+
+Required:
+
+- `value` (String) Value to apply. Can be a single value `y = 15` or a range of values `0 < y < 10`. For Distribution widgets with `display_type` set to `percentile`, this should be a numeric percentile value (for example, `90` for P90).
+
+Optional:
+
+- `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
+- `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request"></a>
@@ -5529,6 +5576,7 @@ Optional:
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show the hosts that don't fit in a group.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
+- `notes` (String) Notes/description text for the host map widget.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
@@ -6928,7 +6976,9 @@ Optional:
 
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -11424,6 +11474,7 @@ Optional:
 
 - `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
 - `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request"></a>
@@ -13757,6 +13808,7 @@ Optional:
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block. (see [below for nested schema](#nestedblock--widget--heatmap_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--heatmap_definition--time))
@@ -13787,6 +13839,20 @@ Required:
 Optional:
 
 - `tags_execution` (String) The execution method for multi-value filters.
+
+
+<a id="nestedblock--widget--heatmap_definition--marker"></a>
+### Nested Schema for `widget.heatmap_definition.marker`
+
+Required:
+
+- `value` (String) Value to apply. Can be a single value `y = 15` or a range of values `0 < y < 10`. For Distribution widgets with `display_type` set to `percentile`, this should be a numeric percentile value (for example, `90` for P90).
+
+Optional:
+
+- `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
+- `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
 
 
 <a id="nestedblock--widget--heatmap_definition--request"></a>
@@ -14472,6 +14538,7 @@ Optional:
 - `no_group_hosts` (Boolean) A Boolean indicating whether to show the hosts that don't fit in a group.
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
+- `notes` (String) Notes/description text for the host map widget.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
@@ -15871,7 +15938,9 @@ Optional:
 
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--list_stream_definition--time))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -20367,6 +20436,7 @@ Optional:
 
 - `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
 - `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
 
 
 <a id="nestedblock--widget--timeseries_definition--request"></a>
