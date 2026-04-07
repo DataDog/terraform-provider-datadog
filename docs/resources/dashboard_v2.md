@@ -10526,11 +10526,18 @@ Optional:
 
 Optional:
 
-- `network_query` (Block List, Max: 1) Network query for the Sankey widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--network_query))
-- `rum_query` (Block List, Max: 1) RUM query for the Sankey widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_query))
+- `network_request` (Block List, Max: 1) Network request for the Sankey widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--network_request))
+- `rum_request` (Block List, Max: 1) RUM request for the Sankey widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request))
 
-<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--network_query"></a>
-### Nested Schema for `widget.group_definition.widget.sankey_definition.request.network_query`
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--network_request"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.network_request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) The query for the Sankey network request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--network_request--query))
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--network_request--query"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.network_request.query`
 
 Required:
 
@@ -10541,13 +10548,13 @@ Required:
 
 Optional:
 
-- `compute` (Block List, Max: 1) Compute aggregation configuration. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--network_query--compute))
+- `compute` (Block List, Max: 1) Compute aggregation configuration. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--network_request--query--compute))
 - `mode` (String) The mode for the Sankey network query. Valid values are `target`.
 - `should_exclude_missing` (Boolean) Whether to exclude missing values.
-- `sort` (Block List, Max: 1) Sort configuration. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--network_query--sort))
+- `sort` (Block List, Max: 1) Sort configuration. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--network_request--query--sort))
 
-<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--network_query--compute"></a>
-### Nested Schema for `widget.group_definition.widget.sankey_definition.request.network_query.compute`
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--network_request--query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.network_request.query.compute`
 
 Required:
 
@@ -10555,8 +10562,8 @@ Required:
 - `metric` (String) The metric to aggregate.
 
 
-<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--network_query--sort"></a>
-### Nested Schema for `widget.group_definition.widget.sankey_definition.request.network_query.sort`
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--network_request--query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.network_request.query.sort`
 
 Optional:
 
@@ -10565,8 +10572,16 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_query`
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) The query for the Sankey RUM request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query))
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query`
 
 Required:
 
@@ -10581,6 +10596,7 @@ Optional:
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
+
 
 
 
@@ -20498,11 +20514,18 @@ Optional:
 
 Optional:
 
-- `network_query` (Block List, Max: 1) Network query for the Sankey widget. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--network_query))
-- `rum_query` (Block List, Max: 1) RUM query for the Sankey widget. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_query))
+- `network_request` (Block List, Max: 1) Network request for the Sankey widget. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--network_request))
+- `rum_request` (Block List, Max: 1) RUM request for the Sankey widget. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request))
 
-<a id="nestedblock--widget--sankey_definition--request--network_query"></a>
-### Nested Schema for `widget.sankey_definition.request.network_query`
+<a id="nestedblock--widget--sankey_definition--request--network_request"></a>
+### Nested Schema for `widget.sankey_definition.request.network_request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) The query for the Sankey network request. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--network_request--query))
+
+<a id="nestedblock--widget--sankey_definition--request--network_request--query"></a>
+### Nested Schema for `widget.sankey_definition.request.network_request.query`
 
 Required:
 
@@ -20513,13 +20536,13 @@ Required:
 
 Optional:
 
-- `compute` (Block List, Max: 1) Compute aggregation configuration. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--network_query--compute))
+- `compute` (Block List, Max: 1) Compute aggregation configuration. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--network_request--query--compute))
 - `mode` (String) The mode for the Sankey network query. Valid values are `target`.
 - `should_exclude_missing` (Boolean) Whether to exclude missing values.
-- `sort` (Block List, Max: 1) Sort configuration. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--network_query--sort))
+- `sort` (Block List, Max: 1) Sort configuration. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--network_request--query--sort))
 
-<a id="nestedblock--widget--sankey_definition--request--network_query--compute"></a>
-### Nested Schema for `widget.sankey_definition.request.network_query.compute`
+<a id="nestedblock--widget--sankey_definition--request--network_request--query--compute"></a>
+### Nested Schema for `widget.sankey_definition.request.network_request.query.compute`
 
 Required:
 
@@ -20527,8 +20550,8 @@ Required:
 - `metric` (String) The metric to aggregate.
 
 
-<a id="nestedblock--widget--sankey_definition--request--network_query--sort"></a>
-### Nested Schema for `widget.sankey_definition.request.network_query.sort`
+<a id="nestedblock--widget--sankey_definition--request--network_request--query--sort"></a>
+### Nested Schema for `widget.sankey_definition.request.network_request.query.sort`
 
 Optional:
 
@@ -20537,8 +20560,16 @@ Optional:
 
 
 
-<a id="nestedblock--widget--sankey_definition--request--rum_query"></a>
-### Nested Schema for `widget.sankey_definition.request.rum_query`
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) The query for the Sankey RUM request. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query))
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query`
 
 Required:
 
@@ -20553,6 +20584,7 @@ Optional:
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
+
 
 
 

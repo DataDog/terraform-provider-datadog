@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775577183","widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"}}]}
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775579913","widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"}}]}
         form: {}
         headers:
             Content-Type:
@@ -29,13 +29,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"zth-wmk-qhj","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775577183","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zth-wmk-qhj/tf-testaccdatadogdashboardv2sankeyimport-local-1775577183","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":3921199435758822}],"notify_list":[],"created_at":"2026-04-07T15:53:05.994297+00:00","modified_at":"2026-04-07T15:53:05.994297+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"ket-qcj-bfp","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ket-qcj-bfp/tf-testaccdatadogdashboardv2sankeyimport-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6461965510590066}],"notify_list":[],"created_at":"2026-04-07T16:38:35.552199+00:00","modified_at":"2026-04-07T16:38:35.552199+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 268.50725ms
+        duration: 558.52275ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -52,7 +52,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/zth-wmk-qhj
+        url: https://api.datadoghq.com/api/v1/dashboard/ket-qcj-bfp
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"zth-wmk-qhj","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775577183","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zth-wmk-qhj/tf-testaccdatadogdashboardv2sankeyimport-local-1775577183","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":3921199435758822}],"notify_list":[],"created_at":"2026-04-07T15:53:05.994297+00:00","modified_at":"2026-04-07T15:53:05.994297+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"ket-qcj-bfp","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ket-qcj-bfp/tf-testaccdatadogdashboardv2sankeyimport-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6461965510590066}],"notify_list":[],"created_at":"2026-04-07T16:38:35.552199+00:00","modified_at":"2026-04-07T16:38:35.552199+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 90.174542ms
+        duration: 108.4655ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/zth-wmk-qhj
+        url: https://api.datadoghq.com/api/v1/dashboard/ket-qcj-bfp
         method: GET
       response:
         proto: HTTP/1.1
@@ -97,13 +97,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"zth-wmk-qhj","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775577183","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zth-wmk-qhj/tf-testaccdatadogdashboardv2sankeyimport-local-1775577183","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":3921199435758822}],"notify_list":[],"created_at":"2026-04-07T15:53:05.994297+00:00","modified_at":"2026-04-07T15:53:05.994297+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"ket-qcj-bfp","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ket-qcj-bfp/tf-testaccdatadogdashboardv2sankeyimport-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6461965510590066}],"notify_list":[],"created_at":"2026-04-07T16:38:35.552199+00:00","modified_at":"2026-04-07T16:38:35.552199+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 109.514292ms
+        duration: 97.03475ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -120,7 +120,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/zth-wmk-qhj
+        url: https://api.datadoghq.com/api/v1/dashboard/ket-qcj-bfp
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"id":"zth-wmk-qhj","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775577183","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/zth-wmk-qhj/tf-testaccdatadogdashboardv2sankeyimport-local-1775577183","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":3921199435758822}],"notify_list":[],"created_at":"2026-04-07T15:53:05.994297+00:00","modified_at":"2026-04-07T15:53:05.994297+00:00","template_variable_presets":[],"tags":[]}'
+        body: '{"id":"ket-qcj-bfp","title":"tf-TestAccDatadogDashboardV2Sankey_import-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ket-qcj-bfp/tf-testaccdatadogdashboardv2sankeyimport-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6461965510590066}],"notify_list":[],"created_at":"2026-04-07T16:38:35.552199+00:00","modified_at":"2026-04-07T16:38:35.552199+00:00","template_variable_presets":[],"tags":[]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 112.21975ms
+        duration: 103.155458ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -154,7 +154,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/zth-wmk-qhj
+        url: https://api.datadoghq.com/api/v1/dashboard/ket-qcj-bfp
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"deleted_dashboard_id":"zth-wmk-qhj"}'
+        body: '{"deleted_dashboard_id":"ket-qcj-bfp"}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 522.321333ms
+        duration: 467.8585ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/zth-wmk-qhj
+        url: https://api.datadoghq.com/api/v1/dashboard/ket-qcj-bfp
         method: GET
       response:
         proto: HTTP/1.1
@@ -199,10 +199,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID zth-wmk-qhj not found"]}'
+        body: '{"errors":["Dashboard with ID ket-qcj-bfp not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 75.476959ms
+        duration: 95.0285ms
