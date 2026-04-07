@@ -44,6 +44,38 @@ resource "datadog_integration_fastly_account" "foo" {
 }`, uniq)
 }
 
+func TestAccIntegrationFastlyAccountWriteOnly(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationFastlyAccountDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationFastlyAccountWriteOnly(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationFastlyAccountExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_fastly_account.foo", "name", uniq),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_fastly_account.foo", "api_key_wo_version", "1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogIntegrationFastlyAccountWriteOnly(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_fastly_account" "foo" {
+    api_key_wo = "ABCDEFG123"
+    api_key_wo_version = "1"
+    name = "%s"
+}`, uniq)
+}
+
 func testAccCheckDatadogIntegrationFastlyAccountDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
