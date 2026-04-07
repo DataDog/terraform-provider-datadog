@@ -30,8 +30,10 @@ resource "datadog_integration_fastly_account" "foo" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `api_key` (String, Sensitive) The API key for the Fastly account. Exactly one of `api_key` or `api_key_wo` must be set.
-- `api_key_wo` (String, Sensitive) Write-only API key for the Fastly account. Exactly one of `api_key` or `api_key_wo` must be set. Must be used with `api_key_wo_version`.
+- `api_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only API key for the Fastly account. Exactly one of `api_key` or `api_key_wo` must be set. Must be used with `api_key_wo_version`.
 - `api_key_wo_version` (String) Version for api_key_wo rotation. Changing this triggers an update. String length must be at least 1.
 
 ### Read-Only
