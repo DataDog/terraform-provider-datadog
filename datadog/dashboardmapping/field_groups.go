@@ -1507,16 +1507,17 @@ var sankeyNetworkQueryFields = []FieldSpec{
 		Description: "Whether to exclude missing values."},
 }
 
-// sankeyWidgetRequestFields are the request fields for the Sankey widget.
-// The request is a oneOf (SankeyRumRequest or SankeyNetworkRequest).
-// Both variants have "query" in JSON but different shapes; we use separate HCL blocks
-// and handle dispatch in post-processing.
-var sankeyWidgetRequestFields = []FieldSpec{
-	{HCLKey: "rum_query", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
-		Description: "RUM query for the Sankey widget.",
+// sankeyRumRequestFields are the children of the rum_request variant.
+var sankeyRumRequestFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The query for the Sankey RUM request.",
 		Children:    sankeyRumQueryFields},
-	{HCLKey: "network_query", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
-		Description: "Network query for the Sankey widget.",
+}
+
+// sankeyNetworkRequestFields are the children of the network_request variant.
+var sankeyNetworkRequestFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The query for the Sankey network request.",
 		Children:    sankeyNetworkQueryFields},
 }
 
@@ -1530,8 +1531,8 @@ var wildcardWidgetSpecificationFields = []FieldSpec{
 		Description: "The type of specification (Vega or Vega-Lite).",
 		ValidValues: []string{"vega", "vega-lite"}},
 	// contents is an arbitrary JSON object — stored as a JSON string in HCL via jsonencode().
-	// Build/flatten handled in post-processing to marshal/unmarshal between string and object.
-	{HCLKey: "contents", Type: TypeString, OmitEmpty: false, Required: true, SchemaOnly: true,
+	// TypeJSON handles the string ↔ object conversion automatically.
+	{HCLKey: "contents", Type: TypeJSON, OmitEmpty: false, Required: true,
 		Description: "The Vega or Vega-Lite specification as a JSON string. Use `jsonencode()` to encode the specification."},
 }
 

@@ -12,10 +12,12 @@ resource "datadog_dashboard_v2" "sankey_dashboard" {
         sankey_definition {
             title = "RUM Sankey"
             request {
-                rum_query {
-                    data_source  = "rum"
-                    query_string = "@type:view"
-                    mode         = "source"
+                rum_request {
+                    query {
+                        data_source  = "rum"
+                        query_string = "@type:view"
+                        mode         = "source"
+                    }
                 }
             }
         }
@@ -26,9 +28,9 @@ resource "datadog_dashboard_v2" "sankey_dashboard" {
 var datadogDashboardSankeyAsserts = []string{
 	"title = {{uniq}}",
 	"widget.0.sankey_definition.0.title = RUM Sankey",
-	"widget.0.sankey_definition.0.request.0.rum_query.0.data_source = rum",
-	"widget.0.sankey_definition.0.request.0.rum_query.0.query_string = @type:view",
-	"widget.0.sankey_definition.0.request.0.rum_query.0.mode = source",
+	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.data_source = rum",
+	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.query_string = @type:view",
+	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.mode = source",
 }
 
 func TestAccDatadogDashboardV2Sankey(t *testing.T) {

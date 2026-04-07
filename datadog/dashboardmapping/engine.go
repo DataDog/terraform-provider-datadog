@@ -31,6 +31,7 @@ const (
 	TypeBlock                       // single nested block (MaxItems:1 in schema)
 	TypeBlockList                   // list of blocks
 	TypeOneOf                       // polymorphic block — exactly one child variant should be set
+	TypeJSON                        // arbitrary JSON — HCL string ↔ JSON object/array
 )
 
 // OneOfDiscriminator configures how a TypeOneOf field determines which variant is active.
@@ -192,6 +193,55 @@ func setAtJSONPath(m map[string]interface{}, path string, val interface{}) {
 }
 
 // ============================================================
+// Shared OneOf Discriminator Helpers
+// ============================================================
+
+// matchOneOfVariant finds the child variant matching the discriminator value
+// in a JSON object. Used by both TypeOneOf and discriminated TypeBlockList.
+func matchOneOfVariant(f FieldSpec, jsonObj map[string]interface{}) *FieldSpec {
+	var discriminatorValue string
+	if f.Discriminator != nil && f.Discriminator.JSONKey != "" {
+		discriminatorValue, _ = jsonObj[f.Discriminator.JSONKey].(string)
+	}
+	for i := range f.Children {
+		child := &f.Children[i]
+		if child.Discriminator == nil {
+			continue
+		}
+		if child.Discriminator.Value != "" && child.Discriminator.Value == discriminatorValue {
+			return child
+		}
+		for _, v := range child.Discriminator.Values {
+			if v == discriminatorValue {
+				return child
+			}
+		}
+	}
+	// Fall back to DefaultVariant
+	for i := range f.Children {
+		if f.Children[i].Discriminator != nil && f.Children[i].Discriminator.DefaultVariant {
+			return &f.Children[i]
+		}
+	}
+	return nil
+}
+
+// findPopulatedVariant finds the first populated variant block in an HCL state map.
+// Returns the matched FieldSpec and the inner block data. Used by both TypeOneOf and
+// discriminated TypeBlockList build direction.
+func findPopulatedVariant(f FieldSpec, item map[string]interface{}) (*FieldSpec, map[string]interface{}) {
+	for i := range f.Children {
+		child := &f.Children[i]
+		if child.Type == TypeBlock {
+			if inner := getBlockFromMap(item, child.HCLKey); inner != nil {
+				return child, inner
+			}
+		}
+	}
+	return nil, nil
+}
+
+// ============================================================
 // Generic Engine: JSON → HCL (flatten direction)
 // ============================================================
 
@@ -235,6 +285,13 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = float64(v)
 			}
 
+		case TypeJSON:
+			if jsonVal != nil {
+				if bytes, err := json.Marshal(jsonVal); err == nil {
+					result[f.HCLKey] = string(bytes)
+				}
+			}
+
 		case TypeStringList:
 			strs := toStringSliceFromInterface(jsonVal)
 			if f.OmitEmpty && len(strs) == 0 {
@@ -248,14 +305,37 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 			}
 
 		case TypeBlockList:
-			if items, ok := jsonVal.([]interface{}); ok {
-				list := make([]interface{}, len(items))
-				for i, item := range items {
-					if m, ok := item.(map[string]interface{}); ok {
-						list[i] = FlattenEngineJSON(f.Children, m)
+			if f.Discriminator != nil {
+				// Discriminated union per list item — each JSON array element
+				// is dispatched to a variant child based on the discriminator.
+				if items, ok := jsonVal.([]interface{}); ok {
+					list := make([]interface{}, len(items))
+					for i, item := range items {
+						m, ok := item.(map[string]interface{})
+						if !ok {
+							list[i] = map[string]interface{}{}
+							continue
+						}
+						if matched := matchOneOfVariant(f, m); matched != nil {
+							list[i] = map[string]interface{}{
+								matched.HCLKey: []interface{}{FlattenEngineJSON(matched.Children, m)},
+							}
+						} else {
+							list[i] = map[string]interface{}{}
+						}
 					}
+					result[f.HCLKey] = list
 				}
-				result[f.HCLKey] = list
+			} else {
+				if items, ok := jsonVal.([]interface{}); ok {
+					list := make([]interface{}, len(items))
+					for i, item := range items {
+						if m, ok := item.(map[string]interface{}); ok {
+							list[i] = FlattenEngineJSON(f.Children, m)
+						}
+					}
+					result[f.HCLKey] = list
+				}
 			}
 
 		case TypeOneOf:
@@ -263,45 +343,10 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 			if !ok {
 				continue
 			}
-			// Read discriminator value from JSON
-			var discriminatorValue string
-			if f.Discriminator != nil && f.Discriminator.JSONKey != "" {
-				discriminatorValue, _ = jsonObj[f.Discriminator.JSONKey].(string)
-			}
-			// Find the matching variant child
-			var matchedChild *FieldSpec
-			for i := range f.Children {
-				child := &f.Children[i]
-				if child.Discriminator == nil {
-					continue
-				}
-				if child.Discriminator.Value != "" && child.Discriminator.Value == discriminatorValue {
-					matchedChild = child
-					break
-				}
-				for _, v := range child.Discriminator.Values {
-					if v == discriminatorValue {
-						matchedChild = child
-						break
-					}
-				}
-				if matchedChild != nil {
-					break
-				}
-			}
-			// Fall back to DefaultVariant if no explicit match
-			if matchedChild == nil {
-				for i := range f.Children {
-					if f.Children[i].Discriminator != nil && f.Children[i].Discriminator.DefaultVariant {
-						matchedChild = &f.Children[i]
-						break
-					}
-				}
-			}
+			matchedChild := matchOneOfVariant(f, jsonObj)
 			if matchedChild == nil {
 				continue
 			}
-			// Flatten the matched variant into a state map for the outer TypeOneOf block
 			variantState := map[string]interface{}{}
 			if matchedChild.Type == TypeBlock {
 				variantState[matchedChild.HCLKey] = []interface{}{FlattenEngineJSON(matchedChild.Children, jsonObj)}
@@ -946,22 +991,6 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 		}
 	}
 
-	// ---- Sankey requests (oneOf rum/network) ----
-	if spec.JSONType == "sankey" {
-		if requests, ok := def["requests"].([]interface{}); ok {
-			flatRequests := make([]interface{}, len(requests))
-			for ri, req := range requests {
-				reqMap, ok := req.(map[string]interface{})
-				if !ok {
-					flatRequests[ri] = map[string]interface{}{}
-					continue
-				}
-				flatRequests[ri] = flattenSankeyRequestJSON(reqMap)
-			}
-			defState["request"] = flatRequests
-		}
-	}
-
 	// ---- Wildcard requests (multiple formula types + list stream) ----
 	if spec.JSONType == "wildcard" {
 		if requests, ok := def["requests"].([]interface{}); ok {
@@ -975,17 +1004,6 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 				flatRequests[ri] = flattenWildcardRequestJSON(reqMap)
 			}
 			defState["request"] = flatRequests
-		}
-		// Flatten specification block
-		if specObj, ok := def["specification"].(map[string]interface{}); ok {
-			flatSpec := FlattenEngineJSON(wildcardWidgetSpecificationFields, specObj)
-			// Marshal contents object to JSON string
-			if contents, ok := specObj["contents"]; ok {
-				if contentsBytes, err := json.Marshal(contents); err == nil {
-					flatSpec["contents"] = string(contentsBytes)
-				}
-			}
-			defState["specification"] = []interface{}{flatSpec}
 		}
 	}
 }
@@ -1543,20 +1561,49 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), nested)
 
+		case TypeJSON:
+			if str, ok := data[f.HCLKey].(string); ok && str != "" {
+				var obj interface{}
+				if err := json.Unmarshal([]byte(str), &obj); err == nil {
+					setAtJSONPath(result, f.effectiveJSONPath(), obj)
+				}
+			}
+
 		case TypeBlockList:
-			items := getBlockListFromMap(data, f.HCLKey)
-			built := make([]interface{}, 0, len(items))
-			for _, item := range items {
-				built = append(built, BuildEngineJSONFromMap(item, f.Children))
+			if f.Discriminator != nil {
+				// Discriminated union per list item
+				items := getBlockListFromMap(data, f.HCLKey)
+				built := make([]interface{}, 0, len(items))
+				for _, item := range items {
+					matched, inner := findPopulatedVariant(f, item)
+					if matched == nil {
+						built = append(built, map[string]interface{}{})
+						continue
+					}
+					resultJSON := BuildEngineJSONFromMap(inner, matched.Children)
+					if matched.Discriminator != nil && matched.Discriminator.Value != "" &&
+						f.Discriminator.JSONKey != "" {
+						resultJSON[f.Discriminator.JSONKey] = matched.Discriminator.Value
+					}
+					built = append(built, resultJSON)
+				}
+				if f.OmitEmpty && len(built) == 0 {
+					continue
+				}
+				setAtJSONPath(result, f.effectiveJSONPath(), built)
+			} else {
+				items := getBlockListFromMap(data, f.HCLKey)
+				built := make([]interface{}, 0, len(items))
+				for _, item := range items {
+					built = append(built, BuildEngineJSONFromMap(item, f.Children))
+				}
+				if f.OmitEmpty && len(built) == 0 {
+					continue
+				}
+				setAtJSONPath(result, f.effectiveJSONPath(), built)
 			}
-			if f.OmitEmpty && len(built) == 0 {
-				continue
-			}
-			setAtJSONPath(result, f.effectiveJSONPath(), built)
 
 		case TypeOneOf:
-			// The TypeOneOf container is a TypeList, MaxItems:1 in SDKv2.
-			// Each child variant is itself a TypeBlock (TypeList, MaxItems:1).
 			outer := getBlockFromMap(data, f.HCLKey)
 			if outer == nil {
 				if f.OmitEmpty {
@@ -1564,21 +1611,10 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 				}
 				break
 			}
-			// Find the first populated variant child
+			matched, inner := findPopulatedVariant(f, outer)
 			var built map[string]interface{}
-			var matchedChild *FieldSpec
-			for i := range f.Children {
-				child := &f.Children[i]
-				if child.Type == TypeBlock {
-					inner := getBlockFromMap(outer, child.HCLKey)
-					if inner != nil {
-						built = BuildEngineJSONFromMap(inner, child.Children)
-						matchedChild = child
-					}
-				}
-				if matchedChild != nil {
-					break
-				}
+			if matched != nil && inner != nil {
+				built = BuildEngineJSONFromMap(inner, matched.Children)
 			}
 			if built == nil {
 				if f.OmitEmpty {
@@ -1586,11 +1622,10 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 				}
 				built = map[string]interface{}{}
 			}
-			// Inject discriminator into built JSON if the matched child specifies a value
-			if matchedChild != nil && matchedChild.Discriminator != nil &&
-				matchedChild.Discriminator.Value != "" &&
+			if matched != nil && matched.Discriminator != nil &&
+				matched.Discriminator.Value != "" &&
 				f.Discriminator != nil && f.Discriminator.JSONKey != "" {
-				built[f.Discriminator.JSONKey] = matchedChild.Discriminator.Value
+				built[f.Discriminator.JSONKey] = matched.Discriminator.Value
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), built)
 		}
@@ -2194,66 +2229,10 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 		}
 	}
 
-	// ---- Sankey requests (oneOf rum/network) ----
-	if spec.JSONType == "sankey" {
-		defJSON["requests"] = buildSankeyRequestsJSONFromMap(defMap)
-	}
-
-	// ---- Wildcard requests + specification ----
+	// ---- Wildcard requests ----
 	if spec.JSONType == "wildcard" {
 		defJSON["requests"] = buildWildcardRequestsJSONFromMap(defMap)
-		if specMap := getBlockFromMap(defMap, "specification"); specMap != nil {
-			specJSON := BuildEngineJSONFromMap(specMap, wildcardWidgetSpecificationFields)
-			// Parse contents JSON string into an object
-			if contentsStr, ok := specMap["contents"].(string); ok && contentsStr != "" {
-				var contentsObj interface{}
-				if err := json.Unmarshal([]byte(contentsStr), &contentsObj); err == nil {
-					specJSON["contents"] = contentsObj
-				}
-			}
-			defJSON["specification"] = specJSON
-		}
 	}
-}
-
-// ============================================================
-// Sankey Widget Build/Flatten Helpers
-// ============================================================
-
-// flattenSankeyRequestJSON flattens a single Sankey request JSON object.
-// Dispatches based on request_type: "sankey" → rum_query, "netflow_sankey" → network_query.
-func flattenSankeyRequestJSON(req map[string]interface{}) map[string]interface{} {
-	result := map[string]interface{}{}
-	requestType, _ := req["request_type"].(string)
-	queryObj, _ := req["query"].(map[string]interface{})
-	if queryObj == nil {
-		return result
-	}
-	switch requestType {
-	case "sankey":
-		result["rum_query"] = []interface{}{FlattenEngineJSON(sankeyRumQueryFields, queryObj)}
-	case "netflow_sankey":
-		result["network_query"] = []interface{}{FlattenEngineJSON(sankeyNetworkQueryFields, queryObj)}
-	}
-	return result
-}
-
-// buildSankeyRequestsJSONFromMap builds the Sankey requests JSON array from HCL.
-func buildSankeyRequestsJSONFromMap(defMap map[string]interface{}) []interface{} {
-	requestList := getBlockListFromMap(defMap, "request")
-	requests := make([]interface{}, 0, len(requestList))
-	for _, reqMap := range requestList {
-		reqJSON := map[string]interface{}{}
-		if rumQuery := getBlockFromMap(reqMap, "rum_query"); rumQuery != nil {
-			reqJSON["query"] = BuildEngineJSONFromMap(rumQuery, sankeyRumQueryFields)
-			reqJSON["request_type"] = "sankey"
-		} else if networkQuery := getBlockFromMap(reqMap, "network_query"); networkQuery != nil {
-			reqJSON["query"] = BuildEngineJSONFromMap(networkQuery, sankeyNetworkQueryFields)
-			reqJSON["request_type"] = "netflow_sankey"
-		}
-		requests = append(requests, reqJSON)
-	}
-	return requests
 }
 
 // ============================================================

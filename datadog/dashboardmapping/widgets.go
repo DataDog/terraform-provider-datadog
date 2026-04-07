@@ -1454,7 +1454,8 @@ var BarChartWidgetSpec = WidgetSpec{
 }
 
 // SankeyWidgetSpec corresponds to OpenAPI SankeyWidgetDefinition.
-// Request build/flatten is handled in post-processing (rum vs network query dispatch).
+// Requests use a discriminated TypeBlockList — each request item is dispatched
+// by request_type to either rum_request or network_request variant.
 var SankeyWidgetSpec = WidgetSpec{
 	HCLKey:      "sankey_definition",
 	JSONType:    "sankey",
@@ -1465,8 +1466,18 @@ var SankeyWidgetSpec = WidgetSpec{
 		{HCLKey: "show_other_links", Type: TypeBool, OmitEmpty: true,
 			Description: "Whether to show links for the 'other' category."},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
-			Description: "A nested block describing the request to use when displaying the widget.",
-			Children:    sankeyWidgetRequestFields},
+			Discriminator: &OneOfDiscriminator{JSONKey: "request_type"},
+			Description:   "A nested block describing the request to use when displaying the widget.",
+			Children: []FieldSpec{
+				{HCLKey: "rum_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "sankey"},
+					Description:   "RUM request for the Sankey widget.",
+					Children:      sankeyRumRequestFields},
+				{HCLKey: "network_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "netflow_sankey"},
+					Description:   "Network request for the Sankey widget.",
+					Children:      sankeyNetworkRequestFields},
+			}},
 	},
 }
 
@@ -1478,7 +1489,7 @@ var WildcardWidgetSpec = WidgetSpec{
 	JSONType:    "wildcard",
 	Description: "The definition for a Wildcard (custom visualization) widget using Vega or Vega-Lite specifications.",
 	Fields: []FieldSpec{
-		{HCLKey: "specification", Type: TypeBlock, OmitEmpty: false, SchemaOnly: true,
+		{HCLKey: "specification", Type: TypeBlock, OmitEmpty: false,
 			Description: "The Vega or Vega-Lite specification for custom visualization rendering.",
 			Children:    wildcardWidgetSpecificationFields},
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
