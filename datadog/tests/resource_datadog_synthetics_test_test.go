@@ -20,6 +20,7 @@ import (
 )
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -47,6 +48,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -70,6 +72,7 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -93,6 +96,7 @@ func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -115,6 +119,7 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 	})
 }
 func TestAccDatadogSyntheticsGRPCTest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -138,6 +143,7 @@ func TestAccDatadogSyntheticsGRPCTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -161,6 +167,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 	})
 }
 func TestAccDatadogSyntheticsMobileTest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -185,6 +192,7 @@ func TestAccDatadogSyntheticsMobileTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -254,6 +262,7 @@ resource "datadog_synthetics_test" "foo" {
 }
 
 func TestAccDatadogSyntheticsAPITest_EmptyLocations(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -273,6 +282,7 @@ func TestAccDatadogSyntheticsAPITest_EmptyLocations(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -289,6 +299,7 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -304,6 +315,7 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_BasicTargetAndTargetValueCanBeNumberOrString(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -319,6 +331,7 @@ func TestAccDatadogSyntheticsAPITest_BasicTargetAndTargetValueCanBeNumberOrStrin
 }
 
 func TestAccDatadogSyntheticsAPITest_AdvancedScheduling(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -334,6 +347,7 @@ func TestAccDatadogSyntheticsAPITest_AdvancedScheduling(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -350,6 +364,7 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsAPITest_UpdatedTargetAndTargetValueCanBeNumberOrString(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -366,6 +381,7 @@ func TestAccDatadogSyntheticsAPITest_UpdatedTargetAndTargetValueCanBeNumberOrStr
 }
 
 func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -392,6 +408,7 @@ func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -407,6 +424,7 @@ func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -423,6 +441,7 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -438,6 +457,7 @@ func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -453,6 +473,7 @@ func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -469,6 +490,7 @@ func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -484,6 +506,7 @@ func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -500,6 +523,7 @@ func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -515,6 +539,7 @@ func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsUDPTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -530,6 +555,7 @@ func TestAccDatadogSyntheticsUDPTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -545,6 +571,7 @@ func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsWebsocketTest_Base64Message(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -560,6 +587,7 @@ func TestAccDatadogSyntheticsWebsocketTest_Base64Message(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGRPCTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -576,6 +604,7 @@ func TestAccDatadogSyntheticsGRPCTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -591,6 +620,7 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_NoSteps(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -606,6 +636,7 @@ func TestAccDatadogSyntheticsBrowserTest_NoSteps(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_EmptyLocations(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -625,6 +656,7 @@ func TestAccDatadogSyntheticsBrowserTest_EmptyLocations(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -641,6 +673,7 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_UpdatedWithoutSteps(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -657,6 +690,7 @@ func TestAccDatadogSyntheticsBrowserTest_UpdatedWithoutSteps(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsMobileTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -672,6 +706,7 @@ func TestAccDatadogSyntheticsMobileTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsMobileTest_NoSteps(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -687,6 +722,7 @@ func TestAccDatadogSyntheticsMobileTest_NoSteps(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -703,6 +739,7 @@ func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsMobileTest_UpdatedWithoutSteps(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -719,6 +756,7 @@ func TestAccDatadogSyntheticsMobileTest_UpdatedWithoutSteps(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -736,6 +774,7 @@ func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -751,6 +790,7 @@ func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -767,6 +807,7 @@ func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T
 }
 
 func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -786,6 +827,7 @@ func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTestBrowserUserLocator_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -802,6 +844,7 @@ func TestAccDatadogSyntheticsTestBrowserUserLocator_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -818,6 +861,7 @@ func TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -834,6 +878,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -860,6 +905,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -886,6 +932,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes(t *testing.T) {
 // The following two tests are validating this is working properly, by first creating a test, and
 // then reordering its steps.
 func TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -1039,6 +1086,7 @@ func updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Con
 }
 
 func TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -8625,6 +8673,7 @@ resource "datadog_synthetics_test" "foo" {
 }
 
 func TestAccDatadogSyntheticsNetworkTest_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
@@ -8649,6 +8698,7 @@ func TestAccDatadogSyntheticsNetworkTest_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsNetworkTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
@@ -8664,6 +8714,7 @@ func TestAccDatadogSyntheticsNetworkTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsNetworkTest_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accProvider := providers.sdkV2Provider
