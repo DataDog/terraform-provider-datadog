@@ -437,7 +437,7 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
-	case "query_value", "toplist":
+	case "query_value", "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
 	default:
 		return scalarFormulaRequestConfig
@@ -523,7 +523,7 @@ var dataSourceToQueryType = map[string]string{
 // formula/query-style requests (response_format: "scalar" or "timeseries").
 func isFormulaCapableWidget(jsonType string) bool {
 	switch jsonType {
-	case "timeseries", "heatmap", "change", "query_value", "toplist", "sunburst", "geomap", "treemap":
+	case "timeseries", "heatmap", "change", "query_value", "toplist", "sunburst", "geomap", "treemap", "bar_chart":
 		return true
 	}
 	return false
@@ -943,6 +943,49 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 	if spec.JSONType == "group" {
 		if widgets, ok := def["widgets"].([]interface{}); ok {
 			defState["widget"] = flattenGroupWidgetsJSON(widgets)
+		}
+	}
+
+	// ---- Sankey requests (oneOf rum/network) ----
+	if spec.JSONType == "sankey" {
+		if requests, ok := def["requests"].([]interface{}); ok {
+			flatRequests := make([]interface{}, len(requests))
+			for ri, req := range requests {
+				reqMap, ok := req.(map[string]interface{})
+				if !ok {
+					flatRequests[ri] = map[string]interface{}{}
+					continue
+				}
+				flatRequests[ri] = flattenSankeyRequestJSON(reqMap)
+			}
+			defState["request"] = flatRequests
+		}
+	}
+
+	// ---- Wildcard requests (multiple formula types + list stream) ----
+	if spec.JSONType == "wildcard" {
+		if requests, ok := def["requests"].([]interface{}); ok {
+			flatRequests := make([]interface{}, len(requests))
+			for ri, req := range requests {
+				reqMap, ok := req.(map[string]interface{})
+				if !ok {
+					flatRequests[ri] = map[string]interface{}{}
+					continue
+				}
+				flatRequests[ri] = flattenWildcardRequestJSON(reqMap)
+			}
+			defState["request"] = flatRequests
+		}
+		// Flatten specification block
+		if specObj, ok := def["specification"].(map[string]interface{}); ok {
+			flatSpec := FlattenEngineJSON(wildcardWidgetSpecificationFields, specObj)
+			// Marshal contents object to JSON string
+			if contents, ok := specObj["contents"]; ok {
+				if contentsBytes, err := json.Marshal(contents); err == nil {
+					flatSpec["contents"] = string(contentsBytes)
+				}
+			}
+			defState["specification"] = []interface{}{flatSpec}
 		}
 	}
 }
@@ -2150,6 +2193,138 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 			}
 		}
 	}
+
+	// ---- Sankey requests (oneOf rum/network) ----
+	if spec.JSONType == "sankey" {
+		defJSON["requests"] = buildSankeyRequestsJSONFromMap(defMap)
+	}
+
+	// ---- Wildcard requests + specification ----
+	if spec.JSONType == "wildcard" {
+		defJSON["requests"] = buildWildcardRequestsJSONFromMap(defMap)
+		if specMap := getBlockFromMap(defMap, "specification"); specMap != nil {
+			specJSON := BuildEngineJSONFromMap(specMap, wildcardWidgetSpecificationFields)
+			// Parse contents JSON string into an object
+			if contentsStr, ok := specMap["contents"].(string); ok && contentsStr != "" {
+				var contentsObj interface{}
+				if err := json.Unmarshal([]byte(contentsStr), &contentsObj); err == nil {
+					specJSON["contents"] = contentsObj
+				}
+			}
+			defJSON["specification"] = specJSON
+		}
+	}
+}
+
+// ============================================================
+// Sankey Widget Build/Flatten Helpers
+// ============================================================
+
+// flattenSankeyRequestJSON flattens a single Sankey request JSON object.
+// Dispatches based on request_type: "sankey" → rum_query, "netflow_sankey" → network_query.
+func flattenSankeyRequestJSON(req map[string]interface{}) map[string]interface{} {
+	result := map[string]interface{}{}
+	requestType, _ := req["request_type"].(string)
+	queryObj, _ := req["query"].(map[string]interface{})
+	if queryObj == nil {
+		return result
+	}
+	switch requestType {
+	case "sankey":
+		result["rum_query"] = []interface{}{FlattenEngineJSON(sankeyRumQueryFields, queryObj)}
+	case "netflow_sankey":
+		result["network_query"] = []interface{}{FlattenEngineJSON(sankeyNetworkQueryFields, queryObj)}
+	}
+	return result
+}
+
+// buildSankeyRequestsJSONFromMap builds the Sankey requests JSON array from HCL.
+func buildSankeyRequestsJSONFromMap(defMap map[string]interface{}) []interface{} {
+	requestList := getBlockListFromMap(defMap, "request")
+	requests := make([]interface{}, 0, len(requestList))
+	for _, reqMap := range requestList {
+		reqJSON := map[string]interface{}{}
+		if rumQuery := getBlockFromMap(reqMap, "rum_query"); rumQuery != nil {
+			reqJSON["query"] = BuildEngineJSONFromMap(rumQuery, sankeyRumQueryFields)
+			reqJSON["request_type"] = "sankey"
+		} else if networkQuery := getBlockFromMap(reqMap, "network_query"); networkQuery != nil {
+			reqJSON["query"] = BuildEngineJSONFromMap(networkQuery, sankeyNetworkQueryFields)
+			reqJSON["request_type"] = "netflow_sankey"
+		}
+		requests = append(requests, reqJSON)
+	}
+	return requests
+}
+
+// ============================================================
+// Wildcard Widget Build/Flatten Helpers
+// ============================================================
+
+// wildcardFormulaRequestConfig is the FormulaRequestConfig for wildcard formula requests.
+// ResponseFormat is empty — it's read from the request data, not injected.
+var wildcardScalarConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+}
+
+var wildcardTimeseriesConfig = FormulaRequestConfig{
+	ResponseFormat: "timeseries",
+	StyleFields:    widgetRequestStyleFields,
+	ExtraFields: []FieldSpec{
+		{HCLKey: "display_type", Type: TypeString, OmitEmpty: true,
+			Description: "How the data points are displayed on the graph."},
+	},
+}
+
+// flattenWildcardRequestJSON flattens a single wildcard request JSON object.
+// Dispatches based on response_format to determine which flattening style to use.
+func flattenWildcardRequestJSON(req map[string]interface{}) map[string]interface{} {
+	responseFormat, _ := req["response_format"].(string)
+	var result map[string]interface{}
+	switch responseFormat {
+	case "timeseries":
+		result = flattenFormulaRequest(req, wildcardTimeseriesConfig)
+	case "event_list":
+		// List stream request
+		result = FlattenEngineJSON(listStreamRequestFields, req)
+	default:
+		// scalar (TreeMap-style) or distribution
+		result = flattenFormulaRequest(req, wildcardScalarConfig)
+	}
+	// Always preserve response_format in state
+	if responseFormat != "" {
+		result["response_format"] = responseFormat
+	}
+	return result
+}
+
+// buildWildcardRequestsJSONFromMap builds the wildcard requests JSON array from HCL.
+func buildWildcardRequestsJSONFromMap(defMap map[string]interface{}) []interface{} {
+	requestList := getBlockListFromMap(defMap, "request")
+	requests := make([]interface{}, 0, len(requestList))
+	for _, reqMap := range requestList {
+		responseFormat, _ := reqMap["response_format"].(string)
+		formulaCount := len(getBlockListFromMap(reqMap, "formula"))
+		queryCount := len(getBlockListFromMap(reqMap, "query"))
+
+		if formulaCount > 0 || queryCount > 0 {
+			var cfg FormulaRequestConfig
+			switch responseFormat {
+			case "timeseries":
+				cfg = wildcardTimeseriesConfig
+			default:
+				cfg = wildcardScalarConfig
+			}
+			requests = append(requests, buildFormulaRequestFromMap(reqMap, cfg))
+		} else if responseFormat == "event_list" {
+			// List stream request
+			reqJSON := BuildEngineJSONFromMap(reqMap, listStreamRequestFields)
+			reqJSON["response_format"] = "event_list"
+			requests = append(requests, reqJSON)
+		}
+	}
+	return requests
 }
 
 // ============================================================
