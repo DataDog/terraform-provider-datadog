@@ -126,9 +126,9 @@ Required:
 
 Optional:
 
-- `starts_with` (List of String) Any match that starts with a value in this list will be suppressed.
 - `ends_with` (List of String) Any match that ends with a value in this list will be suppressed.
 - `exact_match` (List of String) Any match that appears in this list will be suppressed.
+- `starts_with` (List of String) Any match that starts with a value in this list will be suppressed.
 
 
 <a id="nestedblock--text_replacement"></a>
