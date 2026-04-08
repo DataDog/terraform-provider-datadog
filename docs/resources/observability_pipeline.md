@@ -1723,7 +1723,7 @@ Optional:
 
 Required:
 
-- `source` (String) The field in the log event whose value is parsed by the Grok rules.
+- `source` (String) The value of the source field in log events which should be processed by the Grok rules.
 
 Optional:
 
