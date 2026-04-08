@@ -27,7 +27,7 @@ var fastlyApiKeyConfig = fwutils.WriteOnlySecretConfig{
 	TriggerAttr:          "api_key_wo_version",
 	OriginalDescription:  "The API key for the Fastly account. Exactly one of `api_key` or `api_key_wo` must be set.",
 	WriteOnlyDescription: "Write-only API key for the Fastly account. Exactly one of `api_key` or `api_key_wo` must be set. Must be used with `api_key_wo_version`.",
-	TriggerDescription:   "Version for api_key_wo rotation. Changing this triggers an update.",
+	TriggerDescription:   "Version for `api_key_wo` rotation. Changing this triggers an update.",
 }
 
 var fastlyApiKeyHandler = &fwutils.WriteOnlySecretHandler{
