@@ -3,12 +3,12 @@
 page_title: "datadog_dataset Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Dataset resource. This can be used to create and manage Datadog datasets.
+  Provides a Datadog Dataset resource. This can be used to create and manage Datadog datasets, also known as restricted datasets, for Data Access Control.
 ---
 
 # datadog_dataset (Resource)
 
-Provides a Datadog Dataset resource. This can be used to create and manage Datadog datasets.
+Provides a Datadog Dataset resource. This can be used to create and manage Datadog datasets, also known as restricted datasets, for Data Access Control.
 
 ## Example Usage
 
@@ -51,7 +51,7 @@ resource "datadog_dataset" "foo" {
 Required:
 
 - `filters` (Set of String) A list of tag-based filters used to restrict access to the product type. Each filter is formatted as `@tag.key:value`.
-- `product` (String) The product type of the dataset. Supported types: `apm`, `rum`, `synthetics`, `metrics`, `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.
+- `product` (String) The product type of the dataset. Supported types: `apm`, `rum`, `synthetics`, `metrics` (Custom Metrics), `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.
 
 ## Import
 
