@@ -1956,8 +1956,9 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
       inputs = ["source-1"]
 
       azure_storage {
-        container_name = "logs-container"
-        blob_prefix    = "logs/"
+        container_name       = "logs-container"
+        blob_prefix          = "logs/"
+        connection_string_key = "AZURE_STORAGE_CONNECTION_STRING_IDENT"
       }
     }
   }
@@ -1970,6 +1971,7 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
 				),
 			},
 		},
