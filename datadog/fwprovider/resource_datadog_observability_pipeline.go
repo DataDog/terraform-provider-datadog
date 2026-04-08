@@ -1709,7 +1709,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																	Attributes: map[string]schema.Attribute{
 																		"source": schema.StringAttribute{
 																			Required:    true,
-																			Description: "The name of the field in the log event to apply the Grok rules to.",
+																			Description: "The value of the source field in log events which should be processed by the Grok rules.",
 																		},
 																	},
 																	Blocks: map[string]schema.Block{
