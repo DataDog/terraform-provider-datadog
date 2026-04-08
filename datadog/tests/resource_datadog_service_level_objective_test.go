@@ -1510,3 +1510,70 @@ func testAccCheckDatadogServiceLevelObjectiveExists(accProvider func() (*schema.
 		return nil
 	}
 }
+
+func testAccCheckDatadogServiceLevelObjectiveConfigMixedCaseTags(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "metric"
+  description = "some description about foo SLO"
+  query {
+	numerator = "sum:my.metric{type:good}.as_count()"
+	denominator = "sum:my.metric{*}.as_count()"
+  }
+
+  thresholds {
+	timeframe = "7d"
+	target = 99.5
+	warning = 99.8
+  }
+
+  thresholds {
+	timeframe = "30d"
+	target = 99
+	warning = 99.5
+  }
+
+  thresholds {
+	timeframe = "90d"
+	target = 99
+  }
+
+  timeframe = "30d"
+
+  target_threshold = 99
+
+  warning_threshold = 99.5
+
+  tags = ["Service:API", "Owner:DevOps", "env:production"]
+}`, uniq)
+}
+
+func TestAccDatadogServiceLevelObjective_MixedCaseTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigMixedCaseTags(sloName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "service:api"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "owner:devops"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "env:production"),
+				),
+			},
+		},
+	})
+}

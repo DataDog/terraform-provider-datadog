@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/google/uuid"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 

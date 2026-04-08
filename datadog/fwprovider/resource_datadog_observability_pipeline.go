@@ -128,7 +128,8 @@ type logstashSourceModel struct {
 }
 
 type datadogAgentSourceModel struct {
-	Tls []observability_pipeline.TlsModel `tfsdk:"tls"`
+	AddressKey types.String                      `tfsdk:"address_key"`
+	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"`
 }
 
 type kafkaSourceModel struct {
@@ -789,6 +790,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"datadog_agent": schema.ListNestedBlock{
 										Description: "The `datadog_agent` source collects logs from the Datadog Agent.",
 										NestedObject: schema.NestedBlockObject{
+											Attributes: map[string]schema.Attribute{
+												"address_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the listen address for the Datadog Agent source.",
+												},
+											},
 											Blocks: map[string]schema.Block{
 												"tls": observability_pipeline.TlsSchema(),
 											},
@@ -1443,7 +1450,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			Description: "A name identifying the rule.",
 																		},
 																		"tags": schema.ListAttribute{
-																			Required:    true,
+																			Optional:    true,
 																			ElementType: types.StringType,
 																			Description: "Tags assigned to this rule for filtering and classification.",
 																		},
@@ -1491,7 +1498,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						},
 																					},
 																					"library": schema.ListNestedBlock{
-																						Description: "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																						Description:         "Pattern detection using a predefined pattern from the sensitive data scanner pattern library.",
+																						MarkdownDescription: "Pattern detection using a predefined pattern from the Sensitive Data Scanner library. For Terraform setup (standard pattern data source and library rules), see the [Sensitive Data Scanner processor documentation](https://docs.datadoghq.com/observability_pipelines/processors/sensitive_data_scanner/?tab=libraryrules#set-up-the-processor-using-terraform).",
 																						NestedObject: schema.NestedBlockObject{
 																							Attributes: map[string]schema.Attribute{
 																								"id": schema.StringAttribute{
@@ -3218,6 +3226,9 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 		return nil
 	}
 	out := &datadogAgentSourceModel{}
+	if v, ok := src.GetAddressKeyOk(); ok {
+		out.AddressKey = types.StringValue(*v)
+	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
@@ -3227,7 +3238,11 @@ func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentS
 func expandDatadogAgentSource(src *datadogAgentSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
 	agent := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
 	agent.SetId(id)
+	if !src.AddressKey.IsNull() {
+		agent.SetAddressKey(src.AddressKey.ValueString())
+	}
 	agent.Tls = observability_pipeline.ExpandTls(src.Tls)
+
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineDatadogAgentSource: agent,
 	}

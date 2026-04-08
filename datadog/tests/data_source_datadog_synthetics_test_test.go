@@ -10,6 +10,7 @@ import (
 )
 
 func TestAccDatadogSyntheticsTest(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
@@ -29,6 +30,7 @@ func TestAccDatadogSyntheticsTest(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTestWithUrl(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
