@@ -591,9 +591,10 @@ type elasticsearchDestinationDataStreamModel struct {
 }
 
 type azureStorageDestinationModel struct {
-	ContainerName types.String                                `tfsdk:"container_name"`
-	BlobPrefix    types.String                                `tfsdk:"blob_prefix"`
-	Buffer        []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	ContainerName       types.String                                `tfsdk:"container_name"`
+	BlobPrefix          types.String                                `tfsdk:"blob_prefix"`
+	ConnectionStringKey types.String                                `tfsdk:"connection_string_key"`
+	Buffer              []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type microsoftSentinelDestinationModel struct {
@@ -2516,6 +2517,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"blob_prefix": schema.StringAttribute{
 													Optional:    true,
 													Description: "Optional prefix for blobs written to the container.",
+												},
+												"connection_string_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "Name of the environment variable or secret that holds the Azure Storage connection string.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -5873,6 +5878,10 @@ func expandAzureStorageDestination(ctx context.Context, dest *destinationModel, 
 		obj.SetBlobPrefix(src.BlobPrefix.ValueString())
 	}
 
+	if !src.ConnectionStringKey.IsNull() {
+		obj.SetConnectionStringKey(src.ConnectionStringKey.ValueString())
+	}
+
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
 		if buffer != nil {
@@ -5894,6 +5903,10 @@ func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureSto
 	}
 	if v, ok := src.GetBlobPrefixOk(); ok {
 		out.BlobPrefix = types.StringValue(*v)
+	}
+
+	if v, ok := src.GetConnectionStringKeyOk(); ok {
+		out.ConnectionStringKey = types.StringValue(*v)
 	}
 
 	if buffer, ok := src.GetBufferOk(); ok {

@@ -373,6 +373,7 @@ Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer))
+- `connection_string_key` (String) Name of the environment variable or secret that holds the Azure Storage connection string.
 
 <a id="nestedblock--config--destination--azure_storage--buffer"></a>
 ### Nested Schema for `config.destination.azure_storage.buffer`
