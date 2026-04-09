@@ -153,10 +153,11 @@ type kafkaSourceSaslModel struct {
 }
 
 type amazonS3SourceModel struct {
-	Region types.String                          `tfsdk:"region"`  // AWS region where the S3 bucket resides
-	UrlKey types.String                          `tfsdk:"url_key"` // Name of env var or secret for URL
-	Auth   []observability_pipeline.AwsAuthModel `tfsdk:"auth"`    // AWS authentication credentials
-	Tls    []observability_pipeline.TlsModel     `tfsdk:"tls"`     // TLS encryption configuration
+	Region      types.String                          `tfsdk:"region"`      // AWS region where the S3 bucket resides
+	Compression types.String                          `tfsdk:"compression"` // Compression format for objects retrieved from S3
+	UrlKey      types.String                          `tfsdk:"url_key"`     // Name of env var or secret for URL
+	Auth        []observability_pipeline.AwsAuthModel `tfsdk:"auth"`        // AWS authentication credentials
+	Tls         []observability_pipeline.TlsModel     `tfsdk:"tls"`         // TLS encryption configuration
 }
 
 type processorGroupModel struct {
@@ -927,12 +928,19 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									"amazon_s3": schema.ListNestedBlock{
-										Description: "The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption.",
+										Description: "The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication, TLS encryption, and configurable compression.",
 										NestedObject: schema.NestedBlockObject{
 											Attributes: map[string]schema.Attribute{
 												"region": schema.StringAttribute{
 													Required:    true,
 													Description: "AWS region where the S3 bucket resides.",
+												},
+												"compression": schema.StringAttribute{
+													Optional:    true,
+													Description: "Compression format for objects retrieved from the S3 bucket. Use `auto` to detect compression from the object's Content-Encoding header or file extension.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("auto", "none", "gzip", "zstd"),
+													},
 												},
 												"url_key": schema.StringAttribute{
 													Optional:    true,
@@ -5470,6 +5478,9 @@ func expandAmazonS3Source(src *amazonS3SourceModel, id string) datadogV2.Observa
 	s.SetId(id)
 
 	s.SetRegion(src.Region.ValueString())
+	if !src.Compression.IsNull() {
+		s.SetCompression(datadogV2.ObservabilityPipelineAmazonS3SourceCompression(src.Compression.ValueString()))
+	}
 	if !src.UrlKey.IsNull() {
 		s.SetUrlKey(src.UrlKey.ValueString())
 	}
@@ -5490,6 +5501,9 @@ func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *
 
 	out := &amazonS3SourceModel{
 		Region: types.StringValue(src.GetRegion()),
+	}
+	if v, ok := src.GetCompressionOk(); ok {
+		out.Compression = types.StringValue(string(*v))
 	}
 	if v, ok := src.GetUrlKeyOk(); ok {
 		out.UrlKey = types.StringValue(*v)
