@@ -2049,7 +2049,7 @@ Required:
 Optional:
 
 - `amazon_data_firehose` (Block List) The `amazon_data_firehose` source ingests logs from AWS Data Firehose. (see [below for nested schema](#nestedblock--config--source--amazon_data_firehose))
-- `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption. (see [below for nested schema](#nestedblock--config--source--amazon_s3))
+- `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication, TLS encryption, and configurable compression. (see [below for nested schema](#nestedblock--config--source--amazon_s3))
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--source--datadog_agent))
 - `fluent_bit` (Block List) The `fluent_bit` source ingests logs from Fluent Bit. (see [below for nested schema](#nestedblock--config--source--fluent_bit))
 - `fluentd` (Block List) The `fluentd` source ingests logs from a Fluentd-compatible service. (see [below for nested schema](#nestedblock--config--source--fluentd))
@@ -2110,6 +2110,7 @@ Required:
 Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--source--amazon_s3--auth))
+- `compression` (String) Compression format for objects retrieved from the S3 bucket. Use `auto` to detect compression from the object's Content-Encoding header or file extension. Valid values are `auto`, `none`, `gzip`, `zstd`.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--amazon_s3--tls))
 - `url_key` (String) Name of the environment variable or secret that holds the S3 bucket URL.
 
