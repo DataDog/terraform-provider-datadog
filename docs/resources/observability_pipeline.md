@@ -588,7 +588,7 @@ Optional:
 
 Required:
 
-- `strategy` (String) The authentication strategy. Use `basic` for username/password. Valid values are `basic`, `aws`.
+- `strategy` (String) The authentication strategy to use. Valid values are `basic`, `aws`.
 
 Optional:
 
