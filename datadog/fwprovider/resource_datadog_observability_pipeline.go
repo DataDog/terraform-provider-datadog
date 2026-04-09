@@ -774,6 +774,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								"After migrating all queries to the new syntax, set to `false`. " +
 								"The legacy syntax is deprecated and will eventually be removed. " +
 								"Requires Observability Pipelines Worker 2.11 or later. " +
+								"Only applies to `logs` pipelines. This field is ignored for `metrics` pipelines. " +
 								"See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.",
 						},
 					},
