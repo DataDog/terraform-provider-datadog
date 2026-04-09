@@ -79,6 +79,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable OrgGroup
+	config.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOrgGroup", true)
+
 	// Enable IncidentNotificationRule
 	config.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)
 	config.SetUnstableOperationEnabled("v2.GetIncidentNotificationRule", true)

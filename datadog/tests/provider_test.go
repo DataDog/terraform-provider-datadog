@@ -273,6 +273,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_on_call_user_notification_rule_test":                         "on-call",
 	"tests/resource_datadog_organization_settings_test":                                  "organization",
 	"tests/resource_datadog_org_connection_test":                                         "org_connection",
+	"tests/resource_datadog_org_group_test":                                              "org_group",
 	"tests/resource_datadog_reference_table_test":                                        "reference-tables",
 	"tests/resource_datadog_restriction_policy_test":                                     "restriction-policy",
 	"tests/resource_datadog_role_test":                                                   "roles",
