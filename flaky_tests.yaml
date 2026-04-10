@@ -261,12 +261,6 @@ skipped_tests:
     added: "2026-04-10"
     author: fpighi
 
-  # MetricMetadata — Non-empty plan after apply, statsd_interval drift (1 test, APIR-2789)
-  - test: TestAccDatadogMetricMetadata_Updated
-    reason: "Non-empty plan after apply — statsd_interval unconditionally set in Read"
-    added: "2026-04-10"
-    author: fpighi
-
   # MonitorDatasource — restricted_roles returns empty (1 test, APIR-2790)
   - test: TestAccDatadogMonitorDatasource
     reason: "restricted_roles.# expected 1, got 0 — eventual consistency or API change"
