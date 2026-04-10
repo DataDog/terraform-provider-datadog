@@ -276,9 +276,16 @@ type fileEncodingModel struct {
 }
 
 type fileKeyItemModel struct {
-	Column     types.String `tfsdk:"column"`
-	Comparison types.String `tfsdk:"comparison"`
-	Field      types.String `tfsdk:"field"`
+	Column     types.String            `tfsdk:"column"`
+	Comparison types.String            `tfsdk:"comparison"`
+	Field      []fileKeyItemFieldModel `tfsdk:"field"`
+}
+
+type fileKeyItemFieldModel struct {
+	StringPath types.String `tfsdk:"string_path"`
+	Event      types.String `tfsdk:"event"`
+	Vrl        types.String `tfsdk:"vrl"`
+	Secret     types.String `tfsdk:"secret"`
 }
 
 type enrichmentGeoIpModel struct {
@@ -487,8 +494,9 @@ type httpServerSourceModel struct {
 }
 
 type splunkHecSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+	AddressKey    types.String                      `tfsdk:"address_key"`
+	StoreHecToken types.Bool                        `tfsdk:"store_hec_token"`
+	Tls           []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
 }
 
 type generateMetricsProcessorModel struct {
@@ -952,6 +960,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												"address_key": schema.StringAttribute{
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the listen address for the HEC API.",
+												},
+												"store_hec_token": schema.BoolAttribute{
+													Optional:    true,
+													Description: "When `true`, the Splunk HEC token from the incoming request is stored in the event, allowing downstream components to forward it to other Splunk HEC destinations.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -1966,9 +1978,33 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																						Optional:    true,
 																						Description: "The comparison method (e.g. equals).",
 																					},
-																					"field": schema.StringAttribute{
-																						Optional:    true,
-																						Description: "The `items` `field`.",
+																				},
+																				Blocks: map[string]schema.Block{
+																					"field": schema.ListNestedBlock{
+																						Description: "Specifies the source of the key value for enrichment table lookups. Set exactly one of `string_path`, `event`, `vrl`, or `secret`.",
+																						NestedObject: schema.NestedBlockObject{
+																							Attributes: map[string]schema.Attribute{
+																								"string_path": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "A plain field path in the log event (for example, `log.user.id`).",
+																								},
+																								"event": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "The path to the field in the log event to use as the lookup key.",
+																								},
+																								"vrl": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "A VRL expression that returns the value to use as the lookup key.",
+																								},
+																								"secret": schema.StringAttribute{
+																									Optional:    true,
+																									Description: "The name of the secret containing the lookup key value.",
+																								},
+																							},
+																						},
+																						Validators: []validator.List{
+																							listvalidator.SizeAtMost(1),
+																						},
 																					},
 																				},
 																			},
@@ -4021,10 +4057,22 @@ func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.Observa
 			},
 		}
 		for _, k := range src.File.GetKey() {
+			var fieldModels []fileKeyItemFieldModel
+			kField := k.GetField()
+			switch v := kField.GetActualInstance().(type) {
+			case *string:
+				fieldModels = []fileKeyItemFieldModel{{StringPath: types.StringValue(*v)}}
+			case *datadogV2.ObservabilityPipelineEnrichmentTableFieldEventLookup:
+				fieldModels = []fileKeyItemFieldModel{{Event: types.StringValue(v.Event)}}
+			case *datadogV2.ObservabilityPipelineEnrichmentTableFieldVrlLookup:
+				fieldModels = []fileKeyItemFieldModel{{Vrl: types.StringValue(v.Vrl)}}
+			case *datadogV2.ObservabilityPipelineEnrichmentTableFieldSecretLookup:
+				fieldModels = []fileKeyItemFieldModel{{Secret: types.StringValue(v.Secret)}}
+			}
 			enrichment.File[0].Key = append(enrichment.File[0].Key, fileKeyItemModel{
 				Column:     types.StringValue(k.GetColumn()),
 				Comparison: types.StringValue(string(k.GetComparison())),
-				Field:      types.StringValue(k.GetField()),
+				Field:      fieldModels,
 			})
 		}
 	}
@@ -4406,10 +4454,31 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, common observabilit
 		file.Schema = []datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{}
 
 		for _, k := range src.File[0].Key {
+			var apiField datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItemField
+			if len(k.Field) > 0 {
+				f := k.Field[0]
+				switch {
+				case !f.StringPath.IsNull() && f.StringPath.ValueString() != "":
+					v := f.StringPath.ValueString()
+					apiField = datadogV2.ObservabilityPipelineEnrichmentTableFieldStringPathAsObservabilityPipelineEnrichmentTableFileKeyItemField(&v)
+				case !f.Event.IsNull() && f.Event.ValueString() != "":
+					apiField = datadogV2.ObservabilityPipelineEnrichmentTableFieldEventLookupAsObservabilityPipelineEnrichmentTableFileKeyItemField(
+						&datadogV2.ObservabilityPipelineEnrichmentTableFieldEventLookup{Event: f.Event.ValueString()},
+					)
+				case !f.Vrl.IsNull() && f.Vrl.ValueString() != "":
+					apiField = datadogV2.ObservabilityPipelineEnrichmentTableFieldVrlLookupAsObservabilityPipelineEnrichmentTableFileKeyItemField(
+						&datadogV2.ObservabilityPipelineEnrichmentTableFieldVrlLookup{Vrl: f.Vrl.ValueString()},
+					)
+				case !f.Secret.IsNull() && f.Secret.ValueString() != "":
+					apiField = datadogV2.ObservabilityPipelineEnrichmentTableFieldSecretLookupAsObservabilityPipelineEnrichmentTableFileKeyItemField(
+						&datadogV2.ObservabilityPipelineEnrichmentTableFieldSecretLookup{Secret: f.Secret.ValueString()},
+					)
+				}
+			}
 			file.Key = append(file.Key, datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItems{
 				Column:     k.Column.ValueString(),
 				Comparison: datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItemsComparison(k.Comparison.ValueString()),
-				Field:      k.Field.ValueString(),
+				Field:      apiField,
 			})
 		}
 
@@ -5260,6 +5329,9 @@ func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.Obser
 	if !src.AddressKey.IsNull() {
 		s.SetAddressKey(src.AddressKey.ValueString())
 	}
+	if !src.StoreHecToken.IsNull() {
+		s.SetStoreHecToken(src.StoreHecToken.ValueBool())
+	}
 	if src.Tls != nil {
 		s.Tls = observability_pipeline.ExpandTls(src.Tls)
 	}
@@ -5277,6 +5349,9 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 	out := &splunkHecSourceModel{}
 	if v, ok := src.GetAddressKeyOk(); ok {
 		out.AddressKey = types.StringValue(*v)
+	}
+	if src.HasStoreHecToken() {
+		out.StoreHecToken = types.BoolValue(src.GetStoreHecToken())
 	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)
