@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -124,7 +125,7 @@ func testAccCheckDatadogOnCallUserNotificationRuleDestroy(accProvider *fwprovide
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		return utils.Retry(2, 10, func() error {
+		return utils.Retry(2*time.Second, 10, func() error {
 			for _, r := range s.RootModule().Resources {
 				if r.Type != "datadog_on_call_user_notification_rule" {
 					continue
@@ -133,7 +134,14 @@ func testAccCheckDatadogOnCallUserNotificationRuleDestroy(accProvider *fwprovide
 				userID := r.Primary.Attributes["user_id"]
 
 				_, httpResp, err := apiInstances.GetOnCallApiV2().GetUserNotificationRule(auth, userID, id)
-				if httpResp.StatusCode == http.StatusNotFound {
+				if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
+					return nil
+				}
+				// The OnCall API returns 400 when the parent user has been
+				// disabled (Terraform's user "delete" calls DisableUser).
+				// A disabled user cannot have active notification rules, so
+				// treat this as successful destruction.
+				if httpResp != nil && httpResp.StatusCode == http.StatusBadRequest {
 					return nil
 				}
 				if err != nil {
