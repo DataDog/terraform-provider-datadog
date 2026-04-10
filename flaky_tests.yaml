@@ -279,36 +279,6 @@ skipped_tests:
     added: "2026-04-10"
     author: fpighi
 
-  # SDS quota regression — sweeper sync.Once prevents cleanup (7 tests, APIR-2570)
-  - test: TestAccDatadogSensitiveDataScannerGroup_Basic
-    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogSensitiveDataScannerGroup_DeleteAlreadyDeleted
-    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogSDSGroupOrder_basic
-    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogSDSGroupOrderDatasource
-    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccSensitiveDataScannerRule_DeleteAlreadyDeleted
-    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccSensitiveDataScannerRuleBasic
-    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccSensitiveDataScannerRuleWithStandardPattern
-    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
-    added: "2026-04-10"
-    author: fpighi
-
   # Intermittent — Transient API timeouts and rate limits (5 tests, APIR-2793)
   - test: TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions
     reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
