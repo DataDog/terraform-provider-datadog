@@ -4025,7 +4025,13 @@ func flattenEnrichmentTableProcessor(ctx context.Context, src *datadogV2.Observa
 			enrichment.File[0].Key = append(enrichment.File[0].Key, fileKeyItemModel{
 				Column:     types.StringValue(k.GetColumn()),
 				Comparison: types.StringValue(string(k.GetComparison())),
-				Field:      types.StringValue(k.GetField()),
+				Field:      types.StringValue(func() string {
+					f := k.GetField()
+					if f.ObservabilityPipelineEnrichmentTableFieldStringPath != nil {
+						return *f.ObservabilityPipelineEnrichmentTableFieldStringPath
+					}
+					return ""
+				}()),
 			})
 		}
 	}
@@ -4407,10 +4413,11 @@ func expandEnrichmentTableProcessorItem(ctx context.Context, common observabilit
 		file.Schema = []datadogV2.ObservabilityPipelineEnrichmentTableFileSchemaItems{}
 
 		for _, k := range src.File[0].Key {
+			fieldStr := k.Field.ValueString()
 			file.Key = append(file.Key, datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItems{
 				Column:     k.Column.ValueString(),
 				Comparison: datadogV2.ObservabilityPipelineEnrichmentTableFileKeyItemsComparison(k.Comparison.ValueString()),
-				Field:      k.Field.ValueString(),
+				Field:      datadogV2.ObservabilityPipelineEnrichmentTableFieldStringPathAsObservabilityPipelineEnrichmentTableFileKeyItemField(&fieldStr),
 			})
 		}
 
