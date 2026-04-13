@@ -365,7 +365,7 @@ resource "datadog_observability_pipeline" "kafka_test" {
 	})
 }
 
-func TestAccDatadogObservabilityPipeline_datadogAgentWithTLS(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_datadogAgentWithTLSAndAddressKey(t *testing.T) {
 
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -385,6 +385,7 @@ resource "datadog_observability_pipeline" "agent_tls" {
       id = "source-with-tls"
       
       datadog_agent {
+		address_key = "DATADOG_ADDRESS_KEY_TEST"
         tls {
           crt_file = "/etc/certs/agent.crt"
           ca_file  = "/etc/certs/ca.crt"
@@ -406,6 +407,7 @@ resource "datadog_observability_pipeline" "agent_tls" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "agent with tls"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "source-with-tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.address_key", "DATADOG_ADDRESS_KEY_TEST"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.tls.0.crt_file", "/etc/certs/agent.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.tls.0.ca_file", "/etc/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.datadog_agent.0.tls.0.key_file", "/etc/certs/agent.key"),
@@ -1954,8 +1956,9 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
       inputs = ["source-1"]
 
       azure_storage {
-        container_name = "logs-container"
-        blob_prefix    = "logs/"
+        container_name       = "logs-container"
+        blob_prefix          = "logs/"
+        connection_string_key = "AZURE_STORAGE_CONNECTION_STRING_IDENT"
       }
     }
   }
@@ -1968,6 +1971,7 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.container_name", "logs-container"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.blob_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.azure_storage.0.connection_string_key", "AZURE_STORAGE_CONNECTION_STRING_IDENT"),
 				),
 			},
 		},

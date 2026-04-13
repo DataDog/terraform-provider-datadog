@@ -126,6 +126,12 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 							return utils.NormalizeTag(val.(string))
 						},
 					},
+					Set: func(v interface{}) int {
+						// Normalize before hashing so mixed-case tags like "Service:API"
+						// hash identically to "service:api". The ";' suffix matches the
+						// format used by the SDK's default HashSchema/SerializeValueForHash.
+						return schema.HashString(utils.NormalizeTag(v.(string)) + ";")
+					},
 				},
 				"thresholds": {
 					Description: "A list of thresholds and targets that define the service level objectives from the provided SLIs.",
@@ -590,9 +596,14 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 	}
 
 	if attr, ok := d.GetOk("tags"); ok {
+		seen := make(map[string]struct{})
 		s := make([]string, 0)
 		for _, v := range attr.(*schema.Set).List() {
-			s = append(s, v.(string))
+			normalized := utils.NormalizeTag(v.(string))
+			if _, exists := seen[normalized]; !exists {
+				seen[normalized] = struct{}{}
+				s = append(s, normalized)
+			}
 		}
 		slo.SetTags(s)
 		slor.SetTags(s)

@@ -113,14 +113,20 @@ func (r *teamPermissionSettingResource) Read(ctx context.Context, request resour
 
 	found := false
 	for _, permission := range permissions.Data {
-		if permission.Id == state.ID.ValueString() {
+		if permission.Id == state.ID.ValueString() ||
+			(state.ID.ValueString() == "" && string(permission.Attributes.GetAction()) == state.Action.ValueString()) {
 			r.updateState(ctx, &state, &permission)
 			found = true
+			break
 		}
 	}
 
 	if !found {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error getting team permission setting with id %s", state.ID.ValueString())))
+		response.Diagnostics.AddError(
+			fmt.Sprintf("error getting team permission setting with id %s", state.ID.ValueString()),
+			"team permission setting not found",
+		)
+		return
 	}
 
 	// Save data into Terraform state

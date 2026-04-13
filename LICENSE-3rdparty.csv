@@ -123,6 +123,7 @@ go.sum,golang.org/x/text,BSD-3-Clause,2009 The Go Authors
 go.sum,golang.org/x/time,BSD-3-Clause,2019 The Go Authors
 go.sum,golang.org/x/tools,BSD-3-Clause,2019 The Go Authors
 go.sum,golang.org/x/xerrors,BSD-3-Clause,2019 The Go Authors
+go.sum,gonum.org/v1/gonum,BSD-3-Clause,2013 The Gonum Authors
 go.sum,google.golang.org/api,BSD-3-Clause,2011 Google Inc
 go.sum,google.golang.org/appengine,Apache-2.0,Google Inc.
 go.sum,google.golang.org/genproto,Apache-2.0,2018 Google Inc.

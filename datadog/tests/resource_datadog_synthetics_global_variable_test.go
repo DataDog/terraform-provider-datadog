@@ -18,6 +18,8 @@ func getUniqueVariableName(ctx context.Context, t *testing.T) string {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	variableName := getUniqueVariableName(ctx, t)
@@ -40,6 +42,8 @@ func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -54,6 +58,8 @@ func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -69,6 +75,8 @@ func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -83,6 +91,8 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -98,6 +108,8 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableTOTP_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -112,6 +124,8 @@ func TestAccDatadogSyntheticsGlobalVariableTOTP_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableTOTP_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -128,6 +142,8 @@ func TestAccDatadogSyntheticsGlobalVariableTOTP_Updated(t *testing.T) {
 
 // fido variables
 func TestAccDatadogSyntheticsGlobalVariableFIDO_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -148,6 +164,8 @@ func TestAccDatadogSyntheticsGlobalVariableFIDO_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableFIDO_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -169,6 +187,8 @@ func TestAccDatadogSyntheticsGlobalVariableFIDO_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -183,6 +203,8 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -197,6 +219,8 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) 
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -211,6 +235,8 @@ func TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -228,6 +254,8 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -246,6 +274,8 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableWriteOnlySecure_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 

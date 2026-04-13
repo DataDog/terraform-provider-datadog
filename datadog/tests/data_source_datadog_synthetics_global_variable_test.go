@@ -10,6 +10,7 @@ import (
 )
 
 func TestAccDatadogSyntheticsGlobalVariable(t *testing.T) {
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))

@@ -1,139 +1,5 @@
 skipped_tests:
-  # Synthetics quota — 402 Payment Required (33 tests)
-  - test: TestAccDatadogSyntheticsAPITest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsAPITest_Updated
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsAPITest_BasicTargetAndTargetValueCanBeNumberOrString
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsAPITest_UpdatedTargetAndTargetValueCanBeNumberOrString
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsAPITest_AdvancedScheduling
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsAPITest_importBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsApiTest_FileUpload
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsGRPCTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsGRPCTest_importBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsDNSTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsDNSTest_Updated
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsDNSTest_importBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsTCPTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsTCPTest_Updated
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsTCPTest_importBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsSSLTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsSSLTest_Updated
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsSSLTest_importBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsICMPTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsUDPTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsWebsocketTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsWebsocketTest_Base64Message
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsSuite_WithTests
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsGlobalVariableFromTest_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsTest
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogSyntheticsTestWithUrl
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccMonitor_Fwprovider_ComposeWithSyntheticsTest
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogMonitor_ComposeWithSyntheticsTest
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-
-  # Missing cloud integrations — AWS/Azure/GCP not configured (18 tests)
+  # Missing cloud integrations — AWS/Azure/GCP not configured (12 tests)
   - test: TestAccAwsCurConfigBasic
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -182,36 +48,8 @@ skipped_tests:
     reason: "404 Not Found reading/deleting GCP scan options — GCP not configured in org"
     added: "2026-03-04"
     author: LiuVII
-  - test: TestAccDatadogIntegrationGCP
-    reason: "Error retrieving GCP integration — GCP not configured in org"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: Test_ReplacingHostFiltersWithMRC
-    reason: "Error retrieving GCP integration — GCP not configured in org"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogIntegrationAzure
-    reason: "500 Internal Server Error listing Azure integration — Azure not configured in org"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccIntegrationAwsAccount_OptionalLogSourceConfig
-    reason: "500 Internal Server Error retrieving AWS account integration — AWS not configured in org"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccIntegrationAwsAccountKeyBased
-    reason: "404 Not Found: AWS account with provided id is not integrated"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccIntegrationAwsAccount_RoleBased
-    reason: "Non-empty plan after apply — provider cannot read back created AWS account (AWS not configured in org)"
-    added: "2026-03-04"
-    author: LiuVII
 
-  # User/Team datasource — Eventual consistency (9 tests)
-  - test: TestAccDatadogUserDatasourceExactMatch
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
+  # User/Team datasource — Eventual consistency (8 tests)
   - test: TestAccDatadogUserDatasourceWithExactMatch
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -271,7 +109,7 @@ skipped_tests:
     added: "2026-03-02"
     author: fpighi
 
-  # Metric datasource/TagConfig — Metrics don't exist in org (6 tests)
+  # Metric datasource/TagConfig — Metrics don't exist in org (4 tests)
   - test: TestAccDatadogMetricsDatasource
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -284,35 +122,13 @@ skipped_tests:
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestAccDatadogMetricTagConfiguration_GaugeBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
   - test: TestAccDatadogMetricTagConfiguration_Import
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestAccDatadogMetricTagConfiguration_CountBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
 
-  # AWS OpsWorks EOL — API rejects OpsWorks (2 tests)
-  - test: TestAccDatadogIntegrationAWS
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogIntegrationAWSAccessKey
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-
-  # External service config missing (3 tests)
+  # External service config missing (2 tests)
   - test: TestAccMSTeamsWorkflowsWebhookHandlesBasic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-  - test: TestAccDatadogIntegrationAWSExternalIDDatasource
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
@@ -321,7 +137,7 @@ skipped_tests:
     added: "2026-03-02"
     author: fpighi
 
-  # User/ServiceAccount state issues (3 tests)
+  # User/ServiceAccount state issues (2 tests)
   - test: TestAccDatadogUser_ReEnableRoleUpdate
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -330,42 +146,14 @@ skipped_tests:
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestAccDatadogServiceAccountDatasourcePagination
-    reason: "Filter keyword returned no results — service account not visible yet (eventual consistency)"
-    added: "2026-03-04"
-    author: LiuVII
 
-  # Dataset/IncidentNotificationRule — Rate limiting (2 tests)
+  # Dataset/IncidentNotificationRule — Rate limiting (1 test)
   - test: TestAccDatadogDataset_Basic
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestAccDatadogIncidentNotificationRule_Updated
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
 
-  # Incident state — resources not found or externally deleted (6 tests)
-  - test: TestAccDatadogIncidentNotificationTemplate_Import
-    reason: "Cannot import non-existent remote object — template deleted between create and import steps"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogIncidentNotificationTemplate_Updated
-    reason: "404 Not Found retrieving incident notification template — resource deleted externally"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogIncidentTypeDataSource_Basic
-    reason: "Incident type not found — resource deleted externally between steps"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogIncidentNotificationTemplateDataSource_ByName
-    reason: "Could not find incident notification template by name — resource deleted externally"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogIncidentNotificationTemplateDataSource_ByID
-    reason: "404 Not Found reading incident notification template — resource deleted externally"
-    added: "2026-03-04"
-    author: LiuVII
+  # Incident state — resources not found or externally deleted (1 test)
   - test: TestAccDatadogIncidentNotificationRuleDataSource_ByID
     reason: "Non-empty plan — dependent incident_type deleted outside Terraform, triggering rule replacement"
     added: "2026-03-04"
@@ -403,39 +191,17 @@ skipped_tests:
     added: "2026-03-04"
     author: LiuVII
 
-  # User invite — 400 Bad Request: test org rejects user invitations (3 tests)
-  - test: TestAccDatadogRoleUsersDatasourceExactMatch
-    reason: "400 Bad Request: user does not have a valid email — test org rejects user invitations"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccOnCallEscalationPolicyCreateAndUpdate
-    reason: "400 Bad Request: user does not have a valid email — test org rejects user invitations"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogServiceAccountDatasourceError
-    reason: "Wrong error matched: got user invitation 400 instead of expected datasource error — blocked by org email restrictions"
-    added: "2026-03-04"
-    author: LiuVII
-
-  # OnCall — condition polling failure (1 test)
+  # OnCall — condition polling failure (2 tests)
   - test: TestOnCallUserPhoneNotificationRule
     reason: "Failed to satisfy condition after 10 retries — OnCall resource not reaching expected state"
     added: "2026-03-04"
     author: LiuVII
+  - test: TestOnCallUserEmailNotificationRule
+    reason: "Failed to satisfy condition after 10 retries — OnCall destroy polling timeout (APIR-2792)"
+    added: "2026-04-10"
+    author: fpighi
 
-  # Non-empty plan after apply — provider read bug (5 tests)
-  - test: TestAccDatadogObservabilityPipeline_renameFieldsProcessor
-    reason: "Non-empty plan after apply — provider fails to read back pipeline_type and other computed fields"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogObservabilityPipeline_removeFieldsProcessor
-    reason: "Non-empty plan after apply — provider fails to read back pipeline_type and other computed fields"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogObservabilityPipeline_quotaProcessor
-    reason: "Non-empty plan after apply — provider fails to read back pipeline_type and other computed fields"
-    added: "2026-03-04"
-    author: LiuVII
+  # Non-empty plan after apply — provider read bug (2 tests)
   - test: TestAccDatadogAuthNMapping_CreateUpdate
     reason: "Non-empty plan after apply + 404 on destroy — provider read returns empty state after create"
     added: "2026-03-04"
@@ -445,7 +211,7 @@ skipped_tests:
     added: "2026-03-04"
     author: LiuVII
 
-  # Provider bugs (9 tests)
+  # Provider bugs (3 tests)
   - test: TestAccDatadogApmRetentionFilterOrder
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -454,26 +220,10 @@ skipped_tests:
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestAccDatadogActionConnectionResource_HTTP_TokenAuth
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
   - test: TestAccRumRetentionFiltersDatasource
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
     author: fpighi
-  - test: TestCustomFramework_DuplicateHandle
-    reason: "Expected API to reject duplicate framework handles with an error, but no error is returned"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogIPAllowlist_CreateUpdate
-    reason: "Post-test destroy fails: IP allowlist not disabled or empty — dangling resource"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestAccDatadogApplicationKey_Update
-    reason: "404 Not Found retrieving application key immediately after create — key not visible yet"
-    added: "2026-03-04"
-    author: LiuVII
   - test: TestAccDatadogSecurityNotificationRuleFull
     reason: "400 Bad Request creating security notification rule — org may lack required detection rules"
     added: "2026-03-04"
@@ -482,3 +232,101 @@ skipped_tests:
     reason: "400 Bad Request creating security notification rule — org may lack required detection rules"
     added: "2026-03-04"
     author: LiuVII
+
+  # Monitor scheduling — API now requires on_missing_data for custom_schedule (4 tests, APIR-2787)
+  - test: TestAccDatadogMonitor_SchedulingOptionsCustomSchedule
+    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart
+    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccMonitor_Fwprovider_SchedulingOptionsCustomSchedule
+    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccMonitor_Fwprovider_SchedulingOptionsCustomScheduleNoStart
+    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
+    added: "2026-04-10"
+    author: fpighi
+
+  # SloCorrection — Hardcoded timestamps older than 15 months (2 tests, APIR-2788)
+  - test: TestAccDatadogSloCorrection_Basic
+    reason: "400 Bad Request: end timestamp 2025-01-01 must not be older than 15 months"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogSloCorrection_Updated
+    reason: "400 Bad Request: end timestamp 2025-01-01 must not be older than 15 months"
+    added: "2026-04-10"
+    author: fpighi
+
+  # MetricMetadata — Non-empty plan after apply, statsd_interval drift (1 test, APIR-2789)
+  - test: TestAccDatadogMetricMetadata_Updated
+    reason: "Non-empty plan after apply — statsd_interval unconditionally set in Read"
+    added: "2026-04-10"
+    author: fpighi
+
+  # MonitorDatasource — restricted_roles returns empty (1 test, APIR-2790)
+  - test: TestAccDatadogMonitorDatasource
+    reason: "restricted_roles.# expected 1, got 0 — eventual consistency or API change"
+    added: "2026-04-10"
+    author: fpighi
+
+  # PowerpackDatasource — Persistent 504 Gateway Timeout (1 test, APIR-2791)
+  - test: TestAccDatadogPowerpackDatasource
+    reason: "504 Gateway Timeout from ListPowerpacksWithPagination — too many powerpacks in org"
+    added: "2026-04-10"
+    author: fpighi
+
+  # SDS quota regression — sweeper sync.Once prevents cleanup (7 tests, APIR-2570)
+  - test: TestAccDatadogSensitiveDataScannerGroup_Basic
+    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogSensitiveDataScannerGroup_DeleteAlreadyDeleted
+    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogSDSGroupOrder_basic
+    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogSDSGroupOrderDatasource
+    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccSensitiveDataScannerRule_DeleteAlreadyDeleted
+    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccSensitiveDataScannerRuleBasic
+    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccSensitiveDataScannerRuleWithStandardPattern
+    reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
+    added: "2026-04-10"
+    author: fpighi
+
+  # Intermittent — Transient API timeouts and rate limits (5 tests, APIR-2793)
+  - test: TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions
+    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogMonitor_WithTagConfig
+    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogDashboardQueryValueFormula_import
+    reason: "Intermittent 503 Service Unavailable — upstream connect error"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated
+    reason: "Intermittent non-empty plan — deprecated app_sec_spans data_source normalization"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedAtEnd
+    reason: "Intermittent 429 Too Many Requests — rate limiting on CustomAllocationRules API"
+    added: "2026-04-10"
+    author: fpighi

@@ -11,6 +11,9 @@ datadog/tests/cassettes/
 
 /docs/                                    @DataDog/api-reliability @DataDog/documentation
 
+# Dashboard mapping engine (shared by dashboard_v2 and powerpack_v2)
+datadog/dashboardmapping/                 @DataDog/dashboards-backend
+
 # Terraform SDKv2 resources/data-sources
 datadog/*datadog_dashboard*                @DataDog/dashboards-backend
 datadog/*datadog_downtime*                 @DataDog/monitor-app
@@ -24,7 +27,8 @@ datadog/*datadog_metric_metadata*          @DataDog/metrics-experience
 datadog/*datadog_metric_tag_configuration* @DataDog/metrics-experience
 datadog/*datadog_monitor*                  @DataDog/monitor-app
 datadog/*datadog_screenboard*              @DataDog/dashboards-backend
-datadog/*datadog_security*                 @DataDog/k9-cloud-security-platform
+datadog/*datadog_security_monitoring*       @DataDog/k9-cloud-siem
+datadog/*datadog_security_notification_rule* @DataDog/k9-shared-capabilities
 datadog/*datadog_service_definition*       @DataDog/service-catalog
 datadog/*datadog_service_level_objective*  @DataDog/slo-app
 datadog/*datadog_synthetics*               @DataDog/synthetics-managing
@@ -51,8 +55,7 @@ datadog/**/*datadog_metric*                      @DataDog/metrics-intake @DataDo
 datadog/**/*datadog_monitor*                     @DataDog/monitor-app
 datadog/**/*datadog_appsec*                      @DataDog/asm-backend
 datadog/**/*datadog_azure_integration*           @DataDog/azure-integrations
-datadog/**/*datadog_cloud_inventory*             @DataDog/k9-cloud-security-platform
-datadog/**/*datadog_compliance*                  @DataDog/k9-cloud-security-platform
+datadog/**/*datadog_compliance*                  @DataDog/k9-misconfigs
 datadog/**/*datadog_dataset*                     @DataDog/aaa-granular-access
 datadog/**/*datadog_datastore*                   @DataDog/action-platform @DataDog/workflow-automation-backend
 datadog/**/*datadog_incident*                    @DataDog/incident-app
@@ -93,7 +96,8 @@ datadog/**/*datadog_workflow_automation*         @DataDog/workflow-automation-ba
 datadog/**/*datadog_powerpack*                   @DataDog/dashboards-backend
 datadog/**/*datadog_role_users*                  @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/rum-backend
-datadog/**/*datadog_security*                    @DataDog/k9-cloud-security-platform
+datadog/**/*datadog_security_monitoring*          @DataDog/k9-cloud-siem
+datadog/**/*datadog_security_notification_rule*   @DataDog/k9-shared-capabilities
 datadog/**/*datadog_csm_threats*                 @DataDog/k9-cws-backend
 datadog/**/*datadog_cloud_workload_security*     @DataDog/k9-cws-backend
 datadog/**/*datadog_app_builder_app*             @DataDog/app-builder-backend

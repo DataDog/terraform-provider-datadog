@@ -93,7 +93,7 @@ Optional:
 - `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
-- `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
+- `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. Only applies to `logs` pipelines. This field is ignored for `metrics` pipelines. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
 
 <a id="nestedblock--config--destination"></a>
 ### Nested Schema for `config.destination`
@@ -373,6 +373,7 @@ Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer))
+- `connection_string_key` (String) Name of the environment variable or secret that holds the Azure Storage connection string.
 
 <a id="nestedblock--config--destination--azure_storage--buffer"></a>
 ### Nested Schema for `config.destination.azure_storage.buffer`
@@ -1722,7 +1723,7 @@ Optional:
 
 Required:
 
-- `source` (String) The name of the field in the log event to apply the Grok rules to.
+- `source` (String) The value of the source field in log events which should be processed by the Grok rules.
 
 Optional:
 
@@ -1901,7 +1902,6 @@ Optional:
 Required:
 
 - `name` (String) A name identifying the rule.
-- `tags` (List of String) Tags assigned to this rule for filtering and classification.
 
 Optional:
 
@@ -1909,6 +1909,7 @@ Optional:
 - `on_match` (Block List) The action to take when a sensitive value is found. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match))
 - `pattern` (Block List) Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern))
 - `scope` (Block List) Field-level targeting options that determine where the scanner should operate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope))
+- `tags` (List of String) Tags assigned to this rule for filtering and classification.
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--keyword_options"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.keyword_options`
@@ -1956,7 +1957,7 @@ Optional:
 Optional:
 
 - `custom` (Block List) Pattern detection using a custom regular expression. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom))
-- `library` (Block List) Pattern detection using a predefined pattern from the sensitive data scanner pattern library. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
+- `library` (Block List) Pattern detection using a predefined pattern from the Sensitive Data Scanner library. For Terraform setup (standard pattern data source and library rules), see the [Sensitive Data Scanner processor documentation](https://docs.datadoghq.com/observability_pipelines/processors/sensitive_data_scanner/?tab=libraryrules#set-up-the-processor-using-terraform). (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.pattern.custom`
@@ -2142,6 +2143,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the Datadog Agent source.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--datadog_agent--tls))
 
 <a id="nestedblock--config--source--datadog_agent--tls"></a>

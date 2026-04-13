@@ -25,6 +25,26 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 When adding secret/sensitive attributes to Framework resources, use the write-only helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). These generate the three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) required by Terraform 1.11+ write-only support while maintaining backwards compatibility.
 
+## Linting
+
+This project uses [golangci-lint](https://golangci-lint.run/) (v2) for static analysis. Install it locally:
+
+```sh
+# macOS
+brew install golangci-lint
+
+# Any platform via Go
+go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+```
+
+Available Make targets:
+
+- `make lint` — run all linters on the entire codebase
+- `make lint-new` — run linters only on code changed vs `origin/master` (mirrors CI)
+- `make lint-fix` — auto-fix issues where possible
+
+In CI, `golangci-lint` runs with `--new-from-rev=origin/master` so only changed lines are checked on pull requests.
+
 ## Makefile
 
 The root of this project contains a `GNUmakefile` with the purpose of making each development step easier. While some commands are outlined here, please see [GNUmakefile][5] for all available commands.

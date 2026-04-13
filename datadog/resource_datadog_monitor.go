@@ -1389,7 +1389,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
-	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && restrictedRoles != nil && len(*restrictedRoles) > 0 {
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok {
 		// This helper function is defined in `resource_datadog_dashboard`
 		restrictedRolesCopy := buildTerraformRestrictedRoles(restrictedRoles)
 		if err := d.Set("restricted_roles", restrictedRolesCopy); err != nil {
