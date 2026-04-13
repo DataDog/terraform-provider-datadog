@@ -251,16 +251,6 @@ skipped_tests:
     added: "2026-04-10"
     author: fpighi
 
-  # SloCorrection — Hardcoded timestamps older than 15 months (2 tests, APIR-2788)
-  - test: TestAccDatadogSloCorrection_Basic
-    reason: "400 Bad Request: end timestamp 2025-01-01 must not be older than 15 months"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogSloCorrection_Updated
-    reason: "400 Bad Request: end timestamp 2025-01-01 must not be older than 15 months"
-    added: "2026-04-10"
-    author: fpighi
-
   # MetricMetadata — Non-empty plan after apply, statsd_interval drift (1 test, APIR-2789)
   - test: TestAccDatadogMetricMetadata_Updated
     reason: "Non-empty plan after apply — statsd_interval unconditionally set in Read"
