@@ -273,12 +273,6 @@ skipped_tests:
     added: "2026-04-10"
     author: fpighi
 
-  # PowerpackDatasource — Persistent 504 Gateway Timeout (1 test, APIR-2791)
-  - test: TestAccDatadogPowerpackDatasource
-    reason: "504 Gateway Timeout from ListPowerpacksWithPagination — too many powerpacks in org"
-    added: "2026-04-10"
-    author: fpighi
-
   # SDS quota regression — sweeper sync.Once prevents cleanup (7 tests, APIR-2570)
   - test: TestAccDatadogSensitiveDataScannerGroup_Basic
     reason: "429 Too Many Requests: max scanning groups — sweeper sync.Once regression"
