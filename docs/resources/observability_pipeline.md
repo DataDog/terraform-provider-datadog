@@ -93,7 +93,7 @@ Optional:
 - `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
-- `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
+- `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. Only applies to `logs` pipelines. This field is ignored for `metrics` pipelines. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
 
 <a id="nestedblock--config--destination"></a>
 ### Nested Schema for `config.destination`
@@ -1233,6 +1233,7 @@ Optional:
 - `indexed_fields` (List of String) List of log field names to send as indexed fields to Splunk HEC. Available only when `encoding` is `json`.
 - `sourcetype` (String) The Splunk sourcetype to assign to log events.
 - `token_key` (String) Name of the environment variable or secret that holds the Splunk HEC token.
+- `token_strategy` (String) Controls how the Splunk HEC token is supplied. Use `custom` to provide a token via `token_key`, or `from_source` to forward the token received from an upstream Splunk HEC source. Valid values are `custom`, `from_source`.
 
 <a id="nestedblock--config--destination--splunk_hec--buffer"></a>
 ### Nested Schema for `config.destination.splunk_hec.buffer`
@@ -1537,7 +1538,18 @@ Optional:
 
 - `column` (String) The `items` `column`.
 - `comparison` (String) The comparison method (e.g. equals).
-- `field` (String) The `items` `field`.
+- `field` (Block List) Specifies the source of the key value for enrichment table lookups. Set exactly one of `string_path`, `event`, `vrl`, or `secret`. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--file--key--field))
+
+<a id="nestedblock--config--processor_group--processor--enrichment_table--file--key--field"></a>
+### Nested Schema for `config.processor_group.processor.enrichment_table.file.key.field`
+
+Optional:
+
+- `event` (String) The path to the field in the log event to use as the lookup key.
+- `secret` (String) The name of the secret containing the lookup key value.
+- `string_path` (String) A plain field path in the log event (for example, `log.user.id`).
+- `vrl` (String) A VRL expression that returns the value to use as the lookup key.
+
 
 
 
@@ -2486,6 +2498,7 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
+- `store_hec_token` (Boolean) When `true`, the Splunk HEC token from the incoming request is stored in the event, allowing downstream components to forward it to other Splunk HEC destinations.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>

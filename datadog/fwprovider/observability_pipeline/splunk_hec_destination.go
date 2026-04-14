@@ -17,6 +17,7 @@ type SplunkHECDestinationModel struct {
 	Encoding             types.String         `tfsdk:"encoding"`
 	EndpointUrlKey       types.String         `tfsdk:"endpoint_url_key"`
 	TokenKey             types.String         `tfsdk:"token_key"`
+	TokenStrategy        types.String         `tfsdk:"token_strategy"`
 	Sourcetype           types.String         `tfsdk:"sourcetype"`
 	Index                types.String         `tfsdk:"index"`
 	IndexedFields        types.List           `tfsdk:"indexed_fields"`
@@ -49,6 +50,9 @@ func ExpandSplunkHECDestination(ctx context.Context, id string, inputs types.Lis
 	}
 	if !src.TokenKey.IsNull() {
 		s.SetTokenKey(src.TokenKey.ValueString())
+	}
+	if !src.TokenStrategy.IsNull() {
+		s.SetTokenStrategy(datadogV2.ObservabilityPipelineSplunkHecDestinationTokenStrategy(src.TokenStrategy.ValueString()))
 	}
 
 	if !src.IndexedFields.IsNull() {
@@ -95,6 +99,9 @@ func FlattenSplunkHECDestination(ctx context.Context, src *datadogV2.Observabili
 	if v, ok := src.GetTokenKeyOk(); ok {
 		out.TokenKey = types.StringValue(*v)
 	}
+	if v, ok := src.GetTokenStrategyOk(); ok {
+		out.TokenStrategy = types.StringValue(string(*v))
+	}
 	if indexedFields := src.GetIndexedFields(); len(indexedFields) > 0 {
 		out.IndexedFields, _ = types.ListValueFrom(ctx, types.StringType, indexedFields)
 	}
@@ -132,6 +139,13 @@ func SplunkHECDestinationSchema() schema.ListNestedBlock {
 				"token_key": schema.StringAttribute{
 					Optional:    true,
 					Description: "Name of the environment variable or secret that holds the Splunk HEC token.",
+				},
+				"token_strategy": schema.StringAttribute{
+					Optional:    true,
+					Description: "Controls how the Splunk HEC token is supplied. Use `custom` to provide a token via `token_key`, or `from_source` to forward the token received from an upstream Splunk HEC source.",
+					Validators: []validator.String{
+						stringvalidator.OneOf("custom", "from_source"),
+					},
 				},
 				"sourcetype": schema.StringAttribute{
 					Optional:    true,
