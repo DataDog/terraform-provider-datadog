@@ -85,6 +85,10 @@ func TestAccDatadogSecurityMonitoringRule_NewValueRule(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigNewValueRule(ruleName),
 				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider, ruleName),
 			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigNewValueRuleExtendedRange(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRuleExtendedRange(accProvider, ruleName),
+			},
 		},
 	})
 }
@@ -1826,6 +1830,99 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRule(accProvider fu
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_method", "duration"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.instantaneous_baseline", "true"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigNewValueRuleExtendedRange(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s - extended range"
+    message = "acceptance rule triggered (extended range)"
+    enabled = true
+	validate = true
+
+    query {
+        name = "first"
+        query = "does not really match much (extended range)"
+        aggregation = "new_value"
+        data_source = "logs"
+        group_by_fields = ["service"]
+        metric = "@network.bytes_read"
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "high case (extended range)"
+        status = "medium"
+        condition = ""
+        notifications = ["@user"]
+    }
+
+     options {
+		detection_method = "new_value"
+        keep_alive = 600
+        max_signal_duration = 900
+		new_value_options {
+			forget_after = 30
+			learning_duration = 30
+			instantaneous_baseline = true
+		}
+    }
+
+    tags = ["u:tomato", "i:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdateCheckNewValueRuleExtendedRange(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName+" - extended range"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered (extended range)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "does not really match much (extended range)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "new_value"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.data_source", "logs"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.has_optional_group_by_fields", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.metric", "@network.bytes_read"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case (extended range)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "medium"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.notifications.0", "@user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "new_value"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.forget_after", "30"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_method", "duration"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.new_value_options.0.learning_duration", "30"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.new_value_options.0.learning_threshold", "0"),
 		resource.TestCheckResourceAttr(
