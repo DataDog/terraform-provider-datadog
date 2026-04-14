@@ -2,14 +2,14 @@
 name: test-pr-reviewer
 description: >
   Review a test-related PR for common issues: CODEOWNERS, flaky_tests.yaml
-  consistency, cassette freshness, hardcoded values, Sprintf arg counts.
+  consistency, cassette freshness, hardcoded values, and logical correctness.
   Use before requesting human review.
 tools:
   - Bash
   - Read
   - Grep
   - Glob
-model: sonnet
+model: opus
 maxTurns: 20
 ---
 
@@ -62,12 +62,16 @@ grep -nE "\b1[0-9]{9}\b" <changed_test_files>
 grep -nE 'name\s*=\s*"(my |test-|another |sample )' <changed_test_files>
 ```
 
-### 5. Test structure
+### 5. Logical correctness review
 
-Check that:
-- Tests creating quota-limited resources (SDS groups, RUM apps, powerpacks) call a sweeper at the top
-- `CheckDestroy` functions handle eventual consistency (use `utils.Retry` with proper duration, not bare integers)
-- Tests use `t.Parallel()` where appropriate
+Read the full diff and the surrounding code to assess:
+
+- **Is the fix correct?** Does the change actually address the root cause, or is it papering over a symptom? Consider whether there's a simpler or more robust approach.
+- **Are there edge cases?** Think about what happens with nil values, empty lists, concurrent access, API eventual consistency, or resource lifecycle ordering.
+- **Could this regress something else?** Check if the changed code is called from other tests or shared helpers. Trace callers if needed.
+- **Is the approach idiomatic?** Does it follow the patterns established elsewhere in the codebase, or does it introduce unnecessary divergence?
+
+Read related source files (not just tests) when the change touches provider logic — understand what the Read/Create/Delete functions do before judging whether the test fix makes sense.
 
 ## Output format
 
@@ -78,9 +82,13 @@ Check that:
 [WARN] flaky_tests.yaml: TestAccFoo is being fixed but still in skip list
 [FAIL] Cassette stale: TestAccBar test changed but cassette not re-recorded
 [PASS] No hardcoded timestamps found
-[WARN] TestAccBaz creates SDS group but doesn't call sweeper
+
+Logical review:
+- The fix correctly addresses eventual consistency by splitting the test step,
+  but consider whether a retry in the datasource Read would be more robust
+  long-term (file:line reference).
 
 Teams needing review: @DataDog/monitor-app (resource_datadog_monitor_test.go)
 ```
 
-Prioritize actionable findings. Skip checks that have no issues (only report WARN and FAIL in detail).
+Prioritize actionable findings. Skip checks that have no issues (only report WARN and FAIL in detail). For the logical review, focus on high-confidence observations — don't flag speculative concerns.
