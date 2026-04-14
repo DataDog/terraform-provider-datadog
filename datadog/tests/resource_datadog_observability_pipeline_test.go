@@ -6923,3 +6923,116 @@ resource "datadog_observability_pipeline" "enrichment_field_lookup" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_elasticsearchMetricsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.elasticsearch_metrics_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_metrics_dest" {
+  name = "elasticsearch-metrics-dest-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "elasticsearch-metrics-destination-1"
+      inputs = ["source-1"]
+
+      elasticsearch {
+        api_version     = "v8"
+        endpoint_url_key = "ELASTICSEARCH_ENDPOINT_URL"
+        bulk_index      = "metrics-index"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "elasticsearch-metrics-dest-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "elasticsearch-metrics-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.api_version", "v8"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.endpoint_url_key", "ELASTICSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.bulk_index", "metrics-index"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_metrics_dest" {
+  name = "elasticsearch-metrics-dest-pipeline-updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "elasticsearch-metrics-destination-1"
+      inputs = ["source-1"]
+
+      elasticsearch {
+        api_version           = "v8"
+        endpoint_url_key      = "ELASTICSEARCH_ENDPOINT_URL"
+        bulk_index            = "metrics-index"
+        id_key                = "event_id"
+        pipeline              = "metrics-ingest-pipeline"
+        request_retry_partial = true
+
+        auth {
+          strategy     = "basic"
+          username_key = "ELASTICSEARCH_USERNAME"
+          password_key = "ELASTICSEARCH_PASSWORD"
+        }
+
+        compression {
+          algorithm = "gzip"
+          level     = 6
+        }
+
+        tls {
+          ca_file   = "/etc/certs/ca.crt"
+          crt_file  = "/etc/certs/client.crt"
+          key_file  = "/etc/certs/client.key"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "elasticsearch-metrics-dest-pipeline-updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "elasticsearch-metrics-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.api_version", "v8"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.endpoint_url_key", "ELASTICSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.bulk_index", "metrics-index"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.id_key", "event_id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.pipeline", "metrics-ingest-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.request_retry_partial", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.auth.0.strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.auth.0.username_key", "ELASTICSEARCH_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.auth.0.password_key", "ELASTICSEARCH_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.compression.0.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.tls.0.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.tls.0.crt_file", "/etc/certs/client.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.tls.0.key_file", "/etc/certs/client.key"),
+				),
+			},
+		},
+	})
+}

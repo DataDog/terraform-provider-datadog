@@ -579,12 +579,17 @@ type syslogNgDestinationModel struct {
 }
 
 type elasticsearchDestinationModel struct {
-	ApiVersion     types.String                                `tfsdk:"api_version"`
-	BulkIndex      types.String                                `tfsdk:"bulk_index"`
-	EndpointUrlKey types.String                                `tfsdk:"endpoint_url_key"`
-	Auth           []elasticsearchDestinationAuthModel         `tfsdk:"auth"`
-	DataStream     []elasticsearchDestinationDataStreamModel   `tfsdk:"data_stream"`
-	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	ApiVersion          types.String                                `tfsdk:"api_version"`
+	BulkIndex           types.String                                `tfsdk:"bulk_index"`
+	EndpointUrlKey      types.String                                `tfsdk:"endpoint_url_key"`
+	IdKey               types.String                                `tfsdk:"id_key"`
+	Pipeline            types.String                                `tfsdk:"pipeline"`
+	RequestRetryPartial types.Bool                                  `tfsdk:"request_retry_partial"`
+	Auth                []elasticsearchDestinationAuthModel         `tfsdk:"auth"`
+	DataStream          []elasticsearchDestinationDataStreamModel   `tfsdk:"data_stream"`
+	Compression         []elasticsearchDestinationCompressionModel  `tfsdk:"compression"`
+	Tls                 []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Buffer              []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type elasticsearchDestinationAuthModel struct {
@@ -594,9 +599,16 @@ type elasticsearchDestinationAuthModel struct {
 }
 
 type elasticsearchDestinationDataStreamModel struct {
-	Dtype     types.String `tfsdk:"dtype"`
-	Dataset   types.String `tfsdk:"dataset"`
-	Namespace types.String `tfsdk:"namespace"`
+	Dtype       types.String `tfsdk:"dtype"`
+	Dataset     types.String `tfsdk:"dataset"`
+	Namespace   types.String `tfsdk:"namespace"`
+	AutoRouting types.Bool   `tfsdk:"auto_routing"`
+	SyncFields  types.Bool   `tfsdk:"sync_fields"`
+}
+
+type elasticsearchDestinationCompressionModel struct {
+	Algorithm types.String `tfsdk:"algorithm"`
+	Level     types.Int64  `tfsdk:"level"`
 }
 
 type azureStorageDestinationModel struct {
@@ -2401,20 +2413,35 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 									},
 									"elasticsearch": schema.ListNestedBlock{
-										Description: "The `elasticsearch` destination writes logs to an Elasticsearch cluster.",
+										Description: "The `elasticsearch` destination writes logs or metrics to an Elasticsearch cluster.",
 										NestedObject: schema.NestedBlockObject{
 											Attributes: map[string]schema.Attribute{
 												"api_version": schema.StringAttribute{
 													Optional:    true,
 													Description: "The Elasticsearch API version to use. Set to `auto` to auto-detect.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("auto", "v6", "v7", "v8"),
+													},
 												},
 												"bulk_index": schema.StringAttribute{
 													Optional:    true,
-													Description: "The index or datastream to write logs to in Elasticsearch.",
+													Description: "The name of the index to write events to in Elasticsearch.",
 												},
 												"endpoint_url_key": schema.StringAttribute{
 													Optional:    true,
 													Description: "Name of the environment variable or secret that holds the Elasticsearch endpoint URL.",
+												},
+												"id_key": schema.StringAttribute{
+													Optional:    true,
+													Description: "The name of the field used as the document ID in Elasticsearch.",
+												},
+												"pipeline": schema.StringAttribute{
+													Optional:    true,
+													Description: "The name of an Elasticsearch ingest pipeline to apply to events before indexing.",
+												},
+												"request_retry_partial": schema.BoolAttribute{
+													Optional:    true,
+													Description: "When `true`, retries failed partial bulk requests when some events in a batch fail while others succeed.",
 												},
 											},
 											Blocks: map[string]schema.Block{
@@ -2424,18 +2451,18 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														Attributes: map[string]schema.Attribute{
 															"strategy": schema.StringAttribute{
 																Required:    true,
-																Description: "The authentication strategy. Use `basic` for username/password.",
+																Description: "The authentication strategy to use.",
 																Validators: []validator.String{
 																	stringvalidator.OneOf("basic", "aws"),
 																},
 															},
 															"username_key": schema.StringAttribute{
 																Optional:    true,
-																Description: "Name of the environment variable or secret that holds the Elasticsearch username (used when strategy is `basic`).",
+																Description: "Name of the environment variable or secret that holds the Elasticsearch username (used when `strategy` is `basic`).",
 															},
 															"password_key": schema.StringAttribute{
 																Optional:    true,
-																Description: "Name of the environment variable or secret that holds the Elasticsearch password (used when strategy is `basic`).",
+																Description: "Name of the environment variable or secret that holds the Elasticsearch password (used when `strategy` is `basic`).",
 															},
 														},
 													},
@@ -2449,15 +2476,23 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														Attributes: map[string]schema.Attribute{
 															"dtype": schema.StringAttribute{
 																Optional:    true,
-																Description: "The data stream type for your logs. This determines how logs are categorized within the data stream.",
+																Description: "The data stream type. This determines how events are categorized within the data stream.",
 															},
 															"dataset": schema.StringAttribute{
 																Optional:    true,
-																Description: "The data stream dataset for your logs. This groups logs by their source or application.",
+																Description: "The data stream dataset. This groups events by their source or application.",
 															},
 															"namespace": schema.StringAttribute{
 																Optional:    true,
-																Description: "The data stream namespace for your logs. This separates logs into different environments or domains.",
+																Description: "The data stream namespace. This separates events into different environments or domains.",
+															},
+															"auto_routing": schema.BoolAttribute{
+																Optional:    true,
+																Description: "When `true`, automatically routes events to the appropriate data stream based on the event content.",
+															},
+															"sync_fields": schema.BoolAttribute{
+																Optional:    true,
+																Description: "When `true`, synchronizes data stream fields with the Elasticsearch index mapping.",
 															},
 														},
 													},
@@ -2466,6 +2501,28 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.ConflictsWith(frameworkPath.MatchRelative().AtParent().AtName("bulk_index")),
 													},
 												},
+												"compression": schema.ListNestedBlock{
+													Description: "Compression configuration for the Elasticsearch destination.",
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"algorithm": schema.StringAttribute{
+																Required:    true,
+																Description: "The compression algorithm applied when sending data to Elasticsearch.",
+																Validators: []validator.String{
+																	stringvalidator.OneOf("none", "gzip", "zlib", "zstd", "snappy"),
+																},
+															},
+															"level": schema.Int64Attribute{
+																Optional:    true,
+																Description: "The compression level. Only applicable for `gzip`, `zlib`, and `zstd` algorithms.",
+															},
+														},
+													},
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+												},
+												"tls":    observability_pipeline.TlsSchema(),
 												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
@@ -5864,6 +5921,15 @@ func expandElasticsearchDestination(ctx context.Context, dest *destinationModel,
 	if !src.EndpointUrlKey.IsNull() {
 		obj.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
 	}
+	if !src.IdKey.IsNull() {
+		obj.SetIdKey(src.IdKey.ValueString())
+	}
+	if !src.Pipeline.IsNull() {
+		obj.SetPipeline(src.Pipeline.ValueString())
+	}
+	if !src.RequestRetryPartial.IsNull() {
+		obj.SetRequestRetryPartial(src.RequestRetryPartial.ValueBool())
+	}
 	if len(src.Auth) > 0 {
 		authModel := src.Auth[0]
 		auth := datadogV2.NewObservabilityPipelineElasticsearchDestinationAuthWithDefaults()
@@ -5881,18 +5947,36 @@ func expandElasticsearchDestination(ctx context.Context, dest *destinationModel,
 	}
 	if len(src.DataStream) > 0 {
 		ds := datadogV2.NewObservabilityPipelineElasticsearchDestinationDataStream()
-		if !src.DataStream[0].Dtype.IsNull() {
-			ds.SetDtype(src.DataStream[0].Dtype.ValueString())
+		dsModel := src.DataStream[0]
+		if !dsModel.Dtype.IsNull() {
+			ds.SetDtype(dsModel.Dtype.ValueString())
 		}
-		if !src.DataStream[0].Dataset.IsNull() {
-			ds.SetDataset(src.DataStream[0].Dataset.ValueString())
+		if !dsModel.Dataset.IsNull() {
+			ds.SetDataset(dsModel.Dataset.ValueString())
 		}
-		if !src.DataStream[0].Namespace.IsNull() {
-			ds.SetNamespace(src.DataStream[0].Namespace.ValueString())
+		if !dsModel.Namespace.IsNull() {
+			ds.SetNamespace(dsModel.Namespace.ValueString())
+		}
+		if !dsModel.AutoRouting.IsNull() {
+			ds.SetAutoRouting(dsModel.AutoRouting.ValueBool())
+		}
+		if !dsModel.SyncFields.IsNull() {
+			ds.SetSyncFields(dsModel.SyncFields.ValueBool())
 		}
 		obj.DataStream = ds
 	}
-
+	if len(src.Compression) > 0 {
+		compressionModel := src.Compression[0]
+		compression := datadogV2.NewObservabilityPipelineElasticsearchDestinationCompressionWithDefaults()
+		compression.SetAlgorithm(datadogV2.ObservabilityPipelineElasticsearchDestinationCompressionAlgorithm(compressionModel.Algorithm.ValueString()))
+		if !compressionModel.Level.IsNull() {
+			compression.SetLevel(compressionModel.Level.ValueInt64())
+		}
+		obj.SetCompression(*compression)
+	}
+	if len(src.Tls) > 0 {
+		obj.Tls = observability_pipeline.ExpandTls(src.Tls)
+	}
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
 		if buffer != nil {
@@ -5919,6 +6003,15 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 	if v, ok := src.GetEndpointUrlKeyOk(); ok {
 		out.EndpointUrlKey = types.StringValue(*v)
 	}
+	if v, ok := src.GetIdKeyOk(); ok {
+		out.IdKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetPipelineOk(); ok {
+		out.Pipeline = types.StringValue(*v)
+	}
+	if v, ok := src.GetRequestRetryPartialOk(); ok {
+		out.RequestRetryPartial = types.BoolValue(*v)
+	}
 	if auth, ok := src.GetAuthOk(); ok && auth != nil {
 		authModel := elasticsearchDestinationAuthModel{
 			Strategy: types.StringValue(string(auth.GetStrategy())),
@@ -5942,9 +6035,26 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 		if v, ok := ds.GetNamespaceOk(); ok {
 			dsModel.Namespace = types.StringValue(*v)
 		}
+		if v, ok := ds.GetAutoRoutingOk(); ok {
+			dsModel.AutoRouting = types.BoolValue(*v)
+		}
+		if v, ok := ds.GetSyncFieldsOk(); ok {
+			dsModel.SyncFields = types.BoolValue(*v)
+		}
 		out.DataStream = []elasticsearchDestinationDataStreamModel{dsModel}
 	}
-
+	if compression, ok := src.GetCompressionOk(); ok && compression != nil {
+		compressionModel := elasticsearchDestinationCompressionModel{
+			Algorithm: types.StringValue(string(compression.GetAlgorithm())),
+		}
+		if v, ok := compression.GetLevelOk(); ok {
+			compressionModel.Level = types.Int64Value(*v)
+		}
+		out.Compression = []elasticsearchDestinationCompressionModel{compressionModel}
+	}
+	if src.Tls != nil {
+		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+	}
 	if buffer, ok := src.GetBufferOk(); ok {
 		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
 		if outBuffer != nil {

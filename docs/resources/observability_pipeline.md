@@ -114,7 +114,7 @@ Optional:
 - `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destination--datadog_logs))
 - `datadog_metrics` (Block List) The `datadog_metrics` destination forwards metrics to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics))
-- `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
+- `elasticsearch` (Block List) The `elasticsearch` destination writes logs or metrics to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage))
 - `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destination--google_pubsub))
 - `google_secops` (Block List) The `google_chronicle` destination sends logs to Google SecOps. (see [below for nested schema](#nestedblock--config--destination--google_secops))
@@ -571,24 +571,29 @@ Optional:
 
 Optional:
 
-- `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect.
+- `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect. Valid values are `auto`, `v6`, `v7`, `v8`.
 - `auth` (Block List) Authentication settings for the Elasticsearch destination. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--buffer))
-- `bulk_index` (String) The index or datastream to write logs to in Elasticsearch.
+- `bulk_index` (String) The name of the index to write events to in Elasticsearch.
+- `compression` (Block List) Compression configuration for the Elasticsearch destination. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--compression))
 - `data_stream` (Block List) Configuration options for writing to Elasticsearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--data_stream))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Elasticsearch endpoint URL.
+- `id_key` (String) The name of the field used as the document ID in Elasticsearch.
+- `pipeline` (String) The name of an Elasticsearch ingest pipeline to apply to events before indexing.
+- `request_retry_partial` (Boolean) When `true`, retries failed partial bulk requests when some events in a batch fail while others succeed.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--tls))
 
 <a id="nestedblock--config--destination--elasticsearch--auth"></a>
 ### Nested Schema for `config.destination.elasticsearch.auth`
 
 Required:
 
-- `strategy` (String) The authentication strategy. Use `basic` for username/password. Valid values are `basic`, `aws`.
+- `strategy` (String) The authentication strategy to use. Valid values are `basic`, `aws`.
 
 Optional:
 
-- `password_key` (String) Name of the environment variable or secret that holds the Elasticsearch password (used when strategy is `basic`).
-- `username_key` (String) Name of the environment variable or secret that holds the Elasticsearch username (used when strategy is `basic`).
+- `password_key` (String) Name of the environment variable or secret that holds the Elasticsearch password (used when `strategy` is `basic`).
+- `username_key` (String) Name of the environment variable or secret that holds the Elasticsearch username (used when `strategy` is `basic`).
 
 
 <a id="nestedblock--config--destination--elasticsearch--buffer"></a>
@@ -619,14 +624,42 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--elasticsearch--compression"></a>
+### Nested Schema for `config.destination.elasticsearch.compression`
+
+Required:
+
+- `algorithm` (String) The compression algorithm applied when sending data to Elasticsearch. Valid values are `none`, `gzip`, `zlib`, `zstd`, `snappy`.
+
+Optional:
+
+- `level` (Number) The compression level. Only applicable for `gzip`, `zlib`, and `zstd` algorithms.
+
+
 <a id="nestedblock--config--destination--elasticsearch--data_stream"></a>
 ### Nested Schema for `config.destination.elasticsearch.data_stream`
 
 Optional:
 
-- `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
-- `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
-- `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
+- `auto_routing` (Boolean) When `true`, automatically routes events to the appropriate data stream based on the event content.
+- `dataset` (String) The data stream dataset. This groups events by their source or application.
+- `dtype` (String) The data stream type. This determines how events are categorized within the data stream.
+- `namespace` (String) The data stream namespace. This separates events into different environments or domains.
+- `sync_fields` (Boolean) When `true`, synchronizes data stream fields with the Elasticsearch index mapping.
+
+
+<a id="nestedblock--config--destination--elasticsearch--tls"></a>
+### Nested Schema for `config.destination.elasticsearch.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
