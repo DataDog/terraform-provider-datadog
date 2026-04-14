@@ -130,24 +130,21 @@ func testAccCheckDatadogOnCallUserNotificationRuleDestroy(accProvider *fwprovide
 				if r.Type != "datadog_on_call_user_notification_rule" {
 					continue
 				}
-				id := r.Primary.ID
 				userID := r.Primary.Attributes["user_id"]
 
-				_, httpResp, err := apiInstances.GetOnCallApiV2().GetUserNotificationRule(auth, userID, id)
-				if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
-					return nil
-				}
-				// The OnCall API returns 400 when the parent user has been
-				// disabled (Terraform's user "delete" calls DisableUser).
-				// A disabled user cannot have active notification rules, so
-				// treat this as successful destruction.
-				if httpResp != nil && httpResp.StatusCode == http.StatusBadRequest {
-					return nil
-				}
+				// Verify the parent user has been disabled rather than
+				// querying the notification rule directly. The provider's
+				// Delete for datadog_user calls DisableUser, and the OnCall
+				// API returns 400 for disabled users making it impossible to
+				// check the rule itself.
+				resp, _, err := apiInstances.GetUsersApiV2().GetUser(auth, userID)
 				if err != nil {
-					return &utils.RetryableError{Prob: fmt.Sprintf("error retrieving user notification rule %s", err)}
+					return &utils.RetryableError{Prob: fmt.Sprintf("error retrieving user: %s", err)}
 				}
-				return &utils.RetryableError{Prob: "user notification rule still exists"}
+				if resp.Data.Attributes.GetDisabled() {
+					return nil
+				}
+				return &utils.RetryableError{Prob: "user not yet disabled, notification rule may still exist"}
 			}
 			return nil
 		})
