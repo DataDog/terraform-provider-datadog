@@ -1265,6 +1265,51 @@ resource "datadog_observability_pipeline" "s3_source" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonS3SourceCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.s3_source_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "s3_source_compression" {
+  name = "amazon_s3-source-compression-pipeline"
+
+  config {
+    source {
+      id = "s3-source-1"
+
+      amazon_s3 {
+        region      = "us-east-1"
+        compression = "gzip"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["s3-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "s3-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.amazon_s3.0.compression", "gzip"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecSource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
