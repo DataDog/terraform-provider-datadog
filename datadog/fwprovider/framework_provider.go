@@ -76,6 +76,8 @@ var Resources = []func() resource.Resource{
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
 	NewTeamHierarchyLinksResource,
+	NewTeamConnectionResource,
+	NewTeamSyncResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
 	NewSecurityMonitoringCriticalAssetResource,
