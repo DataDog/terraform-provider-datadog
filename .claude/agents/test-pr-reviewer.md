@@ -62,19 +62,7 @@ grep -nE "\b1[0-9]{9}\b" <changed_test_files>
 grep -nE 'name\s*=\s*"(my |test-|another |sample )' <changed_test_files>
 ```
 
-### 5. Sprintf arg counts
-
-For config generator functions (functions returning `string` that use `fmt.Sprintf`):
-- Count `%s` and `%d` placeholders in the format string
-- Count the arguments after the format string
-- Flag mismatches
-
-```bash
-# Find Sprintf calls in changed test files
-grep -n "fmt.Sprintf" <changed_test_files>
-```
-
-### 6. Test structure
+### 5. Test structure
 
 Check that:
 - Tests creating quota-limited resources (SDS groups, RUM apps, powerpacks) call a sweeper at the top
@@ -90,7 +78,6 @@ Check that:
 [WARN] flaky_tests.yaml: TestAccFoo is being fixed but still in skip list
 [FAIL] Cassette stale: TestAccBar test changed but cassette not re-recorded
 [PASS] No hardcoded timestamps found
-[PASS] Sprintf arg counts match
 [WARN] TestAccBaz creates SDS group but doesn't call sweeper
 
 Teams needing review: @DataDog/monitor-app (resource_datadog_monitor_test.go)
