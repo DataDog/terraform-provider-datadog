@@ -1141,6 +1141,8 @@ resource "datadog_monitor" "foo" {
 	critical = "0.5"
   }
 
+  on_missing_data = "show_no_data"
+
   scheduling_options {
 	custom_schedule {
 		recurrence {
