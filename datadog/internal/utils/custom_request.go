@@ -64,39 +64,38 @@ func buildRequest(ctx context.Context, client *datadog.APIClient, method, path s
 		localVarPostBody = body
 	}
 
-	if ctx != nil {
-		if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
-			if apiKey, ok := auth["apiKeyAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
+	// Mirror the auth pattern used by every generated API method:
+	// prefer delegated token (cloud provider auth) when configured, otherwise
+	// fall back to API + App key. The two are mutually exclusive.
+	if client.GetConfig().DelegatedTokenConfig != nil {
+		if err := datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, client.GetConfig().DelegatedTokenConfig); err != nil {
+			return nil, err
+		}
+	} else {
+		if ctx != nil {
+			if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
+				if apiKey, ok := auth["apiKeyAuth"]; ok {
+					var key string
+					if apiKey.Prefix != "" {
+						key = apiKey.Prefix + " " + apiKey.Key
+					} else {
+						key = apiKey.Key
+					}
+					localVarHeaderParams["DD-API-KEY"] = key
 				}
-				localVarHeaderParams["DD-API-KEY"] = key
 			}
 		}
-	}
-	if ctx != nil {
-		if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
-			if apiKey, ok := auth["appKeyAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
+		if ctx != nil {
+			if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
+				if apiKey, ok := auth["appKeyAuth"]; ok {
+					var key string
+					if apiKey.Prefix != "" {
+						key = apiKey.Prefix + " " + apiKey.Key
+					} else {
+						key = apiKey.Key
+					}
+					localVarHeaderParams["DD-APPLICATION-KEY"] = key
 				}
-				localVarHeaderParams["DD-APPLICATION-KEY"] = key
-			}
-		}
-	}
-	// Handle cloud-provider-based (delegated token) authentication.
-	// Generated API methods call UseDelegatedTokenAuth explicitly; buildRequest
-	// bypasses generated code so we must do the same here.
-	if ctx != nil {
-		if _, ok := ctx.Value(datadog.ContextDelegatedToken).(*datadog.DelegatedTokenCredentials); ok {
-			if err := datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, client.GetConfig().DelegatedTokenConfig); err != nil {
-				return nil, err
 			}
 		}
 	}

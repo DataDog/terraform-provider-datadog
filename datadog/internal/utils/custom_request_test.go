@@ -15,6 +15,19 @@ func newTestClient() *datadog.APIClient {
 	return datadog.NewAPIClient(datadog.NewConfiguration())
 }
 
+// newDelegatedTokenTestClient returns an APIClient with DelegatedTokenConfig set,
+// mirroring the production setup in providerConfigure when cloud_provider_type is set.
+func newDelegatedTokenTestClient() *datadog.APIClient {
+	cfg := datadog.NewConfiguration()
+	cfg.DelegatedTokenConfig = &datadog.DelegatedTokenConfig{
+		OrgUUID:  "test-org-uuid",
+		Provider: "aws",
+		// ProviderAuth intentionally nil: tests pre-seed the token in the
+		// context so UseDelegatedTokenAuth never calls out to the token servicer.
+	}
+	return datadog.NewAPIClient(cfg)
+}
+
 func TestBuildRequest_APIKeyAuth(t *testing.T) {
 	ctx := context.WithValue(context.Background(), datadog.ContextAPIKeys, map[string]datadog.APIKey{
 		"apiKeyAuth": {Key: "test-api-key"},
@@ -42,15 +55,17 @@ func TestBuildRequest_APIKeyAuth(t *testing.T) {
 // Also verifies that no DD-API-KEY / DD-APPLICATION-KEY headers are emitted
 // under cloud auth (no key leakage).
 func TestBuildRequest_DelegatedTokenAuth(t *testing.T) {
-	// Pre-seed a valid, non-expired delegated token so UseDelegatedTokenAuth
-	// doesn't try to reach out to the external-token-servicer.
+	// In production, providerConfigure always sets both DelegatedTokenConfig on
+	// the client and ContextDelegatedToken in the context. Mirrors that here.
+	// Pre-seed a valid, non-expired token so UseDelegatedTokenAuth doesn't call
+	// out to the external-token-servicer.
 	creds := &datadog.DelegatedTokenCredentials{
 		DelegatedToken: "test-delegated-bearer-token",
 		Expiration:     time.Now().Add(15 * time.Minute),
 	}
 	ctx := context.WithValue(context.Background(), datadog.ContextDelegatedToken, creds)
 
-	req, err := buildRequest(ctx, newTestClient(), "POST", "/api/v1/dashboard", nil)
+	req, err := buildRequest(ctx, newDelegatedTokenTestClient(), "POST", "/api/v1/dashboard", nil)
 	if err != nil {
 		t.Fatalf("buildRequest error: %v", err)
 	}
