@@ -23,7 +23,7 @@
 * [datadog_sensitive_data_scanner] Add support for suppressions in tf by @fbryden in https://github.com/DataDog/terraform-provider-datadog/pull/3654
 * [datadog_team_sync] Add `datadog_team_sync` and `datadog_team_connection` resources by @gabrielgiordano in https://github.com/DataDog/terraform-provider-datadog/pull/3626
 ### NOTES
-* Bump terraform plugin deps for terraform-plugin-go v0.31.0 compat by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3674
+* Bump terraform plugin dependencies for terraform-plugin-go v0.31.0 compat by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3674
 
 ## New Contributors
 * @fbryden made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3655
