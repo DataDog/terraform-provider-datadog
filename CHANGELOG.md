@@ -1,45 +1,6 @@
 ## 4.5.0 (April 15, 2026)
 
 ### BUGFIXES
-* [datadog_service_level_objective] Fix duplicate tags when using mixed-case values by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3641
-* [datadog_role] Deprecate and stop setting user_count to fix unstoppable drift by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3640
-* [datadog_monitor] Fix restricted roles behavior and relevant tests by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3645
-* [datadog_observability_pipeline] Remove required and update doc with links by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3622
-* [datadog_reference_table] Fix null vs empty string inconsistency for description on import by @g-brizolier in https://github.com/DataDog/terraform-provider-datadog/pull/3658
-* [datadog_team_permission_setting] Fix panic in Read after import by @grv231 in https://github.com/DataDog/terraform-provider-datadog/pull/3628
-* [datadog_action_connection] Fix edge case where reads lose SECRET tokens by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3667
-### IMPROVEMENTS
-* [sensitive_data_scanner] Allow filtering rules by standard pattern ID by @fbryden in https://github.com/DataDog/terraform-provider-datadog/pull/3655
-* [datadog_logs_custom_pipeline] Add support for tags and description fields for nested pipelines by @andreyfel in https://github.com/DataDog/terraform-provider-datadog/pull/3677
-* [datadog_integration_fastly_account] Mark api_key as Sensitive and add write-only support by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3676
-### FEATURES
-* [datadog_observability_pipeline] Make datadog agent source address configurable by @armleth in https://github.com/DataDog/terraform-provider-datadog/pull/3613
-* [datadog_dashboard_v2] New dashboard resource with better API support by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3532
-* [sensitive_data_scanner] Add support for suppressions in tf by @fbryden in https://github.com/DataDog/terraform-provider-datadog/pull/3654
-* [datadog_observability_pipeline] add connection_string_key field to azure_storage destination by @tessneau in https://github.com/DataDog/terraform-provider-datadog/pull/3681
-* [datadog_observability_pipeline] Adding HEC token features to Observability pipelines provider by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3687
-* [datadog_dashboard] Add description field to dashboard widget definitions by @cferland in https://github.com/DataDog/terraform-provider-datadog/pull/3634
-* [datadog_observability_pipeline] Adding compression to AWS s3 source by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3683
-* [datadog_team_sync] Add `datadog_team_sync` and `datadog_team_connection` resources by @gabrielgiordano in https://github.com/DataDog/terraform-provider-datadog/pull/3626
-* [datadog_observability_pipeline] Add Elasticsearch metrics destination to obs pipelines by @jackie8c in https://github.com/DataDog/terraform-provider-datadog/pull/3685
-### NOTES
-* Bump terraform plugin deps for terraform-plugin-go v0.31.0 compat by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3674
-
-## New Contributors
-* @fbryden made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3655
-* @armleth made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3613
-* @gh-worker-campaigns-3e9aa4[bot] made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3670
-* @andreyfel made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3677
-* @jyanezt made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3652
-* @cferland made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3634
-* @gabrielgiordano made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3626
-* @jackie8c made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3685
-
-**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.4.0...v4.5.0
-
-## 4.5.0 (April 15, 2026)
-
-### BUGFIXES
 * [datadog_action_connection] Fix edge case where reads lose SECRET tokens by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3667
 * [datadog_monitor] Fix restricted roles behavior and relevant tests by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3645
 * [datadog_observability_pipeline] Remove required and update doc with links by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3622
@@ -62,7 +23,7 @@
 * [datadog_sensitive_data_scanner] Add support for suppressions in tf by @fbryden in https://github.com/DataDog/terraform-provider-datadog/pull/3654
 * [datadog_team_sync] Add `datadog_team_sync` and `datadog_team_connection` resources by @gabrielgiordano in https://github.com/DataDog/terraform-provider-datadog/pull/3626
 ### NOTES
-* Bump terraform plugin deps for terraform-plugin-go v0.31.0 compat by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3674
+* Bump terraform plugin dependencies for terraform-plugin-go v0.31.0 compat by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3674
 
 ## New Contributors
 * @fbryden made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3655
