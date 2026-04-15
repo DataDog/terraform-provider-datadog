@@ -118,8 +118,9 @@ type sourceModel struct {
 	HttpClientSource         []*httpClientSourceModel                           `tfsdk:"http_client"`
 	GooglePubSubSource       []*googlePubSubSourceModel                         `tfsdk:"google_pubsub"`
 	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
-	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
-	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
+	SocketSource             []*observability_pipeline.SocketSourceModel            `tfsdk:"socket"`
+	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel    `tfsdk:"opentelemetry"`
+	KubernetesLogsSource     []*observability_pipeline.KubernetesLogsSourceModel   `tfsdk:"kubernetes_logs"`
 }
 
 type logstashSourceModel struct {
@@ -1154,8 +1155,9 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 										},
 									},
-									"socket":        observability_pipeline.SocketSourceSchema(),
-									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
+									"socket":          observability_pipeline.SocketSourceSchema(),
+									"opentelemetry":   observability_pipeline.OpentelemetrySourceSchema(),
+									"kubernetes_logs": observability_pipeline.KubernetesLogsSourceSchema(),
 								},
 							},
 						},
@@ -2997,6 +2999,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, o := range sourceBlock.OpentelemetrySource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandOpentelemetrySource(o, sourceId))
 		}
+		for _, k := range sourceBlock.KubernetesLogsSource {
+			config.Sources = append(config.Sources, observability_pipeline.ExpandKubernetesLogsSource(k, sourceId))
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3185,6 +3190,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if o := observability_pipeline.FlattenOpentelemetrySource(src.ObservabilityPipelineOpentelemetrySource); o != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineOpentelemetrySource.GetId())
 			sourceBlock.OpentelemetrySource = append(sourceBlock.OpentelemetrySource, o)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if k := observability_pipeline.FlattenKubernetesLogsSource(src.ObservabilityPipelineKubernetesLogsSource); k != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineKubernetesLogsSource.GetId())
+			sourceBlock.KubernetesLogsSource = append(sourceBlock.KubernetesLogsSource, k)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
