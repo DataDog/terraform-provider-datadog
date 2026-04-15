@@ -90,6 +90,16 @@ func buildRequest(ctx context.Context, client *datadog.APIClient, method, path s
 			}
 		}
 	}
+	// Handle cloud-provider-based (delegated token) authentication.
+	// Generated API methods call UseDelegatedTokenAuth explicitly; buildRequest
+	// bypasses generated code so we must do the same here.
+	if ctx != nil {
+		if _, ok := ctx.Value(datadog.ContextDelegatedToken).(*datadog.DelegatedTokenCredentials); ok {
+			if err := datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, client.GetConfig().DelegatedTokenConfig); err != nil {
+				return nil, err
+			}
+		}
+	}
 
 	req, err := client.PrepareRequest(ctx, localVarPath, method, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormQueryParams, localVarFormFile)
 	if err != nil {
