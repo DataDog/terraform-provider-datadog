@@ -71,31 +71,25 @@ func buildRequest(ctx context.Context, client *datadog.APIClient, method, path s
 		if err := datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, client.GetConfig().DelegatedTokenConfig); err != nil {
 			return nil, err
 		}
-	} else {
-		if ctx != nil {
-			if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
-				if apiKey, ok := auth["apiKeyAuth"]; ok {
-					var key string
-					if apiKey.Prefix != "" {
-						key = apiKey.Prefix + " " + apiKey.Key
-					} else {
-						key = apiKey.Key
-					}
-					localVarHeaderParams["DD-API-KEY"] = key
+	} else if ctx != nil {
+		if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
+			if apiKey, ok := auth["apiKeyAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
 				}
+				localVarHeaderParams["DD-API-KEY"] = key
 			}
-		}
-		if ctx != nil {
-			if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
-				if apiKey, ok := auth["appKeyAuth"]; ok {
-					var key string
-					if apiKey.Prefix != "" {
-						key = apiKey.Prefix + " " + apiKey.Key
-					} else {
-						key = apiKey.Key
-					}
-					localVarHeaderParams["DD-APPLICATION-KEY"] = key
+			if apiKey, ok := auth["appKeyAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
 				}
+				localVarHeaderParams["DD-APPLICATION-KEY"] = key
 			}
 		}
 	}
