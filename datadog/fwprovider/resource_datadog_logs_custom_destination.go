@@ -516,6 +516,20 @@ func (r *logsCustomDestinationResource) updateState(ctx context.Context, state *
 		}
 
 		// NOTE: Access token is not returned by the API, keep user state.
+
+		if splunkDestination.HasSourcetype() {
+			v, _ := splunkDestination.GetSourcetypeOk()
+			if v == nil {
+				// API returned explicit null — store block with null value
+				state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{{Value: types.StringNull()}}
+			} else {
+				// API returned a string — store block with that value
+				state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{{Value: types.StringValue(*v)}}
+			}
+		} else {
+			// API returned absent — store empty slice (no block)
+			state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{}
+		}
 	}
 
 	if elasticsearchDestination := forwarderDestination.CustomDestinationResponseForwardDestinationElasticsearch; elasticsearchDestination != nil {
@@ -677,6 +691,15 @@ func (r *logsCustomDestinationResource) buildLogsCustomDestinationForwarderDesti
 		splunk := datadogV2.NewCustomDestinationForwardDestinationSplunkWithDefaults()
 		splunk.SetEndpoint(splunkDestination[0].Endpoint.ValueString())
 		splunk.SetAccessToken(splunkDestination[0].AccessToken.ValueString())
+
+		if sourcetypes := splunkDestination[0].Sourcetype; len(sourcetypes) == 1 {
+			if sourcetypes[0].Value.IsNull() {
+				splunk.SetSourcetypeNil()
+			} else {
+				splunk.SetSourcetype(sourcetypes[0].Value.ValueString())
+			}
+		}
+		// len(sourcetypes) == 0: do not set sourcetype → absent in request body → PATCH preserves existing
 
 		splunkOut := datadogV2.CustomDestinationForwardDestinationSplunkAsCustomDestinationForwardDestination(splunk)
 		return &splunkOut
