@@ -202,7 +202,7 @@ func testAccCheckDatadogUpdateLogsCustomDestination(name string, destination str
 
 func testAccCheckDatadogSplunkDestinationWithSourcetype(name, sourcetypeBlock string) string {
 	return fmt.Sprintf(`
-		resource "datadog_logs_custom_destination" "splunk_sourcetype" {
+		resource "datadog_logs_custom_destination" "sample_destination" {
 			name = "%s"
 			splunk_destination {
 				endpoint     = "https://example.org"
@@ -232,13 +232,19 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
 		}
 	`
 
+	emptyStringSourcetype := `
+		sourcetype {
+			value = ""
+		}
+	`
+
 	stringSourcetype2 := `
 		sourcetype {
 			value = "other-type"
 		}
 	`
 
-	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() {
 			testAccPreCheck(t)
@@ -247,7 +253,6 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				// Scenario 1: create with no sourcetype block (absent)
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.#", "1"),
@@ -255,7 +260,6 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
 				),
 			},
 			{
-				// Scenario 4: update from absent to string
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
@@ -263,15 +267,20 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
 				),
 			},
 			{
-				// Scenario 6: update from string to null
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, nullSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckNoResourceAttr(path, "splunk_destination.0.sourcetype.0.value"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, emptyStringSourcetype),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
 				),
 			},
 			{
-				// Scenario 7: update from null to string
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype2),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
@@ -287,7 +296,7 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_from_string(t *testin
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 
-	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() {
 			testAccPreCheck(t)
@@ -296,7 +305,6 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_from_string(t *testin
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				// Scenario 2: create with string sourcetype
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, `
 					sourcetype {
 						value = "created-with-string"
@@ -316,7 +324,7 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_from_null(t *testing.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 
-	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() {
 			testAccPreCheck(t)
@@ -325,7 +333,6 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_from_null(t *testing.
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				// Scenario 3: create with null sourcetype
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, `
 					sourcetype {
 						value = null
@@ -333,7 +340,7 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_from_null(t *testing.
 				`),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
-					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
+					resource.TestCheckNoResourceAttr(path, "splunk_destination.0.sourcetype.0.value"),
 				),
 			},
 		},
@@ -345,7 +352,7 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_absent_to_null(t *tes
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 
-	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() {
 			testAccPreCheck(t)
@@ -354,14 +361,12 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_absent_to_null(t *tes
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				// Scenario 5 step 1: create absent
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, ``),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
 				),
 			},
 			{
-				// Scenario 5 step 2: update absent → null
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, `
 					sourcetype {
 						value = null
@@ -369,7 +374,7 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype_absent_to_null(t *tes
 				`),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
-					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
+					resource.TestCheckNoResourceAttr(path, "splunk_destination.0.sourcetype.0.value"),
 				),
 			},
 		},
