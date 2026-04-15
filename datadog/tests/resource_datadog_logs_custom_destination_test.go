@@ -200,6 +200,182 @@ func testAccCheckDatadogUpdateLogsCustomDestination(name string, destination str
 	`, name, destination)
 }
 
+func testAccCheckDatadogSplunkDestinationWithSourcetype(name, sourcetypeBlock string) string {
+	return fmt.Sprintf(`
+		resource "datadog_logs_custom_destination" "splunk_sourcetype" {
+			name = "%s"
+			splunk_destination {
+				endpoint     = "https://example.org"
+				access_token = "test-token"
+				%s
+			}
+		}
+	`, name, sourcetypeBlock)
+}
+
+func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	noSourcetype := ``
+
+	stringSourcetype := `
+		sourcetype {
+			value = "my-custom-type"
+		}
+	`
+
+	nullSourcetype := `
+		sourcetype {
+			value = null
+		}
+	`
+
+	stringSourcetype2 := `
+		sourcetype {
+			value = "other-type"
+		}
+	`
+
+	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Scenario 1: create with no sourcetype block (absent)
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
+				),
+			},
+			{
+				// Scenario 4: update from absent to string
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "my-custom-type"),
+				),
+			},
+			{
+				// Scenario 6: update from string to null
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, nullSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
+				),
+			},
+			{
+				// Scenario 7: update from null to string
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype2),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "other-type"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogLogsCustomDestination_splunk_sourcetype_from_string(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Scenario 2: create with string sourcetype
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, `
+					sourcetype {
+						value = "created-with-string"
+					}
+				`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "created-with-string"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogLogsCustomDestination_splunk_sourcetype_from_null(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Scenario 3: create with null sourcetype
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, `
+					sourcetype {
+						value = null
+					}
+				`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogLogsCustomDestination_splunk_sourcetype_absent_to_null(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	path := "datadog_logs_custom_destination.splunk_sourcetype"
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Scenario 5 step 1: create absent
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, ``),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
+				),
+			},
+			{
+				// Scenario 5 step 2: update absent → null
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, `
+					sourcetype {
+						value = null
+					}
+				`),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
+				),
+			},
+		},
+	})
+}
+
 // testAccCleanupOrphanedLogsCustomDestinations deletes disabled custom destinations
 // that were left behind by previous test runs or external sources, to free up quota.
 func testAccCleanupOrphanedLogsCustomDestinations(t *testing.T, frameworkProvider *fwprovider.FrameworkProvider) {
