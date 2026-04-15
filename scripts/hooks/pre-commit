@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Pre-commit hook: regenerate docs when resource/data source files change.
+# Installed automatically by `make build`. See `make install-hooks`.
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+# Only check staged files
+changed_files=$(git diff --cached --name-only)
+
+if [ -z "$changed_files" ]; then
+  exit 0
+fi
+
+resource_changed=false
+while IFS= read -r file; do
+  case "$file" in
+    datadog/resource_datadog_*.go|\
+    datadog/fwprovider/resource_datadog_*.go|\
+    datadog/fwprovider/data_source_datadog_*.go|\
+    datadog/data_source_datadog_*.go|\
+    templates/resources/*.md.tmpl|\
+    templates/data-sources/*.md.tmpl)
+      resource_changed=true
+      break
+      ;;
+  esac
+done <<< "$changed_files"
+
+if [ "$resource_changed" = false ]; then
+  exit 0
+fi
+
+echo "Resource/data source files changed — regenerating docs..."
+make docs
+
+if ! git diff --exit-code --quiet docs/; then
+  echo ""
+  echo "ERROR: make docs produced changes that are not staged."
+  echo "Please stage the updated docs and commit again:"
+  echo "  git add docs/"
+  echo ""
+  exit 1
+fi

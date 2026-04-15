@@ -9,8 +9,14 @@ LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
 
 default: build
 
-build: fmtcheck
+build: fmtcheck install-hooks
 	go install
+
+install-hooks:
+	@if [ ! -f .git/hooks/pre-commit ]; then \
+		cp scripts/hooks/pre-commit .git/hooks/pre-commit; \
+		echo "Installed pre-commit hook"; \
+	fi
 
 install: fmtcheck
 	mkdir -vp $(DIR)
@@ -99,4 +105,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile tools get-test-deps license-check sweep
+.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile tools get-test-deps license-check sweep install-hooks
