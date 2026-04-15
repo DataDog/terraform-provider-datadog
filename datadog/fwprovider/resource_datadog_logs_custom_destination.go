@@ -60,9 +60,14 @@ type HttpDestinationCustomHeaderAuth struct {
 	HeaderValue types.String `tfsdk:"header_value"`
 }
 
+type SplunkSourcetype struct {
+	Value types.String `tfsdk:"value"`
+}
+
 type SplunkDestination struct {
-	Endpoint    types.String `tfsdk:"endpoint"`
-	AccessToken types.String `tfsdk:"access_token"`
+	Endpoint    types.String       `tfsdk:"endpoint"`
+	AccessToken types.String       `tfsdk:"access_token"`
+	Sourcetype  []SplunkSourcetype `tfsdk:"sourcetype"`
 }
 
 type ElasticsearchDestination struct {
@@ -230,6 +235,22 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 							Description: "Access token of the Splunk HTTP Event Collector. This field is not returned by the API.",
 							Required:    true,
 							Sensitive:   true,
+						},
+					},
+					Blocks: map[string]schema.Block{
+						"sourcetype": schema.ListNestedBlock{
+							Description: "The Splunk sourcetype for forwarded log events. If absent, Splunk uses `_json` as the default. If set with `value = null`, the sourcetype field is omitted from forwarded events entirely.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"value": schema.StringAttribute{
+										Description: "The sourcetype string. Set to `null` to omit the sourcetype from forwarded events.",
+										Optional:    true,
+									},
+								},
+							},
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
+							},
 						},
 					},
 				},
