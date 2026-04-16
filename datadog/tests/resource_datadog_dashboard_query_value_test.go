@@ -15,6 +15,7 @@ resource "datadog_dashboard" "query_value_dashboard" {
 			title = "Avg of system.mem.free over account:prod"
 			title_align = "center"
 			title_size = "16"
+			description = "Average free memory across production accounts."
 			custom_unit = "Gib"
 			precision = "3"
 			autoscale = "true"
@@ -64,6 +65,7 @@ resource "datadog_dashboard" "query_value_dashboard" {
 			title = "Avg of system.mem.free over account:prod"
 			title_align = "center"
 			title_size = "16"
+			description = "Average free memory across production accounts."
 			custom_unit = "Gib"
 			precision = "3"
 			autoscale = "true"
@@ -184,6 +186,7 @@ var datadogDashboardQueryValueAsserts = []string{
 	"widget.0.query_value_definition.0.request.0.conditional_formats.1.timeframe =",
 	"widget.0.query_value_definition.0.text_align =",
 	"widget.0.query_value_definition.0.title = Avg of system.mem.free over account:prod",
+	"widget.0.query_value_definition.0.description = Average free memory across production accounts.",
 	"widget.0.query_value_definition.0.request.0.conditional_formats.1.custom_bg_color =",
 	"widget.0.query_value_definition.0.request.0.conditional_formats.# = 2",
 	"description = Created using the Datadog provider in Terraform",

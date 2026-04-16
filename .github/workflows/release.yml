@@ -4,6 +4,7 @@ name: release
 permissions:
   contents: write
   pull-requests: write
+  id-token: write # Required for dd-octo-sts action
 
 on:
   pull_request:
@@ -20,10 +21,10 @@ jobs:
     steps:
       - name: Get GitHub App token
         id: get_token
-        uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
         with:
-          app-id: ${{ secrets.PIPELINE_GITHUB_APP_ID }}
-          private-key: ${{ secrets.PIPELINE_GITHUB_APP_PRIVATE_KEY }}
+          scope: DataDog/terraform-provider-datadog
+          policy: self.release.create-release
 
       - name: Create tag
         id: create_tag

@@ -191,16 +191,6 @@ skipped_tests:
     added: "2026-03-04"
     author: LiuVII
 
-  # OnCall — condition polling failure (2 tests)
-  - test: TestOnCallUserPhoneNotificationRule
-    reason: "Failed to satisfy condition after 10 retries — OnCall resource not reaching expected state"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestOnCallUserEmailNotificationRule
-    reason: "Failed to satisfy condition after 10 retries — OnCall destroy polling timeout (APIR-2792)"
-    added: "2026-04-10"
-    author: fpighi
-
   # Non-empty plan after apply — provider read bug (2 tests)
   - test: TestAccDatadogAuthNMapping_CreateUpdate
     reason: "Non-empty plan after apply + 404 on destroy — provider read returns empty state after create"
@@ -232,24 +222,6 @@ skipped_tests:
     reason: "400 Bad Request creating security notification rule — org may lack required detection rules"
     added: "2026-03-04"
     author: LiuVII
-
-  # Monitor scheduling — API now requires on_missing_data for custom_schedule (4 tests, APIR-2787)
-  - test: TestAccDatadogMonitor_SchedulingOptionsCustomSchedule
-    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart
-    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccMonitor_Fwprovider_SchedulingOptionsCustomSchedule
-    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
-    added: "2026-04-10"
-    author: fpighi
-  - test: TestAccMonitor_Fwprovider_SchedulingOptionsCustomScheduleNoStart
-    reason: "400 Bad Request: custom_schedule requires on_missing_data — API behavior change"
-    added: "2026-04-10"
-    author: fpighi
 
   # SloCorrection — Hardcoded timestamps older than 15 months (2 tests, APIR-2788)
   - test: TestAccDatadogSloCorrection_Basic

@@ -1265,6 +1265,51 @@ resource "datadog_observability_pipeline" "s3_source" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonS3SourceCompression(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.s3_source_compression"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "s3_source_compression" {
+  name = "amazon_s3-source-compression-pipeline"
+
+  config {
+    source {
+      id = "s3-source-1"
+
+      amazon_s3 {
+        region      = "us-east-1"
+        compression = "gzip"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["s3-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "s3-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.amazon_s3.0.compression", "gzip"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecSource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -3126,7 +3171,9 @@ resource "datadog_observability_pipeline" "enrichment" {
               key {
                 column     = "user_id"
                 comparison = "equals"
-                field      = "log.user.id"
+                field {
+                  string_path = "log.user.id"
+                }
               }
             }
           }
@@ -3177,7 +3224,7 @@ resource "datadog_observability_pipeline" "enrichment" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.encoding.0.includes_headers", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.column", "user_id"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.comparison", "equals"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.field", "log.user.id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.field.0.string_path", "log.user.id"),
 					// GeoIP enrichment checks
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.id", "enrichment-group-2"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.1.enabled", "true"),
@@ -6592,6 +6639,399 @@ resource "datadog_observability_pipeline" "opensearch_validation" {
 }
 `,
 				ExpectError: regexp.MustCompile(`Invalid Attribute Combination`),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_splunkHecSourceStoreHecToken(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.splunk_hec_store_token"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_store_token" {
+  name = "splunk-hec-store-token-pipeline"
+
+  config {
+    source {
+      id = "splunk-hec-source-1"
+
+      splunk_hec {
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["splunk-hec-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-hec-source-1"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_store_token" {
+  name = "splunk-hec-store-token-pipeline"
+
+  config {
+    source {
+      id = "splunk-hec-source-1"
+
+      splunk_hec {
+        store_hec_token = true
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["splunk-hec-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-hec-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.store_hec_token", "true"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_splunkHecDestinationTokenStrategy(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.splunk_hec_token_strategy"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_token_strategy" {
+  name = "splunk-hec-token-strategy-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding = "json"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_token_strategy" {
+  name = "splunk-hec-token-strategy-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "splunk-hec-1"
+      inputs = ["source-1"]
+      splunk_hec {
+        encoding       = "json"
+        token_key      = "SPLUNK_HEC_TOKEN"
+        token_strategy = "custom"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.token_key", "SPLUNK_HEC_TOKEN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec.0.token_strategy", "custom"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_enrichmentTableFieldLookup(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.enrichment_field_lookup"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "enrichment_field_lookup" {
+  name = "enrichment-field-lookup-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "pg-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "csv-enrichment"
+        enabled = true
+        include = "*"
+
+        enrichment_table {
+          target = "log.enrichment"
+
+          file {
+            path = "/etc/enrichment/lookup.csv"
+
+            encoding {
+              type             = "csv"
+              delimiter        = ","
+              includes_headers = true
+            }
+
+            key {
+              column     = "user_id"
+              comparison = "equals"
+              field {
+                string_path = "log.user.id"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["pg-1"]
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.column", "user_id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.comparison", "equals"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.field.0.string_path", "log.user.id"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "enrichment_field_lookup" {
+  name = "enrichment-field-lookup-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "pg-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "csv-enrichment"
+        enabled = true
+        include = "*"
+
+        enrichment_table {
+          target = "log.enrichment"
+
+          file {
+            path = "/etc/enrichment/lookup.csv"
+
+            encoding {
+              type             = "csv"
+              delimiter        = ","
+              includes_headers = true
+            }
+
+            key {
+              column     = "user_id"
+              comparison = "equals"
+              field {
+                secret = "LOOKUP_KEY_SECRET"
+              }
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["pg-1"]
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.column", "user_id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.comparison", "equals"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.enrichment_table.0.file.0.key.0.field.0.secret", "LOOKUP_KEY_SECRET"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_elasticsearchMetricsDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.elasticsearch_metrics_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_metrics_dest" {
+  name = "elasticsearch-metrics-dest-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "elasticsearch-metrics-destination-1"
+      inputs = ["source-1"]
+
+      elasticsearch {
+        api_version     = "v8"
+        endpoint_url_key = "ELASTICSEARCH_ENDPOINT_URL"
+        bulk_index      = "metrics-index"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "elasticsearch-metrics-dest-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "elasticsearch-metrics-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.api_version", "v8"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.endpoint_url_key", "ELASTICSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.bulk_index", "metrics-index"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "elasticsearch_metrics_dest" {
+  name = "elasticsearch-metrics-dest-pipeline-updated"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "elasticsearch-metrics-destination-1"
+      inputs = ["source-1"]
+
+      elasticsearch {
+        api_version           = "v8"
+        endpoint_url_key      = "ELASTICSEARCH_ENDPOINT_URL"
+        bulk_index            = "metrics-index"
+        id_key                = "event_id"
+        pipeline              = "metrics-ingest-pipeline"
+        request_retry_partial = true
+
+        auth {
+          strategy     = "basic"
+          username_key = "ELASTICSEARCH_USERNAME"
+          password_key = "ELASTICSEARCH_PASSWORD"
+        }
+
+        compression {
+          algorithm = "gzip"
+          level     = 6
+        }
+
+        tls {
+          ca_file   = "/etc/certs/ca.crt"
+          crt_file  = "/etc/certs/client.crt"
+          key_file  = "/etc/certs/client.key"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "elasticsearch-metrics-dest-pipeline-updated"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "elasticsearch-metrics-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.api_version", "v8"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.endpoint_url_key", "ELASTICSEARCH_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.bulk_index", "metrics-index"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.id_key", "event_id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.pipeline", "metrics-ingest-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.request_retry_partial", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.auth.0.strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.auth.0.username_key", "ELASTICSEARCH_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.auth.0.password_key", "ELASTICSEARCH_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.compression.0.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.tls.0.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.tls.0.crt_file", "/etc/certs/client.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.elasticsearch.0.tls.0.key_file", "/etc/certs/client.key"),
+				),
 			},
 		},
 	})
