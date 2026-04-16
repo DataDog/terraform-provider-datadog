@@ -67,12 +67,12 @@ func testAccCheckDatadogOrgGroupExists(accProvider *fwprovider.FrameworkProvider
 
 		id, err := uuid.Parse(rs.Primary.ID)
 		if err != nil {
-			return fmt.Errorf("org group ID is not a valid UUID: %s", err)
+			return fmt.Errorf("org group ID is not a valid UUID: %w", err)
 		}
 
 		_, _, err = apiInstances.GetOrgGroupsApiV2().GetOrgGroup(auth, id)
 		if err != nil {
-			return fmt.Errorf("received an error retrieving org group: %s", err)
+			return fmt.Errorf("received an error retrieving org group: %w", err)
 		}
 		return nil
 	}
@@ -90,7 +90,7 @@ func testAccCheckDatadogOrgGroupDestroy(accProvider *fwprovider.FrameworkProvide
 
 			id, err := uuid.Parse(r.Primary.ID)
 			if err != nil {
-				return fmt.Errorf("org group ID is not a valid UUID: %s", err)
+				return fmt.Errorf("org group ID is not a valid UUID: %w", err)
 			}
 
 			_, httpResp, err := apiInstances.GetOrgGroupsApiV2().GetOrgGroup(auth, id)
@@ -98,7 +98,7 @@ func testAccCheckDatadogOrgGroupDestroy(accProvider *fwprovider.FrameworkProvide
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					continue
 				}
-				return fmt.Errorf("received an error retrieving org group: %s", err)
+				return fmt.Errorf("received an error retrieving org group: %w", err)
 			}
 
 			return fmt.Errorf("org group still exists")

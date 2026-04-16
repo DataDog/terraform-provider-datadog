@@ -102,6 +102,7 @@ var Resources = []func() resource.Resource{
 	NewOrgConnectionResource,
 	NewOrgGroupResource,
 	NewOrgGroupMembershipResource,
+	NewOrgGroupPolicyResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
@@ -644,6 +645,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOrgGroupMembership", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListOrgGroupMemberships", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOrgGroupMembership", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroupPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOrgGroupPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOrgGroupPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOrgGroupPolicy", true)
 
 	// Enable IncidentNotificationRule
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)

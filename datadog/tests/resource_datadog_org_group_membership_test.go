@@ -15,7 +15,7 @@ import (
 )
 
 // getTestOrgUUID uses the V1 Organizations API (through the cassette recorder) to get the test org's public ID.
-func getTestOrgUUID(t *testing.T, auth context.Context, apiInstances *utils.ApiInstances) string {
+func getTestOrgUUID(auth context.Context, t *testing.T, apiInstances *utils.ApiInstances) string {
 	t.Helper()
 
 	resp, _, err := apiInstances.GetOrganizationsApiV1().ListOrgs(auth)
@@ -32,7 +32,7 @@ func getTestOrgUUID(t *testing.T, auth context.Context, apiInstances *utils.ApiI
 }
 
 // getOrgCurrentGroupID looks up the org's current org group membership and returns the group ID.
-func getOrgCurrentGroupID(t *testing.T, auth context.Context, apiInstances *utils.ApiInstances, orgUUID string) string {
+func getOrgCurrentGroupID(auth context.Context, t *testing.T, apiInstances *utils.ApiInstances, orgUUID string) string {
 	t.Helper()
 
 	id, err := uuid.Parse(orgUUID)
@@ -72,8 +72,8 @@ func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
 	orgGroupName2 := orgGroupName + "-2"
 	resourceName := "datadog_org_group_membership.foo"
 
-	orgUUID := getTestOrgUUID(t, providers.frameworkProvider.Auth, providers.frameworkProvider.DatadogApiInstances)
-	originalGroupID := getOrgCurrentGroupID(t, providers.frameworkProvider.Auth, providers.frameworkProvider.DatadogApiInstances, orgUUID)
+	orgUUID := getTestOrgUUID(providers.frameworkProvider.Auth, t, providers.frameworkProvider.DatadogApiInstances)
+	originalGroupID := getOrgCurrentGroupID(providers.frameworkProvider.Auth, t, providers.frameworkProvider.DatadogApiInstances, orgUUID)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
@@ -167,12 +167,12 @@ func testAccCheckDatadogOrgGroupMembershipExists(accProvider *fwprovider.Framewo
 
 		id, err := uuid.Parse(rs.Primary.ID)
 		if err != nil {
-			return fmt.Errorf("membership ID is not a valid UUID: %s", err)
+			return fmt.Errorf("membership ID is not a valid UUID: %w", err)
 		}
 
 		_, _, err = apiInstances.GetOrgGroupsApiV2().GetOrgGroupMembership(auth, id)
 		if err != nil {
-			return fmt.Errorf("received an error retrieving org group membership: %s", err)
+			return fmt.Errorf("received an error retrieving org group membership: %w", err)
 		}
 		return nil
 	}
