@@ -239,9 +239,9 @@ skipped_tests:
     added: "2026-04-10"
     author: fpighi
 
-  # MonitorDatasource — restricted_roles returns empty (1 test, APIR-2790)
-  - test: TestAccDatadogMonitorDatasource
-    reason: "restricted_roles.# expected 1, got 0 — eventual consistency or API change"
+  # PowerpackDatasource — Persistent 504 Gateway Timeout (1 test, APIR-2791)
+  - test: TestAccDatadogPowerpackDatasource
+    reason: "504 Gateway Timeout from ListPowerpacksWithPagination — too many powerpacks in org"
     added: "2026-04-10"
     author: fpighi
 
