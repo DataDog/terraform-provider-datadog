@@ -105,6 +105,7 @@ var Resources = []func() resource.Resource{
 	NewOrgGroupPolicyResource,
 	NewOrgGroupPolicyOverrideResource,
 	NewComplianceResourceEvaluationFilter,
+	NewSecurityMonitoringRuleResource,
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
