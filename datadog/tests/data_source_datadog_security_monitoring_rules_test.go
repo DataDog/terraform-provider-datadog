@@ -34,7 +34,7 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroySDKv2(accProvider),
 		Steps: []resource.TestStep{
 			{
 				// Create a rule to make sure we have at least one non-default rule
@@ -262,4 +262,27 @@ data "datadog_security_monitoring_rules" "acceptance_test" {
 	user_only_filter = true
 }
 `
+}
+
+func testAccCheckDatadogSecurityMonitoringRuleDestroySDKv2(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
+
+		for _, resource := range s.RootModule().Resources {
+			if resource.Type == "datadog_security_monitoring_rule" {
+				_, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringRule(auth, resource.Primary.ID)
+				if err != nil {
+					if httpResponse != nil && httpResponse.StatusCode == 404 {
+						continue
+					}
+					return fmt.Errorf("received an error deleting security monitoring rule: %s", err)
+				}
+				return fmt.Errorf("monitor still exists")
+			}
+		}
+		return nil
+	}
 }
