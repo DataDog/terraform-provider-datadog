@@ -25,7 +25,6 @@ jobs:
         with:
           scope: DataDog/terraform-provider-datadog
           policy: self.release.create-release
-          application_id: "38460"
 
       - name: Create tag
         id: create_tag
