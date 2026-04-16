@@ -276,6 +276,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_org_group_test":                                              "org_group",
 	"tests/resource_datadog_org_group_membership_test":                                   "org_group_membership",
 	"tests/resource_datadog_org_group_policy_test":                                       "org_group_policy",
+	"tests/resource_datadog_org_group_policy_override_test":                              "org_group_policy_override",
 	"tests/resource_datadog_reference_table_test":                                        "reference-tables",
 	"tests/resource_datadog_restriction_policy_test":                                     "restriction-policy",
 	"tests/resource_datadog_role_test":                                                   "roles",
