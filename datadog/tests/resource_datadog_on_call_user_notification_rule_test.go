@@ -3,11 +3,11 @@ package test
 import (
 	"context"
 	_ "embed"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -21,6 +21,12 @@ var OnCallUserEmailNotificationRuleTest string
 
 //go:embed resource_datadog_on_call_user_phone_notification_rule_test.tf
 var OnCallUserPhoneNotificationRuleTest string
+
+//go:embed resource_datadog_on_call_user_email_notification_channel_only_test.tf
+var OnCallUserEmailNotificationChannelOnlyTest string
+
+//go:embed resource_datadog_on_call_user_phone_notification_channel_only_test.tf
+var OnCallUserPhoneNotificationChannelOnlyTest string
 
 func TestOnCallUserEmailNotificationRule(t *testing.T) {
 	t.Parallel()
@@ -38,9 +44,14 @@ func TestOnCallUserEmailNotificationRule(t *testing.T) {
 		"DELAY_MINUTES", "0",
 	).Replace(OnCallUserEmailNotificationRuleTest)
 
+	channelOnlyConfig := strings.NewReplacer(
+		"USER_EMAIL", userEmail,
+	).Replace(OnCallUserEmailNotificationChannelOnlyTest)
+
+	var ruleID, ruleUserID string
+
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogOnCallUserNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createConfig,
@@ -56,7 +67,20 @@ func TestOnCallUserEmailNotificationRule(t *testing.T) {
 					testUserNotificationRuleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_on_call_user_notification_rule.on_call_user_email_rule_test", "category", "high_urgency"),
 					resource.TestCheckResourceAttr("datadog_on_call_user_notification_rule.on_call_user_email_rule_test", "delay_minutes", "0"),
+					// Capture IDs before the rule is destroyed in the next step
+					func(s *terraform.State) error {
+						r := s.RootModule().Resources["datadog_on_call_user_notification_rule.on_call_user_email_rule_test"]
+						ruleID = r.Primary.ID
+						ruleUserID = r.Primary.Attributes["user_id"]
+						return nil
+					},
 				),
+			},
+			{
+				// Remove the notification rule from config — Terraform destroys
+				// it while the user is still active, so we can verify via 404.
+				Config: channelOnlyConfig,
+				Check:  testUserNotificationRuleIsDestroyed(providers.frameworkProvider, &ruleUserID, &ruleID),
 			},
 		},
 	})
@@ -66,24 +90,43 @@ func TestOnCallUserPhoneNotificationRule(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	userEmail := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 	userPhone := "+17039389548"
 
 	tfConfig := strings.NewReplacer(
-		"USER_EMAIL", strings.ToLower(uniqueEntityName(ctx, t))+"@example.com",
-		"USER_PHONE", userPhone,
+		"USER_EMAIL", userEmail,
 		"USER_PHONE", userPhone,
 	).Replace(OnCallUserPhoneNotificationRuleTest)
 
+	channelOnlyConfig := strings.NewReplacer(
+		"USER_EMAIL", userEmail,
+		"USER_PHONE", userPhone,
+	).Replace(OnCallUserPhoneNotificationChannelOnlyTest)
+
+	var ruleID, ruleUserID string
+
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogOnCallUserNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: tfConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testUserNotificationRuleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_on_call_user_notification_rule.on_call_user_phone_rule_test", "phone.method", "voice"),
+					// Capture IDs before the rule is destroyed in the next step
+					func(s *terraform.State) error {
+						r := s.RootModule().Resources["datadog_on_call_user_notification_rule.on_call_user_phone_rule_test"]
+						ruleID = r.Primary.ID
+						ruleUserID = r.Primary.Attributes["user_id"]
+						return nil
+					},
 				),
+			},
+			{
+				// Remove the notification rule from config — Terraform destroys
+				// it while the user is still active, so we can verify via 404.
+				Config: channelOnlyConfig,
+				Check:  testUserNotificationRuleIsDestroyed(providers.frameworkProvider, &ruleUserID, &ruleID),
 			},
 		},
 	})
@@ -94,7 +137,6 @@ func testUserNotificationRuleExists(accProvider *fwprovider.FrameworkProvider) r
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		found := false
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_on_call_user_notification_rule" {
 				continue
@@ -108,40 +150,24 @@ func testUserNotificationRuleExists(accProvider *fwprovider.FrameworkProvider) r
 				return utils.TranslateClientError(err, httpResp, "error retrieving user notification rule")
 			}
 
-			found = true
+			return nil
 		}
 
-		if !found {
-			return errors.New("datadog_on_call_user_notification_rule resource is missing in state")
-		}
-
-		return nil
+		return fmt.Errorf("datadog_on_call_user_notification_rule resource is missing in state")
 	}
 }
 
-func testAccCheckDatadogOnCallUserNotificationRuleDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+func testUserNotificationRuleIsDestroyed(accProvider *fwprovider.FrameworkProvider, userID, ruleID *string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		return utils.Retry(2, 10, func() error {
-			for _, r := range s.RootModule().Resources {
-				if r.Type != "datadog_on_call_user_notification_rule" {
-					continue
-				}
-				id := r.Primary.ID
-				userID := r.Primary.Attributes["user_id"]
-
-				_, httpResp, err := apiInstances.GetOnCallApiV2().GetUserNotificationRule(auth, userID, id)
-				if httpResp.StatusCode == http.StatusNotFound {
-					return nil
-				}
-				if err != nil {
-					return &utils.RetryableError{Prob: fmt.Sprintf("error retrieving user notification rule %s", err)}
-				}
-				return &utils.RetryableError{Prob: "user notification rule still exists"}
+		return utils.Retry(2*time.Second, 10, func() error {
+			_, httpResp, _ := apiInstances.GetOnCallApiV2().GetUserNotificationRule(auth, *userID, *ruleID)
+			if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
+				return nil
 			}
-			return nil
+			return &utils.RetryableError{Prob: "notification rule still exists after removal from config"}
 		})
 	}
 }

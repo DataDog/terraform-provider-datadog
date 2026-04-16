@@ -191,16 +191,6 @@ skipped_tests:
     added: "2026-03-04"
     author: LiuVII
 
-  # OnCall — condition polling failure (2 tests)
-  - test: TestOnCallUserPhoneNotificationRule
-    reason: "Failed to satisfy condition after 10 retries — OnCall resource not reaching expected state"
-    added: "2026-03-04"
-    author: LiuVII
-  - test: TestOnCallUserEmailNotificationRule
-    reason: "Failed to satisfy condition after 10 retries — OnCall destroy polling timeout (APIR-2792)"
-    added: "2026-04-10"
-    author: fpighi
-
   # Non-empty plan after apply — provider read bug (2 tests)
   - test: TestAccDatadogAuthNMapping_CreateUpdate
     reason: "Non-empty plan after apply + 404 on destroy — provider read returns empty state after create"
