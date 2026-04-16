@@ -1,4 +1,5 @@
-## 4.5.0 (April 15, 2026)
+
+## 4.5.0 (April 16, 2026)
 
 ### BUGFIXES
 * [datadog_action_connection] Fix edge case where reads lose SECRET tokens by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3667
