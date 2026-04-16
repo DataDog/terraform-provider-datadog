@@ -123,8 +123,10 @@ func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.Metri
 	if err := d.Set("per_unit", metadata.GetPerUnit()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("statsd_interval", metadata.GetStatsdInterval()); err != nil {
-		return diag.FromErr(err)
+	if v, ok := metadata.GetStatsdIntervalOk(); ok {
+		if err := d.Set("statsd_interval", *v); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	// This is a workaround to ensure the metric name is set in the state as the metric name not returned in the API response
 	if err := d.Set("metric", d.Id()); err != nil {
