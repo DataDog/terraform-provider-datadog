@@ -13,10 +13,12 @@ build: fmtcheck install-hooks
 	go install
 
 install-hooks:
-	@if [ ! -f .git/hooks/pre-commit ]; then \
-		cp scripts/hooks/pre-commit .git/hooks/pre-commit; \
-		echo "Installed pre-commit hook"; \
-	fi
+	@hooks_dir="$$(git rev-parse --git-dir)/hooks" && \
+	mkdir -p "$$hooks_dir" && \
+	toplevel="$$(git rev-parse --show-toplevel)" && \
+	ln -sf "$$toplevel/scripts/hooks/pre-commit" "$$hooks_dir/pre-commit" && \
+	chmod +x "$$hooks_dir/pre-commit" && \
+	echo "Installed pre-commit hook (symlink)"
 
 install: fmtcheck
 	mkdir -vp $(DIR)

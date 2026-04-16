@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 # Pre-commit hook: regenerate docs when resource/data source files change.
-# Installed automatically by `make build`. See `make install-hooks`.
+# Installed via symlink by `make build`. See `make install-hooks`.
+# Requires Bash 3+ (uses pipefail).
 
 set -euo pipefail
 
+trap 'echo ""; echo "pre-commit hook failed. If this is a transient error, bypass with:"; echo "  git commit --no-verify"; echo ""' ERR
+
 cd "$(git rev-parse --show-toplevel)"
 
-# Only check staged files
-changed_files=$(git diff --cached --name-only)
+# Only check staged files, excluding deletions (--diff-filter=d)
+changed_files=$(git diff --cached --name-only --diff-filter=d)
 
 if [ -z "$changed_files" ]; then
   exit 0
@@ -32,14 +35,27 @@ if [ "$resource_changed" = false ]; then
   exit 0
 fi
 
+# Stash unstaged changes so make docs runs against the index, not the working tree.
+# This is critical for partial-staging workflows (git add -p).
+stashed=false
+if ! git diff --quiet; then
+  git stash push --keep-index --quiet -m "pre-commit hook: stash unstaged changes"
+  stashed=true
+fi
+
+restore_stash() {
+  if [ "$stashed" = true ]; then
+    git stash pop --quiet
+  fi
+}
+trap 'restore_stash; echo ""; echo "pre-commit hook failed. If this is a transient error, bypass with:"; echo "  git commit --no-verify"; echo ""' ERR
+
 echo "Resource/data source files changed — regenerating docs..."
 make docs
 
 if ! git diff --exit-code --quiet docs/; then
-  echo ""
-  echo "ERROR: make docs produced changes that are not staged."
-  echo "Please stage the updated docs and commit again:"
-  echo "  git add docs/"
-  echo ""
-  exit 1
+  git add docs/
+  echo "Updated docs/ have been staged."
 fi
+
+restore_stash
