@@ -288,18 +288,16 @@ func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
 				),
 			},
 			{
-				// Omitting the sourcetype block stops tracking it: state shows no sourcetype block
-				// and the apply succeeds without error. The existing API value is preserved but
-				// Terraform no longer manages it.
-				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
+				// Omitting the sourcetype block applies cleanly (state shows no sourcetype),
+				// but the next plan detects drift: Read surfaces the API-preserved value.
+				Config:             testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
+				ExpectNonEmptyPlan: true,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
 				),
 			},
 			{
-				// Re-adding the sourcetype block after it was removed resumes tracking and
-				// sends a PATCH with the new value ("my-custom-type"), overwriting whatever
-				// was left in the API.
+				// Adding the sourcetype block resolves the drift by sending a PATCH with the new value.
 				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),

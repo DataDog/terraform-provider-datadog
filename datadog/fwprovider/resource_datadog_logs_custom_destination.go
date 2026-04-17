@@ -356,10 +356,6 @@ func (r *logsCustomDestinationResource) Read(ctx context.Context, request resour
 		return
 	}
 
-	// If the prior state had no sourcetype block, keep it absent regardless
-	// of what the API returns.
-	splunkSourcetypeTracked := len(state.SplunkDestination) == 1 && len(state.SplunkDestination[0].Sourcetype) > 0
-
 	id := state.ID.ValueString()
 	resp, httpResp, err := r.Api.GetLogsCustomDestination(r.Auth, id)
 	if err != nil {
@@ -376,9 +372,6 @@ func (r *logsCustomDestinationResource) Read(ctx context.Context, request resour
 	}
 
 	r.updateState(ctx, &state, &resp)
-	if !splunkSourcetypeTracked && len(state.SplunkDestination) == 1 {
-		state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{}
-	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -416,9 +409,11 @@ func (r *logsCustomDestinationResource) Update(ctx context.Context, request reso
 		return
 	}
 
-	// If the plan has no sourcetype block, the PATCH will not send sourcetype (preserving
-	// the existing API value). We also keep sourcetype absent in state so the post-apply
-	// plan stays empty.
+	// Track whether the plan includes a sourcetype block. If absent, the PATCH omits
+	// sourcetype (API preserves existing value), and the post-apply state must match
+	// the plan — so we clear it here to avoid a framework inconsistency error.
+	// Drift is still detectable: the next terraform plan calls Read, which surfaces
+	// whatever the API returns.
 	splunkSourcetypeInPlan := len(state.SplunkDestination) == 1 && len(state.SplunkDestination[0].Sourcetype) > 0
 
 	id := state.ID.ValueString()
