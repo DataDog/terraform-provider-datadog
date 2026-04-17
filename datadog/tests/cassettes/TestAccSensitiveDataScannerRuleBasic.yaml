@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 218
+        content_length: 272
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"type":"sensitive_data_scanner_group"},"meta":{}}
+            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"type":"sensitive_data_scanner_group"},"meta":{}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 736
+        content_length: 826
         uncompressed: false
-        body: '{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291328,"count_limit":500}}'
+        body: '{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]},"targeted_obfuscations":{"data":[]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302861,"count_limit":750}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 551.202458ms
+        duration: 541.357458ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"character_count":30,"keywords":[]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"character_count":30,"keywords":[]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
@@ -64,15 +64,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 582
+        content_length: 620
         uncompressed: false
-        body: '{"data":{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}},"meta":{"version":291330}}'
+        body: '{"data":{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}},"targeted_obfuscations":{"data":[]}}},"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 288.808833ms
+        duration: 281.356833ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291330,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302863,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 126.490333ms
+        duration: 133.089916ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291330,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302863,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 127.821709ms
+        duration: 146.564375ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291330,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302863,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 124.197834ms
+        duration: 123.57625ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291330,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302863,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 175.017917ms
+        duration: 125.805625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -231,33 +231,33 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291330,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302863,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"a description","excluded_namespaces":["username"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 130.115334ms
+        duration: 128.148917ms
     - id: 7
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 263
+        content_length: 317
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},"meta":{}}
+            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/8ed531b8-c578-46de-a06a-25fce6c4828d
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/d2597ae6-495e-4730-bfab-3f13f2f538da
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -265,35 +265,35 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291331}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 282.110667ms
+        duration: 281.21275ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 569
+        content_length: 570
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/51a6510d-9ddd-415f-86cf-a44bda8729cd
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/623d1c3e-75af-46fc-baec-e17ece40e498
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -301,15 +301,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291332}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 282.464625ms
+        duration: 298.800917ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -336,13 +336,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291332,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302865,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 138.485917ms
+        duration: 126.232125ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291332,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302865,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 128.293041ms
+        duration: 127.061834ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -402,13 +402,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291332,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302865,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 127.630375ms
+        duration: 121.652334ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -435,13 +435,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291332,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302865,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 124.948083ms
+        duration: 121.824292ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -468,13 +468,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291332,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302865,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 130.64975ms
+        duration: 125.944375ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -501,13 +501,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291332,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule"}]}}},{"id":"51a6510d-9ddd-415f-86cf-a44bda8729cd","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302865,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule"}]}}},{"id":"623d1c3e-75af-46fc-baec-e17ece40e498","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":false,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 313.73325ms
+        duration: 253.347625ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -527,7 +527,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/51a6510d-9ddd-415f-86cf-a44bda8729cd
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/623d1c3e-75af-46fc-baec-e17ece40e498
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -535,28 +535,28 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291333}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 247.04175ms
+        duration: 271.163292ms
     - id: 16
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 179
+        content_length: 230
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"]},"type":"sensitive_data_scanner_group"},"meta":{}}
+            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"]},"type":"sensitive_data_scanner_group"},"meta":{}}
         form: {}
         headers:
             Accept:
@@ -571,28 +571,28 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 712
+        content_length: 799
         uncompressed: false
-        body: '{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291333,"count_limit":500}}'
+        body: '{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]},"targeted_obfuscations":{"data":[]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302866,"count_limit":750}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 248.518042ms
+        duration: 265.384875ms
     - id: 17
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 706
+        content_length: 707
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"],"starts_with":["arthur"]},"tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"],"starts_with":["arthur"]},"tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
@@ -607,15 +607,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 778
+        content_length: 798
         uncompressed: false
-        body: '{"data":{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}},"meta":{"version":291335}}'
+        body: '{"data":{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}},"targeted_obfuscations":{"data":[]}}},"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 296.250541ms
+        duration: 265.970041ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -642,13 +642,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291335,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302868,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 134.200041ms
+        duration: 120.317792ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -675,13 +675,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291335,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302868,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 127.963333ms
+        duration: 118.526125ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -708,13 +708,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291335,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302868,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 142.734417ms
+        duration: 122.758875ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -741,13 +741,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291335,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302868,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 135.335041ms
+        duration: 119.601666ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -774,13 +774,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291335,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302868,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.479417ms
+        duration: 115.731208ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -807,13 +807,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291335,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302868,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 153.4155ms
+        duration: 122.772208ms
     - id: 24
       request:
         proto: HTTP/1.1
@@ -840,33 +840,33 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291335,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302868,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{"starts_with":["arthur"],"ends_with":["@datadoghq.com"],"exact_match":["admin@datadoghq.com"]},"tags":["sensitive_data:true"],"text_replacement":{"type":"partial_replacement_from_beginning","number_of_chars":10}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 162.286917ms
+        duration: 119.74725ms
     - id: 25
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 558
+        content_length: 559
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"replacement_string":"REDACTED","should_save_match":true,"type":"replacement_string"}},"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"replacement_string":"REDACTED","should_save_match":true,"type":"replacement_string"}},"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/5ec9bf80-f5d8-4324-989d-1ffe320e6683
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/273fca5b-a2a6-4c3a-a1e2-8d038801f1b7
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -874,15 +874,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291336}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 284.416708ms
+        duration: 292.032875ms
     - id: 26
       request:
         proto: HTTP/1.1
@@ -909,13 +909,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291336,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302869,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 125.411542ms
+        duration: 121.642791ms
     - id: 27
       request:
         proto: HTTP/1.1
@@ -942,13 +942,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291336,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302869,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 132.001375ms
+        duration: 116.22ms
     - id: 28
       request:
         proto: HTTP/1.1
@@ -975,13 +975,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291336,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302869,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 132.153041ms
+        duration: 119.832375ms
     - id: 29
       request:
         proto: HTTP/1.1
@@ -1008,13 +1008,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291336,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302869,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 129.993666ms
+        duration: 115.060791ms
     - id: 30
       request:
         proto: HTTP/1.1
@@ -1041,13 +1041,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291336,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302869,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 126.316291ms
+        duration: 132.713167ms
     - id: 31
       request:
         proto: HTTP/1.1
@@ -1074,13 +1074,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291336,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302869,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 133.808458ms
+        duration: 132.874958ms
     - id: 32
       request:
         proto: HTTP/1.1
@@ -1107,33 +1107,33 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291336,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302869,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"replacement_string","replacement_string":"REDACTED","should_save_match":true}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 126.003125ms
+        duration: 120.000167ms
     - id: 33
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 469
+        content_length: 470
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":30,"keywords":[]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":30,"keywords":[]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/5ec9bf80-f5d8-4324-989d-1ffe320e6683
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/273fca5b-a2a6-4c3a-a1e2-8d038801f1b7
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -1141,15 +1141,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291337}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 272.430792ms
+        duration: 288.815875ms
     - id: 34
       request:
         proto: HTTP/1.1
@@ -1176,13 +1176,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291337,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302870,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 130.481042ms
+        duration: 121.037625ms
     - id: 35
       request:
         proto: HTTP/1.1
@@ -1209,13 +1209,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291337,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302870,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 171.581083ms
+        duration: 119.053084ms
     - id: 36
       request:
         proto: HTTP/1.1
@@ -1242,13 +1242,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291337,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302870,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 171.780541ms
+        duration: 126.968541ms
     - id: 37
       request:
         proto: HTTP/1.1
@@ -1275,13 +1275,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group"},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291337,"count_limit":500},"included":[{"id":"8ed531b8-c578-46de-a06a-25fce6c4828d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule"}]}}},{"id":"5ec9bf80-f5d8-4324-989d-1ffe320e6683","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1771511086","namespaces":[],"pattern":"regex","priority":1,"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"12af2927-35c1-46fe-90d0-ece9b13ab74d","type":"sensitive_data_scanner_group"}}}}]}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group"},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302870,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"d2597ae6-495e-4730-bfab-3f13f2f538da","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group","product_list":["logs"],"samplings":[{"product":"logs","rate":100}]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855-group-2","product_list":["apm"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule"}]}}},{"id":"273fca5b-a2a6-4c3a-a1e2-8d038801f1b7","type":"sensitive_data_scanner_rule","attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"keywords":[],"character_count":30},"is_enabled":true,"labels":[],"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1775836855","namespaces":[],"pattern":"regex","priority":1,"suppressions":{},"tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"63d44be2-c63d-4cb3-889f-912d3bd719e7","type":"sensitive_data_scanner_group"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 132.233625ms
+        duration: 117.008625ms
     - id: 38
       request:
         proto: HTTP/1.1
@@ -1301,7 +1301,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/8ed531b8-c578-46de-a06a-25fce6c4828d
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/d2597ae6-495e-4730-bfab-3f13f2f538da
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1309,15 +1309,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291338}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 310.522083ms
+        duration: 266.750958ms
     - id: 39
       request:
         proto: HTTP/1.1
@@ -1337,7 +1337,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/5ec9bf80-f5d8-4324-989d-1ffe320e6683
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/273fca5b-a2a6-4c3a-a1e2-8d038801f1b7
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1345,15 +1345,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291339}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 282.348ms
+        duration: 259.134375ms
     - id: 40
       request:
         proto: HTTP/1.1
@@ -1373,7 +1373,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/12af2927-35c1-46fe-90d0-ece9b13ab74d
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/63d44be2-c63d-4cb3-889f-912d3bd719e7
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -1381,15 +1381,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 39
+        content_length: 23
         uncompressed: false
-        body: '{"data":null,"meta":{"version":291340}}'
+        body: '{"data":null,"meta":{}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 276.678375ms
+        duration: 274.181ms
     - id: 41
       request:
         proto: HTTP/1.1
@@ -1414,12 +1414,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 469
+        content_length: 1023
         uncompressed: false
-        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[]}}},"meta":{"group_count_limit":20,"rule_count_limit":500,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":291340,"count_limit":500}}'
+        body: '{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group"}]}}},"meta":{"group_count_limit":20,"rule_count_limit":750,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false,"is_float_sampling_rate_enabled":false,"min_sampling_rate":10,"version":302873,"count_limit":750},"included":[{"id":"aed1093b-a756-445e-9fda-0f283872f171","type":"sensitive_data_scanner_group","attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"Test-Typescript-Create_Scanning_Group_returns_OK_response-1775561994","product_list":["logs"],"samplings":[]},"relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 135.681291ms
+        duration: 116.915458ms

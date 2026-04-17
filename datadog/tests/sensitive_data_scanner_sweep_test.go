@@ -86,9 +86,9 @@ func isTestGroup(name string) bool {
 	if strings.HasPrefix(name, "tf-") {
 		return true
 	}
-	// Hardcoded group names used in SDS rule tests
+	// Hardcoded group names used in SDS rule tests (current and legacy)
 	switch name {
-	case "my group", "another group":
+	case "my group", "another group", "my-test-group":
 		return true
 	}
 	return false
