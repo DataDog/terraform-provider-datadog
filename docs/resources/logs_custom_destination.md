@@ -140,7 +140,7 @@ Required:
 
 Optional:
 
-- `sourcetype` (Block List) The Splunk sourcetype for forwarded log events. If absent, Splunk uses `_json` as the default. If set with `value = null`, the sourcetype field is omitted from forwarded events entirely. (see [below for nested schema](#nestedblock--splunk_destination--sourcetype))
+- `sourcetype` (Block List) The Splunk sourcetype for forwarded events. Omitting this block on create leaves the sourcetype unconfigured, and events are forwarded to Splunk with `_json` as the sourcetype. On update, omitting this block preserves any previously-set value; if none was set, the sourcetype stays unconfigured and events are forwarded with `_json` (same as create). Setting `value = null` omits the sourcetype from forwarded events entirely. (see [below for nested schema](#nestedblock--splunk_destination--sourcetype))
 
 <a id="nestedblock--splunk_destination--sourcetype"></a>
 ### Nested Schema for `splunk_destination.sourcetype`

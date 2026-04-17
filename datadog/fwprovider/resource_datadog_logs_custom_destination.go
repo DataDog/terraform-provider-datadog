@@ -239,7 +239,7 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 					},
 					Blocks: map[string]schema.Block{
 						"sourcetype": schema.ListNestedBlock{
-							Description: "The Splunk sourcetype for forwarded log events. If absent, Splunk uses `_json` as the default. If set with `value = null`, the sourcetype field is omitted from forwarded events entirely.",
+							Description: "The Splunk sourcetype for forwarded events. Omitting this block on create leaves the sourcetype unconfigured, and events are forwarded to Splunk with `_json` as the sourcetype. On update, omitting this block preserves any previously-set value; if none was set, the sourcetype stays unconfigured and events are forwarded with `_json` (same as create). Setting `value = null` omits the sourcetype from forwarded events entirely.",
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"value": schema.StringAttribute{
