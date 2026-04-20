@@ -11,7 +11,7 @@ import (
 )
 
 // AccountAttributes holds the mutable fields of an integration account.
-// Used for both create and update requests.
+// NOTE: Used for both create and update requests.
 type AccountAttributes struct {
 	Name     string                 `json:"name,omitempty"`
 	Settings map[string]interface{} `json:"settings,omitempty"`
@@ -27,7 +27,7 @@ type accountRequest struct {
 }
 
 // AccountResponseAttributes holds the fields returned by the API.
-// Secrets are never included in any response.
+// IMPORTANT: Secrets are never included in any response.
 type AccountResponseAttributes struct {
 	Name     string                 `json:"name"`
 	Settings map[string]interface{} `json:"settings"`
@@ -46,18 +46,11 @@ type AccountResponse struct {
 }
 
 // Client calls the AMS Web Integrations public REST API.
-//
-// Auth headers (DD-API-KEY, DD-APPLICATION-KEY) and base URL are derived from
-// the provider-configured APIClient and context — callers never handle credentials
-// directly. Initialise with New using the values the FrameworkProvider already holds.
 type Client struct {
 	client *datadog.APIClient
 	auth   context.Context
 }
 
-// New creates a Client from the provider's existing instances:
-//
-//	webintegrations.New(providerData.DatadogApiInstances.HttpClient, providerData.Auth)
 func New(client *datadog.APIClient, auth context.Context) *Client {
 	return &Client{client: client, auth: auth}
 }
@@ -66,11 +59,8 @@ func (c *Client) accountsPath(integration string) string {
 	return fmt.Sprintf("/api/v2/web-integrations/%s/accounts", integration)
 }
 
-// GetAccount fetches a single account by ID.
-// The raw *http.Response is returned alongside the result so the caller can
-// inspect the status code — in particular to detect 404 and remove the
-// resource from Terraform state without surfacing an error.
 func (c *Client) GetAccount(ctx context.Context, integration, accountID string) (*AccountResponse, *http.Response, error) {
+	// Adding /{id} at the end of the endpoint path to get the account by ID
 	path := fmt.Sprintf("%s/%s", c.accountsPath(integration), accountID)
 	body, httpResp, err := utils.SendRequest(c.auth, c.client, "GET", path, nil)
 	if err != nil {
@@ -83,7 +73,6 @@ func (c *Client) GetAccount(ctx context.Context, integration, accountID string) 
 	return &result, httpResp, nil
 }
 
-// CreateAccount creates a new integration account and returns the API response.
 func (c *Client) CreateAccount(ctx context.Context, integration string, attrs AccountAttributes) (*AccountResponse, *http.Response, error) {
 	var req accountRequest
 	req.Data.Type = "Account"
@@ -100,10 +89,6 @@ func (c *Client) CreateAccount(ctx context.Context, integration string, attrs Ac
 	return &result, httpResp, nil
 }
 
-// UpdateAccount partially updates an existing account.
-// Callers must always include secrets in attrs even when only settings changed —
-// the API never returns secrets so Terraform cannot detect secret drift; always
-// re-sending them ensures the declared state is enforced on every apply.
 func (c *Client) UpdateAccount(ctx context.Context, integration, accountID string, attrs AccountAttributes) (*AccountResponse, *http.Response, error) {
 	var req accountRequest
 	req.Data.Type = "Account"
@@ -121,11 +106,25 @@ func (c *Client) UpdateAccount(ctx context.Context, integration, accountID strin
 	return &result, httpResp, nil
 }
 
-// DeleteAccount deletes an integration account.
-// The raw *http.Response is returned so the caller can treat 404 as success,
-// making delete idempotent when the account was already removed out-of-band.
 func (c *Client) DeleteAccount(ctx context.Context, integration, accountID string) (*http.Response, error) {
 	path := fmt.Sprintf("%s/%s", c.accountsPath(integration), accountID)
 	_, httpResp, err := utils.SendRequest(c.auth, c.client, "DELETE", path, nil)
 	return httpResp, err
+}
+
+// GetAccountSchema returns the JSON schema that the AMS enforces for the given
+// integration's account settings and secrets. The schema is the authoritative
+// source of truth for which fields are required, their types, defaults, and
+// validation rules (e.g. enum values, minLength, pattern).
+func (c *Client) GetAccountSchema(ctx context.Context, integration string) (map[string]interface{}, *http.Response, error) {
+	path := fmt.Sprintf("%s/schema", c.accountsPath(integration))
+	body, httpResp, err := utils.SendRequest(c.auth, c.client, "GET", path, nil)
+	if err != nil {
+		return nil, httpResp, err
+	}
+	var schema map[string]interface{}
+	if err := json.Unmarshal(body, &schema); err != nil {
+		return nil, httpResp, fmt.Errorf("parsing schema response: %w", err)
+	}
+	return schema, httpResp, nil
 }
