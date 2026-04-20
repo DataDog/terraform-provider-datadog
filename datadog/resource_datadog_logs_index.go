@@ -305,8 +305,8 @@ func buildDatadogIndexUpdateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	if !d.GetRawConfig().GetAttr("retention_days").IsNull() {
 		ddIndex.SetNumRetentionDays(int64(d.Get("retention_days").(int)))
 	}
-	if v, ok := d.GetOk("flex_retention_days"); ok {
-		ddIndex.SetNumFlexLogsRetentionDays(int64(v.(int)))
+	if !d.GetRawConfig().GetAttr("flex_retention_days").IsNull() {
+		ddIndex.SetNumFlexLogsRetentionDays(int64(d.Get("flex_retention_days").(int)))
 	}
 
 	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
@@ -335,11 +335,11 @@ func buildDatadogIndexCreateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	if v, ok := d.GetOk("daily_limit_warning_threshold_percentage"); ok {
 		ddIndex.SetDailyLimitWarningThresholdPercentage(float64(v.(float64)))
 	}
-	if v, ok := d.GetOk("retention_days"); ok {
-		ddIndex.SetNumRetentionDays(int64(v.(int)))
+	if !d.GetRawConfig().GetAttr("retention_days").IsNull() {
+		ddIndex.SetNumRetentionDays(int64(d.Get("retention_days").(int)))
 	}
-	if v, ok := d.GetOk("flex_retention_days"); ok {
-		ddIndex.SetNumFlexLogsRetentionDays(int64(v.(int)))
+	if !d.GetRawConfig().GetAttr("flex_retention_days").IsNull() {
+		ddIndex.SetNumFlexLogsRetentionDays(int64(d.Get("flex_retention_days").(int)))
 		if _, isRetentionSet := ddIndex.GetNumRetentionDaysOk(); !isRetentionSet {
 			// NOTE: Null retention is not an acceptable value on creation with flex. Must be explicitly 0.
 			ddIndex.SetNumRetentionDays(0)
