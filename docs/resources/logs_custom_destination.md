@@ -138,6 +138,17 @@ Required:
 - `access_token` (String, Sensitive) Access token of the Splunk HTTP Event Collector. This field is not returned by the API.
 - `endpoint` (String) The destination for which logs will be forwarded to. Must have HTTPS scheme. Forwarding back to Datadog is not allowed.
 
+Optional:
+
+- `sourcetype` (Block List) The Splunk sourcetype for forwarded events. Omitting this block on create leaves the sourcetype unconfigured, and events are forwarded to Splunk with `_json` as the sourcetype. On update, omitting this block preserves any previously-set value; if none was set, the sourcetype stays unconfigured and events are forwarded with `_json` (same as create). Setting `value = null` omits the sourcetype from forwarded events entirely. (see [below for nested schema](#nestedblock--splunk_destination--sourcetype))
+
+<a id="nestedblock--splunk_destination--sourcetype"></a>
+### Nested Schema for `splunk_destination.sourcetype`
+
+Optional:
+
+- `value` (String) The sourcetype string. Set to `null` to omit the sourcetype from forwarded events.
+
 ## Import
 
 Import is supported using the following syntax:

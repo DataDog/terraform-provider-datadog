@@ -200,6 +200,114 @@ func testAccCheckDatadogUpdateLogsCustomDestination(name string, destination str
 	`, name, destination)
 }
 
+func testAccCheckDatadogSplunkDestinationWithSourcetype(name, sourcetypeBlock string) string {
+	return fmt.Sprintf(`
+		resource "datadog_logs_custom_destination" "sample_destination" {
+			name = "%s"
+			splunk_destination {
+				endpoint     = "https://example.org"
+				access_token = "test-token"
+				%s
+			}
+		}
+	`, name, sourcetypeBlock)
+}
+
+func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	noSourcetype := ``
+
+	stringSourcetype := `
+		sourcetype {
+			value = "my-custom-type"
+		}
+	`
+
+	nullSourcetype := `
+		sourcetype {
+			value = null
+		}
+	`
+
+	emptyStringSourcetype := `
+		sourcetype {
+			value = ""
+		}
+	`
+
+	stringSourcetype2 := `
+		sourcetype {
+			value = "other-type"
+		}
+	`
+
+	path := "datadog_logs_custom_destination.sample_destination"
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "my-custom-type"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, nullSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckNoResourceAttr(path, "splunk_destination.0.sourcetype.0.value"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, emptyStringSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype2),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "other-type"),
+				),
+			},
+			{
+				// Omitting the sourcetype block applies cleanly (state shows no sourcetype),
+				// but the next plan detects drift: Read surfaces the API-preserved value.
+				Config:             testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
+				),
+			},
+			{
+				// Adding the sourcetype block resolves the drift by sending a PATCH with the new value.
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "my-custom-type"),
+				),
+			},
+		},
+	})
+}
+
 // testAccCleanupOrphanedLogsCustomDestinations deletes disabled custom destinations
 // that were left behind by previous test runs or external sources, to free up quota.
 func testAccCleanupOrphanedLogsCustomDestinations(t *testing.T, frameworkProvider *fwprovider.FrameworkProvider) {
