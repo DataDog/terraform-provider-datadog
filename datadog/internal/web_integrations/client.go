@@ -112,20 +112,3 @@ func (c *Client) DeleteAccount(ctx context.Context, integration, accountID strin
 	_, httpResp, err := utils.SendRequest(c.auth, c.client, "DELETE", path, nil)
 	return httpResp, err
 }
-
-// GetAccountSchema returns the JSON schema that the AMS enforces for the given
-// integration's account settings and secrets. The schema is the authoritative
-// source of truth for which fields are required, their types, defaults, and
-// validation rules (e.g. enum values, minLength, pattern).
-func (c *Client) GetAccountSchema(ctx context.Context, integration string) (map[string]interface{}, *http.Response, error) {
-	path := fmt.Sprintf("%s/schema", c.accountsPath(integration))
-	body, httpResp, err := utils.SendRequest(c.auth, c.client, "GET", path, nil)
-	if err != nil {
-		return nil, httpResp, err
-	}
-	var schema map[string]interface{}
-	if err := json.Unmarshal(body, &schema); err != nil {
-		return nil, httpResp, fmt.Errorf("parsing schema response: %w", err)
-	}
-	return schema, httpResp, nil
-}
