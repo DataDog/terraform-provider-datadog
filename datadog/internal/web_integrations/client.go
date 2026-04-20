@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -51,7 +52,7 @@ type Client struct {
 	auth   context.Context
 }
 
-func New(client *datadog.APIClient, auth context.Context) *Client {
+func New(auth context.Context, client *datadog.APIClient) *Client {
 	return &Client{client: client, auth: auth}
 }
 
