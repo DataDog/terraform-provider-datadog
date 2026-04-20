@@ -140,14 +140,14 @@ Required:
 
 Optional:
 
-- `sourcetype` (Block List) The Splunk sourcetype for forwarded events. Omitting this block on create leaves the sourcetype unconfigured, and events are forwarded to Splunk with `_json` as the sourcetype. On update, omitting this block preserves any previously-set value; if none was set, the sourcetype stays unconfigured and events are forwarded with `_json` (same as create). Setting `value = null` omits the sourcetype from forwarded events entirely. (see [below for nested schema](#nestedblock--splunk_destination--sourcetype))
+- `sourcetype` (Block List) The Splunk source type for forwarded events. Omitting `sourcetype` when you create a custom destination leaves `sourcetype` unconfigured, and events are forwarded to Splunk with `_json` as the source type. When updating a custom destination, omitting `sourcetype` preserves the previously set value; if none was set, the `sourcetype` field stays unconfigured and events are forwarded with `_json` (same as when creating a custom destination). Setting `value = null` omits the `sourcetype` field in the forwarded events entirely. (see [below for nested schema](#nestedblock--splunk_destination--sourcetype))
 
 <a id="nestedblock--splunk_destination--sourcetype"></a>
 ### Nested Schema for `splunk_destination.sourcetype`
 
 Optional:
 
-- `value` (String) The sourcetype string. Set to `null` to omit the sourcetype from forwarded events.
+- `value` (String) The source type string. Set to `null` to omit the sourcetype from forwarded events.
 
 ## Import
 
