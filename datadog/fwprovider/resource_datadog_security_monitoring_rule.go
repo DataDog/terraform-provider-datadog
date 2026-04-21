@@ -2,11 +2,13 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
@@ -17,6 +19,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	fwutils "github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -850,6 +853,510 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 			},
 		},
 	}
+}
+
+// securityMonitoringRuleInterface Common Interface to securityMonitoringRuleCreateInterface and SecurityMonitoringRuleReadInterface
+type securityMonitoringRuleInterface interface {
+	GetFilters() []datadogV2.SecurityMonitoringFilter
+	GetFiltersOk() (*[]datadogV2.SecurityMonitoringFilter, bool)
+	SetFilters(v []datadogV2.SecurityMonitoringFilter)
+	GetHasExtendedTitle() bool
+	GetHasExtendedTitleOk() (*bool, bool)
+	SetHasExtendedTitle(v bool)
+	GetIsEnabled() bool
+	GetIsEnabledOk() (*bool, bool)
+	SetIsEnabled(v bool)
+	GetMessage() string
+	GetMessageOk() (*string, bool)
+	SetMessage(v string)
+	GetName() string
+	GetNameOk() (*string, bool)
+	SetName(v string)
+	GetOptions() datadogV2.SecurityMonitoringRuleOptions
+	GetOptionsOk() (*datadogV2.SecurityMonitoringRuleOptions, bool)
+	SetOptions(v datadogV2.SecurityMonitoringRuleOptions)
+	GetTags() []string
+	GetTagsOk() (*[]string, bool)
+	SetTags(v []string)
+}
+
+// securityMonitoringRuleResponseInterface Common interface to SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse
+type securityMonitoringRuleResponseInterface interface {
+	securityMonitoringRuleInterface
+	SetCases(v []datadogV2.SecurityMonitoringRuleCase)
+	GetCases() []datadogV2.SecurityMonitoringRuleCase
+	GetDeprecationDateOk() (*int64, bool)
+}
+
+// Null-preservation rules applied throughout the readers below:
+//   - Required fields: always set from API.
+//   - Optional+Computed fields: always set from API; plan modifiers reconcile drift.
+//   - Optional-only string: set only when API returns a non-empty value.
+//   - Optional-only int64: set only when API returns a non-zero value.
+//   - Optional-only list: set only when API returned a non-empty list (ok && len>0).
+func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, ruleResponse securityMonitoringRuleResponseInterface) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	state.Message = types.StringValue(ruleResponse.GetMessage())
+	state.Name = types.StringValue(ruleResponse.GetName())
+	state.HasExtendedTitle = types.BoolValue(ruleResponse.GetHasExtendedTitle())
+	state.Enabled = types.BoolValue(ruleResponse.GetIsEnabled())
+	state.Tags = fwutils.ToTerraformSetString(ctx, ruleResponse.GetTagsOk)
+
+	if filters, ok := ruleResponse.GetFiltersOk(); ok {
+		state.Filters = extractFiltersFromRuleResponse(*filters)
+	}
+
+	var optsDiags diag.Diagnostics
+	state.Options, optsDiags = extractTfOptions(ctx, ruleResponse.GetOptions())
+	diags.Append(optsDiags...)
+
+	return diags
+}
+
+func extractThirdPartyCases(ctx context.Context, responseThirdPartyCases []datadogV2.SecurityMonitoringThirdPartyRuleCase) ([]thirdPartyCaseModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	tfThirdPartyCases := make([]thirdPartyCaseModel, len(responseThirdPartyCases))
+	for idx, thirdPartyCase := range responseThirdPartyCases {
+		tfThirdPartyCase := thirdPartyCaseModel{
+			Status: types.StringValue(string(thirdPartyCase.GetStatus())),
+		}
+		if v, ok := thirdPartyCase.GetNameOk(); ok && *v != "" {
+			tfThirdPartyCase.Name = types.StringValue(*v)
+		}
+		if v, ok := thirdPartyCase.GetQueryOk(); ok && *v != "" {
+			tfThirdPartyCase.Query = types.StringValue(*v)
+		}
+		if notifications, ok := thirdPartyCase.GetNotificationsOk(); ok && len(*notifications) > 0 {
+			var listDiags diag.Diagnostics
+			tfThirdPartyCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notifications)
+			diags.Append(listDiags...)
+		}
+		tfThirdPartyCases[idx] = tfThirdPartyCase
+	}
+	return tfThirdPartyCases, diags
+}
+
+func updateStandardResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	diags.Append(updateCommonResourceDataFromResponse(ctx, state, ruleResponse)...)
+
+	opts := ruleResponse.GetOptions()
+	if opts.GetDetectionMethod() == datadogV2.SECURITYMONITORINGRULEDETECTIONMETHOD_THIRD_PARTY {
+		var tpDiags diag.Diagnostics
+		state.ThirdPartyCases, tpDiags = extractThirdPartyCases(ctx, ruleResponse.GetThirdPartyCases())
+		diags.Append(tpDiags...)
+	} else {
+		var caseDiags diag.Diagnostics
+		state.Cases, caseDiags = extractRuleCases(ctx, ruleResponse.GetCases())
+		diags.Append(caseDiags...)
+
+		var queryDiags diag.Diagnostics
+		state.Queries, queryDiags = extractStandardRuleQueries(ctx, ruleResponse.GetQueries())
+		diags.Append(queryDiags...)
+	}
+
+	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
+		state.Type = types.StringValue(string(*ruleType))
+	}
+
+	if referenceTables, ok := ruleResponse.GetReferenceTablesOk(); ok && len(*referenceTables) > 0 {
+		state.ReferenceTables = extractReferenceTables(*referenceTables)
+	}
+
+	if groupSignalsBy, ok := ruleResponse.GetGroupSignalsByOk(); ok && len(*groupSignalsBy) > 0 {
+		var listDiags diag.Diagnostics
+		state.GroupSignalsBy, listDiags = types.ListValueFrom(ctx, types.StringType, *groupSignalsBy)
+		diags.Append(listDiags...)
+	}
+
+	if calculatedFields, ok := ruleResponse.GetCalculatedFieldsOk(); ok && len(*calculatedFields) > 0 {
+		state.CalculatedFields = extractCalculatedFields(*calculatedFields)
+	}
+
+	if schedulingOptions, ok := ruleResponse.GetSchedulingOptionsOk(); ok {
+		state.SchedulingOptions = extractSchedulingOptions(schedulingOptions)
+	}
+
+	return diags
+}
+
+func extractStandardRuleQueries(ctx context.Context, responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery) ([]ruleQueryModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	ruleQueries := make([]ruleQueryModel, len(responseRuleQueries))
+	for idx, responseRuleQuery := range responseRuleQueries {
+		ruleQuery := ruleQueryModel{}
+
+		// Required
+		if query, ok := responseRuleQuery.GetQueryOk(); ok {
+			ruleQuery.Query = types.StringValue(*query)
+		}
+
+		// Optional+Computed with defaults — always set
+		if aggregation, ok := responseRuleQuery.GetAggregationOk(); ok {
+			ruleQuery.Aggregation = types.StringValue(string(*aggregation))
+		}
+		if hasGbf, ok := responseRuleQuery.GetHasOptionalGroupByFieldsOk(); ok {
+			ruleQuery.HasOptionalGroupByFields = types.BoolValue(*hasGbf)
+		}
+		if dataSource, ok := responseRuleQuery.GetDataSourceOk(); ok {
+			ruleQuery.DataSource = types.StringValue(string(*dataSource))
+		}
+
+		// Optional+Computed without default — set even when empty
+		if metrics, ok := responseRuleQuery.GetMetricsOk(); ok {
+			var listDiags diag.Diagnostics
+			ruleQuery.Metrics, listDiags = types.ListValueFrom(ctx, types.StringType, *metrics)
+			diags.Append(listDiags...)
+		}
+
+		// Optional-only — only set when API returns a meaningful value
+		if name, ok := responseRuleQuery.GetNameOk(); ok && *name != "" {
+			ruleQuery.Name = types.StringValue(*name)
+		}
+		if metric, ok := responseRuleQuery.GetMetricOk(); ok && *metric != "" {
+			ruleQuery.Metric = types.StringValue(*metric)
+		}
+		if distinctFields, ok := responseRuleQuery.GetDistinctFieldsOk(); ok && len(*distinctFields) > 0 {
+			var listDiags diag.Diagnostics
+			ruleQuery.DistinctFields, listDiags = types.ListValueFrom(ctx, types.StringType, *distinctFields)
+			diags.Append(listDiags...)
+		}
+		if groupByFields, ok := responseRuleQuery.GetGroupByFieldsOk(); ok && len(*groupByFields) > 0 {
+			var listDiags diag.Diagnostics
+			ruleQuery.GroupByFields, listDiags = types.ListValueFrom(ctx, types.StringType, *groupByFields)
+			diags.Append(listDiags...)
+		}
+		// The API returns a single "index" string; our schema stores it as a list.
+		if index, ok := responseRuleQuery.GetIndexOk(); ok && *index != "" {
+			var listDiags diag.Diagnostics
+			ruleQuery.Indexes, listDiags = types.ListValueFrom(ctx, types.StringType, []string{*index})
+			diags.Append(listDiags...)
+		}
+
+		ruleQueries[idx] = ruleQuery
+	}
+	return ruleQueries, diags
+}
+
+func updateSignalResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, resp *datadogV2.SecurityMonitoringSignalRuleResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	diags.Append(updateCommonResourceDataFromResponse(ctx, state, resp)...)
+
+	var caseDiags diag.Diagnostics
+	state.Cases, caseDiags = extractRuleCases(ctx, resp.GetCases())
+	diags.Append(caseDiags...)
+
+	var queryDiags diag.Diagnostics
+	state.SignalQueries, queryDiags = extractSignalRuleQueries(ctx, resp.GetQueries())
+	diags.Append(queryDiags...)
+
+	if ruleType, ok := resp.GetTypeOk(); ok {
+		state.Type = types.StringValue(string(*ruleType))
+	}
+
+	return diags
+}
+
+func extractSignalRuleQueries(ctx context.Context, responseRuleQueries []datadogV2.SecurityMonitoringSignalRuleResponseQuery) ([]signalQueryModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	ruleQueries := make([]signalQueryModel, len(responseRuleQueries))
+	for idx, responseRuleQuery := range responseRuleQueries {
+		ruleQuery := signalQueryModel{}
+
+		// Required
+		if ruleId, ok := responseRuleQuery.GetRuleIdOk(); ok {
+			ruleQuery.RuleID = types.StringValue(*ruleId)
+		}
+
+		// Optional+Computed with defaults — always set
+		if aggregation, ok := responseRuleQuery.GetAggregationOk(); ok {
+			ruleQuery.Aggregation = types.StringValue(string(*aggregation))
+		}
+		// correlated_query_index is Optional+Computed with Default(""); the API returns int32.
+		if correlatedQueryIndex, ok := responseRuleQuery.GetCorrelatedQueryIndexOk(); ok {
+			ruleQuery.CorrelatedQueryIndex = types.StringValue(fmt.Sprintf("%d", *correlatedQueryIndex))
+		} else {
+			ruleQuery.CorrelatedQueryIndex = types.StringValue("")
+		}
+
+		// Optional-only — only set when API returns a meaningful value
+		if name, ok := responseRuleQuery.GetNameOk(); ok && *name != "" {
+			ruleQuery.Name = types.StringValue(*name)
+		}
+		if defaultRuleId, ok := responseRuleQuery.GetDefaultRuleIdOk(); ok && *defaultRuleId != "" {
+			ruleQuery.DefaultRuleID = types.StringValue(*defaultRuleId)
+		}
+		if correlatedByFields, ok := responseRuleQuery.GetCorrelatedByFieldsOk(); ok && len(*correlatedByFields) > 0 {
+			var listDiags diag.Diagnostics
+			ruleQuery.CorrelatedByFields, listDiags = types.ListValueFrom(ctx, types.StringType, *correlatedByFields)
+			diags.Append(listDiags...)
+		}
+
+		ruleQueries[idx] = ruleQuery
+	}
+	return ruleQueries, diags
+}
+
+func extractFiltersFromRuleResponse(ruleResponseFilter []datadogV2.SecurityMonitoringFilter) []ruleFilterModel {
+	filters := make([]ruleFilterModel, len(ruleResponseFilter))
+	for idx, responseFilter := range ruleResponseFilter {
+		filters[idx] = ruleFilterModel{
+			Query:  types.StringValue(responseFilter.GetQuery()),
+			Action: types.StringValue(string(responseFilter.GetAction())),
+		}
+	}
+	return filters
+}
+
+func extractRuleCases(ctx context.Context, responseRulesCases []datadogV2.SecurityMonitoringRuleCase) ([]ruleCaseModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	ruleCases := make([]ruleCaseModel, len(responseRulesCases))
+	for idx, responseRuleCase := range responseRulesCases {
+		ruleCase := ruleCaseModel{
+			Status: types.StringValue(string(responseRuleCase.GetStatus())),
+		}
+		if name, ok := responseRuleCase.GetNameOk(); ok && *name != "" {
+			ruleCase.Name = types.StringValue(*name)
+		}
+		if condition, ok := responseRuleCase.GetConditionOk(); ok && *condition != "" {
+			ruleCase.Condition = types.StringValue(*condition)
+		}
+		if notification, ok := responseRuleCase.GetNotificationsOk(); ok && len(*notification) > 0 {
+			var listDiags diag.Diagnostics
+			ruleCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notification)
+			diags.Append(listDiags...)
+		}
+		if actions, ok := responseRuleCase.GetActionsOk(); ok && len(*actions) > 0 {
+			ruleCase.Actions = extractRuleCaseActions(*actions)
+		}
+		ruleCases[idx] = ruleCase
+	}
+	return ruleCases, diags
+}
+
+func extractRuleCaseActions(apiActions []datadogV2.SecurityMonitoringRuleCaseAction) []ruleCaseActionModel {
+	tfActions := make([]ruleCaseActionModel, len(apiActions))
+	for idx, action := range apiActions {
+		tfAction := ruleCaseActionModel{
+			Type: types.StringValue(string(action.GetType())),
+		}
+		if options, ok := action.GetOptionsOk(); ok {
+			tfOptions := ruleCaseActionOptionsModel{}
+			if duration, ok := options.GetDurationOk(); ok {
+				tfOptions.Duration = types.Int64Value(*duration)
+			}
+			if !tfOptions.Duration.IsNull() {
+				tfAction.Options = []ruleCaseActionOptionsModel{tfOptions}
+			}
+		}
+		tfActions[idx] = tfAction
+	}
+	return tfActions
+}
+
+func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringRuleOptions) ([]ruleOptionsModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	tfOptions := ruleOptionsModel{}
+
+	// Optional+Computed with defaults — always set
+	if detectionMethod, ok := options.GetDetectionMethodOk(); ok {
+		tfOptions.DetectionMethod = types.StringValue(string(*detectionMethod))
+	}
+	if decreaseCriticalityBasedOnEnv, ok := options.GetDecreaseCriticalityBasedOnEnvOk(); ok {
+		tfOptions.DecreaseCriticalityBasedOnEnv = types.BoolValue(*decreaseCriticalityBasedOnEnv)
+	}
+
+	// Optional-only int64 — only set when API returns a non-zero value
+	if evaluationWindow, ok := options.GetEvaluationWindowOk(); ok && *evaluationWindow != 0 {
+		tfOptions.EvaluationWindow = types.Int64Value(int64(*evaluationWindow))
+	}
+	if keepAlive, ok := options.GetKeepAliveOk(); ok && *keepAlive != 0 {
+		tfOptions.KeepAlive = types.Int64Value(int64(*keepAlive))
+	}
+	if maxSignalDuration, ok := options.GetMaxSignalDurationOk(); ok && *maxSignalDuration != 0 {
+		tfOptions.MaxSignalDuration = types.Int64Value(int64(*maxSignalDuration))
+	}
+
+	// Sub-options blocks — only set when API returned them
+	if newValueOptions, ok := options.GetNewValueOptionsOk(); ok {
+		tfOptions.NewValueOptions = []newValueOptionsModel{extractNewValueOptions(newValueOptions)}
+	}
+	if impossibleTravelOptions, ok := options.GetImpossibleTravelOptionsOk(); ok {
+		tfOptions.ImpossibleTravelOptions = []impossibleTravelOptionsModel{extractImpossibleTravelOptions(impossibleTravelOptions)}
+	}
+	if anomalyDetectionOptions, ok := options.GetAnomalyDetectionOptionsOk(); ok {
+		tfOptions.AnomalyDetectionOptions = []anomalyDetectionOptionsModel{extractAnomalyDetectionOptions(anomalyDetectionOptions)}
+	}
+	if thirdPartyOptions, ok := options.GetThirdPartyRuleOptionsOk(); ok {
+		var tpDiags diag.Diagnostics
+		tfOptions.ThirdPartyRuleOptions, tpDiags = extractThirdPartyRuleOptions(ctx, thirdPartyOptions)
+		diags.Append(tpDiags...)
+	}
+	if seqOptions, ok := options.GetSequenceDetectionOptionsOk(); ok {
+		tfOptions.SequenceDetectionOptions = []sequenceDetectionOptionsModel{extractSequenceDetectionOptions(seqOptions)}
+	}
+
+	return []ruleOptionsModel{tfOptions}, diags
+}
+
+func extractReferenceTables(referenceTables []datadogV2.SecurityMonitoringReferenceTable) []ruleReferenceTableModel {
+	tfReferenceTables := make([]ruleReferenceTableModel, len(referenceTables))
+	for idx, referenceTable := range referenceTables {
+		tfReferenceTables[idx] = ruleReferenceTableModel{
+			TableName:     types.StringValue(referenceTable.GetTableName()),
+			ColumnName:    types.StringValue(referenceTable.GetColumnName()),
+			LogFieldPath:  types.StringValue(referenceTable.GetLogFieldPath()),
+			RuleQueryName: types.StringValue(referenceTable.GetRuleQueryName()),
+			CheckPresence: types.BoolValue(referenceTable.GetCheckPresence()),
+		}
+	}
+	return tfReferenceTables
+}
+
+func extractSchedulingOptions(schedulingOptions *datadogV2.SecurityMonitoringSchedulingOptions) []schedulingOptionsModel {
+	if schedulingOptions == nil {
+		return nil
+	}
+	tfSchedulingOptions := schedulingOptionsModel{
+		Rrule: types.StringValue(schedulingOptions.GetRrule()),
+	}
+	if start, ok := schedulingOptions.GetStartOk(); ok && *start != "" {
+		tfSchedulingOptions.Start = types.StringValue(*start)
+	}
+	if timezone, ok := schedulingOptions.GetTimezoneOk(); ok && *timezone != "" {
+		tfSchedulingOptions.Timezone = types.StringValue(*timezone)
+	}
+	return []schedulingOptionsModel{tfSchedulingOptions}
+}
+
+func extractCalculatedFields(calculatedFields []datadogV2.CalculatedField) []calculatedFieldModel {
+	tfCalculatedFields := make([]calculatedFieldModel, len(calculatedFields))
+	for idx, calculatedField := range calculatedFields {
+		tfCalculatedFields[idx] = calculatedFieldModel{
+			Name:       types.StringValue(calculatedField.Name),
+			Expression: types.StringValue(calculatedField.Expression),
+		}
+	}
+	return tfCalculatedFields
+}
+
+func extractNewValueOptions(newValueOptions *datadogV2.SecurityMonitoringRuleNewValueOptions) newValueOptionsModel {
+	return newValueOptionsModel{
+		// Required
+		ForgetAfter: types.Int64Value(int64(newValueOptions.GetForgetAfter())),
+		// Optional+Computed with defaults — always set
+		LearningMethod:        types.StringValue(string(newValueOptions.GetLearningMethod())),
+		LearningDuration:      types.Int64Value(int64(newValueOptions.GetLearningDuration())),
+		LearningThreshold:     types.Int64Value(int64(newValueOptions.GetLearningThreshold())),
+		InstantaneousBaseline: types.BoolValue(bool(newValueOptions.GetInstantaneousBaseline())),
+	}
+}
+
+func extractImpossibleTravelOptions(impossibleTravelOptions *datadogV2.SecurityMonitoringRuleImpossibleTravelOptions) impossibleTravelOptionsModel {
+	return impossibleTravelOptionsModel{
+		// Optional+Computed with default false — always set
+		BaselineUserLocations: types.BoolValue(impossibleTravelOptions.GetBaselineUserLocations()),
+	}
+}
+
+func extractAnomalyDetectionOptions(anomalyDetectionOptions *datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions) anomalyDetectionOptionsModel {
+	tfAnomalyDetectionOptions := anomalyDetectionOptionsModel{
+		// Optional+Computed with default false — always set
+		InstantaneousBaseline: types.BoolValue(bool(anomalyDetectionOptions.GetInstantaneousBaseline())),
+	}
+	// Optional-only int64 — only set when non-zero (all valid enum values are > 0)
+	if v := anomalyDetectionOptions.GetBucketDuration(); v != 0 {
+		tfAnomalyDetectionOptions.BucketDuration = types.Int64Value(int64(v))
+	}
+	if v := anomalyDetectionOptions.GetLearningDuration(); v != 0 {
+		tfAnomalyDetectionOptions.LearningDuration = types.Int64Value(int64(v))
+	}
+	if v := anomalyDetectionOptions.GetDetectionTolerance(); v != 0 {
+		tfAnomalyDetectionOptions.DetectionTolerance = types.Int64Value(int64(v))
+	}
+	// learning_period_baseline: Optional-only, 0 is a valid override value — use ok form.
+	if v, ok := anomalyDetectionOptions.GetLearningPeriodBaselineOk(); ok {
+		tfAnomalyDetectionOptions.LearningPeriodBaseline = types.Int64Value(int64(*v))
+	}
+	return tfAnomalyDetectionOptions
+}
+
+func extractThirdPartyRuleOptions(ctx context.Context, thirdPartyOptions *datadogV2.SecurityMonitoringRuleThirdPartyOptions) ([]thirdPartyRuleOptionsModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	tfThirdPartyOptions := thirdPartyRuleOptionsModel{
+		DefaultStatus: types.StringValue(string(thirdPartyOptions.GetDefaultStatus())),
+	}
+
+	// Optional-only list — keep null when API returns empty
+	if v, ok := thirdPartyOptions.GetDefaultNotificationsOk(); ok && len(*v) > 0 {
+		var listDiags diag.Diagnostics
+		tfThirdPartyOptions.DefaultNotifications, listDiags = types.ListValueFrom(ctx, types.StringType, *v)
+		diags.Append(listDiags...)
+	}
+
+	// Optional-only string
+	if v, ok := thirdPartyOptions.GetSignalTitleTemplateOk(); ok && *v != "" {
+		tfThirdPartyOptions.SignalTitleTemplate = types.StringValue(*v)
+	}
+
+	tfRootQueries := thirdPartyOptions.GetRootQueries()
+	tfThirdPartyOptions.RootQueries = make([]thirdPartyRootQueryModel, len(tfRootQueries))
+	for idx, rootQuery := range tfRootQueries {
+		tfRootQuery := thirdPartyRootQueryModel{
+			Query: types.StringValue(rootQuery.GetQuery()),
+		}
+		if v, ok := rootQuery.GetGroupByFieldsOk(); ok && len(*v) > 0 {
+			var listDiags diag.Diagnostics
+			tfRootQuery.GroupByFields, listDiags = types.ListValueFrom(ctx, types.StringType, *v)
+			diags.Append(listDiags...)
+		}
+		tfThirdPartyOptions.RootQueries[idx] = tfRootQuery
+	}
+
+	return []thirdPartyRuleOptionsModel{tfThirdPartyOptions}, diags
+}
+
+func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRuleSequenceDetectionOptions) sequenceDetectionOptionsModel {
+	tfSeqOptions := sequenceDetectionOptionsModel{}
+
+	steps := seqOptions.GetSteps()
+	if len(steps) > 0 {
+		tfSeqOptions.Steps = make([]sequenceStepModel, len(steps))
+		for idx, step := range steps {
+			stepMap := sequenceStepModel{
+				Name:      types.StringValue(step.GetName()),
+				Condition: types.StringValue(step.GetCondition()),
+			}
+			// Optional-only int64 — only set when non-zero
+			if v, ok := step.GetEvaluationWindowOk(); ok && *v != 0 {
+				stepMap.EvaluationWindow = types.Int64Value(int64(*v))
+			}
+			tfSeqOptions.Steps[idx] = stepMap
+		}
+	}
+
+	transitions := seqOptions.GetStepTransitions()
+	if len(transitions) > 0 {
+		tfSeqOptions.StepTransitions = make([]sequenceStepTransitionModel, len(transitions))
+		for idx, tr := range transitions {
+			trMap := sequenceStepTransitionModel{
+				Parent: types.StringValue(tr.GetParent()),
+				Child:  types.StringValue(tr.GetChild()),
+			}
+			// Optional-only int64 — only set when non-zero
+			if v, ok := tr.GetEvaluationWindowOk(); ok && *v != 0 {
+				trMap.EvaluationWindow = types.Int64Value(int64(*v))
+			}
+			tfSeqOptions.StepTransitions[idx] = trMap
+		}
+	}
+
+	return tfSeqOptions
 }
 
 func (r *securityMonitoringRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
