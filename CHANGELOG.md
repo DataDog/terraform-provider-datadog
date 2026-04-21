@@ -1,3 +1,15 @@
+## 4.6.0 (April 21, 2026)
+
+### BUGFIXES
+* [datadog_metric_metadata] Fix non-empty plan — guard statsd_interval in Read by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/3691
+* [datadog_dashboard_json] Fix 401 for SDKv2 resources with cloud provider auth by @wynbennett in https://github.com/DataDog/terraform-provider-datadog/pull/3710
+* [datadog_logs_index] Fix flex_retention_days=0 being silently ignored by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/3659
+### FEATURES
+* [datadog_logs_custom_destination] Add sourcetype support for Splunk Custom Destinations by @mgrunenberger in https://github.com/DataDog/terraform-provider-datadog/pull/3704
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.5.0...v4.6.0
+
 
 ## 4.5.0 (April 16, 2026)
 
