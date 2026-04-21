@@ -28,13 +28,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"orgs":[{"public_id":"ff4a8255-6931-58d1-add0-a6b3602d5421","name":"Org Mgmt Root","description":null,"created":"2026-02-04 23:00:24","subscription":{"id":null,"billing_plan_id":8,"started":1770246024,"expires":null,"finished":null,"type":"dogfood","is_custom":false,"is_trial":false,"is_expired":true},"billing":{},"settings":{"default_landing_page":"Dashboard Lists","saml":{"enabled":false},"saml_can_be_enabled":false,"saml_login_url":null,"saml_idp_metadata_uploaded":false,"saml_idp_endpoint":null,"saml_idp_metadata_valid_until":null,"custom_landing_page":null,"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"enabled":false,"domains":[]},"private_widget_share":false,"manage_reports":"false"}}]}
+            {"orgs":[{"public_id":"ff4a8255-6931-58d1-add0-a6b3602d5421","name":"Org Mgmt Root","description":null,"created":"2026-02-04 23:00:24","subscription":{"id":null,"billing_plan_id":8,"started":1770246024,"expires":null,"finished":null,"type":"dogfood","is_custom":false,"is_trial":false,"is_expired":true},"billing":{},"settings":{"default_landing_page":"Dashboard Lists","saml":{"enabled":false},"saml_can_be_enabled":false,"saml_login_url":null,"saml_idp_metadata_uploaded":false,"saml_idp_endpoint":null,"saml_idp_metadata_valid_until":null,"custom_landing_page":null,"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"enabled":false,"domains":[]},"private_widget_share":true,"manage_reports":"false"}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 380.483679ms
+        duration: 389.004031ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -59,15 +59,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 397
+        content_length: 385
         uncompressed: false
-        body: '{"data":[{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:03:55.879536Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}]}'
+        body: '{"data":[{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T20:22:01.631131Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d1be5-e63b-7dfb-b845-990a2cdca228","type":"org_groups"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 35.431053ms
+        duration: 40.791227ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -80,7 +80,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075"},"type":"org_groups"}}
+            {"data":{"attributes":{"name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360"},"type":"org_groups"}}
         form: {}
         headers:
             Accept:
@@ -95,15 +95,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 332
+        content_length: 320
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:36.757Z","modified_at":"2026-04-10T01:04:36.759296Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:21.677Z","modified_at":"2026-04-21T21:19:21.683292Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 31.413262ms
+        duration: 49.143561ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -128,15 +128,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 397
+        content_length: 385
         uncompressed: false
-        body: '{"data":[{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:03:55.879536Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}]}'
+        body: '{"data":[{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T20:22:01.631131Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d1be5-e63b-7dfb-b845-990a2cdca228","type":"org_groups"}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 30.070196ms
+        duration: 33.655644ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -149,7 +149,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups"}}},"type":"org_group_memberships"}}
+            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups"}}},"type":"org_group_memberships"}}
         form: {}
         headers:
             Accept:
@@ -164,15 +164,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:36.845182Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:21.799089Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 66.277233ms
+        duration: 122.369193ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -197,15 +197,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:36.845182Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:21.799089Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 43.343968ms
+        duration: 69.466055ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -222,7 +222,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6395-7586-be3c-b2fcb899209b
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-7a4d-788b-9433-5bdf28936b64
         method: GET
       response:
         proto: HTTP/2.0
@@ -230,15 +230,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 332
+        content_length: 320
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:36.757Z","modified_at":"2026-04-10T01:04:36.759296Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:21.677Z","modified_at":"2026-04-21T21:19:21.683292Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 34.065385ms
+        duration: 39.141493ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -263,15 +263,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:36.845182Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:21.799089Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 40.397601ms
+        duration: 54.550641ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -288,7 +288,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6395-7586-be3c-b2fcb899209b
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-7a4d-788b-9433-5bdf28936b64
         method: GET
       response:
         proto: HTTP/2.0
@@ -296,15 +296,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 332
+        content_length: 320
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:36.757Z","modified_at":"2026-04-10T01:04:36.759296Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:21.677Z","modified_at":"2026-04-21T21:19:21.683292Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 45.158169ms
+        duration: 66.720569ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -329,15 +329,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:36.845182Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:21.799089Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 75.335367ms
+        duration: 74.984003ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -350,7 +350,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075-2"},"type":"org_groups"}}
+            {"data":{"attributes":{"name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360-2"},"type":"org_groups"}}
         form: {}
         headers:
             Accept:
@@ -365,15 +365,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 334
+        content_length: 321
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:38.956Z","modified_at":"2026-04-10T01:04:38.958361Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075-2","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:23.97Z","modified_at":"2026-04-21T21:19:23.972586Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360-2","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 34.240735ms
+        duration: 37.050002ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -386,7 +386,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups"}}},"type":"org_group_memberships"}}
+            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups"}}},"type":"org_group_memberships"}}
         form: {}
         headers:
             Accept:
@@ -401,15 +401,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:39.023926Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:24.044195Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 59.210331ms
+        duration: 75.384826ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -434,15 +434,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:39.023926Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:24.044195Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 38.81245ms
+        duration: 42.441379ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -459,7 +459,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6c2c-707b-9e35-1f3a20f20da2
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-7a4d-788b-9433-5bdf28936b64
         method: GET
       response:
         proto: HTTP/2.0
@@ -467,15 +467,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 334
+        content_length: 320
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:38.956Z","modified_at":"2026-04-10T01:04:38.958361Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075-2","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:21.677Z","modified_at":"2026-04-21T21:19:21.683292Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 40.097239ms
+        duration: 46.956509ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -492,7 +492,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6395-7586-be3c-b2fcb899209b
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-8342-7908-a85b-1b57ecaccc19
         method: GET
       response:
         proto: HTTP/2.0
@@ -500,15 +500,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 332
+        content_length: 321
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:36.757Z","modified_at":"2026-04-10T01:04:36.759296Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:23.97Z","modified_at":"2026-04-21T21:19:23.972586Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360-2","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 40.177368ms
+        duration: 46.979869ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -533,15 +533,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:39.023926Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:24.044195Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 82.924537ms
+        duration: 52.942052ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -566,15 +566,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:39.023926Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:24.044195Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 79.091398ms
+        duration: 44.686534ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -591,7 +591,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6c2c-707b-9e35-1f3a20f20da2
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
         method: GET
       response:
         proto: HTTP/2.0
@@ -599,15 +599,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 334
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:38.956Z","modified_at":"2026-04-10T01:04:38.958361Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075-2","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:24.044195Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 45.816135ms
+        duration: 70.56967ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -624,7 +624,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6395-7586-be3c-b2fcb899209b
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-7a4d-788b-9433-5bdf28936b64
         method: GET
       response:
         proto: HTTP/2.0
@@ -632,15 +632,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 332
+        content_length: 320
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:36.757Z","modified_at":"2026-04-10T01:04:36.759296Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:21.677Z","modified_at":"2026-04-21T21:19:21.683292Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 48.197045ms
+        duration: 72.72784ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -657,7 +657,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-8342-7908-a85b-1b57ecaccc19
         method: GET
       response:
         proto: HTTP/2.0
@@ -665,15 +665,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 321
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:39.023926Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:23.97Z","modified_at":"2026-04-21T21:19:23.972586Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360-2","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 59.943118ms
+        duration: 72.910341ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -686,7 +686,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}},"type":"org_group_memberships"}}
+            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019d1be5-e63b-7dfb-b845-990a2cdca228","type":"org_groups"}}},"type":"org_group_memberships"}}
         form: {}
         headers:
             Accept:
@@ -701,15 +701,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:41.948982Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:26.941525Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d1be5-e63b-7dfb-b845-990a2cdca228","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 56.543323ms
+        duration: 86.248135ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -726,7 +726,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6c2c-707b-9e35-1f3a20f20da2
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-8342-7908-a85b-1b57ecaccc19
         method: GET
       response:
         proto: HTTP/2.0
@@ -734,15 +734,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 334
+        content_length: 321
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6c2c-707b-9e35-1f3a20f20da2","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:38.956Z","modified_at":"2026-04-10T01:04:38.958361Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075-2","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-8342-7908-a85b-1b57ecaccc19","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:23.97Z","modified_at":"2026-04-21T21:19:23.972586Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360-2","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 58.332214ms
+        duration: 77.148001ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -759,7 +759,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6395-7586-be3c-b2fcb899209b
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-7a4d-788b-9433-5bdf28936b64
         method: GET
       response:
         proto: HTTP/2.0
@@ -767,15 +767,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 332
+        content_length: 320
         uncompressed: false
-        body: '{"data":{"id":"019d74eb-6395-7586-be3c-b2fcb899209b","type":"org_groups","attributes":{"created_at":"2026-04-10T01:04:36.757Z","modified_at":"2026-04-10T01:04:36.759296Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1775783075","owner_org_site":"us1.staging.dog","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        body: '{"data":{"id":"019db1e9-7a4d-788b-9433-5bdf28936b64","type":"org_groups","attributes":{"created_at":"2026-04-21T21:19:21.677Z","modified_at":"2026-04-21T21:19:21.683292Z","name":"tf-TestAccDatadogOrgGroupMembership_Basic-local-1776806360","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 61.335179ms
+        duration: 77.667476ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -800,15 +800,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 395
+        content_length: 383
         uncompressed: false
-        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-10T01:04:41.948982Z","org_name":"Org Mgmt Root","org_site":"us1.staging.dog","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-21T21:19:26.941525Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d1be5-e63b-7dfb-b845-990a2cdca228","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 72.00944ms
+        duration: 86.143677ms
     - id: 24
       request:
         proto: HTTP/1.1
@@ -825,7 +825,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6395-7586-be3c-b2fcb899209b
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-7a4d-788b-9433-5bdf28936b64
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -839,7 +839,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 62.038709ms
+        duration: 68.963761ms
     - id: 25
       request:
         proto: HTTP/1.1
@@ -856,7 +856,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/org_groups/019d74eb-6c2c-707b-9e35-1f3a20f20da2
+        url: https://api.datadoghq.com/api/v2/org_groups/019db1e9-8342-7908-a85b-1b57ecaccc19
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -870,4 +870,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 63.940259ms
+        duration: 77.430571ms
