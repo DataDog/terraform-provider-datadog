@@ -267,7 +267,7 @@ func updateDashboardLists(d *schema.ResourceData, providerConf *ProviderConfigur
 	}
 
 	if v, ok := d.GetOk("dashboard_lists_removed"); ok && v.(*schema.Set).Len() > 0 {
-		items := datadogV2.NewDashboardListDeleteItemsRequest()
+		items := datadogV2.NewDashboardListRemoveItemsRequest()
 		items.SetDashboards(itemsRequest)
 
 		for _, id := range v.(*schema.Set).List() {
