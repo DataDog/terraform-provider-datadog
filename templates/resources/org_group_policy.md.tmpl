@@ -9,6 +9,10 @@ description: |-
 
 {{ .Description | trimspace }}
 
+## Example Usage
+
+{{ tffile "examples/resources/datadog_org_group_policy/resource.tf" }}
+
 ## Behavior notes
 
 ### Side effects on member orgs
@@ -25,3 +29,9 @@ Auto-created overrides show up in the [`datadog_org_group_policy_overrides`](../
 Changing `enforcement_tier` to `"ENFORCE"` atomically deletes every override associated with this policy server-side. Any `datadog_org_group_policy_override` resources pointing at this policy must be removed from configuration in the same commit — otherwise Terraform's next apply will try to recreate the server-deleted overrides and fail with a `FailedPrecondition` error.
 
 {{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Import is supported using the following syntax:
+
+{{ codefile "shell" "examples/resources/datadog_org_group_policy/import.sh" }}

@@ -9,6 +9,10 @@ description: |-
 
 {{ .Description | trimspace }}
 
+## Example Usage
+
+{{ tffile "examples/resources/datadog_org_group_policy_override/resource.tf" }}
+
 ## Behavior notes
 
 ### Server-side auto-creation
@@ -33,3 +37,9 @@ When the parent [`datadog_org_group_policy`](./org_group_policy) transitions to 
 If you plan to flip a policy to `ENFORCE`, remove the `datadog_org_group_policy_override` resource blocks for that policy in the same commit — otherwise Terraform's next apply will try to re-create the server-deleted overrides and fail.
 
 {{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Import is supported using the following syntax:
+
+{{ codefile "shell" "examples/resources/datadog_org_group_policy_override/import.sh" }}
