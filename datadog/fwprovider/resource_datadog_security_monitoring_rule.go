@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -880,6 +881,13 @@ type securityMonitoringRuleInterface interface {
 	SetTags(v []string)
 }
 
+// securityMonitoringRuleCreateInterface Common interface to SecurityMonitoringStandardRuleCreatePayload and SecurityMonitoringSignalRuleCreatePayload
+type securityMonitoringRuleCreateInterface interface {
+	securityMonitoringRuleInterface
+	SetCases(v []datadogV2.SecurityMonitoringRuleCaseCreate)
+	GetCases() []datadogV2.SecurityMonitoringRuleCaseCreate
+}
+
 // securityMonitoringRuleResponseInterface Common interface to SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse
 type securityMonitoringRuleResponseInterface interface {
 	securityMonitoringRuleInterface
@@ -1357,6 +1365,778 @@ func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRul
 	}
 
 	return tfSeqOptions
+}
+
+func isSignalCorrelationSchema(model *securityMonitoringRuleResourceModel) bool {
+	if !model.Type.IsNull() && !model.Type.IsUnknown() {
+		_, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(model.Type.ValueString())
+		return err == nil
+	}
+	return false
+}
+
+func checkQueryConsistency(model *securityMonitoringRuleResourceModel) error {
+	if len(model.Queries) > 0 && len(model.SignalQueries) > 0 {
+		return fmt.Errorf("query list and signal query list cannot be both populated")
+	}
+	isSignalCorrelation := isSignalCorrelationSchema(model)
+	if !isSignalCorrelation && len(model.SignalQueries) > 0 {
+		return fmt.Errorf("signal query list should not be populated for this rule type")
+	}
+	if isSignalCorrelation && len(model.Queries) > 0 {
+		return fmt.Errorf("query list should not be populated for this rule type")
+	}
+	return nil
+}
+
+func buildCreatePayloadFromModel(ctx context.Context, model *securityMonitoringRuleResourceModel) (*datadogV2.SecurityMonitoringRuleCreatePayload, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if err := checkQueryConsistency(model); err != nil {
+		diags.AddError("invalid query configuration", err.Error())
+		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, diags
+	}
+	if isSignalCorrelationSchema(model) {
+		payload, d := buildCreateSignalPayload(ctx, model)
+		diags.Append(d...)
+		createPayload := datadogV2.SecurityMonitoringSignalRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
+		return &createPayload, diags
+	}
+	payload, d := buildCreateStandardPayload(ctx, model)
+	diags.Append(d...)
+	createPayload := datadogV2.SecurityMonitoringStandardRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
+	return &createPayload, diags
+}
+
+func buildValidatePayloadFromModel(ctx context.Context, model *securityMonitoringRuleResourceModel) (*datadogV2.SecurityMonitoringRuleValidatePayload, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if err := checkQueryConsistency(model); err != nil {
+		diags.AddError("invalid query configuration", err.Error())
+		return &datadogV2.SecurityMonitoringRuleValidatePayload{}, diags
+	}
+	if isSignalCorrelationSchema(model) {
+		payload, d := buildSignalPayload(ctx, model)
+		diags.Append(d...)
+		createPayload := datadogV2.SecurityMonitoringSignalRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
+		return &createPayload, diags
+	}
+	payload, d := buildStandardPayload(ctx, model)
+	diags.Append(d...)
+	createPayload := datadogV2.SecurityMonitoringStandardRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
+	return &createPayload, diags
+}
+
+func buildCreateCommonPayload(ctx context.Context, model *securityMonitoringRuleResourceModel, payload securityMonitoringRuleCreateInterface) {
+	payload.SetIsEnabled(model.Enabled.ValueBool())
+	payload.SetMessage(model.Message.ValueString())
+	payload.SetName(model.Name.ValueString())
+	payload.SetHasExtendedTitle(model.HasExtendedTitle.ValueBool())
+
+	if len(model.Options) > 0 {
+		ruleType := model.Type.ValueString()
+		payloadOptions := buildPayloadOptions(ctx, model.Options, ruleType)
+		payload.SetOptions(*payloadOptions)
+	}
+
+	if !model.Tags.IsNull() && !model.Tags.IsUnknown() {
+		var tags []string
+		model.Tags.ElementsAs(ctx, &tags, false)
+		payload.SetTags(tags)
+	}
+
+	if len(model.Filters) > 0 {
+		payload.SetFilters(buildPayloadFilters(model.Filters))
+	}
+}
+
+func isThirdPartyRule(model *securityMonitoringRuleResourceModel) bool {
+	if len(model.Options) == 0 {
+		return false
+	}
+	if !model.Options[0].DetectionMethod.IsNull() && !model.Options[0].DetectionMethod.IsUnknown() {
+		return datadogV2.SecurityMonitoringRuleDetectionMethod(model.Options[0].DetectionMethod.ValueString()) == datadogV2.SECURITYMONITORINGRULEDETECTIONMETHOD_THIRD_PARTY
+	}
+	return false
+}
+
+func buildCreateStandardPayload(ctx context.Context, model *securityMonitoringRuleResourceModel) (*datadogV2.SecurityMonitoringStandardRuleCreatePayload, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
+	buildCreateCommonPayload(ctx, model, &payload)
+
+	if isThirdPartyRule(model) {
+		payload.SetThirdPartyCases(buildPayloadThirdPartyCases(ctx, model.ThirdPartyCases))
+	} else {
+		payload.SetCases(buildCreatePayloadCases(ctx, model.Cases))
+		payload.SetQueries(buildCreateStandardPayloadQueries(ctx, model.Queries))
+	}
+
+	if !model.Type.IsNull() && !model.Type.IsUnknown() {
+		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(model.Type.ValueString()); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			diags.AddError("invalid rule type", err.Error())
+			return &payload, diags
+		}
+	}
+
+	if len(model.ReferenceTables) > 0 {
+		payload.SetReferenceTables(buildPayloadReferenceTables(model.ReferenceTables))
+	}
+
+	if !model.GroupSignalsBy.IsNull() && !model.GroupSignalsBy.IsUnknown() && len(model.GroupSignalsBy.Elements()) > 0 {
+		var groupSignalsBy []string
+		model.GroupSignalsBy.ElementsAs(ctx, &groupSignalsBy, false)
+		payload.SetGroupSignalsBy(groupSignalsBy)
+	}
+
+	if len(model.SchedulingOptions) > 0 {
+		payload.SetSchedulingOptions(*buildPayloadSchedulingOptions(model.SchedulingOptions))
+	}
+
+	if len(model.CalculatedFields) > 0 {
+		payload.SetCalculatedFields(buildPayloadCalculatedFields(model.CalculatedFields))
+	}
+
+	return &payload, diags
+}
+
+func buildStandardPayload(ctx context.Context, model *securityMonitoringRuleResourceModel) (*datadogV2.SecurityMonitoringStandardRulePayload, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payload := datadogV2.SecurityMonitoringStandardRulePayload{}
+	buildCreateCommonPayload(ctx, model, &payload)
+
+	if isThirdPartyRule(model) {
+		payload.SetThirdPartyCases(buildPayloadThirdPartyCases(ctx, model.ThirdPartyCases))
+	} else {
+		payload.SetCases(buildCreatePayloadCases(ctx, model.Cases))
+		payload.SetQueries(buildCreateStandardPayloadQueries(ctx, model.Queries))
+	}
+
+	if !model.Type.IsNull() && !model.Type.IsUnknown() {
+		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(model.Type.ValueString()); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			diags.AddError("invalid rule type", err.Error())
+			return &payload, diags
+		}
+	}
+
+	if len(model.ReferenceTables) > 0 {
+		payload.SetReferenceTables(buildPayloadReferenceTables(model.ReferenceTables))
+	}
+
+	if !model.GroupSignalsBy.IsNull() && !model.GroupSignalsBy.IsUnknown() && len(model.GroupSignalsBy.Elements()) > 0 {
+		var groupSignalsBy []string
+		model.GroupSignalsBy.ElementsAs(ctx, &groupSignalsBy, false)
+		payload.SetGroupSignalsBy(groupSignalsBy)
+	}
+
+	return &payload, diags
+}
+
+func buildCreateSignalPayload(ctx context.Context, model *securityMonitoringRuleResourceModel) (*datadogV2.SecurityMonitoringSignalRuleCreatePayload, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
+	buildCreateCommonPayload(ctx, model, &payload)
+	payload.SetCases(buildCreatePayloadCases(ctx, model.Cases))
+	queries, d := buildCreateSignalPayloadQueries(ctx, model.SignalQueries)
+	diags.Append(d...)
+	if !d.HasError() {
+		payload.SetQueries(queries)
+	} else {
+		diags.Append(d...)
+		return &payload, diags
+	}
+
+	if !model.Type.IsNull() && !model.Type.IsUnknown() {
+		if ruleType, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(model.Type.ValueString()); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			diags.AddError("invalid signal rule type", err.Error())
+			return &payload, diags
+		}
+	}
+
+	return &payload, diags
+}
+
+func buildSignalPayload(ctx context.Context, model *securityMonitoringRuleResourceModel) (*datadogV2.SecurityMonitoringSignalRulePayload, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payload := datadogV2.SecurityMonitoringSignalRulePayload{}
+	buildCreateCommonPayload(ctx, model, &payload)
+	payload.SetCases(buildCreatePayloadCases(ctx, model.Cases))
+	queries, d := buildCreateSignalPayloadQueries(ctx, model.SignalQueries)
+	if !d.HasError() {
+		payload.SetQueries(queries)
+	} else {
+		diags.Append(d...)
+		return &payload, diags
+	}
+
+	if !model.Type.IsNull() && !model.Type.IsUnknown() {
+		if ruleType, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(model.Type.ValueString()); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			diags.AddError("invalid signal rule type", err.Error())
+			return &payload, diags
+		}
+	}
+
+	return &payload, diags
+}
+
+func buildCreatePayloadCases(ctx context.Context, cases []ruleCaseModel) []datadogV2.SecurityMonitoringRuleCaseCreate {
+	payloadCases := make([]datadogV2.SecurityMonitoringRuleCaseCreate, len(cases))
+	for idx, c := range cases {
+		status := datadogV2.SecurityMonitoringRuleSeverity(c.Status.ValueString())
+		structRuleCase := datadogV2.NewSecurityMonitoringRuleCaseCreate(status)
+		fwutils.SetOptString(c.Name, structRuleCase.SetName)
+		fwutils.SetOptString(c.Condition, structRuleCase.SetCondition)
+		fwutils.SetOptStringList(c.Notifications, structRuleCase.SetNotifications, ctx)
+		if len(c.Actions) > 0 {
+			structRuleCase.SetActions(buildPayloadCaseActions(c.Actions))
+		}
+		payloadCases[idx] = *structRuleCase
+	}
+	return payloadCases
+}
+
+func buildPayloadThirdPartyCase(ctx context.Context, tc thirdPartyCaseModel) *datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate {
+	status := datadogV2.SecurityMonitoringRuleSeverity(tc.Status.ValueString())
+	thirdPartyCase := datadogV2.NewSecurityMonitoringThirdPartyRuleCaseCreate(status)
+	fwutils.SetOptString(tc.Query, thirdPartyCase.SetQuery)
+	fwutils.SetOptString(tc.Name, thirdPartyCase.SetName)
+	fwutils.SetOptStringList(tc.Notifications, thirdPartyCase.SetNotifications, ctx)
+	return thirdPartyCase
+}
+
+func buildPayloadThirdPartyCases(ctx context.Context, cases []thirdPartyCaseModel) []datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate {
+	payloadCases := make([]datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate, len(cases))
+	for idx, tc := range cases {
+		payloadCases[idx] = *buildPayloadThirdPartyCase(ctx, tc)
+	}
+	return payloadCases
+}
+
+func buildPayloadCalculatedFields(fields []calculatedFieldModel) []datadogV2.CalculatedField {
+	calculatedFields := make([]datadogV2.CalculatedField, len(fields))
+	for idx, f := range fields {
+		calculatedFields[idx] = datadogV2.CalculatedField{
+			Name:       f.Name.ValueString(),
+			Expression: f.Expression.ValueString(),
+		}
+	}
+	return calculatedFields
+}
+
+func buildPayloadSchedulingOptions(opts []schedulingOptionsModel) *datadogV2.SecurityMonitoringSchedulingOptions {
+	o := opts[0]
+	schedulingOptions := datadogV2.NewSecurityMonitoringSchedulingOptions()
+	schedulingOptions.SetRrule(o.Rrule.ValueString())
+	schedulingOptions.SetStart(o.Start.ValueString())
+	schedulingOptions.SetTimezone(o.Timezone.ValueString())
+	return schedulingOptions
+}
+
+func buildPayloadOptions(ctx context.Context, opts []ruleOptionsModel, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
+	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
+	if len(opts) == 0 {
+		return payloadOptions
+	}
+	tfOptions := opts[0]
+
+	if !tfOptions.DetectionMethod.IsNull() && !tfOptions.DetectionMethod.IsUnknown() {
+		detectionMethod := datadogV2.SecurityMonitoringRuleDetectionMethod(tfOptions.DetectionMethod.ValueString())
+		payloadOptions.DetectionMethod = &detectionMethod
+	}
+	if !tfOptions.EvaluationWindow.IsNull() && !tfOptions.EvaluationWindow.IsUnknown() {
+		evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(tfOptions.EvaluationWindow.ValueInt64())
+		payloadOptions.EvaluationWindow = &evaluationWindow
+	}
+	if !tfOptions.KeepAlive.IsNull() && !tfOptions.KeepAlive.IsUnknown() {
+		keepAlive := datadogV2.SecurityMonitoringRuleKeepAlive(tfOptions.KeepAlive.ValueInt64())
+		payloadOptions.KeepAlive = &keepAlive
+	}
+	if !tfOptions.MaxSignalDuration.IsNull() && !tfOptions.MaxSignalDuration.IsUnknown() {
+		maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(tfOptions.MaxSignalDuration.ValueInt64())
+		payloadOptions.MaxSignalDuration = &maxSignalDuration
+	}
+	if !tfOptions.DecreaseCriticalityBasedOnEnv.IsNull() && !tfOptions.DecreaseCriticalityBasedOnEnv.IsUnknown() &&
+		ruleType == string(datadogV2.SECURITYMONITORINGRULETYPECREATE_LOG_DETECTION) {
+		payloadOptions.SetDecreaseCriticalityBasedOnEnv(tfOptions.DecreaseCriticalityBasedOnEnv.ValueBool())
+	}
+
+	if len(tfOptions.NewValueOptions) > 0 {
+		if p, ok := buildPayloadNewValueOptions(tfOptions.NewValueOptions); ok {
+			payloadOptions.NewValueOptions = p
+		}
+	}
+
+	if len(tfOptions.ImpossibleTravelOptions) > 0 {
+		if p, ok := buildPayloadImpossibleTravelOptions(tfOptions.ImpossibleTravelOptions); ok {
+			payloadOptions.ImpossibleTravelOptions = p
+		}
+	}
+
+	if len(tfOptions.AnomalyDetectionOptions) > 0 {
+		if p, ok := buildPayloadAnomalyDetectionOptions(tfOptions.AnomalyDetectionOptions); ok {
+			payloadOptions.AnomalyDetectionOptions = p
+		}
+	}
+
+	if len(tfOptions.ThirdPartyRuleOptions) > 0 {
+		if p, ok := buildPayloadThirdPartyRuleOptions(ctx, tfOptions.ThirdPartyRuleOptions); ok {
+			payloadOptions.ThirdPartyRuleOptions = p
+		}
+	}
+
+	if len(tfOptions.SequenceDetectionOptions) > 0 {
+		if p, ok := buildPayloadSequenceDetectionOptions(tfOptions.SequenceDetectionOptions); ok {
+			payloadOptions.SequenceDetectionOptions = p
+		}
+	}
+
+	return payloadOptions
+}
+
+func buildPayloadImpossibleTravelOptions(opts []impossibleTravelOptionsModel) (*datadogV2.SecurityMonitoringRuleImpossibleTravelOptions, bool) {
+	options := datadogV2.NewSecurityMonitoringRuleImpossibleTravelOptions()
+	o := opts[0]
+	hasPayload := false
+	if !o.BaselineUserLocations.IsNull() && !o.BaselineUserLocations.IsUnknown() {
+		hasPayload = true
+		v := o.BaselineUserLocations.ValueBool()
+		options.BaselineUserLocations = &v
+	}
+	return options, hasPayload
+}
+
+func buildPayloadAnomalyDetectionOptions(opts []anomalyDetectionOptionsModel) (*datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions, bool) {
+	options := datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptions()
+	o := opts[0]
+	hasPayload := false
+
+	if !o.BucketDuration.IsNull() && !o.BucketDuration.IsUnknown() {
+		hasPayload = true
+		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsBucketDuration(o.BucketDuration.ValueInt64())
+		options.BucketDuration = &v
+	}
+	if !o.LearningDuration.IsNull() && !o.LearningDuration.IsUnknown() {
+		hasPayload = true
+		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsLearningDuration(o.LearningDuration.ValueInt64())
+		options.LearningDuration = &v
+	}
+	if !o.DetectionTolerance.IsNull() && !o.DetectionTolerance.IsUnknown() {
+		hasPayload = true
+		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsDetectionTolerance(o.DetectionTolerance.ValueInt64())
+		options.DetectionTolerance = &v
+	}
+	if !o.InstantaneousBaseline.IsNull() && !o.InstantaneousBaseline.IsUnknown() {
+		hasPayload = true
+		options.SetInstantaneousBaseline(o.InstantaneousBaseline.ValueBool())
+	}
+	// Optional-only: 0 is a valid value ("immediately generate signals"), null means not set.
+	if !o.LearningPeriodBaseline.IsNull() && !o.LearningPeriodBaseline.IsUnknown() {
+		hasPayload = true
+		v := o.LearningPeriodBaseline.ValueInt64()
+		options.LearningPeriodBaseline = &v
+	}
+
+	return options, hasPayload
+}
+
+func buildPayloadNewValueOptions(opts []newValueOptionsModel) (*datadogV2.SecurityMonitoringRuleNewValueOptions, bool) {
+	o := opts[0]
+	payload := datadogV2.NewSecurityMonitoringRuleNewValueOptions()
+	hasPayload := false
+
+	if !o.LearningMethod.IsNull() && !o.LearningMethod.IsUnknown() {
+		hasPayload = true
+		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningMethod(o.LearningMethod.ValueString())
+		payload.LearningMethod = &v
+	}
+	if !o.LearningDuration.IsNull() && !o.LearningDuration.IsUnknown() {
+		hasPayload = true
+		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(o.LearningDuration.ValueInt64())
+		payload.LearningDuration = &v
+	}
+	if !o.LearningThreshold.IsNull() && !o.LearningThreshold.IsUnknown() {
+		hasPayload = true
+		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningThreshold(o.LearningThreshold.ValueInt64())
+		payload.LearningThreshold = &v
+	}
+	if !o.ForgetAfter.IsNull() && !o.ForgetAfter.IsUnknown() {
+		hasPayload = true
+		v := datadogV2.SecurityMonitoringRuleNewValueOptionsForgetAfter(o.ForgetAfter.ValueInt64())
+		payload.ForgetAfter = &v
+	}
+	if !o.InstantaneousBaseline.IsNull() && !o.InstantaneousBaseline.IsUnknown() {
+		hasPayload = true
+		payload.SetInstantaneousBaseline(o.InstantaneousBaseline.ValueBool())
+	}
+
+	return payload, hasPayload
+}
+
+func buildPayloadThirdPartyRuleOptions(ctx context.Context, opts []thirdPartyRuleOptionsModel) (*datadogV2.SecurityMonitoringRuleThirdPartyOptions, bool) {
+	o := opts[0]
+	payload := datadogV2.NewSecurityMonitoringRuleThirdPartyOptions()
+	hasPayload := false
+
+	if !o.DefaultStatus.IsNull() && !o.DefaultStatus.IsUnknown() {
+		hasPayload = true
+		payload.SetDefaultStatus(datadogV2.SecurityMonitoringRuleSeverity(o.DefaultStatus.ValueString()))
+	}
+
+	if !o.DefaultNotifications.IsNull() && !o.DefaultNotifications.IsUnknown() {
+		var notifications []string
+		o.DefaultNotifications.ElementsAs(ctx, &notifications, false)
+		if len(notifications) > 0 {
+			hasPayload = true
+		}
+		payload.SetDefaultNotifications(notifications)
+	}
+
+	if !o.SignalTitleTemplate.IsNull() && !o.SignalTitleTemplate.IsUnknown() {
+		hasPayload = true
+		payload.SetSignalTitleTemplate(o.SignalTitleTemplate.ValueString())
+	}
+
+	if len(o.RootQueries) > 0 {
+		hasPayload = true
+		payloadRootQueries := make([]datadogV2.SecurityMonitoringThirdPartyRootQuery, len(o.RootQueries))
+		for idx, rq := range o.RootQueries {
+			payloadRootQueries[idx] = *buildRootQueryPayload(ctx, rq)
+		}
+		payload.SetRootQueries(payloadRootQueries)
+	}
+
+	return payload, hasPayload
+}
+
+func buildPayloadSequenceDetectionOptions(opts []sequenceDetectionOptionsModel) (*datadogV2.SecurityMonitoringRuleSequenceDetectionOptions, bool) {
+	o := opts[0]
+	options := datadogV2.NewSecurityMonitoringRuleSequenceDetectionOptions()
+	hasPayload := false
+
+	if len(o.Steps) > 0 {
+		hasPayload = true
+		payloadSteps := make([]datadogV2.SecurityMonitoringRuleSequenceDetectionStep, len(o.Steps))
+		for idx, s := range o.Steps {
+			step := datadogV2.SecurityMonitoringRuleSequenceDetectionStep{}
+			fwutils.SetOptString(s.Name, step.SetName)
+			fwutils.SetOptString(s.Condition, step.SetCondition)
+			if !s.EvaluationWindow.IsNull() && !s.EvaluationWindow.IsUnknown() {
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(s.EvaluationWindow.ValueInt64())
+				step.SetEvaluationWindow(ew)
+			}
+			payloadSteps[idx] = step
+		}
+		options.SetSteps(payloadSteps)
+	}
+
+	if len(o.StepTransitions) > 0 {
+		hasPayload = true
+		payloadTransitions := make([]datadogV2.SecurityMonitoringRuleSequenceDetectionStepTransition, len(o.StepTransitions))
+		for idx, tr := range o.StepTransitions {
+			transition := datadogV2.SecurityMonitoringRuleSequenceDetectionStepTransition{}
+			fwutils.SetOptString(tr.Parent, transition.SetParent)
+			fwutils.SetOptString(tr.Child, transition.SetChild)
+			if !tr.EvaluationWindow.IsNull() && !tr.EvaluationWindow.IsUnknown() {
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(tr.EvaluationWindow.ValueInt64())
+				transition.SetEvaluationWindow(ew)
+			}
+			payloadTransitions[idx] = transition
+		}
+		options.SetStepTransitions(payloadTransitions)
+	}
+
+	return options, hasPayload
+}
+
+func buildRootQueryPayload(ctx context.Context, rq thirdPartyRootQueryModel) *datadogV2.SecurityMonitoringThirdPartyRootQuery {
+	payloadRootQuery := datadogV2.NewSecurityMonitoringThirdPartyRootQuery()
+	fwutils.SetOptString(rq.Query, payloadRootQuery.SetQuery)
+	fwutils.SetOptStringList(rq.GroupByFields, payloadRootQuery.SetGroupByFields, ctx)
+	return payloadRootQuery
+}
+
+func buildCreateStandardPayloadQueries(ctx context.Context, queries []ruleQueryModel) []datadogV2.SecurityMonitoringStandardRuleQuery {
+	payloadQueries := make([]datadogV2.SecurityMonitoringStandardRuleQuery, len(queries))
+	for idx, q := range queries {
+		payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
+
+		fwutils.SetOptString(q.Aggregation, func(v string) {
+			agg := datadogV2.SecurityMonitoringRuleQueryAggregation(v)
+			payloadQuery.SetAggregation(agg)
+		})
+		fwutils.SetOptStringList(q.GroupByFields, payloadQuery.SetGroupByFields, ctx)
+		if !q.HasOptionalGroupByFields.IsNull() && !q.HasOptionalGroupByFields.IsUnknown() {
+			payloadQuery.SetHasOptionalGroupByFields(q.HasOptionalGroupByFields.ValueBool())
+		}
+		fwutils.SetOptStringList(q.DistinctFields, payloadQuery.SetDistinctFields, ctx)
+		fwutils.SetOptString(q.DataSource, func(v string) {
+			ds := datadogV2.SecurityMonitoringStandardDataSource(v)
+			payloadQuery.SetDataSource(ds)
+		})
+		fwutils.SetOptString(q.Metric, payloadQuery.SetMetric)
+		fwutils.SetOptStringList(q.Metrics, payloadQuery.SetMetrics, ctx)
+		fwutils.SetOptString(q.Name, payloadQuery.SetName)
+
+		if !q.Indexes.IsNull() && !q.Indexes.IsUnknown() {
+			var indexes []string
+			q.Indexes.ElementsAs(ctx, &indexes, false)
+			if len(indexes) > 0 {
+				payloadQuery.SetIndex(indexes[0])
+			}
+		}
+
+		payloadQuery.SetQuery(q.Query.ValueString())
+		payloadQueries[idx] = payloadQuery
+	}
+	return payloadQueries
+}
+
+func buildCreateSignalPayloadQueries(ctx context.Context, queries []signalQueryModel) ([]datadogV2.SecurityMonitoringSignalRuleQuery, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payloadQueries := make([]datadogV2.SecurityMonitoringSignalRuleQuery, len(queries))
+	for idx, q := range queries {
+		payloadQuery := datadogV2.SecurityMonitoringSignalRuleQuery{}
+
+		fwutils.SetOptString(q.Aggregation, func(v string) {
+			agg := datadogV2.SecurityMonitoringRuleQueryAggregation(v)
+			payloadQuery.SetAggregation(agg)
+		})
+		fwutils.SetOptStringList(q.CorrelatedByFields, payloadQuery.SetCorrelatedByFields, ctx)
+
+		if !q.CorrelatedQueryIndex.IsNull() && !q.CorrelatedQueryIndex.IsUnknown() && q.CorrelatedQueryIndex.ValueString() != "" {
+			if vInt, err := strconv.Atoi(q.CorrelatedQueryIndex.ValueString()); err == nil {
+				payloadQuery.SetCorrelatedQueryIndex(int32(vInt))
+			}
+		}
+
+		fwutils.SetOptString(q.Name, payloadQuery.SetName)
+		payloadQuery.SetRuleId(q.RuleID.ValueString())
+
+		if !q.DefaultRuleID.IsNull() && !q.DefaultRuleID.IsUnknown() && q.DefaultRuleID.ValueString() != "" {
+			diags.AddError("invalid field", "defaultRuleId cannot be set")
+			return payloadQueries, diags
+		}
+
+		payloadQueries[idx] = payloadQuery
+	}
+	return payloadQueries, diags
+}
+
+func buildPayloadFilters(filters []ruleFilterModel) []datadogV2.SecurityMonitoringFilter {
+	payloadFilters := make([]datadogV2.SecurityMonitoringFilter, len(filters))
+	for idx, f := range filters {
+		payloadFilter := datadogV2.SecurityMonitoringFilter{}
+		action := datadogV2.SecurityMonitoringFilterAction(f.Action.ValueString())
+		payloadFilter.SetAction(action)
+		payloadFilter.SetQuery(f.Query.ValueString())
+		payloadFilters[idx] = payloadFilter
+	}
+	return payloadFilters
+}
+
+func buildPayloadReferenceTables(tables []ruleReferenceTableModel) []datadogV2.SecurityMonitoringReferenceTable {
+	payloadTables := make([]datadogV2.SecurityMonitoringReferenceTable, len(tables))
+	for idx, t := range tables {
+		rt := datadogV2.SecurityMonitoringReferenceTable{}
+		rt.SetTableName(t.TableName.ValueString())
+		rt.SetColumnName(t.ColumnName.ValueString())
+		rt.SetLogFieldPath(t.LogFieldPath.ValueString())
+		rt.SetRuleQueryName(t.RuleQueryName.ValueString())
+		rt.SetCheckPresence(t.CheckPresence.ValueBool())
+		payloadTables[idx] = rt
+	}
+	return payloadTables
+}
+
+func buildPayloadCaseActions(actions []ruleCaseActionModel) []datadogV2.SecurityMonitoringRuleCaseAction {
+	payloadActions := make([]datadogV2.SecurityMonitoringRuleCaseAction, len(actions))
+	for idx, a := range actions {
+		actionType := datadogV2.SecurityMonitoringRuleCaseActionType(a.Type.ValueString())
+		payloadOptions := datadogV2.NewSecurityMonitoringRuleCaseActionOptions()
+		if len(a.Options) > 0 {
+			fwutils.SetOptInt64(a.Options[0].Duration, payloadOptions.SetDuration)
+		}
+		payloadActions[idx] = datadogV2.SecurityMonitoringRuleCaseAction{
+			Type:    &actionType,
+			Options: payloadOptions,
+		}
+	}
+	return payloadActions
+}
+
+func buildUpdatePayloadFromModel(ctx context.Context, model, prior *securityMonitoringRuleResourceModel) (*datadogV2.SecurityMonitoringRuleUpdatePayload, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
+
+	if err := checkQueryConsistency(model); err != nil {
+		diags.AddError("invalid query configuration", err.Error())
+		return &payload, diags
+	}
+	isSignalCorrelation := isSignalCorrelationSchema(model)
+
+	if isThirdPartyRule(model) {
+		payloadThirdPartyCases := make([]datadogV2.SecurityMonitoringThirdPartyRuleCase, len(model.ThirdPartyCases))
+		for idx, tc := range model.ThirdPartyCases {
+			payloadCase := datadogV2.SecurityMonitoringThirdPartyRuleCase{}
+			payloadCase.SetStatus(datadogV2.SecurityMonitoringRuleSeverity(tc.Status.ValueString()))
+			fwutils.SetOptStringList(tc.Notifications, payloadCase.SetNotifications, ctx)
+			fwutils.SetOptString(tc.Query, payloadCase.SetQuery)
+			fwutils.SetOptString(tc.Name, payloadCase.SetName)
+			payloadThirdPartyCases[idx] = payloadCase
+		}
+		payload.SetThirdPartyCases(payloadThirdPartyCases)
+	} else {
+		payloadCases := make([]datadogV2.SecurityMonitoringRuleCase, len(model.Cases))
+		for idx, c := range model.Cases {
+			structRuleCase := datadogV2.SecurityMonitoringRuleCase{}
+			structRuleCase.SetStatus(datadogV2.SecurityMonitoringRuleSeverity(c.Status.ValueString()))
+			fwutils.SetOptString(c.Name, structRuleCase.SetName)
+			fwutils.SetOptString(c.Condition, structRuleCase.SetCondition)
+			fwutils.SetOptStringList(c.Notifications, structRuleCase.SetNotifications, ctx)
+			if len(c.Actions) > 0 {
+				structRuleCase.SetActions(buildPayloadCaseActions(c.Actions))
+			}
+			payloadCases[idx] = structRuleCase
+		}
+		payload.SetCases(payloadCases)
+
+		var payloadQueries []datadogV2.SecurityMonitoringRuleQuery
+		if isSignalCorrelation {
+			payloadQueries = make([]datadogV2.SecurityMonitoringRuleQuery, len(model.SignalQueries))
+			for idx, q := range model.SignalQueries {
+				pq, d := buildUpdateSignalRuleQuery(ctx, q)
+				diags.Append(d...)
+				if diags.HasError() {
+					return &payload, diags
+				}
+				payloadQueries[idx] = pq
+			}
+		} else {
+			payloadQueries = make([]datadogV2.SecurityMonitoringRuleQuery, len(model.Queries))
+			for idx, q := range model.Queries {
+				pq := buildUpdateStandardRuleQuery(ctx, q)
+				payloadQueries[idx] = *pq
+			}
+		}
+		if len(payloadQueries) > 0 {
+			payload.SetQueries(payloadQueries)
+		}
+	}
+
+	payload.SetIsEnabled(model.Enabled.ValueBool())
+	payload.SetHasExtendedTitle(model.HasExtendedTitle.ValueBool())
+	fwutils.SetOptString(model.Message, payload.SetMessage)
+	fwutils.SetOptString(model.Name, payload.SetName)
+
+	if len(model.Options) > 0 {
+		payload.Options = buildPayloadOptions(ctx, model.Options, model.Type.ValueString())
+	}
+
+	if !model.Tags.IsNull() && !model.Tags.IsUnknown() {
+		var tags []string
+		model.Tags.ElementsAs(ctx, &tags, false)
+		payload.SetTags(tags)
+	} else {
+		payload.SetTags([]string{})
+	}
+
+	payload.SetFilters(buildPayloadFilters(model.Filters))
+
+	if !isSignalCorrelation {
+		// Mirror SDK behavior: only send reference_tables when present, or empty if removed
+		// from config. Leave untouched when it was never configured.
+		if len(model.ReferenceTables) > 0 {
+			payload.SetReferenceTables(buildPayloadReferenceTables(model.ReferenceTables))
+		} else if prior != nil && len(prior.ReferenceTables) > 0 {
+			payload.SetReferenceTables([]datadogV2.SecurityMonitoringReferenceTable{})
+		}
+
+		// Same pattern for group_signals_by.
+		planHasGroupSignalsBy := !model.GroupSignalsBy.IsNull() && !model.GroupSignalsBy.IsUnknown() && len(model.GroupSignalsBy.Elements()) > 0
+		priorHadGroupSignalsBy := prior != nil && !prior.GroupSignalsBy.IsNull() && !prior.GroupSignalsBy.IsUnknown() && len(prior.GroupSignalsBy.Elements()) > 0
+		if planHasGroupSignalsBy {
+			var groupSignalsBy []string
+			model.GroupSignalsBy.ElementsAs(ctx, &groupSignalsBy, false)
+			payload.SetGroupSignalsBy(groupSignalsBy)
+		} else if priorHadGroupSignalsBy {
+			payload.SetGroupSignalsBy([]string{})
+		}
+
+		if len(model.SchedulingOptions) > 0 {
+			payload.SetSchedulingOptions(*buildPayloadSchedulingOptions(model.SchedulingOptions))
+		} else {
+			payload.SetSchedulingOptionsNil()
+		}
+
+		payload.SetCalculatedFields(buildPayloadCalculatedFields(model.CalculatedFields))
+	}
+
+	return &payload, diags
+}
+
+func buildUpdateStandardRuleQuery(ctx context.Context, query ruleQueryModel) *datadogV2.SecurityMonitoringRuleQuery {
+	payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
+
+	fwutils.SetOptString(query.Aggregation, func(v string) {
+		agg := datadogV2.SecurityMonitoringRuleQueryAggregation(v)
+		payloadQuery.SetAggregation(agg)
+	})
+	fwutils.SetOptStringList(query.GroupByFields, payloadQuery.SetGroupByFields, ctx)
+	if !query.HasOptionalGroupByFields.IsNull() && !query.HasOptionalGroupByFields.IsUnknown() {
+		payloadQuery.SetHasOptionalGroupByFields(query.HasOptionalGroupByFields.ValueBool())
+	}
+	fwutils.SetOptStringList(query.DistinctFields, payloadQuery.SetDistinctFields, ctx)
+	fwutils.SetOptString(query.DataSource, func(v string) {
+		ds := datadogV2.SecurityMonitoringStandardDataSource(v)
+		payloadQuery.SetDataSource(ds)
+	})
+	fwutils.SetOptString(query.Metric, payloadQuery.SetMetric)
+	fwutils.SetOptStringList(query.Metrics, payloadQuery.SetMetrics, ctx)
+	fwutils.SetOptString(query.Name, payloadQuery.SetName)
+	fwutils.SetOptString(query.Query, payloadQuery.SetQuery)
+
+	if !query.Indexes.IsNull() && !query.Indexes.IsUnknown() {
+		var indexes []string
+		query.Indexes.ElementsAs(ctx, &indexes, false)
+		if len(indexes) > 0 {
+			payloadQuery.SetIndex(indexes[0])
+		}
+	}
+
+	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
+	return &standardRuleQuery
+}
+
+func buildUpdateSignalRuleQuery(ctx context.Context, query signalQueryModel) (datadogV2.SecurityMonitoringRuleQuery, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payloadQuery := datadogV2.SecurityMonitoringSignalRuleQuery{}
+
+	fwutils.SetOptString(query.Aggregation, func(v string) {
+		agg := datadogV2.SecurityMonitoringRuleQueryAggregation(v)
+		payloadQuery.SetAggregation(agg)
+	})
+	fwutils.SetOptStringList(query.CorrelatedByFields, payloadQuery.SetCorrelatedByFields, ctx)
+
+	if !query.CorrelatedQueryIndex.IsNull() && !query.CorrelatedQueryIndex.IsUnknown() && query.CorrelatedQueryIndex.ValueString() != "" {
+		if vInt, err := strconv.Atoi(query.CorrelatedQueryIndex.ValueString()); err == nil {
+			payloadQuery.SetCorrelatedQueryIndex(int32(vInt))
+		}
+	}
+
+	fwutils.SetOptString(query.Name, payloadQuery.SetName)
+	payloadQuery.SetRuleId(query.RuleID.ValueString())
+
+	if !query.DefaultRuleID.IsNull() && !query.DefaultRuleID.IsUnknown() && query.DefaultRuleID.ValueString() != "" {
+		diags.AddError("invalid field", "defaultRuleId cannot be set")
+	}
+
+	return datadogV2.SecurityMonitoringSignalRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery), diags
 }
 
 func (r *securityMonitoringRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
