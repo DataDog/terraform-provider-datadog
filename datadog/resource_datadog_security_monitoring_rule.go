@@ -213,11 +213,11 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									Description:      "The learning method used to determine when signals should be generated for values that weren't learned.",
 								},
 								"learning_duration": {
-									Type:             schema.TypeInt,
-									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsLearningDurationFromValue),
-									Optional:         true,
-									Default:          1,
-									Description:      "The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned.",
+									Type:         schema.TypeInt,
+									ValidateFunc: validation.IntBetween(0, 30),
+									Optional:     true,
+									Default:      1,
+									Description:  "The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are between 0 and 30.",
 								},
 								"learning_threshold": {
 									Type:             schema.TypeInt,
@@ -227,10 +227,10 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									Description:      "A number of occurrences after which signals are generated for values that weren't learned.",
 								},
 								"forget_after": {
-									Type:             schema.TypeInt,
-									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleNewValueOptionsForgetAfterFromValue),
-									Required:         true,
-									Description:      "The duration in days after which a learned value is forgotten.",
+									Type:         schema.TypeInt,
+									ValidateFunc: validation.IntBetween(1, 30),
+									Required:     true,
+									Description:  "The duration in days after which a learned value is forgotten. Valid values are between 1 and 30.",
 								},
 								"instantaneous_baseline": {
 									Type:        schema.TypeBool,
