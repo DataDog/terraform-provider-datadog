@@ -6,9 +6,11 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -53,6 +55,7 @@ func (r *OrgGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "The name of the org group.",
+				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 			},
 			"owner_org_site": schema.StringAttribute{
 				Computed:    true,
@@ -87,7 +90,7 @@ func (r *OrgGroupResource) Create(ctx context.Context, request resource.CreateRe
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -118,7 +121,7 @@ func (r *OrgGroupResource) Read(ctx context.Context, request resource.ReadReques
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -149,7 +152,7 @@ func (r *OrgGroupResource) Update(ctx context.Context, request resource.UpdateRe
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -166,6 +169,7 @@ func (r *OrgGroupResource) Delete(ctx context.Context, request resource.DeleteRe
 
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "org group ID must be a valid UUID"))
 		return
 	}
 

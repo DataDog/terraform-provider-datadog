@@ -41,14 +41,11 @@ Destroying this resource is state-only: Terraform removes the resource from its 
 - `org_group_id` (String) The UUID of the org group to assign the organization to.
 - `org_uuid` (String) The UUID of the organization.
 
-### Optional
-
-- `org_site` (String) The site of the organization.
-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 - `org_name` (String) The name of the organization.
+- `org_site` (String) The site of the organization. Server-managed (derived from the organization's own settings).
 
 ## Import
 

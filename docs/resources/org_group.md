@@ -23,7 +23,7 @@ resource "datadog_org_group" "example" {
 
 ### Required
 
-- `name` (String) The name of the org group.
+- `name` (String) The name of the org group. String length must be at least 1.
 
 ### Read-Only
 

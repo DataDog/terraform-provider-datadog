@@ -73,12 +73,15 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 		return
 	}
 
-	pageSize := int64(100)
-	pageNumber := int64(0)
+	// Paginate with a guard: API returns at most pageSize per page and a short page
+	// signals the end of results. maxPages caps the loop to protect against a server
+	// bug returning full pages forever.
+	const pageSize = int64(100)
+	const maxPages = int64(100)
 
 	var groups []datadogV2.OrgGroupData
-	for {
-		opts := datadogV2.NewListOrgGroupsOptionalParameters().WithPageNumber(pageNumber).WithPageSize(pageSize)
+	for page := int64(0); page < maxPages; page++ {
+		opts := datadogV2.NewListOrgGroupsOptionalParameters().WithPageNumber(page).WithPageSize(pageSize)
 		resp, _, err := d.API.ListOrgGroups(d.Auth, *opts)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing org groups"))
@@ -89,7 +92,6 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 		if int64(len(data)) < pageSize {
 			break
 		}
-		pageNumber++
 	}
 
 	items := make([]*OrgGroupItemModel, 0, len(groups))

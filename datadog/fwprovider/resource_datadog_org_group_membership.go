@@ -67,9 +67,8 @@ func (r *OrgGroupMembershipResource) Schema(_ context.Context, _ resource.Schema
 				},
 			},
 			"org_site": schema.StringAttribute{
-				Optional:    true,
 				Computed:    true,
-				Description: "The site of the organization.",
+				Description: "The site of the organization. Server-managed (derived from the organization's own settings).",
 			},
 			"org_name": schema.StringAttribute{
 				Computed:    true,
@@ -127,7 +126,7 @@ func (r *OrgGroupMembershipResource) Create(ctx context.Context, request resourc
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_membership: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -162,7 +161,7 @@ func (r *OrgGroupMembershipResource) Read(ctx context.Context, request resource.
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_membership: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -201,7 +200,7 @@ func (r *OrgGroupMembershipResource) Update(ctx context.Context, request resourc
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_membership: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -236,15 +235,22 @@ func (r *OrgGroupMembershipResource) updateState(state *OrgGroupMembershipModel,
 	state.OrgSite = types.StringValue(attributes.GetOrgSite())
 	state.OrgName = types.StringValue(attributes.GetOrgName())
 
-	if rels, ok := data.GetRelationshipsOk(); ok && rels != nil {
-		if orgGroup, ok := rels.GetOrgGroupOk(); ok && orgGroup != nil {
-			if orgGroupData, ok := orgGroup.GetDataOk(); ok {
-				state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
-			}
-		}
-	} else {
-		diags.AddError("missing relationships", "org group membership response does not contain org group relationship")
+	rels, ok := data.GetRelationshipsOk()
+	if !ok || rels == nil {
+		diags.AddError("missing relationships", "org group membership response does not contain relationships")
+		return diags
 	}
+	orgGroup, ok := rels.GetOrgGroupOk()
+	if !ok || orgGroup == nil {
+		diags.AddError("missing relationships", "org group membership response does not contain org_group relationship")
+		return diags
+	}
+	orgGroupData, ok := orgGroup.GetDataOk()
+	if !ok {
+		diags.AddError("missing relationships", "org group membership response does not contain org_group.data")
+		return diags
+	}
+	state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
 
 	return diags
 }

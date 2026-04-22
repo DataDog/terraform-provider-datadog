@@ -9,11 +9,13 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -80,7 +82,8 @@ func (r *OrgGroupPolicyOverrideResource) Schema(_ context.Context, _ resource.Sc
 			},
 			"org_site": schema.StringAttribute{
 				Required:    true,
-				Description: "The short site name of the organization (e.g. `us1`, `eu1`, `us1-fed`).",
+				Description: "The short site name of the organization (e.g. `us1`, `eu1`, `us1-fed`). Part of the override's server-side identity; changing it replaces the resource.",
+				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -140,7 +143,7 @@ func (r *OrgGroupPolicyOverrideResource) Create(ctx context.Context, request res
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_policy_override: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -174,7 +177,7 @@ func (r *OrgGroupPolicyOverrideResource) Read(ctx context.Context, request resou
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_policy_override: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -185,8 +188,15 @@ func (r *OrgGroupPolicyOverrideResource) Read(ctx context.Context, request resou
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *OrgGroupPolicyOverrideResource) Update(_ context.Context, _ resource.UpdateRequest, _ *resource.UpdateResponse) {
-	// All fields are RequiresReplace; Update is unreachable.
+func (r *OrgGroupPolicyOverrideResource) Update(_ context.Context, _ resource.UpdateRequest, response *resource.UpdateResponse) {
+	// All user-settable fields (org_group_id, policy_id, org_uuid, org_site) are
+	// RequiresReplace; `content` is Computed-only. Terraform should never invoke
+	// Update. If a settable, non-Replace field is added in the future, implement
+	// the real Update logic here.
+	response.Diagnostics.AddError(
+		"datadog_org_group_policy_override: unexpected Update call",
+		"all fields should be RequiresReplace or Computed; Update is unreachable. This indicates a provider bug.",
+	)
 }
 
 func (r *OrgGroupPolicyOverrideResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -198,6 +208,7 @@ func (r *OrgGroupPolicyOverrideResource) Delete(ctx context.Context, request res
 
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "org group policy override ID must be a valid UUID"))
 		return
 	}
 
@@ -228,16 +239,23 @@ func (r *OrgGroupPolicyOverrideResource) updateState(state *OrgGroupPolicyOverri
 		state.Content = jsontypes.NewNormalizedValue("{}")
 	}
 
-	if rels, ok := data.GetRelationshipsOk(); ok && rels != nil {
-		if orgGroup, ok := rels.GetOrgGroupOk(); ok && orgGroup != nil {
-			orgGroupData := orgGroup.GetData()
-			state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
-		}
-		if policy, ok := rels.GetOrgGroupPolicyOk(); ok && policy != nil {
-			policyData := policy.GetData()
-			state.PolicyID = types.StringValue(policyData.GetId().String())
-		}
+	rels, ok := data.GetRelationshipsOk()
+	if !ok || rels == nil {
+		return fmt.Errorf("org group policy override response missing relationships")
 	}
+	orgGroup, ok := rels.GetOrgGroupOk()
+	if !ok || orgGroup == nil {
+		return fmt.Errorf("org group policy override response missing org_group relationship")
+	}
+	orgGroupData := orgGroup.GetData()
+	state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
+
+	policy, ok := rels.GetOrgGroupPolicyOk()
+	if !ok || policy == nil {
+		return fmt.Errorf("org group policy override response missing org_group_policy relationship")
+	}
+	policyData := policy.GetData()
+	state.PolicyID = types.StringValue(policyData.GetId().String())
 
 	return nil
 }

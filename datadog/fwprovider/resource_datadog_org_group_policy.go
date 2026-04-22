@@ -69,6 +69,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"policy_name": schema.StringAttribute{
 				Required:    true,
 				Description: "The name of the policy.",
+				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -157,7 +158,7 @@ func (r *OrgGroupPolicyResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_policy: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -191,7 +192,7 @@ func (r *OrgGroupPolicyResource) Read(ctx context.Context, request resource.Read
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_policy: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -237,7 +238,7 @@ func (r *OrgGroupPolicyResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("datadog_org_group_policy: response contains unparsedObject", err.Error())
 		return
 	}
 
@@ -257,6 +258,7 @@ func (r *OrgGroupPolicyResource) Delete(ctx context.Context, request resource.De
 
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "org group policy ID must be a valid UUID"))
 		return
 	}
 
@@ -276,7 +278,11 @@ func (r *OrgGroupPolicyResource) updateState(state *OrgGroupPolicyModel, resp *d
 	attributes := data.GetAttributes()
 	state.PolicyName = types.StringValue(attributes.GetPolicyName())
 	state.EnforcementTier = types.StringValue(string(attributes.GetEnforcementTier()))
-	state.PolicyType = types.StringValue(string(attributes.GetPolicyType()))
+	// policy_type is immutable (RequiresReplace). If the response omits it, keep the
+	// prior state value so we don't force a spurious replace on the next plan.
+	if pt := string(attributes.GetPolicyType()); pt != "" {
+		state.PolicyType = types.StringValue(pt)
+	}
 
 	contentBytes, err := json.Marshal(attributes.GetContent())
 	if err != nil {
@@ -284,12 +290,16 @@ func (r *OrgGroupPolicyResource) updateState(state *OrgGroupPolicyModel, resp *d
 	}
 	state.Content = jsontypes.NewNormalizedValue(string(contentBytes))
 
-	if rels, ok := data.GetRelationshipsOk(); ok && rels != nil {
-		if orgGroup, ok := rels.GetOrgGroupOk(); ok && orgGroup != nil {
-			orgGroupData := orgGroup.GetData()
-			state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
-		}
+	rels, ok := data.GetRelationshipsOk()
+	if !ok || rels == nil {
+		return fmt.Errorf("org group policy response missing relationships")
 	}
+	orgGroup, ok := rels.GetOrgGroupOk()
+	if !ok || orgGroup == nil {
+		return fmt.Errorf("org group policy response missing org_group relationship")
+	}
+	orgGroupData := orgGroup.GetData()
+	state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
 
 	return nil
 }

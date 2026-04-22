@@ -69,7 +69,7 @@ If you plan to flip a policy to `ENFORCE`, remove the `datadog_org_group_policy_
 ### Required
 
 - `org_group_id` (String) The UUID of the org group that owns the policy.
-- `org_site` (String) The short site name of the organization (e.g. `us1`, `eu1`, `us1-fed`).
+- `org_site` (String) The short site name of the organization (e.g. `us1`, `eu1`, `us1-fed`). Part of the override's server-side identity; changing it replaces the resource. String length must be at least 1.
 - `org_uuid` (String) The UUID of the organization being exempted from the policy.
 - `policy_id` (String) The UUID of the org group policy the override applies to.
 

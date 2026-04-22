@@ -108,12 +108,12 @@ func (d *datadogOrgGroupMembershipsDataSource) Read(ctx context.Context, request
 		opts.WithFilterOrgUuid(parsed)
 	}
 
-	pageSize := int64(100)
-	pageNumber := int64(0)
+	const pageSize = int64(100)
+	const maxPages = int64(100)
 
 	var memberships []datadogV2.OrgGroupMembershipData
-	for {
-		opts.WithPageNumber(pageNumber).WithPageSize(pageSize)
+	for page := int64(0); page < maxPages; page++ {
+		opts.WithPageNumber(page).WithPageSize(pageSize)
 		resp, _, err := d.API.ListOrgGroupMemberships(d.Auth, *opts)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing org group memberships"))
@@ -124,7 +124,6 @@ func (d *datadogOrgGroupMembershipsDataSource) Read(ctx context.Context, request
 		if int64(len(data)) < pageSize {
 			break
 		}
-		pageNumber++
 	}
 
 	items := make([]*OrgGroupMembershipItemModel, 0, len(memberships))
@@ -143,9 +142,8 @@ func (d *datadogOrgGroupMembershipsDataSource) Read(ctx context.Context, request
 				}
 			}
 		}
-		if item.OrgGroupID.IsNull() {
-			item.OrgGroupID = types.StringValue("")
-		}
+		// OrgGroupID left as null if the API omitted the relationship; callers can
+		// distinguish "server data integrity issue" from a legitimate empty value.
 		items = append(items, item)
 	}
 

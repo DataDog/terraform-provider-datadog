@@ -143,11 +143,14 @@ func TestAccDatadogOrgGroupPolicyOverride_AutoCreation(t *testing.T) {
 			},
 			{
 				// Step 3: create a brand-new DEFAULT policy with value=false. The server's
-				// computeOverridesForPolicy path detects the org's retained true value ≠
-				// false and auto-creates an override.
+				// policy-propagation path detects the org's retained true value ≠ false
+				// and auto-creates an override. The Check then reads the auto-created
+				// override via the provider's Read path to confirm the adoption flow
+				// (Read + updateState on a server-created row) works end-to-end.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationStep3(orgGroupName, orgUUID),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckAutoCreatedOverrideExists(providers.frameworkProvider, "datadog_org_group.grp", "datadog_org_group_policy.dflt", orgUUID),
+					testAccCheckAutoCreatedOverrideReadable(providers.frameworkProvider, "datadog_org_group.grp", "datadog_org_group_policy.dflt", orgUUID),
 				),
 			},
 			// Restore membership so the org_group can be destroyed cleanly.
@@ -286,6 +289,66 @@ resource "datadog_org_group_policy" "dflt" {
 }`, orgGroupName, orgUUID)
 }
 
+// testAccCheckAutoCreatedOverrideReadable finds the auto-created override's UUID
+// via the List endpoint, then fetches it via Get — exercising the same Read +
+// updateState path Terraform would hit during `terraform import`. This is the
+// unit-equivalent of an ImportStateVerify round-trip without the config-vs-state
+// comparison complexity.
+func testAccCheckAutoCreatedOverrideReadable(accProvider *fwprovider.FrameworkProvider, orgGroupResource, policyResource, orgUUID string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		orgGroupRS, ok := s.RootModule().Resources[orgGroupResource]
+		if !ok {
+			return fmt.Errorf("resource not found: %s", orgGroupResource)
+		}
+		policyRS, ok := s.RootModule().Resources[policyResource]
+		if !ok {
+			return fmt.Errorf("resource not found: %s", policyResource)
+		}
+
+		orgGroupID, err := uuid.Parse(orgGroupRS.Primary.ID)
+		if err != nil {
+			return fmt.Errorf("org_group ID is not a valid UUID: %w", err)
+		}
+		policyID, err := uuid.Parse(policyRS.Primary.ID)
+		if err != nil {
+			return fmt.Errorf("policy ID is not a valid UUID: %w", err)
+		}
+
+		api := apiInstances.GetOrgGroupsApiV2()
+		params := datadogV2.NewListOrgGroupPolicyOverridesOptionalParameters().WithFilterPolicyId(policyID)
+		listResp, _, err := api.ListOrgGroupPolicyOverrides(auth, orgGroupID, *params)
+		if err != nil {
+			return fmt.Errorf("listing overrides: %w", err)
+		}
+		var overrideID uuid.UUID
+		for _, override := range listResp.GetData() {
+			attrs := override.GetAttributes()
+			if attrs.GetOrgUuid().String() == orgUUID {
+				overrideID = override.GetId()
+				break
+			}
+		}
+		if overrideID == uuid.Nil {
+			return fmt.Errorf("no auto-created override found for org %s on policy %s", orgUUID, policyID.String())
+		}
+
+		// Fetch via Get to confirm the override is readable end-to-end — the same
+		// API call our resource's Read method uses during `terraform import`.
+		getResp, _, err := api.GetOrgGroupPolicyOverride(auth, overrideID)
+		if err != nil {
+			return fmt.Errorf("fetching auto-created override %s: %w", overrideID, err)
+		}
+		fetched := getResp.GetData()
+		if fetched.GetId() != overrideID {
+			return fmt.Errorf("auto-created override %s: Get returned different ID %s", overrideID, fetched.GetId())
+		}
+		return nil
+	}
+}
+
 func testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationRestore(orgGroupName, orgUUID, originalGroupID string) string {
 	return fmt.Sprintf(`
 resource "datadog_org_group" "grp" {
@@ -308,12 +371,12 @@ func restoreOrgMembership(t *testing.T, accProvider *fwprovider.FrameworkProvide
 
 		orgUUIDParsed, err := uuid.Parse(orgUUID)
 		if err != nil {
-			t.Logf("cleanup: invalid org UUID %s: %s", orgUUID, err)
+			t.Errorf("cleanup: invalid org UUID %s: %s", orgUUID, err)
 			return
 		}
 		targetGroupID, err := uuid.Parse(originalGroupID)
 		if err != nil {
-			t.Logf("cleanup: invalid original group ID %s: %s", originalGroupID, err)
+			t.Errorf("cleanup: invalid original group ID %s: %s", originalGroupID, err)
 			return
 		}
 
@@ -321,12 +384,12 @@ func restoreOrgMembership(t *testing.T, accProvider *fwprovider.FrameworkProvide
 		params := datadogV2.NewListOrgGroupMembershipsOptionalParameters().WithFilterOrgUuid(orgUUIDParsed)
 		listResp, _, err := api.ListOrgGroupMemberships(auth, *params)
 		if err != nil {
-			t.Logf("cleanup: listing memberships: %s", err)
+			t.Errorf("cleanup: listing memberships: %s", err)
 			return
 		}
 		memberships := listResp.GetData()
 		if len(memberships) == 0 {
-			t.Logf("cleanup: no membership found for org %s", orgUUID)
+			t.Errorf("cleanup: no membership found for org %s", orgUUID)
 			return
 		}
 		membershipID := memberships[0].GetId()
@@ -338,7 +401,7 @@ func restoreOrgMembership(t *testing.T, accProvider *fwprovider.FrameworkProvide
 		body := datadogV2.NewOrgGroupMembershipUpdateRequest(*data)
 
 		if _, _, err := api.UpdateOrgGroupMembership(auth, membershipID, *body); err != nil {
-			t.Logf("cleanup: restoring org %s to group %s: %s", orgUUID, originalGroupID, err)
+			t.Errorf("cleanup: restoring org %s to group %s: %s", orgUUID, originalGroupID, err)
 		}
 	}
 }
@@ -354,13 +417,8 @@ func enforcePolicyViaAPI(t *testing.T, accProvider *fwprovider.FrameworkProvider
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		// Pull the policy ID + current attributes out of the running state snapshot. The
-		// terraform-plugin-testing framework doesn't expose state to PreConfig directly,
-		// so we look the policy up by name via List.
-		// HACK: we can't reach state here, so we search by listing all org_groups in the
-		// org and finding our policy. Simpler: capture policy ID globally at Check time.
-		// For this test, we use a different approach: store the ID via a package-level
-		// variable populated by a Check in the prior step. That is set below.
+		// PreConfig hooks can't access Terraform state, so the prior step's Check
+		// (capturePolicyIDForCascade) stashes the policy ID in cascadeCapturedPolicyID.
 		if cascadeCapturedPolicyID == "" {
 			t.Fatal("cascadeCapturedPolicyID not set; prior step must capture it")
 		}
@@ -384,7 +442,10 @@ func enforcePolicyViaAPI(t *testing.T, accProvider *fwprovider.FrameworkProvider
 }
 
 // cascadeCapturedPolicyID is set by the first step of TestAccDatadogOrgGroupPolicyOverride_EnforceCascade
-// and read by the PreConfig hook of the second step.
+// and read by the PreConfig hook of the second step. Package-level because PreConfig
+// has no access to Terraform state. Safe as a global: every test in this file is
+// non-parallel because they all share the test org's membership, so there is no
+// concurrency between tests that could race on this variable.
 var cascadeCapturedPolicyID string
 
 func testAccCheckDatadogOrgGroupPolicyOverrideExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {

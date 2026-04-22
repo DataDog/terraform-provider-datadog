@@ -104,12 +104,12 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 		opts.WithFilterPolicyName(state.PolicyName.ValueString())
 	}
 
-	pageSize := int64(100)
-	pageNumber := int64(0)
+	const pageSize = int64(100)
+	const maxPages = int64(100)
 
 	var policies []datadogV2.OrgGroupPolicyData
-	for {
-		opts.WithPageNumber(pageNumber).WithPageSize(pageSize)
+	for page := int64(0); page < maxPages; page++ {
+		opts.WithPageNumber(page).WithPageSize(pageSize)
 		resp, _, err := d.API.ListOrgGroupPolicies(d.Auth, orgGroupID, *opts)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing org group policies"))
@@ -120,7 +120,6 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 		if int64(len(data)) < pageSize {
 			break
 		}
-		pageNumber++
 	}
 
 	items := make([]*OrgGroupPolicyItemModel, 0, len(policies))
@@ -140,7 +139,8 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 		}
 		item.Content = types.StringValue(string(contentBytes))
 
-		item.OrgGroupID = types.StringValue("")
+		// OrgGroupID left as null if the API omitted the relationship — distinguishable
+		// from an empty string so callers can detect server data integrity issues.
 		if rels, ok := p.GetRelationshipsOk(); ok && rels != nil {
 			if orgGroup, ok := rels.GetOrgGroupOk(); ok && orgGroup != nil {
 				ogData := orgGroup.GetData()

@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -66,7 +67,7 @@ func getOrgCurrentGroupID(auth context.Context, t *testing.T, apiInstances *util
 }
 
 func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
-	t.Parallel()
+	// Not parallel: mutates the shared test org's membership.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
 	orgGroupName2 := orgGroupName + "-2"
@@ -74,6 +75,10 @@ func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
 
 	orgUUID := getTestOrgUUID(providers.frameworkProvider.Auth, t, providers.frameworkProvider.DatadogApiInstances)
 	originalGroupID := getOrgCurrentGroupID(providers.frameworkProvider.Auth, t, providers.frameworkProvider.DatadogApiInstances, orgUUID)
+
+	// Safety net: always restore the org to its original group, even if the test
+	// fails before the final restore step.
+	t.Cleanup(restoreOrgMembership(t, providers.frameworkProvider, orgUUID, originalGroupID))
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
@@ -103,6 +108,28 @@ func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
 			// Move org back to its original group so the test org groups can be destroyed
 			{
 				Config: testAccCheckDatadogOrgGroupMembershipConfigRestore(orgGroupName, orgGroupName2, orgUUID, originalGroupID),
+			},
+		},
+	})
+}
+
+func TestAccDatadogOrgGroupMembership_NoMembershipFound(t *testing.T) {
+	// A syntactically-valid but non-existent org_uuid should surface a clear
+	// "not found" error instead of panicking on an empty slice. The server
+	// returns a 404 at the List endpoint, which the provider propagates as-is.
+	// Not parallel; uses a unique org_group and never touches the shared org.
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	orgGroupName := uniqueEntityName(ctx, t)
+	bogusOrgUUID := "00000000-0000-0000-0000-000000000001"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogOrgGroupMembershipConfig(orgGroupName, bogusOrgUUID),
+				// Match the HTTP status prefix; the full detail text can wrap across lines
+				// in the test framework output and break multi-word regexes.
+				ExpectError: regexp.MustCompile(`404 Not Found`),
 			},
 		},
 	})

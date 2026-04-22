@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -126,12 +127,12 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 		orgUuidFilter = parsed.String()
 	}
 
-	pageSize := int64(100)
-	pageNumber := int64(0)
+	const pageSize = int64(100)
+	const maxPages = int64(100)
 
 	var overrides []datadogV2.OrgGroupPolicyOverrideData
-	for {
-		opts.WithPageNumber(pageNumber).WithPageSize(pageSize)
+	for page := int64(0); page < maxPages; page++ {
+		opts.WithPageNumber(page).WithPageSize(pageSize)
 		resp, _, err := d.API.ListOrgGroupPolicyOverrides(d.Auth, orgGroupID, *opts)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing org group policy overrides"))
@@ -142,14 +143,22 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 		if int64(len(data)) < pageSize {
 			break
 		}
-		pageNumber++
 	}
 
 	items := make([]*OrgGroupPolicyOverrideItemModel, 0, len(overrides))
 	for _, o := range overrides {
 		attrs := o.GetAttributes()
+		ou := attrs.GetOrgUuid().String()
+		// Defensive: flag zero-UUID rows. The server should never return these, so
+		// hitting this branch indicates a malformed response rather than a filter miss.
+		if ou == uuid.Nil.String() {
+			tflog.Debug(ctx, "datadog_org_group_policy_overrides: skipping override with zero org_uuid", map[string]interface{}{
+				"override_id": o.GetId().String(),
+			})
+			continue
+		}
 		// Apply the client-side org_uuid filter if set.
-		if orgUuidFilter != "" && attrs.GetOrgUuid().String() != orgUuidFilter {
+		if orgUuidFilter != "" && ou != orgUuidFilter {
 			continue
 		}
 
@@ -170,8 +179,9 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 			item.Content = types.StringValue("{}")
 		}
 
-		item.OrgGroupID = types.StringValue("")
-		item.PolicyID = types.StringValue("")
+		// OrgGroupID/PolicyID left as null if the API omitted the relationship —
+		// distinguishable from an empty string so callers can detect server data
+		// integrity issues.
 		if rels, ok := o.GetRelationshipsOk(); ok && rels != nil {
 			if orgGroup, ok := rels.GetOrgGroupOk(); ok && orgGroup != nil {
 				ogData := orgGroup.GetData()
