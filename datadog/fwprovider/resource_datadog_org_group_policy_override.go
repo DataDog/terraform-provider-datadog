@@ -80,7 +80,7 @@ func (r *OrgGroupPolicyOverrideResource) Schema(_ context.Context, _ resource.Sc
 			},
 			"org_site": schema.StringAttribute{
 				Required:    true,
-				Description: "The site of the organization (e.g. `datadoghq.com`, `us1.staging.dog`).",
+				Description: "The short site name of the organization (e.g. `us1`, `eu1`, `us1-fed`).",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
