@@ -25,7 +25,7 @@ jobs:
         with:
           scope: DataDog/terraform-provider-datadog
           policy: self.release.create-release
-          pool_name: dd-api-reliability
+
       - name: Create tag
         id: create_tag
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
@@ -42,6 +42,7 @@ jobs:
               sha: context.payload.pull_request.merge_commit_sha,
             });
             core.setOutput("tag_name", tagName);
+
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
         with:
