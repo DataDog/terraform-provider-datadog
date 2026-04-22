@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -194,6 +195,33 @@ resource "datadog_logs_index" "sample_index" {
   flex_retention_days = 360
   filter {
     query                = "test:query"
+  }
+}
+`, name)
+}
+
+func TestUnitDatadogLogsIndex_InvalidName(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogLogsIndexInvalidNameConfig("mbff-user_trips"),
+				ExpectError: regexp.MustCompile("must start with a lowercase letter and contain only lowercase letters, digits, or hyphens"),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogLogsIndexInvalidNameConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_index" "invalid_index" {
+  name = "%s"
+  filter {
+    query = "service:test"
   }
 }
 `, name)
