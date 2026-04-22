@@ -52,9 +52,7 @@ func (r *OrgGroupMembershipResource) Metadata(_ context.Context, _ resource.Meta
 
 func (r *OrgGroupMembershipResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group.\n\n" +
-			"Changing `org_group_id` moves the organization between groups in place via the server's membership-update endpoint — the resource is **not** re-created. Changing `org_uuid` triggers replacement since the resource represents a specific org's membership.\n\n" +
-			"Destroy is state-only: Terraform removes the resource from its state without calling an API, because the server has no endpoint to \"delete\" a membership outright. The organization stays in its current group until another `datadog_org_group_membership` resource (or an out-of-band API call) moves it.",
+		Description: "Provides a Datadog Org Group Membership resource. This can be used to manage an organization's membership in an org group.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{
