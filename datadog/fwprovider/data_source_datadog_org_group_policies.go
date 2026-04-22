@@ -4,12 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -63,6 +65,7 @@ func (d *datadogOrgGroupPoliciesDataSource) Schema(_ context.Context, _ datasour
 			"org_group_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the org group whose policies to list.",
+				Validators:  []validator.String{uuidValidator},
 			},
 			"policy_name": schema.StringAttribute{
 				Optional:    true,
@@ -104,11 +107,12 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 		opts.WithFilterPolicyName(state.PolicyName.ValueString())
 	}
 
+	// See datadog_org_groups for the pagination invariant (duplicate row = bail).
 	const pageSize = int64(100)
-	const maxPages = int64(100)
+	seen := make(map[string]struct{})
 
 	var policies []datadogV2.OrgGroupPolicyData
-	for page := int64(0); page < maxPages; page++ {
+	for page := int64(0); ; page++ {
 		opts.WithPageNumber(page).WithPageSize(pageSize)
 		resp, _, err := d.API.ListOrgGroupPolicies(d.Auth, orgGroupID, *opts)
 		if err != nil {
@@ -116,7 +120,18 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 			return
 		}
 		data := resp.GetData()
-		policies = append(policies, data...)
+		for _, item := range data {
+			id := item.GetId().String()
+			if _, ok := seen[id]; ok {
+				response.Diagnostics.AddError(
+					"datadog_org_group_policies: pagination returned duplicate row",
+					fmt.Sprintf("policy %s appeared on more than one page; aborting to avoid an infinite loop", id),
+				)
+				return
+			}
+			seen[id] = struct{}{}
+			policies = append(policies, item)
+		}
 		if int64(len(data)) < pageSize {
 			break
 		}
@@ -139,14 +154,22 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 		}
 		item.Content = types.StringValue(string(contentBytes))
 
-		// OrgGroupID left as null if the API omitted the relationship — distinguishable
-		// from an empty string so callers can detect server data integrity issues.
-		if rels, ok := p.GetRelationshipsOk(); ok && rels != nil {
-			if orgGroup, ok := rels.GetOrgGroupOk(); ok && orgGroup != nil {
-				ogData := orgGroup.GetData()
-				item.OrgGroupID = types.StringValue(ogData.GetId().String())
-			}
+		rels, ok := p.GetRelationshipsOk()
+		if !ok || rels == nil {
+			response.Diagnostics.AddError("datadog_org_group_policies: response missing relationships", fmt.Sprintf("policy %s has no relationships block", item.ID.ValueString()))
+			return
 		}
+		orgGroup, ok := rels.GetOrgGroupOk()
+		if !ok || orgGroup == nil {
+			response.Diagnostics.AddError("datadog_org_group_policies: response missing org_group relationship", fmt.Sprintf("policy %s has no org_group relationship", item.ID.ValueString()))
+			return
+		}
+		ogData, ok := orgGroup.GetDataOk()
+		if !ok {
+			response.Diagnostics.AddError("datadog_org_group_policies: response missing org_group.data", fmt.Sprintf("policy %s has no org_group.data", item.ID.ValueString()))
+			return
+		}
+		item.OrgGroupID = types.StringValue(ogData.GetId().String())
 
 		items = append(items, item)
 	}
@@ -157,9 +180,9 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 }
 
 func synthesizeOrgGroupPoliciesID(state datadogOrgGroupPoliciesDataSourceModel) string {
-	id := state.OrgGroupID.ValueString()
+	parts := []string{state.OrgGroupID.ValueString()}
 	if !state.PolicyName.IsNull() {
-		id = fmt.Sprintf("%s:%s", id, state.PolicyName.ValueString())
+		parts = append(parts, state.PolicyName.ValueString())
 	}
-	return id
+	return strings.Join(parts, ":")
 }

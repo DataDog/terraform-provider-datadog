@@ -56,12 +56,13 @@ func (r *OrgGroupPolicyOverrideResource) Metadata(_ context.Context, _ resource.
 
 func (r *OrgGroupPolicyOverrideResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level. Overrides are also auto-created by the server when an org's existing config does not match a newly-propagated policy; this resource can adopt those via import.",
+		Description: "Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the org group that owns the policy.",
+				Validators:  []validator.String{uuidValidator},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -69,6 +70,7 @@ func (r *OrgGroupPolicyOverrideResource) Schema(_ context.Context, _ resource.Sc
 			"policy_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the org group policy the override applies to.",
+				Validators:  []validator.String{uuidValidator},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -76,6 +78,7 @@ func (r *OrgGroupPolicyOverrideResource) Schema(_ context.Context, _ resource.Sc
 			"org_uuid": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the organization being exempted from the policy.",
+				Validators:  []validator.String{uuidValidator},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -247,14 +250,20 @@ func (r *OrgGroupPolicyOverrideResource) updateState(state *OrgGroupPolicyOverri
 	if !ok || orgGroup == nil {
 		return fmt.Errorf("org group policy override response missing org_group relationship")
 	}
-	orgGroupData := orgGroup.GetData()
+	orgGroupData, ok := orgGroup.GetDataOk()
+	if !ok {
+		return fmt.Errorf("org group policy override response missing org_group.data")
+	}
 	state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
 
 	policy, ok := rels.GetOrgGroupPolicyOk()
 	if !ok || policy == nil {
 		return fmt.Errorf("org group policy override response missing org_group_policy relationship")
 	}
-	policyData := policy.GetData()
+	policyData, ok := policy.GetDataOk()
+	if !ok {
+		return fmt.Errorf("org group policy override response missing org_group_policy.data")
+	}
 	state.PolicyID = types.StringValue(policyData.GetId().String())
 
 	return nil

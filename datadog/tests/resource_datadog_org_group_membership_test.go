@@ -98,6 +98,7 @@ func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupMembershipExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "org_uuid", orgUUID),
+					resource.TestCheckResourceAttrPair(resourceName, "org_group_id", "datadog_org_group.test2", "id"),
 				),
 			},
 			{
@@ -113,11 +114,10 @@ func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogOrgGroupMembership_NoMembershipFound(t *testing.T) {
-	// A syntactically-valid but non-existent org_uuid should surface a clear
-	// "not found" error instead of panicking on an empty slice. The server
-	// returns a 404 at the List endpoint, which the provider propagates as-is.
-	// Not parallel; uses a unique org_group and never touches the shared org.
+func TestAccDatadogOrgGroupMembership_UnknownOrgReturns404(t *testing.T) {
+	// A syntactically-valid but non-existent org_uuid should surface the server's
+	// 404 at the List endpoint instead of producing an opaque error. Not parallel;
+	// uses a unique org_group and never touches the shared org.
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
 	bogusOrgUUID := "00000000-0000-0000-0000-000000000001"

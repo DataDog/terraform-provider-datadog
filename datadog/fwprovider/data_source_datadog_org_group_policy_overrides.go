@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -10,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
@@ -65,14 +67,17 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Schema(_ context.Context, _ d
 			"org_group_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the org group whose overrides to list.",
+				Validators:  []validator.String{uuidValidator},
 			},
 			"policy_id": schema.StringAttribute{
 				Optional:    true,
 				Description: "Filter overrides to those on the given policy.",
+				Validators:  []validator.String{uuidValidator},
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
 				Description: "Filter overrides to those for the given organization. Applied client-side after the List call since the API does not accept an org_uuid filter on this endpoint.",
+				Validators:  []validator.String{uuidValidator},
 			},
 			"overrides": schema.ListAttribute{
 				Computed:    true,
@@ -115,23 +120,23 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 		opts.WithFilterPolicyId(parsed)
 	}
 
-	// Client-side org_uuid filter. Validate the input now so we fail fast on bad UUIDs
-	// before issuing any API calls.
-	var orgUuidFilter string
+	// Parse the client-side org_uuid filter up front so bad values fail before any API call.
+	var orgUuidFilter uuid.UUID
 	if !state.OrgUuid.IsNull() {
 		parsed, err := uuid.Parse(state.OrgUuid.ValueString())
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "org_uuid must be a valid UUID"))
 			return
 		}
-		orgUuidFilter = parsed.String()
+		orgUuidFilter = parsed
 	}
 
+	// See datadog_org_groups for the pagination invariant (duplicate row = bail).
 	const pageSize = int64(100)
-	const maxPages = int64(100)
+	seen := make(map[string]struct{})
 
 	var overrides []datadogV2.OrgGroupPolicyOverrideData
-	for page := int64(0); page < maxPages; page++ {
+	for page := int64(0); ; page++ {
 		opts.WithPageNumber(page).WithPageSize(pageSize)
 		resp, _, err := d.API.ListOrgGroupPolicyOverrides(d.Auth, orgGroupID, *opts)
 		if err != nil {
@@ -139,7 +144,18 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 			return
 		}
 		data := resp.GetData()
-		overrides = append(overrides, data...)
+		for _, item := range data {
+			id := item.GetId().String()
+			if _, ok := seen[id]; ok {
+				response.Diagnostics.AddError(
+					"datadog_org_group_policy_overrides: pagination returned duplicate row",
+					fmt.Sprintf("override %s appeared on more than one page; aborting to avoid an infinite loop", id),
+				)
+				return
+			}
+			seen[id] = struct{}{}
+			overrides = append(overrides, item)
+		}
 		if int64(len(data)) < pageSize {
 			break
 		}
@@ -148,23 +164,22 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 	items := make([]*OrgGroupPolicyOverrideItemModel, 0, len(overrides))
 	for _, o := range overrides {
 		attrs := o.GetAttributes()
-		ou := attrs.GetOrgUuid().String()
+		ou := attrs.GetOrgUuid()
 		// Defensive: flag zero-UUID rows. The server should never return these, so
 		// hitting this branch indicates a malformed response rather than a filter miss.
-		if ou == uuid.Nil.String() {
+		if ou == uuid.Nil {
 			tflog.Debug(ctx, "datadog_org_group_policy_overrides: skipping override with zero org_uuid", map[string]interface{}{
 				"override_id": o.GetId().String(),
 			})
 			continue
 		}
-		// Apply the client-side org_uuid filter if set.
-		if orgUuidFilter != "" && ou != orgUuidFilter {
+		if orgUuidFilter != uuid.Nil && ou != orgUuidFilter {
 			continue
 		}
 
 		item := &OrgGroupPolicyOverrideItemModel{
 			ID:      types.StringValue(o.GetId().String()),
-			OrgUuid: types.StringValue(attrs.GetOrgUuid().String()),
+			OrgUuid: types.StringValue(ou.String()),
 			OrgSite: types.StringValue(attrs.GetOrgSite()),
 		}
 
@@ -179,19 +194,34 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 			item.Content = types.StringValue("{}")
 		}
 
-		// OrgGroupID/PolicyID left as null if the API omitted the relationship —
-		// distinguishable from an empty string so callers can detect server data
-		// integrity issues.
-		if rels, ok := o.GetRelationshipsOk(); ok && rels != nil {
-			if orgGroup, ok := rels.GetOrgGroupOk(); ok && orgGroup != nil {
-				ogData := orgGroup.GetData()
-				item.OrgGroupID = types.StringValue(ogData.GetId().String())
-			}
-			if policy, ok := rels.GetOrgGroupPolicyOk(); ok && policy != nil {
-				pData := policy.GetData()
-				item.PolicyID = types.StringValue(pData.GetId().String())
-			}
+		rels, ok := o.GetRelationshipsOk()
+		if !ok || rels == nil {
+			response.Diagnostics.AddError("datadog_org_group_policy_overrides: response missing relationships", fmt.Sprintf("override %s has no relationships block", item.ID.ValueString()))
+			return
 		}
+		orgGroup, ok := rels.GetOrgGroupOk()
+		if !ok || orgGroup == nil {
+			response.Diagnostics.AddError("datadog_org_group_policy_overrides: response missing org_group relationship", fmt.Sprintf("override %s has no org_group relationship", item.ID.ValueString()))
+			return
+		}
+		ogData, ok := orgGroup.GetDataOk()
+		if !ok {
+			response.Diagnostics.AddError("datadog_org_group_policy_overrides: response missing org_group.data", fmt.Sprintf("override %s has no org_group.data", item.ID.ValueString()))
+			return
+		}
+		item.OrgGroupID = types.StringValue(ogData.GetId().String())
+
+		policy, ok := rels.GetOrgGroupPolicyOk()
+		if !ok || policy == nil {
+			response.Diagnostics.AddError("datadog_org_group_policy_overrides: response missing org_group_policy relationship", fmt.Sprintf("override %s has no org_group_policy relationship", item.ID.ValueString()))
+			return
+		}
+		pData, ok := policy.GetDataOk()
+		if !ok {
+			response.Diagnostics.AddError("datadog_org_group_policy_overrides: response missing org_group_policy.data", fmt.Sprintf("override %s has no org_group_policy.data", item.ID.ValueString()))
+			return
+		}
+		item.PolicyID = types.StringValue(pData.GetId().String())
 
 		items = append(items, item)
 	}

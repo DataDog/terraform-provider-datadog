@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -73,14 +74,15 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 		return
 	}
 
-	// Paginate with a guard: API returns at most pageSize per page and a short page
-	// signals the end of results. maxPages caps the loop to protect against a server
-	// bug returning full pages forever.
+	// Paginate until a short page signals end-of-results. We also track the IDs
+	// we've already accumulated: if the server ever hands us a page containing
+	// rows we've seen before, that's an infinite-loop signal (or a pagination bug),
+	// and we bail with a diagnostic instead of silently running forever.
 	const pageSize = int64(100)
-	const maxPages = int64(100)
+	seen := make(map[string]struct{})
 
 	var groups []datadogV2.OrgGroupData
-	for page := int64(0); page < maxPages; page++ {
+	for page := int64(0); ; page++ {
 		opts := datadogV2.NewListOrgGroupsOptionalParameters().WithPageNumber(page).WithPageSize(pageSize)
 		resp, _, err := d.API.ListOrgGroups(d.Auth, *opts)
 		if err != nil {
@@ -88,7 +90,18 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 			return
 		}
 		data := resp.GetData()
-		groups = append(groups, data...)
+		for _, item := range data {
+			id := item.GetId().String()
+			if _, ok := seen[id]; ok {
+				response.Diagnostics.AddError(
+					"datadog_org_groups: pagination returned duplicate row",
+					fmt.Sprintf("org_group %s appeared on more than one page; aborting to avoid an infinite loop", id),
+				)
+				return
+			}
+			seen[id] = struct{}{}
+			groups = append(groups, item)
+		}
 		if int64(len(data)) < pageSize {
 			break
 		}

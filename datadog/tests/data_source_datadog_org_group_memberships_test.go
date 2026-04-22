@@ -21,6 +21,7 @@ func TestAccDatadogOrgGroupMembershipsDataSource_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogOrgGroupDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				// Move the test org into our new org_group and look it up by org_group_id.

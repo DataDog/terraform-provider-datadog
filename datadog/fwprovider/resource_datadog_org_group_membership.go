@@ -2,20 +2,27 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+var uuidValidator = stringvalidator.RegexMatches(
+	regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`),
+	"must be a valid UUID",
 )
 
 var (
@@ -58,10 +65,12 @@ func (r *OrgGroupMembershipResource) Schema(_ context.Context, _ resource.Schema
 			"org_group_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the org group to assign the organization to.",
+				Validators:  []validator.String{uuidValidator},
 			},
 			"org_uuid": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the organization.",
+				Validators:  []validator.String{uuidValidator},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -89,7 +98,6 @@ func (r *OrgGroupMembershipResource) Create(ctx context.Context, request resourc
 		return
 	}
 
-	// Look up the org's existing membership by org_uuid
 	orgUuid, err := uuid.Parse(state.OrgUuid.ValueString())
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "org_uuid must be a valid UUID"))
@@ -103,15 +111,12 @@ func (r *OrgGroupMembershipResource) Create(ctx context.Context, request resourc
 		return
 	}
 
+	// The server returns HTTP 404 (not an empty list) for unknown org UUIDs,
+	// so the List call above has already surfaced that case. A well-known org
+	// must always have exactly one membership, so we index directly.
 	memberships := listResp.GetData()
-	if len(memberships) == 0 {
-		response.Diagnostics.AddError("no membership found", fmt.Sprintf("no org group membership found for org %s", state.OrgUuid.ValueString()))
-		return
-	}
-
 	membershipID := memberships[0].GetId()
 
-	// Update the membership to assign to the target org group
 	targetGroupID, err := uuid.Parse(state.OrgGroupID.ValueString())
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "org_group_id must be a valid UUID"))
@@ -212,9 +217,16 @@ func (r *OrgGroupMembershipResource) Update(ctx context.Context, request resourc
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *OrgGroupMembershipResource) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
+func (r *OrgGroupMembershipResource) Delete(_ context.Context, _ resource.DeleteRequest, response *resource.DeleteResponse) {
 	// No API call — memberships cannot be deleted, only reassigned.
-	// The org remains in its current group.
+	// The org remains in its current group. Emit a warning so users who ran
+	// `terraform destroy` understand the org isn't detached from the group.
+	response.Diagnostics.AddWarning(
+		"datadog_org_group_membership destroy is state-only",
+		"Memberships cannot be deleted via the API; only reassigned. The organization remains in its current org group. "+
+			"To destroy a `datadog_org_group`, the group must have zero memberships pointing at it — "+
+			"move member orgs to another group first (e.g. by updating `org_group_id` on each membership resource).",
+	)
 }
 
 func (r *OrgGroupMembershipResource) buildUpdateRequest(membershipID uuid.UUID, targetGroupID uuid.UUID) *datadogV2.OrgGroupMembershipUpdateRequest {

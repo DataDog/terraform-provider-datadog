@@ -11,12 +11,13 @@ import (
 
 func TestAccDatadogOrgGroupsDataSource_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
 	dsName := "data.datadog_org_groups.all"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogOrgGroupDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogOrgGroupsDataSourceConfig(orgGroupName),

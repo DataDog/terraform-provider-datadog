@@ -22,6 +22,7 @@ func TestAccDatadogOrgGroupPolicyOverridesDataSource_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             composeOrgGroupStackDestroyChecks(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogOrgGroupPolicyOverridesDataSourceConfig(orgGroupName, orgUUID),

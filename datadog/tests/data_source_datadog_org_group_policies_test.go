@@ -6,17 +6,24 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccDatadogOrgGroupPoliciesDataSource_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
 	dsAll := "data.datadog_org_group_policies.all"
 	dsFiltered := "data.datadog_org_group_policies.filtered"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy: func(s *terraform.State) error {
+			if err := testAccCheckDatadogOrgGroupPolicyDestroy(providers.frameworkProvider)(s); err != nil {
+				return err
+			}
+			return testAccCheckDatadogOrgGroupDestroy(providers.frameworkProvider)(s)
+		},
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogOrgGroupPoliciesDataSourceConfig(orgGroupName),

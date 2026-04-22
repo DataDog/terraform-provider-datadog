@@ -62,6 +62,7 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"org_group_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The UUID of the org group this policy belongs to.",
+				Validators:  []validator.String{uuidValidator},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -298,7 +299,10 @@ func (r *OrgGroupPolicyResource) updateState(state *OrgGroupPolicyModel, resp *d
 	if !ok || orgGroup == nil {
 		return fmt.Errorf("org group policy response missing org_group relationship")
 	}
-	orgGroupData := orgGroup.GetData()
+	orgGroupData, ok := orgGroup.GetDataOk()
+	if !ok {
+		return fmt.Errorf("org group policy response missing org_group.data")
+	}
 	state.OrgGroupID = types.StringValue(orgGroupData.GetId().String())
 
 	return nil
