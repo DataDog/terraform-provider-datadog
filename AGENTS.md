@@ -46,6 +46,7 @@ Some docs are manually maintained and excluded from auto generation. Check `scri
 - ALWAYS search `datadog/fwprovider/` for existing patterns before implementing new ones
 - Use Blocks, not Nested Attributes for complex structures
 - Avoid ObjectType (breaks docs generation - no field description support)
+- Use the Datadog API client for making requests, not raw HTTP requests. If the Datadog API client does not support the API, it should be updated instead first
 
 ## Quality Gates
 
