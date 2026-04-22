@@ -32,7 +32,7 @@ func TestOnCallUserEmailNotificationChannel(t *testing.T) {
 	).Replace(OnCallUserEmailNotificationChannelTest)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOnCallUserNotificationChannelDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -58,7 +58,7 @@ func TestOnCallUserPhoneNotificationChannel(t *testing.T) {
 	).Replace(OnCallUserPhoneNotificationChannelTest)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogOnCallUserNotificationChannelDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

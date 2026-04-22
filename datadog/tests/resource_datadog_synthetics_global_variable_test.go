@@ -18,13 +18,15 @@ func getUniqueVariableName(ctx context.Context, t *testing.T) string {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	variableName := getUniqueVariableName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -40,12 +42,14 @@ func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableStep(ctx, providers.frameworkProvider, t),
@@ -54,12 +58,14 @@ func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableStep(ctx, providers.frameworkProvider, t),
@@ -69,12 +75,14 @@ func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableSecureStep(ctx, providers.frameworkProvider, t),
@@ -83,12 +91,14 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableSecureStep(ctx, providers.frameworkProvider, t),
@@ -98,12 +108,14 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableTOTP_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableTOTPStep(ctx, providers.frameworkProvider, t),
@@ -112,12 +124,14 @@ func TestAccDatadogSyntheticsGlobalVariableTOTP_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableTOTP_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableTOTPStep(ctx, providers.frameworkProvider, t),
@@ -128,6 +142,8 @@ func TestAccDatadogSyntheticsGlobalVariableTOTP_Updated(t *testing.T) {
 
 // fido variables
 func TestAccDatadogSyntheticsGlobalVariableFIDO_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -139,7 +155,7 @@ func TestAccDatadogSyntheticsGlobalVariableFIDO_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableFIDOStep(ctx, providers.frameworkProvider, t),
@@ -148,6 +164,8 @@ func TestAccDatadogSyntheticsGlobalVariableFIDO_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableFIDO_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -159,7 +177,7 @@ func TestAccDatadogSyntheticsGlobalVariableFIDO_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableFIDOStep(ctx, providers.frameworkProvider, t),
@@ -169,12 +187,14 @@ func TestAccDatadogSyntheticsGlobalVariableFIDO_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableFromTestStep(ctx, providers.frameworkProvider, t),
@@ -183,12 +203,14 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableFromTestLocalVariableStep(ctx, providers.frameworkProvider, t),
@@ -197,12 +219,14 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) 
 }
 
 func TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableDynamicBlocksStep(ctx, providers.frameworkProvider, t),
@@ -211,6 +235,8 @@ func TestAccDatadogSyntheticsGlobalVariable_DynamicBlocks(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -219,7 +245,7 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Basic(t *testing.T) {
 			tfversion.SkipBelow(tfversion.Version1_11_0),
 		},
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableWriteOnlyStep(ctx, providers.frameworkProvider, t),
@@ -228,6 +254,8 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -236,7 +264,7 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Updated(t *testing.T) {
 			tfversion.SkipBelow(tfversion.Version1_11_0),
 		},
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableWriteOnlyStep(ctx, providers.frameworkProvider, t),
@@ -246,6 +274,8 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnly_Updated(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsGlobalVariableWriteOnlySecure_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	cleanupSyntheticsGlobalVariables(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -254,7 +284,7 @@ func TestAccDatadogSyntheticsGlobalVariableWriteOnlySecure_Basic(t *testing.T) {
 			tfversion.SkipBelow(tfversion.Version1_11_0),
 		},
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableWriteOnlySecureStep(ctx, providers.frameworkProvider, t),

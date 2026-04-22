@@ -66,7 +66,7 @@ func TestCustomFramework_CreateBasic(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -118,7 +118,7 @@ func TestCustomFramework_CreateWithoutIconURL(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -144,7 +144,7 @@ func TestCustomFramework_CreateAndUpdateMultipleRequirements(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -200,7 +200,7 @@ func TestCustomFramework_SameFrameworkID(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -237,7 +237,7 @@ func TestCustomFramework_InvalidCreate(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -304,7 +304,7 @@ func TestCustomFramework_RecreateAfterAPIDelete(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -346,7 +346,7 @@ func TestCustomFramework_DeleteAfterAPIDelete(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -388,7 +388,7 @@ func TestCustomFramework_UpdateIfFrameworkExists(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -438,7 +438,7 @@ func TestCustomFramework_RecreateOnImmutableFields(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -478,7 +478,7 @@ func TestCustomFramework_DuplicateRuleIds(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{
@@ -503,7 +503,7 @@ func TestCustomFramework_DuplicateHandle(t *testing.T) {
 	path := "datadog_compliance_custom_framework.sample_rules"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogFrameworkDestroy(ctx, providers.frameworkProvider, path, version, handle),
 		Steps: []resource.TestStep{
 			{

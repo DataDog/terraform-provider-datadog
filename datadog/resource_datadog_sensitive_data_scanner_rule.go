@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -146,6 +147,34 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Computed:     true,
 					Description:  "Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).",
 					ValidateFunc: validation.IntBetween(1, 5),
+				},
+				"suppressions": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "Object defining a set of suppressions to skip matches based on a set of rules. The available suppression types are `starts_with`, `ends_with`, and `exact_match`.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"starts_with": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "Any match that starts with a value in this list will be suppressed.",
+							},
+							"ends_with": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "Any match that ends with a value in this list will be suppressed.",
+							},
+							"exact_match": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+								Description: "Any match that appears in this list will be suppressed.",
+							},
+						},
+					},
 				},
 			}
 		},
@@ -319,10 +348,7 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 		if shouldSaveMatch, ok := d.GetOk("text_replacement.0.should_save_match"); ok {
 			if typeVar, ok := d.GetOk("text_replacement.0.type"); ok && typeVar.(string) == "replacement_string" {
-				if textReplacement.AdditionalProperties == nil {
-					textReplacement.AdditionalProperties = map[string]interface{}{}
-				}
-				textReplacement.AdditionalProperties["should_save_match"] = shouldSaveMatch.(bool)
+				textReplacement.SetShouldSaveMatch(shouldSaveMatch.(bool))
 			}
 		}
 
@@ -372,7 +398,45 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		attributes.SetPriority(int64(priority.(int)))
 	}
 
+	if isSensitiveDataScannerRuleBlockConfigured(d, "suppressions") {
+		suppressionsList := d.Get("suppressions").([]interface{})
+		if len(suppressionsList) > 0 && suppressionsList[0] != nil {
+			suppressionsMap := suppressionsList[0].(map[string]interface{})
+			suppressions := datadogV2.NewSensitiveDataScannerSuppressions()
+
+			if startsWith, ok := suppressionsMap["starts_with"].([]interface{}); ok && len(startsWith) > 0 {
+				suppressions.SetStartsWith(buildSensitiveDataScannerStringList(startsWith))
+			}
+			if endsWith, ok := suppressionsMap["ends_with"].([]interface{}); ok && len(endsWith) > 0 {
+				suppressions.SetEndsWith(buildSensitiveDataScannerStringList(endsWith))
+			}
+			if exactMatch, ok := suppressionsMap["exact_match"].([]interface{}); ok && len(exactMatch) > 0 {
+				suppressions.SetExactMatch(buildSensitiveDataScannerStringList(exactMatch))
+			}
+
+			if suppressions.HasStartsWith() || suppressions.HasEndsWith() || suppressions.HasExactMatch() {
+				attributes.SetSuppressions(*suppressions)
+			}
+		}
+	}
+
 	return attributes
+}
+
+func isSensitiveDataScannerRuleBlockConfigured(d *schema.ResourceData, attr string) bool {
+	val, diags := d.GetRawConfigAt(cty.GetAttrPath(attr))
+	return !diags.HasError() && !val.IsNull()
+}
+
+func buildSensitiveDataScannerStringList(items []interface{}) []string {
+	values := make([]string, 0, len(items))
+	for _, item := range items {
+		if item == nil {
+			continue
+		}
+		values = append(values, item.(string))
+	}
+	return values
 }
 
 func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -386,6 +450,11 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	id := d.Id()
 
 	attributes := buildSensitiveDataScannerRuleAttributes(d)
+	if !attributes.HasSuppressions() {
+		// The SDS API preserves existing suppressions when the field is omitted on update,
+		// so we must send an explicit empty object to clear previously configured values.
+		attributes.SetSuppressions(*datadogV2.NewSensitiveDataScannerSuppressions())
+	}
 
 	req := datadogV2.NewSensitiveDataScannerRuleUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewSensitiveDataScannerRuleUpdateWithDefaults()
@@ -460,13 +529,9 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		if replacementString, ok := tR.GetReplacementStringOk(); ok {
 			textReplacement["replacement_string"] = replacementString
 		}
-		if tR.AdditionalProperties != nil {
-			// `should_save_match` should be supported starting in `datadog-api-client-go` v2.45
-			// Additional properties is used until then.
-			if shouldSaveMatch, ok := tR.AdditionalProperties["should_save_match"]; ok {
-				if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
-					textReplacement["should_save_match"] = shouldSaveMatch
-				}
+		if shouldSaveMatch, ok := tR.GetShouldSaveMatchOk(); ok {
+			if replacementType, ok := tR.GetTypeOk(); ok && *replacementType == datadogV2.SENSITIVEDATASCANNERTEXTREPLACEMENTTYPE_REPLACEMENT_STRING {
+				textReplacement["should_save_match"] = shouldSaveMatch
 			}
 		}
 		if replacementType, ok := tR.GetTypeOk(); ok {
@@ -501,6 +566,32 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 	}
 
 	if err := d.Set("priority", ruleAttributes.GetPriority()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if suppressions, ok := ruleAttributes.GetSuppressionsOk(); ok && suppressions != nil {
+		suppressionsState := make(map[string]interface{})
+		suppressionsList := make([]map[string]interface{}, 0, 1)
+
+		if startsWith, ok := suppressions.GetStartsWithOk(); ok && len(*startsWith) > 0 {
+			suppressionsState["starts_with"] = *startsWith
+		}
+		if endsWith, ok := suppressions.GetEndsWithOk(); ok && len(*endsWith) > 0 {
+			suppressionsState["ends_with"] = *endsWith
+		}
+		if exactMatch, ok := suppressions.GetExactMatchOk(); ok && len(*exactMatch) > 0 {
+			suppressionsState["exact_match"] = *exactMatch
+		}
+
+		if len(suppressionsState) > 0 {
+			suppressionsList = append(suppressionsList, suppressionsState)
+			if err := d.Set("suppressions", suppressionsList); err != nil {
+				return diag.FromErr(err)
+			}
+		} else if err := d.Set("suppressions", nil); err != nil {
+			return diag.FromErr(err)
+		}
+	} else if err := d.Set("suppressions", nil); err != nil {
 		return diag.FromErr(err)
 	}
 

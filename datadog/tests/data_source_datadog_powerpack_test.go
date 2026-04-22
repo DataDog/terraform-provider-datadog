@@ -9,13 +9,14 @@ import (
 )
 
 func TestAccDatadogPowerpackDatasource(t *testing.T) {
+	cleanupPowerpacks(t)
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourcePowerpackNameFilterConfig(uniq),

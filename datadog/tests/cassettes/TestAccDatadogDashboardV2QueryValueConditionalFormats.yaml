@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 881
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2QueryValueConditionalFormats-local-1772572372","widgets":[{"definition":{"autoscale":true,"precision":0,"requests":[{"conditional_formats":[{"comparator":"\u003c","hide_value":false,"palette":"white_on_green","value":1},{"comparator":"\u003c","hide_value":false,"palette":"black_on_light_yellow","value":5},{"comparator":"\u003e=","hide_value":false,"palette":"black_on_light_red","value":5}],"formulas":[{"formula":"default_zero(query1)"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*}.as_count()"}],"response_format":"scalar"}],"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Error count with conditional formats","type":"query_value"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vzh-qxb-97d","title":"tf-TestAccDatadogDashboardV2QueryValueConditionalFormats-local-1772572372","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vzh-qxb-97d/tf-testaccdatadogdashboardv2queryvalueconditionalformats-local-1772572372","template_variables":[],"widgets":[{"definition":{"autoscale":true,"precision":0,"requests":[{"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":1},{"comparator":"<","hide_value":false,"palette":"black_on_light_yellow","value":5},{"comparator":">=","hide_value":false,"palette":"black_on_light_red","value":5}],"formulas":[{"formula":"default_zero(query1)"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*}.as_count()"}],"response_format":"scalar"}],"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Error count with conditional formats","type":"query_value"},"id":1364267514146853}],"notify_list":[],"created_at":"2026-03-03T21:12:59.493078+00:00","modified_at":"2026-03-03T21:12:59.493078+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 133.565666ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vzh-qxb-97d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vzh-qxb-97d","title":"tf-TestAccDatadogDashboardV2QueryValueConditionalFormats-local-1772572372","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vzh-qxb-97d/tf-testaccdatadogdashboardv2queryvalueconditionalformats-local-1772572372","template_variables":[],"widgets":[{"definition":{"autoscale":true,"precision":0,"requests":[{"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":1},{"comparator":"<","hide_value":false,"palette":"black_on_light_yellow","value":5},{"comparator":">=","hide_value":false,"palette":"black_on_light_red","value":5}],"formulas":[{"formula":"default_zero(query1)"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*}.as_count()"}],"response_format":"scalar"}],"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Error count with conditional formats","type":"query_value"},"id":1364267514146853}],"notify_list":[],"created_at":"2026-03-03T21:12:59.493078+00:00","modified_at":"2026-03-03T21:12:59.493078+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 103.030417ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vzh-qxb-97d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vzh-qxb-97d","title":"tf-TestAccDatadogDashboardV2QueryValueConditionalFormats-local-1772572372","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vzh-qxb-97d/tf-testaccdatadogdashboardv2queryvalueconditionalformats-local-1772572372","template_variables":[],"widgets":[{"definition":{"autoscale":true,"precision":0,"requests":[{"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":1},{"comparator":"<","hide_value":false,"palette":"black_on_light_yellow","value":5},{"comparator":">=","hide_value":false,"palette":"black_on_light_red","value":5}],"formulas":[{"formula":"default_zero(query1)"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*}.as_count()"}],"response_format":"scalar"}],"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Error count with conditional formats","type":"query_value"},"id":1364267514146853}],"notify_list":[],"created_at":"2026-03-03T21:12:59.493078+00:00","modified_at":"2026-03-03T21:12:59.493078+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 102.612167ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vzh-qxb-97d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vzh-qxb-97d","title":"tf-TestAccDatadogDashboardV2QueryValueConditionalFormats-local-1772572372","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vzh-qxb-97d/tf-testaccdatadogdashboardv2queryvalueconditionalformats-local-1772572372","template_variables":[],"widgets":[{"definition":{"autoscale":true,"precision":0,"requests":[{"conditional_formats":[{"comparator":"<","hide_value":false,"palette":"white_on_green","value":1},{"comparator":"<","hide_value":false,"palette":"black_on_light_yellow","value":5},{"comparator":">=","hide_value":false,"palette":"black_on_light_red","value":5}],"formulas":[{"formula":"default_zero(query1)"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*}.as_count()"}],"response_format":"scalar"}],"timeseries_background":{"type":"area","yaxis":{"include_zero":true}},"title":"Error count with conditional formats","type":"query_value"},"id":1364267514146853}],"notify_list":[],"created_at":"2026-03-03T21:12:59.493078+00:00","modified_at":"2026-03-03T21:12:59.493078+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 87.545334ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vzh-qxb-97d
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"vzh-qxb-97d"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 333.979334ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vzh-qxb-97d
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID vzh-qxb-97d not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 72.859833ms

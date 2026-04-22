@@ -52,6 +52,15 @@ fmtcheck:
 errcheck:
 	@sh -c "'$(CURDIR)/scripts/errcheck.sh'"
 
+lint:
+	golangci-lint run ./...
+
+lint-new:
+	golangci-lint run --new-from-rev=origin/master ./...
+
+lint-fix:
+	golangci-lint run --fix ./...
+
 test-compile: get-test-deps
 	@if [ "$(TEST)" = "./..." ]; then \
 		echo "ERROR: Set TEST to a specific package. For example,"; \
@@ -70,6 +79,9 @@ get-test-deps:
 	gotestsum --version || go install gotest.tools/gotestsum@latest
 	which goimports || go install golang.org/x/tools/cmd/goimports@latest
 
+sweep:
+	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
+
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
 
@@ -87,4 +99,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck test-compile tools get-test-deps license-check
+.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile tools get-test-deps license-check sweep

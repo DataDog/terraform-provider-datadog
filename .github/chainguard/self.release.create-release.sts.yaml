@@ -1,0 +1,13 @@
+---
+# Policy for: .github/workflows/release.yml in DataDog/terraform-provider-datadog
+# Allows the release workflow to create tags and GitHub releases
+issuer: https://token.actions.githubusercontent.com
+subject: repo:DataDog/terraform-provider-datadog:pull_request
+
+claim_pattern:
+  event_name: pull_request
+  job_workflow_ref: DataDog/terraform-provider-datadog/\.github/workflows/release\.yml@refs/heads/(master|v3)
+  repository: DataDog/terraform-provider-datadog
+
+permissions:
+  contents: write

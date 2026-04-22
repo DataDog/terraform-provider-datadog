@@ -79,7 +79,7 @@ func checkPowerpackExists(accProvider func() (*schema.Provider, error)) resource
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_powerpack" {
+			if r.Type != "datadog_powerpack" && r.Type != "datadog_powerpack_v2" {
 				continue
 			}
 			if _, _, err := apiInstances.GetPowerpackApiV2().GetPowerpack(auth, r.Primary.ID); err != nil {
@@ -98,7 +98,7 @@ func checkPowerpackDestroy(accProvider func() (*schema.Provider, error)) resourc
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_powerpack" {
+			if r.Type != "datadog_powerpack" && r.Type != "datadog_powerpack_v2" {
 				continue
 			}
 			err := utils.Retry(2, 10, func() error {

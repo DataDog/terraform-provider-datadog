@@ -4,7 +4,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Prerequisites
 
-- [Terraform][2] 0.12.x and higher.
+- [Terraform][2] 1.1.5 and higher (required for Protocol Version 6 with SDKv2 resources).
   - The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
 - [Go][3] 1.23 (to build the provider plugin)
 - A clone of this repository and the [\$GOPATH environment variable][7] set
@@ -13,7 +13,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Adding new resources
 
-- All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We currently support [Protocol Version 5][13]. (the objective is to keep the compatibility with Terraform 0.x)
+- All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We use [Protocol Version 6][13], which requires Terraform CLI 1.0+ (or 1.1.5+ for SDKv2 resources using tf5to6server).
 - The documentation is generated using the `tfplugindocs` CLI.
   - Ensure each Schema attribute in the code contains a `Description` field.
   - For nested attributes, please don't use the [Nested Attributes Types][14] but [Blocks][15]. Also don't use [ObjectType][16] as it doesn't allow to add field description
@@ -25,6 +25,26 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 When adding secret/sensitive attributes to Framework resources, use the write-only helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). These generate the three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) required by Terraform 1.11+ write-only support while maintaining backwards compatibility.
 
+## Linting
+
+This project uses [golangci-lint](https://golangci-lint.run/) (v2) for static analysis. Install it locally:
+
+```sh
+# macOS
+brew install golangci-lint
+
+# Any platform via Go
+go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
+```
+
+Available Make targets:
+
+- `make lint` — run all linters on the entire codebase
+- `make lint-new` — run linters only on code changed vs `origin/master` (mirrors CI)
+- `make lint-fix` — auto-fix issues where possible
+
+In CI, `golangci-lint` runs with `--new-from-rev=origin/master` so only changed lines are checked on pull requests.
+
 ## Makefile
 
 The root of this project contains a `GNUmakefile` with the purpose of making each development step easier. While some commands are outlined here, please see [GNUmakefile][5] for all available commands.
@@ -35,7 +55,7 @@ The Datadog Provider can be built to use the binary as a terraform plugin. This 
 
 This provider can be built by running `make build`, or just `make`. This will place the binary in `$GOPATH/bin`
 
-### Using Terraform 0.14.x
+### Local Development Setup
 
 1. Setup a `~/.terraformrc` file with the following content:
 
@@ -63,6 +83,7 @@ terraform {
       source = "DataDog/datadog"
     }
   }
+  required_version = ">= 1.1.5"
 }
 
 provider "datadog" {
@@ -117,7 +138,7 @@ where:
 
 To help with changelog documentation, all pull requests must be labelled properly.
 
-It needs one changelog label (among `improvement`, `feature`, `bugfix`, `note` and `no-changelog`), and one resource mentioned in the title as a prefix (if not `no-changelog`) corresponding to the resource being changed (For example `[datadog_dashboard] Fix issue`).
+It needs one changelog label (among `changelog/improvement`, `changelog/feature`, `changelog/bugfix`, `changelog/note` and `changelog/no-changelog`), and one resource mentioned in the title as a prefix (if not `changelog/no-changelog`) corresponding to the resource being changed (For example `[datadog_dashboard] Fix issue`).
 
 [1]: https://www.terraform.io/docs/extend/index.html
 [2]: https://www.terraform.io/downloads.html
@@ -131,7 +152,7 @@ It needs one changelog label (among `improvement`, `feature`, `bugfix`, `note` a
 [10]: https://www.terraform.io/plugin/sdkv2/debugging
 [11]: https://developer.hashicorp.com/terraform/plugin/framework
 [12]: https://github.com/DataDog/terraform-provider-datadog/tree/master/datadog/fwprovider
-[13]: https://developer.hashicorp.com/terraform/plugin/terraform-plugin-protocol#protocol-version-5
+[13]: https://developer.hashicorp.com/terraform/plugin/terraform-plugin-protocol#protocol-version-6
 [14]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/attributes#nested-attribute-types
 [15]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/blocks
 [16]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/attributes/object

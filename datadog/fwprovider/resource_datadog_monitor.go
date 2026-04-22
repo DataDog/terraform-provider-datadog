@@ -76,7 +76,6 @@ type monitorResourceModel struct {
 	NotifyAudit             types.Bool                       `tfsdk:"notify_audit"`
 	TimeoutH                types.Int64                      `tfsdk:"timeout_h"`
 	RequireFullWindow       types.Bool                       `tfsdk:"require_full_window"`
-	Locked                  types.Bool                       `tfsdk:"locked"`
 	RestrictedRoles         types.Set                        `tfsdk:"restricted_roles"`
 	IncludeTags             types.Bool                       `tfsdk:"include_tags"`
 	GroupbySimpleMonitor    types.Bool                       `tfsdk:"groupby_simple_monitor"`
@@ -125,6 +124,7 @@ type EvaluationWindow struct {
 	DayStarts   types.String `tfsdk:"day_starts"`
 	MonthStarts types.Int32  `tfsdk:"month_starts"`
 	HourStarts  types.Int32  `tfsdk:"hour_starts"`
+	Timezone    types.String `tfsdk:"timezone"`
 }
 
 type CustomSchedule struct {
@@ -219,10 +219,6 @@ func (r *monitorResource) ConfigValidators(ctx context.Context) []resource.Confi
 		resourcevalidator.Conflicting(
 			frameworkPath.MatchRoot("on_missing_data"),
 			frameworkPath.MatchRoot("no_data_timeframe"),
-		),
-		resourcevalidator.Conflicting(
-			frameworkPath.MatchRoot("locked"),
-			frameworkPath.MatchRoot("restricted_roles"),
 		),
 		resourcevalidator.Conflicting(
 			frameworkPath.MatchRoot("scheduling_options").AtAnyListIndex().
@@ -347,11 +343,6 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(true),
-			},
-			"locked": schema.BoolAttribute{
-				MarkdownDescription: "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
-				Optional:            true,
-				DeprecationMessage:  "Use `restricted_roles`.",
 			},
 			// We only set new_group_delay in the monitor API payload if it is nonzero
 			// because the SDKv2 terraform plugin API prevents unsetting new_group_delay
@@ -614,6 +605,10 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 										Validators: []validator.Int32{
 											int32validator.Between(0, 59),
 										},
+									},
+									"timezone": schema.StringAttribute{
+										Optional:    true,
+										Description: "The timezone for the cumulative evaluation window start time.",
 									},
 								},
 							},
@@ -1133,7 +1128,6 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 	fwutils.SetOptBool(state.GroupbySimpleMonitor, monitorOptions.SetGroupbySimpleMonitor)
 	fwutils.SetOptBool(state.EnableLogsSample, monitorOptions.SetEnableLogsSample)
 	fwutils.SetOptBool(state.EnableSamples, monitorOptions.SetEnableSamples)
-	fwutils.SetOptBool(state.Locked, monitorOptions.SetLocked)
 
 	if state.MonitorThresholds != nil {
 		thresholdObj := state.MonitorThresholds[0]
@@ -1189,6 +1183,7 @@ func (r *monitorResource) buildSchedulingOptionsStruct(ctx context.Context, sche
 		fwutils.SetOptString(evalWindow.DayStarts, evaluationWindowReq.SetDayStarts)
 		fwutils.SetOptInt32(evalWindow.HourStarts, evaluationWindowReq.SetHourStarts)
 		fwutils.SetOptInt32(evalWindow.MonthStarts, evaluationWindowReq.SetMonthStarts)
+		fwutils.SetOptString(evalWindow.Timezone, evaluationWindowReq.SetTimezone)
 		schedulingOptionsReq.SetEvaluationWindow(evaluationWindowReq)
 	}
 	if customSchedules := schedulingOption.CustomSchedule; len(customSchedules) > 0 {
@@ -1434,7 +1429,6 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 	state.GroupbySimpleMonitor = fwutils.ToTerraformBool(m.Options.GetGroupbySimpleMonitorOk())
 	state.NotifyBy = fwutils.ToTerraformSetString(ctx, m.Options.GetNotifyByOk)
 	state.EnableLogsSample = fwutils.ToTerraformBool(m.Options.GetEnableLogsSampleOk())
-	state.Locked = fwutils.ToTerraformBool(m.Options.GetLockedOk())
 
 	r.updateAssetsState(ctx, state, m)
 
@@ -1496,6 +1490,7 @@ func (r *monitorResource) updateSchedulingOptionState(state *monitorResourceMode
 			DayStarts:   fwutils.ToTerraformStr(evalWindow.GetDayStartsOk()),
 			MonthStarts: fwutils.ToTerraformInt32(evalWindow.GetMonthStartsOk()),
 			HourStarts:  fwutils.ToTerraformInt32(evalWindow.GetHourStartsOk()),
+			Timezone:    fwutils.ToTerraformStr(evalWindow.GetTimezoneOk()),
 		}}
 	}
 	if customSchedule, ok := schedulingOptions.GetCustomScheduleOk(); ok && customSchedule != nil && customSchedule.GetRecurrences() != nil &&

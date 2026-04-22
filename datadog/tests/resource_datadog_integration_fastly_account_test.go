@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -18,7 +19,7 @@ func TestAccIntegrationFastlyAccountBasic(t *testing.T) {
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogIntegrationFastlyAccountDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -40,6 +41,41 @@ func testAccCheckDatadogIntegrationFastlyAccount(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_fastly_account" "foo" {
     api_key = "ABCDEFG123"
+    name = "%s"
+}`, uniq)
+}
+
+func TestAccIntegrationFastlyAccountWriteOnly(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_11_0),
+		},
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationFastlyAccountDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationFastlyAccountWriteOnly(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationFastlyAccountExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_fastly_account.foo", "name", uniq),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_fastly_account.foo", "api_key_wo_version", "1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogIntegrationFastlyAccountWriteOnly(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_fastly_account" "foo" {
+    api_key_wo = "ABCDEFG123"
+    api_key_wo_version = "1"
     name = "%s"
 }`, uniq)
 }

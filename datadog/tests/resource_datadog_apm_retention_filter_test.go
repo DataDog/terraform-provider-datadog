@@ -22,7 +22,7 @@ func TestAccApmRetentionFilter(t *testing.T) {
 	updatedRate := "1"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApmRetentionFilterDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -73,7 +73,7 @@ func TestAccApmRetentionFilterWithTraceRate(t *testing.T) {
 	updatedTraceRate := "0.8"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogApmRetentionFilterDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

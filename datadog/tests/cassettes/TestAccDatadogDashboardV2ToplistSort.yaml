@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 525
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2ToplistSort-local-1772139170","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rk9-sda-kau","title":"tf-TestAccDatadogDashboardV2ToplistSort-local-1772139170","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rk9-sda-kau/tf-testaccdatadogdashboardv2toplistsort-local-1772139170","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":2921714572494684}],"notify_list":[],"created_at":"2026-02-26T20:52:55.416400+00:00","modified_at":"2026-02-26T20:52:55.416400+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 129.550542ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rk9-sda-kau
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rk9-sda-kau","title":"tf-TestAccDatadogDashboardV2ToplistSort-local-1772139170","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rk9-sda-kau/tf-testaccdatadogdashboardv2toplistsort-local-1772139170","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":2921714572494684}],"notify_list":[],"created_at":"2026-02-26T20:52:55.416400+00:00","modified_at":"2026-02-26T20:52:55.416400+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 109.612375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rk9-sda-kau
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rk9-sda-kau","title":"tf-TestAccDatadogDashboardV2ToplistSort-local-1772139170","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rk9-sda-kau/tf-testaccdatadogdashboardv2toplistsort-local-1772139170","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":2921714572494684}],"notify_list":[],"created_at":"2026-02-26T20:52:55.416400+00:00","modified_at":"2026-02-26T20:52:55.416400+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 107.330583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rk9-sda-kau
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"rk9-sda-kau","title":"tf-TestAccDatadogDashboardV2ToplistSort-local-1772139170","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/rk9-sda-kau/tf-testaccdatadogdashboardv2toplistsort-local-1772139170","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"avg","data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":10,"order_by":[{"index":0,"order":"desc","type":"formula"}]}}],"title":"Top Hosts by CPU","type":"toplist"},"id":2921714572494684}],"notify_list":[],"created_at":"2026-02-26T20:52:55.416400+00:00","modified_at":"2026-02-26T20:52:55.416400+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 143.172459ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rk9-sda-kau
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"rk9-sda-kau"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 337.787084ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/rk9-sda-kau
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID rk9-sda-kau not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 94.125916ms

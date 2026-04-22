@@ -16,7 +16,7 @@ func TestAccDatadogTeamNotificationRulesDatasourceBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceTeamNotificationRulesPluralConfig(uniq),
@@ -54,7 +54,7 @@ func TestAccDatadogTeamNotificationRulesDatasourceEmpty(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceTeamNotificationRulesEmptyConfig(uniq),

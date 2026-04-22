@@ -7,13 +7,13 @@ on:
   pull_request:
     branches:
       - master
-      - 4.x
+      - v3
   schedule:
     - cron: "0 1 * * *"
   push:
     branches:
       - mq-working-branch-master-**
-      - mq-working-branch-4.x-**
+      - mq-working-branch-v3-**
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}-test
@@ -57,6 +57,12 @@ jobs:
         with:
           go-version: "1.23"
           cache: true
+      - name: golangci-lint
+        if: github.event_name == 'pull_request'
+        uses: golangci/golangci-lint-action@1e7e51e771db61008b38414a730f564565cf7c20 # v9
+        with:
+          version: v2.11.4
+          args: --new-from-rev=origin/master --timeout=10m
       - name: Vet
         run: make vet
       - name: License Check
@@ -66,12 +72,12 @@ jobs:
 
   test:
     strategy:
+      fail-fast: false
       matrix:
         terraform_version:
-          - "0.14.11"
-          - "0.15.5"
-          - "1.1.2"
+          - "1.1.5"
           - "1.13.1"
+        shard: [0, 1, 2, 3]
         platform: [ubuntu-latest]
 
     runs-on: ${{ matrix.platform }}
@@ -92,12 +98,26 @@ jobs:
           terraform_wrapper: false
       - name: Set TF_ACC_TERRAFORM_PATH env var
         run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
+      - name: Build shard test args
+        id: shard
+        run: |
+          SHARD_REGEX=$(python3 scripts/shard_tests.py --shard ${{ matrix.shard }} --total 4 --escape-for-make)
+          echo "test_args=-run '${SHARD_REGEX}'" >> "$GITHUB_OUTPUT"
       - name: Test
         run: make testall
         env:
           RECORD: false
+          TESTARGS: ${{ steps.shard.outputs.test_args }}
   
   test-tofu:
+    strategy:
+      fail-fast: false
+      matrix:
+        tofu_version:
+          - "1.10.5"
+          - "1.11.2"
+        shard: [0, 1, 2, 3]
+
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout code
@@ -111,16 +131,22 @@ jobs:
           cache: true
       - uses: opentofu/setup-opentofu@592200bd4b9bbf4772ace78f887668b1aee8f716 # v1.0.5
         with:
-          tofu_version: 1.10.5
-          tofu_wrapper: false        
+          tofu_version: ${{ matrix.tofu_version }}
+          tofu_wrapper: false
       - name: Set Terraform env vars
         run: |
           echo "TF_ACC_TERRAFORM_PATH=$(which tofu)" >> $GITHUB_ENV
           echo "TF_ACC_PROVIDER_HOST=registry.opentofu.org" >> $GITHUB_ENV
+      - name: Build shard test args
+        id: shard
+        run: |
+          SHARD_REGEX=$(python3 scripts/shard_tests.py --shard ${{ matrix.shard }} --total 4 --escape-for-make)
+          echo "test_args=-run '${SHARD_REGEX}'" >> "$GITHUB_OUTPUT"
       - name: Test
         run: make testacc
         env:
           RECORD: false
+          TESTARGS: ${{ steps.shard.outputs.test_args }}
 
   # Final job for branch protection rules - depends on all other jobs
   all-checks:

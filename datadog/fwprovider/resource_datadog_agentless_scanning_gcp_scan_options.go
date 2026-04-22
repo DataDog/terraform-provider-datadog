@@ -99,8 +99,12 @@ func (r *agentlessScanningGcpScanOptionsResource) Read(ctx context.Context, requ
 
 	projectID := state.GcpProjectId.ValueString()
 
-	gcpScanOptionsResponse, _, err := r.Api.GetGcpScanOptions(r.Auth, projectID)
+	gcpScanOptionsResponse, httpResp, err := r.Api.GetGcpScanOptions(r.Auth, projectID)
 	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			response.State.RemoveResource(ctx)
+			return
+		}
 		response.Diagnostics.AddError("Error reading GCP scan options", err.Error())
 		return
 	}

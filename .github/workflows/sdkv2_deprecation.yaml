@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - master
-      - 4.x
+      - v3
 
 jobs:
   check-sdkv2:
@@ -20,7 +20,10 @@ jobs:
         uses: tj-actions/changed-files@d6e91a2266cdb9d62096cebf1e8546899c6aa18f
         with:
           files: "datadog/*.go"
-          files_ignore: "datadog/*_test.go"
+          files_ignore: |
+            datadog/*_test.go
+            datadog/resource_datadog_dashboard_v2.go
+            datadog/resource_datadog_powerpack_v2.go
       - run: echo "::error::All new resources must use the `terraform-plugin-framework`"
         if: steps.new-resources.outputs.added_files_count != '0'
       - uses: exercism/pr-commenter-action@085ef62d2a541a112c3ade1d24deea83665ea186

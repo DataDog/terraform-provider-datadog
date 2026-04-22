@@ -3,8 +3,10 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -17,7 +19,8 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure = &teamPermissionSettingResource{}
+	_ resource.ResourceWithConfigure   = &teamPermissionSettingResource{}
+	_ resource.ResourceWithImportState = &teamPermissionSettingResource{}
 )
 
 type teamPermissionSettingResource struct {
@@ -80,6 +83,17 @@ func (r *teamPermissionSettingResource) Schema(_ context.Context, _ resource.Sch
 	}
 }
 
+func (r *teamPermissionSettingResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	result := strings.SplitN(request.ID, ":", 2)
+	if len(result) != 2 {
+		response.Diagnostics.AddError("error retrieving team_id or action from given ID", "")
+		return
+	}
+
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("team_id"), result[0])...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("action"), result[1])...)
+}
+
 func (r *teamPermissionSettingResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state teamPermissionSettingModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
@@ -99,14 +113,20 @@ func (r *teamPermissionSettingResource) Read(ctx context.Context, request resour
 
 	found := false
 	for _, permission := range permissions.Data {
-		if permission.Id == state.ID.ValueString() {
+		if permission.Id == state.ID.ValueString() ||
+			(state.ID.ValueString() == "" && string(permission.Attributes.GetAction()) == state.Action.ValueString()) {
 			r.updateState(ctx, &state, &permission)
 			found = true
+			break
 		}
 	}
 
 	if !found {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error getting team permission setting with id %s", state.ID.ValueString())))
+		response.Diagnostics.AddError(
+			fmt.Sprintf("error getting team permission setting with id %s", state.ID.ValueString()),
+			"team permission setting not found",
+		)
+		return
 	}
 
 	// Save data into Terraform state

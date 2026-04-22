@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 	"testing"
 
@@ -773,6 +772,7 @@ func TestAccDatadogMonitor_ThresholdWindows(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_ComposeWithSyntheticsTest(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
@@ -1067,6 +1067,8 @@ func TestAccDatadogMonitor_SchedulingOptionsHourStart(t *testing.T) {
 						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "scheduling_options.0.evaluation_window.0.hour_starts", "0"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.evaluation_window.0.timezone", "Europe/Amsterdam"),
 				),
 			},
 		},
@@ -1090,6 +1092,7 @@ resource "datadog_monitor" "foo" {
   scheduling_options {
 	evaluation_window {
 	  hour_starts = "0"
+	  timezone = "Europe/Amsterdam"
 	}
   }
 }`, uniq)
@@ -1137,6 +1140,8 @@ resource "datadog_monitor" "foo" {
   monitor_thresholds {
 	critical = "0.5"
   }
+
+  on_missing_data = "show_no_data"
 
   scheduling_options {
 	custom_schedule {
@@ -1991,12 +1996,11 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 }
 
 func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
-	os.Setenv("TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES", "true")
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniqueName := uniqueEntityName(ctx, t)
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		PreCheck:                 func() { testAccPreCheck(t) },
 		CheckDestroy:             testAccCheckDatadogMonitorWithRestrictionRoleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
@@ -2009,7 +2013,14 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 						"datadog_monitor.bar", "message", "some message Notify: @hipchat-channel"),
 					resource.TestCheckResourceAttr(
 						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
+				),
+			},
+			// Refresh state to capture restricted_roles created by restriction policy
+			{
+				RefreshState: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "restricted_roles.#", "1"),
 				),
 			},
 			// A monitor resource update should not clear restricted_roles when the field is not defined
@@ -2024,7 +2035,6 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 						"datadog_restriction_policy.baz", "bindings.0.principals.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "restricted_roles.#", "1"),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 1),
 				),
 			},
 			// Removing restriction policy resource should wipe out restricted_roles
@@ -2033,12 +2043,18 @@ func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "name", uniqueName),
-					verifyRestrictedRolesSize(providers.frameworkProvider, 0),
+				),
+			},
+			// Refresh state to capture restricted_roles deleted by restriction policy
+			{
+				RefreshState: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.bar", "restricted_roles.#", "0"),
 				),
 			},
 		},
 	})
-	os.Unsetenv("TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES")
 }
 
 func testAccCheckDatadogMonitorWithRestrictionPolicy(uniqueName string) string {
@@ -2106,28 +2122,12 @@ func testAccCheckDatadogMonitorWithRestrictionPolicyDestroyed(uniqueName string)
 		}`, uniqueName, uniqueName)
 }
 
-func verifyRestrictedRolesSize(accProvider *fwprovider.FrameworkProvider, expectedSize int) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		apiInstances := accProvider.DatadogApiInstances
-		auth := accProvider.Auth
-		id, _ := strconv.ParseInt(s.RootModule().Resources["datadog_monitor.bar"].Primary.ID, 10, 64)
-		monitor, httpresp, err := apiInstances.GetMonitorsApiV1().GetMonitor(auth, id)
-		if err != nil {
-			return utils.TranslateClientError(err, httpresp, "error retrieving monitor")
-		}
-		if expectedSize != len(monitor.GetRestrictedRoles()) {
-			return fmt.Errorf("restricted_roles expected to be {%d} but get {%d}", expectedSize, len(monitor.GetRestrictedRoles()))
-		}
-		return nil
-	}
-}
-
-func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
+func testAccCheckDatadogMonitorWithTagConfig(uniqueName string, tagKey string) string {
 	return fmt.Sprintf(`
 		resource "datadog_monitor_config_policy" "foo" {
 			policy_type = "tag"
 			tag_policy {
-				tag_key          = "foo"
+				tag_key          = "%s"
 				tag_key_required = true
 				valid_tag_values = ["bar"]
 			}
@@ -2141,28 +2141,29 @@ func testAccCheckDatadogMonitorWithTagConfig(uniqueName string) string {
 			monitor_thresholds {
 				critical = "2.0"
 			}
-		}`, uniqueName)
+		}`, tagKey, uniqueName)
 }
 
 func TestAccDatadogMonitor_WithTagConfig(t *testing.T) {
-	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
+	uniqueName := uniqueEntityName(ctx, t)
+	uniqueTagKey := fmt.Sprintf(`tag_key_%s`, uniqueName)
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() { testAccPreCheck(t) },
 		ProviderFactories: map[string]func() (*schema.Provider, error){
 			"datadog": withDefaultTags(accProvider, map[string]interface{}{
-				"foo": "bar",
+				uniqueTagKey: "bar",
 			}),
 		},
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueEntityName(ctx, t)),
+				Config: testAccCheckDatadogMonitorWithTagConfig(uniqueName, uniqueTagKey),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.bar", "tags.#", "1"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_monitor.bar", "tags.*", "foo:bar"),
+						"datadog_monitor.bar", "tags.*", fmt.Sprintf(`%s:bar`, uniqueTagKey)),
 				),
 			},
 		},

@@ -20,7 +20,7 @@ func TestAccTeamNotificationRuleBasic(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTeamNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -39,7 +39,7 @@ func TestAccTeamNotificationRuleEmpty(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTeamNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -183,7 +183,7 @@ func TestAccTeamNotificationRuleNoNotifications(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogTeamNotificationRuleNoNotifications(uniq),
@@ -199,7 +199,7 @@ func TestAccTeamNotificationRuleImport(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTeamNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -221,7 +221,7 @@ func TestAccTeamNotificationRuleUpdate(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTeamNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -261,7 +261,7 @@ func TestAccTeamNotificationRuleRemoveNotificationType(t *testing.T) {
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogTeamNotificationRuleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

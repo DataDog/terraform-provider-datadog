@@ -274,27 +274,13 @@ func resourceDatadogMonitor() *schema.Resource {
 						return false
 					},
 				},
-				"locked": {
-					Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
-					Type:          schema.TypeBool,
-					Optional:      true,
-					Deprecated:    "Use `restricted_roles`.",
-					ConflictsWith: []string{"restricted_roles"},
-					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-						// if restricted_roles is defined, ignore locked
-						if _, ok := d.GetOk("restricted_roles"); ok {
-							return true
-						}
-						return false
-					},
-				},
 				"restricted_roles": {
-					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.\n > **Note:** When the `TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES` environment variable is set to `true`, this argument is treated as `Computed`. Terraform will automatically read the current restricted roles list from the Datadog API whenever the attribute is omitted. If `restricted_roles` is explicitly set in the configuration, that value always takes precedence over whatever is discovered during the read. This opt-in behaviour lets you migrate responsibility for monitor permissions to the `datadog_restriction_policy` resource.",
-					Type:          schema.TypeSet,
-					Optional:      true,
-					Computed:      getEnv("TERRAFORM_MONITOR_EXPLICIT_RESTRICTED_ROLES", "false") == "true",
-					Elem:          &schema.Schema{Type: schema.TypeString},
-					ConflictsWith: []string{"locked"},
+					Description: "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Computed:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+					Deprecated:  "Use `datadog_restriction_policy` resource to manage permission.",
 				},
 				"include_tags": {
 					Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title.",
@@ -378,6 +364,11 @@ func resourceDatadogMonitor() *schema.Resource {
 										"hour_starts": {
 											Description: "The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.",
 											Type:        schema.TypeInt,
+											Optional:    true,
+										},
+										"timezone": {
+											Description: "The timezone for the cumulative evaluation window start time.",
+											Type:        schema.TypeString,
 											Optional:    true,
 										},
 									},
@@ -778,6 +769,9 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
 						evaluation_window.SetHourStarts(int32(hour_starts))
 					}
+					if timezone, ok := evaluation_window_map["timezone"].(string); ok && timezone != "" {
+						evaluation_window.SetTimezone(timezone)
+					}
 					scheduling_options.SetEvaluationWindow(*evaluation_window)
 				}
 			}
@@ -867,9 +861,6 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	}
 	if attr, ok := d.GetOk("escalation_message"); ok {
 		o.SetEscalationMessage(attr.(string))
-	}
-	if attr, ok := d.GetOk("locked"); ok {
-		o.SetLocked(attr.(bool))
 	}
 
 	if v, ok := d.GetOk("variables"); ok {
@@ -1397,11 +1388,8 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("require_full_window", m.Options.GetRequireFullWindow()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("locked", m.Options.GetLocked()); err != nil {
-		return diag.FromErr(err)
-	}
 
-	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok && restrictedRoles != nil && len(*restrictedRoles) > 0 {
+	if restrictedRoles, ok := m.GetRestrictedRolesOk(); ok {
 		// This helper function is defined in `resource_datadog_dashboard`
 		restrictedRolesCopy := buildTerraformRestrictedRoles(restrictedRoles)
 		if err := d.Set("restricted_roles", restrictedRolesCopy); err != nil {
@@ -1458,6 +1446,9 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 		if m, ok := e.GetMonthStartsOk(); ok {
 			evaluation_window["month_starts"] = m
+		}
+		if timezone, ok := e.GetTimezoneOk(); ok {
+			evaluation_window["timezone"] = *timezone
 		}
 	}
 	custom_schedule := make(map[string]interface{})

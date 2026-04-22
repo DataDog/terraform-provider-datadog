@@ -192,14 +192,14 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tags": {
 							Type:        schema.TypeMap,
 							Optional:    true,
 							Elem:        &schema.Schema{Type: schema.TypeString},
-							Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -215,11 +215,9 @@ func Provider() *schema.Provider {
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
+			"datadog_dashboard_v2":                         resourceDatadogDashboardV2(),
+			"datadog_powerpack_v2":                         resourceDatadogPowerpackV2(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
-			"datadog_integration_aws":                      resourceDatadogIntegrationAws(),
-			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
-			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
-			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
@@ -280,6 +278,11 @@ func Provider() *schema.Provider {
 		ConfigureContextFunc: providerConfigure,
 	}
 
+	// Annotate each SDKv2 resource's auth context with its type name.
+	for name, r := range utils.DatadogProvider.ResourcesMap {
+		annotateSDKv2ResourceCRUD(r, name)
+	}
+
 	if utils.UseMonitorFrameworkProvider() {
 		delete(utils.DatadogProvider.ResourcesMap, "datadog_monitor")
 	}
@@ -296,6 +299,39 @@ type ProviderConfiguration struct {
 	DefaultTags         map[string]interface{}
 
 	Now func() time.Time
+}
+
+// annotateSDKv2ResourceCRUD wraps the CRUD functions of an SDKv2 resource to
+// add the resource type name to the auth context.
+func annotateSDKv2ResourceCRUD(r *schema.Resource, name string) {
+	if orig := r.CreateContext; orig != nil {
+		r.CreateContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+	if orig := r.ReadContext; orig != nil {
+		r.ReadContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+	if orig := r.UpdateContext; orig != nil {
+		r.UpdateContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+	if orig := r.DeleteContext; orig != nil {
+		r.DeleteContext = func(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+			return orig(ctx, d, withResourceName(meta, name))
+		}
+	}
+}
+
+// withResourceName returns a shallow copy of the ProviderConfiguration with
+// the auth context annotated with the given resource name.
+func withResourceName(meta interface{}, name string) interface{} {
+	pc := *meta.(*ProviderConfiguration)
+	pc.Auth = utils.WithTerraformResource(pc.Auth, name)
+	return &pc
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
