@@ -56,9 +56,7 @@ func (r *OrgGroupPolicyResource) Metadata(_ context.Context, _ resource.Metadata
 
 func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Org Group Policy resource. This can be used to create and manage policies attached to an org group.\n\n" +
-			"**Side effects on member orgs.** Creating or updating a policy with a non-`ENFORCE` tier (`DEFAULT` or `DELEGATE`) triggers propagation across every member org in the group. For each member, the server compares the org's current config value to the policy value: if they match, no action is taken; if they differ, the server auto-creates a `datadog_org_group_policy_override` for that org, recording its existing value. Auto-created overrides appear in the `datadog_org_group_policy_overrides` data source and can be adopted into Terraform via import.\n\n" +
-			"**Transitioning to ENFORCE.** Changing `enforcement_tier` to `ENFORCE` atomically deletes every override associated with this policy server-side. Any `datadog_org_group_policy_override` resources pointing at this policy must be removed from configuration in the same commit — otherwise Terraform's next apply will try to recreate the server-deleted overrides and fail with a `FailedPrecondition` error.",
+		Description: "Provides a Datadog Org Group Policy resource. This can be used to create and manage policies attached to an org group.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{
