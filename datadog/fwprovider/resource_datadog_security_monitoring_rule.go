@@ -3,6 +3,8 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -10,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
@@ -28,6 +31,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &securityMonitoringRuleResource{}
 	_ resource.ResourceWithImportState = &securityMonitoringRuleResource{}
+	_ resource.ResourceWithModifyPlan  = &securityMonitoringRuleResource{}
 )
 
 type securityMonitoringRuleResource struct {
@@ -2140,21 +2144,169 @@ func buildUpdateSignalRuleQuery(ctx context.Context, query signalQueryModel) (da
 }
 
 func (r *securityMonitoringRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_rule Create is not yet implemented")
+	var state securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	payload, diags := buildCreatePayloadFromModel(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	ruleResponse, httpResponse, err := r.api.CreateSecurityMonitoringRule(r.auth, *payload)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating security monitoring rule"))
+		_ = httpResponse
+		return
+	}
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
+		state.ID = types.StringValue(ruleResponse.SecurityMonitoringStandardRuleResponse.GetId())
+		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
+	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
+		state.ID = types.StringValue(ruleResponse.SecurityMonitoringSignalRuleResponse.GetId())
+		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
+	} else {
+		response.Diagnostics.AddError("unexpected response", "SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse are both empty")
+		return
+	}
+
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *securityMonitoringRuleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_rule Read is not yet implemented")
+	var state securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	ruleResponse, httpResponse, err := r.api.GetSecurityMonitoringRule(r.auth, state.ID.ValueString())
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading security monitoring rule"))
+		return
+	}
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
+		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
+	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
+		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
+	}
+
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *securityMonitoringRuleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_rule Update is not yet implemented")
+	var state securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var priorState securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &priorState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	payload, diags := buildUpdatePayloadFromModel(ctx, &state, &priorState)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	ruleResponse, httpResponse, err := r.api.UpdateSecurityMonitoringRule(r.auth, priorState.ID.ValueString(), *payload)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating security monitoring rule"))
+		_ = httpResponse
+		return
+	}
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
+		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
+	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
+		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
+	}
+
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *securityMonitoringRuleResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_rule Delete is not yet implemented")
+	var state securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	httpResponse, err := r.api.DeleteSecurityMonitoringRule(r.auth, state.ID.ValueString())
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting security monitoring rule"))
+	}
 }
 
 func (r *securityMonitoringRuleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_rule ImportState is not yet implemented")
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
+}
+
+func (r *securityMonitoringRuleResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	if request.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+
+	var state securityMonitoringRuleResourceModel
+	if !request.State.Raw.IsNull() {
+		response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	}
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	r.resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx, &plan, &state, response)
+}
+
+func (r *securityMonitoringRuleResource) resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, plan, state *securityMonitoringRuleResourceModel, response *resource.ModifyPlanResponse) {
+	if plan.Validate.IsNull() || plan.Validate.IsUnknown() || !plan.Validate.ValueBool() {
+		log.Printf("[DEBUG] Validate is %v, skipping validation", plan.Validate)
+		return
+	}
+
+	payload, diags := buildValidatePayloadFromModel(ctx, plan)
+	if diags.HasError() {
+		log.Printf("[DEBUG] Skipping validation due to an error: %v", diags)
+		return
+	}
+
+	httpResponse, err := r.api.ValidateSecurityMonitoringRule(r.auth, *payload)
+	if err != nil {
+		if httpResponse != nil && (httpResponse.StatusCode == http.StatusBadGateway || httpResponse.StatusCode == http.StatusGatewayTimeout) {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating security monitoring rule, retrying"))
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating security monitoring rule"))
+	}
 }
