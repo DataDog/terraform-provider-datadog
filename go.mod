@@ -107,5 +107,3 @@ require (
 go 1.25.0
 
 toolchain go1.26.1
-
-replace github.com/DataDog/datadog-api-client-go/v2 v2.57.1-0.20260413193016-c9fecb999535 => ../datadog-api-client-go
