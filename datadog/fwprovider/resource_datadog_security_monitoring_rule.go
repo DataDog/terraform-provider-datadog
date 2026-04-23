@@ -11,12 +11,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -278,14 +280,20 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
 							Optional:    true,
+							Computed:    true,
+							Default:     stringdefault.StaticString(""),
 							Description: "Name of the case.",
 						},
 						"condition": schema.StringAttribute{
 							Optional:    true,
+							Computed:    true,
+							Default:     stringdefault.StaticString(""),
 							Description: "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
 						},
 						"notifications": schema.ListAttribute{
 							Optional:    true,
+							Computed:    true,
+							Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							ElementType: types.StringType,
 							Description: "Notification targets for each rule case.",
 						},
@@ -340,6 +348,8 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 					Attributes: map[string]schema.Attribute{
 						"name": schema.StringAttribute{
 							Optional:    true,
+							Computed:    true,
+							Default:     stringdefault.StaticString(""),
 							Description: "Name of the case.",
 						},
 						"query": schema.StringAttribute{
@@ -348,6 +358,8 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 						},
 						"notifications": schema.ListAttribute{
 							Optional:    true,
+							Computed:    true,
+							Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							ElementType: types.StringType,
 							Description: "Notification targets for each rule case.",
 						},
@@ -382,6 +394,9 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 								listvalidator.ValueStringsAre(stringvalidator.LengthAtLeast(1)),
 							},
 						},
+						// Intentionally Optional-only (no Computed/Default): standard query
+						// group_by_fields stays null when unset. The third_party root_queries
+						// variant below defaults to [] for SDKv2 parity — do not unify.
 						"group_by_fields": schema.ListAttribute{
 							Optional:    true,
 							ElementType: types.StringType,
@@ -617,6 +632,8 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 						},
 						"keep_alive": schema.Int64Attribute{
 							Optional:    true,
+							Computed:    true,
+							Default:     int64default.StaticInt64(0),
 							Description: "Once a signal is generated, the signal will remain \"open\" if a case is matched at least once within this keep alive window (in seconds).",
 							Validators: []validator.Int64{
 								validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue),
@@ -787,6 +804,8 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 												},
 												"group_by_fields": schema.ListAttribute{
 													Optional:    true,
+													Computed:    true,
+													Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 													ElementType: types.StringType,
 													Description: "Fields to group by. If empty, each log triggers a signal.",
 													Validators: []validator.List{
@@ -931,15 +950,16 @@ func extractThirdPartyCases(ctx context.Context, responseThirdPartyCases []datad
 	tfThirdPartyCases := make([]thirdPartyCaseModel, len(responseThirdPartyCases))
 	for idx, thirdPartyCase := range responseThirdPartyCases {
 		tfThirdPartyCase := thirdPartyCaseModel{
-			Status: types.StringValue(string(thirdPartyCase.GetStatus())),
+			Status:        types.StringValue(string(thirdPartyCase.GetStatus())),
+			Notifications: types.ListValueMust(types.StringType, []attr.Value{}),
 		}
-		if v, ok := thirdPartyCase.GetNameOk(); ok && *v != "" {
+		if v, ok := thirdPartyCase.GetNameOk(); ok {
 			tfThirdPartyCase.Name = types.StringValue(*v)
 		}
 		if v, ok := thirdPartyCase.GetQueryOk(); ok && *v != "" {
 			tfThirdPartyCase.Query = types.StringValue(*v)
 		}
-		if notifications, ok := thirdPartyCase.GetNotificationsOk(); ok && len(*notifications) > 0 {
+		if notifications, ok := thirdPartyCase.GetNotificationsOk(); ok {
 			var listDiags diag.Diagnostics
 			tfThirdPartyCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notifications)
 			diags.Append(listDiags...)
@@ -977,6 +997,7 @@ func updateStandardResourceDataFromResponse(ctx context.Context, state *security
 		state.ReferenceTables = extractReferenceTables(*referenceTables)
 	}
 
+	state.GroupSignalsBy = types.ListNull(types.StringType)
 	if groupSignalsBy, ok := ruleResponse.GetGroupSignalsByOk(); ok && len(*groupSignalsBy) > 0 {
 		var listDiags diag.Diagnostics
 		state.GroupSignalsBy, listDiags = types.ListValueFrom(ctx, types.StringType, *groupSignalsBy)
@@ -998,7 +1019,12 @@ func extractStandardRuleQueries(ctx context.Context, responseRuleQueries []datad
 	var diags diag.Diagnostics
 	ruleQueries := make([]ruleQueryModel, len(responseRuleQueries))
 	for idx, responseRuleQuery := range responseRuleQueries {
-		ruleQuery := ruleQueryModel{}
+		ruleQuery := ruleQueryModel{
+			DistinctFields: types.ListNull(types.StringType),
+			GroupByFields:  types.ListNull(types.StringType),
+			Indexes:        types.ListNull(types.StringType),
+			Metrics:        types.ListNull(types.StringType),
+		}
 
 		// Required
 		if query, ok := responseRuleQuery.GetQueryOk(); ok {
@@ -1076,7 +1102,9 @@ func extractSignalRuleQueries(ctx context.Context, responseRuleQueries []datadog
 	var diags diag.Diagnostics
 	ruleQueries := make([]signalQueryModel, len(responseRuleQueries))
 	for idx, responseRuleQuery := range responseRuleQueries {
-		ruleQuery := signalQueryModel{}
+		ruleQuery := signalQueryModel{
+			CorrelatedByFields: types.ListNull(types.StringType),
+		}
 
 		// Required
 		if ruleId, ok := responseRuleQuery.GetRuleIdOk(); ok {
@@ -1128,15 +1156,18 @@ func extractRuleCases(ctx context.Context, responseRulesCases []datadogV2.Securi
 	ruleCases := make([]ruleCaseModel, len(responseRulesCases))
 	for idx, responseRuleCase := range responseRulesCases {
 		ruleCase := ruleCaseModel{
-			Status: types.StringValue(string(responseRuleCase.GetStatus())),
+			Status:        types.StringValue(string(responseRuleCase.GetStatus())),
+			Name:          types.StringValue(""),
+			Condition:     types.StringValue(""),
+			Notifications: types.ListValueMust(types.StringType, []attr.Value{}),
 		}
-		if name, ok := responseRuleCase.GetNameOk(); ok && *name != "" {
+		if name, ok := responseRuleCase.GetNameOk(); ok {
 			ruleCase.Name = types.StringValue(*name)
 		}
-		if condition, ok := responseRuleCase.GetConditionOk(); ok && *condition != "" {
+		if condition, ok := responseRuleCase.GetConditionOk(); ok {
 			ruleCase.Condition = types.StringValue(*condition)
 		}
-		if notification, ok := responseRuleCase.GetNotificationsOk(); ok && len(*notification) > 0 {
+		if notification, ok := responseRuleCase.GetNotificationsOk(); ok {
 			var listDiags diag.Diagnostics
 			ruleCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notification)
 			diags.Append(listDiags...)
@@ -1172,7 +1203,10 @@ func extractRuleCaseActions(apiActions []datadogV2.SecurityMonitoringRuleCaseAct
 func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringRuleOptions) ([]ruleOptionsModel, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	tfOptions := ruleOptionsModel{}
+	tfOptions := ruleOptionsModel{
+		DecreaseCriticalityBasedOnEnv: types.BoolValue(false),
+		KeepAlive:                     types.Int64Value(0),
+	}
 
 	// Optional+Computed with defaults — always set
 	if detectionMethod, ok := options.GetDetectionMethodOk(); ok {
@@ -1301,7 +1335,8 @@ func extractThirdPartyRuleOptions(ctx context.Context, thirdPartyOptions *datado
 	var diags diag.Diagnostics
 
 	tfThirdPartyOptions := thirdPartyRuleOptionsModel{
-		DefaultStatus: types.StringValue(string(thirdPartyOptions.GetDefaultStatus())),
+		DefaultStatus:        types.StringValue(string(thirdPartyOptions.GetDefaultStatus())),
+		DefaultNotifications: types.ListNull(types.StringType),
 	}
 
 	// Optional-only list — keep null when API returns empty
@@ -1320,7 +1355,8 @@ func extractThirdPartyRuleOptions(ctx context.Context, thirdPartyOptions *datado
 	tfThirdPartyOptions.RootQueries = make([]thirdPartyRootQueryModel, len(tfRootQueries))
 	for idx, rootQuery := range tfRootQueries {
 		tfRootQuery := thirdPartyRootQueryModel{
-			Query: types.StringValue(rootQuery.GetQuery()),
+			Query:         types.StringValue(rootQuery.GetQuery()),
+			GroupByFields: types.ListValueMust(types.StringType, []attr.Value{}),
 		}
 		if v, ok := rootQuery.GetGroupByFieldsOk(); ok && len(*v) > 0 {
 			var listDiags diag.Diagnostics
@@ -2143,14 +2179,29 @@ func buildUpdateSignalRuleQuery(ctx context.Context, query signalQueryModel) (da
 	return datadogV2.SecurityMonitoringSignalRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery), diags
 }
 
+// preserveQueryDataSources copies DataSource values from src queries onto dst queries
+// by index. The API normalizes deprecated data_source aliases (e.g. "app_sec_spans" → "spans"),
+// so restoring the user-provided / prior-state value avoids Framework plan-consistency errors.
+// Only applies to standard rules — signal rule queries have no data_source field.
+func preserveQueryDataSources(dst, src []ruleQueryModel) {
+	if len(dst) != len(src) {
+		return
+	}
+	for i := range dst {
+		if !src[i].DataSource.IsNull() && !src[i].DataSource.IsUnknown() {
+			dst[i].DataSource = src[i].DataSource
+		}
+	}
+}
+
 func (r *securityMonitoringRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state securityMonitoringRuleResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	var plan securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	payload, diags := buildCreatePayloadFromModel(ctx, &state)
+	payload, diags := buildCreatePayloadFromModel(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -2167,9 +2218,11 @@ func (r *securityMonitoringRuleResource) Create(ctx context.Context, request res
 		return
 	}
 
+	state := plan
 	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
 		state.ID = types.StringValue(ruleResponse.SecurityMonitoringStandardRuleResponse.GetId())
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
+		preserveQueryDataSources(state.Queries, plan.Queries)
 	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
 		state.ID = types.StringValue(ruleResponse.SecurityMonitoringSignalRuleResponse.GetId())
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
@@ -2202,8 +2255,11 @@ func (r *securityMonitoringRuleResource) Read(ctx context.Context, request resou
 		return
 	}
 
+	priorQueries := state.Queries
+
 	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
+		preserveQueryDataSources(state.Queries, priorQueries)
 	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
 	}
@@ -2241,8 +2297,11 @@ func (r *securityMonitoringRuleResource) Update(ctx context.Context, request res
 		return
 	}
 
+	planQueries := state.Queries
+
 	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
+		preserveQueryDataSources(state.Queries, planQueries)
 	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
 	}
