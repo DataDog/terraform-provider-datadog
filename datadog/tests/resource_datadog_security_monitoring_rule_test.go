@@ -441,15 +441,15 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "4"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "4"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:double_bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:double_bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "default_key:default_value"),
 				),
 			},
 			{ // Resource tags take precedence over default tags and duplicates stay
@@ -461,13 +461,13 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:double_bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:double_bar"),
 				),
 			},
 			{ // Resource tags take precedence over default tags, but new tags are added
@@ -480,13 +480,13 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "new_tag:new_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "new_tag:new_value"),
 				),
 			},
 			{ // Tags without any value work correctly
@@ -498,13 +498,13 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "no_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "no_value"),
 				),
 			},
 			{ // Tags with colons in the value work correctly
@@ -516,13 +516,13 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.#", "3"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "baz"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "baz"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "foo:bar"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "foo:bar"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "repo_url:https://github.com/repo/path"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "repo_url:https://github.com/repo/path"),
 				),
 			},
 			{ // Works with rules without a tag attribute
@@ -534,7 +534,7 @@ func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
 				},
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+						"datadog_security_monitoring_rule.acceptance_test", "effective_tags.*", "default_key:default_value"),
 				),
 			},
 		},

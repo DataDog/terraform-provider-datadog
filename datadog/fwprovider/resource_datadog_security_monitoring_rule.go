@@ -37,8 +37,9 @@ var (
 )
 
 type securityMonitoringRuleResource struct {
-	api  *datadogV2.SecurityMonitoringApi
-	auth context.Context
+	api         *datadogV2.SecurityMonitoringApi
+	auth        context.Context
+	defaultTags map[string]string
 }
 
 type securityMonitoringRuleResourceModel struct {
@@ -49,6 +50,7 @@ type securityMonitoringRuleResourceModel struct {
 	HasExtendedTitle types.Bool   `tfsdk:"has_extended_title"`
 	Type             types.String `tfsdk:"type"`
 	Tags             types.Set    `tfsdk:"tags"`
+	EffectiveTags    types.Set    `tfsdk:"effective_tags"`
 	GroupSignalsBy   types.List   `tfsdk:"group_signals_by"`
 	Validate         types.Bool   `tfsdk:"validate"`
 
@@ -209,6 +211,7 @@ func (r *securityMonitoringRuleResource) Configure(_ context.Context, request re
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.api = providerData.DatadogApiInstances.GetSecurityMonitoringApiV2()
 	r.auth = providerData.Auth
+	r.defaultTags = providerData.DefaultTags
 }
 
 func (r *securityMonitoringRuleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -256,9 +259,13 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 			},
 			"tags": schema.SetAttribute{
 				Optional:    true,
+				ElementType: types.StringType,
+				Description: "User-defined tags for generated signals. See also `effective_tags`, which includes provider-level `default_tags`.",
+			},
+			"effective_tags": schema.SetAttribute{
 				Computed:    true,
 				ElementType: types.StringType,
-				Description: "Tags for generated signals. Note: if default tags are present at provider level, they will be added to this resource.",
+				Description: "A list of tags for generated signals, including those inherited from the provider's `default_tags` configuration.",
 			},
 			"group_signals_by": schema.ListAttribute{
 				Optional:    true,
@@ -932,7 +939,7 @@ func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMo
 	state.Name = types.StringValue(ruleResponse.GetName())
 	state.HasExtendedTitle = types.BoolValue(ruleResponse.GetHasExtendedTitle())
 	state.Enabled = types.BoolValue(ruleResponse.GetIsEnabled())
-	state.Tags = fwutils.ToTerraformSetString(ctx, ruleResponse.GetTagsOk)
+	state.EffectiveTags = fwutils.ToTerraformSetString(ctx, ruleResponse.GetTagsOk)
 
 	if filters, ok := ruleResponse.GetFiltersOk(); ok {
 		state.Filters = extractFiltersFromRuleResponse(*filters)
@@ -1477,9 +1484,9 @@ func buildCreateCommonPayload(ctx context.Context, model *securityMonitoringRule
 		payload.SetOptions(*payloadOptions)
 	}
 
-	if !model.Tags.IsNull() && !model.Tags.IsUnknown() {
+	if !model.EffectiveTags.IsNull() && !model.EffectiveTags.IsUnknown() {
 		var tags []string
-		model.Tags.ElementsAs(ctx, &tags, false)
+		model.EffectiveTags.ElementsAs(ctx, &tags, false)
 		payload.SetTags(tags)
 	}
 
@@ -2078,9 +2085,9 @@ func buildUpdatePayloadFromModel(ctx context.Context, model, prior *securityMoni
 		payload.Options = buildPayloadOptions(ctx, model.Options, model.Type.ValueString())
 	}
 
-	if !model.Tags.IsNull() && !model.Tags.IsUnknown() {
+	if !model.EffectiveTags.IsNull() && !model.EffectiveTags.IsUnknown() {
 		var tags []string
-		model.Tags.ElementsAs(ctx, &tags, false)
+		model.EffectiveTags.ElementsAs(ctx, &tags, false)
 		payload.SetTags(tags)
 	} else {
 		payload.SetTags([]string{})
@@ -2341,6 +2348,16 @@ func (r *securityMonitoringRuleResource) ModifyPlan(ctx context.Context, request
 	if !request.State.Raw.IsNull() {
 		response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	}
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	combinedTags, tagDiags := fwutils.CombineTags(ctx, plan.Tags, r.defaultTags)
+	response.Diagnostics.Append(tagDiags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	response.Diagnostics.Append(response.Plan.SetAttribute(ctx, path.Root("effective_tags"), combinedTags)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
