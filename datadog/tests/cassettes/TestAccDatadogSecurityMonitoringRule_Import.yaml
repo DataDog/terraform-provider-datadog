@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 609
+        content_length: 554
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -34,20 +34,20 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 401.155917ms
+        duration: 410.518583ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 609
+        content_length: 554
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -68,20 +68,20 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 457.571959ms
+        duration: 355.146292ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 609
+        content_length: 554
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -98,26 +98,26 @@ interactions:
         trailer: {}
         content_length: 931
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","createdAt":1765474110358,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"sbf-de7-eaz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","createdAt":1776939592092,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hi0-kpl-8w7","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 298.898875ms
+        duration: 157.509792ms
     - id: 3
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 609
+        content_length: 564
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -138,7 +138,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 775.673125ms
+        duration: 271.225084ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sbf-de7-eaz
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hi0-kpl-8w7
         method: GET
       response:
         proto: HTTP/1.1
@@ -165,26 +165,26 @@ interactions:
         trailer: {}
         content_length: 931
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","createdAt":1765474110358,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"sbf-de7-eaz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","createdAt":1776939592092,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hi0-kpl-8w7","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.482357333s
+        duration: 121.364ms
     - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 609
+        content_length: 564
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","distinctFields":[],"groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -205,7 +205,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 167.774292ms
+        duration: 127.48ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -222,7 +222,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sbf-de7-eaz
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hi0-kpl-8w7
         method: GET
       response:
         proto: HTTP/1.1
@@ -232,13 +232,13 @@ interactions:
         trailer: {}
         content_length: 931
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1765474107","createdAt":1765474110358,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"sbf-de7-eaz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1776939588","createdAt":1776939592092,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hi0-kpl-8w7","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 125.578ms
+        duration: 136.169542ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sbf-de7-eaz
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hi0-kpl-8w7
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -269,7 +269,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 563.205375ms
+        duration: 164.263584ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -286,7 +286,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sbf-de7-eaz
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hi0-kpl-8w7
         method: GET
       response:
         proto: HTTP/1.1
@@ -296,10 +296,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: sbf-de7-eaz"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: hi0-kpl-8w7"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 119.102083ms
+        duration: 136.42125ms

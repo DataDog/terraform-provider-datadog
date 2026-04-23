@@ -190,7 +190,7 @@ func TestAccDatadogSecurityMonitoringRule_CreateInvalidRule(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(ruleName),
-				ExpectError: regexp.MustCompile("Max signal duration must be greater than or equal to keep alive"),
+				ExpectError: regexp.MustCompile(`(?s)Max signal\s+duration must be greater than or equal to keep\s+alive.*maxSignalDuration`),
 			},
 		},
 	})
@@ -337,7 +337,10 @@ func TestAccDatadogSecurityMonitoringRule_Import(t *testing.T) {
 				ResourceName:      tfSecurityRuleName,
 				ImportState:       true,
 				ImportStateVerify: true,
-				Check:             testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
+				// "validate" is a write-only dry-run flag; the API never returns it,
+				// so ImportState cannot reproduce it.
+				ImportStateVerifyIgnore: []string{"validate"},
+				Check:                   testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider, ruleName),
 			},
 		},
 	})
@@ -371,7 +374,7 @@ func TestAccDatadogSecurityMonitoringRule_InvalidTypes(t *testing.T) {
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
 
-	invalidValueRegex, _ := regexp.Compile("Invalid enum value")
+	invalidValueRegex, _ := regexp.Compile("Invalid Attribute Value")
 	invalidTypeRegex, _ := regexp.Compile("Incorrect attribute value type")
 
 	resource.Test(t, resource.TestCase{
