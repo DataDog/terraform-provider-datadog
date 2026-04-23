@@ -9,11 +9,10 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 const tfSecurityRulesSource = "data.datadog_security_monitoring_rules.acceptance_test"
@@ -26,15 +25,15 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 		// Cassette is >100MB, too large for Github
 		t.Skip("This test doesn't support recording or replaying")
 	}
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.frameworkProvider
 
 	securityMonitoringCreatedConfig := testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroySDKv2(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				// Create a rule to make sure we have at least one non-default rule
@@ -94,7 +93,7 @@ func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 //	}
 //}
 
-func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Provider, error), name string) resource.TestCheckFunc {
+func securityMonitoringCheckRuleCountNameFilter(accProvider *fwprovider.FrameworkProvider, name string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		if allRules == nil {
 			err := getAllSecurityMonitoringRules(accProvider)
@@ -124,7 +123,7 @@ func securityMonitoringCheckRuleCountNameFilter(accProvider func() (*schema.Prov
 	}
 }
 
-func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Provider, error), filterTag string) resource.TestCheckFunc {
+func securityMonitoringCheckRuleCountTagsFilter(accProvider *fwprovider.FrameworkProvider, filterTag string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		if allRules == nil {
 			err := getAllSecurityMonitoringRules(accProvider)
@@ -155,7 +154,7 @@ func securityMonitoringCheckRuleCountTagsFilter(accProvider func() (*schema.Prov
 	}
 }
 
-func securityMonitoringCheckRuleCountDefaultFilter(accProvider func() (*schema.Provider, error), isDefault bool) resource.TestCheckFunc {
+func securityMonitoringCheckRuleCountDefaultFilter(accProvider *fwprovider.FrameworkProvider, isDefault bool) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		if allRules == nil {
 			err := getAllSecurityMonitoringRules(accProvider)
@@ -204,11 +203,9 @@ func securityMonitoringCheckRuleCount(state *terraform.State, responseRuleCount 
 //`
 //}
 
-func getAllSecurityMonitoringRules(accProvider func() (*schema.Provider, error)) error {
-	provider, _ := accProvider()
-	providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-	auth := providerConf.Auth
-	apiInstances := providerConf.DatadogApiInstances
+func getAllSecurityMonitoringRules(accProvider *fwprovider.FrameworkProvider) error {
+	auth := accProvider.Auth
+	apiInstances := accProvider.DatadogApiInstances
 
 	pageSize := int64(1000)
 	pageNumber := int64(0)
@@ -262,27 +259,4 @@ data "datadog_security_monitoring_rules" "acceptance_test" {
 	user_only_filter = true
 }
 `
-}
-
-func testAccCheckDatadogSecurityMonitoringRuleDestroySDKv2(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
-
-		for _, resource := range s.RootModule().Resources {
-			if resource.Type == "datadog_security_monitoring_rule" {
-				_, httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringRule(auth, resource.Primary.ID)
-				if err != nil {
-					if httpResponse != nil && httpResponse.StatusCode == 404 {
-						continue
-					}
-					return fmt.Errorf("received an error deleting security monitoring rule: %s", err)
-				}
-				return fmt.Errorf("monitor still exists")
-			}
-		}
-		return nil
-	}
 }
