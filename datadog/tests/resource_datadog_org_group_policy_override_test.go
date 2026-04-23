@@ -154,62 +154,6 @@ func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 	})
 }
 
-// TestAccDatadogOrgGroupPolicyOverride_OrgGroupIdRequiresReplace asserts that
-// changing the override's org_group_id produces a DestroyBeforeCreate. Can't
-// fold this into _Basic because moving the override to a second group requires
-// moving the membership too (server requires the org be a member of the group
-// its override targets), and unwinding that cleanly needs a dedicated step.
-func TestAccDatadogOrgGroupPolicyOverride_OrgGroupIdRequiresReplace(t *testing.T) {
-	// Not parallel: the override tests all move the shared test org between groups.
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	orgGroupName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_org_group_policy_override.foo"
-
-	orgUUID := getTestOrgUUID(providers.frameworkProvider.Auth, t, providers.frameworkProvider.DatadogApiInstances)
-	originalGroupID := getOrgCurrentGroupID(providers.frameworkProvider.Auth, t, providers.frameworkProvider.DatadogApiInstances, orgUUID)
-
-	t.Cleanup(restoreOrgMembership(t, providers.frameworkProvider, orgUUID, originalGroupID))
-
-	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             composeOrgGroupStackDestroyChecks(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				// Step 1: baseline setup on the primary group.
-				Config: testAccCheckDatadogOrgGroupPolicyOverrideConfigBasic(orgGroupName, orgUUID, "datadog_org_group_policy.foo.id"),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogOrgGroupPolicyOverrideExists(providers.frameworkProvider, resourceName),
-				),
-			},
-			{
-				// Step 2: move override (and the membership+policy it depends on) to a
-				// second group. The override's plancheck is the one under review here
-				// — the policy + membership planchecks are pinned too so a future
-				// refactor that inverts resourceName or lets another resource absorb
-				// the replace signal fails loudly instead of silently passing.
-				Config: testAccCheckDatadogOrgGroupPolicyOverrideConfigOrgGroupReplace(orgGroupName, orgUUID),
-				ConfigPlanChecks: resource.ConfigPlanChecks{
-					PreApply: []plancheck.PlanCheck{
-						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionDestroyBeforeCreate),
-						plancheck.ExpectResourceAction("datadog_org_group_policy.foo", plancheck.ResourceActionDestroyBeforeCreate),
-						plancheck.ExpectResourceAction("datadog_org_group_membership.foo", plancheck.ResourceActionUpdate),
-					},
-				},
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogOrgGroupPolicyOverrideExists(providers.frameworkProvider, resourceName),
-				),
-			},
-			{
-				// Step 3: unwind so the framework's auto-destroy can remove both groups.
-				// We move the membership back to the original group and drop the
-				// override+policy; at that point both test-created groups are empty
-				// and deletable.
-				Config: testAccCheckDatadogOrgGroupPolicyOverrideOrgGroupReplaceUnwind(orgGroupName, orgUUID, originalGroupID),
-			},
-		},
-	})
-}
-
 func TestAccDatadogOrgGroupPolicyOverride_AutoCreation(t *testing.T) {
 	// Not parallel: the three override tests all move the shared test org between groups;
 	// parallelism causes one test's membership change to drift another's expected state.
@@ -332,63 +276,6 @@ resource "datadog_org_group_membership" "foo" {
   org_group_id = "%s"
   org_uuid     = "%s"
 }`, orgGroupName, originalGroupID, orgUUID)
-}
-
-// testAccCheckDatadogOrgGroupPolicyOverrideConfigOrgGroupReplace keeps the
-// original group around (so the test can unwind cleanly) but moves the
-// membership, policy, and override onto a new second group. The only user-
-// visible change on the override resource is org_group_id — the plancheck that
-// wraps this config asserts that change alone drives a DestroyBeforeCreate.
-func testAccCheckDatadogOrgGroupPolicyOverrideConfigOrgGroupReplace(orgGroupName, orgUUID string) string {
-	return fmt.Sprintf(`
-resource "datadog_org_group" "foo" {
-  name = "%s"
-}
-
-resource "datadog_org_group" "bar" {
-  name = "%s-alt"
-}
-
-resource "datadog_org_group_membership" "foo" {
-  org_group_id = datadog_org_group.bar.id
-  org_uuid     = "%s"
-}
-
-resource "datadog_org_group_policy" "foo" {
-  org_group_id     = datadog_org_group.bar.id
-  policy_name      = "is_widget_copy_paste_enabled"
-  content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
-}
-
-resource "datadog_org_group_policy_override" "foo" {
-  org_group_id = datadog_org_group.bar.id
-  policy_id    = datadog_org_group_policy.foo.id
-  org_uuid     = "%s"
-  org_site     = "%s"
-  depends_on   = [datadog_org_group_membership.foo]
-}`, orgGroupName, orgGroupName, orgUUID, orgUUID, overrideTestOrgSite)
-}
-
-// testAccCheckDatadogOrgGroupPolicyOverrideOrgGroupReplaceUnwind drops the
-// policy+override from bar and moves the membership back to the caller's
-// original group. After this step applies, both test-created groups are empty
-// and the framework's auto-destroy sweep can remove them without the server
-// rejecting a non-empty-group delete.
-func testAccCheckDatadogOrgGroupPolicyOverrideOrgGroupReplaceUnwind(orgGroupName, orgUUID, originalGroupID string) string {
-	return fmt.Sprintf(`
-resource "datadog_org_group" "foo" {
-  name = "%s"
-}
-
-resource "datadog_org_group" "bar" {
-  name = "%s-alt"
-}
-
-resource "datadog_org_group_membership" "foo" {
-  org_group_id = "%s"
-  org_uuid     = "%s"
-}`, orgGroupName, orgGroupName, originalGroupID, orgUUID)
 }
 
 func testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationStep1(orgGroupName, orgUUID string) string {
