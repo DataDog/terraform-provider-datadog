@@ -114,6 +114,33 @@ func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogOrgGroupMembership_RejectsInvalidUUID(t *testing.T) {
+	// Plan-time validator test: a syntactically invalid UUID must be rejected
+	// by uuidValidator before any API call fires. Covers the shared validator
+	// used across all four org_group resources + data sources, so a regex
+	// typo anywhere in that surface is caught here.
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_org_group" "test" {
+  name = "validator-test"
+}
+
+resource "datadog_org_group_membership" "foo" {
+  org_group_id = datadog_org_group.test.id
+  org_uuid     = "not-a-uuid"
+}`,
+				ExpectError: regexp.MustCompile(`must be a valid UUID`),
+				PlanOnly:    true,
+			},
+		},
+	})
+}
+
 func TestAccDatadogOrgGroupMembership_UnknownOrgReturns404(t *testing.T) {
 	// A syntactically-valid but non-existent org_uuid should surface the server's
 	// 404 at the List endpoint instead of producing an opaque error. Not parallel;

@@ -145,9 +145,19 @@ func (d *datadogOrgGroupMembershipsDataSource) Read(ctx context.Context, request
 	items := make([]*OrgGroupMembershipItemModel, 0, len(memberships))
 	for _, m := range memberships {
 		attrs := m.GetAttributes()
+		orgUuid := attrs.GetOrgUuid()
+		// Defensive: flag zero-UUID rows. The server should never return these, so
+		// hitting this branch indicates a malformed response rather than a filter miss.
+		if orgUuid == uuid.Nil {
+			response.Diagnostics.AddWarning(
+				"datadog_org_group_memberships: skipping row with zero org_uuid",
+				fmt.Sprintf("membership %s returned a zero UUID for org_uuid; server-side data integrity issue", m.GetId().String()),
+			)
+			continue
+		}
 		item := &OrgGroupMembershipItemModel{
 			ID:      types.StringValue(m.GetId().String()),
-			OrgUuid: types.StringValue(attrs.GetOrgUuid().String()),
+			OrgUuid: types.StringValue(orgUuid.String()),
 			OrgSite: types.StringValue(attrs.GetOrgSite()),
 			OrgName: types.StringValue(attrs.GetOrgName()),
 		}

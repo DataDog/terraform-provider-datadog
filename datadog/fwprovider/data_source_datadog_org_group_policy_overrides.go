@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -168,9 +167,10 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 		// Defensive: flag zero-UUID rows. The server should never return these, so
 		// hitting this branch indicates a malformed response rather than a filter miss.
 		if ou == uuid.Nil {
-			tflog.Debug(ctx, "datadog_org_group_policy_overrides: skipping override with zero org_uuid", map[string]interface{}{
-				"override_id": o.GetId().String(),
-			})
+			response.Diagnostics.AddWarning(
+				"datadog_org_group_policy_overrides: skipping row with zero org_uuid",
+				fmt.Sprintf("override %s returned a zero UUID for org_uuid; server-side data integrity issue", o.GetId().String()),
+			)
 			continue
 		}
 		if orgUuidFilter != uuid.Nil && ou != orgUuidFilter {

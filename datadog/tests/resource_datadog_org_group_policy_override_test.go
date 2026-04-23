@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"testing"
 
@@ -48,14 +49,15 @@ func TestAccDatadogOrgGroupPolicyOverride_Basic(t *testing.T) {
 				),
 			},
 			{
-				// Swap policy_id to a second policy → RequiresReplace must fire. This
-				// plancheck covers the general RequiresReplace mechanism. The other three
-				// replaceable fields (org_group_id, org_uuid, org_site) are not easily
-				// swappable in a real apply here: org_group_id swap triggers a cleanup
-				// ordering race, org_uuid needs a second real org, and org_site is server-
-				// validated against the real org's site. All four are ultimately backed by
-				// the Update-unreachable error guard in the resource — any regression that
-				// drops RequiresReplace causes apply to fail with that diagnostic.
+				// Swap policy_id to a second policy → RequiresReplace must fire on
+				// policy_id. org_group_id has its own plancheck coverage in the
+				// dedicated _OrgGroupIdRequiresReplace test (which also exercises
+				// co-moving membership+policy and an unwind step). org_uuid and
+				// org_site remain backed only by the resource's Update-unreachable
+				// error guard — they're not applyable here (org_uuid needs a second
+				// real org; org_site is server-validated against the real org's
+				// site). A regression dropping RequiresReplace on any of the four
+				// fields still triggers Update, which the resource errors on loudly.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideConfigReplace(orgGroupName, orgUUID),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -82,10 +84,6 @@ func TestAccDatadogOrgGroupPolicyOverride_Basic(t *testing.T) {
 func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 	// Not parallel: the three override tests all move the shared test org between groups;
 	// parallelism causes one test's membership change to drift another's expected state.
-	// Reset captured globals so `go test -count=N` doesn't pick up stale IDs from a prior run.
-	cascadeCapturedPolicyID = ""
-	cascadeCapturedOverrideID = ""
-
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
 	resourceName := "datadog_org_group_policy_override.foo"
@@ -95,6 +93,8 @@ func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 
 	t.Cleanup(restoreOrgMembership(t, providers.frameworkProvider, orgUUID, originalGroupID))
 
+	cap := &overrideCapture{}
+
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             composeOrgGroupStackDestroyChecks(providers.frameworkProvider),
@@ -103,21 +103,21 @@ func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideConfigBasic(orgGroupName, orgUUID, "datadog_org_group_policy.foo.id"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyOverrideExists(providers.frameworkProvider, resourceName),
-					capturePolicyIDForCascade(resourceName),
+					cap.Capture(resourceName),
 				),
 			},
 			{
 				// Flip the parent policy's tier to ENFORCE directly via API.
 				// This cascades the override delete server-side. Terraform state is unaware
 				// until a refresh — which is what the PlanOnly + ExpectNonEmptyPlan asserts.
-				PreConfig: enforcePolicyViaAPI(t, providers.frameworkProvider),
+				PreConfig: cap.EnforceViaAPI(t, providers.frameworkProvider),
 				Config:    testAccCheckDatadogOrgGroupPolicyOverrideConfigBasic(orgGroupName, orgUUID, "datadog_org_group_policy.foo.id"),
 				PlanOnly:  true,
 				// Non-empty plan alone only proves *something* drifted. The Check below
 				// pins it to the actual cascade by asserting the override is 404 server-side.
 				ExpectNonEmptyPlan: true,
 				Check: resource.ComposeTestCheckFunc(
-					checkOverrideCascaded(providers.frameworkProvider),
+					cap.CheckCascaded(providers.frameworkProvider),
 				),
 			},
 			// Move org back to its original group so the test org_group can be destroyed.
@@ -157,12 +157,16 @@ func TestAccDatadogOrgGroupPolicyOverride_OrgGroupIdRequiresReplace(t *testing.T
 			},
 			{
 				// Step 2: move override (and the membership+policy it depends on) to a
-				// second group. This makes override.org_group_id change — the plancheck
-				// proves RequiresReplace fires.
+				// second group. The override's plancheck is the one under review here
+				// — the policy + membership planchecks are pinned too so a future
+				// refactor that inverts resourceName or lets another resource absorb
+				// the replace signal fails loudly instead of silently passing.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideConfigOrgGroupReplace(orgGroupName, orgUUID),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionDestroyBeforeCreate),
+						plancheck.ExpectResourceAction("datadog_org_group_policy.foo", plancheck.ResourceActionDestroyBeforeCreate),
+						plancheck.ExpectResourceAction("datadog_org_group_membership.foo", plancheck.ResourceActionUpdate),
 					},
 				},
 				Check: resource.ComposeTestCheckFunc(
@@ -215,9 +219,10 @@ func TestAccDatadogOrgGroupPolicyOverride_AutoCreation(t *testing.T) {
 				// Step 3: create a brand-new DEFAULT policy with value=false. The server's
 				// policy-propagation path detects the org's retained true value ≠ false
 				// and auto-creates an override. The Check then invokes the provider's
-				// real Read method against the auto-created row to prove the adoption
-				// flow (import → Read → updateState on a server-created row) works
-				// end-to-end.
+				// real Read method against a synthetic prior-state — the same state
+				// shape `terraform import` produces via ImportStatePassthroughID — to
+				// prove the adoption flow (Read + updateState on a server-created row)
+				// works end-to-end.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationStep3(orgGroupName, orgUUID),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckAutoCreatedOverrideExists(providers.frameworkProvider, "datadog_org_group.grp", "datadog_org_group_policy.dflt", orgUUID),
@@ -449,15 +454,22 @@ func testAccCheckAutoCreatedOverrideViaProviderRead(accProvider *fwprovider.Fram
 		if err != nil {
 			return fmt.Errorf("listing overrides: %w", err)
 		}
-		var overrideID uuid.UUID
+		// Use a bool flag rather than overrideID == uuid.Nil so a malformed
+		// server response (match-but-zero-UUID) is distinguishable from "no row
+		// matched the filter."
+		var (
+			overrideID uuid.UUID
+			found      bool
+		)
 		for _, override := range listResp.GetData() {
 			attrs := override.GetAttributes()
 			if attrs.GetOrgUuid().String() == orgUUID {
 				overrideID = override.GetId()
+				found = true
 				break
 			}
 		}
-		if overrideID == uuid.Nil {
+		if !found {
 			return fmt.Errorf("no auto-created override found for org %s on policy %s", orgUUID, policyID.String())
 		}
 
@@ -596,53 +608,60 @@ func restoreOrgMembership(t *testing.T, accProvider *fwprovider.FrameworkProvide
 	}
 }
 
-// enforcePolicyViaAPI returns a PreConfig hook that flips the captured policy's
-// enforcement_tier to ENFORCE via a direct API call. This triggers the server-side
-// cascade that deletes all overrides for the policy. The policy ID is read from the
-// package-level cascadeCapturedPolicyID variable, set by capturePolicyIDForCascade
-// in the prior test step.
-func enforcePolicyViaAPI(t *testing.T, accProvider *fwprovider.FrameworkProvider) func() {
+// overrideCapture carries a policy_id + override_id captured by a test-step
+// Check into a later PreConfig hook (no access to Terraform state) and a later
+// Check. Each test that needs the pattern allocates its own instance, so we
+// avoid the global-variable pitfalls (test ordering, `go test -count=N`).
+type overrideCapture struct {
+	PolicyID   string
+	OverrideID string
+}
+
+// Capture returns a TestCheckFunc that snapshots the override's id and parent
+// policy_id. Callers can then read them from the PreConfig hook or later Check
+// via EnforceViaAPI / CheckCascaded.
+func (c *overrideCapture) Capture(n string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[n]
+		if !ok {
+			return fmt.Errorf("resource not found: %s", n)
+		}
+		policyID, ok := rs.Primary.Attributes["policy_id"]
+		if !ok {
+			return fmt.Errorf("resource %s has no policy_id attribute", n)
+		}
+		c.PolicyID = policyID
+		c.OverrideID = rs.Primary.ID
+		return nil
+	}
+}
+
+// EnforceViaAPI returns a PreConfig hook that flips the captured policy's
+// enforcement_tier to ENFORCE via a direct API call, triggering the server-side
+// cascade that deletes all overrides for the policy.
+func (c *overrideCapture) EnforceViaAPI(t *testing.T, accProvider *fwprovider.FrameworkProvider) func() {
 	return func() {
 		t.Helper()
-		apiInstances := accProvider.DatadogApiInstances
-		auth := accProvider.Auth
-
-		// PreConfig hooks can't access Terraform state, so the prior step's Check
-		// (capturePolicyIDForCascade) stashes the policy ID in cascadeCapturedPolicyID.
-		if cascadeCapturedPolicyID == "" {
-			t.Fatal("cascadeCapturedPolicyID not set; prior step must capture it")
+		if c.PolicyID == "" {
+			t.Fatal("overrideCapture.PolicyID not set; prior step must Capture")
 		}
-
-		policyID, err := uuid.Parse(cascadeCapturedPolicyID)
+		policyID, err := uuid.Parse(c.PolicyID)
 		if err != nil {
 			t.Fatalf("captured policy ID is not a UUID: %s", err)
 		}
 
-		api := apiInstances.GetOrgGroupsApiV2()
+		api := accProvider.DatadogApiInstances.GetOrgGroupsApiV2()
 		attrs := datadogV2.NewOrgGroupPolicyUpdateAttributes()
 		tier := datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_ENFORCE
 		attrs.SetEnforcementTier(tier)
 		data := datadogV2.NewOrgGroupPolicyUpdateData(*attrs, policyID, datadogV2.ORGGROUPPOLICYTYPE_ORG_GROUP_POLICIES)
 		body := datadogV2.NewOrgGroupPolicyUpdateRequest(*data)
 
-		if _, _, err := api.UpdateOrgGroupPolicy(auth, policyID, *body); err != nil {
+		if _, _, err := api.UpdateOrgGroupPolicy(accProvider.Auth, policyID, *body); err != nil {
 			t.Fatalf("failed to flip policy to ENFORCE: %s", err)
 		}
 	}
 }
-
-// cascadeCapturedPolicyID / cascadeCapturedOverrideID are set by the first step
-// of TestAccDatadogOrgGroupPolicyOverride_EnforceCascade and read by the second
-// step (the PolicyID by a PreConfig hook that can't see Terraform state, the
-// OverrideID by a direct API assertion proving the server cascade ran). Package-
-// level because PreConfig has no access to Terraform state. Safe as a global:
-// every test in this file is non-parallel because they all share the test org's
-// membership, so there is no concurrency between tests that could race on these.
-// The _EnforceCascade test resets both at entry to survive `go test -count=N`.
-var (
-	cascadeCapturedPolicyID   string
-	cascadeCapturedOverrideID string
-)
 
 func testAccCheckDatadogOrgGroupPolicyOverrideExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
@@ -667,36 +686,17 @@ func testAccCheckDatadogOrgGroupPolicyOverrideExists(accProvider *fwprovider.Fra
 	}
 }
 
-// capturePolicyIDForCascade stores the override's parent policy_id and the
-// override's own id in package-level variables so the EnforceCascade test's
-// PreConfig hook can drive an out-of-band update and a later Check can directly
-// verify the server deleted the override.
-func capturePolicyIDForCascade(n string) resource.TestCheckFunc {
-	return func(s *terraform.State) error {
-		rs, ok := s.RootModule().Resources[n]
-		if !ok {
-			return fmt.Errorf("resource not found: %s", n)
-		}
-		policyID, ok := rs.Primary.Attributes["policy_id"]
-		if !ok {
-			return fmt.Errorf("resource %s has no policy_id attribute", n)
-		}
-		cascadeCapturedPolicyID = policyID
-		cascadeCapturedOverrideID = rs.Primary.ID
-		return nil
-	}
-}
-
-// checkOverrideCascaded asserts the captured override ID is no longer retrievable
-// server-side, proving the ENFORCE-tier promotion's cascade actually deleted the
-// override rather than Terraform just detecting some unrelated drift. Without this
-// check, the non-empty plan in the prior step could come from anything.
-func checkOverrideCascaded(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+// CheckCascaded asserts the captured override ID is no longer retrievable
+// server-side, proving the ENFORCE-tier promotion's cascade actually deleted
+// the override rather than Terraform just detecting some unrelated drift.
+// Without this check, the non-empty plan in the prior step could come from
+// anything.
+func (c *overrideCapture) CheckCascaded(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(_ *terraform.State) error {
-		if cascadeCapturedOverrideID == "" {
-			return fmt.Errorf("cascadeCapturedOverrideID not set; prior step must capture it")
+		if c.OverrideID == "" {
+			return fmt.Errorf("overrideCapture.OverrideID not set; prior step must Capture")
 		}
-		id, err := uuid.Parse(cascadeCapturedOverrideID)
+		id, err := uuid.Parse(c.OverrideID)
 		if err != nil {
 			return fmt.Errorf("captured override ID is not a UUID: %w", err)
 		}
@@ -741,9 +741,12 @@ func testAccCheckDatadogOrgGroupPolicyOverrideDestroy(accProvider *fwprovider.Fr
 	}
 }
 
-// composeOrgGroupStackDestroyChecks runs all three destroy checks (override,
-// policy, org_group) against the test state. Catches regressions where a
-// parent resource's Delete silently no-ops even though its child's does not.
+// composeOrgGroupStackDestroyChecks asserts that override, policy, and
+// org_group resources have all been removed server-side. Every sub-check runs
+// (via errors.Join) even when one fails, so a single test run surfaces every
+// leaked resource type in this stack instead of forcing the developer to fix
+// one, rerun, find the next, rinse-and-repeat. Membership is intentionally
+// excluded: its Delete is a state-only no-op by design.
 func composeOrgGroupStackDestroyChecks(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	checks := []func(*terraform.State) error{
 		testAccCheckDatadogOrgGroupPolicyOverrideDestroy(accProvider),
@@ -751,12 +754,13 @@ func composeOrgGroupStackDestroyChecks(accProvider *fwprovider.FrameworkProvider
 		testAccCheckDatadogOrgGroupDestroy(accProvider),
 	}
 	return func(s *terraform.State) error {
+		var errs []error
 		for _, check := range checks {
 			if err := check(s); err != nil {
-				return err
+				errs = append(errs, err)
 			}
 		}
-		return nil
+		return errors.Join(errs...)
 	}
 }
 

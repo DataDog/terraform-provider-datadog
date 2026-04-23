@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccDatadogOrgGroupPoliciesDataSource_Basic(t *testing.T) {
@@ -18,12 +17,7 @@ func TestAccDatadogOrgGroupPoliciesDataSource_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy: func(s *terraform.State) error {
-			if err := testAccCheckDatadogOrgGroupPolicyDestroy(providers.frameworkProvider)(s); err != nil {
-				return err
-			}
-			return testAccCheckDatadogOrgGroupDestroy(providers.frameworkProvider)(s)
-		},
+		CheckDestroy:             composeOrgGroupStackDestroyChecks(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogOrgGroupPoliciesDataSourceConfig(orgGroupName),

@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"regexp"
 
@@ -111,10 +112,20 @@ func (r *OrgGroupMembershipResource) Create(ctx context.Context, request resourc
 		return
 	}
 
-	// The server returns HTTP 404 (not an empty list) for unknown org UUIDs,
-	// so the List call above has already surfaced that case. A well-known org
-	// must always have exactly one membership, so we index directly.
+	// The server returns HTTP 404 (not an empty list) for unknown org UUIDs
+	// — the List call above surfaces that case. A well-known org must always
+	// have exactly one membership; guard the indexing below with an explicit
+	// diagnostic so a future API-contract drift (empty 200, auth filter,
+	// mid-migration race) produces a clean error instead of an index-out-of-
+	// range panic. See TestAccDatadogOrgGroupMembership_UnknownOrgReturns404.
 	memberships := listResp.GetData()
+	if len(memberships) != 1 {
+		response.Diagnostics.AddError(
+			"datadog_org_group_membership: unexpected membership count",
+			fmt.Sprintf("org %s: expected exactly one membership, got %d (API contract violated)", state.OrgUuid.ValueString(), len(memberships)),
+		)
+		return
+	}
 	membershipID := memberships[0].GetId()
 
 	targetGroupID, err := uuid.Parse(state.OrgGroupID.ValueString())

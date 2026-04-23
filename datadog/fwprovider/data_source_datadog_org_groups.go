@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -110,11 +111,21 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 	items := make([]*OrgGroupItemModel, 0, len(groups))
 	for _, g := range groups {
 		attrs := g.GetAttributes()
+		ownerUuid := attrs.GetOwnerOrgUuid()
+		// Defensive: flag zero-UUID rows. The server should never return these, so
+		// hitting this branch indicates a malformed response rather than a filter miss.
+		if ownerUuid == uuid.Nil {
+			response.Diagnostics.AddWarning(
+				"datadog_org_groups: skipping row with zero owner_org_uuid",
+				fmt.Sprintf("org_group %s returned a zero UUID for owner_org_uuid; server-side data integrity issue", g.GetId().String()),
+			)
+			continue
+		}
 		items = append(items, &OrgGroupItemModel{
 			ID:           types.StringValue(g.GetId().String()),
 			Name:         types.StringValue(attrs.GetName()),
 			OwnerOrgSite: types.StringValue(attrs.GetOwnerOrgSite()),
-			OwnerOrgUuid: types.StringValue(attrs.GetOwnerOrgUuid().String()),
+			OwnerOrgUuid: types.StringValue(ownerUuid.String()),
 		})
 	}
 
