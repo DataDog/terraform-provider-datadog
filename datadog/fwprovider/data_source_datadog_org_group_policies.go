@@ -107,10 +107,7 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 		opts.WithFilterPolicyName(state.PolicyName.ValueString())
 	}
 
-	// See datadog_org_groups for the pagination invariant (duplicate row = bail).
 	const pageSize = int64(100)
-	seen := make(map[string]struct{})
-
 	var policies []datadogV2.OrgGroupPolicyData
 	for page := int64(0); ; page++ {
 		opts.WithPageNumber(page).WithPageSize(pageSize)
@@ -120,18 +117,7 @@ func (d *datadogOrgGroupPoliciesDataSource) Read(ctx context.Context, request da
 			return
 		}
 		data := resp.GetData()
-		for _, item := range data {
-			id := item.GetId().String()
-			if _, ok := seen[id]; ok {
-				response.Diagnostics.AddError(
-					"datadog_org_group_policies: pagination returned duplicate row",
-					fmt.Sprintf("policy %s appeared on more than one page; aborting to avoid an infinite loop", id),
-				)
-				return
-			}
-			seen[id] = struct{}{}
-			policies = append(policies, item)
-		}
+		policies = append(policies, data...)
 		if int64(len(data)) < pageSize {
 			break
 		}

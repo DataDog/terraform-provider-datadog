@@ -7,7 +7,6 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -103,7 +102,7 @@ func (r *OrgGroupResource) Create(ctx context.Context, request resource.CreateRe
 		return
 	}
 
-	r.updateState(&state, &resp, &response.Diagnostics)
+	r.updateState(&state, &resp)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -134,7 +133,7 @@ func (r *OrgGroupResource) Read(ctx context.Context, request resource.ReadReques
 		return
 	}
 
-	r.updateState(&state, &resp, &response.Diagnostics)
+	r.updateState(&state, &resp)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -165,7 +164,7 @@ func (r *OrgGroupResource) Update(ctx context.Context, request resource.UpdateRe
 		return
 	}
 
-	r.updateState(&state, &resp, &response.Diagnostics)
+	r.updateState(&state, &resp)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -191,21 +190,12 @@ func (r *OrgGroupResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 }
 
-func (r *OrgGroupResource) updateState(state *OrgGroupModel, resp *datadogV2.OrgGroupResponse, diags *diag.Diagnostics) {
+func (r *OrgGroupResource) updateState(state *OrgGroupModel, resp *datadogV2.OrgGroupResponse) {
 	data := resp.GetData()
 	state.ID = types.StringValue(data.GetId().String())
 
 	attributes := data.GetAttributes()
 	state.Name = types.StringValue(attributes.GetName())
 	state.OwnerOrgSite = types.StringValue(attributes.GetOwnerOrgSite())
-	// Defensive: flag zero-UUID rows. The server should never return these, so
-	// hitting this branch indicates a malformed response.
-	ownerUuid := attributes.GetOwnerOrgUuid()
-	if ownerUuid == uuid.Nil {
-		diags.AddWarning(
-			"datadog_org_group: zero owner_org_uuid in server response",
-			"server returned a zero UUID for owner_org_uuid; writing it into state as-is (server-side data integrity issue)",
-		)
-	}
-	state.OwnerOrgUuid = types.StringValue(ownerUuid.String())
+	state.OwnerOrgUuid = types.StringValue(attributes.GetOwnerOrgUuid().String())
 }

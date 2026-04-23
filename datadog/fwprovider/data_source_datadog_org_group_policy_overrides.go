@@ -130,10 +130,7 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 		orgUuidFilter = parsed
 	}
 
-	// See datadog_org_groups for the pagination invariant (duplicate row = bail).
 	const pageSize = int64(100)
-	seen := make(map[string]struct{})
-
 	var overrides []datadogV2.OrgGroupPolicyOverrideData
 	for page := int64(0); ; page++ {
 		opts.WithPageNumber(page).WithPageSize(pageSize)
@@ -143,18 +140,7 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 			return
 		}
 		data := resp.GetData()
-		for _, item := range data {
-			id := item.GetId().String()
-			if _, ok := seen[id]; ok {
-				response.Diagnostics.AddError(
-					"datadog_org_group_policy_overrides: pagination returned duplicate row",
-					fmt.Sprintf("override %s appeared on more than one page; aborting to avoid an infinite loop", id),
-				)
-				return
-			}
-			seen[id] = struct{}{}
-			overrides = append(overrides, item)
-		}
+		overrides = append(overrides, data...)
 		if int64(len(data)) < pageSize {
 			break
 		}
@@ -164,15 +150,6 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Read(ctx context.Context, req
 	for _, o := range overrides {
 		attrs := o.GetAttributes()
 		ou := attrs.GetOrgUuid()
-		// Defensive: flag zero-UUID rows. The server should never return these, so
-		// hitting this branch indicates a malformed response rather than a filter miss.
-		if ou == uuid.Nil {
-			response.Diagnostics.AddWarning(
-				"datadog_org_group_policy_overrides: skipping row with zero org_uuid",
-				fmt.Sprintf("override %s returned a zero UUID for org_uuid; server-side data integrity issue", o.GetId().String()),
-			)
-			continue
-		}
 		if orgUuidFilter != uuid.Nil && ou != orgUuidFilter {
 			continue
 		}

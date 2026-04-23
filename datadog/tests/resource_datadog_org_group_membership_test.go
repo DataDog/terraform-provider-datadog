@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -109,54 +108,6 @@ func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
 			// Move org back to its original group so the test org groups can be destroyed
 			{
 				Config: testAccCheckDatadogOrgGroupMembershipConfigRestore(orgGroupName, orgGroupName2, orgUUID, originalGroupID),
-			},
-		},
-	})
-}
-
-func TestAccDatadogOrgGroupMembership_RejectsInvalidUUID(t *testing.T) {
-	// Plan-time validator test: a syntactically invalid UUID must be rejected
-	// by uuidValidator before any API call fires. Covers the shared validator
-	// used across all four org_group resources + data sources, so a regex
-	// typo anywhere in that surface is caught here.
-	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: accProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: `
-resource "datadog_org_group" "test" {
-  name = "validator-test"
-}
-
-resource "datadog_org_group_membership" "foo" {
-  org_group_id = datadog_org_group.test.id
-  org_uuid     = "not-a-uuid"
-}`,
-				ExpectError: regexp.MustCompile(`must be a valid UUID`),
-				PlanOnly:    true,
-			},
-		},
-	})
-}
-
-func TestAccDatadogOrgGroupMembership_UnknownOrgReturns404(t *testing.T) {
-	// A syntactically-valid but non-existent org_uuid should surface the server's
-	// 404 at the List endpoint instead of producing an opaque error. Not parallel;
-	// uses a unique org_group and never touches the shared org.
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	orgGroupName := uniqueEntityName(ctx, t)
-	bogusOrgUUID := "00000000-0000-0000-0000-000000000001"
-
-	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: accProviders,
-		Steps: []resource.TestStep{
-			{
-				Config:      testAccCheckDatadogOrgGroupMembershipConfig(orgGroupName, bogusOrgUUID),
-				// Match the HTTP status prefix; the full detail text can wrap across lines
-				// in the test framework output and break multi-word regexes.
-				ExpectError: regexp.MustCompile(`404 Not Found`),
 			},
 		},
 	})

@@ -2,10 +2,8 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -75,13 +73,7 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 		return
 	}
 
-	// Paginate until a short page signals end-of-results. We also track the IDs
-	// we've already accumulated: if the server ever hands us a page containing
-	// rows we've seen before, that's an infinite-loop signal (or a pagination bug),
-	// and we bail with a diagnostic instead of silently running forever.
 	const pageSize = int64(100)
-	seen := make(map[string]struct{})
-
 	var groups []datadogV2.OrgGroupData
 	for page := int64(0); ; page++ {
 		opts := datadogV2.NewListOrgGroupsOptionalParameters().WithPageNumber(page).WithPageSize(pageSize)
@@ -91,18 +83,7 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 			return
 		}
 		data := resp.GetData()
-		for _, item := range data {
-			id := item.GetId().String()
-			if _, ok := seen[id]; ok {
-				response.Diagnostics.AddError(
-					"datadog_org_groups: pagination returned duplicate row",
-					fmt.Sprintf("org_group %s appeared on more than one page; aborting to avoid an infinite loop", id),
-				)
-				return
-			}
-			seen[id] = struct{}{}
-			groups = append(groups, item)
-		}
+		groups = append(groups, data...)
 		if int64(len(data)) < pageSize {
 			break
 		}
@@ -111,21 +92,11 @@ func (d *datadogOrgGroupsDataSource) Read(ctx context.Context, request datasourc
 	items := make([]*OrgGroupItemModel, 0, len(groups))
 	for _, g := range groups {
 		attrs := g.GetAttributes()
-		ownerUuid := attrs.GetOwnerOrgUuid()
-		// Defensive: flag zero-UUID rows. The server should never return these, so
-		// hitting this branch indicates a malformed response rather than a filter miss.
-		if ownerUuid == uuid.Nil {
-			response.Diagnostics.AddWarning(
-				"datadog_org_groups: skipping row with zero owner_org_uuid",
-				fmt.Sprintf("org_group %s returned a zero UUID for owner_org_uuid; server-side data integrity issue", g.GetId().String()),
-			)
-			continue
-		}
 		items = append(items, &OrgGroupItemModel{
 			ID:           types.StringValue(g.GetId().String()),
 			Name:         types.StringValue(attrs.GetName()),
 			OwnerOrgSite: types.StringValue(attrs.GetOwnerOrgSite()),
-			OwnerOrgUuid: types.StringValue(ownerUuid.String()),
+			OwnerOrgUuid: types.StringValue(attrs.GetOwnerOrgUuid().String()),
 		})
 	}
 

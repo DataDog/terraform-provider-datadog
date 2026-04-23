@@ -112,10 +112,7 @@ func (d *datadogOrgGroupMembershipsDataSource) Read(ctx context.Context, request
 		opts.WithFilterOrgUuid(parsed)
 	}
 
-	// See datadog_org_groups for the pagination invariant (duplicate row = bail).
 	const pageSize = int64(100)
-	seen := make(map[string]struct{})
-
 	var memberships []datadogV2.OrgGroupMembershipData
 	for page := int64(0); ; page++ {
 		opts.WithPageNumber(page).WithPageSize(pageSize)
@@ -125,18 +122,7 @@ func (d *datadogOrgGroupMembershipsDataSource) Read(ctx context.Context, request
 			return
 		}
 		data := resp.GetData()
-		for _, item := range data {
-			id := item.GetId().String()
-			if _, ok := seen[id]; ok {
-				response.Diagnostics.AddError(
-					"datadog_org_group_memberships: pagination returned duplicate row",
-					fmt.Sprintf("membership %s appeared on more than one page; aborting to avoid an infinite loop", id),
-				)
-				return
-			}
-			seen[id] = struct{}{}
-			memberships = append(memberships, item)
-		}
+		memberships = append(memberships, data...)
 		if int64(len(data)) < pageSize {
 			break
 		}
@@ -145,19 +131,9 @@ func (d *datadogOrgGroupMembershipsDataSource) Read(ctx context.Context, request
 	items := make([]*OrgGroupMembershipItemModel, 0, len(memberships))
 	for _, m := range memberships {
 		attrs := m.GetAttributes()
-		orgUuid := attrs.GetOrgUuid()
-		// Defensive: flag zero-UUID rows. The server should never return these, so
-		// hitting this branch indicates a malformed response rather than a filter miss.
-		if orgUuid == uuid.Nil {
-			response.Diagnostics.AddWarning(
-				"datadog_org_group_memberships: skipping row with zero org_uuid",
-				fmt.Sprintf("membership %s returned a zero UUID for org_uuid; server-side data integrity issue", m.GetId().String()),
-			)
-			continue
-		}
 		item := &OrgGroupMembershipItemModel{
 			ID:      types.StringValue(m.GetId().String()),
-			OrgUuid: types.StringValue(orgUuid.String()),
+			OrgUuid: types.StringValue(attrs.GetOrgUuid().String()),
 			OrgSite: types.StringValue(attrs.GetOrgSite()),
 			OrgName: types.StringValue(attrs.GetOrgName()),
 		}
