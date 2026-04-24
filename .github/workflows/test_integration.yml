@@ -54,9 +54,8 @@ jobs:
         env:
           DD_TEST_CLIENT_API_KEY: ${{ secrets.DD_CLIENT_API_KEY }}
           DD_TEST_CLIENT_APP_KEY: ${{ secrets.DD_CLIENT_APP_KEY }}
-      - name: Build skip list for label-triggered runs
+      - name: Build skip list for flaky tests
         id: skip-list
-        if: github.event_name == 'pull_request'
         run: |
           SKIP_REGEX=$(python3 scripts/build_skip_regex.py)
           if [ -n "$SKIP_REGEX" ]; then
