@@ -192,7 +192,7 @@ func TestAccDatadogOrgGroupPolicyOverride_AutoCreation(t *testing.T) {
 				// the override exists server-side; the fact that subsequent refreshes
 				// don't fail is our "provider can read a server-created row" coverage.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationStep3(orgGroupName, orgUUID),
-				Check: testAccCheckAutoCreatedOverrideExists(providers.frameworkProvider, "datadog_org_group.grp", "datadog_org_group_policy.dflt", orgUUID),
+				Check:  testAccCheckAutoCreatedOverrideExists(providers.frameworkProvider, "datadog_org_group.grp", "datadog_org_group_policy.dflt", orgUUID),
 			},
 			// Restore membership so the org_group can be destroyed cleanly.
 			{
