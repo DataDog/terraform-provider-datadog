@@ -1954,9 +1954,16 @@ func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schem
 	// validate locations are not empty for API and browser tests
 	type_, typeOk := diff.GetOk("type")
 	if typeOk && (type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_API) || type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER)) {
-		if locations := diff.Get("locations"); locations != nil {
-			if locations.(*schema.Set).Len() == 0 {
-				return fmt.Errorf("locations must not be empty for synthetics API and browser tests")
+		// Skip the emptiness check when the value is not yet known — e.g. when
+		// locations contains the id of a datadog_synthetics_private_location
+		// being created in the same apply. schema.Set.Len() reports 0 in that
+		// case even though the list is non-empty; Terraform re-validates once
+		// the value is known. Fixes #3273.
+		if diff.NewValueKnown("locations") {
+			if locations := diff.Get("locations"); locations != nil {
+				if locations.(*schema.Set).Len() == 0 {
+					return fmt.Errorf("locations must not be empty for synthetics API and browser tests")
+				}
 			}
 		}
 	}
