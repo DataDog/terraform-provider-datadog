@@ -29,8 +29,8 @@ data "datadog_org_group_memberships" "by_org" {
 
 ### Optional
 
-- `org_group_id` (String) Filter memberships to those within the given org group.
-- `org_uuid` (String) Filter memberships to those for the given organization.
+- `org_group_id` (String) Filter memberships to those within the given org group. Must be a valid UUID.
+- `org_uuid` (String) Filter memberships to those for the given organization. Must be a valid UUID.
 
 ### Read-Only
 

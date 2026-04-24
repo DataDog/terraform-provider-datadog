@@ -30,7 +30,7 @@ data "datadog_org_group_policies" "widget_copy_paste" {
 
 ### Required
 
-- `org_group_id` (String) The UUID of the org group whose policies to list.
+- `org_group_id` (String) The UUID of the org group whose policies to list. Must be a valid UUID.
 
 ### Optional
 

@@ -48,7 +48,7 @@ Changing `enforcement_tier` to `"ENFORCE"` atomically deletes every override ass
 ### Required
 
 - `content` (String) The policy content as a JSON-encoded string.
-- `org_group_id` (String) The UUID of the org group this policy belongs to.
+- `org_group_id` (String) The UUID of the org group this policy belongs to. Must be a valid UUID.
 - `policy_name` (String) The name of the policy. String length must be at least 1.
 
 ### Optional

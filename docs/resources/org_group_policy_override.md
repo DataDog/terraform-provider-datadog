@@ -2,12 +2,12 @@
 page_title: "Resource datadog_org_group_policy_override - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level. Overrides are also auto-created by the server when an org's existing config does not match a newly-propagated policy; this resource can adopt those via import.
+  Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level.
 ---
 
 # Resource (datadog_org_group_policy_override)
 
-Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level. Overrides are also auto-created by the server when an org's existing config does not match a newly-propagated policy; this resource can adopt those via import.
+Provides a Datadog Org Group Policy Override resource. An override exempts a specific organization from a policy applied at the org group level.
 
 ## Example Usage
 
@@ -68,10 +68,10 @@ If you plan to flip a policy to `ENFORCE`, remove the `datadog_org_group_policy_
 
 ### Required
 
-- `org_group_id` (String) The UUID of the org group that owns the policy.
+- `org_group_id` (String) The UUID of the org group that owns the policy. Must be a valid UUID.
 - `org_site` (String) The short site name of the organization (e.g. `us1`, `eu1`, `us1-fed`). Part of the override's server-side identity; changing it replaces the resource. String length must be at least 1.
-- `org_uuid` (String) The UUID of the organization being exempted from the policy.
-- `policy_id` (String) The UUID of the org group policy the override applies to.
+- `org_uuid` (String) The UUID of the organization being exempted from the policy. Must be a valid UUID.
+- `policy_id` (String) The UUID of the org group policy the override applies to. Must be a valid UUID.
 
 ### Read-Only
 
