@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hkd-khk-str
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/6c0-bh2-yna
         method: GET
       response:
         proto: HTTP/1.1
@@ -27,10 +27,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_NewValue-local-1777269715","createdAt":1777269726052,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@value","metrics":["@value"],"aggregation":"new_value","name":"first","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"new_value","maxSignalDuration":900,"keepAlive":600,"newValueOptions":{"forgetAfter":7,"learningDuration":1,"learningThreshold":0,"learningMethod":"duration","instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"hkd-khk-str","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_NewValue-local-1777293027","createdAt":1777293041447,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@value","metrics":["@value"],"aggregation":"new_value","name":"first","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"new_value","maxSignalDuration":900,"keepAlive":600,"newValueOptions":{"forgetAfter":7,"learningDuration":1,"learningThreshold":0,"learningMethod":"duration","instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"6c0-bh2-yna","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 167.968584ms
+        duration: 130.493541ms

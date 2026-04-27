@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -18,7 +19,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -433,10 +436,11 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 							DeprecationMessage: "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
 						},
 						"metrics": schema.ListAttribute{
-							Optional:    true,
-							Computed:    true,
-							ElementType: types.StringType,
-							Description: "Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.",
+							Optional:      true,
+							Computed:      true,
+							ElementType:   types.StringType,
+							PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+							Description:   "Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.",
 						},
 						"name": schema.StringAttribute{
 							Optional:    true,
@@ -632,9 +636,13 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 						},
 						"evaluation_window": schema.Int64Attribute{
 							Optional:    true,
+							Computed:    true,
 							Description: "A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time.",
 							Validators: []validator.Int64{
 								validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+							},
+							PlanModifiers: []planmodifier.Int64{
+								int64planmodifier.UseStateForUnknown(),
 							},
 						},
 						"keep_alive": schema.Int64Attribute{
@@ -648,9 +656,13 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 						},
 						"max_signal_duration": schema.Int64Attribute{
 							Optional:    true,
+							Computed:    true,
 							Description: "A signal will \"close\" regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp.",
 							Validators: []validator.Int64{
 								validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue),
+							},
+							PlanModifiers: []planmodifier.Int64{
+								int64planmodifier.UseStateForUnknown(),
 							},
 						},
 						"decrease_criticality_based_on_env": schema.BoolAttribute{
@@ -846,9 +858,13 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 												},
 												"evaluation_window": schema.Int64Attribute{
 													Optional:    true,
+													Computed:    true,
 													Description: "Evaluation window for the step.",
 													Validators: []validator.Int64{
 														validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+													},
+													PlanModifiers: []planmodifier.Int64{
+														int64planmodifier.UseStateForUnknown(),
 													},
 												},
 											},
@@ -868,9 +884,13 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 												},
 												"evaluation_window": schema.Int64Attribute{
 													Optional:    true,
+													Computed:    true,
 													Description: "Maximum time allowed to transition from parent to child.",
 													Validators: []validator.Int64{
 														validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleEvaluationWindowFromValue),
+													},
+													PlanModifiers: []planmodifier.Int64{
+														int64planmodifier.UseStateForUnknown(),
 													},
 												},
 											},
@@ -930,10 +950,12 @@ type securityMonitoringRuleResponseInterface interface {
 //   - Required fields: always set from API.
 //   - Optional+Computed fields: always set from API; plan modifiers reconcile drift.
 //   - Optional-only string: set only when API returns a non-empty value.
-//   - Optional-only int64: set only when API returns a non-zero value.
+//   - Optional-only int64: set when API returns a non-zero value; preserve
+//     explicit prior planned/state values when API returns zero or omits the field.
 //   - Optional-only list: set only when API returned a non-empty list (ok && len>0).
 func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, ruleResponse securityMonitoringRuleResponseInterface) diag.Diagnostics {
 	var diags diag.Diagnostics
+	priorOptions := state.Options
 
 	state.Message = types.StringValue(ruleResponse.GetMessage())
 	state.Name = types.StringValue(ruleResponse.GetName())
@@ -946,7 +968,7 @@ func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMo
 	}
 
 	var optsDiags diag.Diagnostics
-	state.Options, optsDiags = extractTfOptions(ctx, ruleResponse.GetOptions())
+	state.Options, optsDiags = extractTfOptions(ctx, ruleResponse.GetOptions(), priorOptions)
 	diags.Append(optsDiags...)
 
 	return diags
@@ -1207,12 +1229,16 @@ func extractRuleCaseActions(apiActions []datadogV2.SecurityMonitoringRuleCaseAct
 	return tfActions
 }
 
-func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringRuleOptions) ([]ruleOptionsModel, diag.Diagnostics) {
+func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringRuleOptions, priorOptions []ruleOptionsModel) ([]ruleOptionsModel, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	tfOptions := ruleOptionsModel{
 		DecreaseCriticalityBasedOnEnv: types.BoolValue(false),
 		KeepAlive:                     types.Int64Value(0),
+	}
+	var priorOption ruleOptionsModel
+	if len(priorOptions) > 0 {
+		priorOption = priorOptions[0]
 	}
 
 	// Optional+Computed with defaults — always set
@@ -1223,15 +1249,28 @@ func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringR
 		tfOptions.DecreaseCriticalityBasedOnEnv = types.BoolValue(*decreaseCriticalityBasedOnEnv)
 	}
 
-	// Optional-only int64 — only set when API returns a non-zero value
-	if evaluationWindow, ok := options.GetEvaluationWindowOk(); ok && *evaluationWindow != 0 {
-		tfOptions.EvaluationWindow = types.Int64Value(int64(*evaluationWindow))
+	// Optional-only int64. Preserve prior explicit values when the API returns
+	// zero or omits the field, avoiding migration diffs from SDKv2 zero state.
+	if evaluationWindow, ok := options.GetEvaluationWindowOk(); ok {
+		if shouldSetOptionalInt64(int64(*evaluationWindow), priorOption.EvaluationWindow) {
+			tfOptions.EvaluationWindow = types.Int64Value(int64(*evaluationWindow))
+		}
+	} else if shouldPreserveOptionalInt64(priorOption.EvaluationWindow) {
+		tfOptions.EvaluationWindow = priorOption.EvaluationWindow
 	}
+	// Optional+Computed int64 with default. tfOptions is initialized to zero,
+	// so only non-zero API values need to override it.
 	if keepAlive, ok := options.GetKeepAliveOk(); ok && *keepAlive != 0 {
 		tfOptions.KeepAlive = types.Int64Value(int64(*keepAlive))
 	}
-	if maxSignalDuration, ok := options.GetMaxSignalDurationOk(); ok && *maxSignalDuration != 0 {
-		tfOptions.MaxSignalDuration = types.Int64Value(int64(*maxSignalDuration))
+	// Optional-only int64. Preserve prior explicit values when the API returns
+	// zero or omits the field, avoiding migration diffs from SDKv2 zero state.
+	if maxSignalDuration, ok := options.GetMaxSignalDurationOk(); ok {
+		if shouldSetOptionalInt64(int64(*maxSignalDuration), priorOption.MaxSignalDuration) {
+			tfOptions.MaxSignalDuration = types.Int64Value(int64(*maxSignalDuration))
+		}
+	} else if shouldPreserveOptionalInt64(priorOption.MaxSignalDuration) {
+		tfOptions.MaxSignalDuration = priorOption.MaxSignalDuration
 	}
 
 	// Sub-options blocks — only set when API returned them
@@ -1250,10 +1289,18 @@ func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringR
 		diags.Append(tpDiags...)
 	}
 	if seqOptions, ok := options.GetSequenceDetectionOptionsOk(); ok {
-		tfOptions.SequenceDetectionOptions = []sequenceDetectionOptionsModel{extractSequenceDetectionOptions(seqOptions)}
+		tfOptions.SequenceDetectionOptions = []sequenceDetectionOptionsModel{extractSequenceDetectionOptions(seqOptions, priorOption.SequenceDetectionOptions)}
 	}
 
 	return []ruleOptionsModel{tfOptions}, diags
+}
+
+func shouldSetOptionalInt64(value int64, prior types.Int64) bool {
+	return value != 0 || shouldPreserveOptionalInt64(prior)
+}
+
+func shouldPreserveOptionalInt64(prior types.Int64) bool {
+	return !prior.IsNull() && !prior.IsUnknown()
 }
 
 func extractReferenceTables(referenceTables []datadogV2.SecurityMonitoringReferenceTable) []ruleReferenceTableModel {
@@ -1376,8 +1423,12 @@ func extractThirdPartyRuleOptions(ctx context.Context, thirdPartyOptions *datado
 	return []thirdPartyRuleOptionsModel{tfThirdPartyOptions}, diags
 }
 
-func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRuleSequenceDetectionOptions) sequenceDetectionOptionsModel {
+func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRuleSequenceDetectionOptions, priorOptions []sequenceDetectionOptionsModel) sequenceDetectionOptionsModel {
 	tfSeqOptions := sequenceDetectionOptionsModel{}
+	var priorOption sequenceDetectionOptionsModel
+	if len(priorOptions) > 0 {
+		priorOption = priorOptions[0]
+	}
 
 	steps := seqOptions.GetSteps()
 	if len(steps) > 0 {
@@ -1387,9 +1438,16 @@ func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRul
 				Name:      types.StringValue(step.GetName()),
 				Condition: types.StringValue(step.GetCondition()),
 			}
-			// Optional-only int64 — only set when non-zero
-			if v, ok := step.GetEvaluationWindowOk(); ok && *v != 0 {
-				stepMap.EvaluationWindow = types.Int64Value(int64(*v))
+			priorEvaluationWindow := types.Int64Null()
+			if idx < len(priorOption.Steps) {
+				priorEvaluationWindow = priorOption.Steps[idx].EvaluationWindow
+			}
+			if v, ok := step.GetEvaluationWindowOk(); ok {
+				if shouldSetOptionalInt64(int64(*v), priorEvaluationWindow) {
+					stepMap.EvaluationWindow = types.Int64Value(int64(*v))
+				}
+			} else if shouldPreserveOptionalInt64(priorEvaluationWindow) {
+				stepMap.EvaluationWindow = priorEvaluationWindow
 			}
 			tfSeqOptions.Steps[idx] = stepMap
 		}
@@ -1403,9 +1461,16 @@ func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRul
 				Parent: types.StringValue(tr.GetParent()),
 				Child:  types.StringValue(tr.GetChild()),
 			}
-			// Optional-only int64 — only set when non-zero
-			if v, ok := tr.GetEvaluationWindowOk(); ok && *v != 0 {
-				trMap.EvaluationWindow = types.Int64Value(int64(*v))
+			priorEvaluationWindow := types.Int64Null()
+			if idx < len(priorOption.StepTransitions) {
+				priorEvaluationWindow = priorOption.StepTransitions[idx].EvaluationWindow
+			}
+			if v, ok := tr.GetEvaluationWindowOk(); ok {
+				if shouldSetOptionalInt64(int64(*v), priorEvaluationWindow) {
+					trMap.EvaluationWindow = types.Int64Value(int64(*v))
+				}
+			} else if shouldPreserveOptionalInt64(priorEvaluationWindow) {
+				trMap.EvaluationWindow = priorEvaluationWindow
 			}
 			tfSeqOptions.StepTransitions[idx] = trMap
 		}
@@ -2263,6 +2328,7 @@ func (r *securityMonitoringRuleResource) Read(ctx context.Context, request resou
 	}
 
 	priorQueries := state.Queries
+	priorEffectiveTags := state.EffectiveTags
 
 	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
@@ -2271,11 +2337,19 @@ func (r *securityMonitoringRuleResource) Read(ctx context.Context, request resou
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
 	}
 
-	// SDKv2 v4.5.0 persisted absent `tags` as an empty set; Framework treats
-	// empty and null as distinct, which would produce a spurious null→[] diff
-	// on the first plan after upgrading. Normalize to null.
-	if !state.Tags.IsNull() && len(state.Tags.Elements()) == 0 {
-		state.Tags = types.SetNull(types.StringType)
+	// SDKv2 v4.5.0 stored the union of config tags and provider default_tags
+	// in `tags` and had no `effective_tags`. On the first read after migration
+	// (priorEffectiveTags still null), strip default_tags out of state.Tags so
+	// the next plan doesn't show a spurious diff against user config, and
+	// normalize the empty-set case to null. Once Framework has written
+	// effective_tags, preserve explicit `tags = []`.
+	if priorEffectiveTags.IsNull() {
+		if !state.Tags.IsNull() && len(r.defaultTags) > 0 {
+			state.Tags = stripDefaultTagsFromSet(ctx, state.Tags, r.defaultTags)
+		}
+		if !state.Tags.IsNull() && len(state.Tags.Elements()) == 0 {
+			state.Tags = types.SetNull(types.StringType)
+		}
 	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -2350,6 +2424,8 @@ func (r *securityMonitoringRuleResource) ModifyPlan(ctx context.Context, request
 
 	var plan securityMonitoringRuleResourceModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	var config securityMonitoringRuleResourceModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
 
 	var state securityMonitoringRuleResourceModel
 	if !request.State.Raw.IsNull() {
@@ -2368,8 +2444,59 @@ func (r *securityMonitoringRuleResource) ModifyPlan(ctx context.Context, request
 	if response.Diagnostics.HasError() {
 		return
 	}
+	// Mirror into the local plan so validation (which reads `plan`, not
+	// `response.Plan`) sees the same tags create/update will send.
+	plan.EffectiveTags = combinedTags
+
+	normalizeDeprecatedMetricPlan(ctx, &plan, &config, response)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	r.resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx, &plan, &state, response)
+}
+
+// stripDefaultTagsFromSet removes elements from tags whose `key:value` matches
+// an entry in defaultTags. Used to undo SDKv2 v4.5.0's union-of-tags-and-defaults
+// behavior on the first read after migrating to the Framework, where defaults
+// belong in `effective_tags` rather than `tags`.
+func stripDefaultTagsFromSet(ctx context.Context, tags types.Set, defaultTags map[string]string) types.Set {
+	if tags.IsNull() || tags.IsUnknown() || len(defaultTags) == 0 {
+		return tags
+	}
+	var elems []string
+	tags.ElementsAs(ctx, &elems, false)
+	filtered := make([]string, 0, len(elems))
+	for _, t := range elems {
+		key, value, _ := strings.Cut(t, ":")
+		if dv, ok := defaultTags[key]; ok && dv == value {
+			continue
+		}
+		filtered = append(filtered, t)
+	}
+	result, diags := types.SetValueFrom(ctx, types.StringType, filtered)
+	if diags.HasError() {
+		return tags
+	}
+	return result
+}
+
+func normalizeDeprecatedMetricPlan(ctx context.Context, plan, config *securityMonitoringRuleResourceModel, response *resource.ModifyPlanResponse) {
+	if len(plan.Queries) != len(config.Queries) {
+		return
+	}
+	for idx, configQuery := range config.Queries {
+		if configQuery.Metric.IsNull() || configQuery.Metric.IsUnknown() || configQuery.Metric.ValueString() == "" {
+			continue
+		}
+		if !configQuery.Metrics.IsNull() && !configQuery.Metrics.IsUnknown() {
+			continue
+		}
+
+		metrics := types.ListValueMust(types.StringType, []attr.Value{types.StringValue(configQuery.Metric.ValueString())})
+		plan.Queries[idx].Metrics = metrics
+		response.Diagnostics.Append(response.Plan.SetAttribute(ctx, path.Root("query").AtListIndex(idx).AtName("metrics"), metrics)...)
+	}
 }
 
 func (r *securityMonitoringRuleResource) resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, plan, state *securityMonitoringRuleResourceModel, response *resource.ModifyPlanResponse) {
