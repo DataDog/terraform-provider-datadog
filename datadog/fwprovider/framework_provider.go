@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -29,6 +30,11 @@ import (
 )
 
 var _ provider.Provider = &FrameworkProvider{}
+var _ provider.ProviderWithEphemeralResources = &FrameworkProvider{}
+
+var EphemeralResources = []func() ephemeral.EphemeralResource{
+	NewServiceAccountTokenEphemeralResource,
+}
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
@@ -122,6 +128,7 @@ var Resources = []func() resource.Resource{
 	NewReferenceTableResource,
 	NewDatastoreResource,
 	NewDatastoreItemResource,
+	NewServiceAccountTokenLifecycleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -236,6 +243,15 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 	}
 
 	return wrappedResources
+}
+
+func (p *FrameworkProvider) EphemeralResources(_ context.Context) []func() ephemeral.EphemeralResource {
+	var wrapped []func() ephemeral.EphemeralResource
+	for _, f := range EphemeralResources {
+		r := f()
+		wrapped = append(wrapped, func() ephemeral.EphemeralResource { return NewFrameworkEphemeralResourceWrapper(&r) })
+	}
+	return wrapped
 }
 
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
@@ -364,6 +380,7 @@ func (p *FrameworkProvider) Configure(ctx context.Context, request provider.Conf
 	// Make config available for data sources and resources
 	response.DataSourceData = p
 	response.ResourceData = p
+	response.EphemeralResourceData = p
 }
 
 func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config *ProviderSchema) diag.Diagnostics {
