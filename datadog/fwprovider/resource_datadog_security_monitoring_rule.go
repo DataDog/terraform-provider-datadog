@@ -2260,19 +2260,28 @@ func buildUpdateSignalRuleQuery(ctx context.Context, query signalQueryModel) (da
 	return datadogV2.SecurityMonitoringSignalRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery), diags
 }
 
-// preserveQueryDataSources copies DataSource values from src queries onto dst queries
-// by index. The API normalizes deprecated data_source aliases (e.g. "app_sec_spans" → "spans"),
-// so restoring the user-provided / prior-state value avoids Framework plan-consistency errors.
-// Only applies to standard rules — signal rule queries have no data_source field.
-func preserveQueryDataSources(dst, src []ruleQueryModel) {
-	if len(dst) != len(src) {
+// preserveQueryDataSources restores the prior DataSource value onto apiState
+// only when the API has normalized a deprecated alias (currently
+// `app_sec_spans` → `spans`). For all other cases the API value is kept so
+// genuine out-of-band drift is surfaced in `terraform plan`. Only applies to
+// standard rules — signal rule queries have no data_source field.
+func preserveQueryDataSources(apiState, prior []ruleQueryModel) {
+	if len(apiState) != len(prior) {
 		return
 	}
-	for i := range dst {
-		if !src[i].DataSource.IsNull() && !src[i].DataSource.IsUnknown() {
-			dst[i].DataSource = src[i].DataSource
+	for i := range apiState {
+		priorDS := prior[i].DataSource
+		if priorDS.IsNull() || priorDS.IsUnknown() {
+			continue
+		}
+		if isDeprecatedDataSourceAlias(priorDS.ValueString(), apiState[i].DataSource.ValueString()) {
+			apiState[i].DataSource = priorDS
 		}
 	}
+}
+
+func isDeprecatedDataSourceAlias(prior, api string) bool {
+	return prior == "app_sec_spans" && api == "spans"
 }
 
 func (r *securityMonitoringRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
