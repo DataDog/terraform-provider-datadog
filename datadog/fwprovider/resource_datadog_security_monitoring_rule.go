@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -1552,6 +1553,7 @@ func buildCreateCommonPayload(ctx context.Context, model *securityMonitoringRule
 	if !model.EffectiveTags.IsNull() && !model.EffectiveTags.IsUnknown() {
 		var tags []string
 		model.EffectiveTags.ElementsAs(ctx, &tags, false)
+		sort.Strings(tags)
 		payload.SetTags(tags)
 	}
 
@@ -2153,6 +2155,7 @@ func buildUpdatePayloadFromModel(ctx context.Context, model, prior *securityMoni
 	if !model.EffectiveTags.IsNull() && !model.EffectiveTags.IsUnknown() {
 		var tags []string
 		model.EffectiveTags.ElementsAs(ctx, &tags, false)
+		sort.Strings(tags)
 		payload.SetTags(tags)
 	} else {
 		payload.SetTags([]string{})
