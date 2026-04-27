@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_query","query":"*"}],"type":"log_detection"}
+            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_query","query":"*"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 282.110709ms
+        duration: 444.118125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_query","query":"*"}],"type":"log_detection"}
+            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_query","query":"*"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 139.791667ms
+        duration: 380.437416ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","createdAt":1776955000750,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"sng-cf4-oij","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","createdAt":1777269591906,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"lvp-ynr-kwz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 157.257916ms
+        duration: 164.409916ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","createdAt":1776955000750,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"sng-cf4-oij","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","createdAt":1777269591906,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"lvp-ynr-kwz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 356.574834ms
+        duration: 145.06825ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","metrics":["@usr.handle"],"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","metrics":["@usr.handle"],"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 272.4695ms
+        duration: 136.32125ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","createdAt":1776955000750,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"sng-cf4-oij","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","createdAt":1777269591906,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"lvp-ynr-kwz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.010834ms
+        duration: 196.867708ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","metrics":["@usr.handle"],"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","metrics":["@usr.handle"],"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 142.843083ms
+        duration: 274.2885ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: GET
       response:
         proto: HTTP/1.1
@@ -265,13 +265,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","createdAt":1776955000750,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"sng-cf4-oij","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","createdAt":1777269591906,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"lvp-ynr-kwz","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 151.615334ms
+        duration: 474.492208ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,14 +284,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"","name":"new case name (updated)","notifications":["@user"],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_updated_query","query":"*"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
+            {"calculatedFields":[],"cases":[{"condition":"","name":"new case name (updated)","notifications":["@user"],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","dataSource":"logs","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"metric":"@usr.handle","name":"my_updated_query","query":"*"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: PUT
       response:
         proto: HTTP/1.1
@@ -301,13 +301,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","isEnabled":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"sng-cf4-oij","version":2,"createdAt":1776955000750,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1776955004087,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","isEnabled":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"lvp-ynr-kwz","version":2,"createdAt":1777269591906,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1777269595280,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 321.212083ms
+        duration: 581.594625ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -324,7 +324,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: GET
       response:
         proto: HTTP/1.1
@@ -334,13 +334,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","createdAt":1776955000750,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"sng-cf4-oij","updatedAt":1776955004087,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","createdAt":1777269591906,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"lvp-ynr-kwz","updatedAt":1777269595280,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.175625ms
+        duration: 244.365208ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -357,7 +357,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: GET
       response:
         proto: HTTP/1.1
@@ -367,13 +367,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1776954997","createdAt":1776955000750,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"sng-cf4-oij","updatedAt":1776955004087,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1777269590","createdAt":1777269591906,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"impossible_travel","maxSignalDuration":900,"keepAlive":600,"impossibleTravelOptions":{"baselineUserLocations":true,"detectIpTransition":false},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"lvp-ynr-kwz","updatedAt":1777269595280,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 280.100084ms
+        duration: 371.854917ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -390,7 +390,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -404,7 +404,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 475.169459ms
+        duration: 239.798709ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -421,7 +421,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sng-cf4-oij
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/lvp-ynr-kwz
         method: GET
       response:
         proto: HTTP/1.1
@@ -431,10 +431,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: sng-cf4-oij"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: lvp-ynr-kwz"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 132.671042ms
+        duration: 152.370625ms

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"type":"log_detection"}
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 220.963334ms
+        duration: 361.050167ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"type":"log_detection"}
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 174.337541ms
+        duration: 157.320791ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","createdAt":1776955001668,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"bkj-ylh-pah","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","createdAt":1777269584960,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"f4e-aew-wml","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 334.197084ms
+        duration: 162.647667ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","createdAt":1776955001668,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"bkj-ylh-pah","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","createdAt":1777269584960,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"f4e-aew-wml","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 140.214583ms
+        duration: 455.602ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 162.010375ms
+        duration: 236.95375ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","createdAt":1776955001668,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"bkj-ylh-pah","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","createdAt":1777269584960,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"f4e-aew-wml","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 215.557208ms
+        duration: 1.903509375s
     - id: 6
       request:
         proto: HTTP/1.1
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"step_b \u003e 0","name":"","notifications":[],"status":"info"}],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":900,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":60,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":60,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 141.526791ms
+        duration: 392.681583ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: GET
       response:
         proto: HTTP/1.1
@@ -265,13 +265,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","createdAt":1776955001668,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"bkj-ylh-pah","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","createdAt":1777269584960,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":60},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":60}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":900}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"f4e-aew-wml","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 386.122417ms
+        duration: 717.718334ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,14 +284,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"step_b \u003e 0","name":"info case","notifications":[],"status":"info"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":1800,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":300,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":300,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
+            {"calculatedFields":[],"cases":[{"condition":"step_b \u003e 0","name":"info case","notifications":[],"status":"info"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"sequence detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"sequence_detection","keepAlive":300,"maxSignalDuration":600,"sequenceDetectionOptions":{"stepTransitions":[{"child":"step_b","evaluationWindow":1800,"parent":"step_a"}],"steps":[{"condition":"a \u003e 0","evaluationWindow":300,"name":"step_a"},{"condition":"b \u003e 0","evaluationWindow":300,"name":"step_b"}]}},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"a","query":"service:logs-rule-reducer source:sequence-detection-a"},{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"b","query":"service:logs-rule-reducer source:sequence-detection-b"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: PUT
       response:
         proto: HTTP/1.1
@@ -301,13 +301,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","isEnabled":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"bkj-ylh-pah","version":2,"createdAt":1776955001668,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1776955004839,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","isEnabled":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"f4e-aew-wml","version":2,"createdAt":1777269584960,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1777269590114,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 170.802167ms
+        duration: 363.195292ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -324,7 +324,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: GET
       response:
         proto: HTTP/1.1
@@ -334,13 +334,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","createdAt":1776955001668,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"bkj-ylh-pah","updatedAt":1776955004839,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","createdAt":1777269584960,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"f4e-aew-wml","updatedAt":1777269590114,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 287.485792ms
+        duration: 369.231042ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -357,7 +357,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: GET
       response:
         proto: HTTP/1.1
@@ -367,13 +367,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1776955000","createdAt":1776955001668,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"bkj-ylh-pah","updatedAt":1776955004839,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_SequenceDetection-local-1777269573","createdAt":1777269584960,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"service:logs-rule-reducer source:sequence-detection-a","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"a","dataSource":"logs"},{"query":"service:logs-rule-reducer source:sequence-detection-b","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"b","dataSource":"logs"}],"options":{"evaluationWindow":0,"detectionMethod":"sequence_detection","maxSignalDuration":600,"keepAlive":300,"sequenceDetectionOptions":{"steps":[{"name":"step_a","condition":"a \u003e 0","evaluationWindow":300},{"name":"step_b","condition":"b \u003e 0","evaluationWindow":300}],"stepTransitions":[{"parent":"step_a","child":"step_b","evaluationWindow":1800}]},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"info case","status":"info","notifications":[],"condition":"step_b \u003e 0"}],"message":"sequence detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"f4e-aew-wml","updatedAt":1777269590114,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 287.727333ms
+        duration: 211.802ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -390,7 +390,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -404,7 +404,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 395.103708ms
+        duration: 170.801083ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -421,7 +421,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bkj-ylh-pah
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/f4e-aew-wml
         method: GET
       response:
         proto: HTTP/1.1
@@ -431,10 +431,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: bkj-ylh-pah"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: f4e-aew-wml"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 134.543583ms
+        duration: 138.069375ms

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 422.925708ms
+        duration: 709.120709ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 235.569875ms
+        duration: 449.113916ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: 943
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","createdAt":1776955001286,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"mcr-zuc-l2g","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","createdAt":1777269585675,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"osv-0uj-pvs","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 294.876125ms
+        duration: 158.282333ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: 943
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","createdAt":1776955001286,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"mcr-zuc-l2g","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","createdAt":1777269585675,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"osv-0uj-pvs","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 298.871458ms
+        duration: 1.847453375s
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 176.042125ms
+        duration: 689.095333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 943
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","createdAt":1776955001286,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"mcr-zuc-l2g","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","createdAt":1777269585675,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"osv-0uj-pvs","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 318.089334ms
+        duration: 726.912417ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"query":"does not really match much"}],"tags":[],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 128.559709ms
+        duration: 263.787042ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: GET
       response:
         proto: HTTP/1.1
@@ -265,13 +265,13 @@ interactions:
         trailer: {}
         content_length: 943
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997","createdAt":1776955001286,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"mcr-zuc-l2g","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573","createdAt":1777269585675,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"osv-0uj-pvs","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 136.147459ms
+        duration: 301.478ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"type":"log_detection"}
+            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -305,7 +305,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 308.729334ms
+        duration: 465.836292ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -318,7 +318,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"type":"log_detection"}
+            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -339,7 +339,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 229.109375ms
+        duration: 204.963583ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -352,14 +352,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
+            {"calculatedFields":[],"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: PUT
       response:
         proto: HTTP/1.1
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","isEnabled":true,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":600,"keepAlive":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated \u003e 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated \u003e 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"mcr-zuc-l2g","version":2,"createdAt":1776955001286,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1776955005307,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first_updated"}]}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","isEnabled":true,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":600,"keepAlive":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated \u003e 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated \u003e 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"osv-0uj-pvs","version":2,"createdAt":1777269585675,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1777269591902,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first_updated"}]}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 394.476125ms
+        duration: 359.313417ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -392,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: GET
       response:
         proto: HTTP/1.1
@@ -402,13 +402,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","createdAt":1776955001286,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":600,"keepAlive":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated \u003e 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated \u003e 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"mcr-zuc-l2g","updatedAt":1776955005307,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first_updated"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","createdAt":1777269585675,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":600,"keepAlive":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated \u003e 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated \u003e 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"osv-0uj-pvs","updatedAt":1777269591902,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first_updated"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 141.401834ms
+        duration: 141.291083ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -421,7 +421,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -442,7 +442,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 271.429167ms
+        duration: 140.705209ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -459,7 +459,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: GET
       response:
         proto: HTTP/1.1
@@ -469,13 +469,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","createdAt":1776955001286,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":600,"keepAlive":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated \u003e 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated \u003e 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"mcr-zuc-l2g","updatedAt":1776955005307,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first_updated"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","createdAt":1777269585675,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated","dataSource":"logs"}],"options":{"evaluationWindow":60,"detectionMethod":"threshold","maxSignalDuration":600,"keepAlive":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated \u003e 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated \u003e 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"osv-0uj-pvs","updatedAt":1777269591902,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first_updated"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 128.599042ms
+        duration: 238.656125ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -488,7 +488,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1776954997 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1777269573 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["service"],"hasOptionalGroupByFields":false,"name":"first_updated","query":"does not really match much (updated)"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first_updated","tableName":"table1"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -509,7 +509,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 249.509791ms
+        duration: 313.587084ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -526,7 +526,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -540,7 +540,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 164.486917ms
+        duration: 532.076542ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -557,7 +557,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/mcr-zuc-l2g
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/osv-0uj-pvs
         method: GET
       response:
         proto: HTTP/1.1
@@ -567,10 +567,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: mcr-zuc-l2g"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: osv-0uj-pvs"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 270.105959ms
+        duration: 801.049208ms

@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"type":"log_detection"}
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 429.623125ms
+        duration: 313.39675ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"type":"log_detection"}
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 340.424291ms
+        duration: 480.884708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","createdAt":1776955001250,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"m0u-fyn-9t4","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","createdAt":1777269585736,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"tvd-1q8-eed","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 155.661375ms
+        duration: 183.309666ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: GET
       response:
         proto: HTTP/1.1
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","createdAt":1776955001250,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"m0u-fyn-9t4","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","createdAt":1777269585736,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"tvd-1q8-eed","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 264.618375ms
+        duration: 1.818475667s
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 134.38075ms
+        duration: 745.530959ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","createdAt":1776955001250,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"m0u-fyn-9t4","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","createdAt":1777269585736,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"tvd-1q8-eed","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 292.32025ms
+        duration: 708.996333ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"my_query \u003e 0.95","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":300,"detectionTolerance":5,"instantaneousBaseline":false,"learningDuration":24,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 136.725458ms
+        duration: 271.875584ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: GET
       response:
         proto: HTTP/1.1
@@ -265,13 +265,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","createdAt":1776955001250,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"m0u-fyn-9t4","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","createdAt":1777269585736,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":300,"learningDuration":24,"detectionTolerance":5,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":0},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_query \u003e 0.95"}],"message":"anomaly detection rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":1,"id":"tvd-1q8-eed","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 150.409625ms
+        duration: 281.708875ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"type":"log_detection"}
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -305,7 +305,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 316.061291ms
+        duration: 465.856917ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -318,7 +318,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"type":"log_detection"}
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -339,7 +339,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 272.811167ms
+        duration: 389.748083ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -352,14 +352,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"calculatedFields":[],"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
+            {"calculatedFields":[],"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"schedulingOptions":null,"tags":["i:tomato","u:tomato"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: PUT
       response:
         proto: HTTP/1.1
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","isEnabled":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"m0u-fyn-9t4","version":2,"createdAt":1776955001250,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1776955005315,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","isEnabled":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"id":"tvd-1q8-eed","version":2,"createdAt":1777269585736,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1777269592056,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 332.891208ms
+        duration: 312.57225ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -392,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: GET
       response:
         proto: HTTP/1.1
@@ -402,13 +402,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","createdAt":1776955001250,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"m0u-fyn-9t4","updatedAt":1776955005315,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","createdAt":1777269585736,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"tvd-1q8-eed","updatedAt":1777269592056,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 151.645583ms
+        duration: 144.694375ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -421,7 +421,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -442,7 +442,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 250.074292ms
+        duration: 175.798ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -459,7 +459,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: GET
       response:
         proto: HTTP/1.1
@@ -469,13 +469,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","createdAt":1776955001250,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"m0u-fyn-9t4","updatedAt":1776955005315,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","createdAt":1777269585736,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"my_updated_query","dataSource":"logs"}],"options":{"evaluationWindow":1800,"detectionMethod":"anomaly_detection","maxSignalDuration":10800,"keepAlive":10800,"anomalyDetectionOptions":{"bucketDuration":600,"learningDuration":48,"detectionTolerance":4,"instantaneousBaseline":false,"instantaneousBaselineTimeoutMinutes":30,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":["@user"],"condition":"my_updated_query \u003e 0.99"}],"message":"anomaly detection rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[],"version":2,"id":"tvd-1q8-eed","updatedAt":1777269592056,"blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 137.711041ms
+        duration: 286.321792ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -488,7 +488,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1776954997","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"my_updated_query \u003e 0.99","name":"","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"anomaly detection rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule-local-1777269584","options":{"anomalyDetectionOptions":{"bucketDuration":600,"detectionTolerance":4,"instantaneousBaseline":false,"learningDuration":48,"learningPeriodBaseline":10},"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"anomaly_detection","evaluationWindow":1800,"keepAlive":10800,"maxSignalDuration":10800},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"my_updated_query","query":"*"}],"tags":["i:tomato","u:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -509,7 +509,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 336.509583ms
+        duration: 174.488708ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -526,7 +526,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -540,7 +540,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 336.570583ms
+        duration: 514.580583ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -557,7 +557,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/m0u-fyn-9t4
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/tvd-1q8-eed
         method: GET
       response:
         proto: HTTP/1.1
@@ -567,10 +567,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: m0u-fyn-9t4"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: tvd-1q8-eed"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 206.220792ms
+        duration: 346.763333ms

@@ -2271,6 +2271,13 @@ func (r *securityMonitoringRuleResource) Read(ctx context.Context, request resou
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
 	}
 
+	// SDKv2 v4.5.0 persisted absent `tags` as an empty set; Framework treats
+	// empty and null as distinct, which would produce a spurious null→[] diff
+	// on the first plan after upgrading. Normalize to null.
+	if !state.Tags.IsNull() && len(state.Tags.Elements()) == 0 {
+		state.Tags = types.SetNull(types.StringType)
+	}
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 

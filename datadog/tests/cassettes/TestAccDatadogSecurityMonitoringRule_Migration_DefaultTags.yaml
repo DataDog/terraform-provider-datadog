@@ -1,0 +1,235 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/akc-kvo-jxg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_DefaultTags-local-1777269715","createdAt":1777269726204,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["foo:bar","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":1,"id":"akc-kvo-jxg","blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"","name":""}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 175.222125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1471
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"calculatedFields":[],"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_DefaultTags-local-1777269715","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"first","query":"does not really match much"},{"aggregation":"cardinality","dataSource":"logs","distinctFields":["@orgId"],"groupByFields":["host"],"hasOptionalGroupByFields":false,"name":"second","query":"does not really match much either"},{"aggregation":"sum","dataSource":"logs","groupByFields":["host"],"hasOptionalGroupByFields":false,"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"name":"third","query":"does not really match much either"}],"referenceTables":[{"checkPresence":true,"columnName":"column1","logFieldPath":"@testattribute","ruleQueryName":"first","tableName":"table1"}],"schedulingOptions":null,"tags":["baz","default_key:default_value","foo:bar"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/akc-kvo-jxg
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_DefaultTags-local-1777269715","isEnabled":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"id":"akc-kvo-jxg","version":2,"createdAt":1777269726204,"creationAuthorId":1445416,"updateAuthorId":1445416,"updatedAt":1777269735931,"isDefault":false,"blocking":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 243.059458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/akc-kvo-jxg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_DefaultTags-local-1777269715","createdAt":1777269726204,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":2,"id":"akc-kvo-jxg","updatedAt":1777269735931,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.911667ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/akc-kvo-jxg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_DefaultTags-local-1777269715","createdAt":1777269726204,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":2,"id":"akc-kvo-jxg","updatedAt":1777269735931,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 202.3185ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/akc-kvo-jxg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_Migration_DefaultTags-local-1777269715","createdAt":1777269726204,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second","dataSource":"logs"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third","dataSource":"logs"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first \u003e 3 || second \u003e 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first \u003e 0 || second \u003e 0"},{"name":"low case","status":"low","notifications":[],"condition":"third \u003e 9000"}],"message":"acceptance rule triggered","tags":["default_key:default_value","foo:bar","baz"],"hasExtendedTitle":true,"type":"log_detection","filters":[],"version":2,"id":"akc-kvo-jxg","updatedAt":1777269735931,"blocking":false,"metadata":{"entities":null,"sources":null},"referenceTables":[{"tableName":"table1","columnName":"column1","logFieldPath":"@testattribute","checkPresence":true,"ruleQueryName":"first"}],"creationAuthorId":1445416,"updateAuthorId":1445416,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"updater":{"handle":"frog@datadoghq.com","name":"frog"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 200.299208ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/akc-kvo-jxg
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 201.804208ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/akc-kvo-jxg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 86
+        uncompressed: false
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: akc-kvo-jxg"}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 162.480958ms
