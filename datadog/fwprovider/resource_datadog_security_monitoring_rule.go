@@ -1762,15 +1762,15 @@ func buildPayloadOptions(ctx context.Context, opts []ruleOptionsModel, ruleType 
 		payloadOptions.DetectionMethod = &detectionMethod
 	}
 	if !tfOptions.EvaluationWindow.IsNull() && !tfOptions.EvaluationWindow.IsUnknown() {
-		evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(tfOptions.EvaluationWindow.ValueInt64())
+		evaluationWindow := datadogV2.SecurityMonitoringRuleEvaluationWindow(tfOptions.EvaluationWindow.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		payloadOptions.EvaluationWindow = &evaluationWindow
 	}
 	if !tfOptions.KeepAlive.IsNull() && !tfOptions.KeepAlive.IsUnknown() {
-		keepAlive := datadogV2.SecurityMonitoringRuleKeepAlive(tfOptions.KeepAlive.ValueInt64())
+		keepAlive := datadogV2.SecurityMonitoringRuleKeepAlive(tfOptions.KeepAlive.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		payloadOptions.KeepAlive = &keepAlive
 	}
 	if !tfOptions.MaxSignalDuration.IsNull() && !tfOptions.MaxSignalDuration.IsUnknown() {
-		maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(tfOptions.MaxSignalDuration.ValueInt64())
+		maxSignalDuration := datadogV2.SecurityMonitoringRuleMaxSignalDuration(tfOptions.MaxSignalDuration.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		payloadOptions.MaxSignalDuration = &maxSignalDuration
 	}
 	if !tfOptions.DecreaseCriticalityBasedOnEnv.IsNull() && !tfOptions.DecreaseCriticalityBasedOnEnv.IsUnknown() &&
@@ -1830,17 +1830,17 @@ func buildPayloadAnomalyDetectionOptions(opts []anomalyDetectionOptionsModel) (*
 
 	if !o.BucketDuration.IsNull() && !o.BucketDuration.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsBucketDuration(o.BucketDuration.ValueInt64())
+		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsBucketDuration(o.BucketDuration.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		options.BucketDuration = &v
 	}
 	if !o.LearningDuration.IsNull() && !o.LearningDuration.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsLearningDuration(o.LearningDuration.ValueInt64())
+		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsLearningDuration(o.LearningDuration.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		options.LearningDuration = &v
 	}
 	if !o.DetectionTolerance.IsNull() && !o.DetectionTolerance.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsDetectionTolerance(o.DetectionTolerance.ValueInt64())
+		v := datadogV2.SecurityMonitoringRuleAnomalyDetectionOptionsDetectionTolerance(o.DetectionTolerance.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		options.DetectionTolerance = &v
 	}
 	if !o.InstantaneousBaseline.IsNull() && !o.InstantaneousBaseline.IsUnknown() {
@@ -1869,17 +1869,17 @@ func buildPayloadNewValueOptions(opts []newValueOptionsModel) (*datadogV2.Securi
 	}
 	if !o.LearningDuration.IsNull() && !o.LearningDuration.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(o.LearningDuration.ValueInt64())
+		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(o.LearningDuration.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		payload.LearningDuration = &v
 	}
 	if !o.LearningThreshold.IsNull() && !o.LearningThreshold.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningThreshold(o.LearningThreshold.ValueInt64())
+		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningThreshold(o.LearningThreshold.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		payload.LearningThreshold = &v
 	}
 	if !o.ForgetAfter.IsNull() && !o.ForgetAfter.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleNewValueOptionsForgetAfter(o.ForgetAfter.ValueInt64())
+		v := datadogV2.SecurityMonitoringRuleNewValueOptionsForgetAfter(o.ForgetAfter.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 		payload.ForgetAfter = &v
 	}
 	if !o.InstantaneousBaseline.IsNull() && !o.InstantaneousBaseline.IsUnknown() {
@@ -1939,7 +1939,7 @@ func buildPayloadSequenceDetectionOptions(opts []sequenceDetectionOptionsModel) 
 			fwutils.SetOptString(s.Name, step.SetName)
 			fwutils.SetOptString(s.Condition, step.SetCondition)
 			if !s.EvaluationWindow.IsNull() && !s.EvaluationWindow.IsUnknown() {
-				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(s.EvaluationWindow.ValueInt64())
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(s.EvaluationWindow.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 				step.SetEvaluationWindow(ew)
 			}
 			payloadSteps[idx] = step
@@ -1955,7 +1955,7 @@ func buildPayloadSequenceDetectionOptions(opts []sequenceDetectionOptionsModel) 
 			fwutils.SetOptString(tr.Parent, transition.SetParent)
 			fwutils.SetOptString(tr.Child, transition.SetChild)
 			if !tr.EvaluationWindow.IsNull() && !tr.EvaluationWindow.IsUnknown() {
-				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(tr.EvaluationWindow.ValueInt64())
+				ew := datadogV2.SecurityMonitoringRuleEvaluationWindow(tr.EvaluationWindow.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
 				transition.SetEvaluationWindow(ew)
 			}
 			payloadTransitions[idx] = transition
@@ -2023,7 +2023,7 @@ func buildCreateSignalPayloadQueries(ctx context.Context, queries []signalQueryM
 
 		if !q.CorrelatedQueryIndex.IsNull() && !q.CorrelatedQueryIndex.IsUnknown() && q.CorrelatedQueryIndex.ValueString() != "" {
 			if vInt, err := strconv.Atoi(q.CorrelatedQueryIndex.ValueString()); err == nil {
-				payloadQuery.SetCorrelatedQueryIndex(int32(vInt))
+				payloadQuery.SetCorrelatedQueryIndex(int32(vInt)) //nolint:gosec // schema-validated index fits int32
 			}
 		}
 
@@ -2237,7 +2237,7 @@ func buildUpdateSignalRuleQuery(ctx context.Context, query signalQueryModel) (da
 
 	if !query.CorrelatedQueryIndex.IsNull() && !query.CorrelatedQueryIndex.IsUnknown() && query.CorrelatedQueryIndex.ValueString() != "" {
 		if vInt, err := strconv.Atoi(query.CorrelatedQueryIndex.ValueString()); err == nil {
-			payloadQuery.SetCorrelatedQueryIndex(int32(vInt))
+			payloadQuery.SetCorrelatedQueryIndex(int32(vInt)) //nolint:gosec // schema-validated index fits int32
 		}
 	}
 
@@ -2291,14 +2291,15 @@ func (r *securityMonitoringRuleResource) Create(ctx context.Context, request res
 	}
 
 	state := plan
-	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
+	switch {
+	case ruleResponse.SecurityMonitoringStandardRuleResponse != nil:
 		state.ID = types.StringValue(ruleResponse.SecurityMonitoringStandardRuleResponse.GetId())
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
 		preserveQueryDataSources(state.Queries, plan.Queries)
-	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
+	case ruleResponse.SecurityMonitoringSignalRuleResponse != nil:
 		state.ID = types.StringValue(ruleResponse.SecurityMonitoringSignalRuleResponse.GetId())
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
-	} else {
+	default:
 		response.Diagnostics.AddError("unexpected response", "SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse are both empty")
 		return
 	}
