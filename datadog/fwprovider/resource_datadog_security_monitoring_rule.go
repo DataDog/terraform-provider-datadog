@@ -510,7 +510,10 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 							Description: "Rule ID of the signal to correlate.",
 						},
 						"default_rule_id": schema.StringAttribute{
-							Optional:    true,
+							Computed: true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 							Description: "Default Rule ID of the signal to correlate. This value is READ-ONLY.",
 						},
 					},
@@ -1156,8 +1159,11 @@ func extractSignalRuleQueries(ctx context.Context, responseRuleQueries []datadog
 		if name, ok := responseRuleQuery.GetNameOk(); ok && *name != "" {
 			ruleQuery.Name = types.StringValue(*name)
 		}
+		// Computed read-only — must always be set to a known value.
 		if defaultRuleId, ok := responseRuleQuery.GetDefaultRuleIdOk(); ok && *defaultRuleId != "" {
 			ruleQuery.DefaultRuleID = types.StringValue(*defaultRuleId)
+		} else {
+			ruleQuery.DefaultRuleID = types.StringNull()
 		}
 		if correlatedByFields, ok := responseRuleQuery.GetCorrelatedByFieldsOk(); ok && len(*correlatedByFields) > 0 {
 			var listDiags diag.Diagnostics
