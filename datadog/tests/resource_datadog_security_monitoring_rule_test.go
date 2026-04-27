@@ -374,8 +374,8 @@ func TestAccDatadogSecurityMonitoringRule_InvalidTypes(t *testing.T) {
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
 
-	invalidValueRegex, _ := regexp.Compile("Invalid Attribute Value")
-	invalidTypeRegex, _ := regexp.Compile("Incorrect attribute value type")
+	invalidValueRegex := regexp.MustCompile("Invalid Attribute Value")
+	invalidTypeRegex := regexp.MustCompile("Incorrect attribute value type")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -1414,10 +1414,6 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckAnomalyDetectionRule(accProvi
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.anomaly_detection_options.0.instantaneous_baseline", "false"),
 	)
-}
-
-func testAccCheckDatadogSecurityMonitorInvalidRuleCheckCreateRule(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
-	return testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName)
 }
 
 func testAccCheckDatadogSecurityMonitoringCreatedConfigCwsRule(name string) string {
