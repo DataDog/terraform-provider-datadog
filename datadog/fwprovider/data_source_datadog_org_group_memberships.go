@@ -57,17 +57,17 @@ func (d *datadogOrgGroupMembershipsDataSource) Metadata(_ context.Context, _ dat
 
 func (d *datadogOrgGroupMembershipsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve org group memberships, optionally filtered by org group or organization.",
+		Description: "Use this data source to retrieve org group memberships filtered by org group or organization. At least one of `org_group_id` or `org_uuid` is required.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"org_group_id": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter memberships to those within the given org group.",
+				Description: "Filter memberships to those within the given org group. At least one of `org_group_id` or `org_uuid` is required.",
 				Validators:  []validator.String{uuidValidator},
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter memberships to those for the given organization.",
+				Description: "Filter memberships to those for the given organization. At least one of `org_group_id` or `org_uuid` is required.",
 				Validators:  []validator.String{uuidValidator},
 			},
 			"memberships": schema.ListAttribute{
