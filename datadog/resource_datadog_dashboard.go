@@ -985,6 +985,15 @@ func getNonGroupWidgetSchema(isPowerpackSchema bool) map[string]*schema.Schema {
 				Schema: getChangeDefinitionSchema(),
 			},
 		},
+		"cloudcraft_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Cloudcraft widget.",
+			Elem: &schema.Resource{
+				Schema: getCloudcraftDefinitionSchema(),
+			},
+		},
 		"check_status_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -1381,6 +1390,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		if changeDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ChangeWidgetDefinitionAsWidgetDefinition(buildDatadogChangeDefinition(changeDefinition))
 		}
+	} else if def, ok := terraformWidget["cloudcraft_definition"].([]interface{}); ok && len(def) > 0 {
+		if cloudcraftDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.CloudcraftWidgetDefinitionAsWidgetDefinition(buildDatadogCloudcraftDefinition(cloudcraftDefinition))
+		}
 	} else if def, ok := terraformWidget["check_status_definition"].([]interface{}); ok && len(def) > 0 {
 		if checkStatusDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.CheckStatusWidgetDefinitionAsWidgetDefinition(buildDatadogCheckStatusDefinition(checkStatusDefinition))
@@ -1673,6 +1686,9 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 	} else if widgetDefinition.ChangeWidgetDefinition != nil {
 		terraformDefinition := buildTerraformChangeDefinition(widgetDefinition.ChangeWidgetDefinition)
 		terraformWidget["change_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.CloudcraftWidgetDefinition != nil {
+		terraformDefinition := buildTerraformCloudcraftDefinition(widgetDefinition.CloudcraftWidgetDefinition)
+		terraformWidget["cloudcraft_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.CheckStatusWidgetDefinition != nil {
 		terraformDefinition := buildTerraformCheckStatusDefinition(widgetDefinition.CheckStatusWidgetDefinition)
 		terraformWidget["check_status_definition"] = []map[string]interface{}{terraformDefinition}
@@ -2431,6 +2447,144 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
+}
+
+//
+// Cloudcraft Widget Definition helpers
+//
+
+func getCloudcraftDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"query_string": {
+			Description: "The query string used to filter the resources displayed by the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"provider": {
+			Description:      "The cloud provider for the Cloudcraft widget.",
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewCloudcraftWidgetDefinitionProviderFromValue),
+		},
+		"overlay": {
+			Description:      "The overlay applied to the Cloudcraft widget.",
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewCloudcraftWidgetDefinitionOverlayFromValue),
+		},
+		"overlay_filter": {
+			Description: "The filter applied to the overlay.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"group_by": {
+			Description: "The list of attributes used to group resources within the diagram.",
+			Type:        schema.TypeList,
+			Required:    true,
+			Elem:        &schema.Schema{Type: schema.TypeString},
+		},
+		"projection": {
+			Description:      "The projection used to render the Cloudcraft diagram.",
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewCloudcraftWidgetDefinitionProjectionFromValue),
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_size": {
+			Description: "The size of the widget's title (defaults to 16).",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title_align": {
+			Description:      "The alignment of the widget's title.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
+			Optional:         true,
+		},
+		"live_span": {
+			Description:      "The timeframe to use when displaying the widget.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
+			Optional:         true,
+		},
+		"custom_link": {
+			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetCustomLinkSchema(),
+			},
+		},
+	}
+}
+
+func buildDatadogCloudcraftDefinition(terraformDefinition map[string]interface{}) *datadogV1.CloudcraftWidgetDefinition {
+	datadogDefinition := datadogV1.NewCloudcraftWidgetDefinitionWithDefaults()
+
+	// Required params
+	datadogDefinition.SetQueryString(terraformDefinition["query_string"].(string))
+	datadogDefinition.SetProvider(datadogV1.CloudcraftWidgetDefinitionProvider(terraformDefinition["provider"].(string)))
+	datadogDefinition.SetOverlay(datadogV1.CloudcraftWidgetDefinitionOverlay(terraformDefinition["overlay"].(string)))
+	datadogDefinition.SetOverlayFilter(terraformDefinition["overlay_filter"].(string))
+	terraformGroupBy := terraformDefinition["group_by"].([]interface{})
+	datadogGroupBy := make([]string, len(terraformGroupBy))
+	for i, g := range terraformGroupBy {
+		datadogGroupBy[i] = g.(string)
+	}
+	datadogDefinition.SetGroupBy(datadogGroupBy)
+	datadogDefinition.SetProjection(datadogV1.CloudcraftWidgetDefinitionProjection(terraformDefinition["projection"].(string)))
+
+	// Optional params
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleSize(v)
+	}
+	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
+	}
+	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
+	}
+	return datadogDefinition
+}
+
+func buildTerraformCloudcraftDefinition(datadogDefinition *datadogV1.CloudcraftWidgetDefinition) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+
+	// Required params
+	terraformDefinition["query_string"] = datadogDefinition.GetQueryString()
+	terraformDefinition["provider"] = string(datadogDefinition.GetProvider())
+	terraformDefinition["overlay"] = string(datadogDefinition.GetOverlay())
+	terraformDefinition["overlay_filter"] = datadogDefinition.GetOverlayFilter()
+	terraformDefinition["group_by"] = datadogDefinition.GetGroupBy()
+	terraformDefinition["projection"] = string(datadogDefinition.GetProjection())
+
+	// Optional params
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleSizeOk(); ok {
+		terraformDefinition["title_size"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
+		terraformDefinition["title_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		buildTerraformWidgetTime(v, terraformDefinition)
+	}
+	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
+		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
+	}
+	return terraformDefinition
 }
 
 //
