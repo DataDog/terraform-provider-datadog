@@ -27,6 +27,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &onCallScheduleResource{}
 	_ resource.ResourceWithImportState = &onCallScheduleResource{}
+	_ resource.ResourceWithModifyPlan  = &onCallScheduleResource{}
 )
 
 type onCallScheduleResource struct {
@@ -238,6 +239,34 @@ func (r *onCallScheduleResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 		},
 	}
+}
+
+func (r *onCallScheduleResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.Plan.Raw.IsNull() || req.State.Raw.IsNull() {
+		return
+	}
+
+	var plan, state onCallScheduleModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	stateIdByName := make(map[string]string)
+	for _, layer := range state.Layers {
+		if name := layer.Name.ValueString(); name != "" {
+			stateIdByName[name] = layer.Id.ValueString()
+		}
+	}
+
+	for _, layer := range plan.Layers {
+		if id, ok := stateIdByName[layer.Name.ValueString()]; ok && id != "" {
+			layer.Id = types.StringValue(id)
+		}
+	}
+
+	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
 }
 
 func (r *onCallScheduleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {

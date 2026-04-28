@@ -9,7 +9,10 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -58,9 +61,18 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 						"datadog_on_call_schedule.single_layer", "layer.0.effective_date", "2025-01-01T00:00:00-08:00"),
 				),
 			},
-			// Update the effective date
+			// Update the effective date but the layer id must remain known (not "known after apply")
 			{
 				Config: createConfig("2025-02-01T00:00:00Z"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue(
+							"datadog_on_call_schedule.single_layer",
+							tfjsonpath.New("layer").AtSliceIndex(0).AtMapKey("id"),
+							knownvalue.NotNull(),
+						),
+					},
+				},
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
