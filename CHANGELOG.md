@@ -1,3 +1,14 @@
+## 4.7.0 (April 29, 2026)
+
+### BUGFIXES
+* [no-jira][fix] Skip CheckForUnparsed in logs integration pipeline read/update by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3733
+
+## New Contributors
+* @amarshall-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3725
+* @TsaorKG made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3734
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.6.0...v4.7.0
+
 ## 4.6.0 (April 21, 2026)
 
 ### BUGFIXES
