@@ -141,6 +141,8 @@ var widgetMarkerFields = []FieldSpec{
 		Description: "Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`."},
 	{HCLKey: "label", Type: TypeString, OmitEmpty: true,
 		Description: "Label to display over the marker."},
+	{HCLKey: "time", Type: TypeString, OmitEmpty: true,
+		Description: "Timestamp for the marker position."},
 }
 
 // widgetEventFields corresponds to OpenAPI components/schemas/WidgetEvent.

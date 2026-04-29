@@ -109,6 +109,12 @@ var FreeTextWidgetSpec = WidgetSpec{
 			Description: "The alignment of the text in the widget.",
 			ValidValues: []string{"center", "left", "right"},
 		},
+		{
+			HCLKey:      "background_color",
+			Type:        TypeString,
+			OmitEmpty:   true,
+			Description: "The background color of the text widget.",
+		},
 	},
 }
 
@@ -816,6 +822,9 @@ var DistributionWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Children:    distributionWidgetRequestFields},
+		{HCLKey: "marker", JSONKey: "markers", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `distribution_definition` block.",
+			Children:    widgetMarkerFields},
 	},
 }
 
@@ -859,6 +868,9 @@ var HeatmapWidgetSpec = WidgetSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Children:    heatmapWidgetRequestFields},
+		{HCLKey: "marker", JSONKey: "markers", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block.",
+			Children:    widgetMarkerFields},
 		widgetCustomLinkField,
 	},
 }
@@ -897,6 +909,8 @@ var HostmapWidgetSpec = WidgetSpec{
 		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 			Children:    hostmapStyleFields},
+		{HCLKey: "notes", Type: TypeString, OmitEmpty: true,
+			Description: "Notes/description text for the host map widget."},
 		widgetCustomLinkField,
 	},
 }
@@ -1212,6 +1226,10 @@ var ListStreamWidgetSpec = WidgetSpec{
 	JSONType:    "list_stream",
 	Description: "The definition for a List Stream widget.",
 	Fields: []FieldSpec{
+		{HCLKey: "show_legend", Type: TypeBool, OmitEmpty: true,
+			Description: "Whether or not to show the legend on this widget."},
+		{HCLKey: "legend_size", Type: TypeString, OmitEmpty: true,
+			Description: "The size of the legend displayed in the widget."},
 		// request: HCL singular "request" → JSON plural "requests"
 		{
 			HCLKey:      "request",
