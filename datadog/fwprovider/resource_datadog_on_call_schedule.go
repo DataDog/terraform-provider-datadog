@@ -253,13 +253,19 @@ func (r *onCallScheduleResource) ModifyPlan(ctx context.Context, req resource.Mo
 		return
 	}
 
-	stateIdByName := make(map[string]string)
-	for _, layer := range state.Layers {
-		if name := layer.Name.ValueString(); name != "" {
-			stateIdByName[name] = layer.Id.ValueString()
-		}
+	// Create a map of existing layer names to their IDs
+	// This is based on the assumption that the layer name is unique
+	// The name is used as a proxy to identify the layer to be updated
+	// If two layer names are the same, fail the update
+	// we could also don't try to update the given layer but just recreate it on name collision
+	stateIdByName, err := layerIDByName(state.Layers)
+	if err != nil {
+		return
 	}
 
+	// Carry known IDs from state into the plan using layer name as the stable
+	// key. A renamed layer has no state match and keeps an unknown ID in the
+	// plan. Swapping two layer names preserves each layer's original ID.
 	for _, layer := range plan.Layers {
 		if id, ok := stateIdByName[layer.Name.ValueString()]; ok && id != "" {
 			layer.Id = types.StringValue(id)
@@ -360,24 +366,12 @@ func (r *onCallScheduleResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
-	// Create a map of existing layer names to their IDs
-	// This is based on the assumption that the layer name is unique
-	// The name is used as a proxy to identify the layer to be updated
-	// If two layer names are the same, fail the update
-	// we could also don't try to update the given layer but just recreate it on name collision
 	var previousState onCallScheduleModel
 	request.State.Get(ctx, &previousState)
-	existingLayerIdByName := make(map[string]string)
-	for _, layer := range previousState.Layers {
-		if layer.Name.ValueString() == "" {
-			response.Diagnostics.AddError("layer name is required", "layer name is required")
-			return
-		}
-		if existingLayerIdByName[layer.Name.ValueString()] != "" {
-			response.Diagnostics.AddError("layer name is not unique", "layer name is not unique")
-			return
-		}
-		existingLayerIdByName[layer.Name.ValueString()] = layer.Id.ValueString()
+	existingLayerIdByName, err := layerIDByName(previousState.Layers)
+	if err != nil {
+		response.Diagnostics.AddError("invalid previous state", err.Error())
+		return
 	}
 
 	body, diags := r.buildOnCallScheduleUpdateRequestBody(ctx, &plan, existingLayerIdByName)
@@ -863,4 +857,22 @@ func buildUpdateRelationships(plannedTeams []string) *datadogV2.ScheduleUpdateRe
 		}
 	}
 	return relationships
+}
+
+// layerIDByName builds a name → id map from a slice of layers, validating that
+// each name is non-empty and unique. Used by both ModifyPlan (to resolve planned
+// IDs before apply) and Update (to look up existing IDs for the API request).
+func layerIDByName(layers []*layersModel) (map[string]string, error) {
+	m := make(map[string]string)
+	for _, layer := range layers {
+		name := layer.Name.ValueString()
+		if name == "" {
+			return nil, fmt.Errorf("layer name must not be empty")
+		}
+		if _, exists := m[name]; exists {
+			return nil, fmt.Errorf("layer name %q must be unique", name)
+		}
+		m[name] = layer.Id.ValueString()
+	}
+	return m, nil
 }

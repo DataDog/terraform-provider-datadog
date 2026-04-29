@@ -21,6 +21,9 @@ import (
 //go:embed resource_datadog_on_call_schedule_test.tf
 var OnCallScheduleTest string
 
+//go:embed resource_datadog_on_call_schedule_swap_test.tf
+var OnCallScheduleSwapTest string
+
 func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -104,6 +107,62 @@ func TestAccOnCallScheduleCreateAndUpdate(t *testing.T) {
 						"datadog_on_call_schedule.single_layer", "layer.1.name", "Primary On-Call Layer"),
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_schedule.single_layer", "layer.1.effective_date", "2025-02-01T00:00:00Z"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccOnCallScheduleLayerIDSwapNames(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+
+	swapConfig := func(layerAName, layerBName string) string {
+		return strings.NewReplacer(
+			"SWAP_SCHEDULE_NAME", uniq,
+			"LAYER_A_NAME", layerAName,
+			"LAYER_B_NAME", layerBName,
+		).Replace(OnCallScheduleSwapTest)
+	}
+
+	var idFirst, idSecond string
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogOnCallScheduleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: swapConfig("Layer A", "Layer B"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttrWith("datadog_on_call_schedule.swap", "layer.0.id", func(v string) error { idFirst = v; return nil }),
+					resource.TestCheckResourceAttrWith("datadog_on_call_schedule.swap", "layer.1.id", func(v string) error { idSecond = v; return nil }),
+				),
+			},
+			// Swap layer names: each layer must keep its own ID in the plan, not the other's.
+			{
+				Config: swapConfig("Layer B", "Layer A"),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("datadog_on_call_schedule.swap", tfjsonpath.New("layer").AtSliceIndex(0).AtMapKey("id"), knownvalue.NotNull()),
+						plancheck.ExpectKnownValue("datadog_on_call_schedule.swap", tfjsonpath.New("layer").AtSliceIndex(1).AtMapKey("id"), knownvalue.NotNull()),
+					},
+				},
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogOnCallScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttrWith("datadog_on_call_schedule.swap", "layer.0.id", func(v string) error {
+						if v != idSecond {
+							return fmt.Errorf("layer 0 (now %q) expected id %q, got %q", "Layer B", idSecond, v)
+						}
+						return nil
+					}),
+					resource.TestCheckResourceAttrWith("datadog_on_call_schedule.swap", "layer.1.id", func(v string) error {
+						if v != idFirst {
+							return fmt.Errorf("layer 1 (now %q) expected id %q, got %q", "Layer A", idFirst, v)
+						}
+						return nil
+					}),
 				),
 			},
 		},
