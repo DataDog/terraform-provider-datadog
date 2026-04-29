@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -391,7 +393,8 @@ func setPowerpackState(d *schema.ResourceData, ppk *datadogV2.PowerpackResponse)
 	// Widgets — unmarshal each PowerpackInnerWidget to map, then flatten via engine
 	rawWidgets := attrs.GroupWidget.Definition.Widgets
 	flatWidgets := make([]interface{}, 0, len(rawWidgets))
-	for _, ppkWidget := range rawWidgets {
+	var allDropped []string
+	for i, ppkWidget := range rawWidgets {
 		widgetJSON, err := ppkWidget.MarshalJSON()
 		if err != nil {
 			continue
@@ -400,7 +403,10 @@ func setPowerpackState(d *schema.ResourceData, ppk *datadogV2.PowerpackResponse)
 		if err := json.Unmarshal(widgetJSON, &widgetData); err != nil {
 			continue
 		}
-		flattened := dashboardmapping.FlattenWidgetEngineJSON(widgetData)
+		flattened, dropped := dashboardmapping.FlattenWidgetEngineJSON(widgetData)
+		for _, p := range dropped {
+			allDropped = append(allDropped, fmt.Sprintf("widget[%d].%s", i, p))
+		}
 		if flattened == nil {
 			flattened = map[string]interface{}{}
 		}
@@ -425,6 +431,19 @@ func setPowerpackState(d *schema.ResourceData, ppk *datadogV2.PowerpackResponse)
 	}
 	if err := d.Set("widget", flatWidgets); err != nil {
 		diags = append(diags, diag.FromErr(err)...)
+	}
+	if len(allDropped) > 0 {
+		for _, p := range allDropped {
+			log.Printf("[WARN] datadog_powerpack_v2 %s: dropped unmapped API field at %s", d.Id(), p)
+		}
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Warning,
+			Summary:  fmt.Sprintf("Powerpack contains %d field(s) returned by the Datadog API with no schema mapping", len(allDropped)),
+			Detail: fmt.Sprintf(
+				"The following paths were stripped from state because the schema does not declare them; their values will not be preserved on apply.\n  %s\nIf any of these are fields you need, file an issue against the provider.",
+				strings.Join(allDropped, "\n  "),
+			),
+		})
 	}
 
 	return diags

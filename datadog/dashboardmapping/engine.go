@@ -342,6 +342,83 @@ func toStringSliceFromInterface(raw interface{}) []string {
 	return result
 }
 
+// pruneUnknownFields recursively removes keys from `state` that don't appear in `fields`.
+// SchemaOnly fields count as known. Container types (TypeBlock, TypeBlockList, TypeOneOf)
+// are recursed into.
+//
+// `extraKnown` declares additional accepted keys at this level — typically fields that
+// post-processing injects into a widget's defState (e.g. group.widget,
+// split_group.source_widget_definition). A nil children slice means "accept the key,
+// don't recurse"; non-nil means "accept and recurse against these fields".
+//
+// Returns dropped paths (rooted at `path`) for diagnostic surfacing.
+func pruneUnknownFields(state map[string]interface{}, fields []FieldSpec, extraKnown map[string][]FieldSpec, path string) []string {
+	known := make(map[string]*FieldSpec, len(fields))
+	for i := range fields {
+		known[fields[i].HCLKey] = &fields[i]
+	}
+	var dropped []string
+	for key, val := range state {
+		if extraKnown != nil {
+			if children, ok := extraKnown[key]; ok {
+				if children != nil {
+					dropped = append(dropped, recurseIntoBlock(val, children, path, key)...)
+				}
+				continue
+			}
+		}
+		f, ok := known[key]
+		if !ok {
+			dropped = append(dropped, joinPath(path, key))
+			delete(state, key)
+			continue
+		}
+		switch f.Type {
+		case TypeBlock, TypeBlockList:
+			dropped = append(dropped, recurseIntoBlock(val, f.Children, path, key)...)
+		case TypeOneOf:
+			variantFields := make([]FieldSpec, 0, len(f.Children))
+			for i := range f.Children {
+				c := f.Children[i]
+				variantFields = append(variantFields, FieldSpec{
+					HCLKey:   c.HCLKey,
+					Type:     TypeBlock,
+					Children: c.Children,
+				})
+			}
+			dropped = append(dropped, recurseIntoBlock(val, variantFields, path, key)...)
+		}
+	}
+	return dropped
+}
+
+// recurseIntoBlock walks the []interface{} of a block/blocklist value and prunes
+// each element's map against the supplied children spec.
+func recurseIntoBlock(val interface{}, children []FieldSpec, parentPath, key string) []string {
+	items, ok := val.([]interface{})
+	if !ok {
+		return nil
+	}
+	var dropped []string
+	for i, item := range items {
+		m, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		dropped = append(dropped, pruneUnknownFields(
+			m, children, nil,
+			fmt.Sprintf("%s[%d]", joinPath(parentPath, key), i))...)
+	}
+	return dropped
+}
+
+func joinPath(parent, key string) string {
+	if parent == "" {
+		return key
+	}
+	return parent + "." + key
+}
+
 // ============================================================
 // Formula Request Config — unified formula/query request builder
 // ============================================================
@@ -532,10 +609,20 @@ func isFormulaCapableWidget(jsonType string) bool {
 // buildWidgetSortByJSON builds the JSON for a WidgetSortBy block (sort { count, order_by { ... } }).
 // Each order_by element is a discriminated union: formula_sort or group_sort.
 
-func flattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]interface{} {
+// widgetExtraKnownFields lists fields that flattenWidgetPostProcess injects into a
+// widget's defState that are NOT declared in WidgetSpec.Fields. The pruner uses this
+// to avoid dropping legitimate post-processed keys. nil children means "accept the
+// key but don't recurse" — the inner contents have already been pruned at their own
+// flattenWidgetEngineJSON call.
+var widgetExtraKnownFields = map[string]map[string][]FieldSpec{
+	"group":       {"widget": nil},
+	"split_group": {"source_widget_definition": nil},
+}
+
+func flattenWidgetEngineJSON(widgetData map[string]interface{}) (map[string]interface{}, []string) {
 	def, ok := widgetData["definition"].(map[string]interface{})
 	if !ok {
-		return nil
+		return nil, nil
 	}
 	widgetType, _ := def["type"].(string)
 
@@ -550,13 +637,19 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]inter
 
 		// Per-widget post-processing: formula/query blocks, type-specific fixups,
 		// and Batch C complex widget handling — all consolidated in one hook.
-		flattenWidgetPostProcess(spec, def, defState)
+		drops := flattenWidgetPostProcess(spec, def, defState)
+
+		// Generic guard: drop any key that isn't part of this widget's schema. Surfaces
+		// API responses that include fields not present in the OpenAPI spec / our schema
+		// (e.g. treemap requests that contain "style" the API returns but the spec omits).
+		drops = append(drops, pruneUnknownFields(defState, allFields,
+			widgetExtraKnownFields[spec.JSONType], spec.HCLKey)...)
 
 		return map[string]interface{}{
 			spec.HCLKey: []interface{}{defState},
-		}
+		}, drops
 	}
-	return nil
+	return nil, nil
 }
 
 // flattenFormulaQueryJSON converts a single query JSON object into the HCL query block state.
@@ -861,7 +954,12 @@ func flattenEventQueryJSON(q map[string]interface{}) map[string]interface{} {
 	return result
 }
 
-func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defState map[string]interface{}) {
+// flattenWidgetPostProcess applies per-widget-type post-processing to defState.
+// Returns dropped paths bubbled up from nested widget flattens (group children,
+// split_graph source widget). Drops from the parent widget itself are produced by
+// the caller's own pruneUnknownFields pass.
+func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defState map[string]interface{}) []string {
+	var nestedDrops []string
 	// ---- Formula/query request flattening ----
 	if isFormulaCapableWidget(spec.JSONType) {
 		if requests, ok := def["requests"].([]interface{}); ok {
@@ -923,9 +1021,12 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 	// ---- Split graph source widget + static_splits ----
 	if spec.JSONType == "split_group" {
 		if srcDef, ok := def["source_widget_definition"].(map[string]interface{}); ok {
-			flatSrc := flattenSplitGraphSourceWidgetJSON(srcDef)
+			flatSrc, srcDrops := flattenSplitGraphSourceWidgetJSON(srcDef)
 			if flatSrc != nil {
 				defState["source_widget_definition"] = []interface{}{flatSrc}
+			}
+			for _, p := range srcDrops {
+				nestedDrops = append(nestedDrops, joinPath(spec.HCLKey+".source_widget_definition[0]", p))
 			}
 		}
 		if splitConfigArr, ok := defState["split_config"].([]interface{}); ok && len(splitConfigArr) > 0 {
@@ -942,9 +1043,14 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 	// ---- Group nested widgets ----
 	if spec.JSONType == "group" {
 		if widgets, ok := def["widgets"].([]interface{}); ok {
-			defState["widget"] = flattenGroupWidgetsJSON(widgets)
+			flatWidgets, childDrops := flattenGroupWidgetsJSON(widgets)
+			defState["widget"] = flatWidgets
+			for _, p := range childDrops {
+				nestedDrops = append(nestedDrops, joinPath(spec.HCLKey+".widget", p))
+			}
 		}
 	}
+	return nestedDrops
 }
 
 func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interface{} {
@@ -1067,8 +1173,8 @@ func flattenSplitConfigStaticSplitsJSON(staticSplits []interface{}) []interface{
 }
 
 // flattenSplitGraphSourceWidgetJSON flattens the source_widget_definition JSON
-// for a split_graph widget response.
-func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) map[string]interface{} {
+// for a split_graph widget response. Returns dropped paths from the inner widget.
+func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) (map[string]interface{}, []string) {
 	widgetType, _ := srcDef["type"].(string)
 	for _, spec := range allWidgetSpecs {
 		if spec.JSONType != widgetType {
@@ -1079,25 +1185,31 @@ func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) map[string
 		allFields = append(allFields, spec.Fields...)
 		defState := FlattenEngineJSON(allFields, srcDef)
 		// Apply the same per-widget post-processing as the main flatten engine
-		flattenWidgetPostProcess(spec, srcDef, defState)
+		drops := flattenWidgetPostProcess(spec, srcDef, defState)
+		drops = append(drops, pruneUnknownFields(defState, allFields,
+			widgetExtraKnownFields[spec.JSONType], spec.HCLKey)...)
 		return map[string]interface{}{
 			spec.HCLKey: []interface{}{defState},
-		}
+		}, drops
 	}
-	return nil
+	return nil, nil
 }
 
 // buildGroupWidgetsJSON builds the "widgets" array for a group widget.
 
-func flattenGroupWidgetsJSON(widgets []interface{}) []interface{} {
+func flattenGroupWidgetsJSON(widgets []interface{}) ([]interface{}, []string) {
 	result := make([]interface{}, len(widgets))
+	var drops []string
 	for i, w := range widgets {
 		widgetData, ok := w.(map[string]interface{})
 		if !ok {
 			result[i] = map[string]interface{}{}
 			continue
 		}
-		flattened := flattenWidgetEngineJSON(widgetData)
+		flattened, childDrops := flattenWidgetEngineJSON(widgetData)
+		for _, p := range childDrops {
+			drops = append(drops, fmt.Sprintf("[%d].%s", i, p))
+		}
 		if flattened == nil {
 			flattened = map[string]interface{}{}
 		}
@@ -1142,7 +1254,7 @@ func flattenGroupWidgetsJSON(widgets []interface{}) []interface{} {
 		}
 		result[i] = flattened
 	}
-	return result
+	return result, drops
 }
 
 // ============================================================
@@ -1238,8 +1350,9 @@ func FlattenTemplateVariablePresets(tvps []interface{}) []interface{} {
 
 // FlattenWidgetEngineJSON is the exported entry point for flattening a single widget's JSON map
 // into HCL state suitable for setting on a TypeList field in schema.ResourceData.
-// Returns nil if the widget type is not recognized.
-func FlattenWidgetEngineJSON(widgetData map[string]interface{}) map[string]interface{} {
+// Returns nil if the widget type is not recognized. The second return value is a list
+// of API JSON paths whose values were dropped because they have no matching schema field.
+func FlattenWidgetEngineJSON(widgetData map[string]interface{}) (map[string]interface{}, []string) {
 	return flattenWidgetEngineJSON(widgetData)
 }
 
@@ -2230,16 +2343,24 @@ func MarshalDashboardJSONFromMap(data map[string]interface{}, id string) (string
 // into a []interface{} suitable for d.Set("widget", ...).
 // It reuses the existing flattenWidgetEngineJSON function which already returns
 // map[string]interface{} compatible with SDKv2's d.Set().
-func FlattenWidgetsForSDKv2(apiWidgets []interface{}) []interface{} {
+//
+// The second return value lists API JSON paths whose values were dropped because
+// the schema has no matching field — surface these to the user via diagnostics so
+// silent data loss is observable.
+func FlattenWidgetsForSDKv2(apiWidgets []interface{}) ([]interface{}, []string) {
 	result := make([]interface{}, 0, len(apiWidgets))
-	for _, w := range apiWidgets {
+	var drops []string
+	for i, w := range apiWidgets {
 		widgetData, ok := w.(map[string]interface{})
 		if !ok {
 			continue
 		}
 
 		// Flatten the widget definition using the existing engine function.
-		flattened := FlattenWidgetEngineJSON(widgetData)
+		flattened, widgetDrops := FlattenWidgetEngineJSON(widgetData)
+		for _, p := range widgetDrops {
+			drops = append(drops, fmt.Sprintf("widget[%d].%s", i, p))
+		}
 		if flattened == nil {
 			flattened = map[string]interface{}{}
 		}
@@ -2287,7 +2408,7 @@ func FlattenWidgetsForSDKv2(apiWidgets []interface{}) []interface{} {
 
 		result = append(result, flattened)
 	}
-	return result
+	return result, drops
 }
 
 // ============================================================

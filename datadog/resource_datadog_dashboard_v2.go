@@ -283,9 +283,22 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 	var apiWidgets []interface{}
 	if v, ok := resp["widgets"].([]interface{}); ok {
 		apiWidgets = v
-		flatWidgets := dashboardmapping.FlattenWidgetsForSDKv2(v)
+		flatWidgets, dropped := dashboardmapping.FlattenWidgetsForSDKv2(v)
 		if err := d.Set("widget", flatWidgets); err != nil {
 			diags = append(diags, diag.FromErr(err)...)
+		}
+		if len(dropped) > 0 {
+			for _, p := range dropped {
+				log.Printf("[WARN] datadog_dashboard_v2 %s: dropped unmapped API field at %s", d.Id(), p)
+			}
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("Dashboard contains %d field(s) returned by the Datadog API with no schema mapping", len(dropped)),
+				Detail: fmt.Sprintf(
+					"The following paths were stripped from state because the schema does not declare them; their values will not be preserved on apply.\n  %s\nIf any of these are fields you need, file an issue against the provider.",
+					strings.Join(dropped, "\n  "),
+				),
+			})
 		}
 	}
 
