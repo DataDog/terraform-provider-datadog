@@ -31,6 +31,7 @@ const (
 	TypeBlock                       // single nested block (MaxItems:1 in schema)
 	TypeBlockList                   // list of blocks
 	TypeOneOf                       // polymorphic block — exactly one child variant should be set
+	TypeJSON                        // arbitrary JSON — HCL string ↔ JSON object/array
 )
 
 // OneOfDiscriminator configures how a TypeOneOf field determines which variant is active.
@@ -192,6 +193,55 @@ func setAtJSONPath(m map[string]interface{}, path string, val interface{}) {
 }
 
 // ============================================================
+// Shared OneOf Discriminator Helpers
+// ============================================================
+
+// matchOneOfVariant finds the child variant matching the discriminator value
+// in a JSON object. Used by both TypeOneOf and discriminated TypeBlockList.
+func matchOneOfVariant(f FieldSpec, jsonObj map[string]interface{}) *FieldSpec {
+	var discriminatorValue string
+	if f.Discriminator != nil && f.Discriminator.JSONKey != "" {
+		discriminatorValue, _ = jsonObj[f.Discriminator.JSONKey].(string)
+	}
+	for i := range f.Children {
+		child := &f.Children[i]
+		if child.Discriminator == nil {
+			continue
+		}
+		if child.Discriminator.Value != "" && child.Discriminator.Value == discriminatorValue {
+			return child
+		}
+		for _, v := range child.Discriminator.Values {
+			if v == discriminatorValue {
+				return child
+			}
+		}
+	}
+	// Fall back to DefaultVariant
+	for i := range f.Children {
+		if f.Children[i].Discriminator != nil && f.Children[i].Discriminator.DefaultVariant {
+			return &f.Children[i]
+		}
+	}
+	return nil
+}
+
+// findPopulatedVariant finds the first populated variant block in an HCL state map.
+// Returns the matched FieldSpec and the inner block data. Used by both TypeOneOf and
+// discriminated TypeBlockList build direction.
+func findPopulatedVariant(f FieldSpec, item map[string]interface{}) (*FieldSpec, map[string]interface{}) {
+	for i := range f.Children {
+		child := &f.Children[i]
+		if child.Type == TypeBlock {
+			if inner := getBlockFromMap(item, child.HCLKey); inner != nil {
+				return child, inner
+			}
+		}
+	}
+	return nil, nil
+}
+
+// ============================================================
 // Generic Engine: JSON → HCL (flatten direction)
 // ============================================================
 
@@ -235,6 +285,13 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = float64(v)
 			}
 
+		case TypeJSON:
+			if jsonVal != nil {
+				if bytes, err := json.Marshal(jsonVal); err == nil {
+					result[f.HCLKey] = string(bytes)
+				}
+			}
+
 		case TypeStringList:
 			strs := toStringSliceFromInterface(jsonVal)
 			if f.OmitEmpty && len(strs) == 0 {
@@ -248,14 +305,37 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 			}
 
 		case TypeBlockList:
-			if items, ok := jsonVal.([]interface{}); ok {
-				list := make([]interface{}, len(items))
-				for i, item := range items {
-					if m, ok := item.(map[string]interface{}); ok {
-						list[i] = FlattenEngineJSON(f.Children, m)
+			if f.Discriminator != nil {
+				// Discriminated union per list item — each JSON array element
+				// is dispatched to a variant child based on the discriminator.
+				if items, ok := jsonVal.([]interface{}); ok {
+					list := make([]interface{}, len(items))
+					for i, item := range items {
+						m, ok := item.(map[string]interface{})
+						if !ok {
+							list[i] = map[string]interface{}{}
+							continue
+						}
+						if matched := matchOneOfVariant(f, m); matched != nil {
+							list[i] = map[string]interface{}{
+								matched.HCLKey: []interface{}{FlattenEngineJSON(matched.Children, m)},
+							}
+						} else {
+							list[i] = map[string]interface{}{}
+						}
 					}
+					result[f.HCLKey] = list
 				}
-				result[f.HCLKey] = list
+			} else {
+				if items, ok := jsonVal.([]interface{}); ok {
+					list := make([]interface{}, len(items))
+					for i, item := range items {
+						if m, ok := item.(map[string]interface{}); ok {
+							list[i] = FlattenEngineJSON(f.Children, m)
+						}
+					}
+					result[f.HCLKey] = list
+				}
 			}
 
 		case TypeOneOf:
@@ -263,45 +343,10 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 			if !ok {
 				continue
 			}
-			// Read discriminator value from JSON
-			var discriminatorValue string
-			if f.Discriminator != nil && f.Discriminator.JSONKey != "" {
-				discriminatorValue, _ = jsonObj[f.Discriminator.JSONKey].(string)
-			}
-			// Find the matching variant child
-			var matchedChild *FieldSpec
-			for i := range f.Children {
-				child := &f.Children[i]
-				if child.Discriminator == nil {
-					continue
-				}
-				if child.Discriminator.Value != "" && child.Discriminator.Value == discriminatorValue {
-					matchedChild = child
-					break
-				}
-				for _, v := range child.Discriminator.Values {
-					if v == discriminatorValue {
-						matchedChild = child
-						break
-					}
-				}
-				if matchedChild != nil {
-					break
-				}
-			}
-			// Fall back to DefaultVariant if no explicit match
-			if matchedChild == nil {
-				for i := range f.Children {
-					if f.Children[i].Discriminator != nil && f.Children[i].Discriminator.DefaultVariant {
-						matchedChild = &f.Children[i]
-						break
-					}
-				}
-			}
+			matchedChild := matchOneOfVariant(f, jsonObj)
 			if matchedChild == nil {
 				continue
 			}
-			// Flatten the matched variant into a state map for the outer TypeOneOf block
 			variantState := map[string]interface{}{}
 			if matchedChild.Type == TypeBlock {
 				variantState[matchedChild.HCLKey] = []interface{}{FlattenEngineJSON(matchedChild.Children, jsonObj)}
@@ -437,7 +482,7 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
-	case "query_value", "toplist":
+	case "query_value", "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
 	default:
 		return scalarFormulaRequestConfig
@@ -523,7 +568,7 @@ var dataSourceToQueryType = map[string]string{
 // formula/query-style requests (response_format: "scalar" or "timeseries").
 func isFormulaCapableWidget(jsonType string) bool {
 	switch jsonType {
-	case "timeseries", "heatmap", "change", "query_value", "toplist", "sunburst", "geomap", "treemap":
+	case "timeseries", "heatmap", "change", "query_value", "toplist", "sunburst", "geomap", "treemap", "bar_chart":
 		return true
 	}
 	return false
@@ -943,6 +988,22 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 	if spec.JSONType == "group" {
 		if widgets, ok := def["widgets"].([]interface{}); ok {
 			defState["widget"] = flattenGroupWidgetsJSON(widgets)
+		}
+	}
+
+	// ---- Wildcard requests (multiple formula types + list stream) ----
+	if spec.JSONType == "wildcard" {
+		if requests, ok := def["requests"].([]interface{}); ok {
+			flatRequests := make([]interface{}, len(requests))
+			for ri, req := range requests {
+				reqMap, ok := req.(map[string]interface{})
+				if !ok {
+					flatRequests[ri] = map[string]interface{}{}
+					continue
+				}
+				flatRequests[ri] = flattenWildcardRequestJSON(reqMap)
+			}
+			defState["request"] = flatRequests
 		}
 	}
 }
@@ -1500,20 +1561,49 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), nested)
 
+		case TypeJSON:
+			if str, ok := data[f.HCLKey].(string); ok && str != "" {
+				var obj interface{}
+				if err := json.Unmarshal([]byte(str), &obj); err == nil {
+					setAtJSONPath(result, f.effectiveJSONPath(), obj)
+				}
+			}
+
 		case TypeBlockList:
-			items := getBlockListFromMap(data, f.HCLKey)
-			built := make([]interface{}, 0, len(items))
-			for _, item := range items {
-				built = append(built, BuildEngineJSONFromMap(item, f.Children))
+			if f.Discriminator != nil {
+				// Discriminated union per list item
+				items := getBlockListFromMap(data, f.HCLKey)
+				built := make([]interface{}, 0, len(items))
+				for _, item := range items {
+					matched, inner := findPopulatedVariant(f, item)
+					if matched == nil {
+						built = append(built, map[string]interface{}{})
+						continue
+					}
+					resultJSON := BuildEngineJSONFromMap(inner, matched.Children)
+					if matched.Discriminator != nil && matched.Discriminator.Value != "" &&
+						f.Discriminator.JSONKey != "" {
+						resultJSON[f.Discriminator.JSONKey] = matched.Discriminator.Value
+					}
+					built = append(built, resultJSON)
+				}
+				if f.OmitEmpty && len(built) == 0 {
+					continue
+				}
+				setAtJSONPath(result, f.effectiveJSONPath(), built)
+			} else {
+				items := getBlockListFromMap(data, f.HCLKey)
+				built := make([]interface{}, 0, len(items))
+				for _, item := range items {
+					built = append(built, BuildEngineJSONFromMap(item, f.Children))
+				}
+				if f.OmitEmpty && len(built) == 0 {
+					continue
+				}
+				setAtJSONPath(result, f.effectiveJSONPath(), built)
 			}
-			if f.OmitEmpty && len(built) == 0 {
-				continue
-			}
-			setAtJSONPath(result, f.effectiveJSONPath(), built)
 
 		case TypeOneOf:
-			// The TypeOneOf container is a TypeList, MaxItems:1 in SDKv2.
-			// Each child variant is itself a TypeBlock (TypeList, MaxItems:1).
 			outer := getBlockFromMap(data, f.HCLKey)
 			if outer == nil {
 				if f.OmitEmpty {
@@ -1521,21 +1611,10 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 				}
 				break
 			}
-			// Find the first populated variant child
+			matched, inner := findPopulatedVariant(f, outer)
 			var built map[string]interface{}
-			var matchedChild *FieldSpec
-			for i := range f.Children {
-				child := &f.Children[i]
-				if child.Type == TypeBlock {
-					inner := getBlockFromMap(outer, child.HCLKey)
-					if inner != nil {
-						built = BuildEngineJSONFromMap(inner, child.Children)
-						matchedChild = child
-					}
-				}
-				if matchedChild != nil {
-					break
-				}
+			if matched != nil && inner != nil {
+				built = BuildEngineJSONFromMap(inner, matched.Children)
 			}
 			if built == nil {
 				if f.OmitEmpty {
@@ -1543,11 +1622,10 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 				}
 				built = map[string]interface{}{}
 			}
-			// Inject discriminator into built JSON if the matched child specifies a value
-			if matchedChild != nil && matchedChild.Discriminator != nil &&
-				matchedChild.Discriminator.Value != "" &&
+			if matched != nil && matched.Discriminator != nil &&
+				matched.Discriminator.Value != "" &&
 				f.Discriminator != nil && f.Discriminator.JSONKey != "" {
-				built[f.Discriminator.JSONKey] = matchedChild.Discriminator.Value
+				built[f.Discriminator.JSONKey] = matched.Discriminator.Value
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), built)
 		}
@@ -2150,6 +2228,82 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 			}
 		}
 	}
+
+	// ---- Wildcard requests ----
+	if spec.JSONType == "wildcard" {
+		defJSON["requests"] = buildWildcardRequestsJSONFromMap(defMap)
+	}
+}
+
+// ============================================================
+// Wildcard Widget Build/Flatten Helpers
+// ============================================================
+
+// wildcardFormulaRequestConfig is the FormulaRequestConfig for wildcard formula requests.
+// ResponseFormat is empty — it's read from the request data, not injected.
+var wildcardScalarConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+}
+
+var wildcardTimeseriesConfig = FormulaRequestConfig{
+	ResponseFormat: "timeseries",
+	StyleFields:    widgetRequestStyleFields,
+	ExtraFields: []FieldSpec{
+		{HCLKey: "display_type", Type: TypeString, OmitEmpty: true,
+			Description: "How the data points are displayed on the graph."},
+	},
+}
+
+// flattenWildcardRequestJSON flattens a single wildcard request JSON object.
+// Dispatches based on response_format to determine which flattening style to use.
+func flattenWildcardRequestJSON(req map[string]interface{}) map[string]interface{} {
+	responseFormat, _ := req["response_format"].(string)
+	var result map[string]interface{}
+	switch responseFormat {
+	case "timeseries":
+		result = flattenFormulaRequest(req, wildcardTimeseriesConfig)
+	case "event_list":
+		// List stream request
+		result = FlattenEngineJSON(listStreamRequestFields, req)
+	default:
+		// scalar (TreeMap-style) or distribution
+		result = flattenFormulaRequest(req, wildcardScalarConfig)
+	}
+	// Always preserve response_format in state
+	if responseFormat != "" {
+		result["response_format"] = responseFormat
+	}
+	return result
+}
+
+// buildWildcardRequestsJSONFromMap builds the wildcard requests JSON array from HCL.
+func buildWildcardRequestsJSONFromMap(defMap map[string]interface{}) []interface{} {
+	requestList := getBlockListFromMap(defMap, "request")
+	requests := make([]interface{}, 0, len(requestList))
+	for _, reqMap := range requestList {
+		responseFormat, _ := reqMap["response_format"].(string)
+		formulaCount := len(getBlockListFromMap(reqMap, "formula"))
+		queryCount := len(getBlockListFromMap(reqMap, "query"))
+
+		if formulaCount > 0 || queryCount > 0 {
+			var cfg FormulaRequestConfig
+			switch responseFormat {
+			case "timeseries":
+				cfg = wildcardTimeseriesConfig
+			default:
+				cfg = wildcardScalarConfig
+			}
+			requests = append(requests, buildFormulaRequestFromMap(reqMap, cfg))
+		} else if responseFormat == "event_list" {
+			// List stream request
+			reqJSON := BuildEngineJSONFromMap(reqMap, listStreamRequestFields)
+			reqJSON["response_format"] = "event_list"
+			requests = append(requests, reqJSON)
+		}
+	}
+	return requests
 }
 
 // ============================================================

@@ -1393,6 +1393,176 @@ var funnelWidgetRequestFields = []FieldSpec{
 }
 
 // ============================================================
+// Bar Chart Widget Field Groups (OpenAPI: BarChartWidgetStyle, BarChartWidgetDisplay)
+// ============================================================
+
+// barChartWidgetStyleFields corresponds to OpenAPI BarChartWidgetStyle.
+var barChartWidgetStyleFields = []FieldSpec{
+	{HCLKey: "display", Type: TypeOneOf, OmitEmpty: true,
+		Description: "Bar chart display options.",
+		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
+		Children: []FieldSpec{
+			{HCLKey: "flat", Type: TypeBlock, OmitEmpty: true,
+				Description: "Flat display mode with no stacking.",
+				Discriminator: &OneOfDiscriminator{Value: "flat"},
+				Children:      []FieldSpec{}},
+			{HCLKey: "stacked", Type: TypeBlock, OmitEmpty: true,
+				Description: "Stacked display mode.",
+				Discriminator: &OneOfDiscriminator{Value: "stacked"},
+				Children: []FieldSpec{
+					{HCLKey: "legend", Type: TypeString, OmitEmpty: true,
+						Description: "Legend display behavior for stacked bars.",
+						ValidValues: []string{"automatic", "inline", "none"}},
+				}},
+		}},
+	{HCLKey: "scaling", Type: TypeString, OmitEmpty: true,
+		Description: "Scaling definition for the bar chart.",
+		ValidValues: []string{"absolute", "relative"}},
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "Color palette for the bar chart."},
+}
+
+// barChartWidgetRequestFields are the request fields for BarChartWidgetRequest.
+// Bar chart is formula-capable; formula/query fields are handled by the FormulaRequestConfig.
+var barChartWidgetRequestFields = append([]FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Deprecated:    "Use queries and formulas instead.",
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data.",
+		Children:    widgetConditionalFormatFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Define request for the widget's style.",
+		Children:    widgetRequestStyleFields},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget. Only applicable for formula-style requests.",
+		Children:    widgetSortByFields},
+}, standardQueryFields...)
+
+// ============================================================
+// Sankey Widget Field Groups (OpenAPI: SankeyWidgetDefinition)
+// ============================================================
+
+// sankeyRumQueryFields corresponds to OpenAPI SankeyRumQuery.
+var sankeyRumQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The data source for the Sankey RUM query.",
+		ValidValues: []string{"rum", "product_analytics"}},
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The search query string."},
+	{HCLKey: "mode", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The mode for the Sankey RUM query.",
+		ValidValues: []string{"source", "target"}},
+	{HCLKey: "source", Type: TypeString, OmitEmpty: true,
+		Description: "Source field."},
+	{HCLKey: "target", Type: TypeString, OmitEmpty: true,
+		Description: "Target field."},
+	{HCLKey: "entries_per_step", Type: TypeInt, OmitEmpty: true,
+		Description: "Entries per step."},
+	{HCLKey: "number_of_steps", Type: TypeInt, OmitEmpty: true,
+		Description: "Number of steps."},
+	{HCLKey: "subquery_id", Type: TypeString, OmitEmpty: true,
+		Description: "Subquery ID."},
+}
+
+// sankeyNetworkQueryComputeFields corresponds to OpenAPI SankeyNetworkQueryCompute.
+var sankeyNetworkQueryComputeFields = []FieldSpec{
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The aggregation method."},
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The metric to aggregate."},
+}
+
+// sankeyNetworkQuerySortFields corresponds to OpenAPI SankeyNetworkQuerySort.
+var sankeyNetworkQuerySortFields = []FieldSpec{
+	{HCLKey: "field", Type: TypeString, OmitEmpty: true,
+		Description: "Field to sort by."},
+	{HCLKey: "order", Type: TypeString, OmitEmpty: true,
+		Description: "Sort direction.",
+		ValidValues: []string{"asc", "desc"}},
+}
+
+// sankeyNetworkQueryFields corresponds to OpenAPI SankeyNetworkQuery.
+var sankeyNetworkQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The data source for the Sankey network query.",
+		ValidValues: []string{"network_device_flows"}},
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The search query string."},
+	{HCLKey: "mode", Type: TypeString, OmitEmpty: true,
+		Description: "The mode for the Sankey network query.",
+		ValidValues: []string{"target"}},
+	{HCLKey: "group_by", Type: TypeStringList, OmitEmpty: false, Required: true,
+		Description: "Fields to group by."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Maximum number of results."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+		Description: "Sort configuration.",
+		Children:    sankeyNetworkQuerySortFields},
+	{HCLKey: "compute", Type: TypeBlock, OmitEmpty: true,
+		Description: "Compute aggregation configuration.",
+		Children:    sankeyNetworkQueryComputeFields},
+	{HCLKey: "should_exclude_missing", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to exclude missing values."},
+}
+
+// sankeyRumRequestFields are the children of the rum_request variant.
+var sankeyRumRequestFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The query for the Sankey RUM request.",
+		Children:    sankeyRumQueryFields},
+}
+
+// sankeyNetworkRequestFields are the children of the network_request variant.
+var sankeyNetworkRequestFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The query for the Sankey network request.",
+		Children:    sankeyNetworkQueryFields},
+}
+
+// ============================================================
+// Wildcard Widget Field Groups (OpenAPI: WildcardWidgetDefinition)
+// ============================================================
+
+// wildcardWidgetSpecificationFields corresponds to OpenAPI WildcardWidgetSpecification.
+var wildcardWidgetSpecificationFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The type of specification (Vega or Vega-Lite).",
+		ValidValues: []string{"vega", "vega-lite"}},
+	// contents is an arbitrary JSON object — stored as a JSON string in HCL via jsonencode().
+	// TypeJSON handles the string ↔ object conversion automatically.
+	{HCLKey: "contents", Type: TypeJSON, OmitEmpty: false, Required: true,
+		Description: "The Vega or Vega-Lite specification as a JSON string. Use `jsonencode()` to encode the specification."},
+}
+
+// wildcardWidgetRequestFields are the request fields for the Wildcard widget.
+// The request is a oneOf of 4 existing types (TreeMap, Timeseries, ListStream, Distribution).
+// Request build/flatten is handled entirely in post-processing, similar to query_table.
+var wildcardWidgetRequestFields = append([]FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Deprecated:    "Use queries and formulas instead.",
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Define request for the widget's style.",
+		Children:    widgetRequestStyleFields},
+	{HCLKey: "display_type", Type: TypeString, OmitEmpty: true,
+		Description: "How the data points are displayed on the graph (for timeseries requests)."},
+	{HCLKey: "response_format", Type: TypeString, OmitEmpty: true,
+		Description: "The response format for the widget request.",
+		ValidValues: []string{"scalar", "timeseries", "event_list"}},
+	// sort is SchemaOnly: handled by formula request builder.
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget.",
+		Children:    widgetSortByFields},
+	// List stream fields (for event_list response_format)
+	{HCLKey: "columns", Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
+		Description: "Widget columns for list stream requests.",
+		Children:    listStreamColumnFields},
+}, standardQueryFields...)
+
+// ============================================================
 // Common Widget Fields
 // ============================================================
 

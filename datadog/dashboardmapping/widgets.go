@@ -1415,6 +1415,10 @@ var allWidgetSpecs = []WidgetSpec{
 	PowerpackWidgetSpec,
 	// Funnel widget (unique request structure; request_type injected by post-process hook)
 	FunnelWidgetSpec,
+	// New widget types (OpenAPI sync)
+	BarChartWidgetSpec,
+	SankeyWidgetSpec,
+	WildcardWidgetSpec,
 }
 
 // FunnelWidgetSpec corresponds to OpenAPI FunnelWidgetDefinition.
@@ -1428,6 +1432,70 @@ var FunnelWidgetSpec = WidgetSpec{
 			MaxItems:    1,
 			Description: "A nested block describing the request to use when displaying the widget. Only one `request` block is allowed.",
 			Children:    funnelWidgetRequestFields},
+	},
+}
+
+// BarChartWidgetSpec corresponds to OpenAPI BarChartWidgetDefinition.
+// Formula-capable with scalar response_format; uses scalarWithConditionalFormatsConfig.
+var BarChartWidgetSpec = WidgetSpec{
+	HCLKey:      "bar_chart_definition",
+	JSONType:    "bar_chart",
+	Description: "The definition for a Bar Chart widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+			Description: "Style customization for the bar chart widget.",
+			Children:    barChartWidgetStyleFields},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			MaxItems:    1,
+			Description: "A nested block describing the request to use when displaying the widget.",
+			Children:    barChartWidgetRequestFields},
+		widgetCustomLinkField,
+	},
+}
+
+// SankeyWidgetSpec corresponds to OpenAPI SankeyWidgetDefinition.
+// Requests use a discriminated TypeBlockList — each request item is dispatched
+// by request_type to either rum_request or network_request variant.
+var SankeyWidgetSpec = WidgetSpec{
+	HCLKey:      "sankey_definition",
+	JSONType:    "sankey",
+	Description: "The definition for a Sankey diagram widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "sort_nodes", Type: TypeBool, OmitEmpty: true,
+			Description: "Whether to sort nodes in the Sankey diagram."},
+		{HCLKey: "show_other_links", Type: TypeBool, OmitEmpty: true,
+			Description: "Whether to show links for the 'other' category."},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Discriminator: &OneOfDiscriminator{JSONKey: "request_type"},
+			Description:   "A nested block describing the request to use when displaying the widget.",
+			Children: []FieldSpec{
+				{HCLKey: "rum_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "sankey"},
+					Description:   "RUM request for the Sankey widget.",
+					Children:      sankeyRumRequestFields},
+				{HCLKey: "network_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "netflow_sankey"},
+					Description:   "Network request for the Sankey widget.",
+					Children:      sankeyNetworkRequestFields},
+			}},
+	},
+}
+
+// WildcardWidgetSpec corresponds to OpenAPI WildcardWidgetDefinition.
+// Custom visualization widget using Vega or Vega-Lite specifications.
+// Request build/flatten is handled in post-processing.
+var WildcardWidgetSpec = WidgetSpec{
+	HCLKey:      "wildcard_definition",
+	JSONType:    "wildcard",
+	Description: "The definition for a Wildcard (custom visualization) widget using Vega or Vega-Lite specifications.",
+	Fields: []FieldSpec{
+		{HCLKey: "specification", Type: TypeBlock, OmitEmpty: false,
+			Description: "The Vega or Vega-Lite specification for custom visualization rendering.",
+			Children:    wildcardWidgetSpecificationFields},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Description: "A nested block describing the data requests for the widget.",
+			Children:    wildcardWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 
