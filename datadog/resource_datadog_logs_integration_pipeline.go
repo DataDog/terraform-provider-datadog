@@ -56,9 +56,6 @@ func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.R
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting logs integration pipeline")
 	}
-	if err := utils.CheckForUnparsed(ddPipeline); err != nil {
-		return diag.FromErr(err)
-	}
 	if !ddPipeline.GetIsReadOnly() {
 		d.SetId("")
 		return nil
@@ -76,9 +73,6 @@ func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema
 		UpdateLogsPipeline(auth, d.Id(), ddPipeline)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating logs integration pipeline")
-	}
-	if err := utils.CheckForUnparsed(updatedPipeline); err != nil {
-		return diag.FromErr(err)
 	}
 	d.SetId(*updatedPipeline.Id)
 	return updateLogsIntegrationPipelineState(d, &updatedPipeline)
