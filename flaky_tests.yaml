@@ -49,7 +49,11 @@ skipped_tests:
     added: "2026-03-04"
     author: LiuVII
 
-  # User/Team datasource — Eventual consistency (8 tests)
+  # User/Team datasource — Eventual consistency (9 tests)
+  - test: TestAccDatadogUserDatasourceExactMatch
+    reason: "Eventual consistency — user not found immediately after creation"
+    added: "2026-04-24"
+    author: fpighi
   - test: TestAccDatadogUserDatasourceWithExactMatch
     reason: "Initial sync of tests failing on master branch"
     added: "2026-03-02"
@@ -191,7 +195,7 @@ skipped_tests:
     added: "2026-03-04"
     author: LiuVII
 
-  # Non-empty plan after apply — provider read bug (2 tests)
+  # Non-empty plan after apply — provider read bug (3 tests)
   - test: TestAccDatadogAuthNMapping_CreateUpdate
     reason: "Non-empty plan after apply + 404 on destroy — provider read returns empty state after create"
     added: "2026-03-04"
@@ -200,6 +204,10 @@ skipped_tests:
     reason: "Non-empty plan after apply — provider fails to read back created custom destination"
     added: "2026-03-04"
     author: LiuVII
+  - test: TestAccDatadogSensitiveDataScannerGroup_Basic
+    reason: "Non-empty plan after apply — is_enabled read back as false instead of true after create"
+    added: "2026-04-24"
+    author: fpighi
 
   # Provider bugs (3 tests)
   - test: TestAccDatadogApmRetentionFilterOrder
@@ -265,4 +273,34 @@ skipped_tests:
   - test: TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedAtEnd
     reason: "Intermittent 429 Too Many Requests — rate limiting on CustomAllocationRules API"
     added: "2026-04-10"
+    author: fpighi
+  - test: TestAccMonitor_Fwprovider_FormulaFunction_Cost
+    reason: "Intermittent 503 Service Unavailable from /api/v1/monitor/validate"
+    added: "2026-04-24"
+    author: fpighi
+  - test: TestAccDatadogTagPipelineRulesets_OverrideFalseUnmanagedAtEnd
+    reason: "Intermittent 429 Too Many Requests — rate limiting on ccm_list_tag_enrichment_rulesets"
+    added: "2026-04-24"
+    author: fpighi
+
+  # Azure integration — 500 Internal Server Error on list (2 tests)
+  - test: TestAccDatadogIntegrationAzure
+    reason: "500 Internal Server Error from list azure integration endpoint"
+    added: "2026-04-24"
+    author: fpighi
+  - test: TestAccDatadogIntegrationAzure_import
+    reason: "500 Internal Server Error from list azure integration endpoint"
+    added: "2026-04-24"
+    author: fpighi
+
+  # OnCall routing rules — 500 from user_invitations (1 test)
+  - test: TestAccOnCallTeamRoutingRulesCreateAndUpdate
+    reason: "500 Internal Server Error from /api/v2/user_invitations during user creation"
+    added: "2026-04-24"
+    author: fpighi
+
+  # RUM retention filter order — wrong count (1 test)
+  - test: TestAccRumRetentionFilterOrder
+    reason: "retention_filter_ids count mismatch — expected 3, got 2 — pre-existing filters in org"
+    added: "2026-04-24"
     author: fpighi
