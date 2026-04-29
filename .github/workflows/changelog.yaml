@@ -29,8 +29,12 @@ jobs:
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
           script: |
-            const re = new RegExp('\\[\\w+\\] \\w+');
+            const re = /^\[datadog_\w+\] .+/;
             const title = context.payload.pull_request.title;
             if (!re.test(title)) {
-              core.setFailed("Invalid title format: use '[resource_name] Description'");
+              core.setFailed(
+                "Invalid PR title format. Expected: '[datadog_<resource_or_datasource>] <Description>'.\n" +
+                "PR titles are used to generate CHANGELOG entries, so the bracketed tag must name the main affected resource or datasource (e.g. '[datadog_monitor]', '[datadog_logs_index]').\n" +
+                "If this change does not need to be included in the changelog, add the 'changelog/no-changelog' label to skip this check."
+              );
             }
