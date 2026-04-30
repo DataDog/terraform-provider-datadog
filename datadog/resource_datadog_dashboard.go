@@ -2489,6 +2489,16 @@ func getCloudcraftDefinitionSchema() map[string]*schema.Schema {
 			Required:         true,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewCloudcraftWidgetDefinitionProjectionFromValue),
 		},
+		"highlighted": {
+			Description: "Search query that visually highlights matching resources in the diagram.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"show_empty_groups": {
+			Description: "Whether to show empty outline groups (VPCs, subnets, security groups, etc.).",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
 		"title": {
 			Description: "The title of the widget.",
 			Type:        schema.TypeString,
@@ -2539,6 +2549,12 @@ func buildDatadogCloudcraftDefinition(terraformDefinition map[string]interface{}
 	datadogDefinition.SetProjection(datadogV1.CloudcraftWidgetDefinitionProjection(terraformDefinition["projection"].(string)))
 
 	// Optional params
+	if v, ok := terraformDefinition["highlighted"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetHighlighted(v)
+	}
+	if v, ok := terraformDefinition["show_empty_groups"].(bool); ok {
+		datadogDefinition.SetShowEmptyGroups(v)
+	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -2569,6 +2585,12 @@ func buildTerraformCloudcraftDefinition(datadogDefinition *datadogV1.CloudcraftW
 	terraformDefinition["projection"] = string(datadogDefinition.GetProjection())
 
 	// Optional params
+	if v, ok := datadogDefinition.GetHighlightedOk(); ok {
+		terraformDefinition["highlighted"] = *v
+	}
+	if v, ok := datadogDefinition.GetShowEmptyGroupsOk(); ok {
+		terraformDefinition["show_empty_groups"] = *v
+	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
 	}
