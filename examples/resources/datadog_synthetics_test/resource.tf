@@ -455,6 +455,42 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Drag element to target"
+    type = "drag"
+    params {
+      element_user_locator {
+        value {
+          type  = "css"
+          value = "#drag-source"
+        }
+      }
+      drag_drop_options {
+        delay = 120
+        offset {
+          x = 100
+          y = 100
+        }
+      }
+    }
+  }
+
+  browser_step {
+    name = "Drop on target"
+    type = "drop"
+    params {
+      element_user_locator {
+        value {
+          type  = "css"
+          value = "#drop-target"
+        }
+      }
+      drag_drop_options {
+        delay = 100
+      }
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"

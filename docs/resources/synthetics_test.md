@@ -496,6 +496,42 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Drag element to target"
+    type = "drag"
+    params {
+      element_user_locator {
+        value {
+          type  = "css"
+          value = "#drag-source"
+        }
+      }
+      drag_drop_options {
+        delay = 120
+        offset {
+          x = 100
+          y = 100
+        }
+      }
+    }
+  }
+
+  browser_step {
+    name = "Drop on target"
+    type = "drop"
+    params {
+      element_user_locator {
+        value {
+          type  = "css"
+          value = "#drop-target"
+        }
+      }
+      drag_drop_options {
+        delay = 100
+      }
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -1331,6 +1367,7 @@ Optional:
 - `click_with_javascript` (Boolean) Whether to use `element.click()` for a "click" step. This is a more reliable way to interact with elements but does not emulate a real user interaction.
 - `code` (String) Javascript code to use for the step.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
+- `drag_drop_options` (Block List, Max: 1) Options for a "drag" or "drop" step. (see [below for nested schema](#nestedblock--browser_step--params--drag_drop_options))
 - `element` (String) Element to use for the step, JSON encoded string. Refer to the examples for a usage example showing the schema.
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - `email` (String) Details of the email for an "assert email" step, JSON encoded string.
@@ -1347,6 +1384,24 @@ Optional:
 - `with_click` (Boolean) For "file upload" steps.
 - `x` (Number) X coordinates for a "scroll step".
 - `y` (Number) Y coordinates for a "scroll step".
+
+<a id="nestedblock--browser_step--params--drag_drop_options"></a>
+### Nested Schema for `browser_step.params.drag_drop_options`
+
+Optional:
+
+- `delay` (Number) Delay in milliseconds before performing the action (0–9999).
+- `offset` (Block List, Max: 1) Pixel offset from the center of the target element. (see [below for nested schema](#nestedblock--browser_step--params--drag_drop_options--offset))
+
+<a id="nestedblock--browser_step--params--drag_drop_options--offset"></a>
+### Nested Schema for `browser_step.params.drag_drop_options.offset`
+
+Optional:
+
+- `x` (Number) Horizontal offset in pixels.
+- `y` (Number) Vertical offset in pixels.
+
+
 
 <a id="nestedblock--browser_step--params--element_user_locator"></a>
 ### Nested Schema for `browser_step.params.element_user_locator`
