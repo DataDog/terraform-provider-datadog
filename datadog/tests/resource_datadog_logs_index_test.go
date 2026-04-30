@@ -219,7 +219,7 @@ func TestUnitDatadogLogsIndex_InvalidName(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogLogsIndexInvalidNameConfig("mbff-user_trips"),
+				Config:      testAccCheckDatadogLogsIndexInvalidNameConfig("invalid-index_name"),
 				ExpectError: regexp.MustCompile("must start with a lowercase letter and contain only lowercase letters, digits, or hyphens"),
 			},
 		},
