@@ -8,6 +8,7 @@ import (
 	"context"
 	b64 "encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"maps"
@@ -2027,6 +2028,7 @@ func validateDragDropStepOrdering(diff *schema.ResourceDiff) error {
 	if !ok {
 		return nil
 	}
+	var errs []error
 	for i, s := range steps {
 		step, ok := s.(map[string]interface{})
 		if !ok {
@@ -2035,24 +2037,26 @@ func validateDragDropStepOrdering(diff *schema.ResourceDiff) error {
 		stepType := step["type"].(string)
 		if stepType == string(datadogV1.SYNTHETICSSTEPTYPE_DRAG) {
 			if i+1 >= len(steps) {
-				return fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step", i)
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step", i))
+				continue
 			}
 			next := steps[i+1].(map[string]interface{})
 			if next["type"].(string) != string(datadogV1.SYNTHETICSSTEPTYPE_DROP) {
-				return fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step, got %q", i, next["type"])
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step, got %q", i, next["type"]))
 			}
 		}
 		if stepType == string(datadogV1.SYNTHETICSSTEPTYPE_DROP) {
 			if i == 0 {
-				return fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step", i)
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step", i))
+				continue
 			}
 			prev := steps[i-1].(map[string]interface{})
 			if prev["type"].(string) != string(datadogV1.SYNTHETICSSTEPTYPE_DRAG) {
-				return fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step, got %q", i, prev["type"])
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step, got %q", i, prev["type"]))
 			}
 		}
 	}
-	return nil
+	return errors.Join(errs...)
 }
 
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -5851,15 +5855,19 @@ func convertStepParamsValueForState(key string, value interface{}) (interface{},
 			return value, diags
 		}
 		result := map[string]interface{}{}
-		if delay, ok := optsMap["delay"]; ok {
-			result["delay"] = int(delay.(float64))
+		if delay, ok := optsMap["delay"].(float64); ok {
+			result["delay"] = int(delay)
 		}
 		if offsetRaw, ok := optsMap["offset"].(map[string]interface{}); ok {
-			result["offset"] = []interface{}{
-				map[string]interface{}{
-					"x": int(offsetRaw["x"].(float64)),
-					"y": int(offsetRaw["y"].(float64)),
-				},
+			x, xOk := offsetRaw["x"].(float64)
+			y, yOk := offsetRaw["y"].(float64)
+			if xOk && yOk {
+				result["offset"] = []interface{}{
+					map[string]interface{}{
+						"x": int(x),
+						"y": int(y),
+					},
+				}
 			}
 		}
 		return []interface{}{result}, diags
