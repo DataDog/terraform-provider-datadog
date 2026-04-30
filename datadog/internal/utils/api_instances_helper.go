@@ -92,6 +92,7 @@ type ApiInstances struct {
 	rumMetricsApiV2                *datadogV2.RumMetricsApi
 	rumRetentionFiltersApiV2       *datadogV2.RumRetentionFiltersApi
 	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
+	serviceScorecardsApiV2         *datadogV2.ServiceScorecardsApi
 	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2           *datadogV2.ServiceAccountsApi
 	softwareCatalogApiV2           *datadogV2.SoftwareCatalogApi
@@ -813,6 +814,14 @@ func (i *ApiInstances) GetDeploymentGatesApiV2() *datadogV2.DeploymentGatesApi {
 		i.deploymentGatesV2 = datadogV2.NewDeploymentGatesApi(i.HttpClient)
 	}
 	return i.deploymentGatesV2
+}
+
+// GetServiceScorecardsApiV2 get instance of ServiceScorecardsApi
+func (i *ApiInstances) GetServiceScorecardsApiV2() *datadogV2.ServiceScorecardsApi {
+	if i.serviceScorecardsApiV2 == nil {
+		i.serviceScorecardsApiV2 = datadogV2.NewServiceScorecardsApi(i.HttpClient)
+	}
+	return i.serviceScorecardsApiV2
 }
 
 // GetReferenceTablesApiV2 get instance of ReferenceTablesApi
