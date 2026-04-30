@@ -37,7 +37,7 @@ data "datadog_org_group_policy_overrides" "for_org" {
 
 ### Optional
 
-- `org_uuid` (String) Filter overrides to those for the given organization. Applied client-side after the List call since the API does not accept an org_uuid filter on this endpoint. Must be a valid UUID.
+- `org_uuid` (String) Filter overrides to those for the given organization. Applied client-side after the List call because the API does not accept an `org_uuid` filter on this endpoint. Must be a valid UUID.
 - `policy_id` (String) Filter overrides to those on the given policy. Must be a valid UUID.
 
 ### Read-Only

@@ -75,7 +75,7 @@ func (d *datadogOrgGroupPolicyOverridesDataSource) Schema(_ context.Context, _ d
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter overrides to those for the given organization. Applied client-side after the List call since the API does not accept an org_uuid filter on this endpoint.",
+				Description: "Filter overrides to those for the given organization. Applied client-side after the List call because the API does not accept an `org_uuid` filter on this endpoint.",
 				Validators:  []validator.String{uuidValidator},
 			},
 			"overrides": schema.ListAttribute{

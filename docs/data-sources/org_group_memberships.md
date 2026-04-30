@@ -3,12 +3,12 @@
 page_title: "datadog_org_group_memberships Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve org group memberships filtered by org group or organization. At least one of org_group_id or org_uuid is required.
+  Use this data source to retrieve org group memberships. At least one filter (org_group_id or org_uuid) is required.
 ---
 
 # datadog_org_group_memberships (Data Source)
 
-Use this data source to retrieve org group memberships filtered by org group or organization. At least one of `org_group_id` or `org_uuid` is required.
+Use this data source to retrieve org group memberships. At least one filter (`org_group_id` or `org_uuid`) is required.
 
 ## Example Usage
 
@@ -29,8 +29,8 @@ data "datadog_org_group_memberships" "by_org" {
 
 ### Optional
 
-- `org_group_id` (String) Filter memberships to those within the given org group. At least one of `org_group_id` or `org_uuid` is required. Must be a valid UUID.
-- `org_uuid` (String) Filter memberships to those for the given organization. At least one of `org_group_id` or `org_uuid` is required. Must be a valid UUID.
+- `org_group_id` (String) Filter memberships to those within the given org group. At least one filter (`org_group_id` or `org_uuid`) is required. Must be a valid UUID.
+- `org_uuid` (String) Filter memberships to those for the given organization. At least one filter (`org_group_id` or `org_uuid`) is required. Must be a valid UUID.
 
 ### Read-Only
 

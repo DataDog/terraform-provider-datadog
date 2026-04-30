@@ -17,13 +17,13 @@ description: |-
 
 ### In-place moves vs. replacement
 
-Changing `org_group_id` moves the organization between groups in place via the server's membership-update endpoint — the resource is **not** re-created. Changing `org_uuid` triggers replacement since the resource represents a specific org's membership.
+Changing `org_group_id` moves the organization between groups in place via the server's membership-update endpoint. The resource is **not** re-created. Changing `org_uuid` triggers replacement because the resource represents a specific org's membership.
 
 ### State-only destroy
 
 Destroying this resource is state-only: Terraform removes the resource from its state without calling an API, because the server has no endpoint to "delete" a membership outright. The organization stays in its current group until another `datadog_org_group_membership` resource (or an out-of-band API call) moves it.
 
-Because of this, destroying a [`datadog_org_group`](./org_group) requires that it has **zero memberships pointing at it**. Before destroying a group, move every member org to another group first — either by updating `org_group_id` on each membership resource (in-place reassignment) or by removing the member-org configs so Terraform reassigns them elsewhere.
+Because of this, destroying a [`datadog_org_group`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/org_group) requires that it has **zero memberships pointing at it**. Before destroying a group, move every member org to another group first, either by updating `org_group_id` on each membership resource (in-place reassignment) or by removing the member-org configs so Terraform reassigns them elsewhere.
 
 {{ .SchemaMarkdown | trimspace }}
 

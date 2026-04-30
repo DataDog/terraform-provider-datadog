@@ -85,7 +85,7 @@ func (r *OrgGroupPolicyOverrideResource) Schema(_ context.Context, _ resource.Sc
 			},
 			"org_site": schema.StringAttribute{
 				Required:    true,
-				Description: "The short site name of the organization (e.g. `us1`, `eu1`, `us1-fed`). Part of the override's server-side identity; changing it replaces the resource.",
+				Description: "The short site name of the organization (e.g., `us1`, `eu1`, `us1-fed`). Part of the override's server-side identity; changing it replaces the resource.",
 				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
