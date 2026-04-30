@@ -7036,3 +7036,109 @@ resource "datadog_observability_pipeline" "elasticsearch_metrics_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_databricksZerobusDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.databricks_zerobus"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "databricks_zerobus" {
+  name = "databricks zerobus pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "databricks-zerobus-dest-1"
+      inputs = ["source-1"]
+
+      databricks_zerobus {
+        ingestion_endpoint    = "https://ingest.databricks.example.com/v1/logs"
+        table_name            = "my_catalog.my_schema.my_table"
+        unity_catalog_endpoint = "https://unity.databricks.example.com"
+
+        auth {
+          client_id        = "my-oauth-client-id"
+          client_secret_key = "DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint", "https://ingest.databricks.example.com/v1/logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint", "https://unity.databricks.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_secret_key", "DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_databricksZerobusDestination_basic(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.databricks_zerobus_basic"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
+  name = "databricks zerobus pipeline (minimal)"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "databricks-zerobus-dest-basic-1"
+      inputs = ["source-1"]
+
+      databricks_zerobus {
+        ingestion_endpoint    = "https://ingest.databricks.example.com/v1/logs"
+        table_name            = "my_catalog.my_schema.my_table"
+        unity_catalog_endpoint = "https://unity.databricks.example.com"
+
+        auth {
+          client_id = "my-oauth-client-id"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-basic-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint", "https://ingest.databricks.example.com/v1/logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint", "https://unity.databricks.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
+				),
+			},
+		},
+	})
+}

@@ -112,6 +112,7 @@ Optional:
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
 - `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
 - `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem))
+- `databricks_zerobus` (Block List) The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destination--datadog_logs))
 - `datadog_metrics` (Block List) The `datadog_metrics` destination forwards metrics to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics))
 - `elasticsearch` (Block List) The `elasticsearch` destination writes logs or metrics to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
@@ -479,6 +480,32 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
+<a id="nestedblock--config--destination--databricks_zerobus"></a>
+### Nested Schema for `config.destination.databricks_zerobus`
+
+Required:
+
+- `ingestion_endpoint` (String) The Databricks Zerobus ingestion endpoint URL.
+- `table_name` (String) The name of the Databricks table to ingest logs into.
+- `unity_catalog_endpoint` (String) The Databricks Unity Catalog endpoint URL.
+
+Optional:
+
+- `auth` (Block List) OAuth client credentials used to authenticate with Databricks. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--auth))
+
+<a id="nestedblock--config--destination--databricks_zerobus--auth"></a>
+### Nested Schema for `config.destination.databricks_zerobus.auth`
+
+Required:
+
+- `client_id` (String) The OAuth client ID used to authenticate with Databricks.
+
+Optional:
+
+- `client_secret_key` (String) The name of the secret or environment variable holding the OAuth client secret. Defaults to `DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET`.
 
 
 
