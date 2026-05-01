@@ -6,6 +6,82 @@ import (
 	"testing"
 )
 
+// TestPrune_TreemapStyleInGroup reproduces the bug where a treemap widget nested
+// inside a group has a "style" block in its request that the schema doesn't declare.
+// The prune pass should drop "style" and surface the path so the SDKv2 d.Set call
+// no longer fails with "Invalid address to set".
+func TestPrune_TreemapStyleInGroup(t *testing.T) {
+	apiWidgets := []interface{}{
+		map[string]interface{}{
+			"id": float64(6005583415655279),
+			"definition": map[string]interface{}{
+				"title":       "New group",
+				"type":        "group",
+				"layout_type": "ordered",
+				"widgets": []interface{}{
+					map[string]interface{}{
+						"id": float64(3095397288867546),
+						"definition": map[string]interface{}{
+							"type":  "treemap",
+							"title": "",
+							"requests": []interface{}{
+								map[string]interface{}{
+									"response_format": "scalar",
+									"queries": []interface{}{
+										map[string]interface{}{
+											"data_source": "metrics",
+											"name":        "query1",
+											"query":       "sum:system.mem.total{*} by {service}",
+											"aggregator":  "sum",
+										},
+									},
+									"style": map[string]interface{}{
+										"palette": "datadog16",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	result, drops := FlattenWidgetsForSDKv2(apiWidgets)
+	if len(result) != 1 {
+		t.Fatalf("expected 1 flattened widget, got %d", len(result))
+	}
+
+	// Verify the path was dropped and surfaced.
+	wantPath := "widget[0].group_definition.widget.[0].treemap_definition.request[0].style"
+	found := false
+	for _, p := range drops {
+		if p == wantPath {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected dropped path %q in %v", wantPath, drops)
+	}
+
+	// Walk into the result and verify the offending key is gone.
+	groupWrapper := result[0].(map[string]interface{})
+	groupDef := groupWrapper["group_definition"].([]interface{})[0].(map[string]interface{})
+	nestedWidgets := groupDef["widget"].([]interface{})
+	treemapWrapper := nestedWidgets[0].(map[string]interface{})
+	treemapDef := treemapWrapper["treemap_definition"].([]interface{})[0].(map[string]interface{})
+	reqs := treemapDef["request"].([]interface{})
+	req0 := reqs[0].(map[string]interface{})
+	if _, hasStyle := req0["style"]; hasStyle {
+		t.Errorf("expected 'style' to be pruned from treemap request, but it is still present: %v", req0)
+	}
+	// Ensure legitimate keys survive.
+	if _, hasQuery := req0["query"]; !hasQuery {
+		t.Error("expected 'query' to remain after prune")
+	}
+}
+
 // TestPrune_KeepsKnownFields verifies that timeseries requests (which legitimately
 // have a 'style' block in their schema) are not affected by pruning.
 func TestPrune_KeepsKnownFields(t *testing.T) {
