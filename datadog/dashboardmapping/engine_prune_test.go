@@ -6,10 +6,12 @@ import (
 	"testing"
 )
 
-// TestPrune_TreemapStyleInGroup reproduces the bug where a treemap widget nested
-// inside a group has a "style" block in its request that the schema doesn't declare.
-// The prune pass should drop "style" and surface the path so the SDKv2 d.Set call
-// no longer fails with "Invalid address to set".
+// TestPrune_TreemapStyleInGroup verifies that a treemap widget nested inside
+// a group preserves its `style` block end-to-end. This was the originally
+// reported bug — `style` was emitted by the formula request flattener but the
+// schema did not declare it on treemap requests, so the prune pass dropped it.
+// `treemap_definition.request.style` is now declared, so flattened state must
+// retain the field and emit zero drops for this dashboard shape.
 func TestPrune_TreemapStyleInGroup(t *testing.T) {
 	apiWidgets := []interface{}{
 		map[string]interface{}{
@@ -51,21 +53,11 @@ func TestPrune_TreemapStyleInGroup(t *testing.T) {
 	if len(result) != 1 {
 		t.Fatalf("expected 1 flattened widget, got %d", len(result))
 	}
-
-	// Verify the path was dropped and surfaced.
-	wantPath := "widget[0].group_definition.widget.[0].treemap_definition.request[0].style"
-	found := false
-	for _, p := range drops {
-		if p == wantPath {
-			found = true
-			break
-		}
-	}
-	if !found {
-		t.Errorf("expected dropped path %q in %v", wantPath, drops)
+	if len(drops) != 0 {
+		t.Errorf("expected zero drops now that treemap.style is declared, got: %v", drops)
 	}
 
-	// Walk into the result and verify the offending key is gone.
+	// Walk into the result and verify both legitimate keys survived flattening.
 	groupWrapper := result[0].(map[string]interface{})
 	groupDef := groupWrapper["group_definition"].([]interface{})[0].(map[string]interface{})
 	nestedWidgets := groupDef["widget"].([]interface{})
@@ -73,12 +65,11 @@ func TestPrune_TreemapStyleInGroup(t *testing.T) {
 	treemapDef := treemapWrapper["treemap_definition"].([]interface{})[0].(map[string]interface{})
 	reqs := treemapDef["request"].([]interface{})
 	req0 := reqs[0].(map[string]interface{})
-	if _, hasStyle := req0["style"]; hasStyle {
-		t.Errorf("expected 'style' to be pruned from treemap request, but it is still present: %v", req0)
+	if _, hasStyle := req0["style"]; !hasStyle {
+		t.Errorf("expected 'style' to survive flatten, got: %v", req0)
 	}
-	// Ensure legitimate keys survive.
 	if _, hasQuery := req0["query"]; !hasQuery {
-		t.Error("expected 'query' to remain after prune")
+		t.Error("expected 'query' to remain")
 	}
 }
 
