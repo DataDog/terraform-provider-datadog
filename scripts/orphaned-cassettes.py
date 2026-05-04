@@ -17,8 +17,16 @@ def discover_tests(tests_dir: Path) -> set[str]:
     return tests
 
 
-def discover_cassette_basenames(cassettes_dir: Path) -> set[str]:
-    return {p.stem for p in cassettes_dir.iterdir() if p.suffix in CASSETTE_EXTS}
+def discover_cassettes(cassettes_dir: Path) -> dict[str, list[Path]]:
+    cassettes: dict[str, list[Path]] = {}
+    for ext in CASSETTE_EXTS:
+        for path in cassettes_dir.rglob(f"*{ext}"):
+            rel = path.relative_to(cassettes_dir)
+            if len(rel.parts) < 2:
+                continue
+            name = path.stem if len(rel.parts) == 2 else rel.parts[1]
+            cassettes.setdefault(name, []).append(path)
+    return cassettes
 
 
 def main() -> int:
@@ -35,17 +43,15 @@ def main() -> int:
     cassettes_dir = tests_dir / "cassettes"
 
     tests = discover_tests(tests_dir)
-    orphans = sorted(discover_cassette_basenames(cassettes_dir) - tests)
+    cassettes = discover_cassettes(cassettes_dir)
+    orphans = sorted(set(cassettes) - tests)
 
     if not orphans:
         return 0
 
     status = "deleted" if args.delete else "orphaned"
-    for base in orphans:
-        for ext in CASSETTE_EXTS:
-            path = cassettes_dir / f"{base}{ext}"
-            if not path.exists():
-                continue
+    for name in orphans:
+        for path in sorted(cassettes[name]):
             print(f"{status}: {path.relative_to(repo_root)}")
             if args.delete:
                 path.unlink()

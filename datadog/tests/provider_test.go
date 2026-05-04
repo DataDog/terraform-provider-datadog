@@ -5,17 +5,24 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"io"
+	"io/fs"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -383,6 +390,107 @@ func getEndpointTagValue(t *testing.T) (string, error) {
 		functionFile)
 }
 
+const cassetteRoot = "cassettes"
+
+var cassetteResourceFileRE = regexp.MustCompile(
+	`(?:^|/)(?:resource|data_source|import)_datadog_([a-z0-9_]+)_test\.go$`)
+
+var (
+	cassetteFuncFilesOnce sync.Once
+	cassetteFuncFiles     map[string]string
+)
+
+// loadCassetteFuncFiles populates cassetteFuncFiles by parsing every
+// _test.go file alongside provider_test.go and recording each top-level
+// Test* function and the file that declares it. Used to map a cassette name
+// (which is the test function name, possibly with a subtest sub-path) to
+// the source file, so the cassette's per-resource subdirectory can be
+// derived.
+func loadCassetteFuncFiles() {
+	cassetteFuncFilesOnce.Do(func() {
+		cassetteFuncFiles = map[string]string{}
+		_, thisFile, _, _ := runtime.Caller(0)
+		fset := token.NewFileSet()
+		err := filepath.WalkDir(filepath.Dir(thisFile), func(path string, entry fs.DirEntry, err error) error {
+			if err != nil {
+				return fmt.Errorf("walking %s: %w", path, err)
+			}
+			if entry.IsDir() || !strings.HasSuffix(path, "_test.go") {
+				return nil
+			}
+			f, err := parser.ParseFile(fset, path, nil, parser.SkipObjectResolution)
+			if err != nil {
+				return fmt.Errorf("parsing %s: %w", path, err)
+			}
+			for _, decl := range f.Decls {
+				fn, ok := decl.(*ast.FuncDecl)
+				if !ok || fn.Recv != nil {
+					continue
+				}
+				name := fn.Name.Name
+				if strings.HasPrefix(name, "Test") && len(name) > len("Test") {
+					cassetteFuncFiles[name] = path
+				}
+			}
+			return nil
+		})
+		if err != nil {
+			panic(fmt.Sprintf("loadCassetteFuncFiles: %v", err))
+		}
+	})
+}
+
+// cassetteGenericAllowlist enumerates the test functions whose cassettes are
+// permitted to live in cassettes/_generic — i.e. tests that have no
+// resource_datadog_<resource>_test.go home (e.g. provider-level tests).
+// Any other unrouted cassette is treated as an error.
+var cassetteGenericAllowlist = map[string]struct{}{
+	"TestProvider": {},
+}
+
+// cassetteDirForName returns the per-resource cassette directory for the
+// cassette named `name` (a test function name, optionally followed by a
+// subtest sub-path). Panics if the test isn't declared in a
+// resource_datadog_<resource>_test.go file and isn't in
+// cassetteGenericAllowlist.
+func cassetteDirForName(name string) string {
+	top := name
+	if i := strings.Index(top, "/"); i >= 0 {
+		top = top[:i]
+	}
+	loadCassetteFuncFiles()
+	if file, ok := cassetteFuncFiles[top]; ok {
+		if m := cassetteResourceFileRE.FindStringSubmatch(file); m != nil {
+			return cassetteRoot + "/datadog_" + m[1]
+		}
+	}
+	if _, ok := cassetteGenericAllowlist[top]; ok {
+		return cassetteRoot + "/_generic"
+	}
+	panic(fmt.Sprintf("cassette %q has no resource directory: declare its test in resource_datadog_<resource>_test.go (or data_source_/import_), or add %q to cassetteGenericAllowlist in provider_test.go",
+		name, top))
+}
+
+// resolveCassettePath returns the cassette path go-vcr should use (without
+// the .yaml suffix). During the migration window, if the new path doesn't
+// exist on disk but the legacy flat path does, return the legacy path so
+// replay still works. The fallback is removed once all cassettes have been
+// migrated.
+func resolveCassettePath(name string) string {
+	newPath := cassetteDirForName(name) + "/" + name
+	if _, err := os.Stat(newPath + ".yaml"); errors.Is(err, os.ErrNotExist) {
+		legacy := cassetteRoot + "/" + name
+		if _, err := os.Stat(legacy + ".yaml"); err == nil {
+			return legacy
+		}
+	}
+	return newPath
+}
+
+func resolveFreezePath(name string) string {
+	return resolveCassettePath(name) + ".freeze"
+}
+
 func isRecording() bool {
 	return os.Getenv("RECORD") == "true"
 }
@@ -490,8 +598,8 @@ func isCIRun() bool {
 }
 
 func setClock(t *testing.T) clockwork.FakeClock {
-	os.MkdirAll("cassettes", 0755)
-	f, err := os.Create(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
+	os.MkdirAll(cassetteDirForName(t.Name()), 0755)
+	f, err := os.Create(resolveFreezePath(t.Name()))
 	if err != nil {
 		t.Fatalf("Could not set clock: %v", err)
 	}
@@ -502,7 +610,7 @@ func setClock(t *testing.T) clockwork.FakeClock {
 }
 
 func restoreClock(t *testing.T) clockwork.FakeClock {
-	data, err := os.ReadFile(fmt.Sprintf("cassettes/%s.freeze", t.Name()))
+	data, err := os.ReadFile(resolveFreezePath(t.Name()))
 	if err != nil {
 		t.Logf("Could not load clock: %v", err)
 		return setClock(t)
@@ -529,7 +637,7 @@ func testClockWithName(t *testing.T, name string) clockwork.FakeClock {
 }
 
 func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
-	data, err := os.ReadFile(fmt.Sprintf("cassettes/%s.freeze", name))
+	data, err := os.ReadFile(resolveFreezePath(name))
 	if err != nil {
 		t.Logf("Could not load clock for %s: %v", name, err)
 		return setClock(t)
@@ -648,7 +756,7 @@ func initRecorderWithName(t *testing.T, cassetteName string) *recorder.Recorder 
 	}
 
 	opts := &recorder.Options{
-		CassetteName:       fmt.Sprintf("cassettes/%s", cassetteName),
+		CassetteName:       resolveCassettePath(cassetteName),
 		Mode:               mode,
 		SkipRequestLatency: true,
 		RealTransport:      http.DefaultTransport,

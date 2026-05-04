@@ -107,3 +107,4 @@ templates/**/org_group*.md.tmpl                  @DataDog/org-management
 docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
 scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management
 docs/resources/secure_embed_dashboard.md         @DataDog/api-reliability @DataDog/reporting-and-sharing
+datadog/tests/cassettes/_generic/                @DataDog/api-reliability
