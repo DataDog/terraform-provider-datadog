@@ -113,14 +113,10 @@ datadog/**/*observability_pipeline*              @DataDog/observability-pipeline
 datadog/**/*datadog_secure_embed_dashboard*      @DataDog/api-reliability @DataDog/reporting-and-sharing
 
 # Examples (HCL snippets embedded in rendered docs)
-examples/data-sources/datadog_org_group*         @DataDog/org-management
-examples/resources/datadog_org_group*            @DataDog/org-management
+examples/**/datadog_org_group*/**                @DataDog/org-management
 
 # Doc templates (override the auto-generated docs)
-templates/resources/org_group*.md.tmpl           @DataDog/org-management
-
-# Test cassettes (recorded HTTP traffic for replay)
-datadog/tests/cassettes/TestAccDatadogOrgGroup*  @DataDog/org-management
+templates/**/org_group*.md.tmpl                  @DataDog/org-management
 
 # Team-specific
 docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
