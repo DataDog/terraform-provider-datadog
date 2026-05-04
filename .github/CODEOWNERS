@@ -62,6 +62,7 @@ datadog/**/*datadog_incident*                    @DataDog/incident-app
 datadog/**/*datadog_ip_allowlist*                @DataDog/team-aaa
 datadog/**/*datadog_openapi*                     @DataDog/service-catalog
 datadog/**/*datadog_org_connection*              @DataDog/aaa-granular-access
+datadog/**/*datadog_org_group*                   @DataDog/org-management
 datadog/**/*datadog_reference_table*             @DataDog/redapl-experiences
 datadog/**/*datadog_action_connection*           @DataDog/action-platform
 datadog/**/*datadog_agentless*                   @DataDog/k9-agentless
@@ -110,6 +111,12 @@ datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/cloud-cost-management
 datadog/**/*datadog_deployment_gate*             @DataDog/ci-app-backend
 datadog/**/*observability_pipeline*              @DataDog/observability-pipelines
 datadog/**/*datadog_secure_embed_dashboard*      @DataDog/api-reliability @DataDog/reporting-and-sharing
+
+# Examples (HCL snippets embedded in rendered docs)
+examples/**/datadog_org_group*/**                @DataDog/org-management
+
+# Doc templates (override the auto-generated docs)
+templates/**/org_group*.md.tmpl                  @DataDog/org-management
 
 # Team-specific
 docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
