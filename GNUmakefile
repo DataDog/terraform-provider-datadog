@@ -85,6 +85,9 @@ sweep:
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
 
+orphaned-cassettes:
+	@python3 $(CURDIR)/scripts/orphaned-cassettes.py
+
 tools:
 	go generate -tags tools tools/tools.go
 
@@ -99,4 +102,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile tools get-test-deps license-check sweep
+.PHONY: build check-docs docs test testall testacc cassettes orphaned-cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile tools get-test-deps license-check sweep
