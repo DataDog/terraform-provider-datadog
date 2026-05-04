@@ -47,7 +47,6 @@ type ApiInstances struct {
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	actionsDatastoresApiV2         *datadogV2.ActionsDatastoresApi
 	agentlessScanningApiV2         *datadogV2.AgentlessScanningApi
-	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
 	appBuilderApiV2                *datadogV2.AppBuilderApi
 	applicationSecurityApiV2       *datadogV2.ApplicationSecurityApi
@@ -733,14 +732,6 @@ func (i *ApiInstances) GetApmRetentionFiltersApiV2() *datadogV2.APMRetentionFilt
 		i.apmRetentionFiltersApiV2 = datadogV2.NewAPMRetentionFiltersApi(i.HttpClient)
 	}
 	return i.apmRetentionFiltersApiV2
-}
-
-// GetAPIManagementApiV2 get instance of APIManagementApi
-func (i *ApiInstances) GetAPIManagementApiV2() *datadogV2.APIManagementApi {
-	if i.apiManagementAPIV2 == nil {
-		i.apiManagementAPIV2 = datadogV2.NewAPIManagementApi(i.HttpClient)
-	}
-	return i.apiManagementAPIV2
 }
 
 // GetMicrosoftTeamsIntegrationApiV2 get instance of APIMicrosoftTeamsIntegration
