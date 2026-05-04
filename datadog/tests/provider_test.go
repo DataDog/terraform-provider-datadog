@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -472,19 +471,9 @@ func cassetteDirForName(name string) string {
 }
 
 // resolveCassettePath returns the cassette path go-vcr should use (without
-// the .yaml suffix). During the migration window, if the new path doesn't
-// exist on disk but the legacy flat path does, return the legacy path so
-// replay still works. The fallback is removed once all cassettes have been
-// migrated.
+// the .yaml suffix).
 func resolveCassettePath(name string) string {
-	newPath := cassetteDirForName(name) + "/" + name
-	if _, err := os.Stat(newPath + ".yaml"); errors.Is(err, os.ErrNotExist) {
-		legacy := cassetteRoot + "/" + name
-		if _, err := os.Stat(legacy + ".yaml"); err == nil {
-			return legacy
-		}
-	}
-	return newPath
+	return cassetteDirForName(name) + "/" + name
 }
 
 func resolveFreezePath(name string) string {
