@@ -9211,3 +9211,98 @@ resource "datadog_synthetics_test" "orphan_drop" {
 }
 `, testName)
 }
+
+func TestAccDatadogSyntheticsBrowserTest_DragDropMultipleErrors(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestMultipleOrphanDragsConfig(testName),
+				ExpectError: regexp.MustCompile(`(?s)browser_step\[0\].*browser_step\[2\]`),
+			},
+		},
+	})
+}
+
+func createSyntheticsBrowserTestMultipleOrphanDragsConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "multiple_orphan_drags" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "First drag"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source-1"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Click in between"
+		type = "click"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#some-element"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Second drag"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source-2"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Another click"
+		type = "click"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#another-element"
+				}
+			}
+		}
+	}
+}
+`, testName)
+}
