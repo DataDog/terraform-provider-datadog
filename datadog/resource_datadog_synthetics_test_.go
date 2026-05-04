@@ -1591,9 +1591,10 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"delay": {
-								Description: "Delay in milliseconds before performing the action (0–9999).",
-								Type:        schema.TypeInt,
-								Optional:    true,
+								Description:  "Delay in milliseconds before performing the action (0–9999).",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								ValidateFunc: validation.IntBetween(0, 9999),
 							},
 							"offset": {
 								Description: "Pixel offset from the center of the target element.",
