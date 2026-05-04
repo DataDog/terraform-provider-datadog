@@ -67,6 +67,8 @@ jobs:
         run: make vet
       - name: License Check
         run: make license-check
+      - name: Check Orphaned Cassettes
+        run: make orphaned-cassettes
       - name: Check Docs Are Up To Date
         run: make check-docs
 
