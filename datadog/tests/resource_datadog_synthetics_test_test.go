@@ -8992,3 +8992,317 @@ resource "datadog_synthetics_test" "network" {
 	}
 }`, uniq)
 }
+
+// --- Drag and Drop tests ---
+
+func TestAccDatadogSyntheticsBrowserTest_DragDrop(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestDragDropStep(ctx, accProvider, t, testName),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsBrowserTest_DragDropOrphanDrag(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestOrphanDragConfig(testName),
+				ExpectError: regexp.MustCompile(`a "drag" step must be immediately followed by a "drop" step`),
+			},
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsBrowserTest_DragDropOrphanDrop(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestOrphanDropConfig(testName),
+				ExpectError: regexp.MustCompile(`a "drop" step must be immediately preceded by a "drag" step`),
+			},
+		},
+	})
+}
+
+func createSyntheticsBrowserTestDragDropStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestDragDropConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.name", "Drag element"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.type", "drag"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.params.0.drag_drop_options.0.delay", "120"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.params.0.drag_drop_options.0.offset.0.x", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.0.params.0.drag_drop_options.0.offset.0.y", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.1.name", "Drop on target"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.1.type", "drop"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.drag_drop", "browser_step.1.params.0.drag_drop_options.0.delay", "100"),
+		),
+	}
+}
+
+func createSyntheticsBrowserTestDragDropConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "drag_drop" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "Drag element"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source"
+				}
+			}
+			drag_drop_options {
+				delay = 120
+				offset {
+					x = 100
+					y = 100
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Drop on target"
+		type = "drop"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drop-target"
+				}
+			}
+			drag_drop_options {
+				delay = 100
+			}
+		}
+	}
+}
+`, testName)
+}
+
+func createSyntheticsBrowserTestOrphanDragConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "orphan_drag" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "Drag element"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source"
+				}
+			}
+		}
+	}
+}
+`, testName)
+}
+
+func createSyntheticsBrowserTestOrphanDropConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "orphan_drop" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "Drop on target"
+		type = "drop"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drop-target"
+				}
+			}
+		}
+	}
+}
+`, testName)
+}
+
+func TestAccDatadogSyntheticsBrowserTest_DragDropMultipleErrors(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      createSyntheticsBrowserTestMultipleOrphanDragsConfig(testName),
+				ExpectError: regexp.MustCompile(`(?s)browser_step\[0\].*browser_step\[2\]`),
+			},
+		},
+	})
+}
+
+func createSyntheticsBrowserTestMultipleOrphanDragsConfig(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "multiple_orphan_drags" {
+	type = "browser"
+
+	request_definition {
+		method = "GET"
+		url    = "https://www.datadoghq.com"
+	}
+
+	device_ids = ["laptop_large"]
+	locations  = ["aws:eu-central-1"]
+
+	options_list {
+		tick_every = 3600
+	}
+
+	name    = "%s"
+	message = ""
+	tags    = []
+	status  = "paused"
+
+	browser_step {
+		name = "First drag"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source-1"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Click in between"
+		type = "click"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#some-element"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Second drag"
+		type = "drag"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#drag-source-2"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Another click"
+		type = "click"
+		params {
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#another-element"
+				}
+			}
+		}
+	}
+}
+`, testName)
+}

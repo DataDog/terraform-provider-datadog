@@ -8,6 +8,7 @@ import (
 	"context"
 	b64 "encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"maps"
@@ -1582,6 +1583,42 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
+				"drag_drop_options": {
+					Description: `Options for a "drag" or "drop" step.`,
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"delay": {
+								Description:  "Delay in milliseconds before performing the action (0–9999).",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								ValidateFunc: validation.IntBetween(0, 9999),
+							},
+							"offset": {
+								Description: "Pixel offset from the center of the target element.",
+								Type:        schema.TypeList,
+								MaxItems:    1,
+								Optional:    true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"x": {
+											Description: "Horizontal offset in pixels.",
+											Type:        schema.TypeInt,
+											Optional:    true,
+										},
+										"y": {
+											Description: "Vertical offset in pixels.",
+											Type:        schema.TypeInt,
+											Optional:    true,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -1961,6 +1998,13 @@ func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schem
 		}
 	}
 
+	// validate drag/drop step ordering for browser tests
+	if typeOk && type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER) {
+		if err := validateDragDropStepOrdering(diff); err != nil {
+			return err
+		}
+	}
+
 	// Validate gRPC message requirements during planning
 	subtype, subtypeOk := diff.GetOk("subtype")
 	if !subtypeOk || subtype.(string) != "grpc" {
@@ -1978,6 +2022,42 @@ func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schem
 	}
 
 	return nil
+}
+
+func validateDragDropStepOrdering(diff *schema.ResourceDiff) error {
+	steps, ok := diff.Get("browser_step").([]interface{})
+	if !ok {
+		return nil
+	}
+	var errs []error
+	for i, s := range steps {
+		step, ok := s.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		stepType := step["type"].(string)
+		if stepType == string(datadogV1.SYNTHETICSSTEPTYPE_DRAG) {
+			if i+1 >= len(steps) {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step", i))
+				continue
+			}
+			next := steps[i+1].(map[string]interface{})
+			if next["type"].(string) != string(datadogV1.SYNTHETICSSTEPTYPE_DROP) {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step, got %q", i, next["type"]))
+			}
+		}
+		if stepType == string(datadogV1.SYNTHETICSSTEPTYPE_DROP) {
+			if i == 0 {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step", i))
+				continue
+			}
+			prev := steps[i-1].(map[string]interface{})
+			if prev["type"].(string) != string(datadogV1.SYNTHETICSSTEPTYPE_DRAG) {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step, got %q", i, prev["type"]))
+			}
+		}
+	}
+	return errors.Join(errs...)
 }
 
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -5722,6 +5802,25 @@ func convertStepParamsValueForConfig(stepType interface{}, key string, value int
 	case "pattern", "variable":
 		return value.([]interface{})[0], diags
 
+	case "drag_drop_options":
+		optsList, ok := value.([]interface{})
+		if !ok || len(optsList) == 0 {
+			return nil, diags
+		}
+		optsMap := optsList[0].(map[string]interface{})
+		result := map[string]interface{}{}
+		if delay, ok := optsMap["delay"].(int); ok && delay != 0 {
+			result["delay"] = delay
+		}
+		if offsetList, ok := optsMap["offset"].([]interface{}); ok && len(offsetList) > 0 {
+			offsetMap := offsetList[0].(map[string]interface{})
+			result["offset"] = map[string]interface{}{
+				"x": offsetMap["x"],
+				"y": offsetMap["y"],
+			}
+		}
+		return result, diags
+
 	}
 
 	return value, diags
@@ -5750,6 +5849,29 @@ func convertStepParamsValueForState(key string, value interface{}) (interface{},
 
 	case "pattern", "variable":
 		return []interface{}{value}, diags
+
+	case "drag_drop_options":
+		optsMap, ok := value.(map[string]interface{})
+		if !ok {
+			return value, diags
+		}
+		result := map[string]interface{}{}
+		if delay, ok := optsMap["delay"].(float64); ok {
+			result["delay"] = int(delay)
+		}
+		if offsetRaw, ok := optsMap["offset"].(map[string]interface{}); ok {
+			x, xOk := offsetRaw["x"].(float64)
+			y, yOk := offsetRaw["y"].(float64)
+			if xOk && yOk {
+				result["offset"] = []interface{}{
+					map[string]interface{}{
+						"x": int(x),
+						"y": int(y),
+					},
+				}
+			}
+		}
+		return []interface{}{result}, diags
 	}
 
 	return value, diags
@@ -5792,6 +5914,12 @@ func convertStepParamsKey(key string) string {
 
 	case "withClick":
 		return "with_click"
+
+	case "drag_drop_options":
+		return "options"
+
+	case "options":
+		return "drag_drop_options"
 	}
 
 	return key
@@ -5858,7 +5986,9 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) (map[
 			convertedValue, convertDiags := convertStepParamsValueForConfig(stepType, key, stepMap[key])
 			diags = append(diags, convertDiags...)
 
-			params[convertStepParamsKey(key)] = convertedValue
+			if convertedValue != nil {
+				params[convertStepParamsKey(key)] = convertedValue
+			}
 		}
 
 		if key == "element" {
@@ -6035,6 +6165,12 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
 		return []string{"click_type", "click_with_javascript", "element"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_DRAG:
+		return []string{"element", "drag_drop_options"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_DROP:
+		return []string{"element", "drag_drop_options"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_EMAIL_BODY:
 		return []string{"pattern", "variable"}
