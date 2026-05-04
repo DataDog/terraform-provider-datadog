@@ -257,6 +257,8 @@ func TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringConfigAppSecSpansDeprecated(ruleName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+					// Backend rewrites app_sec_spans to spans, but DiffSuppressFunc
+					// keeps the config value in state
 					resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.data_source", "app_sec_spans"),
 				),
 			},

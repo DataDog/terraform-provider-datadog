@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1774347423","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:*"}],"type":"application_security"}
+            {"cases":[{"condition":"first \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1776111497","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service"],"hasOptionalGroupByFields":false,"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:*"}],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -23,20 +23,20 @@ interactions:
         url: https://api.datadoghq.com/api/v2/security_monitoring/rules
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 957
+        content_length: 949
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1774347423","createdAt":1774347425301,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:*","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"","status":"high","notifications":[],"condition":"first \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"ve5-bkw-xk6","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1776111497","createdAt":1776111499574,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:*","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"","status":"high","notifications":[],"condition":"first \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"hxe-tmc-pcs","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 135.531084ms
+        duration: 143.685209ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,23 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ve5-bkw-xk6
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hxe-tmc-pcs
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 957
+        content_length: 949
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1774347423","createdAt":1774347425301,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:*","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"","status":"high","notifications":[],"condition":"first \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"ve5-bkw-xk6","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1776111497","createdAt":1776111499574,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:*","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"","status":"high","notifications":[],"condition":"first \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"hxe-tmc-pcs","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 149.73875ms
+        duration: 178.539792ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,23 +86,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ve5-bkw-xk6
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hxe-tmc-pcs
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 957
+        content_length: 949
         uncompressed: false
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1774347423","createdAt":1774347425301,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:*","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"","status":"high","notifications":[],"condition":"first \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"ve5-bkw-xk6","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated-local-1776111497","createdAt":1776111499574,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:*","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"","status":"high","notifications":[],"condition":"first \u003e 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"hxe-tmc-pcs","blocking":false,"metadata":{"entities":null,"sources":null},"creationAuthorId":65094071,"creator":{"handle":"tanguy.lichau@datadoghq.com","name":"Tanguy Lichau"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 127.215583ms
+        duration: 132.070625ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,12 +119,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ve5-bkw-xk6
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hxe-tmc-pcs
         method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 143.698542ms
+        duration: 152.225334ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,20 +150,20 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ve5-bkw-xk6
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/hxe-tmc-pcs
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: ve5-bkw-xk6"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: hxe-tmc-pcs"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 211.261709ms
+        duration: 117.496791ms

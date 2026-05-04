@@ -487,6 +487,10 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						Optional:         true,
 						Description:      "Source of events.",
 						Default:          datadogV2.SECURITYMONITORINGSTANDARDDATASOURCE_LOGS,
+						DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+							// app_sec_spans is rewritten to spans by the backend
+							return old == "spans" && new == "app_sec_spans"
+						},
 					},
 					"metric": {
 						Type:        schema.TypeString,
@@ -510,6 +514,11 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						Type:        schema.TypeString,
 						Required:    true,
 						Description: "Query to run on logs.",
+						DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+							// The backend rewrites appsecspan queries by prefixing them with
+							// @appsec.security_activity:* and wrapping in parentheses
+							return old == "@appsec.security_activity:* ("+new+")"
+						},
 					},
 					"indexes": {
 						Type:        schema.TypeList,
