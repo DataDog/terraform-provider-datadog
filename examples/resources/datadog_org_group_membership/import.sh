@@ -1,0 +1,1 @@
+terraform import datadog_org_group_membership.example <membership_uuid>

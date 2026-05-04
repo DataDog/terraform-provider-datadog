@@ -79,6 +79,26 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable OrgGroup
+	config.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOrgGroup", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroups", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroupMembership", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroupMemberships", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroupMembership", true)
+	config.SetUnstableOperationEnabled("v2.CreateOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOrgGroupPolicy", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroupPolicies", true)
+	config.SetUnstableOperationEnabled("v2.CreateOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.GetOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOrgGroupPolicyOverride", true)
+	config.SetUnstableOperationEnabled("v2.ListOrgGroupPolicyOverrides", true)
+
 	// Enable IncidentNotificationRule
 	config.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)
 	config.SetUnstableOperationEnabled("v2.GetIncidentNotificationRule", true)
