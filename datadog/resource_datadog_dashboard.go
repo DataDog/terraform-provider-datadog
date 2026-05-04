@@ -2492,12 +2492,12 @@ func getCloudcraftDefinitionSchema() map[string]*schema.Schema {
 		"highlighted": {
 			Description: "Search query that visually highlights matching resources in the diagram.",
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 		"show_empty_groups": {
-			Description: "Whether to show empty outline groups (VPCs, subnets, security groups, etc.).",
+			Description: "Whether to show empty outline groups in the diagram.",
 			Type:        schema.TypeBool,
-			Optional:    true,
+			Required:    true,
 		},
 		"title": {
 			Description: "The title of the widget.",
@@ -2547,14 +2547,10 @@ func buildDatadogCloudcraftDefinition(terraformDefinition map[string]interface{}
 	}
 	datadogDefinition.SetGroupBy(datadogGroupBy)
 	datadogDefinition.SetProjection(datadogV1.CloudcraftWidgetDefinitionProjection(terraformDefinition["projection"].(string)))
+	datadogDefinition.SetHighlighted(terraformDefinition["highlighted"].(string))
+	datadogDefinition.SetShowEmptyGroups(terraformDefinition["show_empty_groups"].(bool))
 
 	// Optional params
-	if v, ok := terraformDefinition["highlighted"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetHighlighted(v)
-	}
-	if v, ok := terraformDefinition["show_empty_groups"].(bool); ok {
-		datadogDefinition.SetShowEmptyGroups(v)
-	}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
 	}
@@ -2583,14 +2579,10 @@ func buildTerraformCloudcraftDefinition(datadogDefinition *datadogV1.CloudcraftW
 	terraformDefinition["overlay_filter"] = datadogDefinition.GetOverlayFilter()
 	terraformDefinition["group_by"] = datadogDefinition.GetGroupBy()
 	terraformDefinition["projection"] = string(datadogDefinition.GetProjection())
+	terraformDefinition["highlighted"] = datadogDefinition.GetHighlighted()
+	terraformDefinition["show_empty_groups"] = datadogDefinition.GetShowEmptyGroups()
 
 	// Optional params
-	if v, ok := datadogDefinition.GetHighlightedOk(); ok {
-		terraformDefinition["highlighted"] = *v
-	}
-	if v, ok := datadogDefinition.GetShowEmptyGroupsOk(); ok {
-		terraformDefinition["show_empty_groups"] = *v
-	}
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
 	}
