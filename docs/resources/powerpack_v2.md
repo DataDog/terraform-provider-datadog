@@ -10652,6 +10652,7 @@ Optional:
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query))
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--sort))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query"></a>
@@ -11376,6 +11377,42 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--sort"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
 
 
 
@@ -13423,6 +13460,8 @@ Optional:
 
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula))
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--sort))
+- `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula`
@@ -13749,6 +13788,51 @@ Optional:
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--sort"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -19614,6 +19698,7 @@ Optional:
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query))
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--sort))
 - `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--sunburst_definition--request--apm_query"></a>
@@ -20338,6 +20423,42 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--sort"></a>
+### Nested Schema for `widget.sunburst_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--sunburst_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.sunburst_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--sunburst_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.sunburst_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.sunburst_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
 
 
 
@@ -22385,6 +22506,8 @@ Optional:
 
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula))
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. Only applicable for formula-style requests. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--sort))
+- `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--style))
 
 <a id="nestedblock--widget--treemap_definition--request--formula"></a>
 ### Nested Schema for `widget.treemap_definition.request.formula`
@@ -22711,6 +22834,51 @@ Optional:
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
 
+
+
+<a id="nestedblock--widget--treemap_definition--request--sort"></a>
+### Nested Schema for `widget.treemap_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--treemap_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.treemap_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--treemap_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.treemap_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--treemap_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.treemap_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--treemap_definition--request--style"></a>
+### Nested Schema for `widget.treemap_definition.request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 

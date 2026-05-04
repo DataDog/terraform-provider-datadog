@@ -1051,6 +1051,11 @@ var sunburstWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "Define style for the widget's request.",
 		Children:    widgetRequestStyleFields},
+	// sort is SchemaOnly: the generic engine skips JSON build/flatten; the formula
+	// request helper (flattenFormulaRequest / buildFormulaRequestFromMap) handles it.
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget. Only applicable for formula-style requests.",
+		Children:    widgetSortByFields},
 }, standardQueryFields...)
 
 var SunburstWidgetSpec = WidgetSpec{
@@ -1143,6 +1148,14 @@ var treemapRequestFields = []FieldSpec{
 	{HCLKey: "formula", Type: TypeBlockList, OmitEmpty: true,
 		Description: "List of formulas that operate on queries.",
 		Children:    widgetFormulaFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Define style for the widget's request.",
+		Children:    widgetRequestStyleFields},
+	// sort is SchemaOnly: the generic engine skips JSON build/flatten; the formula
+	// request helper (flattenFormulaRequest / buildFormulaRequestFromMap) handles it.
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget. Only applicable for formula-style requests.",
+		Children:    widgetSortByFields},
 }
 
 var TreemapWidgetSpec = WidgetSpec{

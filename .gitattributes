@@ -1,0 +1,2 @@
+datadog/tests/cassettes/*.yaml   linguist-generated
+datadog/tests/cassettes/*.freeze     linguist-generated
