@@ -119,6 +119,9 @@ examples/resources/datadog_org_group*            @DataDog/org-management
 # Doc templates (override the auto-generated docs)
 templates/resources/org_group*.md.tmpl           @DataDog/org-management
 
+# Test cassettes (recorded HTTP traffic for replay)
+datadog/tests/cassettes/TestAccDatadogOrgGroup*  @DataDog/org-management
+
 # Team-specific
 docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
 scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management
