@@ -110,6 +110,12 @@ var indexSchema = map[string]*schema.Schema{
 		Computed:    true,
 		Elem:        &schema.Schema{Type: schema.TypeString},
 	},
+	"prevent_deletion": {
+		Description: "If true, the logs index cannot be deleted.",
+		Type:        schema.TypeBool,
+		Optional:    true,
+		Default:     false,
+	},
 }
 
 var exclusionFilterSchema = map[string]*schema.Schema{
@@ -271,12 +277,17 @@ func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData,
 }
 
 func resourceDatadogLogsIndexDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	if d.Get("prevent_deletion").(bool) {
+		return diag.Errorf("Deletion of logs index '%s' is prevented by 'prevent_deletion' flag", d.Id())
+	}
+
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	logsIndexMutex.Lock()
 	defer logsIndexMutex.Unlock()
+
 	httpResponse, err := apiInstances.GetLogsIndexesApiV1().DeleteLogsIndex(auth, d.Id())
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting logs index")
