@@ -22,6 +22,10 @@ var indexSchema = map[string]*schema.Schema{
 		Type:        schema.TypeString,
 		Required:    true,
 		ForceNew:    true,
+		ValidateFunc: validation.StringMatch(
+			regexp.MustCompile(`^[a-z][a-z0-9-]*$`),
+			"must start with a lowercase letter and contain only lowercase letters, digits, or hyphens",
+		),
 	},
 	"disable_daily_limit": {
 		Description: "If true, disables the daily limit and sets `daily_limit` to null. If false, enables the daily limit. When creating an index, if this attribute is omitted, the daily limit is enabled by default. When updating an index, if this attribute is omitted, the existing value is preserved. Providing a `daily_limit` value does not re-enable the limit if it was previously disabled unless `disable_daily_limit` is explicitly set to false.",
