@@ -40,6 +40,9 @@ const DDAPIUrlEnvName = "DD_HOST"
 // DDOrgUUIDEnvName name of env var for Org UUID
 const DDOrgUUIDEnvName = "DD_ORG_UUID"
 
+// DDPATEnvName name of env var for Personal Access Token (PAT, Bearer auth)
+const DDPATEnvName = "DD_PAT"
+
 // DatadogAPPKeyEnvName name of env var for APP key
 const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
 
@@ -48,6 +51,9 @@ const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
 
 // DatadogOrgUUIDEnvName name of env var for Org UUID
 const DatadogOrgUUIDEnvName = "DATADOG_ORG_UUID"
+
+// DatadogPATEnvName name of env var for Personal Access Token (PAT, Bearer auth)
+const DatadogPATEnvName = "DATADOG_PAT"
 
 // DatadogAPIUrlEnvName name of env var for API key
 const DatadogAPIUrlEnvName = "DATADOG_HOST"
@@ -87,6 +93,9 @@ var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
 
 // OrgUUIDEnvVars names of env var for Org UUID
 var OrgUUIDEnvVars = []string{DDOrgUUIDEnvName, DatadogOrgUUIDEnvName}
+
+// PATEnvVars names of env vars for Personal Access Token (Bearer auth)
+var PATEnvVars = []string{DDPATEnvName, DatadogPATEnvName}
 
 // APIUrlEnvVars names of env var for API key
 var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
