@@ -418,3 +418,128 @@ func TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
 	}
 }
+
+// TestFrameworkProviderConfigure_PATOnly tests that PAT (Bearer) auth works when only `pat` is set.
+func TestFrameworkProviderConfigure_PATOnly(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_PAT")
+	os.Unsetenv("DATADOG_PAT")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		Pat:                    types.StringValue("ddpat_test_token"),
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+
+	if diags.HasError() {
+		t.Errorf("framework provider configure should not error with PAT only, got: %v", diags)
+	}
+	if p.DatadogApiInstances == nil {
+		t.Fatal("DatadogApiInstances should be set")
+	}
+
+	// Bearer auth should be plumbed via ContextAccessToken on p.Auth.
+	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the PAT, got %q (ok=%v)", got, ok)
+	}
+	// API key context should NOT be set when only PAT is provided.
+	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when only PAT is provided")
+	}
+}
+
+// TestFrameworkProviderConfigure_PATEnvVar tests env-var fallback for PAT.
+func TestFrameworkProviderConfigure_PATEnvVar(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Setenv("DD_PAT", "ddpat_from_env")
+	defer os.Unsetenv("DD_PAT")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	ctx := context.Background()
+	if diags := p.ConfigureConfigDefaults(ctx, config); diags.HasError() {
+		t.Fatalf("ConfigureConfigDefaults failed: %v", diags)
+	}
+	if got := config.Pat.ValueString(); got != "ddpat_from_env" {
+		t.Errorf("Pat should be populated from DD_PAT, got %q", got)
+	}
+
+	request := &provider.ConfigureRequest{}
+	if diags := p.ConfigureCallbackFunc(p, request, config); diags.HasError() {
+		t.Errorf("framework provider configure should not error with PAT env var, got: %v", diags)
+	}
+	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_from_env" {
+		t.Errorf("ContextAccessToken should be set from DD_PAT, got %q (ok=%v)", got, ok)
+	}
+}
+
+// TestFrameworkProviderConfigure_PATWithAPIKey tests that PAT and API keys can coexist.
+func TestFrameworkProviderConfigure_PATWithAPIKey(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_PAT")
+	os.Unsetenv("DATADOG_PAT")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		ApiKey:                 types.StringValue("test_api_key"),
+		AppKey:                 types.StringValue("test_app_key"),
+		Pat:                    types.StringValue("ddpat_test_token"),
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+	if diags.HasError() {
+		t.Errorf("framework provider configure should not error with PAT + API keys, got: %v", diags)
+	}
+	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the PAT, got %q (ok=%v)", got, ok)
+	}
+	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); !ok {
+		t.Error("ContextAPIKeys should be set when API keys are provided alongside PAT")
+	}
+}
+
+// TestFrameworkProviderConfigure_NoCredentials tests that configure errors with no credentials and validate=true.
+func TestFrameworkProviderConfigure_NoCredentialsErrors(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_PAT")
+	os.Unsetenv("DATADOG_PAT")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("true"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+	if !diags.HasError() {
+		t.Error("framework provider configure should error when no credentials are provided and validate=true")
+	}
+}

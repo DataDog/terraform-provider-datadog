@@ -85,6 +85,12 @@ func Provider() *schema.Provider {
 				Sensitive:   true,
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
 			},
+			"pat": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "Datadog Personal Access Token (PAT) used as a Bearer credential. When set, the provider authenticates with `Authorization: Bearer <pat>` and skips the `DD-API-KEY` / `DD-APPLICATION-KEY` headers for resources that support it. May be supplied via the `DD_PAT` or `DATADOG_PAT` environment variable. PAT-only configurations are validated against `/api/v2/validate_keys` instead of `/api/v1/validate`.",
+			},
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -345,6 +351,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		appKey, _ = utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
 	}
 
+	pat := d.Get("pat").(string)
+	if pat == "" {
+		pat, _ = utils.GetMultiEnvVar(utils.PATEnvVars[:]...)
+	}
+
 	apiURL := d.Get("api_url").(string)
 	if apiURL == "" {
 		apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
@@ -387,8 +398,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	if validate {
-		if cloudProviderType == "" && (apiKey == "" || appKey == "") {
-			return nil, diag.FromErr(errors.New("api_key and app_key or orgUUID must be set unless validate = false"))
+		if cloudProviderType == "" && pat == "" && (apiKey == "" || appKey == "") {
+			return nil, diag.FromErr(errors.New("api_key and app_key, pat, or orgUUID must be set unless validate = false"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
 		}
@@ -435,19 +446,24 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
-	} else if apiKey != "" || appKey != "" {
-		auth = context.WithValue(
-			auth,
-			datadog.ContextAPIKeys,
-			map[string]datadog.APIKey{
-				"apiKeyAuth": {
-					Key: apiKey,
+	} else {
+		if apiKey != "" || appKey != "" {
+			auth = context.WithValue(
+				auth,
+				datadog.ContextAPIKeys,
+				map[string]datadog.APIKey{
+					"apiKeyAuth": {
+						Key: apiKey,
+					},
+					"appKeyAuth": {
+						Key: appKey,
+					},
 				},
-				"appKeyAuth": {
-					Key: appKey,
-				},
-			},
-		)
+			)
+		}
+		if pat != "" {
+			auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
+		}
 	}
 
 	config := datadog.NewConfiguration()
@@ -562,6 +578,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			if delegatedConfig.DelegatedToken == "" {
 				msg := fmt.Sprintf(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your OrgUUID is correct and your cloud auth credentials for "%s" are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`, cloudProviderType)
 				err := errors.New(msg)
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
+		} else if pat != "" { // PAT is set: v1 validate doesn't accept Bearer auth, so use v2 validate_keys
+			if err := utils.ValidateKeysV2(auth, datadogClient); err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
