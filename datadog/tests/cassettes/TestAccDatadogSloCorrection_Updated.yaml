@@ -1,249 +1,499 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"some updated description about foo SLO","name":"tf-TestAccDatadogSloCorrection_Updated-local-1618930806","query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","baz"],"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":98,"timeframe":"30d","warning":99},{"target":99.9,"timeframe":"90d"}],"type":"metric"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo
-    method: POST
-    id: 0
-  response:
-    body: '{"data":[{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"a470fdc68d2156d488769ecd51dd96a4","name":"tf-TestAccDatadogSloCorrection_Updated-local-1618930806","created_at":1618930807,"tags":["foo:bar","baz"],"modified_at":1618930807,"type":"metric"}],"error":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"category":"Scheduled Maintenance","description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1618930806","end":1735718600,"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707000,"timezone":"UTC"},"type":"correction"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction
-    method: POST
-    id: 1
-  response:
-    body: '{"data":{"type":"correction","id":"187ff842-a1e9-11eb-9f64-da7ad0900002","attributes":{"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707000,"end":1735718600,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1618930806","category":"Scheduled Maintenance","timezone":"UTC","creator":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":null,"icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"}}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: GET
-    id: 2
-  response:
-    body: '{"data":{"type":"correction","id":"187ff842-a1e9-11eb-9f64-da7ad0900002","attributes":{"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707000,"end":1735718600,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1618930806","category":"Scheduled Maintenance","timezone":"UTC","creator":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":null,"icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"}}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/a470fdc68d2156d488769ecd51dd96a4
-    method: GET
-    id: 3
-  response:
-    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"a470fdc68d2156d488769ecd51dd96a4","name":"tf-TestAccDatadogSloCorrection_Updated-local-1618930806","created_at":1618930807,"tags":["foo:bar","baz"],"modified_at":1618930807,"type":"metric"},"error":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: GET
-    id: 4
-  response:
-    body: '{"data":{"type":"correction","id":"187ff842-a1e9-11eb-9f64-da7ad0900002","attributes":{"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707000,"end":1735718600,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1618930806","category":"Scheduled Maintenance","timezone":"UTC","creator":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":null,"icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"}}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/a470fdc68d2156d488769ecd51dd96a4
-    method: GET
-    id: 5
-  response:
-    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"a470fdc68d2156d488769ecd51dd96a4","name":"tf-TestAccDatadogSloCorrection_Updated-local-1618930806","created_at":1618930807,"tags":["foo:bar","baz"],"modified_at":1618930807,"type":"metric"},"error":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: GET
-    id: 6
-  response:
-    body: '{"data":{"type":"correction","id":"187ff842-a1e9-11eb-9f64-da7ad0900002","attributes":{"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707000,"end":1735718600,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1618930806","category":"Scheduled Maintenance","timezone":"UTC","creator":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":null,"icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"}}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"category":"Deployment","description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1618930806","end":1735718000,"start":1735707600,"timezone":"Africa/Lagos"},"type":"correction"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: PATCH
-    id: 7
-  response:
-    body: '{"data":{"type":"correction","id":"187ff842-a1e9-11eb-9f64-da7ad0900002","attributes":{"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707600,"end":1735718000,"description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1618930806","category":"Deployment","timezone":"Africa/Lagos","creator":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":null,"icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"}}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: GET
-    id: 8
-  response:
-    body: '{"data":{"type":"correction","id":"187ff842-a1e9-11eb-9f64-da7ad0900002","attributes":{"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707600,"end":1735718000,"description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1618930806","category":"Deployment","timezone":"Africa/Lagos","creator":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":null,"icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"}}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/a470fdc68d2156d488769ecd51dd96a4
-    method: GET
-    id: 9
-  response:
-    body: '{"data":{"description":"some updated description about foo SLO","monitor_tags":[],"creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"thresholds":[{"warning":99.8,"warning_display":"99.8","target":99.5,"target_display":"99.5","timeframe":"7d"},{"warning":99.0,"warning_display":"99.","target":98.0,"target_display":"98.","timeframe":"30d"},{"target":99.9,"target_display":"99.9","timeframe":"90d"}],"type_id":1,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"id":"a470fdc68d2156d488769ecd51dd96a4","name":"tf-TestAccDatadogSloCorrection_Updated-local-1618930806","created_at":1618930807,"tags":["foo:bar","baz"],"modified_at":1618930807,"type":"metric"},"error":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: GET
-    id: 10
-  response:
-    body: '{"data":{"type":"correction","id":"187ff842-a1e9-11eb-9f64-da7ad0900002","attributes":{"slo_id":"a470fdc68d2156d488769ecd51dd96a4","start":1735707600,"end":1735718000,"description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1618930806","category":"Deployment","timezone":"Africa/Lagos","creator":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","handle":"frog@datadoghq.com","email":"frog@datadoghq.com","name":null,"icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro"}}}}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: DELETE
-    id: 11
-  response:
-    body: ""
-    headers:
-      Content-Type:
-      - application/json
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/a470fdc68d2156d488769ecd51dd96a4
-    method: DELETE
-    id: 12
-  response:
-    body: '{"data":["a470fdc68d2156d488769ecd51dd96a4"],"error":null}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/slo/correction/187ff842-a1e9-11eb-9f64-da7ad0900002
-    method: GET
-    id: 13
-  response:
-    body: '{"errors": ["slo correction public id 187ff842-a1e9-11eb-9f64-da7ad0900002 not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 454
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some updated description about foo SLO","name":"tf-TestAccDatadogSloCorrection_Updated-local-1775814702","query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["foo:bar","baz"],"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8},{"target":98,"timeframe":"30d","warning":99},{"target":99.9,"timeframe":"90d"}],"type":"metric"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"5dbc3c2bbb475b9291619f6ddc76279b","name":"tf-TestAccDatadogSloCorrection_Updated-local-1775814702","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":98.0,"target_display":"98.","warning":99.0,"warning_display":"99."},{"timeframe":"90d","target":99.9,"target_display":"99.9"}],"type":"metric","type_id":1,"description":"some updated description about foo SLO","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Francesco Pighi","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com"},"created_at":1775814703,"modified_at":1775814703,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{type:bad}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"(query1 + query2)"}}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 535.565708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 273
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"category":"Scheduled Maintenance","description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1775814702","end":1775829102,"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818302,"timezone":"UTC"},"type":"correction"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"e19815c2-34c2-11f1-b18b-da7ad0902002","attributes":{"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818302,"end":1775829102,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1775814702","category":"Scheduled Maintenance","timezone":"UTC","created_at":null,"modified_at":null,"rrule":null,"duration":null,"creator":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}},"modifier":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 206.598208ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"e19815c2-34c2-11f1-b18b-da7ad0902002","attributes":{"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818302,"end":1775829102,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1775814702","category":"Scheduled Maintenance","timezone":"UTC","created_at":1775814703,"modified_at":1775814703,"rrule":null,"duration":null,"creator":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}},"modifier":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 172.907667ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/5dbc3c2bbb475b9291619f6ddc76279b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5dbc3c2bbb475b9291619f6ddc76279b","name":"tf-TestAccDatadogSloCorrection_Updated-local-1775814702","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":98.0,"target_display":"98.","warning":99.0,"warning_display":"99."},{"timeframe":"90d","target":99.9,"target_display":"99.9"}],"type":"metric","type_id":1,"description":"some updated description about foo SLO","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Francesco Pighi","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com"},"created_at":1775814703,"modified_at":1775814703,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{type:bad}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"(query1 + query2)"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 6.607376042s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"e19815c2-34c2-11f1-b18b-da7ad0902002","attributes":{"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818302,"end":1775829102,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1775814702","category":"Scheduled Maintenance","timezone":"UTC","created_at":1775814703,"modified_at":1775814703,"rrule":null,"duration":null,"creator":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}},"modifier":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 438.623458ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/5dbc3c2bbb475b9291619f6ddc76279b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5dbc3c2bbb475b9291619f6ddc76279b","name":"tf-TestAccDatadogSloCorrection_Updated-local-1775814702","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":98.0,"target_display":"98.","warning":99.0,"warning_display":"99."},{"timeframe":"90d","target":99.9,"target_display":"99.9"}],"type":"metric","type_id":1,"description":"some updated description about foo SLO","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Francesco Pighi","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com"},"created_at":1775814703,"modified_at":1775814703,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{type:bad}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"(query1 + query2)"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 142.117209ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"e19815c2-34c2-11f1-b18b-da7ad0902002","attributes":{"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818302,"end":1775829102,"description":"test correction on slo tf-TestAccDatadogSloCorrection_Updated-local-1775814702","category":"Scheduled Maintenance","timezone":"UTC","created_at":1775814703,"modified_at":1775814703,"rrule":null,"duration":null,"creator":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}},"modifier":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 161.152583ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 230
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"category":"Deployment","description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1775814702","end":1775828502,"start":1775818902,"timezone":"Africa/Lagos"},"type":"correction"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"e19815c2-34c2-11f1-b18b-da7ad0902002","attributes":{"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818902,"end":1775828502,"description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1775814702","category":"Deployment","timezone":"Africa/Lagos","created_at":1775814703,"modified_at":1775814712,"rrule":null,"duration":null,"creator":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}},"modifier":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 225.482708ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"e19815c2-34c2-11f1-b18b-da7ad0902002","attributes":{"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818902,"end":1775828502,"description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1775814702","category":"Deployment","timezone":"Africa/Lagos","created_at":1775814703,"modified_at":1775814712,"rrule":null,"duration":null,"creator":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}},"modifier":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 154.73275ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/5dbc3c2bbb475b9291619f6ddc76279b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5dbc3c2bbb475b9291619f6ddc76279b","name":"tf-TestAccDatadogSloCorrection_Updated-local-1775814702","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"},{"timeframe":"30d","target":98.0,"target_display":"98.","warning":99.0,"warning_display":"99."},{"timeframe":"90d","target":99.9,"target_display":"99.9"}],"type":"metric","type_id":1,"description":"some updated description about foo SLO","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{type:good}.as_count() + sum:my.metric{type:bad}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Francesco Pighi","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com"},"created_at":1775814703,"modified_at":1775814703,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{type:bad}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"(query1 + query2)"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 4.346972417s
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"e19815c2-34c2-11f1-b18b-da7ad0902002","attributes":{"slo_id":"5dbc3c2bbb475b9291619f6ddc76279b","start":1775818902,"end":1775828502,"description":"updated test correction - tf-TestAccDatadogSloCorrection_Updated-local-1775814702","category":"Deployment","timezone":"Africa/Lagos","created_at":1775814703,"modified_at":1775814712,"rrule":null,"duration":null,"creator":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}},"modifier":{"data":{"type":"users","id":"48e5159f-e308-11ef-bcfc-2666505bfd8f","attributes":{"uuid":"48e5159f-e308-11ef-bcfc-2666505bfd8f","handle":"francesco.pighi@datadoghq.com","email":"francesco.pighi@datadoghq.com","name":"Francesco Pighi","icon":"https://secure.gravatar.com/avatar/54aa49f4b855e62d827e32c0ae6d4bb9?s=48&d=retro"}}}}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.88825ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 250.637917ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/5dbc3c2bbb475b9291619f6ddc76279b
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":["5dbc3c2bbb475b9291619f6ddc76279b"],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 272.543ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/e19815c2-34c2-11f1-b18b-da7ad0902002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["slo correction public id e19815c2-34c2-11f1-b18b-da7ad0902002 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 158.07725ms

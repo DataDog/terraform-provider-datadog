@@ -1,0 +1,306 @@
+skipped_tests:
+  # Missing cloud integrations — AWS/Azure/GCP not configured (12 tests)
+  - test: TestAccAwsCurConfigBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAwsCurConfigImport
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAwsCurConfigWithAccountFilters
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAzureUcConfigBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccAzureUcConfigImport
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccGcpUcConfigBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccGcpUcConfigImport
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningAwsScanOptions_Update
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningGcpScanOptions_Update
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAgentlessScanningGcpScanOptions_Basic
+    reason: "404 Not Found reading/deleting GCP scan options — GCP not configured in org"
+    added: "2026-03-04"
+    author: LiuVII
+
+  # User/Team datasource — Eventual consistency (9 tests)
+  - test: TestAccDatadogUserDatasourceExactMatch
+    reason: "Eventual consistency — user not found immediately after creation"
+    added: "2026-04-24"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExactMatch
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExactMatchError
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExcludeServiceAccounts
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExcludeServiceAccountsMultipleUsersWithError
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUserDatasourceWithExcludeServiceAccountsWithError
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogTeamMembershipsDatasourceExactMatch
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUsersDatasourceFilter
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogUsersDatasourceFilterStatus
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Reference Tables — Cloud storage not configured (6 tests)
+  - test: TestAccReferenceTable_Import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccReferenceTable_SchemaOnCreate
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccReferenceTable_UpdateSyncEnabled
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccReferenceTableS3_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogReferenceTableDataSource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogReferenceTableRowsDataSource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Metric datasource/TagConfig — Metrics don't exist in org (4 tests)
+  - test: TestAccDatadogMetricsDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricTagsDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricActiveTagsAndAggregationsDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogMetricTagConfiguration_Import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # External service config missing (2 tests)
+  - test: TestAccMSTeamsWorkflowsWebhookHandlesBasic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogAppKeyRegistrationResource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # User/ServiceAccount state issues (2 tests)
+  - test: TestAccDatadogUser_ReEnableRoleUpdate
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogServiceAccountDatasourceMatchFilter
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Dataset/IncidentNotificationRule — Rate limiting (1 test)
+  - test: TestAccDatadogDataset_Basic
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+
+  # Incident state — resources not found or externally deleted (1 test)
+  - test: TestAccDatadogIncidentNotificationRuleDataSource_ByID
+    reason: "Non-empty plan — dependent incident_type deleted outside Terraform, triggering rule replacement"
+    added: "2026-03-04"
+    author: LiuVII
+
+  # OrgConnection — 409 Conflict: connection already exists (2 tests)
+  - test: TestAccDatadogOrgConnection_Basic
+    reason: "409 Conflict: connection between orgs already exists — pre-existing state in org"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogOrgConnection_Update
+    reason: "409 Conflict: connection between orgs already exists — pre-existing state in org"
+    added: "2026-03-04"
+    author: LiuVII
+
+  # RUM quota — 403 Reached maximum applications (5 tests)
+  - test: TestAccDatadogRUMApplication_Basic
+    reason: "403 Forbidden: Reached the maximum amount of RUM applications in org"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogRUMApplication_ProductScales
+    reason: "403 Forbidden: Reached the maximum amount of RUM applications in org"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogRUMApplicationDatasourceErrorMultiple
+    reason: "403 Forbidden: Reached the maximum amount of RUM applications in org"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogRUMApplicationDatasourceIDFilter
+    reason: "403 Forbidden: Reached the maximum amount of RUM applications in org"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogRUMApplicationDatasourceNameFilter
+    reason: "403 Forbidden: Reached the maximum amount of RUM applications in org"
+    added: "2026-03-04"
+    author: LiuVII
+
+  # Non-empty plan after apply — provider read bug (3 tests)
+  - test: TestAccDatadogAuthNMapping_CreateUpdate
+    reason: "Non-empty plan after apply + 404 on destroy — provider read returns empty state after create"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogLogsCustomDestination_forwarder_types
+    reason: "Non-empty plan after apply — provider fails to read back created custom destination"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogSensitiveDataScannerGroup_Basic
+    reason: "Non-empty plan after apply — is_enabled read back as false instead of true after create"
+    added: "2026-04-24"
+    author: fpighi
+
+  # Provider bugs (3 tests)
+  - test: TestAccDatadogApmRetentionFilterOrder
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccServiceAccountApplicationKeyBasic_import
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccRumRetentionFiltersDatasource
+    reason: "Initial sync of tests failing on master branch"
+    added: "2026-03-02"
+    author: fpighi
+  - test: TestAccDatadogSecurityNotificationRuleFull
+    reason: "400 Bad Request creating security notification rule — org may lack required detection rules"
+    added: "2026-03-04"
+    author: LiuVII
+  - test: TestAccDatadogSecurityNotificationRuleSignalRuleSimple
+    reason: "400 Bad Request creating security notification rule — org may lack required detection rules"
+    added: "2026-03-04"
+    author: LiuVII
+
+  # SloCorrection — Hardcoded timestamps older than 15 months (2 tests, APIR-2788)
+  - test: TestAccDatadogSloCorrection_Basic
+    reason: "400 Bad Request: end timestamp 2025-01-01 must not be older than 15 months"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogSloCorrection_Updated
+    reason: "400 Bad Request: end timestamp 2025-01-01 must not be older than 15 months"
+    added: "2026-04-10"
+    author: fpighi
+
+  # MonitorDatasource — restricted_roles returns empty (1 test, APIR-2790)
+  - test: TestAccDatadogMonitorDatasource
+    reason: "restricted_roles.# expected 1, got 0 — eventual consistency or API change"
+    added: "2026-04-10"
+    author: fpighi
+
+  # PowerpackDatasource — Persistent 504 Gateway Timeout (1 test, APIR-2791)
+  - test: TestAccDatadogPowerpackDatasource
+    reason: "504 Gateway Timeout from ListPowerpacksWithPagination — too many powerpacks in org"
+    added: "2026-04-10"
+    author: fpighi
+
+  # Intermittent — Transient API timeouts and rate limits (5 tests, APIR-2793)
+  - test: TestAccDatadogMonitor_DataQuality_EmptyMonitorOptions
+    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogMonitor_WithTagConfig
+    reason: "Intermittent 512 Timeout from /api/v1/monitor/validate"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogDashboardQueryValueFormula_import
+    reason: "Intermittent 503 Service Unavailable — upstream connect error"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogSecurityMonitoringRule_AppSecSpansDeprecated
+    reason: "Intermittent non-empty plan — deprecated app_sec_spans data_source normalization"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccDatadogCustomAllocationRules_OverrideFalseUnmanagedAtEnd
+    reason: "Intermittent 429 Too Many Requests — rate limiting on CustomAllocationRules API"
+    added: "2026-04-10"
+    author: fpighi
+  - test: TestAccMonitor_Fwprovider_FormulaFunction_Cost
+    reason: "Intermittent 503 Service Unavailable from /api/v1/monitor/validate"
+    added: "2026-04-24"
+    author: fpighi
+  - test: TestAccDatadogTagPipelineRulesets_OverrideFalseUnmanagedAtEnd
+    reason: "Intermittent 429 Too Many Requests — rate limiting on ccm_list_tag_enrichment_rulesets"
+    added: "2026-04-24"
+    author: fpighi
+
+  # Azure integration — 500 Internal Server Error on list (2 tests)
+  - test: TestAccDatadogIntegrationAzure
+    reason: "500 Internal Server Error from list azure integration endpoint"
+    added: "2026-04-24"
+    author: fpighi
+  - test: TestAccDatadogIntegrationAzure_import
+    reason: "500 Internal Server Error from list azure integration endpoint"
+    added: "2026-04-24"
+    author: fpighi
+
+  # OnCall routing rules — 500 from user_invitations (1 test)
+  - test: TestAccOnCallTeamRoutingRulesCreateAndUpdate
+    reason: "500 Internal Server Error from /api/v2/user_invitations during user creation"
+    added: "2026-04-24"
+    author: fpighi
+
+  # RUM retention filter order — wrong count (1 test)
+  - test: TestAccRumRetentionFilterOrder
+    reason: "retention_filter_ids count mismatch — expected 3, got 2 — pre-existing filters in org"
+    added: "2026-04-24"
+    author: fpighi

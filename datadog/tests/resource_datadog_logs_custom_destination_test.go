@@ -6,11 +6,13 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 
 	destinationWithRequiredFieldsOnly := `
@@ -28,8 +30,11 @@ func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 
 	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: destinationWithRequiredFieldsOnly,
@@ -54,7 +59,7 @@ func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 
 func TestAccDatadogLogsCustomDestination_forwarder_types(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
 	nameUpdated := name + "-updated"
 
@@ -99,8 +104,11 @@ func TestAccDatadogLogsCustomDestination_forwarder_types(t *testing.T) {
 
 	path := "datadog_logs_custom_destination.sample_destination"
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCreateLogsCustomDestination(name, httpWithBasicAuth),
@@ -190,4 +198,147 @@ func testAccCheckDatadogUpdateLogsCustomDestination(name string, destination str
 			%s
 		}
 	`, name, destination)
+}
+
+func testAccCheckDatadogSplunkDestinationWithSourcetype(name, sourcetypeBlock string) string {
+	return fmt.Sprintf(`
+		resource "datadog_logs_custom_destination" "sample_destination" {
+			name = "%s"
+			splunk_destination {
+				endpoint     = "https://example.org"
+				access_token = "test-token"
+				%s
+			}
+		}
+	`, name, sourcetypeBlock)
+}
+
+func TestAccDatadogLogsCustomDestination_splunk_sourcetype(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
+
+	noSourcetype := ``
+
+	stringSourcetype := `
+		sourcetype {
+			value = "my-custom-type"
+		}
+	`
+
+	nullSourcetype := `
+		sourcetype {
+			value = null
+		}
+	`
+
+	emptyStringSourcetype := `
+		sourcetype {
+			value = ""
+		}
+	`
+
+	stringSourcetype2 := `
+		sourcetype {
+			value = "other-type"
+		}
+	`
+
+	path := "datadog_logs_custom_destination.sample_destination"
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			testAccCleanupOrphanedLogsCustomDestinations(t, providers.frameworkProvider)
+		},
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "my-custom-type"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, nullSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckNoResourceAttr(path, "splunk_destination.0.sourcetype.0.value"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, emptyStringSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", ""),
+				),
+			},
+			{
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype2),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "other-type"),
+				),
+			},
+			{
+				// Omitting the sourcetype block applies cleanly (state shows no sourcetype),
+				// but the next plan detects drift: Read surfaces the API-preserved value.
+				Config:             testAccCheckDatadogSplunkDestinationWithSourcetype(name, noSourcetype),
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "0"),
+				),
+			},
+			{
+				// Adding the sourcetype block resolves the drift by sending a PATCH with the new value.
+				Config: testAccCheckDatadogSplunkDestinationWithSourcetype(name, stringSourcetype),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.#", "1"),
+					resource.TestCheckResourceAttr(path, "splunk_destination.0.sourcetype.0.value", "my-custom-type"),
+				),
+			},
+		},
+	})
+}
+
+// testAccCleanupOrphanedLogsCustomDestinations deletes disabled custom destinations
+// that were left behind by previous test runs or external sources, to free up quota.
+func testAccCleanupOrphanedLogsCustomDestinations(t *testing.T, frameworkProvider *fwprovider.FrameworkProvider) {
+	apiInstances := frameworkProvider.DatadogApiInstances
+	auth := frameworkProvider.Auth
+	api := apiInstances.GetLogsCustomDestinationsApiV2()
+
+	resp, _, err := api.ListLogsCustomDestinations(auth)
+	if err != nil {
+		t.Logf("Warning: Could not list custom destinations for cleanup: %v", err)
+		return
+	}
+
+	destinations := resp.GetData()
+	t.Logf("Found %d existing custom destinations, cleaning up disabled ones...", len(destinations))
+
+	for _, dest := range destinations {
+		id := dest.GetId()
+		attrs, ok := dest.GetAttributesOk()
+		if !ok {
+			continue
+		}
+		name := attrs.GetName()
+		enabled := attrs.GetEnabled()
+
+		if !enabled {
+			t.Logf("Deleting disabled custom destination: %s (ID: %s)", name, id)
+			_, err := api.DeleteLogsCustomDestination(auth, id)
+			if err != nil {
+				t.Logf("Warning: Could not delete custom destination %s: %v", id, err)
+			}
+		}
+	}
 }

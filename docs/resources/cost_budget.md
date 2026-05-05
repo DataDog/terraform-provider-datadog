@@ -13,38 +13,95 @@ Provides a Datadog Cost Budget resource.
 ## Example Usage
 
 ```terraform
-# Simple budget without tag filters
-# Note: Must provide entries for all months in the budget period
-resource "datadog_cost_budget" "simple" {
-  name          = "My AWS Cost Budget"
-  metrics_query = "sum:aws.cost.amortized{*}"
-  start_month   = 202501
-  end_month     = 202503
+# Budget with multiple tag combinations
+# Note: Each unique tag combination needs its own budget_line block
+resource "datadog_cost_budget" "with_tags" {
+  name          = "Multi-Environment Budget"
+  metrics_query = "sum:aws.cost.amortized{*} by {environment}"
+  start_month   = 202601
+  end_month     = 202603
 
-  entries {
-    month  = 202501
-    amount = 1000
+  budget_line {
+    amounts = {
+      "202601" = 2000
+      "202602" = 2200
+      "202603" = 2000
+    }
+    tag_filters {
+      tag_key   = "environment"
+      tag_value = "production"
+    }
   }
-  entries {
-    month  = 202502
-    amount = 1200
-  }
-  entries {
-    month  = 202503
-    amount = 1000
+
+  budget_line {
+    amounts = {
+      "202601" = 1000
+      "202602" = 1100
+      "202603" = 1000
+    }
+    tag_filters {
+      tag_key   = "environment"
+      tag_value = "staging"
+    }
   }
 }
+```
 
-# Budget with tag filters
-# Note: Must provide entries for all months in the budget period
-resource "datadog_cost_budget" "with_tag_filters" {
-  name          = "Production AWS Budget"
+```terraform
+# Hierarchical budget with parent/child tag structure
+# Note: Order in "by {tag1,tag2}" determines hierarchy (parent,child)
+# Each unique parent+child combination needs its own budget_line block
+resource "datadog_cost_budget" "hierarchical" {
+  name          = "Team-Based AWS Budget"
+  metrics_query = "sum:aws.cost.amortized{*} by {team,environment}"
+  start_month   = 202601
+  end_month     = 202603
+
+  budget_line {
+    amounts = {
+      "202601" = 1500
+      "202602" = 1600
+      "202603" = 1500
+    }
+    parent_tag_filters {
+      tag_key   = "team"
+      tag_value = "backend"
+    }
+    child_tag_filters {
+      tag_key   = "environment"
+      tag_value = "production"
+    }
+  }
+
+  budget_line {
+    amounts = {
+      "202601" = 500
+      "202602" = 550
+      "202603" = 500
+    }
+    parent_tag_filters {
+      tag_key   = "team"
+      tag_value = "frontend"
+    }
+    child_tag_filters {
+      tag_key   = "environment"
+      tag_value = "staging"
+    }
+  }
+}
+```
+
+```terraform
+# Legacy entries with tag filters (deprecated - use budget_line instead)
+# Note: Each unique tag combination must have entries for all months
+resource "datadog_cost_budget" "legacy_with_tags" {
+  name          = "Production Budget (Legacy)"
   metrics_query = "sum:aws.cost.amortized{*} by {environment}"
-  start_month   = 202501
-  end_month     = 202503
+  start_month   = 202601
+  end_month     = 202603
 
   entries {
-    month  = 202501
+    month  = 202601
     amount = 2000
     tag_filters {
       tag_key   = "environment"
@@ -52,7 +109,7 @@ resource "datadog_cost_budget" "with_tag_filters" {
     }
   }
   entries {
-    month  = 202502
+    month  = 202602
     amount = 2200
     tag_filters {
       tag_key   = "environment"
@@ -60,74 +117,13 @@ resource "datadog_cost_budget" "with_tag_filters" {
     }
   }
   entries {
-    month  = 202503
+    month  = 202603
     amount = 2000
     tag_filters {
       tag_key   = "environment"
       tag_value = "production"
     }
   }
-}
-
-# Hierarchical budget with multiple tag combinations
-# Note: Order of tags in "by {tag1,tag2}" determines UI hierarchy (parent,child)
-# Each unique tag combination must have entries for all months in the budget period
-resource "datadog_cost_budget" "hierarchical" {
-  name          = "Team-Based AWS Budget"
-  metrics_query = "sum:aws.cost.amortized{*} by {team,account}"
-  start_month   = 202501
-  end_month     = 202503
-
-  entries {
-    month  = 202501
-    amount = 500
-    tag_filters {
-      tag_key   = "team"
-      tag_value = "backend"
-    }
-    tag_filters {
-      tag_key   = "account"
-      tag_value = "staging"
-    }
-  }
-  entries {
-    month  = 202502
-    amount = 500
-    tag_filters {
-      tag_key   = "team"
-      tag_value = "backend"
-    }
-    tag_filters {
-      tag_key   = "account"
-      tag_value = "staging"
-    }
-  }
-  entries {
-    month  = 202503
-    amount = 500
-    tag_filters {
-      tag_key   = "team"
-      tag_value = "backend"
-    }
-    tag_filters {
-      tag_key   = "account"
-      tag_value = "staging"
-    }
-  }
-
-  entries {
-    month  = 202501
-    amount = 1500
-    tag_filters {
-      tag_key   = "team"
-      tag_value = "backend"
-    }
-    tag_filters {
-      tag_key   = "account"
-      tag_value = "production"
-    }
-  }
-  # ... repeat for additional months and tag combinations
 }
 ```
 
@@ -143,12 +139,54 @@ resource "datadog_cost_budget" "hierarchical" {
 
 ### Optional
 
-- `entries` (Block List) The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months. (see [below for nested schema](#nestedblock--entries))
+- `budget_line` (Block Set) Budget lines that group monthly amounts by tag combination. Use this instead of `entries` for a more convenient schema. **Note:** The order of budget_line blocks does not matter. (see [below for nested schema](#nestedblock--budget_line))
+- `entries` (Block List, Deprecated) The entries of the budget. **Note:** You must provide entries for all months in the budget period. For hierarchical budgets, each unique tag combination must have entries for all months. (see [below for nested schema](#nestedblock--entries))
 - `id` (String) The ID of the budget.
 
 ### Read-Only
 
 - `total_amount` (Number) The sum of all budget entries' amounts.
+
+<a id="nestedblock--budget_line"></a>
+### Nested Schema for `budget_line`
+
+Required:
+
+- `amounts` (Map of Number) Map of month (YYYYMM) to budget amount. Example: {"202601": 1000.0, "202602": 1200.0}
+
+Optional:
+
+- `child_tag_filters` (Block List) Child tag filters for hierarchical budgets. **Note:** Must be used with parent_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--child_tag_filters))
+- `parent_tag_filters` (Block List) Parent tag filters for hierarchical budgets. **Note:** Must be used with child_tag_filters. Cannot be used with tag_filters. (see [below for nested schema](#nestedblock--budget_line--parent_tag_filters))
+- `tag_filters` (Block List) Tag filters for non-hierarchical budgets. **Note:** Cannot be used with parent_tag_filters/child_tag_filters. (see [below for nested schema](#nestedblock--budget_line--tag_filters))
+
+<a id="nestedblock--budget_line--child_tag_filters"></a>
+### Nested Schema for `budget_line.child_tag_filters`
+
+Required:
+
+- `tag_key` (String) Must be one of the tags from the `metrics_query`.
+- `tag_value` (String)
+
+
+<a id="nestedblock--budget_line--parent_tag_filters"></a>
+### Nested Schema for `budget_line.parent_tag_filters`
+
+Required:
+
+- `tag_key` (String) Must be one of the tags from the `metrics_query`.
+- `tag_value` (String)
+
+
+<a id="nestedblock--budget_line--tag_filters"></a>
+### Nested Schema for `budget_line.tag_filters`
+
+Required:
+
+- `tag_key` (String) Must be one of the tags from the `metrics_query`.
+- `tag_value` (String)
+
+
 
 <a id="nestedblock--entries"></a>
 ### Nested Schema for `entries`

@@ -44,7 +44,7 @@ resource "datadog_role" "api_key_manager" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `user_count` (Number) Number of users that have this role.
+- `user_count` (Number, Deprecated) Number of users that have this role. **Deprecated.** This field is no longer set and will be removed in a future release.
 
 <a id="nestedblock--permission"></a>
 ### Nested Schema for `permission`

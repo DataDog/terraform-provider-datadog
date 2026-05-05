@@ -14,6 +14,7 @@ import (
 )
 
 func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	if !isReplaying() {
 		log.Println("Skipping private locations tests in non replaying mode")
@@ -25,7 +26,7 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -42,6 +43,7 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	if !isReplaying() {
 		log.Println("Skipping private locations tests in non replaying mode")
@@ -52,7 +54,7 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),
@@ -61,6 +63,7 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	if !isReplaying() {
 		log.Println("Skipping private locations tests in non replaying mode")
@@ -71,7 +74,7 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),

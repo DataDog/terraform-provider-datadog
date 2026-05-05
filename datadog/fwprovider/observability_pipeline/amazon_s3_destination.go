@@ -12,11 +12,12 @@ import (
 
 // AmazonS3DestinationModel represents the Terraform model for the AmazonS3Destination
 type AmazonS3DestinationModel struct {
-	Bucket       types.String   `tfsdk:"bucket"`
-	Region       types.String   `tfsdk:"region"`
-	KeyPrefix    types.String   `tfsdk:"key_prefix"`
-	StorageClass types.String   `tfsdk:"storage_class"`
-	Auth         []AwsAuthModel `tfsdk:"auth"`
+	Bucket       types.String         `tfsdk:"bucket"`
+	Region       types.String         `tfsdk:"region"`
+	KeyPrefix    types.String         `tfsdk:"key_prefix"`
+	StorageClass types.String         `tfsdk:"storage_class"`
+	Auth         []AwsAuthModel       `tfsdk:"auth"`
+	Buffer       []BufferOptionsModel `tfsdk:"buffer"`
 }
 
 // AmazonS3DestinationSchema returns the schema for the AmazonS3Destination
@@ -46,7 +47,8 @@ func AmazonS3DestinationSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
-				"auth": AwsAuthSchema(),
+				"auth":   AwsAuthSchema(),
+				"buffer": BufferOptionsSchema(),
 			},
 		},
 	}
@@ -70,6 +72,13 @@ func ExpandAmazonS3Destination(ctx context.Context, id string, inputs types.List
 		dest.SetAuth(ExpandAwsAuth(src.Auth[0]))
 	}
 
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			dest.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineAmazonS3Destination: dest,
 	}
@@ -90,6 +99,13 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 
 	if auth, ok := src.GetAuthOk(); ok {
 		model.Auth = FlattenAwsAuth(auth)
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			model.Buffer = []BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return model

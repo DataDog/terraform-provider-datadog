@@ -10,6 +10,7 @@ import (
 )
 
 func TestAccDatadogSyntheticsTest(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
@@ -17,7 +18,7 @@ func TestAccDatadogSyntheticsTest(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
@@ -29,6 +30,7 @@ func TestAccDatadogSyntheticsTest(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsTestWithUrl(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
@@ -36,7 +38,7 @@ func TestAccDatadogSyntheticsTestWithUrl(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{

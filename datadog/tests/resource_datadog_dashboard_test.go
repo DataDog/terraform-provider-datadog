@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
@@ -20,7 +21,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	tags		  = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -456,7 +456,6 @@ resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -508,7 +507,6 @@ resource "datadog_dashboard" "free_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = false
 	tags          = ["team:foobar"]
 	widget {
 		event_stream_definition {
@@ -686,7 +684,6 @@ resource "datadog_dashboard" "simple_dashboard" {
 	title         = "%s"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = true
 	tags          = ["team:foobar"]
 	widget {
 		alert_graph_definition {
@@ -742,7 +739,6 @@ var datadogSimpleOrderedDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
@@ -777,7 +773,6 @@ var datadogSimpleFreeDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
-	"is_read_only = true",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
@@ -816,7 +811,6 @@ var datadogOrderedDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
 	"widget.# = 16",
@@ -1081,7 +1075,6 @@ var datadogFreeDashboardAsserts = []string{
 	// Dashboard metadata
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
-	"is_read_only = false",
 	"tags.# = 1",
 	"tags.0 = team:foobar",
 	"widget.# = 8",
@@ -1318,7 +1311,7 @@ func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_v2" && r.Type != "datadog_dashboard_json" {
 				continue
 			}
 			if _, _, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
@@ -1338,7 +1331,7 @@ func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resourc
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
-				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_v2" && r.Type != "datadog_dashboard_json" {
 					continue
 				}
 				if _, httpResp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
@@ -1406,6 +1399,73 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 	})
 }
 
+// testAccDatadogDashboardV2WidgetUtil runs a v2 dashboard test reusing the cassette from v1TestName.
+// The config should use datadog_dashboard_v2 as the resource type; the entity name is derived from
+// the v1 test so that the cassette's recorded dashboard title matches.
+func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config string, name string, assertions []string) {
+	if os.Getenv("TF_ACC") == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
+	if os.Getenv("RECORD") == "none" {
+		t.Skip("datadog_dashboard_v2 tests require cassettes; skipped when RECORD=none")
+	}
+	t.Parallel()
+	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, v1TestName)
+	accProvider := testAccProvider(t, accProviders)
+	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
+	for i := range assertions {
+		assertions[i] = replacer.Replace(assertions[i])
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testCheckResourceAttrs(name, checkDashboardExists(accProvider), assertions)...,
+				),
+			},
+		},
+	})
+}
+
+// testAccDatadogDashboardV2WidgetUtilImport runs a v2 dashboard import test reusing the cassette from v1TestName.
+func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, config string, name string) {
+	if os.Getenv("TF_ACC") == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
+	if os.Getenv("RECORD") == "none" {
+		t.Skip("datadog_dashboard_v2 tests require cassettes; skipped when RECORD=none")
+	}
+	t.Parallel()
+	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, v1TestName)
+	accProvider := testAccProvider(t, accProviders)
+	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+			},
+			{
+				ResourceName:      name,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func datadogOpenDashboardConfig(uniqueDashboardName string) string {
 	return fmt.Sprintf(`
 resource "datadog_dashboard" "rbac_dashboard" {
@@ -1421,7 +1481,6 @@ resource "datadog_dashboard" "rbac_dashboard" {
 }
 
 var datadogOpenDashboardAsserts = []string{
-	"is_read_only = false",
 	"restricted_roles.# = 0",
 }
 
@@ -1436,13 +1495,10 @@ resource "datadog_dashboard" "rbac_dashboard" {
 			content = "note text"
 		}
 	}
-	is_read_only     = true
 }`, uniqueDashboardName)
 }
 
-var datadogAdminDashboardAsserts = []string{
-	"is_read_only = true",
-}
+var datadogAdminDashboardAsserts = []string{}
 
 func datadogRbacDashboardConfig(uniqueDashboardName string, uniqueRoleName string) string {
 	return fmt.Sprintf(`
@@ -1778,7 +1834,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   title        = "%s"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
   notify_list  = [datadog_user.one.email, datadog_user.two.email, datadog_user.three.email]
   
   depends_on = [
@@ -1822,7 +1877,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   title        = "%s"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
 
   template_variable {
     name    = "var_1"

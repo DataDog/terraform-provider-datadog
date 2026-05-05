@@ -1,0 +1,792 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"ea0b94fd-c591-41b9-9c2b-2b284b35d803","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype_absent_to_null-local-1776259489","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":null},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"},{"id":"d3828ba3-23e0-4a38-9952-c9c2854d3c3e","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776324346","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"},{"id":"44f84193-7656-4070-9e2f-daedb7d6baca","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355292","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"my-custom-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 165.856333ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 340
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"forward_tags":true,"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":""},"type":"custom_destination"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 527.464208ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 254.194416ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 258.548542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 414
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"forward_tags":true,"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","sourcetype":"my-custom-type","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":""},"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","type":"custom_destination"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"my-custom-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 398.936917ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"my-custom-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 337.502542ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"my-custom-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 212.039542ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 402
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"forward_tags":true,"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","sourcetype":null,"type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":""},"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","type":"custom_destination"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":null},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 409.128625ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":null},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 182.859666ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":null},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 173.76675ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 400
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"forward_tags":true,"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","sourcetype":"","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":""},"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","type":"custom_destination"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":""},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 285.885917ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":""},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 186.112166ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":""},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 222.629625ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 410
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"forward_tags":true,"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","sourcetype":"other-type","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":""},"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","type":"custom_destination"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"other-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 529.943291ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"other-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 178.568292ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"other-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 174.90525ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 384
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"forward_tags":true,"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":""},"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","type":"custom_destination"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"other-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 281.853208ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"other-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 193.110458ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"other-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 425.826ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 414
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"forward_tags":true,"forward_tags_restriction_list_type":"ALLOW_LIST","forwarder_destination":{"access_token":"test-token","endpoint":"https://example.org","sourcetype":"my-custom-type","type":"splunk_hec"},"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":""},"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","type":"custom_destination"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"my-custom-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 293.513042ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"5a08fc77-e0e4-44fa-aa0c-34953ca58951","attributes":{"name":"tf-TestAccDatadogLogsCustomDestination_splunk_sourcetype-local-1776355908","query":"","enabled":true,"forwarder_destination":{"endpoint":"https://example.org","type":"splunk_hec","sourcetype":"my-custom-type"},"forward_tags_restriction_list_type":"ALLOW_LIST","forward_tags_restriction_list":[],"forward_tags":true},"type":"custom_destination"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.198681709s
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/logs/config/custom-destinations/5a08fc77-e0e4-44fa-aa0c-34953ca58951
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 335.7995ms

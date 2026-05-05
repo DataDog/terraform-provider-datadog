@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 584
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2SunburstSort_import-local-1777646046","widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":25,"order_by":[{"order":"desc","type":"formula"}]}}],"title":"Hits by host","type":"sunburst"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3rf-rje-5v4","title":"tf-TestAccDatadogDashboardV2SunburstSort_import-local-1777646046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3rf-rje-5v4/tf-testaccdatadogdashboardv2sunburstsortimport-local-1777646046","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":25,"order_by":[{"order":"desc","type":"formula"}]}}],"title":"Hits by host","type":"sunburst"},"id":6090492489817704}],"notify_list":[],"created_at":"2026-05-01T14:34:08.879562+00:00","modified_at":"2026-05-01T14:34:08.879562+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 281.880958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3rf-rje-5v4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3rf-rje-5v4","title":"tf-TestAccDatadogDashboardV2SunburstSort_import-local-1777646046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3rf-rje-5v4/tf-testaccdatadogdashboardv2sunburstsortimport-local-1777646046","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":25,"order_by":[{"order":"desc","type":"formula"}]}}],"title":"Hits by host","type":"sunburst"},"id":6090492489817704}],"notify_list":[],"created_at":"2026-05-01T14:34:08.879562+00:00","modified_at":"2026-05-01T14:34:08.879562+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 132.512208ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3rf-rje-5v4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3rf-rje-5v4","title":"tf-TestAccDatadogDashboardV2SunburstSort_import-local-1777646046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3rf-rje-5v4/tf-testaccdatadogdashboardv2sunburstsortimport-local-1777646046","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":25,"order_by":[{"order":"desc","type":"formula"}]}}],"title":"Hits by host","type":"sunburst"},"id":6090492489817704}],"notify_list":[],"created_at":"2026-05-01T14:34:08.879562+00:00","modified_at":"2026-05-01T14:34:08.879562+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 122.107208ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3rf-rje-5v4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3rf-rje-5v4","title":"tf-TestAccDatadogDashboardV2SunburstSort_import-local-1777646046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3rf-rje-5v4/tf-testaccdatadogdashboardv2sunburstsortimport-local-1777646046","template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"sum:system.cpu.user{*} by {host}"}],"response_format":"scalar","sort":{"count":25,"order_by":[{"order":"desc","type":"formula"}]}}],"title":"Hits by host","type":"sunburst"},"id":6090492489817704}],"notify_list":[],"created_at":"2026-05-01T14:34:08.879562+00:00","modified_at":"2026-05-01T14:34:08.879562+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 163.24925ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3rf-rje-5v4
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"3rf-rje-5v4"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 881.64125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3rf-rje-5v4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID 3rf-rje-5v4 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 755.93425ms

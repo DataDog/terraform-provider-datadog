@@ -9,7 +9,6 @@ resource "datadog_dashboard" "event_stream_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 	
 	widget {
 		event_stream_definition {
@@ -36,7 +35,6 @@ resource "datadog_dashboard" "event_stream_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 	
 	widget {
 		event_stream_definition {
@@ -70,7 +68,6 @@ var datadogDashboardEventStreamAsserts = []string{
 	"widget.0.event_stream_definition.0.event_size = l",
 	"layout_type = free",
 	"description = Created using the Datadog provider in Terraform",
-	"is_read_only = true",
 	"widget.0.event_stream_definition.0.query = *",
 	"widget.0.event_stream_definition.0.title = Widget Title",
 	"widget.0.widget_layout.0.height = 43",

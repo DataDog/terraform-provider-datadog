@@ -64,7 +64,14 @@ func buildRequest(ctx context.Context, client *datadog.APIClient, method, path s
 		localVarPostBody = body
 	}
 
-	if ctx != nil {
+	// Mirror the auth pattern used by every generated API method:
+	// prefer delegated token (cloud provider auth) when configured, otherwise
+	// fall back to API + App key. The two are mutually exclusive.
+	if client.GetConfig().DelegatedTokenConfig != nil {
+		if err := datadog.UseDelegatedTokenAuth(ctx, &localVarHeaderParams, client.GetConfig().DelegatedTokenConfig); err != nil {
+			return nil, err
+		}
+	} else if ctx != nil {
 		if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
 			if apiKey, ok := auth["apiKeyAuth"]; ok {
 				var key string
@@ -75,10 +82,6 @@ func buildRequest(ctx context.Context, client *datadog.APIClient, method, path s
 				}
 				localVarHeaderParams["DD-API-KEY"] = key
 			}
-		}
-	}
-	if ctx != nil {
-		if auth, ok := ctx.Value(datadog.ContextAPIKeys).(map[string]datadog.APIKey); ok {
 			if apiKey, ok := auth["appKeyAuth"]; ok {
 				var key string
 				if apiKey.Prefix != "" {

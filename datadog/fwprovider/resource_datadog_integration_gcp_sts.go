@@ -74,6 +74,8 @@ type integrationGcpStsModel struct {
 	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
 	MetricNamespaceConfigs            types.Set    `tfsdk:"metric_namespace_configs"`
 	MonitoredResourceConfigs          types.Set    `tfsdk:"monitored_resource_configs"`
+	IsGlobalLocationEnabled           types.Bool   `tfsdk:"is_global_location_enabled"`
+	RegionFilterConfigs               types.Set    `tfsdk:"region_filter_configs"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -174,6 +176,16 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Computed:    true,
 				Description: "Configurations for GCP monitored resources. Only monitored resources that apply to specified filters are imported into Datadog.",
 				ElementType: MonitoredResourceConfigSpec,
+			},
+			"is_global_location_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog collects metrics where location is explicitly stated as 'global' or where location information cannot be deduced from GCP.",
+				Optional:    true,
+				Computed:    true,
+			},
+			"region_filter_configs": schema.SetAttribute{
+				Optional:    true,
+				Description: "Configurations for GCP location filtering, such as region, multi-region, or zone. Only monitored resources that match the specified regions are imported into Datadog. By default, Datadog collects from all locations.",
+				ElementType: types.StringType,
 			},
 		},
 	}
@@ -364,6 +376,14 @@ func (r *integrationGcpStsResource) parseGcpStsResponseBody(ctx context.Context,
 		model.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, accountTags)
 	}
 
+	if isGlobalLocationEnabled, ok := attributes.GetIsGlobalLocationEnabledOk(); ok {
+		model.IsGlobalLocationEnabled = types.BoolValue(*isGlobalLocationEnabled)
+	}
+
+	if regionFilterConfigs := attributes.GetRegionFilterConfigs(); len(regionFilterConfigs) > 0 {
+		model.RegionFilterConfigs, _ = types.SetValueFrom(ctx, types.StringType, regionFilterConfigs)
+	}
+
 	mncs := make([]*MetricNamespaceConfigModel, 0)
 	for _, cfg := range attributes.GetMetricNamespaceConfigs() {
 		var mdl MetricNamespaceConfigModel
@@ -409,6 +429,11 @@ func (r *integrationGcpStsResource) buildGcpStsRequestBody(ctx context.Context, 
 		attributes.SetIsPerProjectQuotaEnabled(model.IsPerProjectQuotaEnabled.ValueBool())
 	}
 
+	if !model.IsGlobalLocationEnabled.IsUnknown() {
+		attributes.SetIsGlobalLocationEnabled(model.IsGlobalLocationEnabled.ValueBool())
+	}
+
+	attributes.SetRegionFilterConfigs(tfCollectionToSlice[string](ctx, diags, model.RegionFilterConfigs))
 	attributes.SetAccountTags(tfCollectionToSlice[string](ctx, diags, model.AccountTags))
 
 	// only set this field if the user explicitly sets the field

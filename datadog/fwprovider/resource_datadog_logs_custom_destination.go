@@ -60,9 +60,14 @@ type HttpDestinationCustomHeaderAuth struct {
 	HeaderValue types.String `tfsdk:"header_value"`
 }
 
+type SplunkSourcetype struct {
+	Value types.String `tfsdk:"value"`
+}
+
 type SplunkDestination struct {
-	Endpoint    types.String `tfsdk:"endpoint"`
-	AccessToken types.String `tfsdk:"access_token"`
+	Endpoint    types.String       `tfsdk:"endpoint"`
+	AccessToken types.String       `tfsdk:"access_token"`
+	Sourcetype  []SplunkSourcetype `tfsdk:"sourcetype"`
 }
 
 type ElasticsearchDestination struct {
@@ -232,6 +237,22 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 							Sensitive:   true,
 						},
 					},
+					Blocks: map[string]schema.Block{
+						"sourcetype": schema.ListNestedBlock{
+							Description: "The Splunk source type for forwarded events. Omitting `sourcetype` when you create a custom destination leaves `sourcetype` unconfigured, and events are forwarded to Splunk with `_json` as the source type. When updating a custom destination, omitting `sourcetype` preserves the previously set value; if none was set, the `sourcetype` field stays unconfigured and events are forwarded with `_json` (same as when creating a custom destination). Setting `value = null` omits the `sourcetype` field in the forwarded events entirely.",
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"value": schema.StringAttribute{
+										Description: "The source type string. Set to `null` to omit the sourcetype from forwarded events.",
+										Optional:    true,
+									},
+								},
+							},
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
+							},
+						},
+					},
 				},
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
@@ -388,6 +409,13 @@ func (r *logsCustomDestinationResource) Update(ctx context.Context, request reso
 		return
 	}
 
+	// Track whether the plan includes a sourcetype block. If absent, the PATCH omits
+	// sourcetype (API preserves existing value), and the post-apply state must match
+	// the plan — so we clear it here to avoid a framework inconsistency error.
+	// Drift is still detectable: the next terraform plan calls Read, which surfaces
+	// whatever the API returns.
+	splunkSourcetypeInPlan := len(state.SplunkDestination) == 1 && len(state.SplunkDestination[0].Sourcetype) > 0
+
 	id := state.ID.ValueString()
 
 	body, diags := r.buildLogsCustomDestinationUpdateRequestBody(ctx, &state)
@@ -407,6 +435,9 @@ func (r *logsCustomDestinationResource) Update(ctx context.Context, request reso
 	}
 
 	r.updateState(ctx, &state, &resp)
+	if !splunkSourcetypeInPlan && len(state.SplunkDestination) == 1 {
+		state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{}
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -495,6 +526,20 @@ func (r *logsCustomDestinationResource) updateState(ctx context.Context, state *
 		}
 
 		// NOTE: Access token is not returned by the API, keep user state.
+
+		if splunkDestination.HasSourcetype() {
+			v, _ := splunkDestination.GetSourcetypeOk()
+			if v == nil {
+				// API returned explicit null — store block with null value
+				state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{{Value: types.StringNull()}}
+			} else {
+				// API returned a string — store block with that value
+				state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{{Value: types.StringValue(*v)}}
+			}
+		} else {
+			// API returned absent — store empty slice (no block)
+			state.SplunkDestination[0].Sourcetype = []SplunkSourcetype{}
+		}
 	}
 
 	if elasticsearchDestination := forwarderDestination.CustomDestinationResponseForwardDestinationElasticsearch; elasticsearchDestination != nil {
@@ -656,6 +701,15 @@ func (r *logsCustomDestinationResource) buildLogsCustomDestinationForwarderDesti
 		splunk := datadogV2.NewCustomDestinationForwardDestinationSplunkWithDefaults()
 		splunk.SetEndpoint(splunkDestination[0].Endpoint.ValueString())
 		splunk.SetAccessToken(splunkDestination[0].AccessToken.ValueString())
+
+		if sourcetypes := splunkDestination[0].Sourcetype; len(sourcetypes) == 1 {
+			if sourcetypes[0].Value.IsNull() {
+				splunk.SetSourcetypeNil()
+			} else {
+				splunk.SetSourcetype(sourcetypes[0].Value.ValueString())
+			}
+		}
+		// len(sourcetypes) == 0: do not set sourcetype → absent in request body → PATCH preserves existing
 
 		splunkOut := datadogV2.CustomDestinationForwardDestinationSplunkAsCustomDestinationForwardDestination(splunk)
 		return &splunkOut

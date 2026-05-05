@@ -12,10 +12,6 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -211,52 +207,34 @@ func (r *referenceTableResource) Schema(_ context.Context, _ resource.SchemaRequ
 				},
 			},
 			"schema": schema.SingleNestedBlock{
-				Description: "The schema definition for the reference table, including field definitions and primary keys. Schema is only set on create; updates are derived from the file asynchronously.",
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
-				},
+				Description: "The schema definition for the reference table, including field definitions and primary keys. This block is required. Schema is only set on create; updates are derived from the file asynchronously.",
 				Attributes: map[string]schema.Attribute{
 					"primary_keys": schema.ListAttribute{
-						Optional:    true,
-						Computed:    true,
+						Required:    true,
 						Description: "List of field names that serve as primary keys for the table. Currently only one primary key is supported.",
 						ElementType: types.StringType,
 						Validators: []validator.List{
 							listvalidator.SizeAtLeast(1),
 						},
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
 					},
 				},
 				Blocks: map[string]schema.Block{
 					"fields": schema.ListNestedBlock{
-						Description: "List of fields in the table schema. Must include at least one field. Schema is only set on create.",
+						Description: "List of fields in the table schema. At least one field is required. Schema is only set on create.",
 						Validators: []validator.List{
 							listvalidator.SizeAtLeast(1),
-						},
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
 						},
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"name": schema.StringAttribute{
-									Optional:    true,
-									Computed:    true,
+									Required:    true,
 									Description: "The name of the field.",
-									PlanModifiers: []planmodifier.String{
-										stringplanmodifier.UseStateForUnknown(),
-									},
 								},
 								"type": schema.StringAttribute{
-									Optional:    true,
-									Computed:    true,
+									Required:    true,
 									Description: "The data type of the field. Must be one of: STRING, INT32.",
 									Validators: []validator.String{
 										stringvalidator.OneOf("STRING", "INT32"),
-									},
-									PlanModifiers: []planmodifier.String{
-										stringplanmodifier.UseStateForUnknown(),
 									},
 								},
 							},
@@ -341,7 +319,16 @@ func (r *referenceTableResource) ValidateConfig(ctx context.Context, request res
 			}
 		}
 	}
-	// Note: schema.fields and schema.primary_keys validation is handled by listvalidator.SizeAtLeast(1) in schema definition
+
+	// Validate that schema is provided
+	if config.Schema == nil {
+		response.Diagnostics.AddError(
+			"Missing schema configuration",
+			"The 'schema' block is required and must include primary_keys and at least one field.",
+		)
+		return
+	}
+	// Note: fields are validated by listvalidator.SizeAtLeast(1) in the schema definition
 }
 
 func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
@@ -361,9 +348,15 @@ func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resourc
 	// Check if schema is being modified on an existing resource
 	if state.Schema != nil && plan.Schema != nil {
 		// Compare primary keys using slices.Equal
+		if plan.Schema.PrimaryKeys.IsUnknown() {
+			return
+		}
 		var statePKs, planPKs []string
-		state.Schema.PrimaryKeys.ElementsAs(ctx, &statePKs, false)
-		plan.Schema.PrimaryKeys.ElementsAs(ctx, &planPKs, false)
+		response.Diagnostics.Append(state.Schema.PrimaryKeys.ElementsAs(ctx, &statePKs, false)...)
+		response.Diagnostics.Append(plan.Schema.PrimaryKeys.ElementsAs(ctx, &planPKs, false)...)
+		if response.Diagnostics.HasError() {
+			return
+		}
 		if !slices.Equal(statePKs, planPKs) {
 			response.Diagnostics.AddError(
 				"Primary key modification not supported",
@@ -374,13 +367,24 @@ func (r *referenceTableResource) ModifyPlan(ctx context.Context, request resourc
 		}
 
 		// Compare fields
+		if plan.Schema.Fields.IsUnknown() {
+			return
+		}
+		stateFields, diags := getFieldsFromList(ctx, state.Schema.Fields)
+		response.Diagnostics.Append(diags...)
+		planFields, diags := getFieldsFromList(ctx, plan.Schema.Fields)
+		response.Diagnostics.Append(diags...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+
 		fieldsChanged := false
-		if len(state.Schema.Fields) != len(plan.Schema.Fields) {
+		if len(stateFields) != len(planFields) {
 			fieldsChanged = true
 		} else {
-			for i := range state.Schema.Fields {
-				if state.Schema.Fields[i].Name.ValueString() != plan.Schema.Fields[i].Name.ValueString() ||
-					state.Schema.Fields[i].Type.ValueString() != plan.Schema.Fields[i].Type.ValueString() {
+			for i := range stateFields {
+				if stateFields[i].Name.ValueString() != planFields[i].Name.ValueString() ||
+					stateFields[i].Type.ValueString() != planFields[i].Type.ValueString() {
 					fieldsChanged = true
 					break
 				}
@@ -559,7 +563,11 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 	}
 
 	if description, ok := attributes.GetDescriptionOk(); ok {
-		state.Description = types.StringValue(*description)
+		if *description != "" {
+			state.Description = types.StringValue(*description)
+		} else {
+			state.Description = types.StringNull()
+		}
 	}
 
 	if lastUpdatedBy, ok := attributes.GetLastUpdatedByOk(); ok {
@@ -683,7 +691,7 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 	if schema, ok := attributes.GetSchemaOk(); ok {
 		schemaTf := schemaModel{}
 		if fields, ok := schema.GetFieldsOk(); ok && len(*fields) > 0 {
-			schemaTf.Fields = []*fieldsModel{}
+			var fieldsList []*fieldsModel
 			for _, fieldsDd := range *fields {
 				fieldsTf := fieldsModel{}
 				if name, ok := fieldsDd.GetNameOk(); ok {
@@ -692,8 +700,11 @@ func (r *referenceTableResource) updateState(ctx context.Context, state *referen
 				if typeVar, ok := fieldsDd.GetTypeOk(); ok {
 					fieldsTf.Type = types.StringValue(string(*typeVar))
 				}
-				schemaTf.Fields = append(schemaTf.Fields, &fieldsTf)
+				fieldsList = append(fieldsList, &fieldsTf)
 			}
+			schemaTf.Fields, _ = fieldsToListValue(ctx, fieldsList)
+		} else {
+			schemaTf.Fields = types.ListNull(fieldsModelObjectType())
 		}
 		if primaryKeys, ok := schema.GetPrimaryKeysOk(); ok && len(*primaryKeys) > 0 {
 			schemaTf.PrimaryKeys, _ = types.ListValueFrom(ctx, types.StringType, *primaryKeys)
@@ -772,9 +783,11 @@ func (r *referenceTableResource) buildReferenceTableRequestBody(ctx context.Cont
 		diags.Append(state.Schema.PrimaryKeys.ElementsAs(ctx, &primaryKeys, false)...)
 		schema.SetPrimaryKeys(primaryKeys)
 
-		if state.Schema.Fields != nil {
+		if !state.Schema.Fields.IsNull() && !state.Schema.Fields.IsUnknown() {
+			fieldsList, fieldDiags := getFieldsFromList(ctx, state.Schema.Fields)
+			diags.Append(fieldDiags...)
 			var fields []datadogV2.CreateTableRequestDataAttributesSchemaFieldsItems
-			for _, fieldsTFItem := range state.Schema.Fields {
+			for _, fieldsTFItem := range fieldsList {
 				if !fieldsTFItem.Name.IsNull() && !fieldsTFItem.Type.IsNull() {
 					fieldsDDItem := datadogV2.NewCreateTableRequestDataAttributesSchemaFieldsItems(
 						fieldsTFItem.Name.ValueString(),

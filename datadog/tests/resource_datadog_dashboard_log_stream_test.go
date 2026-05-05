@@ -9,7 +9,6 @@ resource "datadog_dashboard" "log_stream_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 
 	widget {
 		log_stream_definition {
@@ -43,7 +42,6 @@ resource "datadog_dashboard" "log_stream_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 
 	widget {
 		log_stream_definition {
@@ -83,7 +81,6 @@ var datadogDashboardLogStreamAsserts = []string{
 	"widget.0.log_stream_definition.0.live_span = 1d",
 	"widget.0.widget_layout.0.width = 32",
 	"widget.0.widget_layout.0.x = 5",
-	"is_read_only = true",
 	"widget.0.log_stream_definition.0.message_display = expanded-md",
 	"widget.0.widget_layout.0.height = 43",
 	"title = {{uniq}}",
@@ -109,7 +106,6 @@ resource "datadog_dashboard" "log_stream_dashboard_logset" {
 	title         = "Acceptance Test Log Stream Widget Dashboard"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 
 	widget {
 		log_stream_definition {
@@ -172,7 +168,6 @@ var datadogDashboardLogStreamLogSetAsserts = []string{
 	"widget.0.log_stream_definition.0.live_span = 1d",
 	"widget.0.widget_layout.0.width = 32",
 	"widget.0.widget_layout.0.x = 5",
-	"is_read_only = true",
 	"widget.0.log_stream_definition.0.message_display = expanded-md",
 	"widget.0.widget_layout.0.height = 43",
 	"title = Acceptance Test Log Stream Widget Dashboard",

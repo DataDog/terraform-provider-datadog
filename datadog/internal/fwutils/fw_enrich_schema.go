@@ -229,12 +229,24 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 				break
 			}
 
-			// Int64 validators
+			// Float64 and Int64 validators (both use "betweenValidator" and "atLeastValidator" names)
+			// Try Float64 first, then fall back to Int64
 			if strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "betweenValidator") ||
 				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "atLeastValidator") {
-				validationMessage := rv_validators.Index(i).Elem().Interface().(validator.Int64).Description(context.Background())
-				currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
-				break
+
+				// Try Float64 validator first
+				if float64Val, ok := rv_validators.Index(i).Elem().Interface().(validator.Float64); ok {
+					validationMessage := float64Val.Description(context.Background())
+					currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
+					break
+				}
+
+				// Fall back to Int64 validator
+				if int64Val, ok := rv_validators.Index(i).Elem().Interface().(validator.Int64); ok {
+					validationMessage := int64Val.Description(context.Background())
+					currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
+					break
+				}
 			}
 
 		}

@@ -42,7 +42,6 @@ resource "datadog_dashboard" "time" {
 	depends_on   = ["datadog_dashboard.screen"]
 	description  = "Created using the Datadog provider in Terraform"
 	layout_type  = "ordered"
-	is_read_only = true
 	widget {
 		alert_graph_definition {
 			alert_id = "1234"
@@ -57,7 +56,6 @@ resource "datadog_dashboard" "screen" {
 	title        = "%s-screen"
 	description  = "Created using the Datadog provider in Terraform"
 	layout_type  = "free"
-	is_read_only = false
 	widget {
 		event_stream_definition {
 			query = "*"
@@ -87,7 +85,6 @@ resource "datadog_dashboard" "time" {
 	title        = "%s-time"
 	description  = "Created using the Datadog provider in Terraform"
 	layout_type  = "ordered"
-	is_read_only = true
 	widget {
 		alert_graph_definition {
 			alert_id = "1234"
@@ -110,7 +107,6 @@ resource "datadog_dashboard" "time" {
 	title        = "%s-time"
 	description  = "Created using the Datadog provider in Terraform"
 	layout_type  = "ordered"
-	is_read_only = true
 	widget {
 		alert_graph_definition {
 			alert_id = "1234"
@@ -132,7 +128,7 @@ func TestDatadogDashListImport(t *testing.T) {
 	// So instead we use an import test to make sure the resource can be imported properly.
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
@@ -153,7 +149,7 @@ func TestDatadogDashListInDashboard(t *testing.T) {
 	uniqueName := uniqueEntityName(ctx, t)
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

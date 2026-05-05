@@ -54,6 +54,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
+	NewCloudInventorySyncConfigResource,
 	NewIpAllowListResource,
 	NewMonitorNotificationRuleResource,
 	NewSecurityNotificationRuleResource,
@@ -68,13 +69,18 @@ var Resources = []func() resource.Resource{
 	NewSyntheticsConcurrencyCapResource,
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
+	NewSyntheticsSuiteResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
+	NewTeamNotificationRuleResource,
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
 	NewTeamHierarchyLinksResource,
+	NewTeamConnectionResource,
+	NewTeamSyncResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
+	NewSecurityMonitoringCriticalAssetResource,
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
@@ -91,6 +97,8 @@ var Resources = []func() resource.Resource{
 	NewOnCallEscalationPolicyResource,
 	NewOnCallScheduleResource,
 	NewOnCallTeamRoutingRulesResource,
+	NewOnCallUserNotificationChannelResource,
+	NewOnCallUserNotificationRuleResource,
 	NewOrgConnectionResource,
 	NewComplianceResourceEvaluationFilter,
 	NewSecurityMonitoringRuleJSONResource,
@@ -98,6 +106,7 @@ var Resources = []func() resource.Resource{
 	NewCostBudgetResource,
 	NewTagPipelineRulesetResource,
 	NewTagPipelineRulesetsResource,
+	NewSecureEmbedDashboardResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
@@ -111,11 +120,12 @@ var Resources = []func() resource.Resource{
 	NewAzureUcConfigResource,
 	NewDeploymentGateResource,
 	NewReferenceTableResource,
+	NewDatastoreResource,
+	NewDatastoreItemResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
-	NewApplicationKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
@@ -135,6 +145,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogTeamDataSource,
 	NewDatadogTeamHierarchyLinksDataSource,
 	NewDatadogTeamMembershipsDataSource,
+	NewDatadogTeamNotificationRuleDataSource,
+	NewDatadogTeamNotificationRulesDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
@@ -143,6 +155,8 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
+	NewSecurityMonitoringCriticalAssetDataSource,
+	NewSecurityMonitoringCriticalAssetsDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
@@ -163,6 +177,9 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogAzureUcConfigDataSource,
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
+	NewOrganizationSettingsDataSource,
+	NewDatadogDatastoreDataSource,
+	NewDatastoreItemDataSource,
 }
 
 // FrameworkProvider struct
@@ -312,13 +329,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Indexes, Logs Pipelines, Monitors Security Monitoring Rules, and Service Level Objectives only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -579,12 +596,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSLogsServices", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSNamespaces", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
@@ -692,7 +703,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 
 		if !config.HttpClientRetryBackoffBase.IsNull() {
-			ddClientConfig.RetryConfiguration.BackOffBase = float64(config.HttpClientRetryBackoffMultiplier.ValueInt64())
+			ddClientConfig.RetryConfiguration.BackOffBase = float64(config.HttpClientRetryBackoffBase.ValueInt64())
 		}
 
 		if !config.HttpClientRetryMaxRetries.IsNull() {
@@ -778,6 +789,7 @@ func NewFrameworkResourceWrapper(i *resource.Resource) resource.Resource {
 
 type FrameworkResourceWrapper struct {
 	innerResource *resource.Resource
+	typeName      string
 }
 
 func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -786,10 +798,17 @@ func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.C
 		if req.ProviderData == nil {
 			return
 		}
-		_, ok := req.ProviderData.(*FrameworkProvider)
+		fp, ok := req.ProviderData.(*FrameworkProvider)
 		if !ok {
 			resp.Diagnostics.AddError("Unexpected Resource Configure Type", "")
 			return
+		}
+
+		// Annotate the auth context with the resource type name.
+		if r.typeName != "" {
+			annotatedFP := *fp
+			annotatedFP.Auth = utils.WithTerraformResource(fp.Auth, r.typeName)
+			req.ProviderData = &annotatedFP
 		}
 
 		rCasted.Configure(ctx, req, resp)
@@ -799,6 +818,7 @@ func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.C
 func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	(*r.innerResource).Metadata(ctx, req, resp)
 	resp.TypeName = req.ProviderTypeName + resp.TypeName
+	r.typeName = resp.TypeName
 }
 
 func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {

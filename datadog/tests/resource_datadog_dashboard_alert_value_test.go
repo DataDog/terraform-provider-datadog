@@ -9,7 +9,6 @@ resource "datadog_dashboard" "alert_value_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	widget {
 		alert_value_definition {
 			alert_id = "895605"
@@ -48,7 +47,6 @@ var datadogDashboardAlertValueAsserts = []string{
 	"widget.1.alert_value_definition.0.title = Widget Title",
 	"widget.0.alert_value_definition.0.alert_id = 895605",
 	"widget.1.alert_value_definition.0.unit = b",
-	"is_read_only = true",
 }
 
 func TestAccDatadogDashboardAlertValue(t *testing.T) {

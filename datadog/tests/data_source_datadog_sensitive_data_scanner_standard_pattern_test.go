@@ -105,9 +105,61 @@ func TestAccDatadogStandardPatternDatasourceExactMatch(t *testing.T) {
 	})
 }
 
+func TestAccDatadogStandardPatternDatasourceIDFilter(t *testing.T) {
+	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	datasourceName := "data.datadog_sensitive_data_scanner_standard_pattern.sample_sp"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceStandardPatternConfigByID("OfGqX8R9TRqAcorxenl2fQ"),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(datasourceName, "name", "AWS Access Key ID Scanner"),
+					resource.TestCheckResourceAttr(datasourceName, "id", "OfGqX8R9TRqAcorxenl2fQ"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogStandardPatternDatasourceIDFilterErrorNotFound(t *testing.T) {
+	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccDatasourceStandardPatternConfigByID("nonexistent-standard-pattern-id"),
+				ExpectError: regexp.MustCompile("Couldn't find the standard pattern with id nonexistent-standard-pattern-id"),
+			},
+		},
+	})
+}
+
 func testAccDatasourceStandardPatternConfig(name string) string {
 	return fmt.Sprintf(`
 data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
   filter = "%s"
 }`, name)
+}
+
+func testAccDatasourceStandardPatternConfigByID(id string) string {
+	return fmt.Sprintf(`
+data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
+  standard_pattern_id = "%s"
+}`, id)
 }

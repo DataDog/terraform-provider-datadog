@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 324
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"api_version":"v8","data_stream":{"dtype":"logs"},"id":"elasticsearch-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"elasticsearch-datastream-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 406
+        uncompressed: false
+        body: |
+            {"data":{"id":"2e9bfd96-f20d-11f0-9e24-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-datastream-pipeline","config":{"destinations":[{"api_version":"v8","data_stream":{"dtype":"logs"},"id":"elasticsearch-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 513.346042ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2e9bfd96-f20d-11f0-9e24-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 406
+        uncompressed: false
+        body: |
+            {"data":{"id":"2e9bfd96-f20d-11f0-9e24-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-datastream-pipeline","config":{"destinations":[{"api_version":"v8","data_stream":{"dtype":"logs"},"id":"elasticsearch-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 349.049ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2e9bfd96-f20d-11f0-9e24-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 406
+        uncompressed: false
+        body: |
+            {"data":{"id":"2e9bfd96-f20d-11f0-9e24-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-datastream-pipeline","config":{"destinations":[{"api_version":"v8","data_stream":{"dtype":"logs"},"id":"elasticsearch-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 244.647875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 392
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"api_version":"v8","data_stream":{"dataset":"my-application","dtype":"logs","namespace":"production"},"id":"elasticsearch-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"elasticsearch-datastream-pipeline-updated"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2e9bfd96-f20d-11f0-9e24-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 466
+        uncompressed: false
+        body: |
+            {"data":{"id":"2e9bfd96-f20d-11f0-9e24-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-datastream-pipeline-updated","config":{"destinations":[{"api_version":"v8","data_stream":{"dataset":"my-application","dtype":"logs","namespace":"production"},"id":"elasticsearch-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 637.688458ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2e9bfd96-f20d-11f0-9e24-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 466
+        uncompressed: false
+        body: |
+            {"data":{"id":"2e9bfd96-f20d-11f0-9e24-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-datastream-pipeline-updated","config":{"destinations":[{"api_version":"v8","data_stream":{"dataset":"my-application","dtype":"logs","namespace":"production"},"id":"elasticsearch-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 230.84725ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2e9bfd96-f20d-11f0-9e24-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 642.287125ms

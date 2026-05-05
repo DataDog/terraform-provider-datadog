@@ -1,112 +1,210 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTreemap_import-local-1682003477","widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"}}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"wa5-exv-tpa","title":"tf-TestAccDatadogDashboardTreemap_import-local-1682003477","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/wa5-exv-tpa/tf-testaccdatadogdashboardtreemapimport-local-1682003477","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":8205426674842711}],"notify_list":[],"created_at":"2023-04-20T15:11:18.967010+00:00","modified_at":"2023-04-20T15:11:18.967010+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/wa5-exv-tpa
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"wa5-exv-tpa","title":"tf-TestAccDatadogDashboardTreemap_import-local-1682003477","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/wa5-exv-tpa/tf-testaccdatadogdashboardtreemapimport-local-1682003477","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":8205426674842711}],"notify_list":[],"created_at":"2023-04-20T15:11:18.967010+00:00","modified_at":"2023-04-20T15:11:18.967010+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/wa5-exv-tpa
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"wa5-exv-tpa","title":"tf-TestAccDatadogDashboardTreemap_import-local-1682003477","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/wa5-exv-tpa/tf-testaccdatadogdashboardtreemapimport-local-1682003477","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":8205426674842711}],"notify_list":[],"created_at":"2023-04-20T15:11:18.967010+00:00","modified_at":"2023-04-20T15:11:18.967010+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/wa5-exv-tpa
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"wa5-exv-tpa","title":"tf-TestAccDatadogDashboardTreemap_import-local-1682003477","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/wa5-exv-tpa/tf-testaccdatadogdashboardtreemapimport-local-1682003477","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":8205426674842711}],"notify_list":[],"created_at":"2023-04-20T15:11:18.967010+00:00","modified_at":"2023-04-20T15:11:18.967010+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/wa5-exv-tpa
-    method: DELETE
-    id: 4
-  response:
-    body: |
-      {"deleted_dashboard_id":"wa5-exv-tpa"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/wa5-exv-tpa
-    method: GET
-    id: 5
-  response:
-    body: '{"errors":["Dashboard with ID wa5-exv-tpa not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 552
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardTreemap_import-local-1767989565","widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q68-ix3-wqx","title":"tf-TestAccDatadogDashboardTreemap_import-local-1767989565","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q68-ix3-wqx/tf-testaccdatadogdashboardtreemapimport-local-1767989565","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":2349295488072812}],"notify_list":[],"created_at":"2026-01-09T20:12:46.777593+00:00","modified_at":"2026-01-09T20:12:46.777593+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 182.171834ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q68-ix3-wqx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q68-ix3-wqx","title":"tf-TestAccDatadogDashboardTreemap_import-local-1767989565","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q68-ix3-wqx/tf-testaccdatadogdashboardtreemapimport-local-1767989565","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":2349295488072812}],"notify_list":[],"created_at":"2026-01-09T20:12:46.777593+00:00","modified_at":"2026-01-09T20:12:46.777593+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 98.737125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q68-ix3-wqx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q68-ix3-wqx","title":"tf-TestAccDatadogDashboardTreemap_import-local-1767989565","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q68-ix3-wqx/tf-testaccdatadogdashboardtreemapimport-local-1767989565","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":2349295488072812}],"notify_list":[],"created_at":"2026-01-09T20:12:46.777593+00:00","modified_at":"2026-01-09T20:12:46.777593+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 99.129875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q68-ix3-wqx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"q68-ix3-wqx","title":"tf-TestAccDatadogDashboardTreemap_import-local-1767989565","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/q68-ix3-wqx/tf-testaccdatadogdashboardtreemapimport-local-1767989565","template_variables":[],"widgets":[{"definition":{"color_by":"user","requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar"}],"type":"treemap"},"id":2349295488072812}],"notify_list":[],"created_at":"2026-01-09T20:12:46.777593+00:00","modified_at":"2026-01-09T20:12:46.777593+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 106.343208ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q68-ix3-wqx
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"q68-ix3-wqx"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 361.879417ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/q68-ix3-wqx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID q68-ix3-wqx not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 95.112875ms

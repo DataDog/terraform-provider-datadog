@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -13,15 +14,22 @@ import (
 
 func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern.",
+		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern by its stable standard pattern ID or by name.",
 		ReadContext: dataSourceDatadogSensitiveDataScannerStandardPatternRead,
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"filter": {
-					Description: "Filter all the Datadog standard patterns by name.",
-					Type:        schema.TypeString,
-					Required:    true,
+					Description:  "Filter all the Datadog standard patterns by name.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ExactlyOneOf: []string{"filter", "standard_pattern_id"},
+				},
+				"standard_pattern_id": {
+					Description:  "Stable ID of the Datadog standard pattern to retrieve. This can be set directly to avoid Terraform configs breaking when Datadog renames a standard pattern.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ExactlyOneOf: []string{"filter", "standard_pattern_id"},
 				},
 				// Computed
 				"included_keywords": {
@@ -68,6 +76,19 @@ func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Contex
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error listing standard patterns")
 	}
 
+	if standardPatternID, ok := d.GetOk("standard_pattern_id"); ok {
+		// Look up by ID
+		matchDescription := fmt.Sprintf("id %s", standardPatternID.(string))
+		for _, resource := range resp.GetData() {
+			if resource.GetId() == standardPatternID.(string) {
+				d.SetId(resource.GetId())
+				return dataSourceSensitiveDataScannerStandardPatternUpdate(d, &resource)
+			}
+		}
+		return diag.Errorf("Couldn't find the standard pattern with %s", matchDescription)
+	}
+
+	// Look up by name filter with exact match priority
 	searchedName := d.Get("filter").(string)
 
 	var exactMatch *datadogV2.SensitiveDataScannerStandardPatternsResponseItem

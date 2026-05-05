@@ -9,7 +9,6 @@ resource "datadog_dashboard" "list_stream_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "free"
-	is_read_only  = "true"
 
 	widget {
 		list_stream_definition {
@@ -52,7 +51,6 @@ resource "datadog_dashboard" "list_stream_dashboard" {
 var datadogDashboardListStreamAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = free",
-	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.list_stream_definition.0.request.0.response_format = event_list",
 	"widget.0.list_stream_definition.0.request.0.query.0.data_source = rum_issue_stream",
@@ -80,7 +78,6 @@ resource "datadog_dashboard" "list_stream_event_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		list_stream_definition {
@@ -111,7 +108,6 @@ resource "datadog_dashboard" "list_stream_event_dashboard" {
 var datadogDashboardListStreamEventsAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.list_stream_definition.0.request.0.response_format = event_list",
 	"widget.0.list_stream_definition.0.request.0.query.0.data_source = event_stream",
@@ -132,7 +128,6 @@ resource "datadog_dashboard" "list_stream_event_dashboard_rum" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = "true"
 
 	widget {
 		list_stream_definition {
@@ -170,7 +165,6 @@ resource "datadog_dashboard" "list_stream_event_dashboard_rum" {
 var datadogDashboardListStreamRumAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
-	"is_read_only = true",
 	"title = {{uniq}}",
 	"widget.0.list_stream_definition.0.request.0.response_format = event_list",
 	"widget.0.list_stream_definition.0.request.0.query.0.data_source = rum_stream",

@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 507
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id"},"id":"databricks-zerobus-dest-basic-1","ingestion_endpoint":"https://ingest.databricks.example.com/v1/logs","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint":"https://unity.databricks.example.com"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"databricks zerobus pipeline (minimal)"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 589
+        uncompressed: false
+        body: |
+            {"data":{"id":"2a744a42-43f8-11f1-88ba-da7ad0900002","type":"pipelines","attributes":{"name":"databricks zerobus pipeline (minimal)","config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id"},"id":"databricks-zerobus-dest-basic-1","ingestion_endpoint":"https://ingest.databricks.example.com/v1/logs","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint":"https://unity.databricks.example.com"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 871.110708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2a744a42-43f8-11f1-88ba-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 589
+        uncompressed: false
+        body: |
+            {"data":{"id":"2a744a42-43f8-11f1-88ba-da7ad0900002","type":"pipelines","attributes":{"name":"databricks zerobus pipeline (minimal)","config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id"},"id":"databricks-zerobus-dest-basic-1","ingestion_endpoint":"https://ingest.databricks.example.com/v1/logs","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint":"https://unity.databricks.example.com"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 336.362375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2a744a42-43f8-11f1-88ba-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 943.312416ms

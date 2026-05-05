@@ -9,7 +9,6 @@ resource "datadog_dashboard" "alert_graph_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -34,7 +33,6 @@ resource "datadog_dashboard" "alert_graph_dashboard" {
 	title         = "{{uniq}}"
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
-	is_read_only  = true
 	widget {
 		alert_graph_definition {
 			alert_id = "895605"
@@ -59,7 +57,6 @@ var datadogDashboardAlertGraphAsserts = []string{
 	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.1.alert_graph_definition.0.time.% = 0",
 	"widget.1.alert_graph_definition.0.title = Widget Title",
-	"is_read_only = true",
 	"widget.1.alert_graph_definition.0.title_size = 16",
 	"widget.1.alert_graph_definition.0.viz_type = toplist",
 	"widget.1.alert_graph_definition.0.live_span = 1h",

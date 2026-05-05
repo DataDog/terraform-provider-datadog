@@ -3,13 +3,12 @@
 page_title: "datadog_logs_index Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.Note: It is not possible to delete logs indexes through Terraform, so an index remains in your account after the resource is removed from your terraform config. Reach out to support to delete a logs index.
+  Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.
 ---
 
 # datadog_logs_index (Resource)
 
-Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.  
-**Note:** It is not possible to delete logs indexes through Terraform, so an index remains in your account after the resource is removed from your terraform config. Reach out to support to delete a logs index.
+Provides a Datadog Logs Index API resource. This can be used to create and manage Datadog logs indexes.
 
 ## Example Usage
 
@@ -45,6 +44,7 @@ resource "datadog_logs_index" "sample_index" {
       sample_rate = 1.0
     }
   }
+  tags = ["team:backend", "env:production"]
 }
 ```
 
@@ -61,10 +61,11 @@ resource "datadog_logs_index" "sample_index" {
 - `daily_limit` (Number) The number of log events you can send in this index per day before you are rate-limited.
 - `daily_limit_reset` (Block List, Max: 1) Object containing options to override the default daily limit reset time. (see [below for nested schema](#nestedblock--daily_limit_reset))
 - `daily_limit_warning_threshold_percentage` (Number) A percentage threshold of the daily quota at which a Datadog warning event is generated.
-- `disable_daily_limit` (Boolean) If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.
+- `disable_daily_limit` (Boolean) If true, disables the daily limit and sets `daily_limit` to null. If false, enables the daily limit. When creating an index, if this attribute is omitted, the daily limit is enabled by default. When updating an index, if this attribute is omitted, the existing value is preserved. Providing a `daily_limit` value does not re-enable the limit if it was previously disabled unless `disable_daily_limit` is explicitly set to false.
 - `exclusion_filter` (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
 - `flex_retention_days` (Number) The total number of days logs are stored in Standard and Flex Tier before being deleted from the index.
 - `retention_days` (Number) The number of days logs are stored in Standard Tier before aging into the Flex Tier or being deleted from the index.
+- `tags` (Set of String) A list of tags for this index. Tags must be in `key:value` format. If default tags are present at the provider level, they will be added to this resource.
 
 ### Read-Only
 

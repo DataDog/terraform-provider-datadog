@@ -1,0 +1,107 @@
+version: "2"
+
+run:
+  timeout: 10m
+
+linters:
+  default: none
+  enable:
+    # Already effectively enforced via make vet / make fmtcheck — included
+    # here for unified reporting.
+    - govet
+    - ineffassign
+
+    # Unchecked errors. Aligns with existing scripts/errcheck.sh exclusions.
+    - errcheck
+
+    # Gold-standard Go linter (absorbs gosimple + stylecheck in v2).
+    - staticcheck
+
+    # Dead code detection.
+    - unused
+
+    # Flags fmt.Errorf calls that should use %w for proper error wrapping.
+    - errorlint
+
+    # Security checks.
+    - gosec
+
+    # Opinionated but high-signal code-quality checks (diagnostic tag only).
+    - gocritic
+
+    # Configurable golint successor.
+    - revive
+
+  settings:
+    errcheck:
+      # Align with existing scripts/errcheck.sh exclusions.
+      exclude-functions:
+        - io.Close
+        - io.Write
+        - (*bytes.Buffer).Write
+        - (*bytes.Buffer).WriteString
+        # d.Set() on schema.ResourceData — error is conventionally ignored
+        # in Terraform providers. Aligns with scripts/errcheck.sh exclusion.
+        - (*github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema.ResourceData).Set
+      check-blank: false
+
+    errorlint:
+      errorf: true
+      asserts: true
+      comparison: false  # TODO: enable after codebase cleanup
+
+    gocritic:
+      enabled-tags:
+        - diagnostic
+      disabled-checks:
+        # Common pattern in Terraform providers (append to a slice then assign).
+        - appendAssign
+
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: increment-decrement
+        - name: var-declaration
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: empty-block
+        - name: superfluous-else
+        # Too noisy for existing code — would require doc comments on all
+        # exported symbols. Enable in a follow-up.
+        - name: exported
+          disabled: true
+
+    gosec:
+      excludes:
+        # Deferred to errcheck, which applies project-specific exclusions.
+        - G104
+
+  exclusions:
+    # Exclude test files from linters that are noisy in test code.
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+      - path: datadog/tests/
+        linters:
+          - errcheck
+          - gosec
+
+formatters:
+  enable:
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/terraform-providers/terraform-provider-datadog
+

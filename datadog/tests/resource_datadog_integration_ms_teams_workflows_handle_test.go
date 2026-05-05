@@ -20,7 +20,7 @@ func TestAccMSTeamsWorkflowsWebhookHandlesBasic(t *testing.T) {
 	url := "https://fake.url.com"
 
 	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
+		ProtoV6ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogMSTeamsWorkflowsWebhookHandlesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{

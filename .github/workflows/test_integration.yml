@@ -25,7 +25,7 @@ env:
 jobs:
   integration_tests:
     runs-on: ubuntu-latest
-    if: (github.event_name == 'pull_request' && github.event.pull_request.draft == false && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
+    if: (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
     steps:
       - name: Start the Datadog Agent locally
         uses: datadog/agent-github-action@8240b406d73cb84cd5085a3919a78f59c258da3a
@@ -49,6 +49,21 @@ jobs:
             wget https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
           fi
           unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
+      - name: Sweep stale test resources
+        run: make sweep
+        env:
+          DD_TEST_CLIENT_API_KEY: ${{ secrets.DD_CLIENT_API_KEY }}
+          DD_TEST_CLIENT_APP_KEY: ${{ secrets.DD_CLIENT_APP_KEY }}
+      - name: Build skip list for flaky tests
+        id: skip-list
+        run: |
+          SKIP_REGEX=$(python3 scripts/build_skip_regex.py)
+          if [ -n "$SKIP_REGEX" ]; then
+            echo "test_args=-skip '${SKIP_REGEX}'" >> "$GITHUB_OUTPUT"
+            echo "Skipping flaky tests: ${SKIP_REGEX}"
+          else
+            echo "test_args=" >> "$GITHUB_OUTPUT"
+          fi
       - name: Run integration tests
         run: make testacc
         env:
@@ -65,3 +80,4 @@ jobs:
           DD_TAGS: "team:integrations-tools-and-libraries"
           TF_ACC_TERRAFORM_PATH: "/home/runner/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"
+          TESTARGS: ${{ steps.skip-list.outputs.test_args }}

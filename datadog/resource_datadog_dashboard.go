@@ -2,9 +2,12 @@ package datadog
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/google/uuid"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -144,6 +147,31 @@ func resourceDatadogDashboard() *schema.Resource {
 					MaxItems:    5,
 					Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"tab": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "The list of tabs for organizing widgets on the dashboard.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"id": {
+								Type:        schema.TypeString,
+								Computed:    true,
+								Description: "The UUID of the tab.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the tab.",
+							},
+							"widget_ids": {
+								Type:        schema.TypeList,
+								Required:    true,
+								Description: "List of widget references for this tab. Use @N format to reference widgets by position (1-indexed).",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+						},
+					},
 				},
 			}
 		},
@@ -310,6 +338,63 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 
+	// Set tabs — always call d.Set so stale state is cleared when tabs are removed
+	var terraformTabs []map[string]interface{}
+	if tabs := dashboard.GetTabs(); len(tabs) > 0 {
+		terraformTabs = buildTerraformTabs(tabs, &dashboard.Widgets)
+	}
+	if err := d.Set("tab", terraformTabs); err != nil {
+		return diag.FromErr(err)
+	}
+
+	return nil
+}
+
+// isWidgetTimeUnparsedObject checks if an unparsed object is a WidgetTime.
+// WidgetTime can be unparsed due to oneOf ambiguity between legacy and new formats.
+func isWidgetTimeUnparsedObject(obj interface{}) bool {
+	m, ok := obj.(map[string]interface{})
+	if !ok {
+		return false
+	}
+
+	if typeVal, hasType := m["type"]; hasType {
+		switch typeVal {
+		case "live":
+			_, hasUnit := m["unit"]
+			_, hasValue := m["value"]
+			return hasUnit && hasValue
+		case "fixed":
+			_, hasFrom := m["from"]
+			_, hasTo := m["to"]
+			return hasFrom && hasTo
+		}
+	}
+
+	// Check for WidgetLegacyLiveSpan signature: live_span (and optionally hide_incomplete_cost_data)
+	// This is less specific, so only match if it has live_span and no other unexpected fields
+	if _, hasLiveSpan := m["live_span"]; hasLiveSpan {
+		// Should only have live_span and optionally hide_incomplete_cost_data
+		for key := range m {
+			if key != "live_span" && key != "hide_incomplete_cost_data" {
+				return false // Has other fields, not a legacy live span
+			}
+		}
+		return true
+	}
+
+	return false
+}
+
+// checkForUnparsedDashboard checks for unparsed elements but allows WidgetTime unparsed objects.
+// WidgetTime can be unparsed due to oneOf ambiguity, which we handle separately.
+func checkForUnparsedDashboard(dashboard datadogV1.Dashboard) error {
+	if unparsed, invalidPart := datadog.ContainsUnparsedObject(dashboard); unparsed {
+		if !isWidgetTimeUnparsedObject(invalidPart) {
+			return fmt.Errorf("dashboard contains unparsed element: %+v", invalidPart)
+		}
+		// WidgetTime unparsed objects are expected and handled by buildTerraformWidgetTime
+	}
 	return nil
 }
 
@@ -326,10 +411,9 @@ func resourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData, m
 		}
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting dashboard")
 	}
-	if err := utils.CheckForUnparsed(dashboard); err != nil {
+	if err := checkForUnparsedDashboard(dashboard); err != nil {
 		return diag.FromErr(err)
 	}
-
 	return updateDashboardState(d, &dashboard)
 }
 
@@ -392,6 +476,16 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	// Build TemplateVariablePresets
 	templateVariablePresets := d.Get("template_variable_preset").([]interface{})
 	dashboard.TemplateVariablePresets = *buildDatadogTemplateVariablePresets(&templateVariablePresets)
+
+	// Build Tabs
+	if v, ok := d.GetOk("tab"); ok {
+		terraformTabs := v.([]interface{})
+		tabs := buildDatadogTabs(&terraformTabs)
+		if dashboard.AdditionalProperties == nil {
+			dashboard.AdditionalProperties = make(map[string]interface{})
+		}
+		dashboard.AdditionalProperties["tabs"] = tabs
+	}
 
 	return &dashboard, nil
 }
@@ -774,6 +868,57 @@ func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
 		terraformNotifyList[i] = authorHandle
 	}
 	return &terraformNotifyList
+}
+
+//
+// Tab helpers
+//
+
+func buildDatadogTabs(terraformTabs *[]interface{}) []map[string]interface{} {
+	tabs := make([]map[string]interface{}, len(*terraformTabs))
+	for i, t := range *terraformTabs {
+		tab := t.(map[string]interface{})
+		id := uuid.NewSHA1(uuid.Nil, []byte(fmt.Sprintf("tab-%d", i))).String()
+		if v, ok := tab["id"].(string); ok && v != "" {
+			id = v
+		}
+		ddTab := map[string]interface{}{
+			"id":         id,
+			"name":       tab["name"].(string),
+			"widget_ids": tab["widget_ids"].([]interface{}),
+		}
+		tabs[i] = ddTab
+	}
+	return tabs
+}
+
+func buildTerraformTabs(tabs []datadogV1.DashboardTab, widgets *[]datadogV1.Widget) []map[string]interface{} {
+	widgetIDToPosition := make(map[int64]int)
+	for i, w := range *widgets {
+		widgetIDToPosition[w.GetId()] = i + 1 // 1-indexed
+	}
+
+	terraformTabs := make([]map[string]interface{}, len(tabs))
+	for i, tab := range tabs {
+		widgetIDs := tab.GetWidgetIds()
+
+		// Reverse-map integer widget IDs to @N positional references.
+		// Skip any IDs that don't map to a known widget position rather than
+		// emitting an empty string which would corrupt state.
+		refs := make([]string, 0, len(widgetIDs))
+		for _, widgetID := range widgetIDs {
+			if pos, ok := widgetIDToPosition[widgetID]; ok {
+				refs = append(refs, fmt.Sprintf("@%d", pos))
+			}
+		}
+
+		terraformTabs[i] = map[string]interface{}{
+			"id":         tab.GetId().String(),
+			"name":       tab.GetName(),
+			"widget_ids": refs,
+		}
+	}
+	return terraformTabs
 }
 
 //
@@ -1818,7 +1963,7 @@ func buildTerraformGroupDefinition(datadogGroupDefinition *datadogV1.GroupWidget
 //
 
 func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	return mergeSchemas(map[string]*schema.Schema{
 		"alert_id": {
 			Description: "The ID of the monitor used by the widget.",
 			Type:        schema.TypeString,
@@ -1846,8 +1991,7 @@ func getAlertGraphDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
-	}
+	}, getCommonTimeSpanSchema())
 }
 
 func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}) *datadogV1.AlertGraphWidgetDefinition {
@@ -1865,10 +2009,11 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	return datadogDefinition
 }
@@ -1888,8 +2033,11 @@ func buildTerraformAlertGraphDefinition(datadogDefinition *datadogV1.AlertGraphW
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	return terraformDefinition
 }
@@ -1900,6 +2048,11 @@ func buildTerraformAlertGraphDefinition(datadogDefinition *datadogV1.AlertGraphW
 
 func getAlertValueDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"alert_id": {
 			Description: "The ID of the monitor used by the widget.",
 			Type:        schema.TypeString,
@@ -1963,6 +2116,9 @@ func buildDatadogAlertValueDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 	return datadogDefinition
 }
 
@@ -1989,6 +2145,9 @@ func buildTerraformAlertValueDefinition(datadogDefinition *datadogV1.AlertValueW
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	return terraformDefinition
 }
 
@@ -1997,7 +2156,7 @@ func buildTerraformAlertValueDefinition(datadogDefinition *datadogV1.AlertValueW
 //
 
 func getChangeDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
@@ -2022,7 +2181,11 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -2032,6 +2195,8 @@ func getChangeDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *datadogV1.ChangeWidgetDefinition {
 	datadogDefinition := datadogV1.NewChangeWidgetDefinitionWithDefaults()
@@ -2048,10 +2213,11 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
@@ -2073,8 +2239,11 @@ func buildTerraformChangeDefinition(datadogDefinition *datadogV1.ChangeWidgetDef
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -2269,7 +2438,7 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 //
 
 func getDistributionDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
@@ -2294,6 +2463,11 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"legend_size": {
 			Description:  "The size of the legend displayed in the widget.",
 			Type:         schema.TypeString,
@@ -2305,7 +2479,6 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 		"xaxis": {
 			Description: "A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -2325,6 +2498,8 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 func buildDatadogDistributionDefinition(terraformDefinition map[string]interface{}) *datadogV1.DistributionWidgetDefinition {
 	datadogDefinition := datadogV1.NewDistributionWidgetDefinitionWithDefaults()
@@ -2347,10 +2522,11 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if axis, ok := terraformDefinition["xaxis"].([]interface{}); ok && len(axis) > 0 {
 		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -2385,9 +2561,11 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetXaxisOk(); ok {
 		axis := buildTerraformDistributionWidgetXAxis(*v)
@@ -2501,7 +2679,7 @@ func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1
 //
 
 func getEventStreamDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"query": {
 			Description: "The query to use in the widget.",
 			Type:        schema.TypeString,
@@ -2529,13 +2707,19 @@ func getEventStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"tags_execution": {
 			Description: "The execution method for multi-value filters, options: `and` or `or`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{}) *datadogV1.EventStreamWidgetDefinition {
@@ -2555,10 +2739,11 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["tags_execution"].(string); ok && len(v) > 0 {
 		datadogDefinition.SetTagsExecution(v)
@@ -2583,8 +2768,11 @@ func buildTerraformEventStreamDefinition(datadogDefinition *datadogV1.EventStrea
 	if datadogDefinition.TitleAlign != nil {
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if datadogDefinition.TagsExecution != nil {
 		terraformDefinition["tags_execution"] = *datadogDefinition.TagsExecution
@@ -2597,7 +2785,7 @@ func buildTerraformEventStreamDefinition(datadogDefinition *datadogV1.EventStrea
 //
 
 func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"query": {
 			Description: "The query to use in the widget.",
 			Type:        schema.TypeString,
@@ -2619,13 +2807,19 @@ func getEventTimelineDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"tags_execution": {
 			Description: "The execution method for multi-value filters, options: `and` or `or`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interface{}) *datadogV1.EventTimelineWidgetDefinition {
@@ -2642,10 +2836,11 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["tags_execution"].(string); ok && len(v) > 0 {
 		datadogDefinition.SetTagsExecution(v)
@@ -2667,9 +2862,11 @@ func buildTerraformEventTimelineDefinition(datadogDefinition *datadogV1.EventTim
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetTagsExecutionOk(); ok {
 		terraformDefinition["tags_execution"] = *v
@@ -2682,7 +2879,7 @@ func buildTerraformEventTimelineDefinition(datadogDefinition *datadogV1.EventTim
 //
 
 func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"check": {
 			Description: "The check to use in the widget.",
 			Type:        schema.TypeString,
@@ -2727,8 +2924,9 @@ func getCheckStatusDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{}) *datadogV1.CheckStatusWidgetDefinition {
@@ -2763,10 +2961,11 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	return datadogDefinition
 }
@@ -2803,8 +3002,11 @@ func buildTerraformCheckStatusDefinition(datadogDefinition *datadogV1.CheckStatu
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	return terraformDefinition
 }
@@ -2815,6 +3017,11 @@ func buildTerraformCheckStatusDefinition(datadogDefinition *datadogV1.CheckStatu
 
 func getFreeTextDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"text": {
 			Description: "The text to display in the widget.",
 			Type:        schema.TypeString,
@@ -2878,7 +3085,7 @@ func buildTerraformFreeTextDefinition(datadogDefinition *datadogV1.FreeTextWidge
 //
 
 func getHeatmapDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 			Type:        schema.TypeList,
@@ -2912,6 +3119,11 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"event": {
 			Description: "The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -2931,7 +3143,6 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			Optional:     true,
 			ValidateFunc: validateTimeseriesWidgetLegendSize,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -2941,6 +3152,8 @@ func getHeatmapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *datadogV1.HeatMapWidgetDefinition {
 	datadogDefinition := datadogV1.NewHeatMapWidgetDefinitionWithDefaults()
@@ -2971,10 +3184,11 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
@@ -3002,6 +3216,9 @@ func buildTerraformHeatmapDefinition(datadogDefinition *datadogV1.HeatMapWidgetD
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
 		terraformDefinition["show_legend"] = *v
 	}
@@ -3009,8 +3226,7 @@ func buildTerraformHeatmapDefinition(datadogDefinition *datadogV1.HeatMapWidgetD
 		terraformDefinition["legend_size"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
-
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -3247,6 +3463,11 @@ func getHostmapDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -3313,6 +3534,9 @@ func buildDatadogHostmapDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
@@ -3369,6 +3593,9 @@ func buildTerraformHostmapDefinition(datadogDefinition *datadogV1.HostMapWidgetD
 	}
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -3580,7 +3807,7 @@ func buildTerraformImageDefinition(datadogDefinition *datadogV1.ImageWidgetDefin
 //
 
 func getLogStreamDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"indexes": {
 			Description: "An array of index names to query in the stream.",
 			Type:        schema.TypeList,
@@ -3639,12 +3866,18 @@ func getLogStreamDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func getWidgetFieldSortSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"column": {
 			Description: "The facet path for the column.",
 			Type:        schema.TypeString,
@@ -3701,10 +3934,11 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	return datadogDefinition
 }
@@ -3759,8 +3993,11 @@ func buildTerraformLogStreamDefinition(datadogDefinition *datadogV1.LogStreamWid
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	return terraformDefinition
 }
@@ -3880,6 +4117,9 @@ func buildDatadogManageStatusDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 	return datadogDefinition
 }
 
@@ -3918,6 +4158,9 @@ func buildTerraformManageStatusDefinition(datadogDefinition *datadogV1.MonitorSu
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	return terraformDefinition
 }
 
@@ -3927,6 +4170,11 @@ func buildTerraformManageStatusDefinition(datadogDefinition *datadogV1.MonitorSu
 
 func getNoteDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"content": {
 			Description:  "The content of the note.",
 			Type:         schema.TypeString,
@@ -4049,7 +4297,7 @@ func buildTerraformNoteDefinition(datadogDefinition *datadogV1.NoteWidgetDefinit
 //
 
 func getQueryValueDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
@@ -4104,7 +4352,11 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -4114,6 +4366,8 @@ func getQueryValueDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}) *datadogV1.QueryValueWidgetDefinition {
 	datadogDefinition := datadogV1.NewQueryValueWidgetDefinitionWithDefaults()
@@ -4147,10 +4401,11 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
@@ -4204,8 +4459,11 @@ func buildTerraformQueryValueDefinition(datadogDefinition *datadogV1.QueryValueW
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -4381,7 +4639,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 
 // Query Table Widget Definition helpers
 func getQueryTableDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
@@ -4406,7 +4664,11 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -4422,6 +4684,8 @@ func getQueryTableDefinitionSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}) *datadogV1.TableWidgetDefinition {
 	datadogDefinition := datadogV1.NewTableWidgetDefinitionWithDefaults()
@@ -4438,10 +4702,11 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
@@ -4466,8 +4731,11 @@ func buildTerraformQueryTableDefinition(datadogDefinition *datadogV1.TableWidget
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -4879,7 +5147,7 @@ func getTableWidgetTextFormatReplaceSchema() map[string]*schema.Schema {
 //
 
 func getScatterplotDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -4955,7 +5223,11 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -4965,6 +5237,8 @@ func getScatterplotDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{}) *datadogV1.ScatterPlotWidgetDefinition {
 	datadogDefinition := datadogV1.NewScatterPlotWidgetDefinitionWithDefaults()
@@ -5016,10 +5290,11 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
@@ -5072,8 +5347,11 @@ func buildTerraformScatterplotDefinition(datadogDefinition *datadogV1.ScatterPlo
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -5244,6 +5522,11 @@ func getServiceMapDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -5276,6 +5559,9 @@ func buildDatadogServiceMapDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
@@ -5297,6 +5583,9 @@ func buildTerraformServiceMapDefinition(datadogDefinition *datadogV1.ServiceMapW
 	}
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
+	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -5333,6 +5622,11 @@ func getTopologyMapDefinitionSchema() map[string]*schema.Schema {
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
+		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
@@ -5402,6 +5696,9 @@ func buildDatadogTopologyMapDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
@@ -5459,6 +5756,9 @@ func buildTerraformTopologyMapDefinition(datadogDefinition *datadogV1.TopologyMa
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
 	}
@@ -5511,6 +5811,11 @@ func getServiceLevelObjectiveDefinitionSchema() map[string]*schema.Schema {
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
+		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 		"view_type": {
 			Description: "The type of view to use when displaying the widget. Only `detail` is supported.",
@@ -5567,6 +5872,9 @@ func buildDatadogServiceLevelObjectiveDefinition(terraformDefinition map[string]
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 	if v, ok := terraformDefinition["view_type"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetViewType(v)
 	}
@@ -5607,6 +5915,9 @@ func buildTerraformServiceLevelObjectiveDefinition(datadogDefinition *datadogV1.
 	}
 	if titleAlign, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = titleAlign
+	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
 	}
 	if viewType, ok := datadogDefinition.GetViewTypeOk(); ok {
 		terraformDefinition["view_type"] = viewType
@@ -5674,6 +5985,11 @@ func getSloListDefinitionSchema() map[string]*schema.Schema {
 
 func getSloListRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"request_type": {
 			Description:      "The request type for the SLO List request.",
 			Type:             schema.TypeString,
@@ -5727,6 +6043,9 @@ func buildDatadogSloListDefinition(terraformDefinition map[string]interface{}) *
 	}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
 	}
 	return datadogDefinition
 }
@@ -5793,6 +6112,9 @@ func buildTerraformSloListDefinition(datadogDefinition *datadogV1.SLOListWidgetD
 	}
 	if titleAlign, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = titleAlign
+	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
 	}
 	return terraformDefinition
 }
@@ -5873,6 +6195,11 @@ func getListStreamDefinitionSchema() map[string]*schema.Schema {
 
 func getListStreamRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"columns": {
 			Description: "Widget columns.",
 			Type:        schema.TypeList,
@@ -5988,6 +6315,9 @@ func buildDatadogListStreamDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 	return datadogDefinition, nil
 }
 
@@ -6091,7 +6421,7 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) (*[]datado
 
 // Geomap Widget Definition helpers
 func getGeomapDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
 			Type:        schema.TypeList,
@@ -6151,7 +6481,11 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -6161,6 +6495,8 @@ func getGeomapDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func getGeomapRequestSchema() map[string]*schema.Schema {
@@ -6205,11 +6541,12 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -6300,7 +6637,7 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 //
 
 func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
@@ -6359,6 +6696,11 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"show_legend": {
 			Description: "Whether or not to show the legend on this widget.",
 			Type:        schema.TypeBool,
@@ -6385,7 +6727,6 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTimeseriesWidgetLegendColumnFromValue),
 			},
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -6395,6 +6736,18 @@ func getTimeseriesDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
+}
+
+func mergeSchemas(schemas ...map[string]*schema.Schema) map[string]*schema.Schema {
+	merged := make(map[string]*schema.Schema)
+	for _, componentSchema := range schemas {
+		for k, v := range componentSchema {
+			merged[k] = v
+		}
+	}
+	return merged
 }
 
 func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}) *datadogV1.TimeseriesWidgetDefinition {
@@ -6428,10 +6781,11 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["show_legend"].(bool); ok {
 		datadogDefinition.SetShowLegend(v)
@@ -6484,8 +6838,11 @@ func buildTerraformTimeseriesDefinition(datadogDefinition *datadogV1.TimeseriesW
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
 		terraformDefinition["show_legend"] = *v
@@ -6514,7 +6871,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition *datadogV1.TimeseriesW
 //
 
 func getSunburstDefinitionschema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block).",
 			Type:        schema.TypeList,
@@ -6586,7 +6943,11 @@ func getSunburstDefinitionschema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "Nested block describing a custom link. Multiple `custom_link` blocks are allowed with the structure below.",
 			Type:        schema.TypeList,
@@ -6596,6 +6957,8 @@ func getSunburstDefinitionschema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func getSunburstRequestSchema() map[string]*schema.Schema {
@@ -6693,11 +7056,12 @@ func buildDatadogSunburstDefinition(terraformDefinition map[string]interface{}) 
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
 
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -6888,9 +7252,12 @@ func buildTerraformSunburstDefinition(datadogDefinition *datadogV1.SunburstWidge
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 
 	return terraformDefinition
@@ -7188,6 +7555,54 @@ func getFormulaQuerySchema() *schema.Schema {
 														Required:         true,
 														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
 														Description:      "The aggregation methods for the event platform queries.",
+													},
+													"metric": {
+														Type:        schema.TypeString,
+														Optional:    true,
+														Description: "The metric used for sorting group by results.",
+													},
+													"order": {
+														Type:             schema.TypeString,
+														Optional:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+														Description:      "Direction of sort.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"group_by_fields": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both.",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"fields": {
+											Type:        schema.TypeList,
+											Required:    true,
+											Description: "List of event facets to group by.",
+											Elem:        &schema.Schema{Type: schema.TypeString},
+										},
+										"limit": {
+											Type:        schema.TypeInt,
+											Optional:    true,
+											Description: "The number of groups to return.",
+										},
+										"sort": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											MaxItems:    1,
+											Description: "The options for sorting group by results.",
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"aggregation": {
+														Type:             schema.TypeString,
+														Required:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionEventAggregationFromValue),
+														Description:      "The aggregation method for the event platform queries.",
 													},
 													"metric": {
 														Type:        schema.TypeString,
@@ -7561,6 +7976,17 @@ func getTimeseriesRequestSchema() map[string]*schema.Schema {
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLineWidthFromValue),
 						Optional:         true,
 					},
+					"order_by": {
+						Description:      "How to order series in timeseries visualizations.",
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetStyleOrderByFromValue),
+						Optional:         true,
+					},
+					"has_value_labels": {
+						Description: "If true, the value is displayed as a label relative to the data point.",
+						Type:        schema.TypeBool,
+						Optional:    true,
+					},
 				},
 			},
 		},
@@ -7738,7 +8164,41 @@ func buildDatadogEventQuery(data map[string]interface{}) *datadogV1.FormulaAndFu
 
 			datadogGroupBys[i] = *datadogGroupBy
 		}
-		eventQuery.SetGroupBy(datadogGroupBys)
+		groupByConfig := datadogV1.FormulaAndFunctionEventQueryGroupByListAsFormulaAndFunctionEventQueryGroupByConfig(&datadogGroupBys)
+		eventQuery.SetGroupBy(groupByConfig)
+	} else if terraformGroupByFields, ok := data["group_by_fields"].([]interface{}); ok && len(terraformGroupByFields) > 0 {
+		groupByFieldsMap := terraformGroupByFields[0].(map[string]interface{})
+		fieldsRaw := groupByFieldsMap["fields"].([]interface{})
+		fields := make([]string, len(fieldsRaw))
+		for i, f := range fieldsRaw {
+			fields[i] = f.(string)
+		}
+		datadogGroupByFields := datadogV1.NewFormulaAndFunctionEventQueryGroupByFields(fields)
+
+		if v, ok := groupByFieldsMap["limit"].(int); ok && v != 0 {
+			datadogGroupByFields.SetLimit(int64(v))
+		}
+
+		if v, ok := groupByFieldsMap["sort"].([]interface{}); ok && len(v) > 0 {
+			if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
+				sortMap := &datadogV1.FormulaAndFunctionEventQueryGroupBySort{}
+				if aggr, ok := v["aggregation"].(string); ok && len(aggr) > 0 {
+					aggregation := datadogV1.FormulaAndFunctionEventAggregation(aggr)
+					sortMap.SetAggregation(aggregation)
+				}
+				if order, ok := v["order"].(string); ok && len(order) > 0 {
+					eventSort := datadogV1.QuerySortOrder(order)
+					sortMap.SetOrder(eventSort)
+				}
+				if metric, ok := v["metric"].(string); ok && len(metric) > 0 {
+					sortMap.SetMetric(metric)
+				}
+				datadogGroupByFields.SetSort(*sortMap)
+			}
+		}
+
+		groupByConfig := datadogV1.FormulaAndFunctionEventQueryGroupByFieldsAsFormulaAndFunctionEventQueryGroupByConfig(datadogGroupByFields)
+		eventQuery.SetGroupBy(groupByConfig)
 	}
 
 	definition := datadogV1.FormulaAndFunctionEventQueryDefinitionAsFormulaAndFunctionQueryDefinition(eventQuery)
@@ -8003,7 +8463,7 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
-				datadogTimeseriesRequest.Style = buildDatadogWidgetRequestStyle(v)
+				datadogTimeseriesRequest.Style = buildDatadogTimeseriesRequestStyle(v)
 			}
 		}
 		// Metadata
@@ -8070,7 +8530,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		}
 
 		if v, ok := datadogRequest.GetStyleOk(); ok {
-			style := buildTerraformWidgetRequestStyle(*v)
+			style := buildTerraformTimeseriesRequestStyle(*v)
 			terraformRequest["style"] = []map[string]interface{}{style}
 		}
 		// Metadata
@@ -8106,7 +8566,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 //
 
 func getToplistDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"request": {
 			Description: "A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block).",
 			Type:        schema.TypeList,
@@ -8131,7 +8591,11 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -8149,6 +8613,8 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *datadogV1.ToplistWidgetDefinition {
 	datadogDefinition := datadogV1.NewToplistWidgetDefinitionWithDefaults()
@@ -8165,10 +8631,11 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
@@ -8228,8 +8695,11 @@ func buildTerraformToplistDefinition(datadogDefinition *datadogV1.ToplistWidgetD
 	if datadogDefinition.TitleAlign != nil {
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -8418,7 +8888,7 @@ func buildTerraformToplistWidgetStyle(datadogToplistStyle *datadogV1.ToplistWidg
 //
 
 func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"env": {
 			Description: "APM environment.",
 			Type:        schema.TypeString,
@@ -8492,8 +8962,9 @@ func getTraceServiceDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface{}) *datadogV1.ServiceSummaryWidgetDefinition {
@@ -8536,10 +9007,11 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 
 	return datadogDefinition
@@ -8551,6 +9023,11 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 
 func getPowerpackDefinitionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"background_color": {
 			Description: "The background color of the powerpack title.",
 			Type:        schema.TypeString,
@@ -8595,7 +9072,7 @@ func getPowerpackDefinitionSchema() map[string]*schema.Schema {
 //
 
 func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"source_widget_definition": {
 			Description: "The original widget we are splitting on.",
 			Type:        schema.TypeList,
@@ -8631,8 +9108,9 @@ func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func getSplitConfigSchema() map[string]*schema.Schema {
@@ -8777,10 +9255,8 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.Title = datadog.PtrString(v)
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 
 	return datadogDefinition, nil
@@ -8929,7 +9405,7 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 		terraformDefinition["title"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 
 	return terraformDefinition, nil
@@ -9034,7 +9510,7 @@ func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEn
 //
 
 func getRunWorkflowDefinitionSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+	schema := map[string]*schema.Schema{
 		"workflow_id": {
 			Description: "Workflow ID",
 			Type:        schema.TypeString,
@@ -9075,7 +9551,11 @@ func getRunWorkflowDefinitionSchema() map[string]*schema.Schema {
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetTextAlignFromValue),
 			Optional:         true,
 		},
-		"live_span": getWidgetLiveSpanSchema(),
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_link": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -9085,6 +9565,8 @@ func getRunWorkflowDefinitionSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
+	return schema
 }
 
 func buildDatadogRunWorkflowDefinition(terraformDefinition map[string]interface{}) *datadogV1.RunWorkflowWidgetDefinition {
@@ -9104,10 +9586,11 @@ func buildDatadogRunWorkflowDefinition(terraformDefinition map[string]interface{
 	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
 	}
-	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
-		datadogDefinition.Time = &datadogV1.WidgetTime{
-			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
-		}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
+	}
+	if widgetTime := buildDatadogWidgetTime(terraformDefinition); widgetTime != nil {
+		datadogDefinition.Time = widgetTime
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
@@ -9144,8 +9627,11 @@ func buildTerraformRunWorkflowDefinition(datadogDefinition *datadogV1.RunWorkflo
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -9183,6 +9669,11 @@ func getTreemapDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
+		"description": {
+			Description: "The description of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"custom_links": {
 			Description: "A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below.",
 			Type:        schema.TypeList,
@@ -9210,6 +9701,9 @@ func buildDatadogTreemapDefinition(terraformDefinition map[string]interface{}) *
 
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
 		datadogDefinition.SetTitle(v)
+	}
+	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+		datadogDefinition.SetDescription(v)
 	}
 
 	if v, ok := terraformDefinition["custom_links"].([]interface{}); ok && len(v) > 0 {
@@ -9286,6 +9780,9 @@ func buildTerraformTreemapDefinition(datadogDefinition *datadogV1.TreeMapWidgetD
 	if v, ok := datadogDefinition.GetTitleOk(); ok {
 		terraformDefinition["title"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_links"] = buildTerraformWidgetCustomLinks(v)
@@ -9324,9 +9821,12 @@ func buildTerraformGeomapDefinition(datadogDefinition *datadogV1.GeomapWidgetDef
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = *v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 
 	return terraformDefinition
@@ -9345,6 +9845,9 @@ func buildTerraformListStreamDefinition(datadogDefinition *datadogV1.ListStreamW
 	}
 	if datadogDefinition.TitleAlign != nil {
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
+	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
 	}
 	return terraformDefinition
 }
@@ -9438,8 +9941,11 @@ func buildTerraformTraceServiceDefinition(datadogDefinition *datadogV1.ServiceSu
 	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
 		terraformDefinition["title_align"] = v
 	}
+	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
+		terraformDefinition["description"] = *v
+	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+		buildTerraformWidgetTime(v, terraformDefinition)
 	}
 	return terraformDefinition
 }
@@ -9732,12 +10238,116 @@ func buildTerraformWidgetEvents(datadogWidgetEvents *[]datadogV1.WidgetEvent) *[
 }
 
 // Widget Time helpers
-func getWidgetLiveSpanSchema() *schema.Schema {
-	return &schema.Schema{
-		Description:      "The timeframe to use when displaying the widget.",
-		Type:             schema.TypeString,
-		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
-		Optional:         true,
+
+// widgetLiveSpanUnitToAbbrev converts WidgetLiveSpanUnit enum to legacy format abbreviation
+func widgetLiveSpanUnitToAbbrev(unit datadogV1.WidgetLiveSpanUnit) string {
+	switch unit {
+	case "minute":
+		return "m"
+	case "hour":
+		return "h"
+	case "day":
+		return "d"
+	case "week":
+		return "w"
+	case "month":
+		return "mo"
+	case "year":
+		return "y"
+	default:
+		return string(unit)
+	}
+}
+
+// buildDatadogWidgetTime creates a WidgetTime from Terraform definition.
+// Always uses legacy format - API will handle conversion if needed.
+func buildDatadogWidgetTime(terraformDefinition map[string]interface{}) *datadogV1.WidgetTime {
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		widgetLegacyLiveSpan := &datadogV1.WidgetLegacyLiveSpan{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+		// Only set hide_incomplete_cost_data if explicitly present in config
+		if hic, ok := terraformDefinition["hide_incomplete_cost_data"].(bool); ok && hic {
+			widgetLegacyLiveSpan.SetHideIncompleteCostData(hic)
+		}
+		return &datadogV1.WidgetTime{
+			WidgetLegacyLiveSpan: widgetLegacyLiveSpan,
+		}
+	}
+	return nil
+}
+
+// buildTerraformWidgetTime extracts time settings from a WidgetTime union into a Terraform definition map.
+// Handles WidgetLegacyLiveSpan, WidgetNewLiveSpan, and UnparsedObject fallback.
+func buildTerraformWidgetTime(widgetTime *datadogV1.WidgetTime, terraformDefinition map[string]interface{}) {
+	if widgetTime == nil {
+		return
+	}
+
+	if widgetTime.WidgetLegacyLiveSpan != nil {
+		// Legacy format: {"live_span": "1h"}
+		terraformDefinition["live_span"] = widgetTime.WidgetLegacyLiveSpan.GetLiveSpan()
+		// Only set hide_incomplete_cost_data if true (API defaults to false)
+		if hic, ok := widgetTime.WidgetLegacyLiveSpan.GetHideIncompleteCostDataOk(); ok && *hic {
+			terraformDefinition["hide_incomplete_cost_data"] = true
+		}
+	} else if widgetTime.WidgetNewLiveSpan != nil {
+		// New format: {"type": "live", "unit": "hour", "value": 1}
+		// Convert back to legacy format for Terraform
+		unit := widgetTime.WidgetNewLiveSpan.GetUnit()
+		value := widgetTime.WidgetNewLiveSpan.GetValue()
+		unitAbbrev := widgetLiveSpanUnitToAbbrev(unit)
+		terraformDefinition["live_span"] = fmt.Sprintf("%d%s", value, unitAbbrev)
+		// Only set hide_incomplete_cost_data if true (API defaults to false)
+		if hic, ok := widgetTime.WidgetNewLiveSpan.GetHideIncompleteCostDataOk(); ok && *hic {
+			terraformDefinition["hide_incomplete_cost_data"] = true
+		}
+	} else if widgetTime.UnparsedObject != nil {
+		// Handle unparsed WidgetTime (due to oneOf ambiguity)
+		// Use the API client's own UnmarshalJSON methods to parse
+		unparsedBytes, err := json.Marshal(widgetTime.UnparsedObject)
+		if err == nil {
+			// Try new format first (more specific - has required fields)
+			var newLiveSpan datadogV1.WidgetNewLiveSpan
+			if err := json.Unmarshal(unparsedBytes, &newLiveSpan); err == nil && newLiveSpan.UnparsedObject == nil {
+				// Successfully parsed as new format
+				unit := newLiveSpan.GetUnit()
+				value := newLiveSpan.GetValue()
+				unitAbbrev := widgetLiveSpanUnitToAbbrev(unit)
+				terraformDefinition["live_span"] = fmt.Sprintf("%d%s", value, unitAbbrev)
+				// Only set hide_incomplete_cost_data if true (API defaults to false)
+				if hic, ok := newLiveSpan.GetHideIncompleteCostDataOk(); ok && *hic {
+					terraformDefinition["hide_incomplete_cost_data"] = true
+				}
+			} else {
+				// Try legacy format
+				var legacyLiveSpan datadogV1.WidgetLegacyLiveSpan
+				if err := json.Unmarshal(unparsedBytes, &legacyLiveSpan); err == nil && legacyLiveSpan.UnparsedObject == nil {
+					terraformDefinition["live_span"] = legacyLiveSpan.GetLiveSpan()
+					// Only set hide_incomplete_cost_data if true (API defaults to false)
+					if hic, ok := legacyLiveSpan.GetHideIncompleteCostDataOk(); ok && *hic {
+						terraformDefinition["hide_incomplete_cost_data"] = true
+					}
+				}
+			}
+		}
+	}
+}
+
+func getCommonTimeSpanSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"live_span": {
+			Description:      "The timeframe to use when displaying the widget.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetLiveSpanFromValue),
+			Optional:         true,
+		},
+		"hide_incomplete_cost_data": {
+			Description: "Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Computed:    true,
+		},
 	}
 }
 
@@ -10051,19 +10661,43 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 				terraformComputeList := []map[string]interface{}{terraformCompute}
 				terraformQuery["compute"] = terraformComputeList
 			}
-			if terraformEventQuery, ok := terraformEventQueryDefinition.GetGroupByOk(); ok {
-				terraformGroupBys := make([]map[string]interface{}, len(*terraformEventQuery))
-				for i, groupBy := range *terraformEventQuery {
-					// Facet
-					terraformGroupBy := map[string]interface{}{
-						"facet": groupBy.GetFacet(),
+			if groupByConfig, ok := terraformEventQueryDefinition.GetGroupByOk(); ok {
+				if groupByList := groupByConfig.FormulaAndFunctionEventQueryGroupByList; groupByList != nil {
+					terraformGroupBys := make([]map[string]interface{}, len(*groupByList))
+					for i, groupBy := range *groupByList {
+						// Facet
+						terraformGroupBy := map[string]interface{}{
+							"facet": groupBy.GetFacet(),
+						}
+						// Limit
+						if v, ok := groupBy.GetLimitOk(); ok {
+							terraformGroupBy["limit"] = *v
+						}
+						// Sort
+						if v, ok := groupBy.GetSortOk(); ok {
+							terraformSort := map[string]interface{}{}
+							if metric, ok := v.GetMetricOk(); ok {
+								terraformSort["metric"] = metric
+							}
+							if order, ok := v.GetOrderOk(); ok {
+								terraformSort["order"] = order
+							}
+							if aggregation, ok := v.GetAggregationOk(); ok {
+								terraformSort["aggregation"] = aggregation
+							}
+							terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+						}
+						terraformGroupBys[i] = terraformGroupBy
 					}
-					// Limit
-					if v, ok := groupBy.GetLimitOk(); ok {
-						terraformGroupBy["limit"] = *v
+					terraformQuery["group_by"] = &terraformGroupBys
+				} else if groupByFields := groupByConfig.FormulaAndFunctionEventQueryGroupByFields; groupByFields != nil {
+					terraformGroupByFieldsMap := map[string]interface{}{
+						"fields": groupByFields.GetFields(),
 					}
-					// Sort
-					if v, ok := groupBy.GetSortOk(); ok {
+					if v, ok := groupByFields.GetLimitOk(); ok {
+						terraformGroupByFieldsMap["limit"] = *v
+					}
+					if v, ok := groupByFields.GetSortOk(); ok {
 						terraformSort := map[string]interface{}{}
 						if metric, ok := v.GetMetricOk(); ok {
 							terraformSort["metric"] = metric
@@ -10074,11 +10708,10 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 						if aggregation, ok := v.GetAggregationOk(); ok {
 							terraformSort["aggregation"] = aggregation
 						}
-						terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+						terraformGroupByFieldsMap["sort"] = []map[string]interface{}{terraformSort}
 					}
-					terraformGroupBys[i] = terraformGroupBy
+					terraformQuery["group_by_fields"] = []map[string]interface{}{terraformGroupByFieldsMap}
 				}
-				terraformQuery["group_by"] = &terraformGroupBys
 			}
 			terraformQueries := []map[string]interface{}{terraformQuery}
 			terraformEventQuery := map[string]interface{}{}
@@ -10922,6 +11555,9 @@ func buildDatadogWidgetRequestStyle(terraformStyle map[string]interface{}) *data
 	if v, ok := terraformStyle["line_width"].(string); ok && len(v) != 0 {
 		datadogStyle.SetLineWidth(datadogV1.WidgetLineWidth(v))
 	}
+	if v, ok := terraformStyle["order_by"].(string); ok && len(v) != 0 {
+		datadogStyle.SetOrderBy(datadogV1.WidgetStyleOrderBy(v))
+	}
 
 	return datadogStyle
 }
@@ -10935,6 +11571,49 @@ func buildTerraformWidgetRequestStyle(datadogStyle datadogV1.WidgetRequestStyle)
 	}
 	if v, ok := datadogStyle.GetLineWidthOk(); ok {
 		terraformStyle["line_width"] = v
+	}
+	if v, ok := datadogStyle.GetOrderByOk(); ok {
+		terraformStyle["order_by"] = v
+	}
+	return terraformStyle
+}
+
+func buildDatadogTimeseriesRequestStyle(terraformStyle map[string]interface{}) *datadogV1.TimeseriesRequestStyle {
+	datadogStyle := &datadogV1.TimeseriesRequestStyle{}
+	if v, ok := terraformStyle["palette"].(string); ok && len(v) != 0 {
+		datadogStyle.SetPalette(v)
+	}
+	if v, ok := terraformStyle["line_type"].(string); ok && len(v) != 0 {
+		datadogStyle.SetLineType(datadogV1.WidgetLineType(v))
+	}
+	if v, ok := terraformStyle["line_width"].(string); ok && len(v) != 0 {
+		datadogStyle.SetLineWidth(datadogV1.WidgetLineWidth(v))
+	}
+	if v, ok := terraformStyle["order_by"].(string); ok && len(v) != 0 {
+		datadogStyle.SetOrderBy(datadogV1.WidgetStyleOrderBy(v))
+	}
+	if v, ok := terraformStyle["has_value_labels"].(bool); ok {
+		datadogStyle.SetHasValueLabels(v)
+	}
+
+	return datadogStyle
+}
+func buildTerraformTimeseriesRequestStyle(datadogStyle datadogV1.TimeseriesRequestStyle) map[string]interface{} {
+	terraformStyle := map[string]interface{}{}
+	if v, ok := datadogStyle.GetPaletteOk(); ok {
+		terraformStyle["palette"] = v
+	}
+	if v, ok := datadogStyle.GetLineTypeOk(); ok {
+		terraformStyle["line_type"] = v
+	}
+	if v, ok := datadogStyle.GetLineWidthOk(); ok {
+		terraformStyle["line_width"] = v
+	}
+	if v, ok := datadogStyle.GetOrderByOk(); ok {
+		terraformStyle["order_by"] = v
+	}
+	if v, ok := datadogStyle.GetHasValueLabelsOk(); ok {
+		terraformStyle["has_value_labels"] = v
 	}
 	return terraformStyle
 }

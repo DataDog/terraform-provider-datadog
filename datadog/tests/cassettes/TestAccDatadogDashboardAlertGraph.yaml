@@ -1,112 +1,210 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"}},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"}}]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"fgz-vc3-m6d","title":"tf-TestAccDatadogDashboardAlertGraph-local-1682003522","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/fgz-vc3-m6d/tf-testaccdatadogdashboardalertgraph-local-1682003522","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":6278462940244230},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":4925443550914109}],"notify_list":[],"created_at":"2023-04-20T15:12:03.827854+00:00","modified_at":"2023-04-20T15:12:03.827854+00:00","template_variable_presets":[],"tags":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
-    method: DELETE
-    id: 4
-  response:
-    body: |
-      {"deleted_dashboard_id":"fgz-vc3-m6d"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/fgz-vc3-m6d
-    method: GET
-    id: 5
-  response:
-    body: '{"errors":["Dashboard with ID fgz-vc3-m6d not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 506
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardAlertGraph-local-1767988418","widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"}},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pvm-4mv-gqv","title":"tf-TestAccDatadogDashboardAlertGraph-local-1767988418","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/pvm-4mv-gqv/tf-testaccdatadogdashboardalertgraph-local-1767988418","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":1419583213051720},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":8567937777885037}],"notify_list":[],"created_at":"2026-01-09T19:53:39.999479+00:00","modified_at":"2026-01-09T19:53:39.999479+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 125.318375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/pvm-4mv-gqv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pvm-4mv-gqv","title":"tf-TestAccDatadogDashboardAlertGraph-local-1767988418","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/pvm-4mv-gqv/tf-testaccdatadogdashboardalertgraph-local-1767988418","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":1419583213051720},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":8567937777885037}],"notify_list":[],"created_at":"2026-01-09T19:53:39.999479+00:00","modified_at":"2026-01-09T19:53:39.999479+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 104.925333ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/pvm-4mv-gqv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pvm-4mv-gqv","title":"tf-TestAccDatadogDashboardAlertGraph-local-1767988418","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/pvm-4mv-gqv/tf-testaccdatadogdashboardalertgraph-local-1767988418","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":1419583213051720},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":8567937777885037}],"notify_list":[],"created_at":"2026-01-09T19:53:39.999479+00:00","modified_at":"2026-01-09T19:53:39.999479+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 105.9015ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/pvm-4mv-gqv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pvm-4mv-gqv","title":"tf-TestAccDatadogDashboardAlertGraph-local-1767988418","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/pvm-4mv-gqv/tf-testaccdatadogdashboardalertgraph-local-1767988418","template_variables":[],"widgets":[{"definition":{"alert_id":"895605","type":"alert_graph","viz_type":"timeseries"},"id":1419583213051720},{"definition":{"alert_id":"895606","time":{"live_span":"1h"},"title":"Widget Title","title_align":"right","title_size":"16","type":"alert_graph","viz_type":"toplist"},"id":8567937777885037}],"notify_list":[],"created_at":"2026-01-09T19:53:39.999479+00:00","modified_at":"2026-01-09T19:53:39.999479+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 110.018084ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/pvm-4mv-gqv
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"pvm-4mv-gqv"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 315.466625ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/pvm-4mv-gqv
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID pvm-4mv-gqv not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 93.557167ms

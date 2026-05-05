@@ -4,6 +4,7 @@ import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -11,15 +12,20 @@ import (
 
 // SocketSourceModel represents the Terraform model for socket source configuration
 type SocketSourceModel struct {
-	Mode    types.String         `tfsdk:"mode"`
-	Framing []SocketFramingModel `tfsdk:"framing"`
-	Tls     []TlsModel           `tfsdk:"tls"`
+	AddressKey types.String         `tfsdk:"address_key"`
+	Mode       types.String         `tfsdk:"mode"`
+	Framing    []SocketFramingModel `tfsdk:"framing"`
+	Tls        []TlsModel           `tfsdk:"tls"`
 }
 
 // ExpandSocketSource converts the Terraform model to the Datadog API model
-func ExpandSocketSource(src *SocketSourceModel, id string) datadogV2.ObservabilityPipelineConfigSourceItem {
+func ExpandSocketSource(src *SocketSourceModel, id string) (datadogV2.ObservabilityPipelineConfigSourceItem, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	s := datadogV2.NewObservabilityPipelineSocketSourceWithDefaults()
 	s.SetId(id)
+	if !src.AddressKey.IsNull() {
+		s.SetAddressKey(src.AddressKey.ValueString())
+	}
 	s.SetMode(datadogV2.ObservabilityPipelineSocketSourceMode(src.Mode.ValueString()))
 
 	switch src.Framing[0].Method.ValueString() {
@@ -36,11 +42,14 @@ func ExpandSocketSource(src *SocketSourceModel, id string) datadogV2.Observabili
 			},
 		}
 	case "character_delimited":
+		charDelimited := &datadogV2.ObservabilityPipelineSocketSourceFramingCharacterDelimited{
+			Method: "character_delimited",
+		}
+		if len(src.Framing[0].CharacterDelimited) > 0 {
+			charDelimited.Delimiter = src.Framing[0].CharacterDelimited[0].Delimiter.ValueString()
+		}
 		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
-			ObservabilityPipelineSocketSourceFramingCharacterDelimited: &datadogV2.ObservabilityPipelineSocketSourceFramingCharacterDelimited{
-				Method:    "character_delimited",
-				Delimiter: src.Framing[0].CharacterDelimited[0].Delimiter.ValueString(),
-			},
+			ObservabilityPipelineSocketSourceFramingCharacterDelimited: charDelimited,
 		}
 	case "octet_counting":
 		s.Framing = datadogV2.ObservabilityPipelineSocketSourceFraming{
@@ -60,7 +69,7 @@ func ExpandSocketSource(src *SocketSourceModel, id string) datadogV2.Observabili
 	}
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSocketSource: s,
-	}
+	}, diags
 }
 
 // FlattenSocketSource converts the Datadog API model to the Terraform model
@@ -71,6 +80,9 @@ func FlattenSocketSource(src *datadogV2.ObservabilityPipelineSocketSource) *Sock
 
 	out := &SocketSourceModel{
 		Mode: types.StringValue(string(src.GetMode())),
+	}
+	if v, ok := src.GetAddressKeyOk(); ok {
+		out.AddressKey = types.StringValue(*v)
 	}
 
 	if src.Tls != nil {
@@ -104,6 +116,10 @@ func SocketSourceSchema() schema.ListNestedBlock {
 		Description: "The `socket` source ingests logs over TCP or UDP.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
+				"address_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the listen address for the socket.",
+				},
 				"mode": schema.StringAttribute{
 					Required:    true,
 					Description: "The protocol used to receive logs.",
@@ -147,9 +163,12 @@ func SocketSourceSchema() schema.ListNestedBlock {
 								},
 							},
 						},
+						Validators: []validator.Object{
+							SocketFramingValidator{},
+						},
 					},
 					Validators: []validator.List{
-						listvalidator.SizeAtLeast(1),
+						listvalidator.IsRequired(),
 						listvalidator.SizeAtMost(1),
 					},
 				},

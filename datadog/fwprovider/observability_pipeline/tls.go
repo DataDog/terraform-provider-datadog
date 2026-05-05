@@ -10,9 +10,10 @@ import (
 
 // TlsModel represents TLS configuration
 type TlsModel struct {
-	CrtFile types.String `tfsdk:"crt_file"`
-	CaFile  types.String `tfsdk:"ca_file"`
-	KeyFile types.String `tfsdk:"key_file"`
+	CrtFile    types.String `tfsdk:"crt_file"`
+	CaFile     types.String `tfsdk:"ca_file"`
+	KeyFile    types.String `tfsdk:"key_file"`
+	KeyPassKey types.String `tfsdk:"key_pass_key"`
 }
 
 // ExpandTls converts the Terraform TLS model to the Datadog API model
@@ -31,6 +32,9 @@ func ExpandTls(tlsTF []TlsModel) *datadogV2.ObservabilityPipelineTls {
 	if !tlsItem.KeyFile.IsNull() {
 		tls.SetKeyFile(tlsItem.KeyFile.ValueString())
 	}
+	if !tlsItem.KeyPassKey.IsNull() {
+		tls.SetKeyPassKey(tlsItem.KeyPassKey.ValueString())
+	}
 	return tls
 }
 
@@ -39,13 +43,15 @@ func FlattenTls(src *datadogV2.ObservabilityPipelineTls) []TlsModel {
 	if src == nil {
 		return []TlsModel{}
 	}
-	return []TlsModel{
-		{
-			CrtFile: types.StringValue(src.CrtFile),
-			CaFile:  types.StringPointerValue(src.CaFile),
-			KeyFile: types.StringPointerValue(src.KeyFile),
-		},
+	out := TlsModel{
+		CrtFile: types.StringValue(src.CrtFile),
+		CaFile:  types.StringPointerValue(src.CaFile),
+		KeyFile: types.StringPointerValue(src.KeyFile),
 	}
+	if v, ok := src.GetKeyPassKeyOk(); ok {
+		out.KeyPassKey = types.StringValue(*v)
+	}
+	return []TlsModel{out}
 }
 
 // TlsSchema returns the schema for TLS configuration
@@ -65,6 +71,10 @@ func TlsSchema() schema.ListNestedBlock {
 				"key_file": schema.StringAttribute{
 					Optional:    true,
 					Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
+				},
+				"key_pass_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the passphrase for the private key file.",
 				},
 			},
 		},

@@ -75,7 +75,7 @@ resource "datadog_reference_table" "s3_table" {
 
 - `description` (String) The description of the reference table.
 - `file_metadata` (Block, Optional) Configuration for cloud storage file access and sync settings. (see [below for nested schema](#nestedblock--file_metadata))
-- `schema` (Block, Optional) The schema definition for the reference table, including field definitions and primary keys. Schema is only set on create; updates are derived from the file asynchronously. (see [below for nested schema](#nestedblock--schema))
+- `schema` (Block, Optional) The schema definition for the reference table, including field definitions and primary keys. This block is required. Schema is only set on create; updates are derived from the file asynchronously. (see [below for nested schema](#nestedblock--schema))
 - `tags` (List of String) A list of tags to associate with the reference table.
 
 ### Read-Only
@@ -151,15 +151,18 @@ Optional:
 <a id="nestedblock--schema"></a>
 ### Nested Schema for `schema`
 
+Required:
+
+- `primary_keys` (List of String) List of field names that serve as primary keys for the table. Currently only one primary key is supported.
+
 Optional:
 
-- `fields` (Block List) List of fields in the table schema. Must include at least one field. Schema is only set on create. (see [below for nested schema](#nestedblock--schema--fields))
-- `primary_keys` (List of String) List of field names that serve as primary keys for the table. Currently only one primary key is supported.
+- `fields` (Block List) List of fields in the table schema. At least one field is required. Schema is only set on create. (see [below for nested schema](#nestedblock--schema--fields))
 
 <a id="nestedblock--schema--fields"></a>
 ### Nested Schema for `schema.fields`
 
-Optional:
+Required:
 
 - `name` (String) The name of the field.
 - `type` (String) The data type of the field. Must be one of: STRING, INT32. Valid values are `STRING`, `INT32`.
@@ -176,7 +179,9 @@ The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/c
 
 terraform import datadog_reference_table.imported_table "00000000-0000-0000-0000-000000000000"
 
-# After importing, add the resource configuration to your .tf file:
+# After importing, you must add the full resource configuration to your .tf file.
+# Use `terraform state show datadog_reference_table.imported_table` to view the imported schema
+# and other attributes, then add the matching configuration:
 # 
 # resource "datadog_reference_table" "imported_table" {
 #   table_name  = "existing_table"
