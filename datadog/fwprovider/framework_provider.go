@@ -587,24 +587,21 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
 		}
-	} else {
-		if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
-			auth = context.WithValue(
-				auth,
-				datadog.ContextAPIKeys,
-				map[string]datadog.APIKey{
-					"apiKeyAuth": {
-						Key: config.ApiKey.ValueString(),
-					},
-					"appKeyAuth": {
-						Key: config.AppKey.ValueString(),
-					},
+	} else if pat != "" {
+		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
+	} else if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
+		auth = context.WithValue(
+			auth,
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": {
+					Key: config.ApiKey.ValueString(),
 				},
-			)
-		}
-		if pat != "" {
-			auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
-		}
+				"appKeyAuth": {
+					Key: config.AppKey.ValueString(),
+				},
+			},
+		)
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)

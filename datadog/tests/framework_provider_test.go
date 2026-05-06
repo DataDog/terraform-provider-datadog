@@ -489,8 +489,9 @@ func TestFrameworkProviderConfigure_PATEnvVar(t *testing.T) {
 	}
 }
 
-// TestFrameworkProviderConfigure_PATWithAPIKey tests that PAT and API keys can coexist.
-func TestFrameworkProviderConfigure_PATWithAPIKey(t *testing.T) {
+// TestFrameworkProviderConfigure_PATWinsOverAPIKey tests that PAT takes precedence over API keys
+// when both are configured: only Bearer auth is plumbed, no DD-API-KEY/DD-APPLICATION-KEY headers.
+func TestFrameworkProviderConfigure_PATWinsOverAPIKey(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
 	os.Unsetenv("DD_APP_KEY")
 	os.Unsetenv("DATADOG_API_KEY")
@@ -516,8 +517,8 @@ func TestFrameworkProviderConfigure_PATWithAPIKey(t *testing.T) {
 	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
 		t.Errorf("ContextAccessToken should be set to the PAT, got %q (ok=%v)", got, ok)
 	}
-	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); !ok {
-		t.Error("ContextAPIKeys should be set when API keys are provided alongside PAT")
+	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when PAT is also provided (PAT wins)")
 	}
 }
 

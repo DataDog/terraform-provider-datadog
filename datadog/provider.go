@@ -446,24 +446,21 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
-	} else {
-		if apiKey != "" || appKey != "" {
-			auth = context.WithValue(
-				auth,
-				datadog.ContextAPIKeys,
-				map[string]datadog.APIKey{
-					"apiKeyAuth": {
-						Key: apiKey,
-					},
-					"appKeyAuth": {
-						Key: appKey,
-					},
+	} else if pat != "" {
+		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
+	} else if apiKey != "" || appKey != "" {
+		auth = context.WithValue(
+			auth,
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": {
+					Key: apiKey,
 				},
-			)
-		}
-		if pat != "" {
-			auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
-		}
+				"appKeyAuth": {
+					Key: appKey,
+				},
+			},
+		)
 	}
 
 	config := datadog.NewConfiguration()
