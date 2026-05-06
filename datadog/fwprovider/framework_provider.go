@@ -390,7 +390,7 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 	}
 
 	if config.Pat.IsNull() {
-		pat, err := utils.GetMultiEnvVar(utils.PATEnvVars[:]...)
+		pat, err := utils.GetMultiEnvVar(utils.PATEnvVars...)
 		if err == nil {
 			config.Pat = types.StringValue(pat)
 		}

@@ -353,7 +353,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	pat := d.Get("pat").(string)
 	if pat == "" {
-		pat, _ = utils.GetMultiEnvVar(utils.PATEnvVars[:]...)
+		pat, _ = utils.GetMultiEnvVar(utils.PATEnvVars...)
 	}
 
 	apiURL := d.Get("api_url").(string)
