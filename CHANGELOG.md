@@ -1,3 +1,24 @@
+## 4.7.0 (May 6, 2026)
+
+### BUGFIXES
+* [datadog_logs_integration_pipeline] Skip CheckForUnparsed in logs integration pipeline read/update by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3733
+* [datadog_dashboard_v2] Drop unmapped API fields instead of failing by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3742
+### IMPROVEMENTS
+* [datadog_dashboard_v2] Add missing fields on existing widgets by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3679
+* [datadog_dashboard_v2] Declare style/sort on treemap and sunburst requests by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3751
+### FEATURES
+* [datadog_observability_pipeline] Add databricks_zerobus destination by @petere-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3741
+* [datadog_synthetics_test] Add drag and drop browser step support by @dd-victor-cumer in https://github.com/DataDog/terraform-provider-datadog/pull/3744
+
+## New Contributors
+* @amarshall-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3725
+* @TsaorKG made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3734
+* @petere-datadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3741
+* @dd-victor-cumer made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3744
+* @k-phan made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3746
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.6.0...v4.7.0
+
 ## 4.6.0 (April 21, 2026)
 
 ### BUGFIXES
