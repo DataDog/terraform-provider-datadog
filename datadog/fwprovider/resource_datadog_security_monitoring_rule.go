@@ -1259,9 +1259,8 @@ func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringR
 	// Optional-only int64. Preserve prior explicit values when the API returns
 	// zero or omits the field, avoiding migration diffs from SDKv2 zero state.
 	if evaluationWindow, ok := options.GetEvaluationWindowOk(); ok {
-		if shouldSetOptionalInt64(int64(*evaluationWindow), priorOption.EvaluationWindow) {
-			tfOptions.EvaluationWindow = types.Int64Value(int64(*evaluationWindow))
-		}
+		tfOptions.EvaluationWindow = types.Int64Value(int64(*evaluationWindow))
+
 	} else if shouldPreserveOptionalInt64(priorOption.EvaluationWindow) {
 		tfOptions.EvaluationWindow = priorOption.EvaluationWindow
 	}
