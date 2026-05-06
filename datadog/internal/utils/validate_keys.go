@@ -41,7 +41,7 @@ func ValidateKeysV2(ctx context.Context, client *datadog.APIClient) error {
 		return nil
 	}
 	if parsed.Data.Attributes.Valid != nil && !*parsed.Data.Attributes.Valid {
-		return fmt.Errorf("Invalid or missing credentials provided to the Datadog Provider. Please confirm your PAT (or API/APP keys) are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider")
+		return fmt.Errorf("invalid or missing credentials provided to the Datadog Provider; please confirm your PAT (or API/APP keys) are valid and are for the correct region — see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider")
 	}
 	return nil
 }
