@@ -162,7 +162,7 @@ func TestAccDatadogSecurityMonitoringRule_Migration_DefaultTags(t *testing.T) {
 				// v4.5.0 creates the resource; no default_tags yet, tags is user-only
 				ExternalProviders: map[string]resource.ExternalProvider{
 					"datadog": {
-						VersionConstraint: "4.5.0",
+						VersionConstraint: "4.6.0",
 						Source:            "DataDog/datadog",
 					},
 				},
