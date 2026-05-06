@@ -159,7 +159,7 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 				Optional:    true,
-				Description: "(Preview) When enabled, Datadog authenticates to this app registration using federated workload identity credentials instead of a client secret. The app registration must have a datadog federated credential for this to work. When `true`, `client_secret` may be omitted.",
+				Description: "(Preview) When enabled, Datadog authenticates to this app registration using federated workload identity credentials instead of a client secret. The app registration must have a Datadog federated credential for this to work. When `true`, `client_secret` should be omitted.",
 			},
 			"resource_provider_configs": schema.ListAttribute{
 				Computed: true,
