@@ -101,6 +101,7 @@ var Resources = []func() resource.Resource{
 	NewOnCallUserNotificationRuleResource,
 	NewOrgConnectionResource,
 	NewComplianceResourceEvaluationFilter,
+	NewSecurityMonitoringRuleResource,
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,

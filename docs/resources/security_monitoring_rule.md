@@ -62,23 +62,24 @@ resource "datadog_security_monitoring_rule" "myrule" {
 ### Optional
 
 - `calculated_field` (Block List) One or more calculated fields. Available only for scheduled rules (in other words, when `scheduling_options` is defined). (see [below for nested schema](#nestedblock--calculated_field))
-- `case` (Block List, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
+- `case` (Block List) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules. (see [below for nested schema](#nestedblock--filter))
 - `group_signals_by` (List of String) Additional grouping to perform on top of the query grouping.
 - `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title. Defaults to `false`.
-- `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
+- `options` (Block List) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `reference_tables` (Block List) Reference tables for filtering query results. (see [below for nested schema](#nestedblock--reference_tables))
-- `scheduling_options` (Block List, Max: 1) Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs in real time on ingested logs. (see [below for nested schema](#nestedblock--scheduling_options))
+- `scheduling_options` (Block List) Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs in real time on ingested logs. (see [below for nested schema](#nestedblock--scheduling_options))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
-- `tags` (Set of String) Tags for generated signals. Note: if default tags are present at provider level, they will be added to this resource.
-- `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
+- `tags` (Set of String) User-defined tags for generated signals. See also `effective_tags`, which includes provider-level `default_tags`.
+- `third_party_case` (Block List) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
 - `type` (String) The rule type. Valid values are `application_security`, `log_detection`, `workload_security`, `signal_correlation`. Defaults to `"log_detection"`.
 - `validate` (Boolean) Whether or not to validate the Rule.
 
 ### Read-Only
 
+- `effective_tags` (Set of String) A list of tags for generated signals, including those inherited from the provider's `default_tags` configuration.
 - `id` (String) The ID of this resource.
 
 <a id="nestedblock--calculated_field"></a>
@@ -86,8 +87,8 @@ resource "datadog_security_monitoring_rule" "myrule" {
 
 Required:
 
-- `expression` (String) Expression.
-- `name` (String) Field name.
+- `expression` (String) Expression. String length must be at least 1.
+- `name` (String) Field name. String length must be at least 1.
 
 
 <a id="nestedblock--case"></a>
@@ -100,8 +101,8 @@ Required:
 Optional:
 
 - `action` (Block List) Action to perform when the case trigger (see [below for nested schema](#nestedblock--case--action))
-- `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.
-- `name` (String) Name of the case.
+- `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries. Defaults to `""`.
+- `name` (String) Name of the case. Defaults to `""`.
 - `notifications` (List of String) Notification targets for each rule case.
 
 <a id="nestedblock--case--action"></a>
@@ -113,7 +114,7 @@ Required:
 
 Optional:
 
-- `options` (Block List, Max: 1) Options for the action. (see [below for nested schema](#nestedblock--case--action--options))
+- `options` (Block List) Options for the action. (see [below for nested schema](#nestedblock--case--action--options))
 
 <a id="nestedblock--case--action--options"></a>
 ### Nested Schema for `case.action.options`
@@ -139,16 +140,16 @@ Required:
 
 Optional:
 
-- `anomaly_detection_options` (Block List, Max: 1) Options for rules using the anomaly detection method. (see [below for nested schema](#nestedblock--options--anomaly_detection_options))
+- `anomaly_detection_options` (Block List) Options for rules using the anomaly detection method. (see [below for nested schema](#nestedblock--options--anomaly_detection_options))
 - `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
 - `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`, `anomaly_threshold`, `sequence_detection`. Defaults to `"threshold"`.
 - `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
-- `impossible_travel_options` (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
-- `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
-- `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
-- `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
-- `sequence_detection_options` (Block List, Max: 1) Options for rules using the sequence detection method. (see [below for nested schema](#nestedblock--options--sequence_detection_options))
-- `third_party_rule_options` (Block List, Max: 1) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
+- `impossible_travel_options` (Block List) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
+- `keep_alive` (Number) Once a signal is generated, the signal will remain "open" if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`. Defaults to `0`.
+- `max_signal_duration` (Number) A signal will "close" regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
+- `new_value_options` (Block List) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
+- `sequence_detection_options` (Block List) Options for rules using the sequence detection method. (see [below for nested schema](#nestedblock--options--sequence_detection_options))
+- `third_party_rule_options` (Block List) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
 
 <a id="nestedblock--options--anomaly_detection_options"></a>
 ### Nested Schema for `options.anomaly_detection_options`
@@ -159,7 +160,7 @@ Optional:
 - `detection_tolerance` (Number) An optional parameter that sets how permissive anomaly detection is. Higher values require higher deviations before triggering a signal. Valid values are 1, 2, 3, 4, 5. Valid values are `1`, `2`, `3`, `4`, `5`.
 - `instantaneous_baseline` (Boolean) When set to true, Datadog uses previous values that fall within the defined learning window to construct the baseline, enabling the system to establish an accurate baseline more rapidly rather than relying solely on gradual learning over time. Defaults to `false`.
 - `learning_duration` (Number) Learning duration in hours. Anomaly detection waits for at least this amount of historical data before it starts evaluating. Valid values are 1, 6, 12, 24, 48, 168, 336. Valid values are `1`, `6`, `12`, `24`, `48`, `168`, `336`.
-- `learning_period_baseline` (Number) An optional override baseline to apply while the rule is in the learning period. Must be greater than or equal to 0.
+- `learning_period_baseline` (Number) An optional override baseline to apply while the rule is in the learning period. Must be greater than or equal to 0. Value must be at least 0.
 
 
 <a id="nestedblock--options--impossible_travel_options"></a>
@@ -226,11 +227,11 @@ Optional:
 Required:
 
 - `default_status` (String) Severity of the default rule case, when none of the third-party cases match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
-- `root_query` (Block List, Min: 1, Max: 10) Queries to be combined with third-party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert. (see [below for nested schema](#nestedblock--options--third_party_rule_options--root_query))
 
 Optional:
 
 - `default_notifications` (List of String) Notification targets for the default rule case, when none of the third-party cases match.
+- `root_query` (Block List) Queries to be combined with third-party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert. (see [below for nested schema](#nestedblock--options--third_party_rule_options--root_query))
 - `signal_title_template` (String) A template for the signal title; if omitted, the title is generated based on the case name.
 
 <a id="nestedblock--options--third_party_rule_options--root_query"></a>
@@ -256,14 +257,14 @@ Required:
 
 Optional:
 
-- `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
+- `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. (see [below for nested schema](#nestedblock--query--agent_rule))
 - `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `"count"`.
 - `data_source` (String) Source of events. Valid values are `logs`, `audit`, `app_sec_spans`, `spans`, `security_runtime`, `network`, `events`, `security_signals`. Defaults to `"logs"`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `has_optional_group_by_fields` (Boolean) When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values. Defaults to `false`.
 - `indexes` (List of String) List of indexes to run the query on when the data source is `logs`. Supports only one element. Used only for scheduled rules (in other words, when `scheduling_options` is defined).
-- `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
+- `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations.
 - `metrics` (List of String) Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
 
@@ -283,10 +284,10 @@ Required:
 Required:
 
 - `check_presence` (Boolean) Whether to include or exclude logs that match the reference table.
-- `column_name` (String) The name of the column in the reference table.
-- `log_field_path` (String) The field in the log that should be matched against the reference table.
-- `rule_query_name` (String) The name of the query to filter.
-- `table_name` (String) The name of the reference table.
+- `column_name` (String) The name of the column in the reference table. String length must be at least 1.
+- `log_field_path` (String) The field in the log that should be matched against the reference table. String length must be at least 1.
+- `rule_query_name` (String) The name of the query to filter. String length must be at least 1.
+- `table_name` (String) The name of the reference table. String length must be at least 1.
 
 
 <a id="nestedblock--scheduling_options"></a>
@@ -311,8 +312,11 @@ Optional:
 - `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `"event_count"`.
 - `correlated_by_fields` (List of String) Fields to correlate by.
 - `correlated_query_index` (String) Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule. Defaults to `""`.
-- `default_rule_id` (String) Default Rule ID of the signal to correlate. This value is READ-ONLY.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
+
+Read-Only:
+
+- `default_rule_id` (String) Default Rule ID of the signal to correlate. This value is READ-ONLY.
 
 
 <a id="nestedblock--third_party_case"></a>
@@ -324,7 +328,7 @@ Required:
 
 Optional:
 
-- `name` (String) Name of the case.
+- `name` (String) Name of the case. Defaults to `""`.
 - `notifications` (List of String) Notification targets for each rule case.
 - `query` (String) A query to associate a third-party event to this case.
 
