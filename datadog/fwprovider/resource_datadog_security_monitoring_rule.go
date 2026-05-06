@@ -773,7 +773,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 									},
 									"learning_period_baseline": schema.Int64Attribute{
 										Optional:    true,
-										Description: "An optional override baseline to apply while the rule is in the learning period. Must be greater than or equal to 0.",
+										Description: "An optional override baseline to apply while the rule is in the learning period.",
 										Validators: []validator.Int64{
 											int64validator.AtLeast(0),
 										},
@@ -1288,9 +1288,7 @@ func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringR
 	// Optional-only int64. Preserve prior explicit values when the API returns
 	// zero or omits the field, avoiding migration diffs from SDKv2 zero state.
 	if maxSignalDuration, ok := options.GetMaxSignalDurationOk(); ok {
-		if shouldSetOptionalInt64(int64(*maxSignalDuration), priorOption.MaxSignalDuration) {
-			tfOptions.MaxSignalDuration = types.Int64Value(int64(*maxSignalDuration))
-		}
+		tfOptions.MaxSignalDuration = types.Int64Value(int64(*maxSignalDuration))
 	} else if shouldPreserveOptionalInt64(priorOption.MaxSignalDuration) {
 		tfOptions.MaxSignalDuration = priorOption.MaxSignalDuration
 	}
@@ -1315,10 +1313,6 @@ func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringR
 	}
 
 	return []ruleOptionsModel{tfOptions}, diags
-}
-
-func shouldSetOptionalInt64(value int64, prior types.Int64) bool {
-	return value != 0 || shouldPreserveOptionalInt64(prior)
 }
 
 func shouldPreserveOptionalInt64(prior types.Int64) bool {
@@ -1464,9 +1458,7 @@ func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRul
 				priorEvaluationWindow = priorOption.Steps[idx].EvaluationWindow
 			}
 			if v, ok := step.GetEvaluationWindowOk(); ok {
-				if shouldSetOptionalInt64(int64(*v), priorEvaluationWindow) {
-					stepMap.EvaluationWindow = types.Int64Value(int64(*v))
-				}
+				stepMap.EvaluationWindow = types.Int64Value(int64(*v))
 			} else if shouldPreserveOptionalInt64(priorEvaluationWindow) {
 				stepMap.EvaluationWindow = priorEvaluationWindow
 			}
@@ -1487,9 +1479,7 @@ func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRul
 				priorEvaluationWindow = priorOption.StepTransitions[idx].EvaluationWindow
 			}
 			if v, ok := tr.GetEvaluationWindowOk(); ok {
-				if shouldSetOptionalInt64(int64(*v), priorEvaluationWindow) {
-					trMap.EvaluationWindow = types.Int64Value(int64(*v))
-				}
+				trMap.EvaluationWindow = types.Int64Value(int64(*v))
 			} else if shouldPreserveOptionalInt64(priorEvaluationWindow) {
 				trMap.EvaluationWindow = priorEvaluationWindow
 			}
@@ -2637,12 +2627,7 @@ func (r *securityMonitoringRuleResource) resourceDatadogSecurityMonitoringRuleCu
 		return
 	}
 
-	httpResponse, err := r.api.ValidateSecurityMonitoringRule(r.auth, *payload)
-	if err != nil {
-		if httpResponse != nil && (httpResponse.StatusCode == http.StatusBadGateway || httpResponse.StatusCode == http.StatusGatewayTimeout) {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating security monitoring rule, retrying"))
-			return
-		}
+	if _, err := r.api.ValidateSecurityMonitoringRule(r.auth, *payload); err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating security monitoring rule"))
 	}
 }
