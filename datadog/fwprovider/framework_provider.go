@@ -197,6 +197,7 @@ type FrameworkProvider struct {
 type ProviderSchema struct {
 	ApiKey                           types.String `tfsdk:"api_key"`
 	AppKey                           types.String `tfsdk:"app_key"`
+	Pat                              types.String `tfsdk:"pat"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
 	CloudProviderType                types.String `tfsdk:"cloud_provider_type"`
@@ -267,6 +268,11 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Sensitive:   true,
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
+			},
+			"pat": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "Datadog Personal Access Token (PAT) used as a Bearer credential. When set, the provider authenticates with `Authorization: Bearer <pat>` and skips the `DD-API-KEY` / `DD-APPLICATION-KEY` headers for resources that support it. May be supplied via the `DD_PAT` or `DATADOG_PAT` environment variable. PAT-only configurations are validated against `/api/v2/validate_keys` instead of `/api/v1/validate`.",
 			},
 			"api_url": schema.StringAttribute{
 				Optional:    true,
@@ -380,6 +386,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		appKey, err := utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
 		if err == nil {
 			config.AppKey = types.StringValue(appKey)
+		}
+	}
+
+	if config.Pat.IsNull() {
+		pat, err := utils.GetMultiEnvVar(utils.PATEnvVars...)
+		if err == nil {
+			config.Pat = types.StringValue(pat)
 		}
 	}
 
@@ -522,10 +535,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
+	pat := config.Pat.ValueString()
 
 	if validate {
-		if cloudProviderType == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("api_key and app_key or orgUUID must be set unless validate = false", "")
+		if cloudProviderType == "" && pat == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
+			diags.AddError("api_key and app_key, pat, or orgUUID must be set unless validate = false", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -573,6 +587,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
 		}
+	} else if pat != "" {
+		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	} else if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
 		auth = context.WithValue(
 			auth,
