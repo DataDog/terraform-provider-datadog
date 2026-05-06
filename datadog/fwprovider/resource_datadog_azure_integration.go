@@ -52,6 +52,7 @@ type integrationAzureModel struct {
 	TenantName                types.String                   `tfsdk:"tenant_name"`
 	MetricsEnabled            types.Bool                     `tfsdk:"metrics_enabled"`
 	MetricsEnabledDefault     types.Bool                     `tfsdk:"metrics_enabled_default"`
+	SecretlessAuthEnabled     types.Bool                     `tfsdk:"secretless_auth_enabled"`
 	UsageMetricsEnabled       types.Bool                     `tfsdk:"usage_metrics_enabled"`
 	ResourceProviderConfigs   []*ResourceProviderConfigModel `tfsdk:"resource_provider_configs"`
 }
@@ -86,8 +87,8 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Description: "Your Azure web application ID.",
 			},
 			"client_secret": schema.StringAttribute{
-				Required:    true,
-				Description: "(Required for Initial Creation) Your Azure web application secret key.",
+				Optional:    true,
+				Description: "Your Azure web application secret key. Required unless `secretless_auth_enabled` is set to `true`.",
 				Sensitive:   true,
 			},
 			"tenant_name": schema.StringAttribute{
@@ -152,6 +153,12 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Default:     booldefault.StaticBool(true),
 				Optional:    true,
 				Description: "Enable azure.usage metrics for your organization.",
+			},
+			"secretless_auth_enabled": schema.BoolAttribute{
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+				Optional:    true,
+				Description: "When enabled, Datadog authenticates to this app registration using federated workload identity credentials instead of a client secret. When `true`, `client_secret` may be omitted.",
 			},
 			"resource_provider_configs": schema.ListAttribute{
 				Computed: true,
@@ -327,6 +334,7 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 	state.CustomMetricsEnabled = types.BoolValue(account.GetCustomMetricsEnabled())
 	state.MetricsEnabled = types.BoolValue(account.GetMetricsEnabled())
 	state.MetricsEnabledDefault = types.BoolValue(account.GetMetricsEnabledDefault())
+	state.SecretlessAuthEnabled = types.BoolValue(account.GetSecretlessAuthEnabled())
 	state.UsageMetricsEnabled = types.BoolValue(account.GetUsageMetricsEnabled())
 
 	resourceProviderConfigs := account.GetResourceProviderConfigs()
@@ -398,6 +406,7 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetCustomMetricsEnabled(state.CustomMetricsEnabled.ValueBool())
 	datadogDefinition.SetMetricsEnabled(state.MetricsEnabled.ValueBool())
 	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
+	datadogDefinition.SetSecretlessAuthEnabled(state.SecretlessAuthEnabled.ValueBool())
 	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
 
 	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, 0, len(state.ResourceProviderConfigs))
@@ -409,9 +418,12 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	}
 	datadogDefinition.SetResourceProviderConfigs(resourceProviderConfigsPayload)
 
-	if !state.ClientSecret.IsNull() {
-		datadogDefinition.SetClientSecret(state.ClientSecret.ValueString())
+	// The API requires a non-empty client_secret even when secretless auth is enabled.
+	clientSecret := state.ClientSecret.ValueString()
+	if clientSecret == "" {
+		clientSecret = "SECRETLESS_AUTH"
 	}
+	datadogDefinition.SetClientSecret(clientSecret)
 	// Only do the following if building for the Update
 	if update {
 		if !state.TenantName.IsNull() {
