@@ -1,0 +1,40 @@
+{{- define "state" -}}
+func (d *datadog{{ .TypeName }}DataSource) updateState(ctx context.Context, state *{{ .Model.StructName }}, resp *{{ .SDKImportPath }}.{{ .SDKResponseType }}) {
+{{- if .Read.IsJSONAPI }}
+	data := resp.GetData()
+	state.ID = types.StringValue(data.GetId())
+	attributes := data.GetAttributes()
+{{- else }}
+	state.ID = types.StringValue(resp.GetId())
+{{- end }}
+
+{{- range .State.FieldMappings }}
+{{- if .IsMap }}
+	{{ .ModelField }}, _ = types.MapValueFrom(ctx, {{ .MapElementType }}, {{ .SDKAccessor }})
+{{- else if .IsList }}
+	{{ .ModelField }}, _ = types.ListValueFrom(ctx, {{ .ListElementType }}, {{ .SDKAccessor }})
+{{- else if .Nullable }}
+	if v, ok := {{ .SDKOkAccessor }}; ok && v != nil {
+		{{ .ModelField }} = {{ .TypeConverter }}(*v)
+	} else {
+		{{ .ModelField }} = {{ .NullValue }}
+	}
+{{- else if .NeedsCast }}
+	{{ .ModelField }} = {{ .TypeConverter }}({{ .NeedsCast }}({{ .SDKAccessor }}))
+{{- else }}
+	{{ .ModelField }} = {{ .TypeConverter }}({{ .SDKAccessor }})
+{{- end }}
+{{- end }}
+{{- range .State.VariantBlocks }}
+
+	// oneOf/anyOf variant probing for {{ .ParentField }}
+{{- range .Variants }}
+	if v, ok := {{ .SDKOkAccessor }}; ok && v != nil {
+		state.{{ .ModelField }} = {{ .HelperFunc }}(ctx, v)
+	} else {
+		state.{{ .ModelField }} = nil
+	}
+{{- end }}
+{{- end }}
+}
+{{- end -}}

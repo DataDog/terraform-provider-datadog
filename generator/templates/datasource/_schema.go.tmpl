@@ -1,0 +1,125 @@
+{{- define "schema" -}}
+func (d *datadog{{ .TypeName }}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+	resp.Schema = schema.Schema{
+		Description: "{{ sanitizeDescription .Description }}",
+		Attributes: map[string]schema.Attribute{
+{{- range .Schema.Attributes }}
+{{- if .IsNestedMap }}
+			"{{ .Name }}": schema.MapNestedAttribute{
+				Description: "{{ sanitizeDescription .Description }}",
+				Computed:    true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+{{- range .NestedAttributes }}
+						"{{ .Name }}": {{ .Type }}{
+							Description: "{{ sanitizeDescription .Description }}",
+							Computed:    true,
+						},
+{{- end }}
+					},
+				},
+			},
+{{- else }}
+			"{{ .Name }}": {{ .Type }}{
+				Description: "{{ sanitizeDescription .Description }}",
+{{- if .Required }}
+				Required:    true,
+{{- end }}
+{{- if .Optional }}
+				Optional:    true,
+{{- end }}
+{{- if .Computed }}
+				Computed:    true,
+{{- end }}
+{{- if .ElementType }}
+				ElementType: {{ .ElementType }},
+{{- end }}
+			},
+{{- end }}
+{{- end }}
+		},
+{{- if .Schema.Blocks }}
+		Blocks: map[string]schema.Block{
+{{- range .Schema.Blocks }}
+			{{ template "schemaBlock" . }}
+{{- end }}
+		},
+{{- end }}
+	}
+	d.Hooks.ModifySchema(&resp.Schema)
+}
+{{- end -}}
+
+{{- define "schemaBlock" -}}
+{{- if .NeedsNestedObject }}
+			"{{ .Name }}": schema.{{ .Type }}{
+{{- if .Description }}
+				Description: "{{ sanitizeDescription .Description }}",
+{{- end }}
+				NestedObject: schema.NestedBlockObject{
+{{- if .Attributes }}
+					Attributes: map[string]schema.Attribute{
+{{- range .Attributes }}
+						"{{ .Name }}": {{ .Type }}{
+							Description: "{{ sanitizeDescription .Description }}",
+{{- if .Required }}
+							Required:    true,
+{{- end }}
+{{- if .Optional }}
+							Optional:    true,
+{{- end }}
+{{- if .Computed }}
+							Computed:    true,
+{{- end }}
+{{- if .ElementType }}
+							ElementType: {{ .ElementType }},
+{{- end }}
+						},
+{{- end }}
+					},
+{{- end }}
+{{- if .Blocks }}
+					Blocks: map[string]schema.Block{
+{{- range .Blocks }}
+						{{ template "schemaBlock" . }}
+{{- end }}
+					},
+{{- end }}
+				},
+			},
+{{- else }}
+			"{{ .Name }}": schema.{{ .Type }}{
+{{- if .Description }}
+				Description: "{{ sanitizeDescription .Description }}",
+{{- end }}
+{{- if .Attributes }}
+				Attributes: map[string]schema.Attribute{
+{{- range .Attributes }}
+					"{{ .Name }}": {{ .Type }}{
+						Description: "{{ sanitizeDescription .Description }}",
+{{- if .Required }}
+						Required:    true,
+{{- end }}
+{{- if .Optional }}
+						Optional:    true,
+{{- end }}
+{{- if .Computed }}
+						Computed:    true,
+{{- end }}
+{{- if .ElementType }}
+						ElementType: {{ .ElementType }},
+{{- end }}
+					},
+{{- end }}
+				},
+{{- end }}
+{{- if .Blocks }}
+				Blocks: map[string]schema.Block{
+{{- range .Blocks }}
+					{{ template "schemaBlock" . }}
+{{- end }}
+				},
+{{- end }}
+			},
+{{- end }}
+{{- end -}}

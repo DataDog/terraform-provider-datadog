@@ -1,0 +1,30 @@
+{{- define "hooks.go.tmpl" -}}
+package {{ .PackageName }}
+
+import (
+	"context"
+
+	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+)
+
+// {{ .TypeName }}DataSourceHooks provides extension points for the generated
+// {{ snakeCase .TypeName }} data source. Modify the methods below to add custom
+// behavior without editing the generated file.
+type {{ .TypeName }}DataSourceHooks struct{}
+
+// BeforeRead is called before the API read operation.
+func (h *{{ .TypeName }}DataSourceHooks) BeforeRead(_ context.Context, _ datasource.ReadRequest, _ interface{}) diag.Diagnostics {
+	return nil
+}
+
+// AfterRead is called after the API read operation.
+func (h *{{ .TypeName }}DataSourceHooks) AfterRead(_ context.Context, _ interface{}) diag.Diagnostics {
+	return nil
+}
+
+// ModifySchema allows customization of the generated schema.
+func (h *{{ .TypeName }}DataSourceHooks) ModifySchema(_ *schema.Schema) {
+}
+{{ end -}}

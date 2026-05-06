@@ -1,0 +1,21 @@
+{{- define "model" -}}
+type {{ .Model.StructName }} struct {
+{{- range .Model.Fields }}
+	{{ .GoName }} {{ .GoType }} `tfsdk:"{{ .TfsdkTag }}"`
+{{- end }}
+}
+{{ range .Model.NestedStructs }}
+{{ template "nestedModel" . }}
+{{ end }}
+{{- end -}}
+
+{{- define "nestedModel" -}}
+type {{ .StructName }} struct {
+{{- range .Fields }}
+	{{ .GoName }} {{ .GoType }} `tfsdk:"{{ .TfsdkTag }}"`
+{{- end }}
+}
+{{ range .NestedStructs }}
+{{ template "nestedModel" . }}
+{{ end }}
+{{- end -}}

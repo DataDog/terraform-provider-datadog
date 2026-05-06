@@ -1,0 +1,18 @@
+specs:
+  v2:
+    path: minimal.yaml
+
+datasources:
+  team:
+    spec: v2
+    read:
+      path: /api/v2/team/{team_id}
+      method: get
+    list:
+      path: /api/v2/team
+      method: get
+  simple:
+    spec: v2
+    read:
+      path: /api/v2/simple/{id}
+      method: get

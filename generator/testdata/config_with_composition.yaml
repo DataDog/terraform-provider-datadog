@@ -1,0 +1,10 @@
+specs:
+  v2:
+    path: minimal.yaml
+
+datasources:
+  composed:
+    spec: v2
+    read:
+      path: /api/v2/composed/{id}
+      method: get

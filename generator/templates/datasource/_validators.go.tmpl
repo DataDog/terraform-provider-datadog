@@ -1,0 +1,14 @@
+{{- define "validators" -}}
+func (d *datadog{{ .TypeName }}DataSource) ConfigValidators(_ context.Context) []datasource.ConfigValidator {
+	return []datasource.ConfigValidator{
+		datasourcevalidator.AtLeastOneOf(
+{{- range .Read.PathParams }}
+			path.MatchRoot("{{ .Name }}"),
+{{- end }}
+{{- range .Read.FilterParams }}
+			path.MatchRoot("{{ snakeCase .GoName }}"),
+{{- end }}
+		),
+	}
+}
+{{- end -}}

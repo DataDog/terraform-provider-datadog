@@ -1,0 +1,85 @@
+{{- define "read" -}}
+func (d *datadog{{ .TypeName }}DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state {{ .Model.StructName }}
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Hook: BeforeRead
+	if diags := d.Hooks.BeforeRead(ctx, req, &state); diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+
+{{- if .Read.HasListFallback }}
+	if !state.{{ (index .Read.PathParams 0).GoName }}.IsNull() {
+		// Direct ID lookup
+		ddResp, _, err := d.Api.{{ .SDKReadMethod }}(d.Auth, state.{{ (index .Read.PathParams 0).GoName }}.{{ (index .Read.PathParams 0).ValueMethod }})
+		if err != nil {
+			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading datadog {{ snakeCase .TypeName }}"))
+			return
+		}
+		d.updateState(ctx, &state, &ddResp)
+	} else {
+		// Filter-based list lookup
+		optionalParams := {{ .SDKImportPath }}.New{{ .Read.SDKListOptParams }}()
+{{- range .Read.FilterParams }}
+		if !state.{{ .GoName }}.IsNull() {
+			optionalParams = optionalParams.With{{ .GoName }}(state.{{ .GoName }}.{{ .ValueMethod }})
+		}
+{{- end }}
+		listResp, _, err := d.Api.{{ .Read.SDKListMethod }}(d.Auth, *optionalParams)
+		if err != nil {
+			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog {{ snakeCase .TypeName }}"))
+			return
+		}
+		items := listResp.GetData()
+		if len(items) == 0 {
+			resp.Diagnostics.AddError("no {{ snakeCase .TypeName }} matched the given filters", "Try broadening your search or use the ID directly.")
+			return
+		}
+		if len(items) > 1 {
+			resp.Diagnostics.AddError("multiple {{ snakeCase .TypeName }} matched the given filters", "Narrow your filters or provide the ID directly.")
+			return
+		}
+		// Check for additional pages (overflow detection)
+		if meta, ok := listResp.GetMetaOk(); ok {
+			if pagination := meta.GetPagination(); pagination.GetNextOffset() > 0 {
+				resp.Diagnostics.AddError("filters are too broad for {{ snakeCase .TypeName }}", "The query matched more results than one page. Narrow your filters or use the ID directly.")
+				return
+			}
+		}
+		// Fetch full resource by ID from list result
+		id := items[0].GetId()
+		if id == "" {
+			resp.Diagnostics.AddError("list result has no ID", "The list response item did not contain an ID. Use the ID directly.")
+			return
+		}
+		ddResp, _, err := d.Api.{{ .SDKReadMethod }}(d.Auth, id)
+		if err != nil {
+			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading datadog {{ snakeCase .TypeName }}"))
+			return
+		}
+		state.{{ (index .Read.PathParams 0).GoName }} = types.StringValue(id)
+		d.updateState(ctx, &state, &ddResp)
+	}
+{{- else }}
+	ddResp, _, err := d.Api.{{ .SDKReadMethod }}(d.Auth{{ range .Read.PathParams }}, state.{{ .GoName }}.{{ .ValueMethod }}{{ end }})
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading datadog {{ snakeCase .TypeName }}"))
+		return
+	}
+
+	d.updateState(ctx, &state, &ddResp)
+{{- end }}
+
+	// Hook: AfterRead
+	if diags := d.Hooks.AfterRead(ctx, &state); diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+}
+{{- end -}}

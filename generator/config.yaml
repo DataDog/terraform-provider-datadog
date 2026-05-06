@@ -1,0 +1,32 @@
+specs:
+  v2:
+    path: ../.generator/V2/openapi.yaml
+
+datasources:
+  incident_type:
+    spec: v2
+    read:
+      path: /api/v2/incidents/config/types/{incident_type_id}
+      method: get
+  # team:
+  #   spec: v2
+  #   read:
+  #     path: /api/v2/team/{team_id}
+  #     method: get
+  #   list:
+  #     path: /api/v2/team
+  #     method: get
+  # cost_budget:
+  #   spec: v2
+  #   read:
+  #     path: /api/v2/cost/budget/{budget_id}
+  #     method: get
+
+  # reference_table: # Has OneOf
+  #   spec: v2
+  #   read:
+  #     path: /api/v2/reference-tables/tables/{id}
+  #     method: get
+  #   list:
+  #     path: /api/v2/reference-tables/tables
+  #     method: get

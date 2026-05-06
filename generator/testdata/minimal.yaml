@@ -1,0 +1,369 @@
+openapi: 3.0.0
+info:
+  title: Test API
+  version: "1.0"
+paths:
+  /api/v2/team/{team_id}:
+    get:
+      operationId: GetTeam
+      tags:
+        - Teams
+      summary: Get a team
+      description: Get a team by ID.
+      parameters:
+        - name: team_id
+          in: path
+          required: true
+          description: The ID of the team.
+          schema:
+            type: string
+        - name: filter_keyword
+          in: query
+          required: false
+          description: Search query for team name.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamResponse'
+  /api/v2/team:
+    get:
+      operationId: ListTeams
+      tags:
+        - Teams
+      summary: List teams
+      description: Get a list of teams.
+      parameters:
+        - name: filter[keyword]
+          in: query
+          required: false
+          description: Search query for team name.
+          schema:
+            type: string
+        - name: filter[me]
+          in: query
+          required: false
+          description: Only return teams the user belongs to.
+          schema:
+            type: boolean
+        - name: page[number]
+          in: query
+          required: false
+          description: Specific page number to return.
+          schema:
+            type: integer
+        - name: page[size]
+          in: query
+          required: false
+          description: Size for a given page.
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          required: false
+          description: Sort order.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsResponse'
+  /api/v2/simple/{id}:
+    get:
+      operationId: GetSimple
+      tags:
+        - Simple
+      summary: Get a simple resource
+      description: Get a simple resource by ID (flat JSON, no JSON:API).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The resource ID.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The resource name.
+                  value:
+                    type: number
+                    format: double
+                    description: A numeric value.
+                  enabled:
+                    type: boolean
+                    description: Whether the resource is enabled.
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    description: A list of tags.
+  /api/v2/complex/{id}:
+    get:
+      operationId: GetComplex
+      tags:
+        - Complex
+      summary: Get a complex resource
+      description: Get a complex resource with nested objects.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The resource ID.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: The resource ID.
+                      type:
+                        type: string
+                        enum:
+                          - complex_resource
+                        description: The resource type.
+                      attributes:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            description: The resource title.
+                          config:
+                            type: object
+                            description: Configuration settings.
+                            properties:
+                              key:
+                                type: string
+                                description: Configuration key.
+                              threshold:
+                                type: number
+                                format: float
+                                description: Threshold value.
+                          endpoints:
+                            type: array
+                            description: List of endpoints.
+                            items:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                                  description: Endpoint URL.
+                                weight:
+                                  type: integer
+                                  format: int64
+                                  description: Endpoint weight.
+  /api/v2/composed/{id}:
+    get:
+      operationId: GetComposed
+      tags:
+        - Composed
+      summary: Get a composed resource
+      description: Resource with allOf, oneOf, and additionalProperties for testing composition handling.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The composed resource ID.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ComposedResponse'
+components:
+  schemas:
+    TeamAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the team.
+        handle:
+          type: string
+          description: "The team's handle."
+        description:
+          type: string
+          nullable: true
+          description: Free-form markdown description.
+        summary:
+          type: string
+          nullable: true
+          description: A brief summary of the team.
+        user_count:
+          type: integer
+          format: int64
+          description: The number of users belonging to the team.
+        link_count:
+          type: integer
+          format: int32
+          description: The number of links belonging to the team.
+        is_active:
+          type: boolean
+          description: Whether the team is active.
+        status:
+          type: string
+          enum:
+            - active
+            - disabled
+            - paused
+          description: The team status.
+        created_at:
+          type: string
+          format: date-time
+          description: Creation date of the team.
+        modified_at:
+          type: string
+          format: date-time
+          description: Modification date of the team.
+        hidden_modules:
+          type: array
+          items:
+            type: string
+          description: List of hidden modules for the team.
+        visible_modules:
+          type: array
+          items:
+            type: string
+          description: List of visible modules for the team.
+      required:
+        - name
+        - handle
+    TeamData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The team ID.
+        type:
+          type: string
+          enum:
+            - team
+          description: The resource type.
+        attributes:
+          $ref: '#/components/schemas/TeamAttributes'
+    TeamResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/TeamData'
+    TeamsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamData'
+        meta:
+          type: object
+          properties:
+            page:
+              type: object
+              properties:
+                total_count:
+                  type: integer
+                  description: Total number of teams.
+                total_filtered_count:
+                  type: integer
+                  description: Total number of teams matching the filter.
+    ComposedBase:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The resource name.
+        version:
+          type: string
+          description: The version string.
+      required:
+        - name
+    ComposedExtension:
+      type: object
+      properties:
+        priority:
+          type: integer
+          format: int64
+          description: Priority level.
+        config:
+          oneOf:
+            - $ref: '#/components/schemas/ConfigTypeA'
+            - $ref: '#/components/schemas/ConfigTypeB'
+    ConfigTypeA:
+      type: object
+      properties:
+        url:
+          type: string
+          description: The URL endpoint.
+        timeout:
+          type: integer
+          format: int64
+          description: Timeout in seconds.
+    ConfigTypeB:
+      type: object
+      properties:
+        port:
+          type: integer
+          format: int64
+          description: The port number.
+        timeout:
+          type: integer
+          format: int64
+          description: Timeout in seconds.
+    ComposedAttributes:
+      allOf:
+        - $ref: '#/components/schemas/ComposedBase'
+        - $ref: '#/components/schemas/ComposedExtension'
+        - type: object
+          properties:
+            metadata:
+              type: object
+              additionalProperties: true
+              description: Arbitrary metadata key-value pairs.
+            labels:
+              type: object
+              additionalProperties:
+                type: string
+              description: String-valued labels.
+    ComposedData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The resource ID.
+        type:
+          type: string
+          enum:
+            - composed_resource
+          description: The resource type.
+        attributes:
+          $ref: '#/components/schemas/ComposedAttributes'
+    ComposedResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ComposedData'
