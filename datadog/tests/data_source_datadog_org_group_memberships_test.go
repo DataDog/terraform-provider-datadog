@@ -9,6 +9,9 @@ import (
 )
 
 func TestAccDatadogOrgGroupMembershipsDataSource_Basic(t *testing.T) {
+	if !isRecording() && !isReplaying() {
+		t.Skip("org_group requires a special test org setup not available in live CI runs")
+	}
 	// Not parallel: uses the shared test org's membership.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)

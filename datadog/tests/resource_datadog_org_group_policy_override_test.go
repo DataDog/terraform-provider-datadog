@@ -18,6 +18,9 @@ import (
 const overrideTestOrgSite = "us1"
 
 func TestAccDatadogOrgGroupPolicyOverride_Basic(t *testing.T) {
+	if !isRecording() && !isReplaying() {
+		t.Skip("org_group requires a special test org setup not available in live CI runs")
+	}
 	// Not parallel: the three override tests all move the shared test org between groups;
 	// parallelism causes one test's membership change to drift another's expected state.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -78,6 +81,9 @@ func TestAccDatadogOrgGroupPolicyOverride_Basic(t *testing.T) {
 }
 
 func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
+	if !isRecording() && !isReplaying() {
+		t.Skip("org_group requires a special test org setup not available in live CI runs")
+	}
 	// Not parallel: shared test org's membership.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
@@ -155,6 +161,9 @@ func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 }
 
 func TestAccDatadogOrgGroupPolicyOverride_AutoCreation(t *testing.T) {
+	if !isRecording() && !isReplaying() {
+		t.Skip("org_group requires a special test org setup not available in live CI runs")
+	}
 	// Not parallel: the three override tests all move the shared test org between groups;
 	// parallelism causes one test's membership change to drift another's expected state.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)

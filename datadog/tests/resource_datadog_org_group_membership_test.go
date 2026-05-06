@@ -66,6 +66,9 @@ func getOrgCurrentGroupID(auth context.Context, t *testing.T, apiInstances *util
 }
 
 func TestAccDatadogOrgGroupMembership_Basic(t *testing.T) {
+	if !isRecording() && !isReplaying() {
+		t.Skip("org_group requires a special test org setup not available in live CI runs")
+	}
 	// Not parallel: mutates the shared test org's membership.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	orgGroupName := uniqueEntityName(ctx, t)
