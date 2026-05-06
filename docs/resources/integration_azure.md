@@ -33,13 +33,13 @@ resource "datadog_integration_azure" "sandbox" {
 ### Required
 
 - `client_id` (String) Your Azure web application ID.
-- `client_secret` (String, Sensitive) (Required for Initial Creation) Your Azure web application secret key.
 - `tenant_name` (String) Your Azure Active Directory ID.
 
 ### Optional
 
 - `app_service_plan_filters` (String) This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s). Defaults to `""`.
 - `automute` (Boolean) Silence monitors for expected Azure VM shutdowns. Defaults to `false`.
+- `client_secret` (String, Sensitive) Your Azure web application secret key. Required unless `secretless_auth_enabled` is set to `true`.
 - `container_app_filters` (String) This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure Container Apps. Only Container Apps that match one of the defined tags are imported into Datadog. Defaults to `""`.
 - `cspm_enabled` (Boolean) When enabled, Datadog’s Cloud Security Management product scans resource configurations monitored by this app registration.
 Note: This requires `resource_collection_enabled` to be set to true. Defaults to `false`.
@@ -49,6 +49,7 @@ Note: This requires `resource_collection_enabled` to be set to true. Defaults to
 - `metrics_enabled_default` (Boolean) Enable Azure metrics for your organization for resource providers where no resource provider config is specified. Defaults to `true`.
 - `resource_collection_enabled` (Boolean) When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.
 - `resource_provider_configs` (List of Object) Configuration settings applied to resources from the specified Azure resource providers. (see [below for nested schema](#nestedatt--resource_provider_configs))
+- `secretless_auth_enabled` (Boolean) When enabled, Datadog authenticates to this app registration using federated workload identity credentials instead of a client secret. When `true`, `client_secret` may be omitted. Defaults to `false`.
 - `usage_metrics_enabled` (Boolean) Enable azure.usage metrics for your organization. Defaults to `true`.
 
 ### Read-Only
