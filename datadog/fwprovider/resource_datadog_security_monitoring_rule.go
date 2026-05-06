@@ -951,12 +951,10 @@ type securityMonitoringRuleResponseInterface interface {
 }
 
 // Null-preservation rules applied throughout the readers below:
-//   - Required fields: always set from API.
-//   - Optional+Computed fields: always set from API; plan modifiers reconcile drift.
-//   - Optional-only string: set only when API returns a non-empty value.
-//   - Optional-only int64: set when API returns a non-zero value; preserve
-//     explicit prior planned/state values when API returns zero or omits the field.
-//   - Optional-only list: set only when API returned a non-empty list (ok && len>0).
+//   - Required / Optional+Computed: always set from API.
+//   - Optional-only string / list: pass API value through; reconcileEmpty*
+//     helpers reconcile empty API responses against prior plan/state.
+//   - Optional-only int64: preserve prior when API returns zero or omits.
 func updateCommonResourceDataFromResponse(ctx context.Context, state *securityMonitoringRuleResourceModel, ruleResponse securityMonitoringRuleResponseInterface) diag.Diagnostics {
 	var diags diag.Diagnostics
 	priorOptions := state.Options
@@ -1098,19 +1096,18 @@ func extractStandardRuleQueries(ctx context.Context, responseRuleQueries []datad
 			diags.Append(listDiags...)
 		}
 
-		// Optional-only — only set when API returns a meaningful value
-		if name, ok := responseRuleQuery.GetNameOk(); ok && *name != "" {
+		if name, ok := responseRuleQuery.GetNameOk(); ok {
 			ruleQuery.Name = types.StringValue(*name)
 		}
-		if metric, ok := responseRuleQuery.GetMetricOk(); ok && *metric != "" {
+		if metric, ok := responseRuleQuery.GetMetricOk(); ok {
 			ruleQuery.Metric = types.StringValue(*metric)
 		}
-		if distinctFields, ok := responseRuleQuery.GetDistinctFieldsOk(); ok && len(*distinctFields) > 0 {
+		if distinctFields, ok := responseRuleQuery.GetDistinctFieldsOk(); ok {
 			var listDiags diag.Diagnostics
 			ruleQuery.DistinctFields, listDiags = types.ListValueFrom(ctx, types.StringType, *distinctFields)
 			diags.Append(listDiags...)
 		}
-		if groupByFields, ok := responseRuleQuery.GetGroupByFieldsOk(); ok && len(*groupByFields) > 0 {
+		if groupByFields, ok := responseRuleQuery.GetGroupByFieldsOk(); ok {
 			var listDiags diag.Diagnostics
 			ruleQuery.GroupByFields, listDiags = types.ListValueFrom(ctx, types.StringType, *groupByFields)
 			diags.Append(listDiags...)
@@ -1171,8 +1168,11 @@ func extractSignalRuleQueries(ctx context.Context, responseRuleQueries []datadog
 			ruleQuery.CorrelatedQueryIndex = types.StringValue("")
 		}
 
-		// Optional-only — only set when API returns a meaningful value
-		if name, ok := responseRuleQuery.GetNameOk(); ok && *name != "" {
+		// Optional-only — pass the API value through. The API returns "" even
+		// when the user didn't author `name`, so reconcileEmptySignalQueryFields
+		// reconciles empty strings against the prior plan/state to keep
+		// post-apply state equal to plan.
+		if name, ok := responseRuleQuery.GetNameOk(); ok {
 			ruleQuery.Name = types.StringValue(*name)
 		}
 		// Computed read-only — must always be set to a known value.
@@ -1415,15 +1415,14 @@ func extractThirdPartyRuleOptions(ctx context.Context, thirdPartyOptions *datado
 		DefaultNotifications: types.ListNull(types.StringType),
 	}
 
-	// Optional-only list — keep null when API returns empty
-	if v, ok := thirdPartyOptions.GetDefaultNotificationsOk(); ok && len(*v) > 0 {
+	if v, ok := thirdPartyOptions.GetDefaultNotificationsOk(); ok {
 		var listDiags diag.Diagnostics
 		tfThirdPartyOptions.DefaultNotifications, listDiags = types.ListValueFrom(ctx, types.StringType, *v)
 		diags.Append(listDiags...)
 	}
 
 	// Optional-only string
-	if v, ok := thirdPartyOptions.GetSignalTitleTemplateOk(); ok && *v != "" {
+	if v, ok := thirdPartyOptions.GetSignalTitleTemplateOk(); ok {
 		tfThirdPartyOptions.SignalTitleTemplate = types.StringValue(*v)
 	}
 
@@ -2299,6 +2298,83 @@ func isDeprecatedDataSourceAlias(prior, api string) bool {
 	return prior == "app_sec_spans" && api == "spans"
 }
 
+// reconcileEmptyQueryFields restores the prior null/empty representation for
+// Optional fields the API returns as empty (`[]` or `""`) even when the user
+// didn't set them. The framework requires post-apply state to equal the
+// planned value; the prior plan/state holds what the user authored, so we use
+// it as the tiebreaker when the API response is ambiguous. When no prior is
+// available (e.g., Import), default to typed-null — that's what an omitted
+// config maps to. Real, non-empty API values always pass through unchanged.
+func reconcileEmptyQueryFields(apiState, prior []ruleQueryModel) {
+	for i := range apiState {
+		hasPrior := i < len(prior)
+		if isEmptyKnownList(apiState[i].DistinctFields) {
+			if hasPrior {
+				apiState[i].DistinctFields = prior[i].DistinctFields
+			} else {
+				apiState[i].DistinctFields = types.ListNull(types.StringType)
+			}
+		}
+		if isEmptyKnownList(apiState[i].GroupByFields) {
+			if hasPrior {
+				apiState[i].GroupByFields = prior[i].GroupByFields
+			} else {
+				apiState[i].GroupByFields = types.ListNull(types.StringType)
+			}
+		}
+		if isEmptyKnownString(apiState[i].Name) {
+			if hasPrior {
+				apiState[i].Name = prior[i].Name
+			} else {
+				apiState[i].Name = types.StringNull()
+			}
+		}
+	}
+}
+
+// reconcileEmptyOptionFields restores the prior null/empty representation for
+// Optional fields under `options` the API returns as empty. Currently covers
+// `third_party_rule_options.default_notifications`.
+func reconcileEmptyOptionFields(apiState, prior []ruleOptionsModel) {
+	for i := range apiState {
+		hasPrior := i < len(prior)
+
+		for j := range apiState[i].ThirdPartyRuleOptions {
+			hasPriorTP := hasPrior && j < len(prior[i].ThirdPartyRuleOptions)
+			if isEmptyKnownList(apiState[i].ThirdPartyRuleOptions[j].DefaultNotifications) {
+				if hasPriorTP {
+					apiState[i].ThirdPartyRuleOptions[j].DefaultNotifications = prior[i].ThirdPartyRuleOptions[j].DefaultNotifications
+				} else {
+					apiState[i].ThirdPartyRuleOptions[j].DefaultNotifications = types.ListNull(types.StringType)
+				}
+			}
+		}
+	}
+}
+
+// reconcileEmptySignalQueryFields is the signal-rule analog: signal queries
+// have `name` (and no `distinct_fields`).
+func reconcileEmptySignalQueryFields(apiState, prior []signalQueryModel) {
+	for i := range apiState {
+		hasPrior := i < len(prior)
+		if isEmptyKnownString(apiState[i].Name) {
+			if hasPrior {
+				apiState[i].Name = prior[i].Name
+			} else {
+				apiState[i].Name = types.StringNull()
+			}
+		}
+	}
+}
+
+func isEmptyKnownList(l types.List) bool {
+	return !l.IsNull() && !l.IsUnknown() && len(l.Elements()) == 0
+}
+
+func isEmptyKnownString(s types.String) bool {
+	return !s.IsNull() && !s.IsUnknown() && s.ValueString() == ""
+}
+
 func (r *securityMonitoringRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var plan securityMonitoringRuleResourceModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
@@ -2329,9 +2405,13 @@ func (r *securityMonitoringRuleResource) Create(ctx context.Context, request res
 		state.ID = types.StringValue(ruleResponse.SecurityMonitoringStandardRuleResponse.GetId())
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
 		preserveQueryDataSources(state.Queries, plan.Queries)
+		reconcileEmptyQueryFields(state.Queries, plan.Queries)
+		reconcileEmptyOptionFields(state.Options, plan.Options)
 	case ruleResponse.SecurityMonitoringSignalRuleResponse != nil:
 		state.ID = types.StringValue(ruleResponse.SecurityMonitoringSignalRuleResponse.GetId())
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
+		reconcileEmptySignalQueryFields(state.SignalQueries, plan.SignalQueries)
+		reconcileEmptyOptionFields(state.Options, plan.Options)
 	default:
 		response.Diagnostics.AddError("unexpected response", "SecurityMonitoringStandardRuleResponse and SecurityMonitoringSignalRuleResponse are both empty")
 		return
@@ -2362,13 +2442,19 @@ func (r *securityMonitoringRuleResource) Read(ctx context.Context, request resou
 	}
 
 	priorQueries := state.Queries
+	priorSignalQueries := state.SignalQueries
+	priorOptions := state.Options
 	priorEffectiveTags := state.EffectiveTags
 
 	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
 		preserveQueryDataSources(state.Queries, priorQueries)
+		reconcileEmptyQueryFields(state.Queries, priorQueries)
+		reconcileEmptyOptionFields(state.Options, priorOptions)
 	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
+		reconcileEmptySignalQueryFields(state.SignalQueries, priorSignalQueries)
+		reconcileEmptyOptionFields(state.Options, priorOptions)
 	}
 
 	// SDKv2 v4.5.0 stored the union of config tags and provider default_tags
@@ -2420,12 +2506,18 @@ func (r *securityMonitoringRuleResource) Update(ctx context.Context, request res
 	}
 
 	planQueries := state.Queries
+	planSignalQueries := state.SignalQueries
+	planOptions := state.Options
 
 	if ruleResponse.SecurityMonitoringStandardRuleResponse != nil {
 		response.Diagnostics.Append(updateStandardResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringStandardRuleResponse)...)
 		preserveQueryDataSources(state.Queries, planQueries)
+		reconcileEmptyQueryFields(state.Queries, planQueries)
+		reconcileEmptyOptionFields(state.Options, planOptions)
 	} else if ruleResponse.SecurityMonitoringSignalRuleResponse != nil {
 		response.Diagnostics.Append(updateSignalResourceDataFromResponse(ctx, &state, ruleResponse.SecurityMonitoringSignalRuleResponse)...)
+		reconcileEmptySignalQueryFields(state.SignalQueries, planSignalQueries)
+		reconcileEmptyOptionFields(state.Options, planOptions)
 	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
