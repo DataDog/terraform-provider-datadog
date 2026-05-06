@@ -22,8 +22,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &integrationAzureResource{}
-	_ resource.ResourceWithImportState = &integrationAzureResource{}
+	_ resource.ResourceWithConfigure      = &integrationAzureResource{}
+	_ resource.ResourceWithImportState    = &integrationAzureResource{}
+	_ resource.ResourceWithValidateConfig = &integrationAzureResource{}
 )
 
 var integrationAzureMutex = sync.Mutex{}
@@ -179,6 +180,22 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
+	}
+}
+
+func (r *integrationAzureResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var config integrationAzureModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	secretless := !config.SecretlessAuthEnabled.IsNull() && config.SecretlessAuthEnabled.ValueBool()
+	if config.ClientSecret.IsNull() && !secretless {
+		response.Diagnostics.AddAttributeError(
+			frameworkPath.Root("client_secret"),
+			"Missing client_secret",
+			"client_secret is required unless secretless_auth_enabled is true.",
+		)
 	}
 }
 
