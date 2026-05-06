@@ -1012,6 +1012,22 @@ func updateStandardResourceDataFromResponse(ctx context.Context, state *security
 		var tpDiags diag.Diagnostics
 		state.ThirdPartyCases, tpDiags = extractThirdPartyCases(ctx, ruleResponse.GetThirdPartyCases())
 		diags.Append(tpDiags...)
+
+		// The API auto-derives `cases`/`queries` from `third_party_cases` for
+		// backwards compatibility. Only mirror them into state if the user
+		// declared blocks themselves (Computed sub-attributes like `metrics`
+		// would otherwise stay unknown after apply); otherwise keep the
+		// plan/state empty so we don't desync with the configured shape.
+		if len(state.Cases) > 0 {
+			var caseDiags diag.Diagnostics
+			state.Cases, caseDiags = extractRuleCases(ctx, ruleResponse.GetCases())
+			diags.Append(caseDiags...)
+		}
+		if len(state.Queries) > 0 {
+			var queryDiags diag.Diagnostics
+			state.Queries, queryDiags = extractStandardRuleQueries(ctx, ruleResponse.GetQueries())
+			diags.Append(queryDiags...)
+		}
 	} else {
 		var caseDiags diag.Diagnostics
 		state.Cases, caseDiags = extractRuleCases(ctx, ruleResponse.GetCases())
