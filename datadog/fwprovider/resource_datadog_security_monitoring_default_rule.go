@@ -2,7 +2,9 @@ package fwprovider
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -347,7 +349,32 @@ func (r *securityMonitoringDefaultRuleResource) Create(ctx context.Context, requ
 }
 
 func (r *securityMonitoringDefaultRuleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	response.Diagnostics.AddError("not implemented", "Read is not implemented yet for the framework default rule resource")
+	var state securityMonitoringDefaultRuleResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	ruleResponse, _, err := r.api.GetSecurityMonitoringRule(r.auth, state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading security monitoring default rule"))
+		return
+	}
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	rule := ruleResponse.SecurityMonitoringStandardRuleResponse
+	if rule == nil {
+		response.Diagnostics.AddError("unsupported rule type", "signal rule type is not currently supported")
+		return
+	}
+
+	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, rule)...)
+
+	response.Diagnostics.Append(securityMonitoringDefaultRuleDeprecationWarning(rule)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *securityMonitoringDefaultRuleResourceModel, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) diag.Diagnostics {
@@ -355,9 +382,6 @@ func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *secur
 
 	state.Enabled = types.BoolValue(ruleResponse.GetIsEnabled())
 
-	// SDKv2 default rule never wrote these to state, hiding API-side drift.
-	// Surface it now; pair with an Update-side empty-string clear.
-	// TODO: Remove this comment once the second half fix is done
 	if customMessage, ok := ruleResponse.GetCustomMessageOk(); ok {
 		state.CustomMessage = types.StringValue(*customMessage)
 	} else {
@@ -501,37 +525,71 @@ func extractDefaultRuleCustomTags(ctx context.Context, apiTags []string, apiDefa
 	return types.SetValueFrom(ctx, types.StringType, customTags)
 }
 
-// When the API returns [] for an Optional list the user didn't author, copy
-// the prior null back so post-apply state equals planned value.
-func reconcileEmptyDefaultRuleQueryFields(apiState, prior []defaultRuleQueryModel) {
-	for i := range apiState {
-		hasPrior := i < len(prior)
-		if isEmptyKnownList(apiState[i].DistinctFields) {
-			if hasPrior {
-				apiState[i].DistinctFields = prior[i].DistinctFields
-			} else {
-				apiState[i].DistinctFields = types.ListNull(types.StringType)
-			}
-		}
-		if isEmptyKnownList(apiState[i].GroupByFields) {
-			if hasPrior {
-				apiState[i].GroupByFields = prior[i].GroupByFields
-			} else {
-				apiState[i].GroupByFields = types.ListNull(types.StringType)
-			}
-		}
-		if isEmptyKnownList(apiState[i].Metrics) {
-			if hasPrior {
-				apiState[i].Metrics = prior[i].Metrics
-			} else {
-				apiState[i].Metrics = types.ListNull(types.StringType)
-			}
-		}
-	}
-}
-
 func (r *securityMonitoringDefaultRuleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError("not implemented", "Update is not implemented yet for the framework default rule resource")
+	var plan securityMonitoringDefaultRuleResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var priorState securityMonitoringDefaultRuleResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &priorState)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	ruleID := priorState.ID.ValueString()
+	currentResponse, httpResponse, err := r.api.GetSecurityMonitoringRule(r.auth, ruleID)
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == http.StatusNotFound {
+			response.Diagnostics.AddError("default rule not found", "default rule does not exist")
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error fetching default rule"))
+		return
+	}
+	if err := utils.CheckForUnparsed(currentResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	rule := currentResponse.SecurityMonitoringStandardRuleResponse
+	if rule == nil {
+		response.Diagnostics.AddError("unsupported rule type", "signal rule type is not currently supported")
+		return
+	}
+	if !rule.GetIsDefault() {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(errors.New("rule is not a default rule"), "cannot update non-default rule"))
+		return
+	}
+
+	payload, shouldUpdate, payloadDiags := buildSecMonDefaultRuleUpdatePayload(ctx, rule, &plan)
+	response.Diagnostics.Append(payloadDiags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	updatedRule := rule
+	if shouldUpdate {
+		updateResponse, _, err := r.api.UpdateSecurityMonitoringRule(r.auth, ruleID, *payload)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating security monitoring default rule"))
+			return
+		}
+		if err := utils.CheckForUnparsed(updateResponse); err != nil {
+			response.Diagnostics.AddError("response contains unparsed object", err.Error())
+			return
+		}
+		updatedRule = updateResponse.SecurityMonitoringStandardRuleResponse
+	}
+
+	state := plan
+	state.ID = types.StringValue(ruleID)
+
+	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, updatedRule)...)
+
+	response.Diagnostics.Append(securityMonitoringDefaultRuleDeprecationWarning(updatedRule)...)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *datadogV2.SecurityMonitoringStandardRuleResponse, plan *securityMonitoringDefaultRuleResourceModel) (*datadogV2.SecurityMonitoringRuleUpdatePayload, bool, diag.Diagnostics) {
