@@ -1,7 +1,7 @@
 # A sample Datadog logs index resource definition.
 
 resource "datadog_logs_index" "sample_index" {
-  name        = "your index"
+  name        = "your-index"
   daily_limit = 200000
   daily_limit_reset {
     reset_time       = "14:00"
