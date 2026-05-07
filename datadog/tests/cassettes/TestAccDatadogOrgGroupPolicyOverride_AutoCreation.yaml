@@ -1,0 +1,1036 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/org
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"orgs":[{"public_id":"ff4a8255-6931-58d1-add0-a6b3602d5421","name":"Org Mgmt Root","description":null,"created":"2026-02-04 23:00:24","subscription":{"id":null,"billing_plan_id":8,"started":1770246024,"expires":null,"finished":null,"type":"dogfood","is_custom":false,"is_trial":false,"is_expired":true},"billing":{},"settings":{"default_landing_page":"Dashboard Lists","saml":{"enabled":false},"saml_can_be_enabled":false,"saml_login_url":null,"saml_idp_metadata_uploaded":false,"saml_idp_endpoint":null,"saml_idp_metadata_valid_until":null,"custom_landing_page":null,"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"enabled":false,"domains":[]},"private_widget_share":true,"manage_reports":"true"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 221.099986ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships?filter%5Borg_uuid%5D=ff4a8255-6931-58d1-add0-a6b3602d5421
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 385
+        uncompressed: false
+        body: '{"data":[{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:47.590241Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 34.185066ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 125
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429"},"type":"org_groups"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 30.200682ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships?filter%5Borg_uuid%5D=ff4a8255-6931-58d1-add0-a6b3602d5421
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 385
+        uncompressed: false
+        body: '{"data":[{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:47.590241Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 43.24453ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 191
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}},"type":"org_group_memberships"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: PATCH
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:50.331102Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 89.177366ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 290
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"content":{"org_config":true},"enforcement_tier":"ENFORCE","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}},"type":"org_group_policies"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_policies
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 421
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"ENFORCE","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 168.969736ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 27.991836ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:50.331102Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 45.69974ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_policies/019dbcc3-a035-7da5-84e3-aaff8d07f407
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 421
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"ENFORCE","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 34.586061ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 35.356169ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_policies/019dbcc3-a035-7da5-84e3-aaff8d07f407
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 421
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"ENFORCE","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 53.532783ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:50.331102Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 39.969833ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/org_group_policies/019dbcc3-a035-7da5-84e3-aaff8d07f407
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 73.335092ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 30.550618ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:50.331102Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 39.75547ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 27.935727ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:50.331102Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 39.939231ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}},"type":"org_group_policies"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_policies
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 378
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 57.419542ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_policy_overrides?filter%5Borg_group_id%5D=019dbcc3-9f85-7a57-aab6-bef1a5060386&filter%5Bpolicy_id%5D=019dbcc3-af25-7877-8d27-d52c2827fd2d
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"019dbcc3-af31-79a6-add0-3b4156343f78","type":"org_group_policy_overrides","attributes":{"content":{"org_config":true},"created_at":"2026-04-23T23:53:54.219353Z","modified_at":"2026-04-23T23:53:54.219353Z","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}},"org_group_policy":{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies"}}}}],"meta":{"page":{"type":"number_size","number":0,"size":50,"total":1,"first_number":0,"prev_number":null,"next_number":null,"last_number":0}},"links":{"self":"https://api.datadoghq.com/api/v2/org_group_policy_overrides?filter%5Borg_group_id%5D=019dbcc3-9f85-7a57-aab6-bef1a5060386\u0026filter%5Bpolicy_id%5D=019dbcc3-af25-7877-8d27-d52c2827fd2d","first":"https://api.datadoghq.com/api/v2/org_group_policy_overrides?filter[org_group_id]=019dbcc3-9f85-7a57-aab6-bef1a5060386\u0026filter[policy_id]=019dbcc3-af25-7877-8d27-d52c2827fd2d\u0026page[number]=0\u0026page[size]=50","last":"https://api.datadoghq.com/api/v2/org_group_policy_overrides?filter[org_group_id]=019dbcc3-9f85-7a57-aab6-bef1a5060386\u0026filter[policy_id]=019dbcc3-af25-7877-8d27-d52c2827fd2d\u0026page[number]=0\u0026page[size]=50"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 46.755951ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 33.608812ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:50.331102Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 38.884842ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_policies/019dbcc3-af25-7877-8d27-d52c2827fd2d
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 378
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 36.425287ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 53.993992ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_policies/019dbcc3-af25-7877-8d27-d52c2827fd2d
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 378
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 77.936165ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:50.331102Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 77.957786ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/org_group_policies/019dbcc3-af25-7877-8d27-d52c2827fd2d
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 61.163985ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 191
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}},"type":"org_group_memberships"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: PATCH
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:56.425975Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 60.219312ms
+    - id: 27
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 331
+        uncompressed: false
+        body: '{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups","attributes":{"created_at":"2026-04-23T23:53:50.213Z","modified_at":"2026-04-23T23:53:50.214619Z","name":"tf-TestAccDatadogOrgGroupPolicyOverride_AutoCreation-local-1776988429","owner_org_site":"us1","owner_org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 33.631911ms
+    - id: 28
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_group_memberships/019c2ae2-b060-7954-8606-6fe2b42616c4
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 383
+        uncompressed: false
+        body: '{"data":{"id":"019c2ae2-b060-7954-8606-6fe2b42616c4","type":"org_group_memberships","attributes":{"created_at":"2026-02-04T23:00:25.312Z","modified_at":"2026-04-23T23:53:56.425975Z","org_name":"Org Mgmt Root","org_site":"us1","org_uuid":"ff4a8255-6931-58d1-add0-a6b3602d5421"},"relationships":{"org_group":{"data":{"id":"019d6e95-d818-7825-a63d-28fabd22002b","type":"org_groups"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 49.533437ms
+    - id: 29
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 47.264546ms
+    - id: 30
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/org_groups/019dbcc3-9f85-7a57-aab6-bef1a5060386
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 97
+        uncompressed: false
+        body: '{"errors":[{"status":"404","detail":"org group 019dbcc3-9f85-7a57-aab6-bef1a5060386 not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 30.266622ms
