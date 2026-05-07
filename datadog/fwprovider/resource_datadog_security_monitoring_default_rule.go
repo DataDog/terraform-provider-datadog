@@ -534,6 +534,356 @@ func (r *securityMonitoringDefaultRuleResource) Update(ctx context.Context, requ
 	response.Diagnostics.AddError("not implemented", "Update is not implemented yet for the framework default rule resource")
 }
 
+func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *datadogV2.SecurityMonitoringStandardRuleResponse, plan *securityMonitoringDefaultRuleResourceModel) (*datadogV2.SecurityMonitoringRuleUpdatePayload, bool, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	payload := datadogV2.SecurityMonitoringRuleUpdatePayload{}
+	isSignalCorrelation := isSignalCorrelationSchema(plan.Type)
+
+	isEnabled := plan.Enabled.ValueBool()
+	payload.IsEnabled = &isEnabled
+
+	shouldUpdate := false
+	if currentState.GetIsEnabled() != isEnabled {
+		shouldUpdate = true
+	}
+
+	matchedCases := 0
+	modifiedCases := 0
+
+	updatedRuleCase := make([]datadogV2.SecurityMonitoringRuleCase, len(currentState.GetCases()))
+	for i, ruleCase := range currentState.GetCases() {
+		updatedRuleCase[i] = ruleCase
+
+		if planCase, ok := findRuleCaseForStatus(plan.Cases, ruleCase.GetStatus()); ok {
+
+			// Update rule case notifications when rule added to terraform configuration
+
+			matchedCases++
+
+			var planNotifications []string
+			if !planCase.Notifications.IsNull() && !planCase.Notifications.IsUnknown() {
+				notifDiags := planCase.Notifications.ElementsAs(ctx, &planNotifications, false)
+				diags.Append(notifDiags...)
+			}
+			if planNotifications == nil {
+				planNotifications = []string{}
+			}
+			if !stringSliceEquals(planNotifications, ruleCase.GetNotifications()) {
+				modifiedCases++
+				shouldUpdate = true
+				updatedRuleCase[i].Notifications = planNotifications
+			}
+
+			if !planCase.CustomStatus.IsNull() && !planCase.CustomStatus.IsUnknown() && planCase.CustomStatus.ValueString() != "" {
+				planCustomStatus := datadogV2.SecurityMonitoringRuleSeverity(planCase.CustomStatus.ValueString())
+				if planCustomStatus != ruleCase.GetCustomStatus() {
+					modifiedCases++
+					shouldUpdate = true
+					updatedRuleCase[i].CustomStatus = &planCustomStatus
+				}
+			}
+		} else {
+
+			// Clear rule case notifications when rule case removed from terraform configuration
+
+			emptyNotifications := []string{}
+			if !stringSliceEquals(emptyNotifications, ruleCase.GetNotifications()) {
+				modifiedCases++
+				shouldUpdate = true
+				updatedRuleCase[i].Notifications = emptyNotifications
+			}
+		}
+	}
+
+	if !isSignalCorrelation && len(plan.Queries) > 0 {
+		payloadQueries := make([]datadogV2.SecurityMonitoringRuleQuery, len(plan.Queries))
+		for idx, planQuery := range plan.Queries {
+			// For default rules, merge with existing query to preserve unspecified fields
+			var existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery
+			if idx < len(currentState.GetQueries()) {
+				existingQuery = &currentState.GetQueries()[idx]
+			}
+			built, qDiags := buildUpdateDefaultRuleQuery(ctx, &planQuery, existingQuery)
+			diags.Append(qDiags...)
+			if built != nil {
+				payloadQueries[idx] = *built
+			}
+		}
+		payload.SetQueries(payloadQueries)
+
+		// Compare queries including custom_query_extension
+		if !compareQueries(currentState.GetQueries(), payloadQueries) {
+			shouldUpdate = true
+		}
+	}
+
+	// custom_message: send whenever plan has a known value (including ""),
+	// so removing the user override propagates to the API.
+	if !plan.CustomMessage.IsNull() && !plan.CustomMessage.IsUnknown() {
+		customMessage := plan.CustomMessage.ValueString()
+		payload.SetCustomMessage(customMessage)
+
+		// Check if custom_message exists in current state and compare
+		if currentCustomMessage, ok := currentState.GetCustomMessageOk(); ok {
+			if *currentCustomMessage != customMessage {
+				shouldUpdate = true
+			}
+		} else if customMessage != "" {
+			// Custom message doesn't exist in the current state, so this is a change
+			shouldUpdate = true
+		}
+	}
+
+	if !plan.CustomName.IsNull() && !plan.CustomName.IsUnknown() {
+		customName := plan.CustomName.ValueString()
+		payload.SetCustomName(customName)
+		if currentCustomName, ok := currentState.GetCustomNameOk(); ok {
+			if *currentCustomName != customName {
+				shouldUpdate = true
+			}
+		} else if customName != "" {
+			// Custom name doesn't exist in the current state, so this is a change
+			shouldUpdate = true
+		}
+	}
+
+	if matchedCases < len(plan.Cases) {
+		// Enable partial state so that we don't persist the changes
+		diags.AddError(
+			"invalid case",
+			"attempted to update notifications for non-existing case for rule "+currentState.GetId(),
+		)
+		return nil, false, diags
+	}
+
+	if modifiedCases > 0 {
+		payload.Cases = updatedRuleCase
+	}
+
+	payloadFilters := buildPayloadFilters(plan.Filters)
+	if !compareFilters(currentState.GetFilters(), payloadFilters) {
+		payload.Filters = payloadFilters
+		shouldUpdate = true
+	}
+
+	if len(plan.Options) > 0 {
+		payloadOptions := buildPayloadDefaultRuleOptions(plan.Options, string(currentState.GetType()))
+		payload.SetOptions(*payloadOptions)
+		currentOptions := currentState.GetOptions()
+		if !compareOptions(&currentOptions, payloadOptions) {
+			shouldUpdate = true
+		}
+	}
+
+	defaultTags := currentState.GetDefaultTags()
+	tagSet := make(map[string]bool, len(defaultTags))
+	for _, tag := range defaultTags {
+		tagSet[tag] = true
+	}
+	if !plan.CustomTags.IsNull() && !plan.CustomTags.IsUnknown() {
+		var customTags []string
+		tagsDiags := plan.CustomTags.ElementsAs(ctx, &customTags, false)
+		diags.Append(tagsDiags...)
+		for _, t := range customTags {
+			tagSet[t] = true
+		}
+	}
+	payloadTags := make([]string, 0, len(tagSet))
+	for tag := range tagSet {
+		payloadTags = append(payloadTags, tag)
+	}
+	payload.SetTags(payloadTags)
+	if !compareTags(currentState.GetTags(), payloadTags) {
+		shouldUpdate = true
+	}
+
+	return &payload, shouldUpdate, diags
+}
+
+// buildUpdateDefaultRuleQuery merges the plan with the existing API query so
+// fields the user didn't author keep their server-side value.
+func buildUpdateDefaultRuleQuery(ctx context.Context, planQuery *defaultRuleQueryModel, existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery) (*datadogV2.SecurityMonitoringRuleQuery, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
+
+	if existingQuery != nil {
+		if planQuery.Aggregation.IsNull() || planQuery.Aggregation.IsUnknown() {
+			if v, ok := existingQuery.GetAggregationOk(); ok {
+				payloadQuery.SetAggregation(*v)
+			}
+		}
+		if planQuery.GroupByFields.IsNull() || planQuery.GroupByFields.IsUnknown() {
+			if v, ok := existingQuery.GetGroupByFieldsOk(); ok {
+				payloadQuery.SetGroupByFields(*v)
+			}
+		}
+		if planQuery.HasOptionalGroupByFields.IsNull() || planQuery.HasOptionalGroupByFields.IsUnknown() {
+			if v, ok := existingQuery.GetHasOptionalGroupByFieldsOk(); ok {
+				payloadQuery.SetHasOptionalGroupByFields(*v)
+			}
+		}
+		if planQuery.DistinctFields.IsNull() || planQuery.DistinctFields.IsUnknown() {
+			if v, ok := existingQuery.GetDistinctFieldsOk(); ok {
+				payloadQuery.SetDistinctFields(*v)
+			}
+		}
+		if planQuery.DataSource.IsNull() || planQuery.DataSource.IsUnknown() {
+			if v, ok := existingQuery.GetDataSourceOk(); ok {
+				payloadQuery.SetDataSource(*v)
+			}
+		}
+		if planQuery.Metric.IsNull() || planQuery.Metric.IsUnknown() {
+			if v, ok := existingQuery.GetMetricOk(); ok {
+				payloadQuery.SetMetric(*v)
+			}
+		}
+		if planQuery.Metrics.IsNull() || planQuery.Metrics.IsUnknown() {
+			if v, ok := existingQuery.GetMetricsOk(); ok {
+				payloadQuery.SetMetrics(*v)
+			}
+		}
+		if planQuery.Name.IsNull() || planQuery.Name.IsUnknown() {
+			if v, ok := existingQuery.GetNameOk(); ok {
+				payloadQuery.SetName(*v)
+			}
+		}
+		if planQuery.Query.IsNull() || planQuery.Query.IsUnknown() {
+			if v, ok := existingQuery.GetQueryOk(); ok {
+				payloadQuery.SetQuery(*v)
+			}
+		}
+		if planQuery.CustomQueryExtension.IsNull() || planQuery.CustomQueryExtension.IsUnknown() {
+			if v, ok := existingQuery.GetCustomQueryExtensionOk(); ok {
+				payloadQuery.SetCustomQueryExtension(*v)
+			}
+		}
+	}
+
+	if !planQuery.Aggregation.IsNull() && !planQuery.Aggregation.IsUnknown() {
+		payloadQuery.SetAggregation(datadogV2.SecurityMonitoringRuleQueryAggregation(planQuery.Aggregation.ValueString()))
+	}
+	if !planQuery.GroupByFields.IsNull() && !planQuery.GroupByFields.IsUnknown() {
+		var groupByFields []string
+		listDiags := planQuery.GroupByFields.ElementsAs(ctx, &groupByFields, false)
+		diags.Append(listDiags...)
+		payloadQuery.SetGroupByFields(groupByFields)
+	}
+	if !planQuery.HasOptionalGroupByFields.IsNull() && !planQuery.HasOptionalGroupByFields.IsUnknown() {
+		payloadQuery.SetHasOptionalGroupByFields(planQuery.HasOptionalGroupByFields.ValueBool())
+	}
+	if !planQuery.DistinctFields.IsNull() && !planQuery.DistinctFields.IsUnknown() {
+		var distinctFields []string
+		listDiags := planQuery.DistinctFields.ElementsAs(ctx, &distinctFields, false)
+		diags.Append(listDiags...)
+		payloadQuery.SetDistinctFields(distinctFields)
+	}
+	if !planQuery.DataSource.IsNull() && !planQuery.DataSource.IsUnknown() {
+		payloadQuery.SetDataSource(datadogV2.SecurityMonitoringStandardDataSource(planQuery.DataSource.ValueString()))
+	}
+	if !planQuery.Metric.IsNull() && !planQuery.Metric.IsUnknown() {
+		payloadQuery.SetMetric(planQuery.Metric.ValueString())
+	}
+	if !planQuery.Metrics.IsNull() && !planQuery.Metrics.IsUnknown() {
+		var metrics []string
+		listDiags := planQuery.Metrics.ElementsAs(ctx, &metrics, false)
+		diags.Append(listDiags...)
+		payloadQuery.SetMetrics(metrics)
+	}
+	if !planQuery.Name.IsNull() && !planQuery.Name.IsUnknown() {
+		payloadQuery.SetName(planQuery.Name.ValueString())
+	}
+	if !planQuery.Query.IsNull() && !planQuery.Query.IsUnknown() {
+		payloadQuery.SetQuery(planQuery.Query.ValueString())
+	}
+	if !planQuery.CustomQueryExtension.IsNull() && !planQuery.CustomQueryExtension.IsUnknown() {
+		payloadQuery.SetCustomQueryExtension(planQuery.CustomQueryExtension.ValueString())
+	}
+
+	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
+	return &standardRuleQuery, diags
+}
+
+func compareQueries(currentQueries []datadogV2.SecurityMonitoringStandardRuleQuery, payloadQueries []datadogV2.SecurityMonitoringRuleQuery) bool {
+	if len(currentQueries) != len(payloadQueries) {
+		return false
+	}
+
+	// For now, we'll assume queries are different if they exist in the payload
+	// This is a simplified approach - in a more complete implementation,
+	// we would need to extract the standard query from the payload query
+	// and compare each field individually
+
+	// Since we're building the payload from Terraform config and comparing with current state,
+	// if there are any queries in the payload, we should check if they differ from current state
+	// For simplicity, we'll return false (indicating a change) if there are queries in the payload
+	// This ensures that any query changes are detected
+
+	return len(payloadQueries) == 0
+}
+
+func compareFilters(currentFilters, payloadFilters []datadogV2.SecurityMonitoringFilter) bool {
+	if len(currentFilters) != len(payloadFilters) {
+		return false
+	}
+	for i, currentFilter := range currentFilters {
+		if currentFilter.GetAction() != payloadFilters[i].GetAction() {
+			return false
+		}
+		if currentFilter.GetQuery() != payloadFilters[i].GetQuery() {
+			return false
+		}
+	}
+	return true
+}
+
+func compareTags(currentTags, payloadTags []string) bool {
+	return stringSliceEquals(currentTags, payloadTags)
+}
+
+func stringSliceEquals(left, right []string) bool {
+	if len(left) != len(right) {
+		return false
+	}
+	for i := range left {
+		if left[i] != right[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func compareOptions(currentOptions, payloadOptions *datadogV2.SecurityMonitoringRuleOptions) bool {
+	if currentOptions == nil && payloadOptions == nil {
+		return true
+	}
+	if currentOptions == nil || payloadOptions == nil {
+		return false
+	}
+	// Compare decrease_criticality_based_on_env
+	return currentOptions.GetDecreaseCriticalityBasedOnEnv() == payloadOptions.GetDecreaseCriticalityBasedOnEnv()
+}
+
+func findRuleCaseForStatus(planCases []defaultRuleCaseModel, status datadogV2.SecurityMonitoringRuleSeverity) (*defaultRuleCaseModel, bool) {
+	for i := range planCases {
+		if datadogV2.SecurityMonitoringRuleSeverity(planCases[i].Status.ValueString()) == status {
+			return &planCases[i], true
+		}
+	}
+	return nil, false
+}
+
+// decrease_criticality_based_on_env is only valid for log_detection rules.
+func buildPayloadDefaultRuleOptions(planOptions []defaultRuleOptionsModel, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
+	payloadOptions := datadogV2.NewSecurityMonitoringRuleOptions()
+	opt := planOptions[0]
+	if ruleType == string(datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION) &&
+		!opt.DecreaseCriticalityBasedOnEnv.IsNull() && !opt.DecreaseCriticalityBasedOnEnv.IsUnknown() {
+		payloadOptions.SetDecreaseCriticalityBasedOnEnv(opt.DecreaseCriticalityBasedOnEnv.ValueBool())
+	}
+	return payloadOptions
+}
+
 func (r *securityMonitoringDefaultRuleResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	// no-op
 }

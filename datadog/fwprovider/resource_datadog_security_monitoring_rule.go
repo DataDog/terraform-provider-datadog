@@ -1494,9 +1494,9 @@ func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRul
 	return tfSeqOptions
 }
 
-func isSignalCorrelationSchema(model *securityMonitoringRuleResourceModel) bool {
-	if !model.Type.IsNull() && !model.Type.IsUnknown() {
-		_, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(model.Type.ValueString())
+func isSignalCorrelationSchema(ruleType types.String) bool {
+	if !ruleType.IsNull() && !ruleType.IsUnknown() {
+		_, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(ruleType.ValueString())
 		return err == nil
 	}
 	return false
@@ -1506,7 +1506,7 @@ func checkQueryConsistency(model *securityMonitoringRuleResourceModel) error {
 	if len(model.Queries) > 0 && len(model.SignalQueries) > 0 {
 		return fmt.Errorf("query list and signal query list cannot be both populated")
 	}
-	isSignalCorrelation := isSignalCorrelationSchema(model)
+	isSignalCorrelation := isSignalCorrelationSchema(model.Type)
 	if !isSignalCorrelation && len(model.SignalQueries) > 0 {
 		return fmt.Errorf("signal query list should not be populated for this rule type")
 	}
@@ -1522,7 +1522,7 @@ func buildCreatePayloadFromModel(ctx context.Context, model *securityMonitoringR
 		diags.AddError("invalid query configuration", err.Error())
 		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, diags
 	}
-	if isSignalCorrelationSchema(model) {
+	if isSignalCorrelationSchema(model.Type) {
 		payload, d := buildCreateSignalPayload(ctx, model)
 		diags.Append(d...)
 		createPayload := datadogV2.SecurityMonitoringSignalRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
@@ -1540,7 +1540,7 @@ func buildValidatePayloadFromModel(ctx context.Context, model *securityMonitorin
 		diags.AddError("invalid query configuration", err.Error())
 		return &datadogV2.SecurityMonitoringRuleValidatePayload{}, diags
 	}
-	if isSignalCorrelationSchema(model) {
+	if isSignalCorrelationSchema(model.Type) {
 		payload, d := buildSignalPayload(ctx, model)
 		diags.Append(d...)
 		createPayload := datadogV2.SecurityMonitoringSignalRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
@@ -2106,7 +2106,7 @@ func buildUpdatePayloadFromModel(ctx context.Context, model, prior *securityMoni
 		diags.AddError("invalid query configuration", err.Error())
 		return &payload, diags
 	}
-	isSignalCorrelation := isSignalCorrelationSchema(model)
+	isSignalCorrelation := isSignalCorrelationSchema(model.Type)
 
 	if isThirdPartyRule(model) {
 		payloadThirdPartyCases := make([]datadogV2.SecurityMonitoringThirdPartyRuleCase, len(model.ThirdPartyCases))
