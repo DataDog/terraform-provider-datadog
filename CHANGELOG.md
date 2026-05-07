@@ -1,3 +1,17 @@
+## 4.8.0 (May 7, 2026)
+
+### IMPROVEMENTS
+* [datadog_logs_index] validate name at plan time by @gmeligio in https://github.com/DataDog/terraform-provider-datadog/pull/3726
+* [datadog_security_monitoring_rule] Expand new value rule learningDuration and forgetAfter from enum to int range (0-30 and 1-30) by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3712
+### FEATURES
+* [datadog_org_group] Terraform support for org groups and policies by @k-phan in https://github.com/DataDog/terraform-provider-datadog/pull/3686
+* [datadog_azure_integration] Introduce Preview Secretless Auth Flag  by @benjjs in https://github.com/DataDog/terraform-provider-datadog/pull/3759
+
+## New Contributors
+* @benjjs made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3759
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.7.0...v4.8.0
+
 ## 4.7.0 (May 6, 2026)
 
 ### BUGFIXES
