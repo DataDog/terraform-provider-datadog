@@ -597,8 +597,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
 		}
-	} else if pat != "" {
-		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	} else if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
 		auth = context.WithValue(
 			auth,
@@ -612,6 +610,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 				},
 			},
 		)
+	} else if pat != "" {
+		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)

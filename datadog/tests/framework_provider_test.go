@@ -509,9 +509,11 @@ func TestFrameworkProviderConfigure_PATEnvVar(t *testing.T) {
 	}
 }
 
-// TestFrameworkProviderConfigure_PATWinsOverAPIKey tests that PAT takes precedence over API keys
-// when both are configured: only Bearer auth is plumbed, no DD-API-KEY/DD-APPLICATION-KEY headers.
-func TestFrameworkProviderConfigure_PATWinsOverAPIKey(t *testing.T) {
+// TestFrameworkProviderConfigure_APIKeyWinsOverPAT tests that API keys take precedence over PAT
+// when both are configured: only DD-API-KEY/DD-APPLICATION-KEY headers are plumbed, no Bearer.
+// PAT is additive — it only kicks in when API keys aren't set, preserving backward compatibility
+// for existing configurations that may have DD_API_KEY/DD_APP_KEY set globally in the environment.
+func TestFrameworkProviderConfigure_APIKeyWinsOverPAT(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
 	os.Unsetenv("DD_APP_KEY")
 	os.Unsetenv("DATADOG_API_KEY")
@@ -534,11 +536,11 @@ func TestFrameworkProviderConfigure_PATWinsOverAPIKey(t *testing.T) {
 	if diags.HasError() {
 		t.Errorf("framework provider configure should not error with PAT + API keys, got: %v", diags)
 	}
-	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
-		t.Errorf("ContextAccessToken should be set to the PAT, got %q (ok=%v)", got, ok)
+	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); !ok {
+		t.Error("ContextAPIKeys should be set when API keys are provided (API keys take precedence over PAT)")
 	}
-	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
-		t.Error("ContextAPIKeys should NOT be set when PAT is also provided (PAT wins)")
+	if _, ok := p.Auth.Value(common.ContextAccessToken).(string); ok {
+		t.Error("ContextAccessToken should NOT be set when API keys are also provided (API keys win)")
 	}
 }
 

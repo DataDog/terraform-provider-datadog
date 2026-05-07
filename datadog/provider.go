@@ -445,8 +445,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
-	} else if pat != "" {
-		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	} else if apiKey != "" || appKey != "" {
 		auth = context.WithValue(
 			auth,
@@ -460,6 +458,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				},
 			},
 		)
+	} else if pat != "" {
+		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	}
 
 	config := datadog.NewConfiguration()
@@ -577,12 +577,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
-		} else if pat != "" { // PAT is set: v1 validate doesn't accept Bearer auth, so use v2 validate_keys
-			if err := utils.ValidateKeysV2(auth, datadogClient); err != nil {
-				log.Printf("[ERROR] Datadog Client validation error: %v", err)
-				return nil, diag.FromErr(err)
-			}
-		} else { // Validate the API and APP keys
+		} else if apiKey != "" || appKey != "" { // Validate the API and APP keys
 			resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
@@ -591,6 +586,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			valid, ok := resp.GetValidOk()
 			if (ok && !*valid) || !ok {
 				err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
+		} else if pat != "" { // PAT-only: v1 validate doesn't accept Bearer auth, so use v2 validate_keys
+			if err := utils.ValidateKeysV2(auth, datadogClient); err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
