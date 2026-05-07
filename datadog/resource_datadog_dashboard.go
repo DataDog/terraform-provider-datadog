@@ -8231,7 +8231,12 @@ func buildDatadogMetricQuery(data map[string]interface{}) *datadogV1.FormulaAndF
 func buildDatadogFormulaAndFunctionAPMResourceStatsQuery(data map[string]interface{}) *datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionApmResourceStatsDataSource(data["data_source"].(string))
 	stat := datadogV1.FormulaAndFunctionApmResourceStatName(data["stat"].(string))
-	apmResourceStatsQuery := datadogV1.NewFormulaAndFunctionApmResourceStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["service"].(string), stat)
+	apmResourceStatsQuery := datadogV1.NewFormulaAndFunctionApmResourceStatsQueryDefinitionWithDefaults()
+	apmResourceStatsQuery.SetDataSource(dataSource)
+	apmResourceStatsQuery.SetEnv(data["env"].(string))
+	apmResourceStatsQuery.SetName(data["name"].(string))
+	apmResourceStatsQuery.SetService(data["service"].(string))
+	apmResourceStatsQuery.SetStat(stat)
 
 	// cross_org_uuids
 	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
