@@ -428,6 +428,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 							Default:     stringdefault.StaticString(string(datadogV2.SECURITYMONITORINGSTANDARDDATASOURCE_LOGS)),
 							Description: "Source of events.",
 							Validators: []validator.String{
+								validators.SecurityMonitoringDataSourceWarningValidator(),
 								validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
 							},
 						},
