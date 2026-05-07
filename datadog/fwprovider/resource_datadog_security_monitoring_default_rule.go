@@ -2,10 +2,13 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -95,11 +98,19 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 			"id": utils.ResourceIDAttribute(),
 			"custom_message": schema.StringAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "Custom Message (will override default message) for generated signals.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"custom_name": schema.StringAttribute{
 				Optional:    true,
+				Computed:    true,
 				Description: "The name (will override default name) of the rule.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"enabled": schema.BoolAttribute{
 				Optional:    true,
@@ -312,6 +323,22 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 	}
 }
 
+func securityMonitoringDefaultRuleDeprecationWarning(rule *datadogV2.SecurityMonitoringStandardRuleResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
+	if deprecationTimestampMs, ok := rule.GetDeprecationDateOk(); ok {
+		deprecation := time.UnixMilli(*deprecationTimestampMs)
+		diags.AddWarning(
+			fmt.Sprintf("Rule will be deprecated on %s.", deprecation.Format("Jan _2 2006")),
+			"Please consider deleting the associated resource. "+
+				"After the depreciation date, the rule will stop triggering signals. "+
+				" Moreover, the API will reject any call to update the rule, which might break your Terraform pipeline. "+
+				"The Datadog team performs regular audit of all detection rules to maintain high fidelity signal quality. "+
+				"We will be replacing this rule with an improved third party detection rule after the depreciation date.",
+		)
+	}
+	return diags
+}
+
 func (r *securityMonitoringDefaultRuleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	response.Diagnostics.AddError(
 		"Default rule cannot be created",
@@ -321,6 +348,186 @@ func (r *securityMonitoringDefaultRuleResource) Create(ctx context.Context, requ
 
 func (r *securityMonitoringDefaultRuleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	response.Diagnostics.AddError("not implemented", "Read is not implemented yet for the framework default rule resource")
+}
+
+func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *securityMonitoringDefaultRuleResourceModel, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	state.Enabled = types.BoolValue(ruleResponse.GetIsEnabled())
+
+	// SDKv2 default rule never wrote these to state, hiding API-side drift.
+	// Surface it now; pair with an Update-side empty-string clear.
+	// TODO: Remove this comment once the second half fix is done
+	if customMessage, ok := ruleResponse.GetCustomMessageOk(); ok {
+		state.CustomMessage = types.StringValue(*customMessage)
+	} else {
+		state.CustomMessage = types.StringNull()
+	}
+	if customName, ok := ruleResponse.GetCustomNameOk(); ok {
+		state.CustomName = types.StringValue(*customName)
+	} else {
+		state.CustomName = types.StringNull()
+	}
+
+	var caseDiags diag.Diagnostics
+	state.Cases, caseDiags = extractDefaultRuleCases(ctx, ruleResponse.GetCases())
+	diags.Append(caseDiags...)
+
+	if filters, ok := ruleResponse.GetFiltersOk(); ok {
+		state.Filters = extractDefaultRuleFilters(*filters)
+	}
+
+	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
+		state.Type = types.StringValue(string(*ruleType))
+	}
+
+	// options are only meaningful for log_detection rules.
+	responseOptions := ruleResponse.GetOptions()
+	var stateOptions []defaultRuleOptionsModel
+	if ruleResponse.GetType() == datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION {
+		stateOptions = append(stateOptions, defaultRuleOptionsModel{
+			DecreaseCriticalityBasedOnEnv: types.BoolValue(responseOptions.GetDecreaseCriticalityBasedOnEnv()),
+		})
+	}
+	state.Options = stateOptions
+
+	var queryDiags diag.Diagnostics
+	state.Queries, queryDiags = extractDefaultRuleQueries(ctx, ruleResponse.GetQueries())
+	diags.Append(queryDiags...)
+
+	var tagsDiags diag.Diagnostics
+	state.CustomTags, tagsDiags = extractDefaultRuleCustomTags(ctx, ruleResponse.GetTags(), ruleResponse.GetDefaultTags())
+	diags.Append(tagsDiags...)
+
+	return diags
+}
+
+func extractDefaultRuleCases(ctx context.Context, responseRuleCases []datadogV2.SecurityMonitoringRuleCase) ([]defaultRuleCaseModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	stateCases := make([]defaultRuleCaseModel, len(responseRuleCases))
+	for idx, apiCase := range responseRuleCases {
+		stateCase := defaultRuleCaseModel{
+			Status:        types.StringValue(string(apiCase.GetStatus())),
+			Notifications: types.ListNull(types.StringType),
+		}
+		if customStatus, ok := apiCase.GetCustomStatusOk(); ok && customStatus != nil {
+			stateCase.CustomStatus = types.StringValue(string(*customStatus))
+		}
+		if notifications, ok := apiCase.GetNotificationsOk(); ok {
+			var listDiags diag.Diagnostics
+			stateCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notifications)
+			diags.Append(listDiags...)
+		}
+		stateCases[idx] = stateCase
+	}
+	return stateCases, diags
+}
+
+func extractDefaultRuleFilters(responseFilters []datadogV2.SecurityMonitoringFilter) []ruleFilterModel {
+	filters := make([]ruleFilterModel, len(responseFilters))
+	for idx, responseFilter := range responseFilters {
+		filters[idx] = ruleFilterModel{
+			Action: types.StringValue(string(responseFilter.GetAction())),
+			Query:  types.StringValue(responseFilter.GetQuery()),
+		}
+	}
+	return filters
+}
+
+func extractDefaultRuleQueries(ctx context.Context, responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery) ([]defaultRuleQueryModel, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	stateQueries := make([]defaultRuleQueryModel, len(responseRuleQueries))
+	for idx, responseQuery := range responseRuleQueries {
+		stateQuery := defaultRuleQueryModel{}
+
+		if agg, ok := responseQuery.GetAggregationOk(); ok {
+			stateQuery.Aggregation = types.StringValue(string(*agg))
+		}
+		if gbf, ok := responseQuery.GetGroupByFieldsOk(); ok {
+			var listDiags diag.Diagnostics
+			stateQuery.GroupByFields, listDiags = types.ListValueFrom(ctx, types.StringType, *gbf)
+			diags.Append(listDiags...)
+		}
+		if hasGbf, ok := responseQuery.GetHasOptionalGroupByFieldsOk(); ok {
+			stateQuery.HasOptionalGroupByFields = types.BoolValue(*hasGbf)
+		}
+		if df, ok := responseQuery.GetDistinctFieldsOk(); ok {
+			var listDiags diag.Diagnostics
+			stateQuery.DistinctFields, listDiags = types.ListValueFrom(ctx, types.StringType, *df)
+			diags.Append(listDiags...)
+		}
+		if ds, ok := responseQuery.GetDataSourceOk(); ok {
+			stateQuery.DataSource = types.StringValue(string(*ds))
+		}
+		if metric, ok := responseQuery.GetMetricOk(); ok {
+			stateQuery.Metric = types.StringValue(*metric)
+		}
+		if m, ok := responseQuery.GetMetricsOk(); ok {
+			var listDiags diag.Diagnostics
+			stateQuery.Metrics, listDiags = types.ListValueFrom(ctx, types.StringType, *m)
+			diags.Append(listDiags...)
+		}
+		if n, ok := responseQuery.GetNameOk(); ok {
+			stateQuery.Name = types.StringValue(*n)
+		}
+		if q, ok := responseQuery.GetQueryOk(); ok {
+			stateQuery.Query = types.StringValue(*q)
+		}
+		if cqe, ok := responseQuery.GetCustomQueryExtensionOk(); ok {
+			stateQuery.CustomQueryExtension = types.StringValue(*cqe)
+		}
+
+		stateQueries[idx] = stateQuery
+	}
+	return stateQueries, diags
+}
+
+// custom_tags = api.tags - api.default_tags. Returns null when empty so
+// "user never set custom_tags" doesn't render as an empty set.
+func extractDefaultRuleCustomTags(ctx context.Context, apiTags []string, apiDefaultTags []string) (types.Set, diag.Diagnostics) {
+	defaultTags := make(map[string]bool, len(apiDefaultTags))
+	for _, t := range apiDefaultTags {
+		defaultTags[t] = true
+	}
+	customTags := make([]string, 0, len(apiTags))
+	for _, tag := range apiTags {
+		if _, ok := defaultTags[tag]; !ok {
+			customTags = append(customTags, tag)
+		}
+	}
+	if len(customTags) == 0 {
+		return types.SetNull(types.StringType), nil
+	}
+	return types.SetValueFrom(ctx, types.StringType, customTags)
+}
+
+// When the API returns [] for an Optional list the user didn't author, copy
+// the prior null back so post-apply state equals planned value.
+func reconcileEmptyDefaultRuleQueryFields(apiState, prior []defaultRuleQueryModel) {
+	for i := range apiState {
+		hasPrior := i < len(prior)
+		if isEmptyKnownList(apiState[i].DistinctFields) {
+			if hasPrior {
+				apiState[i].DistinctFields = prior[i].DistinctFields
+			} else {
+				apiState[i].DistinctFields = types.ListNull(types.StringType)
+			}
+		}
+		if isEmptyKnownList(apiState[i].GroupByFields) {
+			if hasPrior {
+				apiState[i].GroupByFields = prior[i].GroupByFields
+			} else {
+				apiState[i].GroupByFields = types.ListNull(types.StringType)
+			}
+		}
+		if isEmptyKnownList(apiState[i].Metrics) {
+			if hasPrior {
+				apiState[i].Metrics = prior[i].Metrics
+			} else {
+				apiState[i].Metrics = types.ListNull(types.StringType)
+			}
+		}
+	}
 }
 
 func (r *securityMonitoringDefaultRuleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
