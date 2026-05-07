@@ -24,10 +24,11 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
+				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, false, true, false, true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "aws_account_id", accountID),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "compliance_host", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "lambda", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "sensitive_data", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "vuln_containers_os", "true"),
@@ -49,7 +50,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_InvalidAccountID(t *testing.T
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
+				Config:      testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, false, true, false, true, true),
 				ExpectError: regexp.MustCompile("must be a valid AWS account ID"),
 			},
 		},
@@ -67,17 +68,19 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Update(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
+				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, false, true, false, true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "compliance_host", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "lambda", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "sensitive_data", "false"),
 				),
 			},
 			{
-				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, false, true, false, false),
+				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, false, false, true, false, false),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "compliance_host", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "lambda", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "sensitive_data", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_aws_scan_options.test", "vuln_containers_os", "false"),
@@ -99,7 +102,7 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningAwsScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, true, false, true, true),
+				Config: testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID, false, true, false, true, true),
 			},
 			{
 				ResourceName:      "datadog_agentless_scanning_aws_scan_options.test",
@@ -110,15 +113,16 @@ func TestAccDatadogAgentlessScanningAwsScanOptions_Import(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID string, lambda, sensitiveData, vulnContainers, vulnHost bool) string {
+func testAccCheckDatadogAgentlessScanningAwsScanOptionsConfig(accountID string, complianceHost, lambda, sensitiveData, vulnContainers, vulnHost bool) string {
 	return fmt.Sprintf(`
 resource "datadog_agentless_scanning_aws_scan_options" "test" {
   aws_account_id     = "%s"
+  compliance_host    = %s
   lambda             = %s
   sensitive_data     = %s
   vuln_containers_os = %s
   vuln_host_os       = %s
-}`, accountID, strconv.FormatBool(lambda), strconv.FormatBool(sensitiveData), strconv.FormatBool(vulnContainers), strconv.FormatBool(vulnHost))
+}`, accountID, strconv.FormatBool(complianceHost), strconv.FormatBool(lambda), strconv.FormatBool(sensitiveData), strconv.FormatBool(vulnContainers), strconv.FormatBool(vulnHost))
 }
 
 func testAccCheckDatadogAgentlessScanningAwsScanOptionsExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

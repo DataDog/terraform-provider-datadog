@@ -29,6 +29,7 @@ type agentlessScanningGcpScanOptionsResource struct {
 type agentlessScanningGcpScanOptionsResourceModel struct {
 	ID               types.String `tfsdk:"id"`
 	GcpProjectId     types.String `tfsdk:"gcp_project_id"`
+	ComplianceHost   types.Bool   `tfsdk:"compliance_host"`
 	VulnContainersOs types.Bool   `tfsdk:"vuln_containers_os"`
 	VulnHostOs       types.Bool   `tfsdk:"vuln_host_os"`
 }
@@ -62,6 +63,10 @@ func (r *agentlessScanningGcpScanOptionsResource) Schema(_ context.Context, _ re
 						"must be a valid GCP project ID: 6–30 characters, start with a lowercase letter, and include only lowercase letters, digits, or hyphens.",
 					),
 				},
+			},
+			"compliance_host": schema.BoolAttribute{
+				Description: "Indicates if host compliance scanning is enabled.",
+				Required:    true,
 			},
 			"vuln_containers_os": schema.BoolAttribute{
 				Description: "Indicates if scanning for vulnerabilities in containers is enabled.",
@@ -163,6 +168,7 @@ func (r *agentlessScanningGcpScanOptionsResource) updateStateFromScanOptionsData
 	state.GcpProjectId = types.StringValue(data.GetId())
 
 	attributes := data.GetAttributes()
+	state.ComplianceHost = types.BoolValue(attributes.GetComplianceHost())
 	state.VulnContainersOs = types.BoolValue(attributes.GetVulnContainersOs())
 	state.VulnHostOs = types.BoolValue(attributes.GetVulnHostOs())
 }
@@ -189,6 +195,7 @@ func (r *agentlessScanningGcpScanOptionsResource) createOrUpdate(state *agentles
 				Id:   projectID,
 				Type: datadogV2.GCPSCANOPTIONSINPUTUPDATEDATATYPE_GCP_SCAN_OPTIONS,
 				Attributes: &datadogV2.GcpScanOptionsInputUpdateDataAttributes{
+					ComplianceHost:   boolPtr(state.ComplianceHost.ValueBool()),
 					VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
 					VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),
 				},
@@ -213,6 +220,7 @@ func (r *agentlessScanningGcpScanOptionsResource) createOrUpdate(state *agentles
 				Id:   projectID,
 				Type: datadogV2.GCPSCANOPTIONSDATATYPE_GCP_SCAN_OPTIONS,
 				Attributes: &datadogV2.GcpScanOptionsDataAttributes{
+					ComplianceHost:   boolPtr(state.ComplianceHost.ValueBool()),
 					VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
 					VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),
 				},
