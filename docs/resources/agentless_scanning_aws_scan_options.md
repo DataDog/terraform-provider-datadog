@@ -16,11 +16,11 @@ Provides a Datadog Agentless Scanning AWS scan options resource. This can be use
 # Configure agentless scanning for an AWS account
 resource "datadog_agentless_scanning_aws_scan_options" "example" {
   aws_account_id     = "123456789012"
-  compliance_host    = true
   lambda             = true
   sensitive_data     = false
   vuln_containers_os = true
   vuln_host_os       = true
+  # compliance_host  = true  # Optional. Defaults to false. Enables host compliance benchmark scanning.
 }
 ```
 
@@ -30,11 +30,14 @@ resource "datadog_agentless_scanning_aws_scan_options" "example" {
 ### Required
 
 - `aws_account_id` (String) The AWS account ID for which agentless scanning is configured. Must be a valid AWS account ID.
-- `compliance_host` (Boolean) Indicates if host compliance scanning is enabled.
 - `lambda` (Boolean) Indicates if scanning of Lambda functions is enabled.
 - `sensitive_data` (Boolean) Indicates if scanning for sensitive data is enabled.
 - `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
 - `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
+
+### Optional
+
+- `compliance_host` (Boolean) Indicates if host compliance scanning is enabled. Defaults to `false`.
 
 ### Read-Only
 
