@@ -6,6 +6,8 @@ github.com/DataDog/datadog-api-client-go/v2 v2.59.1-0.20260429200005-8cd26b14c8b
 github.com/DataDog/datadog-api-client-go/v2 v2.59.1-0.20260429200005-8cd26b14c8b3/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
 github.com/DataDog/datadog-api-client-go/v2 v2.59.1-0.20260506113920-d887be416f6f h1:n0I0JS136/p0zP1hwl2FTlFSifp9amQ05M+pt4YzEMY=
 github.com/DataDog/datadog-api-client-go/v2 v2.59.1-0.20260506113920-d887be416f6f/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
+github.com/DataDog/datadog-api-client-go/v2 v2.59.1-0.20260507073823-d21839b72900 h1:4DoTeFr0n1c2Vl1I7+9yRaUqFzxdxpsYsWIF7O2wnEE=
+github.com/DataDog/datadog-api-client-go/v2 v2.59.1-0.20260507073823-d21839b72900/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
 github.com/DataDog/datadog-go v4.4.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/datadog-go v4.8.3+incompatible h1:fNGaYSuObuQb5nzeTQqowRAd9bpDIRRV4/gUtIBjh8Q=
 github.com/DataDog/datadog-go v4.8.3+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
