@@ -12,11 +12,11 @@ const tfSecurityDefaultRuleName = "datadog_security_monitoring_default_rule.acce
 
 func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			// Define an existing default rule as one we want to import
 			{
@@ -51,11 +51,11 @@ func TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning(t *testing.T
 	}
 
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			// Define an existing rule
 			{
@@ -155,7 +155,7 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 	options {
 		decrease_criticality_based_on_env = true
 	}
-	
+
 	custom_tags = [
 		"testtag:newtag",
 	]
