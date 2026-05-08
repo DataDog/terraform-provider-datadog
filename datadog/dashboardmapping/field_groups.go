@@ -1401,15 +1401,15 @@ var funnelWidgetRequestFields = []FieldSpec{
 // barChartWidgetStyleFields corresponds to OpenAPI BarChartWidgetStyle.
 var barChartWidgetStyleFields = []FieldSpec{
 	{HCLKey: "display", Type: TypeOneOf, OmitEmpty: true,
-		Description: "Bar chart display options.",
+		Description:   "Bar chart display options.",
 		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
 		Children: []FieldSpec{
 			{HCLKey: "flat", Type: TypeBlock, OmitEmpty: true,
-				Description: "Flat display mode with no stacking.",
+				Description:   "Flat display mode with no stacking.",
 				Discriminator: &OneOfDiscriminator{Value: "flat"},
 				Children:      []FieldSpec{}},
 			{HCLKey: "stacked", Type: TypeBlock, OmitEmpty: true,
-				Description: "Stacked display mode.",
+				Description:   "Stacked display mode.",
 				Discriminator: &OneOfDiscriminator{Value: "stacked"},
 				Children: []FieldSpec{
 					{HCLKey: "legend", Type: TypeString, OmitEmpty: true,
