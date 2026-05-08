@@ -66,7 +66,6 @@ type ApiInstances struct {
 	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
 	gcpStsIntegrationApiV2         *datadogV2.GCPIntegrationApi
 	incidentServicesApiV2          *datadogV2.IncidentServicesApi
-	incidentTeamsApiV2             *datadogV2.IncidentTeamsApi
 	incidentsApiV2                 *datadogV2.IncidentsApi
 	ipAllowlistApiV2               *datadogV2.IPAllowlistApi
 	keyManagementApiV2             *datadogV2.KeyManagementApi
@@ -464,14 +463,6 @@ func (i *ApiInstances) GetIncidentServicesApiV2() *datadogV2.IncidentServicesApi
 		i.incidentServicesApiV2 = datadogV2.NewIncidentServicesApi(i.HttpClient)
 	}
 	return i.incidentServicesApiV2
-}
-
-// GetIncidentTeamsApiV2 get instance of IncidentTeamsApi
-func (i *ApiInstances) GetIncidentTeamsApiV2() *datadogV2.IncidentTeamsApi {
-	if i.incidentTeamsApiV2 == nil {
-		i.incidentTeamsApiV2 = datadogV2.NewIncidentTeamsApi(i.HttpClient)
-	}
-	return i.incidentTeamsApiV2
 }
 
 // GetIncidentsApiV2 get instance of IncidentsApi
