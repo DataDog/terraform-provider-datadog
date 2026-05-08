@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
 	"testing"
 
@@ -2674,4 +2675,100 @@ resource "datadog_monitor" "data_quality_empty_group_by" {
     }
   }
 }`, uniq)
+}
+
+// TestAccDatadogMonitor_AggregateAugmentedQuery exercises composite aggregate_augmented_query variables (dogweb PR 159684 shape).
+// Requires an existing reference table: set DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE to the table name (with columns org_id and name).
+func TestAccDatadogMonitor_AggregateAugmentedQuery(t *testing.T) {
+	tableName := os.Getenv("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE")
+	if tableName == "" {
+		t.Skip("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE must be set to an existing reference table name with columns org_id and name")
+	}
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorAggregateAugmentedConfig(monitorName, tableName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "name", monitorName),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "type", "query alert"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.0.data_source", "aggregate_augmented_query"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.0.name", "query1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.0.augment_reference_table.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.0.base_metrics_query.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.0.join_condition.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.0.join_condition.0.join_type", "inner"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorAggregateAugmentedConfig(uniq, refTableName string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "aggregate_augmented" {
+  name    = "%s"
+  type    = "query alert"
+  message = "aggregate augmented test"
+  query   = "formula(\"query1\").rollup(\"sum\").last(\"5m\") > 124"
+
+  monitor_thresholds {
+    critical = "124"
+  }
+
+  variables {
+    aggregate_augmented_query {
+      name        = "query1"
+      data_source = "aggregate_augmented_query"
+
+      augment_reference_table {
+        name         = "filter_query"
+        data_source  = "reference_table"
+        table_name   = "%s"
+        columns {
+          name = "org_id"
+        }
+        columns {
+          name = "name"
+        }
+      }
+
+      base_metrics_query {
+        data_source = "metrics"
+        name        = "query1"
+        query       = "avg:dd{*} by {org_id}.as_count()"
+      }
+
+      join_condition {
+        augment_attribute = "org_id"
+        base_attribute    = "org_id"
+        join_type         = "inner"
+      }
+
+      compute {
+        name        = "compute_result"
+        aggregation = "max"
+      }
+
+      group_by {
+        facet  = "org_id"
+        source = "filter_query"
+      }
+      group_by {
+        facet  = "name"
+        source = "filter_query"
+      }
+    }
+  }
+}`, uniq, refTableName)
 }

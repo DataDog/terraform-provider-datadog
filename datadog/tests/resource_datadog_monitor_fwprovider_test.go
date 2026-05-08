@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
 	"testing"
 
@@ -1422,4 +1423,92 @@ func monitorExistsHelperFwprovider(auth context.Context, s *terraform.State, api
 		}
 	}
 	return nil
+}
+
+func TestAccMonitor_Fwprovider_AggregateAugmentedQuery(t *testing.T) {
+	tableName := os.Getenv("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE")
+	if tableName == "" {
+		t.Skip("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE must be set to an existing reference table name with columns org_id and name")
+	}
+	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorAggregateAugmentedFwConfig(uniq, tableName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.r", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_monitor.r", "type", "query alert"),
+					resource.TestCheckResourceAttr("datadog_monitor.r", "variables.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.r", "variables.0.aggregate_augmented_query.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.r", "variables.0.aggregate_augmented_query.0.data_source", "aggregate_augmented_query"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorAggregateAugmentedFwConfig(uniq, refTableName string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "r" {
+  name    = "%s"
+  type    = "query alert"
+  message = "aggregate augmented fw test"
+  query   = "formula(\"query1\").rollup(\"sum\").last(\"5m\") > 124"
+
+  monitor_thresholds {
+    critical = "124"
+  }
+
+  variables {
+    aggregate_augmented_query {
+      name        = "query1"
+      data_source = "aggregate_augmented_query"
+
+      augment_reference_table {
+        name         = "filter_query"
+        data_source  = "reference_table"
+        table_name   = "%s"
+        columns {
+          name = "org_id"
+        }
+        columns {
+          name = "name"
+        }
+      }
+
+      base_metrics_query {
+        data_source = "metrics"
+        name        = "query1"
+        query       = "avg:dd{*} by {org_id}.as_count()"
+      }
+
+      join_condition {
+        augment_attribute = "org_id"
+        base_attribute    = "org_id"
+        join_type         = "inner"
+      }
+
+      compute {
+        name        = "compute_result"
+        aggregation = "max"
+      }
+
+      group_by {
+        facet  = "org_id"
+        source = "filter_query"
+      }
+      group_by {
+        facet  = "name"
+        source = "filter_query"
+      }
+    }
+  }
+}`, uniq, refTableName)
 }
