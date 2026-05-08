@@ -11,8 +11,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -29,11 +29,11 @@ type agentlessScanningAzureScanOptionsResource struct {
 }
 
 type agentlessScanningAzureScanOptionsResourceModel struct {
-	ID                 types.String `tfsdk:"id"`
+	ID                  types.String `tfsdk:"id"`
 	AzureSubscriptionId types.String `tfsdk:"azure_subscription_id"`
-	ComplianceHost     types.Bool   `tfsdk:"compliance_host"`
-	VulnContainersOs   types.Bool   `tfsdk:"vuln_containers_os"`
-	VulnHostOs         types.Bool   `tfsdk:"vuln_host_os"`
+	ComplianceHost      types.Bool   `tfsdk:"compliance_host"`
+	VulnContainersOs    types.Bool   `tfsdk:"vuln_containers_os"`
+	VulnHostOs          types.Bool   `tfsdk:"vuln_host_os"`
 }
 
 func NewAgentlessScanningAzureScanOptionsResource() resource.Resource {
