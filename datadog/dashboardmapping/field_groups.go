@@ -1538,10 +1538,27 @@ var wildcardWidgetSpecificationFields = []FieldSpec{
 		Description: "The Vega or Vega-Lite specification as a JSON string. Use `jsonencode()` to encode the specification."},
 }
 
-// wildcardWidgetRequestFields are the request fields for the Wildcard widget.
-// The request is a oneOf of 4 existing types (TreeMap, Timeseries, ListStream, Distribution).
-// Request build/flatten is handled entirely in post-processing, similar to query_table.
-var wildcardWidgetRequestFields = append([]FieldSpec{
+// wildcardTreemapRequestFields are the children of the `treemap_request`
+// variant — a scalar formula request (the `TreeMapWidgetRequest` shape from
+// the OpenAPI spec). Mirrors the existing scalarFormulaRequestConfig
+// expectations: q (deprecated), formula/query plurals, style, sort.
+var wildcardTreemapRequestFields = append([]FieldSpec{
+	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
+		Deprecated:    "Use queries and formulas instead.",
+		ConflictsWith: []string{"query", "formula"},
+		Description:   "The metric query to use for this widget."},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Define request for the widget's style.",
+		Children:    widgetRequestStyleFields},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget.",
+		Children:    widgetSortByFields},
+}, standardQueryFields...)
+
+// wildcardTimeseriesRequestFields are the children of the
+// `timeseries_request` variant — same as treemap plus the timeseries-specific
+// `display_type` field.
+var wildcardTimeseriesRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
 		ConflictsWith: []string{"query", "formula"},
@@ -1550,19 +1567,56 @@ var wildcardWidgetRequestFields = append([]FieldSpec{
 		Description: "Define request for the widget's style.",
 		Children:    widgetRequestStyleFields},
 	{HCLKey: "display_type", Type: TypeString, OmitEmpty: true,
-		Description: "How the data points are displayed on the graph (for timeseries requests)."},
-	{HCLKey: "response_format", Type: TypeString, OmitEmpty: true,
-		Description: "The response format for the widget request.",
-		ValidValues: []string{"scalar", "timeseries", "event_list"}},
-	// sort is SchemaOnly: handled by formula request builder.
+		Description: "How the data points are displayed on the graph."},
 	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
 		Description: "The controls for sorting the widget.",
 		Children:    widgetSortByFields},
-	// List stream fields (for event_list response_format)
-	{HCLKey: "columns", Type: TypeBlockList, OmitEmpty: true, SchemaOnly: true,
-		Description: "Widget columns for list stream requests.",
-		Children:    listStreamColumnFields},
 }, standardQueryFields...)
+
+// wildcardListStreamRequestFields are the children of the
+// `liststream_request` variant — `ListStreamWidgetRequest` shape.
+var wildcardListStreamRequestFields = []FieldSpec{
+	{HCLKey: "columns", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "Widget columns for the list stream request.",
+		Children:    listStreamColumnFields},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "List stream query for the widget request.",
+		Children:    listStreamQueryFields},
+}
+
+// wildcardHistogramRequestFields are the children of the
+// `histogram_request` variant — `DistributionWidgetRequest` in histogram mode.
+// The singular `query` block is exposed as `histogram_query`; build/flatten
+// dispatch handled in post-processing.
+var wildcardHistogramRequestFields = []FieldSpec{
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Define request for the widget's style.",
+		Children:    widgetRequestStyleFields},
+	{HCLKey: "histogram_query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Singular query block for the histogram request.",
+		Children:    distributionHistogramQueryFields},
+}
+
+// wildcardWidgetRequestFields are the four sibling variant blocks for the
+// Wildcard widget request, mirroring the OpenAPI WildcardWidgetRequest
+// `oneOf` of TreeMap / Timeseries / ListStream / Distribution. Each
+// variant is SchemaOnly because build/flatten is handled in post-processing —
+// the post-processor inspects which variant block is populated and emits
+// the corresponding JSON shape.
+var wildcardWidgetRequestFields = []FieldSpec{
+	{HCLKey: "treemap_request", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Scalar-formula request (response_format=scalar). Set exactly one of treemap_request / timeseries_request / liststream_request / histogram_request.",
+		Children:    wildcardTreemapRequestFields},
+	{HCLKey: "timeseries_request", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Timeseries-formula request (response_format=timeseries).",
+		Children:    wildcardTimeseriesRequestFields},
+	{HCLKey: "liststream_request", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "List stream request (response_format=event_list).",
+		Children:    wildcardListStreamRequestFields},
+	{HCLKey: "histogram_request", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Histogram-mode distribution request (request_type=histogram).",
+		Children:    wildcardHistogramRequestFields},
+}
 
 // ============================================================
 // Common Widget Fields

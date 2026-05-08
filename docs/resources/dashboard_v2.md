@@ -1879,10 +1879,12 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--formula))
+- `histogram_query` (Block List, Max: 1) Singular query block for histogram-mode distribution requests. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--process_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query))
+- `request_type` (String) Set to 'histogram' for distribution-of-point-values requests. Valid values are `histogram`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--style))
@@ -2089,6 +2091,145 @@ Optional:
 
 - `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
 - `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query`
+
+Optional:
+
+- `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--apm_resource_stats_query))
+- `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query))
+- `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query--compute"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--event_query--search"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 
@@ -5042,10 +5183,12 @@ Optional:
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) The APM stats query to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--apm_stats_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--formula))
+- `histogram_query` (Block List, Max: 1) Singular query block for histogram-mode distribution requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--process_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query))
+- `request_type` (String) Set to 'histogram' for distribution-of-point-values requests. Valid values are `histogram`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--style))
@@ -5252,6 +5395,145 @@ Optional:
 
 - `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
 - `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query`
+
+Optional:
+
+- `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_resource_stats_query))
+- `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query))
+- `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
 
@@ -15693,317 +15975,33 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query))
-- `columns` (Block List) Widget columns for list stream requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--columns))
-- `display_type` (String) How the data points are displayed on the graph (for timeseries requests).
-- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula))
-- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query))
-- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--process_query))
-- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
-- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query))
-- `response_format` (String) The response format for the widget request. Valid values are `scalar`, `timeseries`, `event_list`.
-- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query))
-- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query))
-- `sort` (Block List, Max: 1) The controls for sorting the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--sort))
-- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--style))
+- `histogram_request` (Block List, Max: 1) Histogram-mode distribution request (request_type=histogram). (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request))
+- `liststream_request` (Block List, Max: 1) List stream request (response_format=event_list). (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request))
+- `timeseries_request` (Block List, Max: 1) Timeseries-formula request (response_format=timeseries). (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request))
+- `treemap_request` (Block List, Max: 1) Scalar-formula request (response_format=scalar). Set exactly one of treemap_request / timeseries_request / liststream_request / histogram_request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.apm_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request`
 
 Required:
 
-- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+- `histogram_query` (Block List, Min: 1, Max: 1) Singular query block for the histogram request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query))
 
 Optional:
 
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--multi_compute))
-- `search_query` (String) The search query to use.
+- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--style))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.apm_query.compute_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query`
 
 Optional:
 
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.apm_query.group_by`
-
-Optional:
-
-- `facet` (String) The facet name.
-- `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--group_by--sort_query))
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.apm_query.group_by.sort_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- `facet` (String) The facet name.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.apm_query.multi_compute`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-
-Optional:
-
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--columns"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.columns`
-
-Optional:
-
-- `field` (String) Widget column field.
-- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula`
-
-Required:
-
-- `formula_expression` (String) A string expression built from queries, formulas, and functions.
-
-Optional:
-
-- `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, and `trend`.
-- `cell_display_mode_options` (Block List, Max: 1) Options for the cell display mode. Only used when `cell_display_mode` is set to `trend`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--cell_display_mode_options))
-- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--conditional_formats))
-- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--limit))
-- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format))
-- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--style))
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--cell_display_mode_options"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.cell_display_mode_options`
-
-Optional:
-
-- `trend_type` (String) The type of trend line to display. Valid values are `area`, `line`, and `bars`.
-- `y_scale` (String) The scale of the y-axis. Valid values are `shared` and `independent`.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--conditional_formats"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.conditional_formats`
-
-Required:
-
-- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
-- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
-- `value` (Number) A value for the comparator.
-
-Optional:
-
-- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
-- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
-- `hide_value` (Boolean) Setting this to True hides values.
-- `image_url` (String) Displays an image as the background.
-- `metric` (String) The metric from the request to correlate with this conditional format.
-- `timeframe` (String) Defines the displayed timeframe.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--limit"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.limit`
-
-Optional:
-
-- `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.number_format`
-
-Required:
-
-- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit))
-
-Optional:
-
-- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit_scale))
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.number_format.unit`
-
-Optional:
-
-- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit--custom))
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit--canonical"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.number_format.unit.canonical`
-
-Optional:
-
-- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit--custom"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.number_format.unit.custom`
-
-Required:
-
-- `label` (String) Unit label
-
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--number_format--unit_scale"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.number_format.unit_scale`
-
-Required:
-
-- `unit_name` (String) The name of the unit.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--formula--style"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.formula.style`
-
-Optional:
-
-- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
-- `palette_index` (Number) Index specifying which color to use within the palette.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.log_query`
-
-Required:
-
-- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
-
-Optional:
-
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--multi_compute))
-- `search_query` (String) The search query to use.
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.log_query.compute_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-
-Optional:
-
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.log_query.group_by`
-
-Optional:
-
-- `facet` (String) The facet name.
-- `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--group_by--sort_query))
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.log_query.group_by.sort_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- `facet` (String) The facet name.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.log_query.multi_compute`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-
-Optional:
-
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.process_query`
-
-Required:
-
-- `metric` (String) Your chosen metric.
-
-Optional:
-
-- `filter_by` (List of String) A list of processes.
-- `limit` (Number) The max number of items in the filter list.
-- `search_by` (String) Your chosen search term.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query`
-
-Optional:
-
-- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--apm_dependency_stats_query))
-- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--apm_resource_stats_query))
-- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--cloud_cost_query))
-- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query))
-- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--metric_query))
-- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--process_query))
-- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--slo_query))
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--apm_dependency_stats_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.apm_dependency_stats_query`
-
-Required:
-
-- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM environment.
-- `name` (String) The name of query for use in formulas.
-- `operation_name` (String) Name of operation on service.
-- `resource_name` (String) APM resource.
-- `service` (String) APM service.
-- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
-
-Optional:
-
-- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
-- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--apm_resource_stats_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.apm_resource_stats_query`
+- `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query))
+- `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query))
+- `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.apm_resource_stats_query`
 
 Required:
 
@@ -16023,41 +16021,26 @@ Optional:
 - `resource_name` (String) APM resource.
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--cloud_cost_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.cloud_cost_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.event_query`
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
-- `name` (String) The name of the query for use in formulas.
-- `query` (String) Query for Cloud Cost data.
-
-Optional:
-
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-
-
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.event_query`
-
-Required:
-
-- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--compute))
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--compute))
 - `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by))
-- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by_fields))
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
-- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--search))
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--search))
 - `storage` (String) Option for storage location. Feature in Private Beta.
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.event_query.compute`
 
 Required:
 
@@ -16069,8 +16052,8 @@ Optional:
 - `metric` (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by`
 
 Required:
 
@@ -16079,10 +16062,10 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
-- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by--sort))
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by.sort`
 
 Required:
 
@@ -16095,8 +16078,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by_fields"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.event_query.group_by_fields`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by_fields`
 
 Required:
 
@@ -16105,10 +16088,10 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
-- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by_fields--sort))
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields--sort))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--group_by_fields--sort"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.event_query.group_by_fields.sort`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by_fields.sort`
 
 Required:
 
@@ -16121,8 +16104,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.event_query.search`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.event_query.search`
 
 Required:
 
@@ -16130,8 +16113,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.metric_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.metric_query`
 
 Required:
 
@@ -16146,8 +16129,519 @@ Optional:
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--process_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.process_query`
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--style"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.liststream_request`
+
+Required:
+
+- `columns` (Block List, Min: 1) Widget columns for the list stream request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--columns))
+- `query` (Block List, Min: 1, Max: 1) List stream query for the widget request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--columns"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.liststream_request.columns`
+
+Optional:
+
+- `field` (String) Widget column field.
+- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.liststream_request.query`
+
+Required:
+
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
+
+Optional:
+
+- `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
+- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--group_by))
+- `indexes` (List of String) List of indexes.
+- `query_string` (String) Widget query.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--sort))
+- `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.liststream_request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet name
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.liststream_request.query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request`
+
+Optional:
+
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query))
+- `display_type` (String) How the data points are displayed on the graph.
+- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
+- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort))
+- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--style))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.apm_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.apm_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.apm_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.apm_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.apm_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula`
+
+Required:
+
+- `formula_expression` (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) An expression alias.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, and `trend`.
+- `cell_display_mode_options` (Block List, Max: 1) Options for the cell display mode. Only used when `cell_display_mode` is set to `trend`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--cell_display_mode_options))
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--conditional_formats))
+- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format))
+- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--style))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--cell_display_mode_options"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.cell_display_mode_options`
+
+Optional:
+
+- `trend_type` (String) The type of trend line to display. Valid values are `area`, `line`, and `bars`.
+- `y_scale` (String) The scale of the y-axis. Valid values are `shared` and `independent`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--limit"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.limit`
+
+Optional:
+
+- `count` (Number) The number of results to return.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--formula--style"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.formula.style`
+
+Optional:
+
+- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
+- `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.log_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.log_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.log_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.log_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--log_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.log_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.process_query`
+
+Required:
+
+- `metric` (String) Your chosen metric.
+
+Optional:
+
+- `filter_by` (List of String) A list of processes.
+- `limit` (Number) The max number of items in the filter list.
+- `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--slo_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.process_query`
 
 Required:
 
@@ -16166,8 +16660,8 @@ Optional:
 - `text_filter` (String) The text to use as a filter.
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--query--slo_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.query.slo_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.slo_query`
 
 Required:
 
@@ -16185,8 +16679,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.rum_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.rum_query`
 
 Required:
 
@@ -16194,13 +16688,13 @@ Required:
 
 Optional:
 
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--multi_compute))
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--multi_compute))
 - `search_query` (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.rum_query.compute_query`
 
 Required:
 
@@ -16212,17 +16706,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.rum_query.group_by`
 
 Optional:
 
 - `facet` (String) The facet name.
 - `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--group_by--sort_query))
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--group_by--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.rum_query.group_by.sort_query`
 
 Required:
 
@@ -16235,8 +16729,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.rum_query.multi_compute`
 
 Required:
 
@@ -16249,8 +16743,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.security_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.security_query`
 
 Required:
 
@@ -16258,13 +16752,13 @@ Required:
 
 Optional:
 
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--multi_compute))
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--multi_compute))
 - `search_query` (String) The search query to use.
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.security_query.compute_query`
 
 Required:
 
@@ -16276,17 +16770,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.security_query.group_by`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.security_query.group_by`
 
 Optional:
 
 - `facet` (String) The facet name.
 - `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--group_by--sort_query))
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.security_query.group_by.sort_query`
 
 Required:
 
@@ -16299,8 +16793,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.security_query.multi_compute`
 
 Required:
 
@@ -16313,24 +16807,24 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--sort"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.sort`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.sort`
 
 Optional:
 
 - `count` (Number) The number of items to limit the widget to.
-- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--sort--order_by))
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort--order_by))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--sort--order_by"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.sort.order_by`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort--order_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.sort.order_by`
 
 Optional:
 
-- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--sort--order_by--formula_sort))
-- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--sort--order_by--group_sort))
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort--order_by--group_sort))
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--sort--order_by--formula_sort"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.sort.order_by.formula_sort`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.sort.order_by.formula_sort`
 
 Required:
 
@@ -16338,8 +16832,8 @@ Required:
 - `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--sort--order_by--group_sort"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.sort.order_by.group_sort`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.sort.order_by.group_sort`
 
 Required:
 
@@ -16349,13 +16843,673 @@ Required:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--style"></a>
-### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.style`
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--style"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.style`
 
 Optional:
 
 - `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request`
+
+Optional:
+
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query))
+- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
+- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort))
+- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--style))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.apm_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.apm_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.apm_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.apm_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.apm_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula`
+
+Required:
+
+- `formula_expression` (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) An expression alias.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, and `trend`.
+- `cell_display_mode_options` (Block List, Max: 1) Options for the cell display mode. Only used when `cell_display_mode` is set to `trend`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--cell_display_mode_options))
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--conditional_formats))
+- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format))
+- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--style))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--cell_display_mode_options"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.cell_display_mode_options`
+
+Optional:
+
+- `trend_type` (String) The type of trend line to display. Valid values are `area`, `line`, and `bars`.
+- `y_scale` (String) The scale of the y-axis. Valid values are `shared` and `independent`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--limit"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.limit`
+
+Optional:
+
+- `count` (Number) The number of results to return.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--formula--style"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.formula.style`
+
+Optional:
+
+- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
+- `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.log_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.log_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.log_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.log_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--log_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.log_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.process_query`
+
+Required:
+
+- `metric` (String) Your chosen metric.
+
+Optional:
+
+- `filter_by` (List of String) A list of processes.
+- `limit` (Number) The max number of items in the filter list.
+- `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--slo_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.rum_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.rum_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.rum_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.rum_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.rum_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.security_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--compute_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.security_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.security_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--group_by--sort_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.security_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--security_query--multi_compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.security_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort--order_by))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort--order_by"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--style"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
 
 
 
@@ -33273,317 +34427,33 @@ Optional:
 
 Optional:
 
-- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--apm_query))
-- `columns` (Block List) Widget columns for list stream requests. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--columns))
-- `display_type` (String) How the data points are displayed on the graph (for timeseries requests).
-- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula))
-- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--log_query))
-- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--process_query))
-- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
-- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query))
-- `response_format` (String) The response format for the widget request. Valid values are `scalar`, `timeseries`, `event_list`.
-- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--rum_query))
-- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--security_query))
-- `sort` (Block List, Max: 1) The controls for sorting the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--sort))
-- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--style))
+- `histogram_request` (Block List, Max: 1) Histogram-mode distribution request (request_type=histogram). (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request))
+- `liststream_request` (Block List, Max: 1) List stream request (response_format=event_list). (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request))
+- `timeseries_request` (Block List, Max: 1) Timeseries-formula request (response_format=timeseries). (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request))
+- `treemap_request` (Block List, Max: 1) Scalar-formula request (response_format=scalar). Set exactly one of treemap_request / timeseries_request / liststream_request / histogram_request. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request))
 
-<a id="nestedblock--widget--wildcard_definition--request--apm_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.apm_query`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request`
 
 Required:
 
-- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+- `histogram_query` (Block List, Min: 1, Max: 1) Singular query block for the histogram request. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query))
 
 Optional:
 
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--apm_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--apm_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--apm_query--multi_compute))
-- `search_query` (String) The search query to use.
+- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--style))
 
-<a id="nestedblock--widget--wildcard_definition--request--apm_query--compute_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.apm_query.compute_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query`
 
 Optional:
 
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--apm_query--group_by"></a>
-### Nested Schema for `widget.wildcard_definition.request.apm_query.group_by`
-
-Optional:
-
-- `facet` (String) The facet name.
-- `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--apm_query--group_by--sort_query))
-
-<a id="nestedblock--widget--wildcard_definition--request--apm_query--group_by--sort_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.apm_query.group_by.sort_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- `facet` (String) The facet name.
-
-
-
-<a id="nestedblock--widget--wildcard_definition--request--apm_query--multi_compute"></a>
-### Nested Schema for `widget.wildcard_definition.request.apm_query.multi_compute`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-
-Optional:
-
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--wildcard_definition--request--columns"></a>
-### Nested Schema for `widget.wildcard_definition.request.columns`
-
-Optional:
-
-- `field` (String) Widget column field.
-- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--formula"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula`
-
-Required:
-
-- `formula_expression` (String) A string expression built from queries, formulas, and functions.
-
-Optional:
-
-- `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, and `trend`.
-- `cell_display_mode_options` (Block List, Max: 1) Options for the cell display mode. Only used when `cell_display_mode` is set to `trend`. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--cell_display_mode_options))
-- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--conditional_formats))
-- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--limit))
-- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--number_format))
-- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--style))
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--cell_display_mode_options"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.cell_display_mode_options`
-
-Optional:
-
-- `trend_type` (String) The type of trend line to display. Valid values are `area`, `line`, and `bars`.
-- `y_scale` (String) The scale of the y-axis. Valid values are `shared` and `independent`.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--conditional_formats"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.conditional_formats`
-
-Required:
-
-- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
-- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
-- `value` (Number) A value for the comparator.
-
-Optional:
-
-- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
-- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
-- `hide_value` (Boolean) Setting this to True hides values.
-- `image_url` (String) Displays an image as the background.
-- `metric` (String) The metric from the request to correlate with this conditional format.
-- `timeframe` (String) Defines the displayed timeframe.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--limit"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.limit`
-
-Optional:
-
-- `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--number_format"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.number_format`
-
-Required:
-
-- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--number_format--unit))
-
-Optional:
-
-- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--number_format--unit_scale))
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--number_format--unit"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.number_format.unit`
-
-Optional:
-
-- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--formula--number_format--unit--custom))
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--number_format--unit--canonical"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.number_format.unit.canonical`
-
-Optional:
-
-- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
-- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
-
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--number_format--unit--custom"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.number_format.unit.custom`
-
-Required:
-
-- `label` (String) Unit label
-
-
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--number_format--unit_scale"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.number_format.unit_scale`
-
-Required:
-
-- `unit_name` (String) The name of the unit.
-
-
-
-<a id="nestedblock--widget--wildcard_definition--request--formula--style"></a>
-### Nested Schema for `widget.wildcard_definition.request.formula.style`
-
-Optional:
-
-- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
-- `palette_index` (Number) Index specifying which color to use within the palette.
-
-
-
-<a id="nestedblock--widget--wildcard_definition--request--log_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.log_query`
-
-Required:
-
-- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
-
-Optional:
-
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--log_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--log_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--log_query--multi_compute))
-- `search_query` (String) The search query to use.
-
-<a id="nestedblock--widget--wildcard_definition--request--log_query--compute_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.log_query.compute_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-
-Optional:
-
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--log_query--group_by"></a>
-### Nested Schema for `widget.wildcard_definition.request.log_query.group_by`
-
-Optional:
-
-- `facet` (String) The facet name.
-- `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--log_query--group_by--sort_query))
-
-<a id="nestedblock--widget--wildcard_definition--request--log_query--group_by--sort_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.log_query.group_by.sort_query`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
-
-Optional:
-
-- `facet` (String) The facet name.
-
-
-
-<a id="nestedblock--widget--wildcard_definition--request--log_query--multi_compute"></a>
-### Nested Schema for `widget.wildcard_definition.request.log_query.multi_compute`
-
-Required:
-
-- `aggregation` (String) The aggregation method.
-
-Optional:
-
-- `facet` (String) The facet name.
-- `interval` (Number) Define the time interval in seconds.
-
-
-
-<a id="nestedblock--widget--wildcard_definition--request--process_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.process_query`
-
-Required:
-
-- `metric` (String) Your chosen metric.
-
-Optional:
-
-- `filter_by` (List of String) A list of processes.
-- `limit` (Number) The max number of items in the filter list.
-- `search_by` (String) Your chosen search term.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query`
-
-Optional:
-
-- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--apm_dependency_stats_query))
-- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--apm_resource_stats_query))
-- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--cloud_cost_query))
-- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--event_query))
-- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--metric_query))
-- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--process_query))
-- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--slo_query))
-
-<a id="nestedblock--widget--wildcard_definition--request--query--apm_dependency_stats_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.apm_dependency_stats_query`
-
-Required:
-
-- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM environment.
-- `name` (String) The name of query for use in formulas.
-- `operation_name` (String) Name of operation on service.
-- `resource_name` (String) APM resource.
-- `service` (String) APM service.
-- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
-
-Optional:
-
-- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
-- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
-- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--query--apm_resource_stats_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.apm_resource_stats_query`
+- `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query))
+- `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query))
+- `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.apm_resource_stats_query`
 
 Required:
 
@@ -33603,41 +34473,26 @@ Optional:
 - `resource_name` (String) APM resource.
 
 
-<a id="nestedblock--widget--wildcard_definition--request--query--cloud_cost_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.cloud_cost_query`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.event_query`
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
-- `name` (String) The name of the query for use in formulas.
-- `query` (String) Query for Cloud Cost data.
-
-Optional:
-
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-
-
-<a id="nestedblock--widget--wildcard_definition--request--query--event_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.event_query`
-
-Required:
-
-- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--event_query--compute))
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--compute))
 - `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
 
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
-- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--event_query--group_by))
-- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--event_query--group_by_fields))
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields))
 - `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
-- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--event_query--search))
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--search))
 - `storage` (String) Option for storage location. Feature in Private Beta.
 
-<a id="nestedblock--widget--wildcard_definition--request--query--event_query--compute"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.event_query.compute`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.event_query.compute`
 
 Required:
 
@@ -33649,8 +34504,8 @@ Optional:
 - `metric` (String) The measurable attribute to compute.
 
 
-<a id="nestedblock--widget--wildcard_definition--request--query--event_query--group_by"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.event_query.group_by`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by`
 
 Required:
 
@@ -33659,10 +34514,10 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
-- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--event_query--group_by--sort))
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort))
 
-<a id="nestedblock--widget--wildcard_definition--request--query--event_query--group_by--sort"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.event_query.group_by.sort`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by.sort`
 
 Required:
 
@@ -33675,8 +34530,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--query--event_query--group_by_fields"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.event_query.group_by_fields`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by_fields`
 
 Required:
 
@@ -33685,10 +34540,10 @@ Required:
 Optional:
 
 - `limit` (Number) The number of groups to return.
-- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--query--event_query--group_by_fields--sort))
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields--sort))
 
-<a id="nestedblock--widget--wildcard_definition--request--query--event_query--group_by_fields--sort"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.event_query.group_by_fields.sort`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.event_query.group_by_fields.sort`
 
 Required:
 
@@ -33701,8 +34556,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--query--event_query--search"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.event_query.search`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--search"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.event_query.search`
 
 Required:
 
@@ -33710,8 +34565,8 @@ Required:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--query--metric_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.metric_query`
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.metric_query`
 
 Required:
 
@@ -33726,8 +34581,519 @@ Optional:
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
 
 
-<a id="nestedblock--widget--wildcard_definition--request--query--process_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.process_query`
+
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--style"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--liststream_request"></a>
+### Nested Schema for `widget.wildcard_definition.request.liststream_request`
+
+Required:
+
+- `columns` (Block List, Min: 1) Widget columns for the list stream request. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--columns))
+- `query` (Block List, Min: 1, Max: 1) List stream query for the widget request. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--query))
+
+<a id="nestedblock--widget--wildcard_definition--request--liststream_request--columns"></a>
+### Nested Schema for `widget.wildcard_definition.request.liststream_request.columns`
+
+Optional:
+
+- `field` (String) Widget column field.
+- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--liststream_request--query"></a>
+### Nested Schema for `widget.wildcard_definition.request.liststream_request.query`
+
+Required:
+
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
+
+Optional:
+
+- `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
+- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--query--group_by))
+- `indexes` (List of String) List of indexes.
+- `query_string` (String) Widget query.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--query--sort))
+- `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--wildcard_definition--request--liststream_request--query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.liststream_request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet name
+
+
+<a id="nestedblock--widget--wildcard_definition--request--liststream_request--query--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.liststream_request.query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request`
+
+Optional:
+
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query))
+- `display_type` (String) How the data points are displayed on the graph.
+- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
+- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--sort))
+- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--style))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.apm_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.apm_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.apm_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.apm_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.apm_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula`
+
+Required:
+
+- `formula_expression` (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) An expression alias.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, and `trend`.
+- `cell_display_mode_options` (Block List, Max: 1) Options for the cell display mode. Only used when `cell_display_mode` is set to `trend`. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--cell_display_mode_options))
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--conditional_formats))
+- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format))
+- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--style))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--cell_display_mode_options"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.cell_display_mode_options`
+
+Optional:
+
+- `trend_type` (String) The type of trend line to display. Valid values are `area`, `line`, and `bars`.
+- `y_scale` (String) The scale of the y-axis. Valid values are `shared` and `independent`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--conditional_formats"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--limit"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.limit`
+
+Optional:
+
+- `count` (Number) The number of results to return.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--formula--style"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.formula.style`
+
+Optional:
+
+- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
+- `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--log_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.log_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.log_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.log_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.log_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--log_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.log_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--process_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.process_query`
+
+Required:
+
+- `metric` (String) Your chosen metric.
+
+Optional:
+
+- `filter_by` (List of String) A list of processes.
+- `limit` (Number) The max number of items in the filter list.
+- `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--slo_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--search"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--metric_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--process_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.process_query`
 
 Required:
 
@@ -33746,8 +35112,8 @@ Optional:
 - `text_filter` (String) The text to use as a filter.
 
 
-<a id="nestedblock--widget--wildcard_definition--request--query--slo_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.query.slo_query`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--slo_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.slo_query`
 
 Required:
 
@@ -33765,8 +35131,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--rum_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.rum_query`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.rum_query`
 
 Required:
 
@@ -33774,13 +35140,13 @@ Required:
 
 Optional:
 
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--rum_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--rum_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--rum_query--multi_compute))
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--multi_compute))
 - `search_query` (String) The search query to use.
 
-<a id="nestedblock--widget--wildcard_definition--request--rum_query--compute_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.rum_query.compute_query`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.rum_query.compute_query`
 
 Required:
 
@@ -33792,17 +35158,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--wildcard_definition--request--rum_query--group_by"></a>
-### Nested Schema for `widget.wildcard_definition.request.rum_query.group_by`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.rum_query.group_by`
 
 Optional:
 
 - `facet` (String) The facet name.
 - `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--rum_query--group_by--sort_query))
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--group_by--sort_query))
 
-<a id="nestedblock--widget--wildcard_definition--request--rum_query--group_by--sort_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.rum_query.group_by.sort_query`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.rum_query.group_by.sort_query`
 
 Required:
 
@@ -33815,8 +35181,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--rum_query--multi_compute"></a>
-### Nested Schema for `widget.wildcard_definition.request.rum_query.multi_compute`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.rum_query.multi_compute`
 
 Required:
 
@@ -33829,8 +35195,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--security_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.security_query`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--security_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.security_query`
 
 Required:
 
@@ -33838,13 +35204,13 @@ Required:
 
 Optional:
 
-- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--security_query--compute_query))
-- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--security_query--group_by))
-- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--security_query--multi_compute))
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--multi_compute))
 - `search_query` (String) The search query to use.
 
-<a id="nestedblock--widget--wildcard_definition--request--security_query--compute_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.security_query.compute_query`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.security_query.compute_query`
 
 Required:
 
@@ -33856,17 +35222,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
-<a id="nestedblock--widget--wildcard_definition--request--security_query--group_by"></a>
-### Nested Schema for `widget.wildcard_definition.request.security_query.group_by`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.security_query.group_by`
 
 Optional:
 
 - `facet` (String) The facet name.
 - `limit` (Number) The maximum number of items in the group.
-- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--security_query--group_by--sort_query))
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--group_by--sort_query))
 
-<a id="nestedblock--widget--wildcard_definition--request--security_query--group_by--sort_query"></a>
-### Nested Schema for `widget.wildcard_definition.request.security_query.group_by.sort_query`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.security_query.group_by.sort_query`
 
 Required:
 
@@ -33879,8 +35245,8 @@ Optional:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--security_query--multi_compute"></a>
-### Nested Schema for `widget.wildcard_definition.request.security_query.multi_compute`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--security_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.security_query.multi_compute`
 
 Required:
 
@@ -33893,24 +35259,24 @@ Optional:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--sort"></a>
-### Nested Schema for `widget.wildcard_definition.request.sort`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.sort`
 
 Optional:
 
 - `count` (Number) The number of items to limit the widget to.
-- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--sort--order_by))
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--sort--order_by))
 
-<a id="nestedblock--widget--wildcard_definition--request--sort--order_by"></a>
-### Nested Schema for `widget.wildcard_definition.request.sort.order_by`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--sort--order_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.sort.order_by`
 
 Optional:
 
-- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--sort--order_by--formula_sort))
-- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--sort--order_by--group_sort))
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--sort--order_by--group_sort))
 
-<a id="nestedblock--widget--wildcard_definition--request--sort--order_by--formula_sort"></a>
-### Nested Schema for `widget.wildcard_definition.request.sort.order_by.formula_sort`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.sort.order_by.formula_sort`
 
 Required:
 
@@ -33918,8 +35284,8 @@ Required:
 - `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
 
 
-<a id="nestedblock--widget--wildcard_definition--request--sort--order_by--group_sort"></a>
-### Nested Schema for `widget.wildcard_definition.request.sort.order_by.group_sort`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.sort.order_by.group_sort`
 
 Required:
 
@@ -33929,13 +35295,673 @@ Required:
 
 
 
-<a id="nestedblock--widget--wildcard_definition--request--style"></a>
-### Nested Schema for `widget.wildcard_definition.request.style`
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--style"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.style`
 
 Optional:
 
 - `order_by` (String) How to order series. Valid values are `tags`, `values`.
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request`
+
+Optional:
+
+- `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--apm_query))
+- `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula))
+- `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--log_query))
+- `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--process_query))
+- `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
+- `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query))
+- `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--rum_query))
+- `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--sort))
+- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--style))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--apm_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.apm_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.apm_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.apm_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.apm_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.apm_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula`
+
+Required:
+
+- `formula_expression` (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) An expression alias.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, and `trend`.
+- `cell_display_mode_options` (Block List, Max: 1) Options for the cell display mode. Only used when `cell_display_mode` is set to `trend`. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--cell_display_mode_options))
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--conditional_formats))
+- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format))
+- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--style))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--cell_display_mode_options"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.cell_display_mode_options`
+
+Optional:
+
+- `trend_type` (String) The type of trend line to display. Valid values are `area`, `line`, and `bars`.
+- `y_scale` (String) The scale of the y-axis. Valid values are `shared` and `independent`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--conditional_formats"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--limit"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.limit`
+
+Optional:
+
+- `count` (Number) The number of results to return.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--formula--style"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.formula.style`
+
+Optional:
+
+- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
+- `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--log_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.log_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--log_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--log_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--log_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--log_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.log_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--log_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.log_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.log_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--log_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.log_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--process_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.process_query`
+
+Required:
+
+- `metric` (String) Your chosen metric.
+
+Optional:
+
+- `filter_by` (List of String) A list of processes.
+- `limit` (Number) The max number of items in the filter list.
+- `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--slo_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--search"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--metric_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--process_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--slo_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--rum_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.rum_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.rum_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.rum_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.rum_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.rum_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--security_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.security_query`
+
+Required:
+
+- `index` (String) A comma separated-list of index names. Use `*` to query all indexes at once. [Multiple Indexes](https://docs.datadoghq.com/logs/indexes/#multiple-indexes).
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--security_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--security_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--security_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--security_query--compute_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.security_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--security_query--group_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.security_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--security_query--group_by--sort_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.security_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--security_query--multi_compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.security_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--sort--order_by))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--sort--order_by"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--style"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
 
 
 

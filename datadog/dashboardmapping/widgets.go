@@ -757,7 +757,33 @@ var ChangeWidgetSpec = WidgetSpec{
 	},
 }
 
+// distributionHistogramQueryFields holds the children of the singular `query`
+// block on a histogram-mode DistributionWidgetRequest. The OpenAPI spec
+// (DistributionWidgetHistogramRequestQuery) lists three valid query variants:
+// metric, event, and apm_resource_stats. We reuse the same FieldSpec children
+// already declared for plural-formula queries — flattenFormulaQueryJSON and
+// buildQueryFromMapAttrs both dispatch by data_source over this exact shape.
+var distributionHistogramQueryFields = []FieldSpec{
+	{HCLKey: "metric_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Metric query for histogram-mode distribution.",
+		Children:    formulaAndFunctionMetricQueryFields},
+	{HCLKey: "event_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Event query for histogram-mode distribution.",
+		Children:    formulaAndFunctionEventQueryFields},
+	{HCLKey: "apm_resource_stats_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "APM resource stats query for histogram-mode distribution.",
+		Children:    formulaAndFunctionApmResourceStatsQueryFields},
+}
+
 // DistributionWidgetSpec corresponds to OpenAPI DistributionWidgetDefinition.
+//
+// Distribution requests have two coexisting modes in the same flat schema
+// (per OpenAPI DistributionWidgetRequest):
+//   - Aggregated: queries[]/formulas[]/response_format (handled by the
+//     standard formula request path).
+//   - Histogram: request_type=histogram + a singular `query` block (one of
+//     three FormulaAndFunction query types). Surfaced in HCL as the
+//     `histogram_query` block and dispatched in post-processing.
 var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
@@ -770,6 +796,17 @@ var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The APM stats query to use in the widget.",
 		Children:    apmStatsQueryFields},
+	// Histogram-mode distribution request fields. request_type acts as the
+	// discriminator for histogram mode; histogram_query carries the singular
+	// query body. histogram_query is SchemaOnly because the JSON key it maps
+	// to (`query`) conflicts with the existing plural `query` TypeBlockList
+	// in standardQueryFields — handled in post-processing.
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
+		Description: "Set to 'histogram' for distribution-of-point-values requests.",
+		ValidValues: []string{"histogram"}},
+	{HCLKey: "histogram_query", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Singular query block for histogram-mode distribution requests.",
+		Children:    distributionHistogramQueryFields},
 }, standardQueryFields...)
 
 // distributionWidgetXAxisFields corresponds to OpenAPI DistributionWidgetXAxis.
@@ -1446,7 +1483,6 @@ var allWidgetSpecs = []WidgetSpec{
 	PowerpackWidgetSpec,
 	// Funnel widget (unique request structure; request_type injected by post-process hook)
 	FunnelWidgetSpec,
-	// New widget types (OpenAPI sync)
 	BarChartWidgetSpec,
 	SankeyWidgetSpec,
 	WildcardWidgetSpec,

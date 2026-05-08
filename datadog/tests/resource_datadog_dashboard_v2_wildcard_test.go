@@ -24,17 +24,18 @@ resource "datadog_dashboard_v2" "wildcard_dashboard" {
                 })
             }
             request {
-                formula {
-                    formula_expression = "query1"
-                }
-                query {
-                    metric_query {
-                        data_source = "metrics"
-                        name        = "query1"
-                        query       = "avg:system.cpu.user{*} by {env}"
+                treemap_request {
+                    formula {
+                        formula_expression = "query1"
+                    }
+                    query {
+                        metric_query {
+                            data_source = "metrics"
+                            name        = "query1"
+                            query       = "avg:system.cpu.user{*} by {env}"
+                        }
                     }
                 }
-                response_format = "scalar"
             }
         }
     }
@@ -45,10 +46,10 @@ var datadogDashboardWildcardAsserts = []string{
 	"title = {{uniq}}",
 	"widget.0.wildcard_definition.0.title = Custom Vega-Lite Chart",
 	"widget.0.wildcard_definition.0.specification.0.type = vega-lite",
-	"widget.0.wildcard_definition.0.request.0.formula.0.formula_expression = query1",
-	"widget.0.wildcard_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
-	"widget.0.wildcard_definition.0.request.0.query.0.metric_query.0.name = query1",
-	"widget.0.wildcard_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.user{*} by {env}",
+	"widget.0.wildcard_definition.0.request.0.treemap_request.0.formula.0.formula_expression = query1",
+	"widget.0.wildcard_definition.0.request.0.treemap_request.0.query.0.metric_query.0.data_source = metrics",
+	"widget.0.wildcard_definition.0.request.0.treemap_request.0.query.0.metric_query.0.name = query1",
+	"widget.0.wildcard_definition.0.request.0.treemap_request.0.query.0.metric_query.0.query = avg:system.cpu.user{*} by {env}",
 }
 
 func TestAccDatadogDashboardV2Wildcard(t *testing.T) {

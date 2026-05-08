@@ -56,6 +56,15 @@ type OneOfDiscriminator struct {
 	// exists in the JSON or no Value/Values match. Used for legacy variants that
 	// predate the discriminator field (e.g. WidgetLegacyLiveSpan has no "type" field).
 	DefaultVariant bool
+
+	// ChildJSONKey, when set on a child variant, replaces the parent's JSONKey
+	// for the build-direction discriminator injection. Used when a variant uses
+	// a different JSON discriminator field than the parent's other variants —
+	// e.g. wildcard's histogram_request variant uses request_type while the
+	// other variants use response_format. Flatten-direction matching still
+	// uses the parent's JSONKey (combine with DefaultVariant to handle the
+	// case where the parent's key is absent on this variant's JSON shape).
+	ChildJSONKey string
 }
 
 // FieldSpec declares the bidirectional mapping for a single field.
@@ -1112,6 +1121,37 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 		}
 	}
 
+	// ---- Distribution: histogram-mode request fields ----
+	// The aggregated mode is already flattened by the generic engine via
+	// distributionWidgetRequestFields. For histogram-mode requests, the JSON
+	// has request_type="histogram" + a singular `query` block that the engine
+	// can't flatten by itself (the `query` HCL key it knows about is the
+	// plural TypeBlockList from standardQueryFields). Promote the singular
+	// query into a `histogram_query` block on the flattened state.
+	if spec.JSONType == "distribution" {
+		if reqState, ok := defState["request"].([]interface{}); ok {
+			if requests, ok := def["requests"].([]interface{}); ok && len(requests) == len(reqState) {
+				for ri, req := range requests {
+					reqMap, ok := req.(map[string]interface{})
+					if !ok {
+						continue
+					}
+					if rt, _ := reqMap["request_type"].(string); rt != "histogram" {
+						continue
+					}
+					reqStateMap, ok := reqState[ri].(map[string]interface{})
+					if !ok {
+						continue
+					}
+					reqStateMap["request_type"] = "histogram"
+					if q, ok := reqMap["query"].(map[string]interface{}); ok {
+						reqStateMap["histogram_query"] = []interface{}{flattenFormulaQueryJSON(q)}
+					}
+				}
+			}
+		}
+	}
+
 	return nestedDrops
 }
 
@@ -1695,9 +1735,14 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 						continue
 					}
 					resultJSON := BuildEngineJSONFromMap(inner, matched.Children)
-					if matched.Discriminator != nil && matched.Discriminator.Value != "" &&
-						f.Discriminator.JSONKey != "" {
-						resultJSON[f.Discriminator.JSONKey] = matched.Discriminator.Value
+					if matched.Discriminator != nil && matched.Discriminator.Value != "" {
+						keyToInject := matched.Discriminator.ChildJSONKey
+						if keyToInject == "" {
+							keyToInject = f.Discriminator.JSONKey
+						}
+						if keyToInject != "" {
+							resultJSON[keyToInject] = matched.Discriminator.Value
+						}
 					}
 					built = append(built, resultJSON)
 				}
@@ -1737,9 +1782,16 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 				built = map[string]interface{}{}
 			}
 			if matched != nil && matched.Discriminator != nil &&
-				matched.Discriminator.Value != "" &&
-				f.Discriminator != nil && f.Discriminator.JSONKey != "" {
-				built[f.Discriminator.JSONKey] = matched.Discriminator.Value
+				matched.Discriminator.Value != "" {
+				keyToInject := matched.Discriminator.ChildJSONKey
+				if keyToInject == "" && f.Discriminator != nil {
+					keyToInject = f.Discriminator.JSONKey
+				}
+				if keyToInject == "" {
+					setAtJSONPath(result, f.effectiveJSONPath(), built)
+					continue
+				}
+				built[keyToInject] = matched.Discriminator.Value
 			}
 			setAtJSONPath(result, f.effectiveJSONPath(), built)
 		}
@@ -2347,20 +2399,41 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 	if spec.JSONType == "wildcard" {
 		defJSON["requests"] = buildWildcardRequestsJSONFromMap(defMap)
 	}
+
+	// ---- Distribution: histogram-mode request fields ----
+	// When the user provides a `histogram_query` block, replace the per-request
+	// JSON object with the histogram shape (request_type + singular `query`).
+	// Aggregated-mode requests (with plural `query`/`formula` blocks instead)
+	// are left alone and use the generic build path.
+	if spec.JSONType == "distribution" {
+		requestList := getBlockListFromMap(defMap, "request")
+		if existingReqs, ok := defJSON["requests"].([]interface{}); ok && len(existingReqs) == len(requestList) {
+			for ri, reqMap := range requestList {
+				histQuery := getBlockFromMap(reqMap, "histogram_query")
+				if histQuery == nil {
+					continue
+				}
+				reqJSON := map[string]interface{}{"request_type": "histogram"}
+				if built := buildQueryFromMapAttrs(histQuery); built != nil {
+					reqJSON["query"] = built
+				}
+				if styleMap := getBlockFromMap(reqMap, "style"); styleMap != nil {
+					if s := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(s) > 0 {
+						reqJSON["style"] = s
+					}
+				}
+				existingReqs[ri] = reqJSON
+			}
+		}
+	}
 }
 
 // ============================================================
 // Wildcard Widget Build/Flatten Helpers
 // ============================================================
 
-// wildcardFormulaRequestConfig is the FormulaRequestConfig for wildcard formula requests.
-// ResponseFormat is empty — it's read from the request data, not injected.
-var wildcardScalarConfig = FormulaRequestConfig{
-	ResponseFormat: "scalar",
-	StyleFields:    widgetRequestStyleFields,
-	IncludeSort:    true,
-}
-
+// wildcardTimeseriesConfig is the FormulaRequestConfig for wildcard timeseries
+// requests. The scalar variant reuses scalarFormulaRequestConfig directly.
 var wildcardTimeseriesConfig = FormulaRequestConfig{
 	ResponseFormat: "timeseries",
 	StyleFields:    widgetRequestStyleFields,
@@ -2370,51 +2443,74 @@ var wildcardTimeseriesConfig = FormulaRequestConfig{
 	},
 }
 
-// flattenWildcardRequestJSON flattens a single wildcard request JSON object.
-// Dispatches based on response_format to determine which flattening style to use.
+// flattenWildcardRequestJSON flattens a single wildcard request JSON object
+// into a state map keyed by the matching variant block (treemap_request,
+// timeseries_request, liststream_request, or histogram_request). The variant
+// is selected by response_format, with histogram requests (no response_format,
+// request_type=histogram) using the histogram variant.
 func flattenWildcardRequestJSON(req map[string]interface{}) map[string]interface{} {
+	if rt, _ := req["request_type"].(string); rt == "histogram" {
+		variantState := map[string]interface{}{}
+		if styleObj, ok := req["style"].(map[string]interface{}); ok {
+			if s := FlattenEngineJSON(widgetRequestStyleFields, styleObj); len(s) > 0 {
+				variantState["style"] = []interface{}{s}
+			}
+		}
+		if q, ok := req["query"].(map[string]interface{}); ok {
+			variantState["histogram_query"] = []interface{}{flattenFormulaQueryJSON(q)}
+		}
+		return map[string]interface{}{"histogram_request": []interface{}{variantState}}
+	}
 	responseFormat, _ := req["response_format"].(string)
-	var result map[string]interface{}
 	switch responseFormat {
 	case "timeseries":
-		result = flattenFormulaRequest(req, wildcardTimeseriesConfig)
+		return map[string]interface{}{
+			"timeseries_request": []interface{}{flattenFormulaRequest(req, wildcardTimeseriesConfig)},
+		}
 	case "event_list":
-		// List stream request
-		result = FlattenEngineJSON(listStreamRequestFields, req)
+		return map[string]interface{}{
+			"liststream_request": []interface{}{FlattenEngineJSON(wildcardListStreamRequestFields, req)},
+		}
 	default:
-		// scalar (TreeMap-style) or distribution
-		result = flattenFormulaRequest(req, wildcardScalarConfig)
+		return map[string]interface{}{
+			"treemap_request": []interface{}{flattenFormulaRequest(req, scalarFormulaRequestConfig)},
+		}
 	}
-	// Always preserve response_format in state
-	if responseFormat != "" {
-		result["response_format"] = responseFormat
-	}
-	return result
 }
 
-// buildWildcardRequestsJSONFromMap builds the wildcard requests JSON array from HCL.
+// buildWildcardRequestsJSONFromMap builds the wildcard requests JSON array
+// from HCL. Inspects each request entry for which variant block is populated
+// and emits the corresponding JSON shape.
 func buildWildcardRequestsJSONFromMap(defMap map[string]interface{}) []interface{} {
 	requestList := getBlockListFromMap(defMap, "request")
 	requests := make([]interface{}, 0, len(requestList))
 	for _, reqMap := range requestList {
-		responseFormat, _ := reqMap["response_format"].(string)
-		formulaCount := len(getBlockListFromMap(reqMap, "formula"))
-		queryCount := len(getBlockListFromMap(reqMap, "query"))
-
-		if formulaCount > 0 || queryCount > 0 {
-			var cfg FormulaRequestConfig
-			switch responseFormat {
-			case "timeseries":
-				cfg = wildcardTimeseriesConfig
-			default:
-				cfg = wildcardScalarConfig
+		switch {
+		case getBlockFromMap(reqMap, "histogram_request") != nil:
+			variant := getBlockFromMap(reqMap, "histogram_request")
+			reqJSON := map[string]interface{}{"request_type": "histogram"}
+			if histQuery := getBlockFromMap(variant, "histogram_query"); histQuery != nil {
+				if built := buildQueryFromMapAttrs(histQuery); built != nil {
+					reqJSON["query"] = built
+				}
 			}
-			requests = append(requests, buildFormulaRequestFromMap(reqMap, cfg))
-		} else if responseFormat == "event_list" {
-			// List stream request
-			reqJSON := BuildEngineJSONFromMap(reqMap, listStreamRequestFields)
+			if styleMap := getBlockFromMap(variant, "style"); styleMap != nil {
+				if s := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(s) > 0 {
+					reqJSON["style"] = s
+				}
+			}
+			requests = append(requests, reqJSON)
+		case getBlockFromMap(reqMap, "timeseries_request") != nil:
+			variant := getBlockFromMap(reqMap, "timeseries_request")
+			requests = append(requests, buildFormulaRequestFromMap(variant, wildcardTimeseriesConfig))
+		case getBlockFromMap(reqMap, "liststream_request") != nil:
+			variant := getBlockFromMap(reqMap, "liststream_request")
+			reqJSON := BuildEngineJSONFromMap(variant, wildcardListStreamRequestFields)
 			reqJSON["response_format"] = "event_list"
 			requests = append(requests, reqJSON)
+		case getBlockFromMap(reqMap, "treemap_request") != nil:
+			variant := getBlockFromMap(reqMap, "treemap_request")
+			requests = append(requests, buildFormulaRequestFromMap(variant, scalarFormulaRequestConfig))
 		}
 	}
 	return requests
