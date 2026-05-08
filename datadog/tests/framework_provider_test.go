@@ -511,8 +511,6 @@ func TestFrameworkProviderConfigure_PATEnvVar(t *testing.T) {
 
 // TestFrameworkProviderConfigure_APIKeyWinsOverPAT tests that API keys take precedence over PAT
 // when both are configured: only DD-API-KEY/DD-APPLICATION-KEY headers are plumbed, no Bearer.
-// PAT is additive — it only kicks in when API keys aren't set, preserving backward compatibility
-// for existing configurations that may have DD_API_KEY/DD_APP_KEY set globally in the environment.
 func TestFrameworkProviderConfigure_APIKeyWinsOverPAT(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
 	os.Unsetenv("DD_APP_KEY")
