@@ -131,7 +131,7 @@ func testAccCheckDatadogAgentlessScanningAzureScanOptionsExists(accProvider *fwp
 
 			_, _, err := apiInstances.GetAgentlessScanningApiV2().GetAzureScanOptions(auth, r.Primary.ID)
 			if err != nil {
-				return fmt.Errorf("received an error retrieving agentless scanning azure scan options: %s", err)
+				return fmt.Errorf("received an error retrieving agentless scanning azure scan options: %w", err)
 			}
 		}
 		return nil
