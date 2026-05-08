@@ -29,6 +29,7 @@ datadog/**/*datadog_aws_cur_config*                   @DataDog/cloud-cost-manage
 datadog/**/*datadog_azure_integration*                @DataDog/azure-integrations
 datadog/**/*datadog_azure_uc_config*                  @DataDog/cloud-cost-management
 datadog/**/*datadog_child_organization*               @DataDog/team-aaa
+datadog/**/*datadog_cloud_inventory_sync_config*      @DataDog/new-workloads
 datadog/**/*datadog_cloud_workload_security*          @DataDog/k9-cws-backend
 datadog/**/*datadog_compliance*                       @DataDog/k9-misconfigs
 datadog/**/*datadog_cost_budget*                      @DataDog/cloud-cost-management
