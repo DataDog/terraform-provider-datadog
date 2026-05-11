@@ -939,8 +939,8 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							NestedObject: schema.NestedBlockObject{
 								Attributes: map[string]schema.Attribute{
 									"name": schema.StringAttribute{
-										Required:    true,
-										Description: "The name of this variable for use in the monitor formula.",
+										Optional:    true,
+										Description: "Name of the query for use in formulas.",
 									},
 									"data_source": schema.StringAttribute{
 										Required:    true,
@@ -981,9 +981,6 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 											Blocks: map[string]schema.Block{
 												"columns": schema.ListNestedBlock{
 													Description: "Columns to retrieve from the reference table.",
-													Validators: []validator.List{
-														listvalidator.IsRequired(),
-													},
 													NestedObject: schema.NestedBlockObject{
 														Attributes: map[string]schema.Attribute{
 															"name": schema.StringAttribute{
@@ -1090,7 +1087,11 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 										},
 									},
 									"group_by": schema.ListNestedBlock{
-										Description: "Group by options for the aggregate-augmented query.",
+										Description: "Group by options for the aggregate-augmented query. At least one block is required.",
+										Validators: []validator.List{
+											listvalidator.IsRequired(),
+											listvalidator.SizeAtLeast(1),
+										},
 										NestedObject: schema.NestedBlockObject{
 											Attributes: map[string]schema.Attribute{
 												"facet": schema.StringAttribute{

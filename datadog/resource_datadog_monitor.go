@@ -602,8 +602,8 @@ func aggregateAugmentedQueryVariableSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Type:        schema.TypeString,
-			Required:    true,
-			Description: "The name of this variable for use in the monitor formula.",
+			Optional:    true,
+			Description: "Name of the query for use in formulas.",
 		},
 		"data_source": {
 			Type:             schema.TypeString,
@@ -641,7 +641,7 @@ func aggregateAugmentedQueryVariableSchema() map[string]*schema.Schema {
 					},
 					"columns": {
 						Type:        schema.TypeList,
-						Required:    true,
+						Optional:    true,
 						Description: "Columns to retrieve from the reference table.",
 						Elem: &schema.Resource{
 							Schema: refTableCol,
@@ -759,8 +759,9 @@ func aggregateAugmentedQueryVariableSchema() map[string]*schema.Schema {
 		},
 		"group_by": {
 			Type:        schema.TypeList,
-			Optional:    true,
-			Description: "Group by options for the aggregate-augmented query.",
+			Required:    true,
+			MinItems:    1,
+			Description: "Group by options for the aggregate-augmented query. At least one block is required.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"facet": {
@@ -1320,7 +1321,10 @@ func buildEventQueryComputesFromTerraform(computeList []interface{}) []datadogV1
 }
 
 func buildMonitorFormulaAndFunctionAggregateAugmentedQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
-	name := data["name"].(string)
+	var name string
+	if v, ok := data["name"].(string); ok {
+		name = v
+	}
 	dataSource := datadogV1.MonitorFormulaAndFunctionAggregateAugmentedDataSource(data["data_source"].(string))
 
 	var augment datadogV1.MonitorFormulaAndFunctionAggregateAugmentQuery
@@ -1334,7 +1338,7 @@ func buildMonitorFormulaAndFunctionAggregateAugmentedQuery(data map[string]inter
 		if qf, ok := m["query_filter"].(string); ok && qf != "" {
 			ref.SetQueryFilter(qf)
 		}
-		if cols, ok := m["columns"].([]interface{}); ok {
+		if cols, ok := m["columns"].([]interface{}); ok && len(cols) > 0 {
 			outCols := make([]datadogV1.MonitorFormulaAndFunctionReferenceTableColumn, 0, len(cols))
 			for _, c := range cols {
 				if c == nil {
@@ -1347,7 +1351,9 @@ func buildMonitorFormulaAndFunctionAggregateAugmentedQuery(data map[string]inter
 				}
 				outCols = append(outCols, *col)
 			}
-			ref.SetColumns(outCols)
+			if len(outCols) > 0 {
+				ref.SetColumns(outCols)
+			}
 		}
 		augment = datadogV1.MonitorFormulaAndFunctionReferenceTableQueryDefinitionAsMonitorFormulaAndFunctionAggregateAugmentQuery(ref)
 	} else if aeq, ok := data["augment_event_query"].([]interface{}); ok && len(aeq) > 0 && aeq[0] != nil {

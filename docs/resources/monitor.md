@@ -186,15 +186,15 @@ Required:
 - `compute` (Block List, Min: 1) Compute aggregations for the aggregate-augmented query. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--compute))
 - `data_source` (String) The data source for aggregate-augmented composite queries. Must be `aggregate_augmented_query`. Valid values are `aggregate_augmented_query`.
 - `join_condition` (Block List, Min: 1, Max: 1) Join condition between augment and base queries. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--join_condition))
-- `name` (String) The name of this variable for use in the monitor formula.
+- `group_by` (Block List, Min: 1) Group by options for the aggregate-augmented query. At least one block is required. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--group_by))
 
 Optional:
 
+- `name` (String) Name of the query for use in formulas.
 - `augment_event_query` (Block List, Max: 1) Events augment query. Do not set `augment_reference_table` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_event_query))
 - `augment_reference_table` (Block List, Max: 1) Reference table augment query. Do not set `augment_event_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_reference_table))
 - `base_event_query` (Block List, Max: 1) Events base query. Do not set `base_metrics_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_event_query))
 - `base_metrics_query` (Block List, Max: 1) Metrics base query. Do not set `base_event_query` in the same block. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--base_metrics_query))
-- `group_by` (Block List) Group by options for the aggregate-augmented query. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--group_by))
 
 <a id="nestedblock--variables--aggregate_augmented_query--compute"></a>
 ### Nested Schema for `variables.aggregate_augmented_query.compute`
@@ -290,12 +290,12 @@ Optional:
 
 Required:
 
-- `columns` (Block List, Min: 1) Columns to retrieve from the reference table. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_reference_table--columns))
 - `data_source` (String) Must be `reference_table`. Valid values are `reference_table`.
 - `table_name` (String) Name of the reference table.
 
 Optional:
 
+- `columns` (Block List) Columns to retrieve from the reference table. (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query--augment_reference_table--columns))
 - `name` (String) Name of the augment sub-query.
 - `query_filter` (String) Optional filter expression for the reference table query.
 
