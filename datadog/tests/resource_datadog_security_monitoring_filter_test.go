@@ -36,6 +36,29 @@ func TestAccDatadogSecurityMonitoringFilter(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringFilter_Import(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	filterName := uniqueEntityName(ctx, t)
+	accProvider := providers.frameworkProvider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringFilterDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringFilterCreated(filterName),
+			},
+			{
+				ResourceName:      tfSecurityFilterName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogSecurityMonitoringFilterCreated(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_filter" "acceptance_test" {
