@@ -187,7 +187,7 @@ func (r *securityMonitoringFilterResource) Update(ctx context.Context, request r
 		return
 	}
 
-	filterUpdate := buildSecMonFilterUpdatePayload(&plan, int32(state.Version.ValueInt64()))
+	filterUpdate := buildSecMonFilterUpdatePayload(&plan, int32(state.Version.ValueInt64())) //nolint:gosec // API-assigned monotonic counter, fits int32
 
 	filterWriteMutex.Lock()
 	defer filterWriteMutex.Unlock()
