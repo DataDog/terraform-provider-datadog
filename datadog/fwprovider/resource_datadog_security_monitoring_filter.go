@@ -117,19 +117,105 @@ func (r *securityMonitoringFilterResource) ImportState(ctx context.Context, requ
 }
 
 func (r *securityMonitoringFilterResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_filter Create is not yet implemented")
+	var plan securityMonitoringFilterResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	filterCreate := buildSecMonFilterCreatePayload(&plan)
+
+	filterResponse, httpResponse, err := r.api.CreateSecurityFilter(r.auth, *filterCreate)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResponse, "error creating security monitoring filter"), ""))
+		return
+	}
+	if err := utils.CheckForUnparsed(filterResponse); err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
+		return
+	}
+
+	updateResourceDataFilterFromResponse(&plan, filterResponse)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *securityMonitoringFilterResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_filter Read is not yet implemented")
+	var state securityMonitoringFilterResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	filterResponse, httpResponse, err := r.api.GetSecurityFilter(r.auth, state.ID.ValueString())
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResponse, "error fetching security monitoring filter"), ""))
+		return
+	}
+	if err := utils.CheckForUnparsed(filterResponse); err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
+		return
+	}
+
+	updateResourceDataFilterFromResponse(&state, filterResponse)
+
+	// handle warning
+	if filterResponse.HasMeta() {
+		filterMeta := filterResponse.GetMeta()
+		if warning := filterMeta.GetWarning(); warning != "" {
+			response.Diagnostics.AddWarning(warning, "")
+		}
+	}
+
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *securityMonitoringFilterResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_filter Update is not yet implemented")
+	var plan securityMonitoringFilterResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	var state securityMonitoringFilterResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	filterUpdate := buildSecMonFilterUpdatePayload(&plan, int32(state.Version.ValueInt64()))
+
+	filterResponse, httpResponse, err := r.api.UpdateSecurityFilter(r.auth, state.ID.ValueString(), *filterUpdate)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResponse, "error updating security monitoring filter"), ""))
+		return
+	}
+	if err := utils.CheckForUnparsed(filterResponse); err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
+		return
+	}
+
+	updateResourceDataFilterFromResponse(&plan, filterResponse)
+	response.Diagnostics.Append(response.State.Set(ctx, &plan)...)
 }
 
 func (r *securityMonitoringFilterResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	response.Diagnostics.AddError("not implemented", "security_monitoring_filter Delete is not yet implemented")
+	var state securityMonitoringFilterResourceModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	httpResponse, err := r.api.DeleteSecurityFilter(r.auth, state.ID.ValueString())
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResponse, "error deleting security monitoring filter"), ""))
+	}
 }
 
 func updateResourceDataFilterFromResponse(state *securityMonitoringFilterResourceModel, filterResponse datadogV2.SecurityFilterResponse) {
