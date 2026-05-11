@@ -76,19 +76,11 @@ func (r *agentlessScanningAzureScanOptionsResource) Schema(_ context.Context, _ 
 			},
 			"vuln_containers_os": schema.BoolAttribute{
 				Description: "Indicates if scanning for vulnerabilities in containers is enabled.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
+				Required:    true,
 			},
 			"vuln_host_os": schema.BoolAttribute{
 				Description: "Indicates if scanning for vulnerabilities in hosts is enabled.",
-				Optional:    true,
-				Computed:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
+				Required:    true,
 			},
 		},
 	}

@@ -28,12 +28,12 @@ resource "datadog_agentless_scanning_azure_scan_options" "example" {
 ### Required
 
 - `azure_subscription_id` (String) The Azure subscription ID for which agentless scanning is configured. Must be a valid Azure subscription ID (UUID format).
+- `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
+- `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
 
 ### Optional
 
 - `compliance_host` (Boolean) Indicates whether host compliance scanning is enabled.
-- `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
-- `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
 
 ### Read-Only
 
