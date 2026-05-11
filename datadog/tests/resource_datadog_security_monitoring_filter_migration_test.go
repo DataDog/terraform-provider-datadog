@@ -50,7 +50,6 @@ func runSecurityMonitoringFilterMigrationTest(t *testing.T, config string, check
 }
 
 func TestAccDatadogSecurityMonitoringFilter_Migration_Basic(t *testing.T) {
-	t.Parallel()
 	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
 	filterName := uniqueEntityName(ctx, t)
 	runSecurityMonitoringFilterMigrationTest(t,
@@ -63,7 +62,6 @@ func TestAccDatadogSecurityMonitoringFilter_Migration_Basic(t *testing.T) {
 // no-`exclusion_filter`-block path. SDKv2 always sends an empty slice on PUT (resource
 // line 250); the FW reader must produce identical state so the FW step plans empty.
 func TestAccDatadogSecurityMonitoringFilter_Migration_NoExclusionFilters(t *testing.T) {
-	t.Parallel()
 	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
 	filterName := uniqueEntityName(ctx, t)
 	config := testAccCheckDatadogSecurityMonitoringFilterNoExclusion(filterName)
@@ -80,7 +78,6 @@ func TestAccDatadogSecurityMonitoringFilter_Migration_NoExclusionFilters(t *test
 // `filtered_data_type = "logs"` set explicitly — the user-set-equals-default path that
 // commonly drifts on Optional+Computed migrations.
 func TestAccDatadogSecurityMonitoringFilter_Migration_ExplicitFilteredDataType(t *testing.T) {
-	t.Parallel()
 	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
 	filterName := uniqueEntityName(ctx, t)
 	config := testAccCheckDatadogSecurityMonitoringFilterExplicitDataType(filterName)
@@ -95,7 +92,6 @@ func TestAccDatadogSecurityMonitoringFilter_Migration_ExplicitFilteredDataType(t
 // `filtered_data_type` omitted from config — the FW Default must materialize as `"logs"`
 // so post-upgrade plan stays empty against the v4.7.0-recorded state.
 func TestAccDatadogSecurityMonitoringFilter_Migration_DefaultFilteredDataType(t *testing.T) {
-	t.Parallel()
 	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
 	filterName := uniqueEntityName(ctx, t)
 	config := testAccCheckDatadogSecurityMonitoringFilterNoExclusion(filterName)

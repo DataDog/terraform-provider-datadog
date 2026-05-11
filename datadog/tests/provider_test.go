@@ -296,6 +296,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_screenboard_test":                                            "dashboards",
 	"tests/resource_datadog_security_monitoring_default_rule_test":                       "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                             "security-monitoring",
+	"tests/resource_datadog_security_monitoring_filter_migration_test":                   "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_json_test":                          "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_test":                               "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_migration_test":                     "security-monitoring",

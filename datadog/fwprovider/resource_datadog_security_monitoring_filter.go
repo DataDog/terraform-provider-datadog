@@ -2,13 +2,12 @@ package fwprovider
 
 import (
 	"context"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -18,6 +17,8 @@ import (
 )
 
 const securityFilterType = "security_filters"
+
+var filterWriteMutex = sync.Mutex{}
 
 var (
 	_ resource.ResourceWithConfigure   = &securityMonitoringFilterResource{}
@@ -70,9 +71,6 @@ func (r *securityMonitoringFilterResource) Schema(_ context.Context, _ resource.
 			"version": schema.Int64Attribute{
 				Computed:    true,
 				Description: "The version of the security filter.",
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 			"query": schema.StringAttribute{
 				Required:    true,
@@ -124,6 +122,9 @@ func (r *securityMonitoringFilterResource) Create(ctx context.Context, request r
 	}
 
 	filterCreate := buildSecMonFilterCreatePayload(&plan)
+
+	filterWriteMutex.Lock()
+	defer filterWriteMutex.Unlock()
 
 	filterResponse, httpResponse, err := r.api.CreateSecurityFilter(r.auth, *filterCreate)
 	if err != nil {
@@ -188,6 +189,9 @@ func (r *securityMonitoringFilterResource) Update(ctx context.Context, request r
 
 	filterUpdate := buildSecMonFilterUpdatePayload(&plan, int32(state.Version.ValueInt64()))
 
+	filterWriteMutex.Lock()
+	defer filterWriteMutex.Unlock()
+
 	filterResponse, httpResponse, err := r.api.UpdateSecurityFilter(r.auth, state.ID.ValueString(), *filterUpdate)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResponse, "error updating security monitoring filter"), ""))
@@ -208,6 +212,9 @@ func (r *securityMonitoringFilterResource) Delete(ctx context.Context, request r
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	filterWriteMutex.Lock()
+	defer filterWriteMutex.Unlock()
 
 	httpResponse, err := r.api.DeleteSecurityFilter(r.auth, state.ID.ValueString())
 	if err != nil {
