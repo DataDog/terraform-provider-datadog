@@ -1619,7 +1619,7 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 }
 
 func (r *monitorResource) buildAggregateAugmentedQueryStruct(ctx context.Context, aggs []AggregateAugmentedQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
-	if aggs == nil || len(aggs) == 0 {
+	if len(aggs) == 0 {
 		return nil
 	}
 	out := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}

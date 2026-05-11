@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 	"testing"
 
@@ -1426,12 +1425,7 @@ func monitorExistsHelperFwprovider(auth context.Context, s *terraform.State, api
 }
 
 func TestAccMonitor_Fwprovider_AggregateAugmentedQuery(t *testing.T) {
-	tableName := os.Getenv("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE")
-	if tableName == "" {
-		t.Skip("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE must be set to an existing reference table name with columns org_id and name")
-	}
 	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
-	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
@@ -1440,7 +1434,7 @@ func TestAccMonitor_Fwprovider_AggregateAugmentedQuery(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorAggregateAugmentedFwConfig(uniq, tableName),
+				Config: testAccCheckDatadogMonitorAggregateAugmentedFwConfig(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.r", "name", uniq),
@@ -1454,7 +1448,7 @@ func TestAccMonitor_Fwprovider_AggregateAugmentedQuery(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogMonitorAggregateAugmentedFwConfig(uniq, refTableName string) string {
+func testAccCheckDatadogMonitorAggregateAugmentedFwConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "r" {
   name    = "%s"
@@ -1474,7 +1468,7 @@ resource "datadog_monitor" "r" {
       augment_reference_table {
         name         = "filter_query"
         data_source  = "reference_table"
-        table_name   = "%s"
+        table_name   = "test_table"
         columns {
           name = "org_id"
         }
@@ -1510,5 +1504,5 @@ resource "datadog_monitor" "r" {
       }
     }
   }
-}`, uniq, refTableName)
+}`, uniq)
 }

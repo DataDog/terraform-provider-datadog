@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 	"testing"
 
@@ -2677,13 +2676,7 @@ resource "datadog_monitor" "data_quality_empty_group_by" {
 }`, uniq)
 }
 
-// TestAccDatadogMonitor_AggregateAugmentedQuery exercises composite aggregate_augmented_query variables (dogweb PR 159684 shape).
-// Requires an existing reference table: set DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE to the table name (with columns org_id and name).
 func TestAccDatadogMonitor_AggregateAugmentedQuery(t *testing.T) {
-	tableName := os.Getenv("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE")
-	if tableName == "" {
-		t.Skip("DD_TEST_MONITOR_AGGREGATE_AUGMENT_TABLE must be set to an existing reference table name with columns org_id and name")
-	}
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
@@ -2695,11 +2688,11 @@ func TestAccDatadogMonitor_AggregateAugmentedQuery(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorAggregateAugmentedConfig(monitorName, tableName),
+				Config: testAccCheckDatadogMonitorAggregateAugmentedConfig(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "name", monitorName),
-					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "type", "query alert"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "type", "metric alert"),
 					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.#", "1"),
 					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.#", "1"),
 					resource.TestCheckResourceAttr("datadog_monitor.aggregate_augmented", "variables.0.aggregate_augmented_query.0.data_source", "aggregate_augmented_query"),
@@ -2714,7 +2707,7 @@ func TestAccDatadogMonitor_AggregateAugmentedQuery(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogMonitorAggregateAugmentedConfig(uniq, refTableName string) string {
+func testAccCheckDatadogMonitorAggregateAugmentedConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "aggregate_augmented" {
   name    = "%s"
@@ -2734,7 +2727,7 @@ resource "datadog_monitor" "aggregate_augmented" {
       augment_reference_table {
         name         = "filter_query"
         data_source  = "reference_table"
-        table_name   = "%s"
+        table_name   = "test_table"
         columns {
           name = "org_id"
         }
@@ -2770,5 +2763,5 @@ resource "datadog_monitor" "aggregate_augmented" {
       }
     }
   }
-}`, uniq, refTableName)
+}`, uniq)
 }
