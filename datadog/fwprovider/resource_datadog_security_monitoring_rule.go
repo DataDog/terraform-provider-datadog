@@ -697,9 +697,9 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 										Optional:    true,
 										Computed:    true,
 										Default:     int64default.StaticInt64(1),
-										Description: "The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned.",
+										Description: "The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Accepted values are between 0 and 30.",
 										Validators: []validator.Int64{
-											validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleNewValueOptionsLearningDurationFromValue),
+											int64validator.Between(0, 30),
 										},
 									},
 									"learning_threshold": schema.Int64Attribute{
@@ -713,9 +713,9 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 									},
 									"forget_after": schema.Int64Attribute{
 										Required:    true,
-										Description: "The duration in days after which a learned value is forgotten.",
+										Description: "The duration in days after which a learned value is forgotten. Accepted values are between 1 and 30.",
 										Validators: []validator.Int64{
-											validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleNewValueOptionsForgetAfterFromValue),
+											int64validator.Between(1, 30),
 										},
 									},
 									"instantaneous_baseline": schema.BoolAttribute{
@@ -1881,7 +1881,7 @@ func buildPayloadNewValueOptions(opts []newValueOptionsModel) (*datadogV2.Securi
 	}
 	if !o.LearningDuration.IsNull() && !o.LearningDuration.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleNewValueOptionsLearningDuration(o.LearningDuration.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
+		v := int32(o.LearningDuration.ValueInt64()) //nolint:gosec // schema-validated range fits int32
 		payload.LearningDuration = &v
 	}
 	if !o.LearningThreshold.IsNull() && !o.LearningThreshold.IsUnknown() {
@@ -1891,7 +1891,7 @@ func buildPayloadNewValueOptions(opts []newValueOptionsModel) (*datadogV2.Securi
 	}
 	if !o.ForgetAfter.IsNull() && !o.ForgetAfter.IsUnknown() {
 		hasPayload = true
-		v := datadogV2.SecurityMonitoringRuleNewValueOptionsForgetAfter(o.ForgetAfter.ValueInt64()) //nolint:gosec // schema-validated enum value fits int32
+		v := int32(o.ForgetAfter.ValueInt64()) //nolint:gosec // schema-validated range fits int32
 		payload.ForgetAfter = &v
 	}
 	if !o.InstantaneousBaseline.IsNull() && !o.InstantaneousBaseline.IsUnknown() {
