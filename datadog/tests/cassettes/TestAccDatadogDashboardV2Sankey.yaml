@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 357
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2Sankey-local-1775579913","widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"kut-ngd-wdj","title":"tf-TestAccDatadogDashboardV2Sankey-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kut-ngd-wdj/tf-testaccdatadogdashboardv2sankey-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6494948646308435}],"notify_list":[],"created_at":"2026-04-07T16:38:35.569736+00:00","modified_at":"2026-04-07T16:38:35.569736+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 546.171666ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/kut-ngd-wdj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"kut-ngd-wdj","title":"tf-TestAccDatadogDashboardV2Sankey-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kut-ngd-wdj/tf-testaccdatadogdashboardv2sankey-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6494948646308435}],"notify_list":[],"created_at":"2026-04-07T16:38:35.569736+00:00","modified_at":"2026-04-07T16:38:35.569736+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 111.393708ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/kut-ngd-wdj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"kut-ngd-wdj","title":"tf-TestAccDatadogDashboardV2Sankey-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kut-ngd-wdj/tf-testaccdatadogdashboardv2sankey-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6494948646308435}],"notify_list":[],"created_at":"2026-04-07T16:38:35.569736+00:00","modified_at":"2026-04-07T16:38:35.569736+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 109.443583ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/kut-ngd-wdj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"kut-ngd-wdj","title":"tf-TestAccDatadogDashboardV2Sankey-local-1775579913","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/kut-ngd-wdj/tf-testaccdatadogdashboardv2sankey-local-1775579913","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"rum","mode":"source","query_string":"@type:view"},"request_type":"sankey"}],"title":"RUM Sankey","type":"sankey"},"id":6494948646308435}],"notify_list":[],"created_at":"2026-04-07T16:38:35.569736+00:00","modified_at":"2026-04-07T16:38:35.569736+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 106.075875ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/kut-ngd-wdj
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"kut-ngd-wdj"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 427.113958ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/kut-ngd-wdj
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID kut-ngd-wdj not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 113.143292ms
