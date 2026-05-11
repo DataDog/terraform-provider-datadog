@@ -239,7 +239,6 @@ func Provider() *schema.Provider {
 			"datadog_powerpack":                            resourceDatadogPowerpack(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
-			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
 			"datadog_sensitive_data_scanner_group":         resourceDatadogSensitiveDataScannerGroup(),
 			"datadog_sensitive_data_scanner_rule":          resourceDatadogSensitiveDataScannerRule(),
