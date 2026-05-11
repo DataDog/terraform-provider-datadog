@@ -131,3 +131,77 @@ func (r *securityMonitoringFilterResource) Update(ctx context.Context, request r
 func (r *securityMonitoringFilterResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	response.Diagnostics.AddError("not implemented", "security_monitoring_filter Delete is not yet implemented")
 }
+
+func updateResourceDataFilterFromResponse(state *securityMonitoringFilterResourceModel, filterResponse datadogV2.SecurityFilterResponse) {
+	data := filterResponse.GetData()
+	state.ID = types.StringValue(data.GetId())
+
+	attributes := data.GetAttributes()
+	state.Version = types.Int64Value(int64(attributes.GetVersion()))
+	state.Name = types.StringValue(attributes.GetName())
+	state.Query = types.StringValue(attributes.GetQuery())
+	state.IsEnabled = types.BoolValue(attributes.GetIsEnabled())
+	state.FilteredDataType = types.StringValue(string(attributes.GetFilteredDataType()))
+
+	if _, ok := attributes.GetExclusionFiltersOk(); ok {
+		state.ExclusionFilter = extractExclusionFiltersTF(attributes)
+	}
+}
+
+func extractExclusionFiltersTF(attributes datadogV2.SecurityFilterAttributes) []exclusionFilterModel {
+	exclusionFilters := make([]exclusionFilterModel, len(attributes.GetExclusionFilters()))
+	for i, ef := range attributes.GetExclusionFilters() {
+		exclusionFilters[i] = exclusionFilterModel{
+			Name:  types.StringValue(ef.GetName()),
+			Query: types.StringValue(ef.GetQuery()),
+		}
+	}
+	return exclusionFilters
+}
+
+func buildSecMonFilterUpdatePayload(plan *securityMonitoringFilterResourceModel, currentVersion int32) *datadogV2.SecurityFilterUpdateRequest {
+	payload := datadogV2.SecurityFilterUpdateRequest{}
+	payload.Data.Type = securityFilterType
+	// set the version from current state
+	payload.Data.Attributes.SetVersion(currentVersion)
+
+	isEnabled, name, filteredDataType, query, filters := extractFilterAttributedFromResource(plan)
+
+	payload.Data.Attributes.SetIsEnabled(isEnabled)
+	payload.Data.Attributes.SetName(name)
+	payload.Data.Attributes.SetFilteredDataType(filteredDataType)
+	payload.Data.Attributes.SetQuery(query)
+	payload.Data.Attributes.SetExclusionFilters(filters)
+
+	return &payload
+}
+
+func buildSecMonFilterCreatePayload(plan *securityMonitoringFilterResourceModel) *datadogV2.SecurityFilterCreateRequest {
+	payload := datadogV2.SecurityFilterCreateRequest{}
+	payload.Data.Type = securityFilterType
+
+	isEnabled, name, filteredDataType, query, filters := extractFilterAttributedFromResource(plan)
+
+	payload.Data.Attributes.SetIsEnabled(isEnabled)
+	payload.Data.Attributes.SetName(name)
+	payload.Data.Attributes.SetFilteredDataType(filteredDataType)
+	payload.Data.Attributes.SetQuery(query)
+	payload.Data.Attributes.SetExclusionFilters(filters)
+
+	return &payload
+}
+
+func extractFilterAttributedFromResource(plan *securityMonitoringFilterResourceModel) (bool, string, datadogV2.SecurityFilterFilteredDataType, string, []datadogV2.SecurityFilterExclusionFilter) {
+	isEnabled := plan.IsEnabled.ValueBool()
+	name := plan.Name.ValueString()
+	filteredDataType := datadogV2.SecurityFilterFilteredDataType(plan.FilteredDataType.ValueString())
+	query := plan.Query.ValueString()
+
+	filters := make([]datadogV2.SecurityFilterExclusionFilter, len(plan.ExclusionFilter))
+	for i, ef := range plan.ExclusionFilter {
+		filters[i].SetName(ef.Name.ValueString())
+		filters[i].SetQuery(ef.Query.ValueString())
+	}
+
+	return isEnabled, name, filteredDataType, query, filters
+}
