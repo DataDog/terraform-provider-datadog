@@ -590,13 +590,16 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				return nil, diag.FromErr(err)
 			}
 		} else if pat != "" {
-			// PAT-only: /api/v1/validate is API-key-only and won't accept a PAT.
-			// /api/v2/validate_keys does accept a PAT (in DD-APPLICATION-KEY) but
-			// isn't yet exposed by datadog-api-client-go. Skip startup validation
-			// until the SDK regenerates from datadog-api-spec#5638; at that point
-			// switch to apiInstances.GetKeyManagementApiV2().ValidateAPIKey(auth)
-			// with the PAT injected into ContextAPIKeys["appKeyAuth"].
-			log.Println("[INFO] Skipping startup validation for PAT-only configuration; auth errors will surface on the first API call")
+			// /api/v1/validate is API-key-only. Hit /api/v2/validate_keys with the
+			// PAT in the DD-APPLICATION-KEY slot — the authn-validation backend
+			// accepts PATs there.
+			validateAuth := context.WithValue(auth, datadog.ContextAPIKeys, map[string]datadog.APIKey{
+				"appKeyAuth": {Key: pat},
+			})
+			if _, _, err := apiInstances.GetKeyManagementApiV2().ValidateAPIKey(validateAuth); err != nil {
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
 		}
 	} else {
 		log.Println("[INFO] Skipping key validation (validate = false)")
