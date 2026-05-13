@@ -462,7 +462,11 @@ func extractDefaultRuleQueries(ctx context.Context, responseRuleQueries []datado
 	var diags diag.Diagnostics
 	stateQueries := make([]defaultRuleQueryModel, len(responseRuleQueries))
 	for idx, responseQuery := range responseRuleQueries {
-		stateQuery := defaultRuleQueryModel{}
+		stateQuery := defaultRuleQueryModel{
+			DistinctFields: types.ListNull(types.StringType),
+			GroupByFields:  types.ListNull(types.StringType),
+			Metrics:        types.ListNull(types.StringType),
+		}
 
 		if agg, ok := responseQuery.GetAggregationOk(); ok {
 			stateQuery.Aggregation = types.StringValue(string(*agg))
