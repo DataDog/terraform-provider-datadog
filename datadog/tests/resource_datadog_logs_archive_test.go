@@ -25,8 +25,8 @@ resource "datadog_integration_azure" "an_azure_integration" {
 
 resource "datadog_logs_archive" "my_azure_archive" {
   depends_on = ["datadog_integration_azure.an_azure_integration"]
-  name  = "my first azure archive"
-  query = "service:toto"
+  name       = "my first azure archive"
+  query      = "service:toto"
   azure_archive {
     container 		= "my-container"
     tenant_id 		= "%s"
@@ -70,6 +70,8 @@ func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 						"datadog_logs_archive.my_azure_archive", "include_tags", "false"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "rehydration_max_scan_size_in_gb"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_azure_archive", "compression_method", "GZIP"),
 				),
 			},
 		},
@@ -135,6 +137,8 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 						"datadog_logs_archive.my_gcs_archive", "include_tags", "false"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_logs_archive.my_gcs_archive", "rehydration_max_scan_size_in_gb"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_gcs_archive", "compression_method", "GZIP"),
 				),
 			},
 		},
@@ -180,6 +184,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
   rehydration_tags = ["team:intake", "team:app"]
   include_tags = true
 	rehydration_max_scan_size_in_gb = 123
+  compression_method = "ZSTD"
 }`, uniq, uniq, encryption)
 }
 
@@ -224,6 +229,8 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "include_tags", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "compression_method", "ZSTD"),
 				),
 			},
 		},
@@ -307,6 +314,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "STANDARD_IA"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "compression_method", "ZSTD"),
 				),
 			},
 			{
@@ -334,6 +343,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_key", "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "345"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "compression_method", "GZIP"),
 				),
 			},
 			{
