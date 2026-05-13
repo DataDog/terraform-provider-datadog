@@ -511,6 +511,17 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	config.UserAgent = utils.GetUserAgent(config.UserAgent)
 	config.Debug = logging.IsDebugOrHigher()
+	if pat != "" && config.Debug {
+		// datadog-api-client-go's debug dump (client.go ~L172) calls
+		// httputil.DumpRequestOut with body=true and only redacts values
+		// pulled from ContextAPIKeys. The Bearer header from
+		// ContextAccessToken is dumped verbatim, so TF_LOG=DEBUG/TRACE with
+		// a PAT would write `Authorization: Bearer ddpat_...` to Terraform
+		// logs. Disable SDK debug output until the upstream redaction is
+		// fixed; operators wanting raw HTTP dumps can use api_key/app_key.
+		log.Println("[WARN] PAT credential detected — disabling datadog-api-client-go HTTP debug dumps to prevent leaking the Bearer token in TF_LOG output")
+		config.Debug = false
+	}
 	if apiURL != "" {
 		parsedAPIURL, parseErr := url.Parse(apiURL)
 		if parseErr != nil {
