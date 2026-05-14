@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -100,19 +100,11 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 			"id": utils.ResourceIDAttribute(),
 			"custom_message": schema.StringAttribute{
 				Optional:    true,
-				Computed:    true,
 				Description: "Custom Message (will override default message) for generated signals.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"custom_name": schema.StringAttribute{
 				Optional:    true,
-				Computed:    true,
 				Description: "The name (will override default name) of the rule.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"enabled": schema.BoolAttribute{
 				Optional:    true,
@@ -168,42 +160,29 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"aggregation": schema.StringAttribute{
-							Optional:    true,
 							Computed:    true,
-							Description: "The aggregation type. For Signal Correlation rules, it must be event_count.",
+							Description: "The aggregation type.",
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
-							Validators: []validator.String{
-								validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringRuleQueryAggregationFromValue),
-							},
 						},
 						"distinct_fields": schema.ListAttribute{
-							Optional:    true,
 							Computed:    true,
 							ElementType: types.StringType,
 							Description: "Field for which the cardinality is measured. Sent as an array.",
 							PlanModifiers: []planmodifier.List{
 								listplanmodifier.UseStateForUnknown(),
 							},
-							Validators: []validator.List{
-								listvalidator.ValueStringsAre(stringvalidator.LengthAtLeast(1)),
-							},
 						},
 						"group_by_fields": schema.ListAttribute{
-							Optional:    true,
 							Computed:    true,
 							ElementType: types.StringType,
 							Description: "Fields to group by.",
 							PlanModifiers: []planmodifier.List{
 								listplanmodifier.UseStateForUnknown(),
 							},
-							Validators: []validator.List{
-								listvalidator.ValueStringsAre(stringvalidator.LengthAtLeast(1)),
-							},
 						},
 						"has_optional_group_by_fields": schema.BoolAttribute{
-							Optional:    true,
 							Computed:    true,
 							Description: "When false, events without a group-by value are ignored by the rule. When true, events with missing group-by fields are processed with `N/A`, replacing the missing values.",
 							PlanModifiers: []planmodifier.Bool{
@@ -211,19 +190,13 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 							},
 						},
 						"data_source": schema.StringAttribute{
-							Optional:    true,
 							Computed:    true,
 							Description: "Source of events.",
 							PlanModifiers: []planmodifier.String{
 								stringplanmodifier.UseStateForUnknown(),
 							},
-							Validators: []validator.String{
-								validators.SecurityMonitoringDataSourceWarningValidator(),
-								validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
-							},
 						},
 						"metric": schema.StringAttribute{
-							Optional:           true,
 							Computed:           true,
 							Description:        "The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations.",
 							DeprecationMessage: "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
@@ -232,7 +205,6 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 							},
 						},
 						"metrics": schema.ListAttribute{
-							Optional:    true,
 							Computed:    true,
 							ElementType: types.StringType,
 							Description: "Group of target fields to aggregate over when using the `sum`, `max`, `geo_data`, or `new_value` aggregations. The `sum`, `max`, and `geo_data` aggregations only accept one value in this list, whereas the `new_value` aggregation accepts up to five values.",
@@ -241,7 +213,6 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 							},
 						},
 						"name": schema.StringAttribute{
-							Optional:    true,
 							Computed:    true,
 							Description: "Name of the query. Not compatible with `new_value` aggregations.",
 							PlanModifiers: []planmodifier.String{
@@ -249,7 +220,6 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 							},
 						},
 						"query": schema.StringAttribute{
-							Optional:    true,
 							Computed:    true,
 							Description: "Query to run on logs.",
 							PlanModifiers: []planmodifier.String{
@@ -360,35 +330,55 @@ func (r *securityMonitoringDefaultRuleResource) Read(ctx context.Context, reques
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error reading security monitoring default rule"))
 		return
 	}
-	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
-		response.Diagnostics.AddError("response contains unparsed object", err.Error())
-		return
-	}
-
 	rule := ruleResponse.SecurityMonitoringStandardRuleResponse
 	if rule == nil {
 		response.Diagnostics.AddError("unsupported rule type", "signal rule type is not currently supported")
 		return
 	}
 
-	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, rule)...)
+	if err := utils.CheckForUnparsed(ruleResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
+		return
+	}
+
+	priorOptions := state.Options
+	priorCustomMessage := state.CustomMessage
+	priorCustomName := state.CustomName
+	priorQueries := state.Queries
+
+	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, rule, priorCustomMessage, priorCustomName, priorQueries)...)
+
+	if len(priorOptions) == 0 {
+		state.Options = nil
+	}
 
 	response.Diagnostics.Append(securityMonitoringDefaultRuleDeprecationWarning(rule)...)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *securityMonitoringDefaultRuleResourceModel, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) diag.Diagnostics {
+// updateDefaultRuleResourceDataFromResponse populates state from the API response.
+// Most fields are read directly from the API. custom_message and custom_name carry
+// forward only when the reference holds "" (the explicit-clear sentinel): the API
+// omits these fields after they are cleared, so without the carry-forward a config
+// value of "" would cause a perpetual diff ("" → null on every plan). Any other
+// non-empty prior value is NOT carried forward so that external API changes surface
+// as plan diffs. custom_query_extension follows the same rule inside extractDefaultRuleQueries.
+func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *securityMonitoringDefaultRuleResourceModel, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse, referenceCustomMessage, referenceCustomName types.String, referenceQueries []defaultRuleQueryModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	state.Enabled = types.BoolValue(ruleResponse.GetIsEnabled())
 
 	if customMessage, ok := ruleResponse.GetCustomMessageOk(); ok {
 		state.CustomMessage = types.StringValue(*customMessage)
+	} else if referenceCustomMessage == types.StringValue("") {
+		state.CustomMessage = types.StringValue("")
 	} else {
 		state.CustomMessage = types.StringNull()
 	}
 	if customName, ok := ruleResponse.GetCustomNameOk(); ok {
 		state.CustomName = types.StringValue(*customName)
+	} else if referenceCustomName == types.StringValue("") {
+		state.CustomName = types.StringValue("")
 	} else {
 		state.CustomName = types.StringNull()
 	}
@@ -416,7 +406,7 @@ func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *secur
 	state.Options = stateOptions
 
 	var queryDiags diag.Diagnostics
-	state.Queries, queryDiags = extractDefaultRuleQueries(ctx, ruleResponse.GetQueries())
+	state.Queries, queryDiags = extractDefaultRuleQueries(ctx, ruleResponse.GetQueries(), referenceQueries)
 	diags.Append(queryDiags...)
 
 	var tagsDiags diag.Diagnostics
@@ -426,6 +416,9 @@ func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *secur
 	return diags
 }
 
+// extractDefaultRuleCases builds case state from the API response. status,
+// notifications, and custom_status all come directly from the API. custom_status
+// is present in the response when set and omitted when not set
 func extractDefaultRuleCases(ctx context.Context, responseRuleCases []datadogV2.SecurityMonitoringRuleCase) ([]defaultRuleCaseModel, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	stateCases := make([]defaultRuleCaseModel, len(responseRuleCases))
@@ -434,8 +427,10 @@ func extractDefaultRuleCases(ctx context.Context, responseRuleCases []datadogV2.
 			Status:        types.StringValue(string(apiCase.GetStatus())),
 			Notifications: types.ListNull(types.StringType),
 		}
-		if customStatus, ok := apiCase.GetCustomStatusOk(); ok && customStatus != nil {
-			stateCase.CustomStatus = types.StringValue(string(*customStatus))
+		if rawCS, ok := apiCase.GetCustomStatusOk(); ok && rawCS != nil {
+			if v := string(*rawCS); v != "" {
+				stateCase.CustomStatus = types.StringValue(v)
+			}
 		}
 		if notifications, ok := apiCase.GetNotificationsOk(); ok {
 			var listDiags diag.Diagnostics
@@ -458,7 +453,10 @@ func extractDefaultRuleFilters(responseFilters []datadogV2.SecurityMonitoringFil
 	return filters
 }
 
-func extractDefaultRuleQueries(ctx context.Context, responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery) ([]defaultRuleQueryModel, diag.Diagnostics) {
+// extractDefaultRuleQueries builds query state from the API response.
+// custom_query_extension carries forward only when the matching reference holds ""
+// (see updateDefaultRuleResourceDataFromResponse for the rationale).
+func extractDefaultRuleQueries(ctx context.Context, responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery, referenceQueries []defaultRuleQueryModel) ([]defaultRuleQueryModel, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	stateQueries := make([]defaultRuleQueryModel, len(responseRuleQueries))
 	for idx, responseQuery := range responseRuleQueries {
@@ -503,6 +501,8 @@ func extractDefaultRuleQueries(ctx context.Context, responseRuleQueries []datado
 		}
 		if cqe, ok := responseQuery.GetCustomQueryExtensionOk(); ok {
 			stateQuery.CustomQueryExtension = types.StringValue(*cqe)
+		} else if idx < len(referenceQueries) && referenceQueries[idx].CustomQueryExtension == types.StringValue("") {
+			stateQuery.CustomQueryExtension = types.StringValue("")
 		}
 
 		stateQueries[idx] = stateQuery
@@ -552,14 +552,13 @@ func (r *securityMonitoringDefaultRuleResource) Update(ctx context.Context, requ
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error fetching default rule"))
 		return
 	}
-	if err := utils.CheckForUnparsed(currentResponse); err != nil {
-		response.Diagnostics.AddError("response contains unparsed object", err.Error())
-		return
-	}
-
 	rule := currentResponse.SecurityMonitoringStandardRuleResponse
 	if rule == nil {
 		response.Diagnostics.AddError("unsupported rule type", "signal rule type is not currently supported")
+		return
+	}
+	if err := utils.CheckForUnparsed(currentResponse); err != nil {
+		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
 	}
 	if !rule.GetIsDefault() {
@@ -590,7 +589,10 @@ func (r *securityMonitoringDefaultRuleResource) Update(ctx context.Context, requ
 	state := plan
 	state.ID = types.StringValue(ruleID)
 
-	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, updatedRule)...)
+	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, updatedRule, plan.CustomMessage, plan.CustomName, plan.Queries)...)
+	if len(plan.Options) == 0 {
+		state.Options = nil
+	}
 
 	response.Diagnostics.Append(securityMonitoringDefaultRuleDeprecationWarning(updatedRule)...)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -644,7 +646,12 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 					shouldUpdate = true
 					updatedRuleCase[i].CustomStatus = &planCustomStatus
 				}
+			} else if cs := ruleCase.GetCustomStatus(); string(cs) != "" {
+				updatedRuleCase[i].CustomStatus = nil
+				modifiedCases++
+				shouldUpdate = true
 			}
+
 		} else {
 
 			// Clear rule case notifications when rule case removed from terraform configuration
@@ -666,8 +673,7 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 			if idx < len(currentState.GetQueries()) {
 				existingQuery = &currentState.GetQueries()[idx]
 			}
-			built, qDiags := buildUpdateDefaultRuleQuery(ctx, &planQuery, existingQuery)
-			diags.Append(qDiags...)
+			built := buildUpdateDefaultRuleQuery(&planQuery, existingQuery)
 			if built != nil {
 				payloadQueries[idx] = *built
 			}
@@ -682,19 +688,21 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 
 	// custom_message: send whenever plan has a known value (including ""),
 	// so removing the user override propagates to the API.
+	// When null (not set in config), explicitly clear any existing value.
 	if !plan.CustomMessage.IsNull() && !plan.CustomMessage.IsUnknown() {
 		customMessage := plan.CustomMessage.ValueString()
 		payload.SetCustomMessage(customMessage)
-
-		// Check if custom_message exists in current state and compare
 		if currentCustomMessage, ok := currentState.GetCustomMessageOk(); ok {
 			if *currentCustomMessage != customMessage {
 				shouldUpdate = true
 			}
 		} else if customMessage != "" {
-			// Custom message doesn't exist in the current state, so this is a change
 			shouldUpdate = true
 		}
+	} else if _, ok := currentState.GetCustomMessageOk(); ok {
+		// config removed custom_message — clear it in the API
+		payload.SetCustomMessage("")
+		shouldUpdate = true
 	}
 
 	if !plan.CustomName.IsNull() && !plan.CustomName.IsUnknown() {
@@ -705,9 +713,12 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 				shouldUpdate = true
 			}
 		} else if customName != "" {
-			// Custom name doesn't exist in the current state, so this is a change
 			shouldUpdate = true
 		}
+	} else if _, ok := currentState.GetCustomNameOk(); ok {
+		// config removed custom_name — clear it in the API
+		payload.SetCustomName("")
+		shouldUpdate = true
 	}
 
 	if matchedCases < len(plan.Cases) {
@@ -755,6 +766,7 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 	for tag := range tagSet {
 		payloadTags = append(payloadTags, tag)
 	}
+	sort.Strings(payloadTags)
 	payload.SetTags(payloadTags)
 	if !compareTags(currentState.GetTags(), payloadTags) {
 		shouldUpdate = true
@@ -763,125 +775,72 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 	return &payload, shouldUpdate, diags
 }
 
-// buildUpdateDefaultRuleQuery merges the plan with the existing API query so
-// fields the user didn't author keep their server-side value.
-func buildUpdateDefaultRuleQuery(ctx context.Context, planQuery *defaultRuleQueryModel, existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery) (*datadogV2.SecurityMonitoringRuleQuery, diag.Diagnostics) {
-	var diags diag.Diagnostics
+// buildUpdateDefaultRuleQuery builds a query payload for a default rule update.
+// For default rules, only custom_query_extension is writable; all other fields
+// are owned by Datadog and must always come from the existing API state.
+func buildUpdateDefaultRuleQuery(planQuery *defaultRuleQueryModel, existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery) *datadogV2.SecurityMonitoringRuleQuery {
 	payloadQuery := datadogV2.SecurityMonitoringStandardRuleQuery{}
 
 	if existingQuery != nil {
-		if planQuery.Aggregation.IsNull() || planQuery.Aggregation.IsUnknown() {
-			if v, ok := existingQuery.GetAggregationOk(); ok {
-				payloadQuery.SetAggregation(*v)
-			}
+		if v, ok := existingQuery.GetAggregationOk(); ok {
+			payloadQuery.SetAggregation(*v)
 		}
-		if planQuery.GroupByFields.IsNull() || planQuery.GroupByFields.IsUnknown() {
-			if v, ok := existingQuery.GetGroupByFieldsOk(); ok {
-				payloadQuery.SetGroupByFields(*v)
-			}
+		if v, ok := existingQuery.GetGroupByFieldsOk(); ok {
+			payloadQuery.SetGroupByFields(*v)
 		}
-		if planQuery.HasOptionalGroupByFields.IsNull() || planQuery.HasOptionalGroupByFields.IsUnknown() {
-			if v, ok := existingQuery.GetHasOptionalGroupByFieldsOk(); ok {
-				payloadQuery.SetHasOptionalGroupByFields(*v)
-			}
+		if v, ok := existingQuery.GetHasOptionalGroupByFieldsOk(); ok {
+			payloadQuery.SetHasOptionalGroupByFields(*v)
 		}
-		if planQuery.DistinctFields.IsNull() || planQuery.DistinctFields.IsUnknown() {
-			if v, ok := existingQuery.GetDistinctFieldsOk(); ok {
-				payloadQuery.SetDistinctFields(*v)
-			}
+		if v, ok := existingQuery.GetDistinctFieldsOk(); ok {
+			payloadQuery.SetDistinctFields(*v)
 		}
-		if planQuery.DataSource.IsNull() || planQuery.DataSource.IsUnknown() {
-			if v, ok := existingQuery.GetDataSourceOk(); ok {
-				payloadQuery.SetDataSource(*v)
-			}
+		if v, ok := existingQuery.GetDataSourceOk(); ok {
+			payloadQuery.SetDataSource(*v)
 		}
-		if planQuery.Metric.IsNull() || planQuery.Metric.IsUnknown() {
-			if v, ok := existingQuery.GetMetricOk(); ok {
-				payloadQuery.SetMetric(*v)
-			}
+		if v, ok := existingQuery.GetMetricOk(); ok {
+			payloadQuery.SetMetric(*v)
 		}
-		if planQuery.Metrics.IsNull() || planQuery.Metrics.IsUnknown() {
-			if v, ok := existingQuery.GetMetricsOk(); ok {
-				payloadQuery.SetMetrics(*v)
-			}
+		if v, ok := existingQuery.GetMetricsOk(); ok {
+			payloadQuery.SetMetrics(*v)
 		}
-		if planQuery.Name.IsNull() || planQuery.Name.IsUnknown() {
-			if v, ok := existingQuery.GetNameOk(); ok {
-				payloadQuery.SetName(*v)
-			}
+		if v, ok := existingQuery.GetNameOk(); ok {
+			payloadQuery.SetName(*v)
 		}
-		if planQuery.Query.IsNull() || planQuery.Query.IsUnknown() {
-			if v, ok := existingQuery.GetQueryOk(); ok {
-				payloadQuery.SetQuery(*v)
-			}
-		}
-		if planQuery.CustomQueryExtension.IsNull() || planQuery.CustomQueryExtension.IsUnknown() {
-			if v, ok := existingQuery.GetCustomQueryExtensionOk(); ok {
-				payloadQuery.SetCustomQueryExtension(*v)
-			}
+		if v, ok := existingQuery.GetQueryOk(); ok {
+			payloadQuery.SetQuery(*v)
 		}
 	}
 
-	if !planQuery.Aggregation.IsNull() && !planQuery.Aggregation.IsUnknown() {
-		payloadQuery.SetAggregation(datadogV2.SecurityMonitoringRuleQueryAggregation(planQuery.Aggregation.ValueString()))
-	}
-	if !planQuery.GroupByFields.IsNull() && !planQuery.GroupByFields.IsUnknown() {
-		var groupByFields []string
-		listDiags := planQuery.GroupByFields.ElementsAs(ctx, &groupByFields, false)
-		diags.Append(listDiags...)
-		payloadQuery.SetGroupByFields(groupByFields)
-	}
-	if !planQuery.HasOptionalGroupByFields.IsNull() && !planQuery.HasOptionalGroupByFields.IsUnknown() {
-		payloadQuery.SetHasOptionalGroupByFields(planQuery.HasOptionalGroupByFields.ValueBool())
-	}
-	if !planQuery.DistinctFields.IsNull() && !planQuery.DistinctFields.IsUnknown() {
-		var distinctFields []string
-		listDiags := planQuery.DistinctFields.ElementsAs(ctx, &distinctFields, false)
-		diags.Append(listDiags...)
-		payloadQuery.SetDistinctFields(distinctFields)
-	}
-	if !planQuery.DataSource.IsNull() && !planQuery.DataSource.IsUnknown() {
-		payloadQuery.SetDataSource(datadogV2.SecurityMonitoringStandardDataSource(planQuery.DataSource.ValueString()))
-	}
-	if !planQuery.Metric.IsNull() && !planQuery.Metric.IsUnknown() {
-		payloadQuery.SetMetric(planQuery.Metric.ValueString())
-	}
-	if !planQuery.Metrics.IsNull() && !planQuery.Metrics.IsUnknown() {
-		var metrics []string
-		listDiags := planQuery.Metrics.ElementsAs(ctx, &metrics, false)
-		diags.Append(listDiags...)
-		payloadQuery.SetMetrics(metrics)
-	}
-	if !planQuery.Name.IsNull() && !planQuery.Name.IsUnknown() {
-		payloadQuery.SetName(planQuery.Name.ValueString())
-	}
-	if !planQuery.Query.IsNull() && !planQuery.Query.IsUnknown() {
-		payloadQuery.SetQuery(planQuery.Query.ValueString())
-	}
+	// custom_query_extension is the only writable field; plan value takes precedence.
 	if !planQuery.CustomQueryExtension.IsNull() && !planQuery.CustomQueryExtension.IsUnknown() {
 		payloadQuery.SetCustomQueryExtension(planQuery.CustomQueryExtension.ValueString())
+	} else if existingQuery != nil {
+		if v, ok := existingQuery.GetCustomQueryExtensionOk(); ok {
+			payloadQuery.SetCustomQueryExtension(*v)
+		}
 	}
 
 	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)
-	return &standardRuleQuery, diags
+	return &standardRuleQuery
 }
 
+// compareQueries reports whether the query payloads represent no change.
+// Only custom_query_extension is writable on default rules; all other fields
+// are always echoed back from the API, so only that field needs comparison.
 func compareQueries(currentQueries []datadogV2.SecurityMonitoringStandardRuleQuery, payloadQueries []datadogV2.SecurityMonitoringRuleQuery) bool {
 	if len(currentQueries) != len(payloadQueries) {
 		return false
 	}
-
-	// For now, we'll assume queries are different if they exist in the payload
-	// This is a simplified approach - in a more complete implementation,
-	// we would need to extract the standard query from the payload query
-	// and compare each field individually
-
-	// Since we're building the payload from Terraform config and comparing with current state,
-	// if there are any queries in the payload, we should check if they differ from current state
-	// For simplicity, we'll return false (indicating a change) if there are queries in the payload
-	// This ensures that any query changes are detected
-
-	return len(payloadQueries) == 0
+	for i, current := range currentQueries {
+		payload := payloadQueries[i].SecurityMonitoringStandardRuleQuery
+		if payload == nil {
+			return false
+		}
+		if current.GetCustomQueryExtension() != payload.GetCustomQueryExtension() {
+			return false
+		}
+	}
+	return true
 }
 
 func compareFilters(currentFilters, payloadFilters []datadogV2.SecurityMonitoringFilter) bool {
@@ -900,7 +859,13 @@ func compareFilters(currentFilters, payloadFilters []datadogV2.SecurityMonitorin
 }
 
 func compareTags(currentTags, payloadTags []string) bool {
-	return stringSliceEquals(currentTags, payloadTags)
+	if len(currentTags) != len(payloadTags) {
+		return false
+	}
+	sorted := make([]string, len(currentTags))
+	copy(sorted, currentTags)
+	sort.Strings(sorted)
+	return stringSliceEquals(sorted, payloadTags)
 }
 
 func stringSliceEquals(left, right []string) bool {
