@@ -494,7 +494,7 @@ func (r *datadogCustomAllocationRuleResource) Create(ctx context.Context, reques
 
 	resp, _, err := r.Api.CreateCustomAllocationRule(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating DatadogCustomAllocationRule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -538,7 +538,7 @@ func (r *datadogCustomAllocationRuleResource) Update(ctx context.Context, reques
 
 	resp, _, err := r.Api.UpdateCustomAllocationRule(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DatadogCustomAllocationRule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating DatadogCustomAllocationRule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

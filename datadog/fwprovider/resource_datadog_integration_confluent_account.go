@@ -117,7 +117,7 @@ func (r *integrationConfluentAccountResource) Create(ctx context.Context, reques
 
 	resp, _, err := r.Api.CreateConfluentAccount(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationConfluentAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating IntegrationConfluentAccount"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -147,7 +147,7 @@ func (r *integrationConfluentAccountResource) Update(ctx context.Context, reques
 
 	resp, _, err := r.Api.UpdateConfluentAccount(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationConfluentAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating IntegrationConfluentAccount"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

@@ -207,7 +207,7 @@ func (r *rumMetricResource) Create(ctx context.Context, request resource.CreateR
 
 	resp, _, err := r.Api.CreateRumMetric(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumMetric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating RumMetric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -237,7 +237,7 @@ func (r *rumMetricResource) Update(ctx context.Context, request resource.UpdateR
 
 	resp, _, err := r.Api.UpdateRumMetric(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumMetric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating RumMetric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

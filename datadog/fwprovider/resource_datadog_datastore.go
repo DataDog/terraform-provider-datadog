@@ -197,7 +197,7 @@ func (r *datastoreResource) Update(ctx context.Context, request resource.UpdateR
 
 	resp, _, err := r.Api.UpdateDatastore(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Datastore"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating Datastore"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

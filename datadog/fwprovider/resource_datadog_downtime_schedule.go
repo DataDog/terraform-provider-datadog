@@ -229,7 +229,7 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 
 	resp, _, err := r.Api.CreateDowntime(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating DowntimeSchedule"))
 		return
 	}
 	r.updateState(ctx, &state, &resp)
@@ -255,7 +255,7 @@ func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.
 
 	resp, _, err := r.Api.UpdateDowntime(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating DowntimeSchedule"))
 		return
 	}
 	r.updateState(ctx, &state, &resp)

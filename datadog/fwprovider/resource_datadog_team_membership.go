@@ -165,7 +165,7 @@ func (r *teamMembershipResource) Create(ctx context.Context, request resource.Cr
 
 	resp, _, err := r.Api.CreateTeamMembership(r.Auth, teamId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamMembership"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating TeamMembership"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -196,7 +196,7 @@ func (r *teamMembershipResource) Update(ctx context.Context, request resource.Up
 
 	resp, _, err := r.Api.UpdateTeamMembership(r.Auth, teamId, userId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamMembership"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating TeamMembership"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

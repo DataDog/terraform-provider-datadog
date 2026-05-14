@@ -175,7 +175,7 @@ func (r *gcpUcConfigResource) Create(ctx context.Context, request resource.Creat
 
 	resp, _, err := r.Api.CreateCostGCPUsageCostConfig(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving GcpUcConfig"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating GcpUcConfig"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

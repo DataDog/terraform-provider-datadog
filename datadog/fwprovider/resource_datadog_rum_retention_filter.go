@@ -147,7 +147,7 @@ func (r *rumRetentionFilterResource) Create(ctx context.Context, request resourc
 
 	resp, _, err := r.Api.CreateRetentionFilter(r.Auth, appId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumRetentionFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating RumRetentionFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -175,7 +175,7 @@ func (r *rumRetentionFilterResource) Update(ctx context.Context, request resourc
 
 	resp, _, err := r.Api.UpdateRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString(), *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumRetentionFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating RumRetentionFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

@@ -927,7 +927,7 @@ func (r *monitorResource) Create(ctx context.Context, request resource.CreateReq
 
 	resp, _, err := r.Api.CreateMonitor(r.Auth, *monitorBody)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Monitor"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating Monitor"))
 		return
 	}
 	r.updateState(ctx, &state, &resp)
@@ -955,7 +955,7 @@ func (r *monitorResource) Update(ctx context.Context, request resource.UpdateReq
 
 	resp, _, err := r.Api.UpdateMonitor(r.Auth, *id, *updateRequestBody)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Monitor"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating Monitor"))
 		return
 	}
 	r.updateState(ctx, &state, &resp)

@@ -136,7 +136,7 @@ func (r *RestrictionPolicyResource) Create(ctx context.Context, request resource
 
 	resp, _, err := r.API.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating RestrictionPolicy"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -165,7 +165,7 @@ func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource
 
 	resp, _, err := r.API.UpdateRestrictionPolicy(r.Auth, resourceId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating RestrictionPolicy"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
