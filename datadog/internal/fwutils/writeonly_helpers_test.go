@@ -74,7 +74,7 @@ func TestCreateWriteOnlySecretAttributes(t *testing.T) {
 		TriggerAttr:          "api_key_wo_version",
 		OriginalDescription:  "The API key for the account.",
 		WriteOnlyDescription: "Write-only API key for the account.",
-		TriggerDescription:   "Version for api_key_wo rotation.",
+		TriggerDescription:   "Version for `api_key_wo` rotation.",
 	}
 
 	attrs := CreateWriteOnlySecretAttributes(config)

@@ -262,6 +262,7 @@ func (r *onCallTeamRoutingRulesResource) Read(ctx context.Context, request resou
 		return
 	}
 
+	clearUnknownPolicyActions(&resp)
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
@@ -299,6 +300,7 @@ func (r *onCallTeamRoutingRulesResource) Create(ctx context.Context, request res
 		return
 	}
 
+	clearUnknownPolicyActions(&resp)
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
@@ -336,6 +338,7 @@ func (r *onCallTeamRoutingRulesResource) Update(ctx context.Context, request res
 		return
 	}
 
+	clearUnknownPolicyActions(&resp)
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsed object", err.Error())
 		return
@@ -368,6 +371,27 @@ func (r *onCallTeamRoutingRulesResource) Delete(ctx context.Context, request res
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting on_call_team_routing_rules"))
 		return
+	}
+}
+
+// clearUnknownPolicyActions removes UnparsedObject from routing rule actions of type "escalation_policy".
+// The Go client does not yet know this type, so it lands in UnparsedObject and would cause
+// CheckForUnparsed to fail. The escalation policy is read from relationships.Policy, not from
+// the actions array, so it is safe to drop it here until the client is regenerated.
+func clearUnknownPolicyActions(resp *datadogV2.TeamRoutingRules) {
+	for i := range resp.Included {
+		rr := resp.Included[i].RoutingRule
+		if rr == nil || rr.Attributes == nil {
+			continue
+		}
+		for j := range rr.Attributes.Actions {
+			action := &rr.Attributes.Actions[j]
+			if unparsed, ok := action.UnparsedObject.(map[string]interface{}); ok {
+				if unparsed["type"] == "escalation_policy" {
+					action.UnparsedObject = nil
+				}
+			}
+		}
 	}
 }
 

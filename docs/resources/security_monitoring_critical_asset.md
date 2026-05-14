@@ -29,7 +29,7 @@ resource "datadog_security_monitoring_critical_asset" "my_critical_asset" {
 
 - `query` (String) The query used to match a critical asset and the associated signals. Uses the same syntax as the search bar in the Security Signals Explorer.
 - `rule_query` (String) The rule query to filter which detection rules this critical asset applies to. Uses the same syntax as the search bar for detection rules.
-- `severity` (String) The severity change applied to signals matching this critical asset. Valid values are `critical`, `high`, `medium`, `low`, `info`, `increase`, `decrease`.
+- `severity` (String) The severity change applied to signals matching this critical asset. Valid values are `critical`, `high`, `medium`, `low`, `info`, `no-op`, `increase`, `decrease`.
 
 ### Optional
 

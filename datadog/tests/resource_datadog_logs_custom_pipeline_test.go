@@ -74,6 +74,8 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 		pipeline {
 			name = "my nested pipeline"
 			is_enabled = true
+			tags = ["nested:tag1", "nested:tag2"]
+			description = "Nested pipeline description"
 			filter {
 				query = "source:kafka"
 			}
@@ -579,6 +581,8 @@ resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
 		pipeline {
 			is_enabled = true
 			name       = "Nginx"
+			tags = ["nested:empty-filter"]
+			description = "Nested pipeline with empty filter"
 			filter {
 				query = ""
 			}
@@ -631,6 +635,14 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.3.grok_parser.0.samples.#", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.filter.0.query", "source:kafka"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.tags.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.tags.0", "nested:tag1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.tags.1", "nested:tag2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.description", "Nested pipeline description"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.4.pipeline.0.processor.0.url_parser.0.sources.#", "1"),
 					resource.TestCheckResourceAttr(
@@ -760,6 +772,12 @@ func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
 						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.1.category_processor.0.category.0.filter.0.query", ""),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.2.pipeline.0.filter.0.query", ""),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.2.pipeline.0.tags.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.2.pipeline.0.tags.0", "nested:empty-filter"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.2.pipeline.0.description", "Nested pipeline with empty filter"),
 				),
 			},
 		},

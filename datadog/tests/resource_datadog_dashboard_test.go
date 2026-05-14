@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
@@ -1310,7 +1311,7 @@ func checkDashboardExists(accProvider func() (*schema.Provider, error)) resource
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+			if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_v2" && r.Type != "datadog_dashboard_json" {
 				continue
 			}
 			if _, _, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
@@ -1330,7 +1331,7 @@ func checkDashboardDestroy(accProvider func() (*schema.Provider, error)) resourc
 
 		err := utils.Retry(2, 10, func() error {
 			for _, r := range s.RootModule().Resources {
-				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_json" {
+				if r.Type != "datadog_dashboard" && r.Type != "datadog_dashboard_v2" && r.Type != "datadog_dashboard_json" {
 					continue
 				}
 				if _, httpResp, err := apiInstances.GetDashboardsApiV1().GetDashboard(auth, r.Primary.ID); err != nil {
@@ -1380,6 +1381,73 @@ func testAccDatadogDashboardWidgetUtilImport(t *testing.T, config string, name s
 	replacer := strings.NewReplacer("{{uniq}}", uniq)
 	config = replacer.Replace(config)
 	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+			},
+			{
+				ResourceName:      name,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+// testAccDatadogDashboardV2WidgetUtil runs a v2 dashboard test reusing the cassette from v1TestName.
+// The config should use datadog_dashboard_v2 as the resource type; the entity name is derived from
+// the v1 test so that the cassette's recorded dashboard title matches.
+func testAccDatadogDashboardV2WidgetUtil(t *testing.T, v1TestName string, config string, name string, assertions []string) {
+	if os.Getenv("TF_ACC") == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
+	if os.Getenv("RECORD") == "none" {
+		t.Skip("datadog_dashboard_v2 tests require cassettes; skipped when RECORD=none")
+	}
+	t.Parallel()
+	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, v1TestName)
+	accProvider := testAccProvider(t, accProviders)
+	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
+	for i := range assertions {
+		assertions[i] = replacer.Replace(assertions[i])
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      checkDashboardDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: config,
+				Check: resource.ComposeTestCheckFunc(
+					testCheckResourceAttrs(name, checkDashboardExists(accProvider), assertions)...,
+				),
+			},
+		},
+	})
+}
+
+// testAccDatadogDashboardV2WidgetUtilImport runs a v2 dashboard import test reusing the cassette from v1TestName.
+func testAccDatadogDashboardV2WidgetUtilImport(t *testing.T, v1TestName string, config string, name string) {
+	if os.Getenv("TF_ACC") == "" {
+		t.Skip("Acceptance tests skipped unless env 'TF_ACC' set")
+	}
+	if os.Getenv("RECORD") == "none" {
+		t.Skip("datadog_dashboard_v2 tests require cassettes; skipped when RECORD=none")
+	}
+	t.Parallel()
+	ctx, accProviders := testAccProvidersWithCassette(context.Background(), t, v1TestName)
+	accProvider := testAccProvider(t, accProviders)
+	uniq := withUniqueSurrounding(clockFromContext(ctx), v1TestName)
+	replacer := strings.NewReplacer("{{uniq}}", uniq)
+	config = replacer.Replace(config)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },

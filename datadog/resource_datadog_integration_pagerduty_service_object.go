@@ -144,7 +144,7 @@ func resourceDatadogIntegrationPagerdutySODelete(ctx context.Context, d *schema.
 func resourceDatadogIntegrationPagerdutySOImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	originalId := d.Id()
 	if diagErr := resourceDatadogIntegrationPagerdutySORead(ctx, d, meta); diagErr != nil {
-		return nil, fmt.Errorf(diagErr[0].Summary)
+		return nil, fmt.Errorf("%s", diagErr[0].Summary)
 	}
 
 	// We can assume resource was not found for import when `id` is set to nil in the read step

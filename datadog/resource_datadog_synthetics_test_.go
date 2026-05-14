@@ -8,6 +8,7 @@ import (
 	"context"
 	b64 "encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"maps"
@@ -283,6 +284,11 @@ func syntheticsTestRequest() *schema.Resource {
 				Deprecated:  "Use `http_version` in the `options_list` field instead.",
 				Type:        schema.TypeString,
 				Optional:    true,
+				Computed:    true,
+				DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+					// This field is deprecated and silently ignored; suppress all diffs.
+					return true
+				},
 			},
 			"is_message_base64_encoded": {
 				Description: "For Websocket tests, whether the message is treated as a base64-encoded string in the server.",
@@ -1237,10 +1243,15 @@ func syntheticsTestRequestFile() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"content": {
-					Type:         schema.TypeString,
-					Description:  "Content of the file.",
-					Optional:     true,
-					ValidateFunc: validation.StringLenBetween(1, 3145728),
+					Type:        schema.TypeString,
+					Description: "Content of the file.",
+					Optional:    true,
+					// The backend enforces a 3 MB (3,145,728 byte) limit on the decoded file size.
+					// Content is always base64-encoded, which inflates the string length by ~33%
+					// (every 3 raw bytes become 4 base64 characters).
+					// The upper bound here is therefore ceil(3,145,728 * 4/3) = 4,194,304 bytes,
+					// giving the provider room for the largest base64 string that decodes to <=3 MB.
+					ValidateFunc: validation.StringLenBetween(1, 4194304),
 				},
 				"bucket_key": {
 					Type:        schema.TypeString,
@@ -1571,6 +1582,42 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Description: `Y coordinates for a "scroll step".`,
 					Type:        schema.TypeInt,
 					Optional:    true,
+				},
+				"drag_drop_options": {
+					Description: `Options for a "drag" or "drop" step.`,
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"delay": {
+								Description:  "Delay in milliseconds before performing the action (0–9999).",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								ValidateFunc: validation.IntBetween(0, 9999),
+							},
+							"offset": {
+								Description: "Pixel offset from the center of the target element.",
+								Type:        schema.TypeList,
+								MaxItems:    1,
+								Optional:    true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"x": {
+											Description: "Horizontal offset in pixels.",
+											Type:        schema.TypeInt,
+											Optional:    true,
+										},
+										"y": {
+											Description: "Vertical offset in pixels.",
+											Type:        schema.TypeInt,
+											Optional:    true,
+										},
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -1951,6 +1998,13 @@ func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schem
 		}
 	}
 
+	// validate drag/drop step ordering for browser tests
+	if typeOk && type_.(string) == string(datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER) {
+		if err := validateDragDropStepOrdering(diff); err != nil {
+			return err
+		}
+	}
+
 	// Validate gRPC message requirements during planning
 	subtype, subtypeOk := diff.GetOk("subtype")
 	if !subtypeOk || subtype.(string) != "grpc" {
@@ -1968,6 +2022,42 @@ func resourceDatadogSyntheticsTestCustomizeDiff(ctx context.Context, diff *schem
 	}
 
 	return nil
+}
+
+func validateDragDropStepOrdering(diff *schema.ResourceDiff) error {
+	steps, ok := diff.Get("browser_step").([]interface{})
+	if !ok {
+		return nil
+	}
+	var errs []error
+	for i, s := range steps {
+		step, ok := s.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		stepType := step["type"].(string)
+		if stepType == string(datadogV1.SYNTHETICSSTEPTYPE_DRAG) {
+			if i+1 >= len(steps) {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step", i))
+				continue
+			}
+			next := steps[i+1].(map[string]interface{})
+			if next["type"].(string) != string(datadogV1.SYNTHETICSSTEPTYPE_DROP) {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drag\" step must be immediately followed by a \"drop\" step, got %q", i, next["type"]))
+			}
+		}
+		if stepType == string(datadogV1.SYNTHETICSSTEPTYPE_DROP) {
+			if i == 0 {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step", i))
+				continue
+			}
+			prev := steps[i-1].(map[string]interface{})
+			if prev["type"].(string) != string(datadogV1.SYNTHETICSSTEPTYPE_DRAG) {
+				errs = append(errs, fmt.Errorf("browser_step[%d]: a \"drop\" step must be immediately preceded by a \"drag\" step, got %q", i, prev["type"]))
+			}
+		}
+	}
+	return errors.Join(errs...)
 }
 
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -3875,9 +3965,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 				assertionOperator := v.(string)
 				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
 					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+					targetJSONSchema, _ := assertionMap["targetjsonschema"].([]interface{})
+					if len(targetJSONSchema) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetJSONSchema[0].(map[string]interface{})
 						if v, ok := targetMap["jsonschema"]; ok {
 							subTarget.SetJsonSchema(v.(string))
 						}
@@ -3893,7 +3984,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionJSONSchemaTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetJSONSchema) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesJSONSchema` operator. It will be ignored, use `assertion.targetjsonschema` instead.",
@@ -3905,9 +3996,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionJSONPathTarget.SetProperty(v)
 					}
-					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+					targetJSONPath, _ := assertionMap["targetjsonpath"].([]interface{})
+					if len(targetJSONPath) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetJSONPath[0].(map[string]interface{})
 						if v, ok := targetMap["jsonpath"]; ok {
 							subTarget.SetJsonPath(v.(string))
 						}
@@ -3941,7 +4033,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetJSONPath) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesJSONPath` operator. It will be ignored, use `assertion.targetjsonpath` instead.",
@@ -3953,9 +4045,10 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionXPathTarget.SetProperty(v)
 					}
-					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
+					targetXPath, _ := assertionMap["targetxpath"].([]interface{})
+					if len(targetXPath) > 0 {
 						subTarget := datadogV1.NewSyntheticsAssertionXPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
+						targetMap := targetXPath[0].(map[string]interface{})
 						if v, ok := targetMap["xpath"]; ok {
 							subTarget.SetXPath(v.(string))
 						}
@@ -3983,7 +4076,7 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 						}
 						assertionXPathTarget.SetTarget(*subTarget)
 					}
-					if _, ok := assertionMap["target"]; ok {
+					if _, ok := assertionMap["target"]; ok && len(targetXPath) == 0 {
 						diags = append(diags, diag.Diagnostic{
 							Severity: diag.Warning,
 							Summary:  "`assertion.target` is not valid for `validatesXPath` operator. It will be ignored, use `assertion.targetxpath` instead.",
@@ -4406,10 +4499,15 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 
 		if content, ok := fileMap["content"]; ok && content != "" {
 			file.SetContent(content.(string))
-		}
-
-		if encoding, ok := fileMap["encoding"]; ok && encoding != "" {
-			file.SetEncoding(encoding.(string))
+			// When content is provided it is always base64-encoded (Terraform's
+			// local_file data source exposes content_base64 for binary files).
+			// Auto-set encoding so the backend and worker both know to decode it;
+			// without this the worker sends base64 text to S3 instead of binary.
+			encoding, _ := fileMap["encoding"].(string)
+			if encoding == "" {
+				encoding = "base64"
+			}
+			file.SetEncoding(encoding)
 		}
 
 		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
@@ -5704,6 +5802,25 @@ func convertStepParamsValueForConfig(stepType interface{}, key string, value int
 	case "pattern", "variable":
 		return value.([]interface{})[0], diags
 
+	case "drag_drop_options":
+		optsList, ok := value.([]interface{})
+		if !ok || len(optsList) == 0 {
+			return nil, diags
+		}
+		optsMap := optsList[0].(map[string]interface{})
+		result := map[string]interface{}{}
+		if delay, ok := optsMap["delay"].(int); ok && delay != 0 {
+			result["delay"] = delay
+		}
+		if offsetList, ok := optsMap["offset"].([]interface{}); ok && len(offsetList) > 0 {
+			offsetMap := offsetList[0].(map[string]interface{})
+			result["offset"] = map[string]interface{}{
+				"x": offsetMap["x"],
+				"y": offsetMap["y"],
+			}
+		}
+		return result, diags
+
 	}
 
 	return value, diags
@@ -5732,6 +5849,29 @@ func convertStepParamsValueForState(key string, value interface{}) (interface{},
 
 	case "pattern", "variable":
 		return []interface{}{value}, diags
+
+	case "drag_drop_options":
+		optsMap, ok := value.(map[string]interface{})
+		if !ok {
+			return value, diags
+		}
+		result := map[string]interface{}{}
+		if delay, ok := optsMap["delay"].(float64); ok {
+			result["delay"] = int(delay)
+		}
+		if offsetRaw, ok := optsMap["offset"].(map[string]interface{}); ok {
+			x, xOk := offsetRaw["x"].(float64)
+			y, yOk := offsetRaw["y"].(float64)
+			if xOk && yOk {
+				result["offset"] = []interface{}{
+					map[string]interface{}{
+						"x": int(x),
+						"y": int(y),
+					},
+				}
+			}
+		}
+		return []interface{}{result}, diags
 	}
 
 	return value, diags
@@ -5774,6 +5914,12 @@ func convertStepParamsKey(key string) string {
 
 	case "withClick":
 		return "with_click"
+
+	case "drag_drop_options":
+		return "options"
+
+	case "options":
+		return "drag_drop_options"
 	}
 
 	return key
@@ -5840,7 +5986,9 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) (map[
 			convertedValue, convertDiags := convertStepParamsValueForConfig(stepType, key, stepMap[key])
 			diags = append(diags, convertDiags...)
 
-			params[convertStepParamsKey(key)] = convertedValue
+			if convertedValue != nil {
+				params[convertStepParamsKey(key)] = convertedValue
+			}
 		}
 
 		if key == "element" {
@@ -6017,6 +6165,12 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
 		return []string{"click_type", "click_with_javascript", "element"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_DRAG:
+		return []string{"element", "drag_drop_options"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_DROP:
+		return []string{"element", "drag_drop_options"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_EXTRACT_FROM_EMAIL_BODY:
 		return []string{"pattern", "variable"}

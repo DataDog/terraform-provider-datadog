@@ -59,7 +59,7 @@ func (r *DatasetResource) Metadata(_ context.Context, _ resource.MetadataRequest
 
 func (r *DatasetResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Dataset resource. This can be used to create and manage Datadog datasets.",
+		Description: "Provides a Datadog Dataset resource. This can be used to create and manage Datadog datasets, also known as restricted datasets, for Data Access Control.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "The name of the dataset.",
@@ -87,7 +87,7 @@ func (r *DatasetResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"product": schema.StringAttribute{
-							Description: "The product type of the dataset. Supported types: `apm`, `rum`, `synthetics`, `metrics`, `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.",
+							Description: "The product type of the dataset. Supported types: `apm`, `rum`, `synthetics`, `metrics` (Custom Metrics), `logs`, `sd_repoinfo`, `error_tracking`, `cloud_cost`, and `ml_obs`.",
 							Required:    true,
 						},
 						"filters": schema.SetAttribute{

@@ -1,0 +1,205 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 437
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"layers":[{"effective_date":"2025-01-01T00:00:00Z","interval":{"days":1,"seconds":0},"members":[{}],"name":"Layer A","rotation_start":"2025-01-01T00:00:00Z"},{"effective_date":"2025-01-01T00:00:00Z","interval":{"days":2,"seconds":0},"members":[{}],"name":"Layer B","rotation_start":"2025-01-01T00:00:00Z"}],"name":"tf-testacconcallschedulelayeridswapnames-local-1777447498","time_zone":"UTC"},"type":"schedules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/schedules?include=layers%2Clayers.members.user
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"a2967322-070b-49df-bd0a-03ca77338451","type":"schedules","attributes":{"name":"tf-testacconcallschedulelayeridswapnames-local-1777447498","time_zone":"UTC"},"relationships":{"layers":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers"},{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers"}]},"teams":{"data":[]}}},"included":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":1},"name":"Layer A","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03-member-1","type":"members"}]}}},{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":2},"name":"Layer B","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592-member-1","type":"members"}]}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 390.506416ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/a2967322-070b-49df-bd0a-03ca77338451?include=layers%2Clayers.members.user
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"a2967322-070b-49df-bd0a-03ca77338451","type":"schedules","attributes":{"name":"tf-testacconcallschedulelayeridswapnames-local-1777447498","time_zone":"UTC"},"relationships":{"layers":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers"},{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers"}]},"teams":{"data":[]}}},"included":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":1},"name":"Layer A","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03-member-1","type":"members"}]}}},{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":2},"name":"Layer B","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592-member-1","type":"members"}]}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 128.846791ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/a2967322-070b-49df-bd0a-03ca77338451?include=layers%2Clayers.members.user
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"a2967322-070b-49df-bd0a-03ca77338451","type":"schedules","attributes":{"name":"tf-testacconcallschedulelayeridswapnames-local-1777447498","time_zone":"UTC"},"relationships":{"layers":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers"},{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers"}]},"teams":{"data":[]}}},"included":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":1},"name":"Layer A","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03-member-1","type":"members"}]}}},{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":2},"name":"Layer B","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592-member-1","type":"members"}]}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 118.685208ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"layers":[{"effective_date":"2025-01-01T00:00:00Z","id":"2915dbec-3e5d-486f-90dc-73b1c7911592","interval":{"days":1,"seconds":0},"members":[{}],"name":"Layer B","rotation_start":"2025-01-01T00:00:00Z"},{"effective_date":"2025-01-01T00:00:00Z","id":"2888f515-3a3a-49ec-bad2-4a322780ba03","interval":{"days":2,"seconds":0},"members":[{}],"name":"Layer A","rotation_start":"2025-01-01T00:00:00Z"}],"name":"tf-testacconcallschedulelayeridswapnames-local-1777447498","time_zone":"UTC"},"id":"a2967322-070b-49df-bd0a-03ca77338451","type":"schedules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/a2967322-070b-49df-bd0a-03ca77338451?include=layers%2Clayers.members.user
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"a2967322-070b-49df-bd0a-03ca77338451","type":"schedules","attributes":{"name":"tf-testacconcallschedulelayeridswapnames-local-1777447498","time_zone":"UTC"},"relationships":{"layers":{"data":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers"},{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers"}]},"teams":{"data":[]}}},"included":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":1},"name":"Layer B","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592-member-1","type":"members"}]}}},{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":2},"name":"Layer A","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03-member-1","type":"members"}]}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 153.366709ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/a2967322-070b-49df-bd0a-03ca77338451?include=layers%2Clayers.members.user
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"a2967322-070b-49df-bd0a-03ca77338451","type":"schedules","attributes":{"name":"tf-testacconcallschedulelayeridswapnames-local-1777447498","time_zone":"UTC"},"relationships":{"layers":{"data":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers"},{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers"}]},"teams":{"data":[]}}},"included":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":1},"name":"Layer B","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2915dbec-3e5d-486f-90dc-73b1c7911592-member-1","type":"members"}]}}},{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03","type":"layers","attributes":{"applied_rotation_start":"2025-01-01T00:00:00Z","effective_date":"2025-01-01T00:00:00Z","interval":{"days":2},"name":"Layer A","restrictions":[],"rotation_start":"2025-01-01T00:00:00Z"},"relationships":{"members":{"data":[{"id":"2888f515-3a3a-49ec-bad2-4a322780ba03-member-1","type":"members"}]}}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 116.899875ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/on-call/schedules/a2967322-070b-49df-bd0a-03ca77338451
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 166.110791ms

@@ -104,6 +104,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_k
 - `pattern` (String) Not included if there is a relationship to a standard pattern.
 - `priority` (Number) Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).
 - `standard_pattern_id` (String) Id of the standard pattern the rule refers to. If provided, then pattern must not be provided.
+- `suppressions` (Block List, Max: 1) Object defining a set of suppressions to skip matches based on a set of rules. The available suppression types are `starts_with`, `ends_with`, and `exact_match`. (see [below for nested schema](#nestedblock--suppressions))
 - `tags` (List of String) List of tags.
 - `text_replacement` (Block List, Max: 1) Object describing how the scanned event will be replaced. Defaults to `type: none` (see [below for nested schema](#nestedblock--text_replacement))
 
@@ -118,6 +119,16 @@ Required:
 
 - `character_count` (Number) Number of characters before the match to find a keyword validating the match. It must be between 1 and 50 (inclusive).
 - `keywords` (List of String) Keyword list that is checked during scanning in order to validate a match. The number of keywords in the list must be lower than or equal to 30.
+
+
+<a id="nestedblock--suppressions"></a>
+### Nested Schema for `suppressions`
+
+Optional:
+
+- `ends_with` (List of String) Any match that ends with a value in this list will be suppressed.
+- `exact_match` (List of String) Any match that appears in this list will be suppressed.
+- `starts_with` (List of String) Any match that starts with a value in this list will be suppressed.
 
 
 <a id="nestedblock--text_replacement"></a>

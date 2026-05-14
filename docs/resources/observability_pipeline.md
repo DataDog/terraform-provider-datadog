@@ -93,7 +93,7 @@ Optional:
 - `pipeline_type` (String) The type of data being ingested. Defaults to `logs` if not specified. Valid values are `logs`, `metrics`.
 - `processor_group` (Block List) A processor group containing common configuration and nested processors. (see [below for nested schema](#nestedblock--config--processor_group))
 - `source` (Block List) List of sources. (see [below for nested schema](#nestedblock--config--source))
-- `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
+- `use_legacy_search_syntax` (Boolean) Set to `true` to continue using the legacy search syntax while migrating filter queries. After migrating all queries to the new syntax, set to `false`. The legacy syntax is deprecated and will eventually be removed. Requires Observability Pipelines Worker 2.11 or later. Only applies to `logs` pipelines. This field is ignored for `metrics` pipelines. See https://docs.datadoghq.com/observability_pipelines/guide/upgrade_your_filter_queries_to_the_new_search_syntax/ for more information.
 
 <a id="nestedblock--config--destination"></a>
 ### Nested Schema for `config.destination`
@@ -107,13 +107,15 @@ Optional:
 
 - `amazon_opensearch` (Block List) The `amazon_opensearch` destination writes logs to Amazon OpenSearch. (see [below for nested schema](#nestedblock--config--destination--amazon_opensearch))
 - `amazon_s3` (Block List) The `amazon_s3` destination sends your logs in Datadog-rehydratable format to an Amazon S3 bucket for archiving. (see [below for nested schema](#nestedblock--config--destination--amazon_s3))
+- `amazon_s3_generic` (Block List) The `amazon_s3_generic` destination sends your logs to an Amazon S3 bucket. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic))
 - `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
 - `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
 - `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem))
+- `databricks_zerobus` (Block List) The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus))
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destination--datadog_logs))
 - `datadog_metrics` (Block List) The `datadog_metrics` destination forwards metrics to Datadog. (see [below for nested schema](#nestedblock--config--destination--datadog_metrics))
-- `elasticsearch` (Block List) The `elasticsearch` destination writes logs to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
+- `elasticsearch` (Block List) The `elasticsearch` destination writes logs or metrics to an Elasticsearch cluster. (see [below for nested schema](#nestedblock--config--destination--elasticsearch))
 - `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destination--google_cloud_storage))
 - `google_pubsub` (Block List) The `google_pubsub` destination publishes logs to a Google Cloud Pub/Sub topic. (see [below for nested schema](#nestedblock--config--destination--google_pubsub))
 - `google_secops` (Block List) The `google_chronicle` destination sends logs to Google SecOps. (see [below for nested schema](#nestedblock--config--destination--google_secops))
@@ -236,6 +238,63 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--amazon_s3_generic"></a>
+### Nested Schema for `config.destination.amazon_s3_generic`
+
+Required:
+
+- `bucket` (String) S3 bucket name.
+- `region` (String) AWS region of the S3 bucket.
+- `storage_class` (String) S3 storage class. Valid values are `STANDARD`, `REDUCED_REDUNDANCY`, `INTELLIGENT_TIERING`, `STANDARD_IA`, `EXPRESS_ONEZONE`, `ONEZONE_IA`, `GLACIER`, `GLACIER_IR`, `DEEP_ARCHIVE`.
+
+Optional:
+
+- `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--auth))
+- `batch_settings` (Block List) Event batching settings. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--batch_settings))
+- `compression` (Block List) Compression configuration. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--compression))
+- `encoding` (Block List) Encoding format for the destination. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--encoding))
+- `key_prefix` (String) Optional prefix for object keys.
+
+<a id="nestedblock--config--destination--amazon_s3_generic--auth"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.auth`
+
+Optional:
+
+- `assume_role` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `external_id` (String) A unique identifier for cross-account role assumption.
+- `session_name` (String) A session identifier used for logging and tracing the assumed role session.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--batch_settings"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.batch_settings`
+
+Optional:
+
+- `batch_size` (Number) Maximum batch size in bytes.
+- `timeout_secs` (Number) Maximum number of seconds to wait before flushing the batch.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--compression"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. Valid values are `gzip`, `zstd`, `snappy`.
+
+Optional:
+
+- `level` (Number) Compression level.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--encoding"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.encoding`
+
+Required:
+
+- `type` (String) The encoding type. Valid values are `json`, `parquet`.
+
+
+
 <a id="nestedblock--config--destination--amazon_security_lake"></a>
 ### Nested Schema for `config.destination.amazon_security_lake`
 
@@ -315,6 +374,7 @@ Optional:
 
 - `blob_prefix` (String) Optional prefix for blobs written to the container.
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--azure_storage--buffer))
+- `connection_string_key` (String) Name of the environment variable or secret that holds the Azure Storage connection string.
 
 <a id="nestedblock--config--destination--azure_storage--buffer"></a>
 ### Nested Schema for `config.destination.azure_storage.buffer`
@@ -423,6 +483,32 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--databricks_zerobus"></a>
+### Nested Schema for `config.destination.databricks_zerobus`
+
+Required:
+
+- `ingestion_endpoint` (String) The Databricks Zerobus ingestion endpoint URL.
+- `table_name` (String) The name of the Databricks table to ingest logs into.
+- `unity_catalog_endpoint` (String) The Databricks Unity Catalog endpoint URL.
+
+Optional:
+
+- `auth` (Block List) OAuth client credentials used to authenticate with Databricks. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--auth))
+
+<a id="nestedblock--config--destination--databricks_zerobus--auth"></a>
+### Nested Schema for `config.destination.databricks_zerobus.auth`
+
+Required:
+
+- `client_id` (String) The OAuth client ID used to authenticate with Databricks.
+
+Optional:
+
+- `client_secret_key` (String) The name of the secret or environment variable holding the OAuth client secret. Defaults to `DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET`.
+
+
+
 <a id="nestedblock--config--destination--datadog_logs"></a>
 ### Nested Schema for `config.destination.datadog_logs`
 
@@ -512,24 +598,29 @@ Optional:
 
 Optional:
 
-- `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect.
+- `api_version` (String) The Elasticsearch API version to use. Set to `auto` to auto-detect. Valid values are `auto`, `v6`, `v7`, `v8`.
 - `auth` (Block List) Authentication settings for the Elasticsearch destination. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--buffer))
-- `bulk_index` (String) The index or datastream to write logs to in Elasticsearch.
+- `bulk_index` (String) The name of the index to write events to in Elasticsearch.
+- `compression` (Block List) Compression configuration for the Elasticsearch destination. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--compression))
 - `data_stream` (Block List) Configuration options for writing to Elasticsearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--data_stream))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Elasticsearch endpoint URL.
+- `id_key` (String) The name of the field used as the document ID in Elasticsearch.
+- `pipeline` (String) The name of an Elasticsearch ingest pipeline to apply to events before indexing.
+- `request_retry_partial` (Boolean) When `true`, retries failed partial bulk requests when some events in a batch fail while others succeed.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--elasticsearch--tls))
 
 <a id="nestedblock--config--destination--elasticsearch--auth"></a>
 ### Nested Schema for `config.destination.elasticsearch.auth`
 
 Required:
 
-- `strategy` (String) The authentication strategy. Use `basic` for username/password. Valid values are `basic`, `aws`.
+- `strategy` (String) The authentication strategy to use. Valid values are `basic`, `aws`.
 
 Optional:
 
-- `password_key` (String) Name of the environment variable or secret that holds the Elasticsearch password (used when strategy is `basic`).
-- `username_key` (String) Name of the environment variable or secret that holds the Elasticsearch username (used when strategy is `basic`).
+- `password_key` (String) Name of the environment variable or secret that holds the Elasticsearch password (used when `strategy` is `basic`).
+- `username_key` (String) Name of the environment variable or secret that holds the Elasticsearch username (used when `strategy` is `basic`).
 
 
 <a id="nestedblock--config--destination--elasticsearch--buffer"></a>
@@ -560,14 +651,42 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--elasticsearch--compression"></a>
+### Nested Schema for `config.destination.elasticsearch.compression`
+
+Required:
+
+- `algorithm` (String) The compression algorithm applied when sending data to Elasticsearch. Valid values are `none`, `gzip`, `zlib`, `zstd`, `snappy`.
+
+Optional:
+
+- `level` (Number) The compression level. Only applicable for `gzip`, `zlib`, and `zstd` algorithms.
+
+
 <a id="nestedblock--config--destination--elasticsearch--data_stream"></a>
 ### Nested Schema for `config.destination.elasticsearch.data_stream`
 
 Optional:
 
-- `dataset` (String) The data stream dataset for your logs. This groups logs by their source or application.
-- `dtype` (String) The data stream type for your logs. This determines how logs are categorized within the data stream.
-- `namespace` (String) The data stream namespace for your logs. This separates logs into different environments or domains.
+- `auto_routing` (Boolean) When `true`, automatically routes events to the appropriate data stream based on the event content.
+- `dataset` (String) The data stream dataset. This groups events by their source or application.
+- `dtype` (String) The data stream type. This determines how events are categorized within the data stream.
+- `namespace` (String) The data stream namespace. This separates events into different environments or domains.
+- `sync_fields` (Boolean) When `true`, synchronizes data stream fields with the Elasticsearch index mapping.
+
+
+<a id="nestedblock--config--destination--elasticsearch--tls"></a>
+### Nested Schema for `config.destination.elasticsearch.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -1163,7 +1282,7 @@ Optional:
 
 Required:
 
-- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
+- `encoding` (String) Encoding format for log events. Valid values are `json`, `raw_message`.
 
 Optional:
 
@@ -1171,8 +1290,10 @@ Optional:
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the Splunk HEC endpoint URL.
 - `index` (String) Optional name of the Splunk index where logs are written.
+- `indexed_fields` (List of String) List of log field names to send as indexed fields to Splunk HEC. Available only when `encoding` is `json`.
 - `sourcetype` (String) The Splunk sourcetype to assign to log events.
 - `token_key` (String) Name of the environment variable or secret that holds the Splunk HEC token.
+- `token_strategy` (String) Controls how the Splunk HEC token is supplied. Use `custom` to provide a token via `token_key`, or `from_source` to forward the token received from an upstream Splunk HEC source. Valid values are `custom`, `from_source`.
 
 <a id="nestedblock--config--destination--splunk_hec--buffer"></a>
 ### Nested Schema for `config.destination.splunk_hec.buffer`
@@ -1477,7 +1598,18 @@ Optional:
 
 - `column` (String) The `items` `column`.
 - `comparison` (String) The comparison method (e.g. equals).
-- `field` (String) The `items` `field`.
+- `field` (Block List) Specifies the source of the key value for enrichment table lookups. Set exactly one of `string_path`, `event`, `vrl`, or `secret`. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table--file--key--field))
+
+<a id="nestedblock--config--processor_group--processor--enrichment_table--file--key--field"></a>
+### Nested Schema for `config.processor_group.processor.enrichment_table.file.key.field`
+
+Optional:
+
+- `event` (String) The path to the field in the log event to use as the lookup key.
+- `secret` (String) The name of the secret containing the lookup key value.
+- `string_path` (String) A plain field path in the log event (for example, `log.user.id`).
+- `vrl` (String) A VRL expression that returns the value to use as the lookup key.
+
 
 
 
@@ -1569,6 +1701,7 @@ Required:
 
 Optional:
 
+- `keep_unmatched` (Boolean) Whether to keep an event that does not match any of the mapping filters.
 - `mapping` (Block List) List of OCSF mapping entries. Each entry uses either a library mapping or a custom mapping. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper--mapping))
 
 <a id="nestedblock--config--processor_group--processor--ocsf_mapper--mapping"></a>
@@ -1662,7 +1795,7 @@ Optional:
 
 Required:
 
-- `source` (String) The name of the field in the log event to apply the Grok rules to.
+- `source` (String) The value of the source field in log events which should be processed by the Grok rules.
 
 Optional:
 
@@ -1841,7 +1974,6 @@ Optional:
 Required:
 
 - `name` (String) A name identifying the rule.
-- `tags` (List of String) Tags assigned to this rule for filtering and classification.
 
 Optional:
 
@@ -1849,6 +1981,7 @@ Optional:
 - `on_match` (Block List) The action to take when a sensitive value is found. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--on_match))
 - `pattern` (Block List) Pattern detection configuration for identifying sensitive data using either a custom regex or a library reference. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern))
 - `scope` (Block List) Field-level targeting options that determine where the scanner should operate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--scope))
+- `tags` (List of String) Tags assigned to this rule for filtering and classification.
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--keyword_options"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.keyword_options`
@@ -1896,7 +2029,7 @@ Optional:
 Optional:
 
 - `custom` (Block List) Pattern detection using a custom regular expression. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom))
-- `library` (Block List) Pattern detection using a predefined pattern from the sensitive data scanner pattern library. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
+- `library` (Block List) Pattern detection using a predefined pattern from the Sensitive Data Scanner library. For Terraform setup (standard pattern data source and library rules), see the [Sensitive Data Scanner processor documentation](https://docs.datadoghq.com/observability_pipelines/processors/sensitive_data_scanner/?tab=libraryrules#set-up-the-processor-using-terraform). (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--library))
 
 <a id="nestedblock--config--processor_group--processor--sensitive_data_scanner--rule--pattern--custom"></a>
 ### Nested Schema for `config.processor_group.processor.sensitive_data_scanner.rule.pattern.custom`
@@ -1988,7 +2121,7 @@ Required:
 Optional:
 
 - `amazon_data_firehose` (Block List) The `amazon_data_firehose` source ingests logs from AWS Data Firehose. (see [below for nested schema](#nestedblock--config--source--amazon_data_firehose))
-- `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption. (see [below for nested schema](#nestedblock--config--source--amazon_s3))
+- `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication, TLS encryption, and configurable compression. (see [below for nested schema](#nestedblock--config--source--amazon_s3))
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--source--datadog_agent))
 - `fluent_bit` (Block List) The `fluent_bit` source ingests logs from Fluent Bit. (see [below for nested schema](#nestedblock--config--source--fluent_bit))
 - `fluentd` (Block List) The `fluentd` source ingests logs from a Fluentd-compatible service. (see [below for nested schema](#nestedblock--config--source--fluentd))
@@ -2049,6 +2182,7 @@ Required:
 Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--source--amazon_s3--auth))
+- `compression` (String) Compression format for objects retrieved from the S3 bucket. Use `auto` to detect compression from the object's Content-Encoding header or file extension. Valid values are `auto`, `none`, `gzip`, `zstd`.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--amazon_s3--tls))
 - `url_key` (String) Name of the environment variable or secret that holds the S3 bucket URL.
 
@@ -2082,6 +2216,7 @@ Optional:
 
 Optional:
 
+- `address_key` (String) Name of the environment variable or secret that holds the listen address for the Datadog Agent source.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--datadog_agent--tls))
 
 <a id="nestedblock--config--source--datadog_agent--tls"></a>
@@ -2423,6 +2558,7 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
+- `store_hec_token` (Boolean) When `true`, the Splunk HEC token from the incoming request is stored in the event, allowing downstream components to forward it to other Splunk HEC destinations.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>

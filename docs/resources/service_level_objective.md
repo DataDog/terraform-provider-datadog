@@ -51,8 +51,8 @@ resource "datadog_service_level_objective" "metric_count_spec_slo" {
   description = "My custom metric count spec SLO"
   sli_specification {
     count {
-      good_events_formula  = "query1"
-      total_events_formula = "query2"
+      good_events_formula = "query1"
+      bad_events_formula  = "query2"
 
       queries {
         metric_query {
@@ -64,7 +64,7 @@ resource "datadog_service_level_objective" "metric_count_spec_slo" {
       queries {
         metric_query {
           name  = "query2"
-          query = "sum:my.custom.count.metric{*}.as_count()"
+          query = "sum:my.custom.count.metric{type:bad_events}.as_count()"
         }
       }
     }
@@ -212,7 +212,7 @@ Required:
 
 Optional:
 
-- `count` (Block List, Max: 1) A count-based (metric) SLI specification. Composed of a good events formula, a total events formula, and the underlying metric queries. (see [below for nested schema](#nestedblock--sli_specification--count))
+- `count` (Block List, Max: 1) A count-based (metric) SLI specification. Composed of a good events formula, either a total events formula or a bad events formula (but not both), and the underlying metric queries. (see [below for nested schema](#nestedblock--sli_specification--count))
 - `time_slice` (Block List, Max: 1) The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided. (see [below for nested schema](#nestedblock--sli_specification--time_slice))
 
 <a id="nestedblock--sli_specification--count"></a>
@@ -222,7 +222,11 @@ Required:
 
 - `good_events_formula` (String) The formula that specifies how to compute the good events.
 - `queries` (Block List, Min: 1) A list of data-source-specific queries that are referenced in the formulas. (see [below for nested schema](#nestedblock--sli_specification--count--queries))
-- `total_events_formula` (String) The formula that specifies how to compute the total events.
+
+Optional:
+
+- `bad_events_formula` (String) The formula that specifies how to compute the bad events. Mutually exclusive with `total_events_formula`.
+- `total_events_formula` (String) The formula that specifies how to compute the total events. Mutually exclusive with `bad_events_formula`.
 
 <a id="nestedblock--sli_specification--count--queries"></a>
 ### Nested Schema for `sli_specification.count.queries`

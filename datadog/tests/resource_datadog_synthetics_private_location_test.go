@@ -14,6 +14,7 @@ import (
 )
 
 func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	if !isReplaying() {
 		log.Println("Skipping private locations tests in non replaying mode")
@@ -42,6 +43,7 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	if !isReplaying() {
 		log.Println("Skipping private locations tests in non replaying mode")
@@ -61,6 +63,7 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
+	cleanupSyntheticsTests(t)
 	t.Parallel()
 	if !isReplaying() {
 		log.Println("Skipping private locations tests in non replaying mode")

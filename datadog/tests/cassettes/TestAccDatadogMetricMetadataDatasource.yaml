@@ -28,14 +28,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}
+        body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 429.484167ms
+        duration: 396.340083ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -63,14 +62,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}
+        body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 429.484167ms
+        duration: 153.972458ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -98,11 +96,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"description":"some description","short_name":"short name for metric_metadata foo","integration":null,"statsd_interval":1,"per_unit":"second","type":"gauge","unit":"byte"}
+        body: '{"description":"some description","short_name":"short name for metric_metadata foo","type":"gauge","unit":"byte","per_unit":"second","statsd_interval":1,"integration":null}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 429.484167ms
+        duration: 141.075667ms

@@ -71,6 +71,8 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.character_count", "20"),
 					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.ends_with.0", "@datadoghq.com"),
+					resource.TestCheckResourceAttr(
 						resource_name, "priority", "1"),
 					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name, nil),
 				),
@@ -101,6 +103,12 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.character_count", "20"),
+					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.starts_with.0", "arthur"),
+					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.ends_with.0", "@datadoghq.com"),
+					resource.TestCheckResourceAttr(
+						resource_name, "suppressions.0.exact_match.0", "admin@datadoghq.com"),
 					resource.TestCheckResourceAttr(
 						resource_name, "priority", "1"),
 				),
@@ -146,7 +154,8 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 
-	_, accProviders := testAccProviders(context.Background(), t)
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource_name_1 := "datadog_sensitive_data_scanner_rule.sp_rule_1"
@@ -162,7 +171,7 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(),
+				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name_1),
 					resource.TestCheckResourceAttrPair(
@@ -201,7 +210,7 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 func testAccCheckDatadogSensitiveDataScannerRule(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
-	name = "my group"
+	name = "%s-group"
 	is_enabled = true
 	product_list = ["logs"]
 	filter {
@@ -226,13 +235,13 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		character_count = 30
 	}
 }
-`, name)
+`, name, name)
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleUpdate(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
-	name = "my group"
+	name = "%s-group"
 	is_enabled = false
 	product_list = ["logs"]
 	filter {
@@ -261,15 +270,18 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		keywords = ["credit card", "cc"]
 		character_count = 20
 	}
+	suppressions {
+		ends_with = ["@datadoghq.com"]
+	}
 	priority = 1
 }
-`, name)
+`, name, name)
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleChangedGroup(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
-	name = "my group"
+	name = "%s-group"
 	is_enabled = false
 	product_list = ["logs"]
 	filter {
@@ -282,7 +294,7 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 }
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
-	name = "another group"
+	name = "%s-group-2"
 	is_enabled = false
 	product_list = ["apm"]
 	filter {
@@ -307,15 +319,20 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		keywords = ["credit card", "cc"]
 		character_count = 20
 	}
+	suppressions {
+		starts_with = ["arthur"]
+		ends_with = ["@datadoghq.com"]
+		exact_match = ["admin@datadoghq.com"]
+	}
 	priority = 1
 }
-`, name)
+`, name, name, name)
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleChangedGroupNone(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
-	name = "my group"
+	name = "%s-group"
 	is_enabled = false
 	product_list = ["logs"]
 	filter {
@@ -328,7 +345,7 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 }
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
-	name = "another group"
+	name = "%s-group-2"
 	is_enabled = false
 	product_list = ["apm"]
 	filter {
@@ -349,13 +366,13 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		character_count = 30
 	}
 }
-`, name)
+`, name, name, name)
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleReplacementString(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
-	name = "my group"
+	name = "%s-group"
 	is_enabled = false
 	product_list = ["logs"]
 	filter {
@@ -368,7 +385,7 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 }
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
-	name = "another group"
+	name = "%s-group-2"
 	is_enabled = false
 	product_list = ["apm"]
 	filter {
@@ -390,13 +407,13 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		should_save_match = true
 	}
 }
-`, name)
+`, name, name, name)
 }
 
-func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern() string {
-	return `
+func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(name string) string {
+	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
-	name = "my group"
+	name = "%s-group"
 	is_enabled = true
 	product_list = ["logs"]
 	filter {
@@ -438,7 +455,7 @@ resource "datadog_sensitive_data_scanner_rule" "sp_rule_2" {
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
 	standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.id
 }
-`
+`, name)
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
@@ -577,7 +594,7 @@ func TestAccSensitiveDataScannerRule_DeleteAlreadyDeleted(t *testing.T) {
 func testAccCheckDatadogSensitiveDataScannerGroupOnly(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
-	name = "my group %s"
+	name = "%s-group"
 	is_enabled = true
 	product_list = ["logs"]
 	filter {

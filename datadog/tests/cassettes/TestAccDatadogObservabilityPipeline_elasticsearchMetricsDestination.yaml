@@ -1,0 +1,212 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 380
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"api_version":"v8","bulk_index":"metrics-index","endpoint_url_key":"ELASTICSEARCH_ENDPOINT_URL","id":"elasticsearch-metrics-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"elasticsearch-metrics-dest-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 462
+        uncompressed: false
+        body: |
+            {"data":{"id":"424fc84c-345a-11f1-a1f9-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-metrics-dest-pipeline","config":{"destinations":[{"api_version":"v8","bulk_index":"metrics-index","endpoint_url_key":"ELASTICSEARCH_ENDPOINT_URL","id":"elasticsearch-metrics-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 517.135584ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/424fc84c-345a-11f1-a1f9-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 462
+        uncompressed: false
+        body: |
+            {"data":{"id":"424fc84c-345a-11f1-a1f9-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-metrics-dest-pipeline","config":{"destinations":[{"api_version":"v8","bulk_index":"metrics-index","endpoint_url_key":"ELASTICSEARCH_ENDPOINT_URL","id":"elasticsearch-metrics-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 239.150917ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/424fc84c-345a-11f1-a1f9-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 462
+        uncompressed: false
+        body: |
+            {"data":{"id":"424fc84c-345a-11f1-a1f9-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-metrics-dest-pipeline","config":{"destinations":[{"api_version":"v8","bulk_index":"metrics-index","endpoint_url_key":"ELASTICSEARCH_ENDPOINT_URL","id":"elasticsearch-metrics-destination-1","inputs":["source-1"],"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 330.648958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 743
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"api_version":"v8","auth":{"password_key":"ELASTICSEARCH_PASSWORD","strategy":"basic","username_key":"ELASTICSEARCH_USERNAME"},"bulk_index":"metrics-index","compression":{"algorithm":"gzip","level":6},"endpoint_url_key":"ELASTICSEARCH_ENDPOINT_URL","id":"elasticsearch-metrics-destination-1","id_key":"event_id","inputs":["source-1"],"pipeline":"metrics-ingest-pipeline","request_retry_partial":true,"tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/client.crt","key_file":"/etc/certs/client.key"},"type":"elasticsearch"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"elasticsearch-metrics-dest-pipeline-updated"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/424fc84c-345a-11f1-a1f9-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 817
+        uncompressed: false
+        body: |
+            {"data":{"id":"424fc84c-345a-11f1-a1f9-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-metrics-dest-pipeline-updated","config":{"destinations":[{"api_version":"v8","auth":{"password_key":"ELASTICSEARCH_PASSWORD","strategy":"basic","username_key":"ELASTICSEARCH_USERNAME"},"bulk_index":"metrics-index","compression":{"algorithm":"gzip","level":6},"endpoint_url_key":"ELASTICSEARCH_ENDPOINT_URL","id":"elasticsearch-metrics-destination-1","id_key":"event_id","inputs":["source-1"],"pipeline":"metrics-ingest-pipeline","request_retry_partial":true,"tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/client.crt","key_file":"/etc/certs/client.key"},"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 501.315541ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/424fc84c-345a-11f1-a1f9-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 817
+        uncompressed: false
+        body: |
+            {"data":{"id":"424fc84c-345a-11f1-a1f9-da7ad0900002","type":"pipelines","attributes":{"name":"elasticsearch-metrics-dest-pipeline-updated","config":{"destinations":[{"api_version":"v8","auth":{"password_key":"ELASTICSEARCH_PASSWORD","strategy":"basic","username_key":"ELASTICSEARCH_USERNAME"},"bulk_index":"metrics-index","compression":{"algorithm":"gzip","level":6},"endpoint_url_key":"ELASTICSEARCH_ENDPOINT_URL","id":"elasticsearch-metrics-destination-1","id_key":"event_id","inputs":["source-1"],"pipeline":"metrics-ingest-pipeline","request_retry_partial":true,"tls":{"ca_file":"/etc/certs/ca.crt","crt_file":"/etc/certs/client.crt","key_file":"/etc/certs/client.key"},"type":"elasticsearch"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 224.550583ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/424fc84c-345a-11f1-a1f9-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 443.6645ms

@@ -137,6 +137,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":                     "cloud_workload_security",
 	"tests/resource_datadog_action_connection_test":                                      "action_connection",
 	"tests/resource_datadog_agentless_scanning_aws_scan_options_test":                    "agentless-scanning",
+	"tests/resource_datadog_agentless_scanning_azure_scan_options_test":                  "agentless-scanning",
 	"tests/resource_datadog_agentless_scanning_gcp_scan_options_test":                    "agentless-scanning",
 	"tests/resource_datadog_csm_threats_agent_rule_test":                                 "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_policy_test":                                     "cloud-workload-security",
@@ -172,6 +173,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_split_graph_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_style_test":                                        "dashboards",
 	"tests/resource_datadog_dashboard_sunburst_test":                                     "dashboards",
+	"tests/resource_datadog_dashboard_tab_test":                                          "dashboards",
 	"tests/resource_datadog_dashboard_test":                                              "dashboards",
 	"tests/resource_datadog_dashboard_time_spans_test":                                   "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                                   "dashboards",
@@ -179,7 +181,22 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                                      "dashboards",
-	"tests/resource_datadog_dashboard_secure_embed_dashboard_test":                       "dashboards",
+	"tests/resource_datadog_secure_embed_dashboard_test":                                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_test":                                           "dashboards",
+	"tests/resource_datadog_dashboard_v2_timeseries_event_query_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_funnel_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_bar_chart_test":                                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_sankey_test":                                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_wildcard_test":                                  "dashboards",
+	"tests/resource_datadog_dashboard_v2_distribution_histogram_test":                    "dashboards",
+	"tests/resource_datadog_dashboard_v2_wildcard_histogram_test":                        "dashboards",
+	"tests/resource_datadog_dashboard_v2_toplist_sort_test":                              "dashboards",
+	"tests/resource_datadog_dashboard_v2_toplist_display_test":                           "dashboards",
+	"tests/resource_datadog_dashboard_v2_query_value_conditional_formats_test":           "dashboards",
+	"tests/resource_datadog_dashboard_v2_timeseries_legend_columns_test":                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_tab_test":                                       "dashboards",
+	"tests/resource_datadog_dashboard_v2_treemap_style_sort_test":                        "dashboards",
+	"tests/resource_datadog_dashboard_v2_sunburst_sort_test":                             "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
 	"tests/resource_datadog_datastore_test":                                              "datastores",
 	"tests/resource_datadog_datastore_item_test":                                         "datastores",
@@ -262,6 +279,14 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_on_call_user_notification_rule_test":                         "on-call",
 	"tests/resource_datadog_organization_settings_test":                                  "organization",
 	"tests/resource_datadog_org_connection_test":                                         "org_connection",
+	"tests/resource_datadog_org_group_test":                                              "org_group",
+	"tests/resource_datadog_org_group_membership_test":                                   "org_group_membership",
+	"tests/resource_datadog_org_group_policy_test":                                       "org_group_policy",
+	"tests/resource_datadog_org_group_policy_override_test":                              "org_group_policy_override",
+	"tests/data_source_datadog_org_groups_test":                                          "org_group",
+	"tests/data_source_datadog_org_group_memberships_test":                               "org_group_membership",
+	"tests/data_source_datadog_org_group_policies_test":                                  "org_group_policy",
+	"tests/data_source_datadog_org_group_policy_overrides_test":                          "org_group_policy_override",
 	"tests/resource_datadog_reference_table_test":                                        "reference-tables",
 	"tests/resource_datadog_restriction_policy_test":                                     "restriction-policy",
 	"tests/resource_datadog_role_test":                                                   "roles",
@@ -274,6 +299,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_security_monitoring_filter_test":                             "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_json_test":                          "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_test":                               "security-monitoring",
+	"tests/resource_datadog_security_monitoring_rule_migration_test":                     "security-monitoring",
 	"tests/resource_datadog_security_monitoring_suppression_test":                        "security-monitoring",
 	"tests/resource_datadog_security_monitoring_critical_asset_test":                     "security-monitoring",
 	"tests/resource_datadog_sensitive_data_scanner_group_order_test":                     "sensitive-data-scanner",
@@ -297,6 +323,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_team_test":                                                   "team",
 	"tests/resource_datadog_team_hierarchy_links_test":                                   "team",
 	"tests/resource_datadog_team_notification_rule_test":                                 "team",
+	"tests/resource_datadog_team_connection_test":                                        "team",
+	"tests/resource_datadog_team_sync_test":                                              "team",
 	"tests/data_source_datadog_team_notification_rule_test":                              "team",
 	"tests/data_source_datadog_team_notification_rules_test":                             "team",
 	"tests/resource_datadog_timeboard_test":                                              "dashboards",
@@ -497,13 +525,30 @@ func restoreClock(t *testing.T) clockwork.FakeClock {
 }
 
 func testClock(t *testing.T) clockwork.FakeClock {
+	return testClockWithName(t, t.Name())
+}
+
+func testClockWithName(t *testing.T, name string) clockwork.FakeClock {
 	if isRecording() {
 		return setClock(t)
 	} else if isReplaying() {
-		return restoreClock(t)
+		return restoreClockWithName(t, name)
 	}
 	// do not set or restore frozen time
 	return clockwork.NewFakeClockAt(clockwork.NewRealClock().Now())
+}
+
+func restoreClockWithName(t *testing.T, name string) clockwork.FakeClock {
+	data, err := os.ReadFile(fmt.Sprintf("cassettes/%s.freeze", name))
+	if err != nil {
+		t.Logf("Could not load clock for %s: %v", name, err)
+		return setClock(t)
+	}
+	now, err := time.Parse(time.RFC3339Nano, string(data))
+	if err != nil {
+		t.Fatalf("Could not parse clock date: %v", err)
+	}
+	return clockwork.NewFakeClockAt(now)
 }
 
 func clockFromContext(ctx context.Context) clockwork.FakeClock {
@@ -599,6 +644,10 @@ func removeURLSecrets(u *url.URL) *url.URL {
 }
 
 func initRecorder(t *testing.T) *recorder.Recorder {
+	return initRecorderWithName(t, t.Name())
+}
+
+func initRecorderWithName(t *testing.T, cassetteName string) *recorder.Recorder {
 	var mode recorder.Mode
 	if isRecording() {
 		mode = recorder.ModeRecordOnly
@@ -609,7 +658,7 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 	}
 
 	opts := &recorder.Options{
-		CassetteName:       fmt.Sprintf("cassettes/%s", t.Name()),
+		CassetteName:       fmt.Sprintf("cassettes/%s", cassetteName),
 		Mode:               mode,
 		SkipRequestLatency: true,
 		RealTransport:      http.DefaultTransport,
@@ -617,7 +666,7 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 
 	rec, err := recorder.NewWithOptions(opts)
 	if err != nil {
-		log.Fatal(err)
+		t.Fatalf("Failed to initialize cassette recorder for %q: %v", cassetteName, err)
 	}
 
 	rec.SetMatcher(matchInteraction)
@@ -678,6 +727,12 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 
 	matched := b.String() == "" || b.String() == i.Body
 
+	// Normalize JSON bodies so key ordering differences don't cause mismatches.
+	// This allows v1 (struct serialization) and v2 (map serialization) to share cassettes.
+	if !matched && isJSONBody(b.String()) && isJSONBody(i.Body) {
+		matched = jsonEquivalent(b.String(), i.Body)
+	}
+
 	// Ignore boundary differences for multipart/form-data content
 	if !matched && strings.HasPrefix(r.Header["Content-Type"][0], "multipart/form-data") {
 		rl := strings.Split(strings.TrimSpace(b.String()), "\n")
@@ -697,6 +752,106 @@ func matchInteraction(r *http.Request, i cassette.Request) bool {
 		log.Printf("full request info: %v", *r)
 	}
 	return matched
+}
+
+// jsonEquivalent compares two JSON strings for semantic equality, ignoring:
+//   - key ordering (Go map vs struct serialization)
+//   - absent vs zero-value fields ("id":"" vs no "id" key)
+//
+// This allows v1 (typed struct serialization) and v2 (map serialization) request
+// bodies to match against the same cassette.
+func jsonEquivalent(a, b string) bool {
+	var va, vb interface{}
+	if err := json.Unmarshal([]byte(a), &va); err != nil {
+		return false
+	}
+	if err := json.Unmarshal([]byte(b), &vb); err != nil {
+		return false
+	}
+	return deepEquivalent(va, vb)
+}
+
+// deepEquivalent recursively compares two JSON values, treating absent keys
+// as equivalent to zero values (empty string, empty array, nil, false, 0).
+func deepEquivalent(a, b interface{}) bool {
+	// Both nil
+	if a == nil && b == nil {
+		return true
+	}
+
+	// One nil, the other must be a zero value
+	if a == nil {
+		return isZeroValue(b)
+	}
+	if b == nil {
+		return isZeroValue(a)
+	}
+
+	switch av := a.(type) {
+	case map[string]interface{}:
+		bv, ok := b.(map[string]interface{})
+		if !ok {
+			return false
+		}
+		// Check all keys from both maps
+		allKeys := make(map[string]bool)
+		for k := range av {
+			allKeys[k] = true
+		}
+		for k := range bv {
+			allKeys[k] = true
+		}
+		for k := range allKeys {
+			if !deepEquivalent(av[k], bv[k]) {
+				return false
+			}
+		}
+		return true
+
+	case []interface{}:
+		bv, ok := b.([]interface{})
+		if !ok {
+			return false
+		}
+		if len(av) != len(bv) {
+			return false
+		}
+		for i := range av {
+			if !deepEquivalent(av[i], bv[i]) {
+				return false
+			}
+		}
+		return true
+
+	default:
+		return fmt.Sprintf("%v", a) == fmt.Sprintf("%v", b)
+	}
+}
+
+// isZeroValue returns true if v is a JSON zero value (empty string, empty array, 0, false, nil).
+func isZeroValue(v interface{}) bool {
+	switch tv := v.(type) {
+	case nil:
+		return true
+	case string:
+		return tv == ""
+	case float64:
+		return tv == 0
+	case bool:
+		return !tv
+	case []interface{}:
+		return len(tv) == 0
+	case map[string]interface{}:
+		return len(tv) == 0
+	}
+	return false
+}
+
+// isJSONBody returns true if s looks like a JSON object or array.
+func isJSONBody(s string) bool {
+	s = strings.TrimSpace(s)
+	return (strings.HasPrefix(s, "{") && strings.HasSuffix(s, "}")) ||
+		(strings.HasPrefix(s, "[") && strings.HasSuffix(s, "]"))
 }
 
 func testSpan(ctx context.Context, t *testing.T) context.Context {
@@ -722,8 +877,12 @@ func testSpan(ctx context.Context, t *testing.T) context.Context {
 }
 
 func initAccProvider(ctx context.Context, t *testing.T, httpClient *http.Client) *schema.Provider {
+	return initAccProviderWithClock(ctx, t, httpClient, testClock(t))
+}
+
+func initAccProviderWithClock(ctx context.Context, t *testing.T, httpClient *http.Client, clock clockwork.FakeClock) *schema.Provider {
 	p := datadog.Provider()
-	p.ConfigureContextFunc = testProviderConfigure(ctx, httpClient, testClock(t))
+	p.ConfigureContextFunc = testProviderConfigure(ctx, httpClient, clock)
 
 	return p
 }
@@ -838,6 +997,31 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	c := cleanhttp.DefaultClient()
 	c.Transport = rec
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
+	t.Cleanup(func() {
+		rec.Stop()
+	})
+
+	return ctx, p
+}
+
+// testAccProvidersWithCassette works like testAccProviders but uses cassetteName
+// for the VCR cassette and freeze file instead of t.Name(). This allows v2 resource
+// tests to reuse cassettes recorded for v1 tests, proving backward compatibility.
+func testAccProvidersWithCassette(ctx context.Context, t *testing.T, cassetteName string) (context.Context, map[string]func() (*schema.Provider, error)) {
+	ctx = testSpan(ctx, t)
+	rec := initRecorderWithName(t, cassetteName)
+	clock := testClockWithName(t, cassetteName)
+	ctx = context.WithValue(ctx, clockContextKey("clock"), clock)
+	c := cleanhttp.DefaultClient()
+	c.Transport = rec
+	// Use initAccProviderWithClock to avoid the second testClock(t) call in initAccProvider
+	// that would use t.Name() (the v2 test name) instead of the v1 cassette name.
+	provider := initAccProviderWithClock(ctx, t, c, clock)
+	p := map[string]func() (*schema.Provider, error){
+		"datadog": func() (*schema.Provider, error) {
+			return provider, nil
+		},
+	}
 	t.Cleanup(func() {
 		rec.Stop()
 	})

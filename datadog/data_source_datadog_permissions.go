@@ -56,15 +56,20 @@ func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceDat
 			continue
 		}
 
+		permId := perm.GetId()
 		if err := utils.CheckForUnparsed(perm); err != nil {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Warning,
-				Summary:  fmt.Sprintf("skipping permission with id: %s", perm.GetId()),
+				Summary:  fmt.Sprintf("skipping permission with id: %s", permId),
 				Detail:   fmt.Sprintf("permission contains unparsed object: %v", err),
 			})
 			continue
 		}
-		permsNameToID[perm.Attributes.GetName()] = perm.GetId()
+		permsNameToID[perm.Attributes.GetName()] = permId
+		nameAliases := perm.Attributes.GetNameAliases()
+		for _, alias := range nameAliases {
+			permsNameToID[alias] = permId
+		}
 	}
 	if err := d.Set("permissions", permsNameToID); err != nil {
 		return diag.FromErr(err)

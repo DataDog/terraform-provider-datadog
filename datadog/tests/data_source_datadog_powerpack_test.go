@@ -9,6 +9,7 @@ import (
 )
 
 func TestAccDatadogPowerpackDatasource(t *testing.T) {
+	cleanupPowerpacks(t)
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

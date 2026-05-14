@@ -990,10 +990,12 @@ func buildTerraformNestedPipeline(ddNested *datadogV1.LogsPipelineProcessor) (ma
 		return nil, err
 	}
 	return map[string]interface{}{
-		"filter":     buildTerraformFilter(ddNested.Filter),
-		"processor":  tfProcessors,
-		"name":       ddNested.GetName(),
-		"is_enabled": ddNested.GetIsEnabled(),
+		"filter":      buildTerraformFilter(ddNested.Filter),
+		"processor":   tfProcessors,
+		"name":        ddNested.GetName(),
+		"is_enabled":  ddNested.GetIsEnabled(),
+		"tags":        ddNested.GetTags(),
+		"description": ddNested.GetDescription(),
 	}, nil
 }
 
@@ -1511,6 +1513,17 @@ func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.
 	}
 	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
 		ddNestedPipeline.SetIsEnabled(tfIsEnabled)
+	}
+	if tfTags, exists := tfProcessor["tags"].(*schema.Set); exists {
+		tagsSet := tfTags.List()
+		tags := []string{}
+		for _, tag := range tagsSet {
+			tags = append(tags, tag.(string))
+		}
+		ddNestedPipeline.SetTags(tags)
+	}
+	if tfDescription, exists := tfProcessor["description"].(string); exists {
+		ddNestedPipeline.SetDescription(tfDescription)
 	}
 	return ddNestedPipeline, nil
 }

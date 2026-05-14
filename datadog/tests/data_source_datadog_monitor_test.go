@@ -26,6 +26,11 @@ func TestAccDatadogMonitorDatasource(t *testing.T) {
 				Check:  checkDatasourceAttrs(accProvider, uniq),
 			},
 			{
+				// Create the monitor with restricted_roles (no datasource yet — give API time to propagate)
+				Config: testAccMonitorConfigWithRestrictedRoles(uniq),
+			},
+			{
+				// Now read via datasource — restriction policy should have propagated
 				Config: testAccDatasourceMonitorNameFilterConfig_WithRestrictedRoles(uniq),
 				Check:  checkRestrictedRolesAttr(accProvider, uniq),
 			},

@@ -56,6 +56,7 @@ func resourceDatadogRole() *schema.Resource {
 					Type:        schema.TypeInt,
 					Computed:    true,
 					Description: "Number of users that have this role.",
+					Deprecated:  "This field is no longer set and will be removed in a future release.",
 				},
 				"validate": {
 					Description: "If set to `false`, skip the validation call done during plan.",
@@ -201,9 +202,6 @@ func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI int
 	if roleAttrsI != nil {
 		switch roleAttrs := roleAttrsI.(type) {
 		case *datadogV2.RoleAttributes:
-			if err := d.Set("user_count", roleAttrs.GetUserCount()); err != nil {
-				return diag.FromErr(err)
-			}
 			if err := d.Set("name", roleAttrs.GetName()); err != nil {
 				return diag.FromErr(err)
 			}

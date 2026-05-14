@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -13,15 +14,22 @@ import (
 
 func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern.",
+		Description: "Use this data source to retrieve information about an existing sensitive data scanner standard pattern. You can look up a pattern by its stable standard pattern ID or by name.",
 		ReadContext: dataSourceDatadogSensitiveDataScannerStandardPatternRead,
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"filter": {
-					Description: "Filter all the Datadog standard patterns by name.",
-					Type:        schema.TypeString,
-					Required:    true,
+					Description:  "Filter all the Datadog standard patterns by name.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ExactlyOneOf: []string{"filter", "standard_pattern_id"},
+				},
+				"standard_pattern_id": {
+					Description:  "Stable ID of the Datadog standard pattern to retrieve. This can be set directly to avoid Terraform configs breaking when Datadog renames a standard pattern.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ExactlyOneOf: []string{"filter", "standard_pattern_id"},
 				},
 				// Computed
 				"included_keywords": {
@@ -68,17 +76,27 @@ func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Contex
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error listing standard patterns")
 	}
 
-	searchedName := d.Get("filter").(string)
-
 	foundStandardPatterns := make([]datadogV2.SensitiveDataScannerStandardPatternsResponseItem, 0)
-	for _, resource := range resp.GetData() {
-		if strings.Contains(strings.ToLower(*resource.Attributes.Name), strings.ToLower(searchedName)) {
-			foundStandardPatterns = append(foundStandardPatterns, resource)
+	matchDescription := ""
+	if standardPatternID, ok := d.GetOk("standard_pattern_id"); ok {
+		matchDescription = fmt.Sprintf("id %s", standardPatternID.(string))
+		for _, resource := range resp.GetData() {
+			if resource.GetId() == standardPatternID.(string) {
+				foundStandardPatterns = append(foundStandardPatterns, resource)
+			}
+		}
+	} else {
+		searchedName := d.Get("filter").(string)
+		matchDescription = fmt.Sprintf("name %s", searchedName)
+		for _, resource := range resp.GetData() {
+			if strings.Contains(strings.ToLower(*resource.Attributes.Name), strings.ToLower(searchedName)) {
+				foundStandardPatterns = append(foundStandardPatterns, resource)
+			}
 		}
 	}
 
 	if len(foundStandardPatterns) == 0 {
-		return diag.Errorf("Couldn't find the standard pattern with name %s", searchedName)
+		return diag.Errorf("Couldn't find the standard pattern with %s", matchDescription)
 	}
 	if len(foundStandardPatterns) > 1 {
 		return diag.Errorf("Your query returned more than one result, please try a more specific search criteria")

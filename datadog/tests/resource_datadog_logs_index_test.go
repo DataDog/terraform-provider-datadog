@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -74,6 +75,15 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "0"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "flex_retention_days", "360"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogUpdateLogsIndexDisableFlexRetentionConfig(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					sleep(),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", uniq),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "15"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "flex_retention_days", "0"),
 				),
 			},
 			{
@@ -200,6 +210,42 @@ resource "datadog_logs_index" "sample_index" {
 `, name)
 }
 
+func TestUnitDatadogLogsIndex_InvalidName(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogLogsIndexInvalidNameConfig("invalid-index_name"),
+				ExpectError: regexp.MustCompile("must start with a lowercase letter and contain only lowercase letters, digits, or hyphens"),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogUpdateLogsIndexDisableFlexRetentionConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_index" "sample_index" {
+  name                   = "%s"
+  daily_limit            = 20000
+  daily_limit_reset {
+	reset_time = "10:00"
+	reset_utc_offset = "+02:00"
+  }
+  daily_limit_warning_threshold_percentage = 70
+  disable_daily_limit    = true
+  retention_days         = 15
+  flex_retention_days    = 0
+  filter {
+    query                = "test:query"
+  }
+}
+`, name)
+}
+
 func TestAccDatadogLogsIndex_WithTags(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -240,6 +286,17 @@ func TestAccDatadogLogsIndex_WithTags(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccCheckDatadogLogsIndexInvalidNameConfig(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_index" "invalid_index" {
+  name = "%s"
+  filter {
+    query = "service:test"
+  }
+}
+`, name)
 }
 
 func testAccCheckDatadogLogsIndexWithTagsConfig(name string) string {

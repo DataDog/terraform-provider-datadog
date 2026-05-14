@@ -32,6 +32,7 @@ var _ provider.Provider = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
+	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
 	NewOpenapiApiResource,
 	NewAPIKeyResource,
@@ -76,6 +77,8 @@ var Resources = []func() resource.Resource{
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
 	NewTeamHierarchyLinksResource,
+	NewTeamConnectionResource,
+	NewTeamSyncResource,
 	NewUserRoleResource,
 	NewScorecardRuleResource,
 	NewSecurityMonitoringSuppressionResource,
@@ -99,13 +102,18 @@ var Resources = []func() resource.Resource{
 	NewOnCallUserNotificationChannelResource,
 	NewOnCallUserNotificationRuleResource,
 	NewOrgConnectionResource,
+	NewOrgGroupResource,
+	NewOrgGroupMembershipResource,
+	NewOrgGroupPolicyResource,
+	NewOrgGroupPolicyOverrideResource,
 	NewComplianceResourceEvaluationFilter,
+	NewSecurityMonitoringRuleResource,
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
 	NewTagPipelineRulesetResource,
 	NewTagPipelineRulesetsResource,
-	NewDashboardSecureEmbedResource,
+	NewSecureEmbedDashboardResource,
 	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewAppKeyRegistrationResource,
@@ -146,6 +154,10 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogTeamMembershipsDataSource,
 	NewDatadogTeamNotificationRuleDataSource,
 	NewDatadogTeamNotificationRulesDataSource,
+	NewDatadogOrgGroupsDataSource,
+	NewDatadogOrgGroupMembershipsDataSource,
+	NewDatadogOrgGroupPoliciesDataSource,
+	NewDatadogOrgGroupPolicyOverridesDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
@@ -641,6 +653,26 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable OrgGroup
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOrgGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOrgGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOrgGroup", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListOrgGroups", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOrgGroupMembership", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListOrgGroupMemberships", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOrgGroupMembership", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroupPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOrgGroupPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOrgGroupPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOrgGroupPolicy", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListOrgGroupPolicies", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOrgGroupPolicyOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOrgGroupPolicyOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOrgGroupPolicyOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOrgGroupPolicyOverride", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListOrgGroupPolicyOverrides", true)
+
 	// Enable IncidentNotificationRule
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentNotificationRule", true)
@@ -796,6 +828,7 @@ func NewFrameworkResourceWrapper(i *resource.Resource) resource.Resource {
 
 type FrameworkResourceWrapper struct {
 	innerResource *resource.Resource
+	typeName      string
 }
 
 func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -804,10 +837,17 @@ func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.C
 		if req.ProviderData == nil {
 			return
 		}
-		_, ok := req.ProviderData.(*FrameworkProvider)
+		fp, ok := req.ProviderData.(*FrameworkProvider)
 		if !ok {
 			resp.Diagnostics.AddError("Unexpected Resource Configure Type", "")
 			return
+		}
+
+		// Annotate the auth context with the resource type name.
+		if r.typeName != "" {
+			annotatedFP := *fp
+			annotatedFP.Auth = utils.WithTerraformResource(fp.Auth, r.typeName)
+			req.ProviderData = &annotatedFP
 		}
 
 		rCasted.Configure(ctx, req, resp)
@@ -817,6 +857,7 @@ func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.C
 func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	(*r.innerResource).Metadata(ctx, req, resp)
 	resp.TypeName = req.ProviderTypeName + resp.TypeName
+	r.typeName = resp.TypeName
 }
 
 func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
