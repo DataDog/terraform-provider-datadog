@@ -228,11 +228,7 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 						},
 						"custom_query_extension": schema.StringAttribute{
 							Optional:    true,
-							Computed:    true,
 							Description: "Query extension to append to the logs query.",
-							PlanModifiers: []planmodifier.String{
-								stringplanmodifier.UseStateForUnknown(),
-							},
 						},
 					},
 					Blocks: map[string]schema.Block{
@@ -811,13 +807,11 @@ func buildUpdateDefaultRuleQuery(planQuery *defaultRuleQueryModel, existingQuery
 		}
 	}
 
-	// custom_query_extension is the only writable field; plan value takes precedence.
+	// custom_query_extension is the only writable field. null means removed from config → clear.
 	if !planQuery.CustomQueryExtension.IsNull() && !planQuery.CustomQueryExtension.IsUnknown() {
 		payloadQuery.SetCustomQueryExtension(planQuery.CustomQueryExtension.ValueString())
-	} else if existingQuery != nil {
-		if v, ok := existingQuery.GetCustomQueryExtensionOk(); ok {
-			payloadQuery.SetCustomQueryExtension(*v)
-		}
+	} else {
+		payloadQuery.SetCustomQueryExtension("")
 	}
 
 	standardRuleQuery := datadogV2.SecurityMonitoringStandardRuleQueryAsSecurityMonitoringRuleQuery(&payloadQuery)

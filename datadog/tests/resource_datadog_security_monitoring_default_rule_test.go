@@ -326,3 +326,30 @@ func testAccCheckDatadogSecurityMonitoringDefaultCustomQueryExtension() resource
 			tfSecurityDefaultRuleName, "query.0.custom_query_extension", "env:test-acceptance"),
 	)
 }
+
+func TestAccDatadogSecurityMonitoringDefaultRule_CustomQueryExtensionClear(t *testing.T) {
+	runDefaultRuleAcceptanceTest(t,
+		testAccDatadogSecurityMonitoringDefaultRuleCustomQueryExtensionClear(),
+		testAccCheckDatadogSecurityMonitoringDefaultCustomQueryExtensionClear(),
+	)
+}
+
+func testAccDatadogSecurityMonitoringDefaultRuleCustomQueryExtensionClear() string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+	query {
+		custom_query_extension = ""
+	}
+	options {
+		decrease_criticality_based_on_env = false
+	}
+%s}
+`, defaultRuleBaseCase)
+}
+
+func testAccCheckDatadogSecurityMonitoringDefaultCustomQueryExtensionClear() resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "query.0.custom_query_extension", ""),
+	)
+}
