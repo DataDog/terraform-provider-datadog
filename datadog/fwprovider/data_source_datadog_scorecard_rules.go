@@ -16,7 +16,7 @@ import (
 var _ datasource.DataSource = &scorecardRulesDataSource{}
 
 type scorecardRulesDataSource struct {
-	Api  *datadogV2.ServiceScorecardsApi
+	Api  *datadogV2.ScorecardsApi
 	Auth context.Context
 }
 
@@ -49,7 +49,7 @@ func NewScorecardRulesDataSource() datasource.DataSource {
 
 func (d *scorecardRulesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	d.Api = providerData.DatadogApiInstances.GetServiceScorecardsApiV2()
+	d.Api = providerData.DatadogApiInstances.GetScorecardsApiV2()
 	d.Auth = providerData.Auth
 }
 

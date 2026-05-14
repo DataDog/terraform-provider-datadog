@@ -133,7 +133,7 @@ func testAccCheckDatadogScorecardRuleExists(accProvider *fwprovider.FrameworkPro
 			optParams := datadogV2.NewListScorecardRulesOptionalParameters()
 			optParams.WithFilterRuleId(id)
 			optParams.WithPageSize(1)
-			resp, _, err := apiInstances.GetServiceScorecardsApiV2().ListScorecardRules(auth, *optParams)
+			resp, _, err := apiInstances.GetScorecardsApiV2().ListScorecardRules(auth, *optParams)
 			if err != nil {
 				return utils.TranslateClientError(err, nil, "error checking scorecard rule exists")
 			}
@@ -168,7 +168,7 @@ func scorecardRuleDestroyHelper(auth context.Context, s *terraform.State, apiIns
 			optParams := datadogV2.NewListScorecardRulesOptionalParameters()
 			optParams.WithFilterRuleId(id)
 			optParams.WithPageSize(1)
-			resp, _, err := apiInstances.GetServiceScorecardsApiV2().ListScorecardRules(auth, *optParams)
+			resp, _, err := apiInstances.GetScorecardsApiV2().ListScorecardRules(auth, *optParams)
 			if err != nil {
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving scorecard rule: %s", err)}
 			}

@@ -91,8 +91,8 @@ type ApiInstances struct {
 	rumApiV2                       *datadogV2.RUMApi
 	rumMetricsApiV2                *datadogV2.RumMetricsApi
 	rumRetentionFiltersApiV2       *datadogV2.RumRetentionFiltersApi
+	scorecardsApiV2                *datadogV2.ScorecardsApi
 	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
-	serviceScorecardsApiV2         *datadogV2.ServiceScorecardsApi
 	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2           *datadogV2.ServiceAccountsApi
 	softwareCatalogApiV2           *datadogV2.SoftwareCatalogApi
@@ -816,12 +816,12 @@ func (i *ApiInstances) GetDeploymentGatesApiV2() *datadogV2.DeploymentGatesApi {
 	return i.deploymentGatesV2
 }
 
-// GetServiceScorecardsApiV2 get instance of ServiceScorecardsApi
-func (i *ApiInstances) GetServiceScorecardsApiV2() *datadogV2.ServiceScorecardsApi {
-	if i.serviceScorecardsApiV2 == nil {
-		i.serviceScorecardsApiV2 = datadogV2.NewServiceScorecardsApi(i.HttpClient)
+// GetScorecardsApiV2 get instance of ScorecardsApi
+func (i *ApiInstances) GetScorecardsApiV2() *datadogV2.ScorecardsApi {
+	if i.scorecardsApiV2 == nil {
+		i.scorecardsApiV2 = datadogV2.NewScorecardsApi(i.HttpClient)
 	}
-	return i.serviceScorecardsApiV2
+	return i.scorecardsApiV2
 }
 
 // GetReferenceTablesApiV2 get instance of ReferenceTablesApi

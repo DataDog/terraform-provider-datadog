@@ -24,7 +24,7 @@ var (
 )
 
 type scorecardRuleResource struct {
-	Api  *datadogV2.ServiceScorecardsApi
+	Api  *datadogV2.ScorecardsApi
 	Auth context.Context
 }
 
@@ -45,7 +45,7 @@ func NewScorecardRuleResource() resource.Resource {
 
 func (r *scorecardRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetServiceScorecardsApiV2()
+	r.Api = providerData.DatadogApiInstances.GetScorecardsApiV2()
 	r.Auth = providerData.Auth
 }
 
@@ -228,8 +228,8 @@ func (r *scorecardRuleResource) Delete(ctx context.Context, request resource.Del
 	}
 }
 
-func (r *scorecardRuleResource) buildRuleAttributes(state *scorecardRuleModel) datadogV2.RuleAttributes {
-	attrs := datadogV2.RuleAttributes{}
+func (r *scorecardRuleResource) buildRuleAttributes(state *scorecardRuleModel) datadogV2.RuleAttributesRequest {
+	attrs := datadogV2.RuleAttributesRequest{}
 
 	attrs.SetName(state.Name.ValueString())
 	attrs.SetScorecardName(state.ScorecardName.ValueString())
