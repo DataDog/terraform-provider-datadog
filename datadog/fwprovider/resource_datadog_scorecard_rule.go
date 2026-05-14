@@ -33,6 +33,7 @@ type scorecardRuleModel struct {
 	Name          types.String `tfsdk:"name"`
 	ScorecardName types.String `tfsdk:"scorecard_name"`
 	Description   types.String `tfsdk:"description"`
+	ScopeQuery    types.String `tfsdk:"scope_query"`
 	Enabled       types.Bool   `tfsdk:"enabled"`
 	Level         types.String `tfsdk:"level"`
 	Owner         types.String `tfsdk:"owner"`
@@ -71,6 +72,10 @@ func (r *scorecardRuleResource) Schema(_ context.Context, _ resource.SchemaReque
 			},
 			"description": schema.StringAttribute{
 				Description: "Description of the rule.",
+				Optional:    true,
+			},
+			"scope_query": schema.StringAttribute{
+				Description: "Query to filter which entities this rule applies to.",
 				Optional:    true,
 			},
 			"enabled": schema.BoolAttribute{
@@ -238,6 +243,9 @@ func (r *scorecardRuleResource) buildRuleAttributes(state *scorecardRuleModel) d
 	if !state.Description.IsNull() {
 		attrs.SetDescription(state.Description.ValueString())
 	}
+	if !state.ScopeQuery.IsNull() {
+		attrs.SetScopeQuery(state.ScopeQuery.ValueString())
+	}
 	if !state.Owner.IsNull() {
 		attrs.SetOwner(state.Owner.ValueString())
 	}
@@ -264,6 +272,11 @@ func (r *scorecardRuleResource) updateState(state *scorecardRuleModel, id string
 		state.Description = types.StringValue(*v)
 	} else {
 		state.Description = types.StringNull()
+	}
+	if v, ok := attrs.GetScopeQueryOk(); ok && v != nil {
+		state.ScopeQuery = types.StringValue(*v)
+	} else {
+		state.ScopeQuery = types.StringNull()
 	}
 	if v, ok := attrs.GetEnabledOk(); ok && v != nil {
 		state.Enabled = types.BoolValue(*v)

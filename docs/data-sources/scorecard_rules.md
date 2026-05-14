@@ -46,4 +46,5 @@ Read-Only:
 - `level` (String) The maturity level of the rule.
 - `name` (String) Name of the rule.
 - `owner` (String) Owner of the rule.
+- `scope_query` (String) Query to filter which entities this rule applies to.
 - `scorecard_name` (String) Name of the scorecard this rule belongs to.

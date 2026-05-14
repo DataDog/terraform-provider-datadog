@@ -25,6 +25,7 @@ type scorecardRuleItemModel struct {
 	Name          types.String `tfsdk:"name"`
 	ScorecardName types.String `tfsdk:"scorecard_name"`
 	Description   types.String `tfsdk:"description"`
+	ScopeQuery    types.String `tfsdk:"scope_query"`
 	Enabled       types.Bool   `tfsdk:"enabled"`
 	Level         types.String `tfsdk:"level"`
 	Owner         types.String `tfsdk:"owner"`
@@ -98,6 +99,10 @@ func (d *scorecardRulesDataSource) Schema(_ context.Context, _ datasource.Schema
 						},
 						"description": schema.StringAttribute{
 							Description: "Description of the rule.",
+							Computed:    true,
+						},
+						"scope_query": schema.StringAttribute{
+							Description: "Query to filter which entities this rule applies to.",
 							Computed:    true,
 						},
 						"enabled": schema.BoolAttribute{
@@ -184,6 +189,9 @@ func (d *scorecardRulesDataSource) updateState(state *scorecardRulesDataSourceMo
 		}
 		if v, ok := attrs.GetDescriptionOk(); ok && v != nil {
 			m.Description = types.StringValue(*v)
+		}
+		if v, ok := attrs.GetScopeQueryOk(); ok && v != nil {
+			m.ScopeQuery = types.StringValue(*v)
 		}
 		if v, ok := attrs.GetEnabledOk(); ok && v != nil {
 			m.Enabled = types.BoolValue(*v)

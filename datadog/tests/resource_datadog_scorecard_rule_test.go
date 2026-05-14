@@ -30,6 +30,7 @@ func TestAccDatadogScorecardRule_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "scorecard_name", uniq+"-scorecard"),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "description", "Test rule description"),
+					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "scope_query", "kind:service"),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "enabled", "true"),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "level", "1"),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "owner", "test-team"),
@@ -42,6 +43,7 @@ func TestAccDatadogScorecardRule_Basic(t *testing.T) {
 					testAccCheckDatadogScorecardRuleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "description", "Updated description"),
+					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "scope_query", "kind:api"),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "enabled", "false"),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "level", "2"),
 				),
@@ -54,6 +56,7 @@ func TestAccDatadogScorecardRule_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "level", "1"),
 					resource.TestCheckResourceAttr("datadog_scorecard_rule.foo", "enabled", "true"),
 					resource.TestCheckNoResourceAttr("datadog_scorecard_rule.foo", "description"),
+					resource.TestCheckNoResourceAttr("datadog_scorecard_rule.foo", "scope_query"),
 					resource.TestCheckNoResourceAttr("datadog_scorecard_rule.foo", "owner"),
 				),
 			},
@@ -89,6 +92,7 @@ resource "datadog_scorecard_rule" "foo" {
   name           = "%[1]s"
   scorecard_name = "%[1]s-scorecard"
   description    = "Test rule description"
+  scope_query    = "kind:service"
   enabled        = true
   level          = "1"
   owner          = "test-team"
@@ -102,6 +106,7 @@ resource "datadog_scorecard_rule" "foo" {
   name           = "%[1]s"
   scorecard_name = "%[1]s-scorecard"
   description    = "Updated description"
+  scope_query    = "kind:api"
   enabled        = false
   level          = "2"
   owner          = "test-team"

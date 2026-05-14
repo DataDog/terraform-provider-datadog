@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 289
+        content_length: 318
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Test rule description","enabled":true,"level":1,"name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897","owner":"test-team","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard"},"type":"rule"}}
+            {"data":{"attributes":{"description":"Test rule description","enabled":true,"level":1,"name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143","owner":"test-team","scope_query":"kind:service","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard"},"type":"rule"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 904
+        content_length: 912
         uncompressed: false
-        body: '{"data":{"id":"insg1_1w3e5zzag1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard","created_at":"2026-05-14T19:28:19.355696927Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:28:19.355696927Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897","owner":"test-team","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard"},"relationships":{"policy_scope":{"data":{"id":"insg1_1w3e5zzag1","type":"policy-scope"}},"scorecard":{"data":{"id":"HXVXewxHEtmg","type":"scorecard"}}}},"included":[{"id":"insg1_1w3e5zzag1","type":"policy-scope","attributes":{"scopes":[{"kind":"service","query":"has_definition:\"true\""},{"kind":"queue","query":"has_definition:\"true\""},{"kind":"datastore","query":"has_definition:\"true\""}]}}]}'
+        body: '{"data":{"id":"293snodt1_78rlc8","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard","created_at":"2026-05-14T19:32:24.879336744Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:32:24.879336744Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143","owner":"test-team","scope_query":"kind:service","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard"},"relationships":{"policy_scope":{"data":{"id":"293snodt1_78rlc8","type":"policy-scope"}},"scope":{"data":{"id":"ae07a16e-1319-5e61-bdba-b3026bc2bdcd","type":"entity-scope"}},"scorecard":{"data":{"id":"OOHYJ3BR3uGK","type":"scorecard"}}}},"included":[{"id":"293snodt1_78rlc8","type":"policy-scope","attributes":{"scopes":[{"kind":"service","query":"has_definition:\"true\""}]}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 512.263959ms
+        duration: 364.884459ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1&page%5Bsize%5D=1
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8&page%5Bsize%5D=1
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 786
+        content_length: 900
         uncompressed: false
-        body: '{"data":[{"id":"insg1_1w3e5zzag1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard","created_at":"2026-05-14T19:28:19.355696Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:28:19.355696Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897","owner":"test-team","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard"},"relationships":{"policy_scope":{"data":{"id":"insg1_1w3e5zzag1","type":"policy-scope"}},"scorecard":{"data":{"id":"HXVXewxHEtmg","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
+        body: '{"data":[{"id":"293snodt1_78rlc8","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard","created_at":"2026-05-14T19:32:24.879336Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:32:24.879336Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143","owner":"test-team","scope_query":"kind:service","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard"},"relationships":{"policy_scope":{"data":{"id":"293snodt1_78rlc8","type":"policy-scope"}},"scope":{"data":{"id":"ae07a16e-1319-5e61-bdba-b3026bc2bdcd","type":"entity-scope"}},"scorecard":{"data":{"id":"OOHYJ3BR3uGK","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 38.030375ms
+        duration: 127.903917ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1&page%5Bsize%5D=1
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8&page%5Bsize%5D=1
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 786
+        content_length: 900
         uncompressed: false
-        body: '{"data":[{"id":"insg1_1w3e5zzag1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard","created_at":"2026-05-14T19:28:19.355696Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:28:19.355696Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897","owner":"test-team","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard"},"relationships":{"policy_scope":{"data":{"id":"insg1_1w3e5zzag1","type":"policy-scope"}},"scorecard":{"data":{"id":"HXVXewxHEtmg","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
+        body: '{"data":[{"id":"293snodt1_78rlc8","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard","created_at":"2026-05-14T19:32:24.879336Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:32:24.879336Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143","owner":"test-team","scope_query":"kind:service","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard"},"relationships":{"policy_scope":{"data":{"id":"293snodt1_78rlc8","type":"policy-scope"}},"scope":{"data":{"id":"ae07a16e-1319-5e61-bdba-b3026bc2bdcd","type":"entity-scope"}},"scorecard":{"data":{"id":"OOHYJ3BR3uGK","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 48.833042ms
+        duration: 36.139291ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1&page%5Bsize%5D=1
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8&page%5Bsize%5D=1
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 786
+        content_length: 900
         uncompressed: false
-        body: '{"data":[{"id":"insg1_1w3e5zzag1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard","created_at":"2026-05-14T19:28:19.355696Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:28:19.355696Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897","owner":"test-team","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard"},"relationships":{"policy_scope":{"data":{"id":"insg1_1w3e5zzag1","type":"policy-scope"}},"scorecard":{"data":{"id":"HXVXewxHEtmg","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
+        body: '{"data":[{"id":"293snodt1_78rlc8","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard","created_at":"2026-05-14T19:32:24.879336Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:32:24.879336Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143","owner":"test-team","scope_query":"kind:service","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard"},"relationships":{"policy_scope":{"data":{"id":"293snodt1_78rlc8","type":"policy-scope"}},"scope":{"data":{"id":"ae07a16e-1319-5e61-bdba-b3026bc2bdcd","type":"entity-scope"}},"scorecard":{"data":{"id":"OOHYJ3BR3uGK","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 45.130625ms
+        duration: 95.637834ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1&page%5Bsize%5D=1
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8&page%5Bsize%5D=1
         method: GET
       response:
         proto: HTTP/1.1
@@ -160,15 +160,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 786
+        content_length: 900
         uncompressed: false
-        body: '{"data":[{"id":"insg1_1w3e5zzag1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard","created_at":"2026-05-14T19:28:19.355696Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:28:19.355696Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897","owner":"test-team","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard"},"relationships":{"policy_scope":{"data":{"id":"insg1_1w3e5zzag1","type":"policy-scope"}},"scorecard":{"data":{"id":"HXVXewxHEtmg","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
+        body: '{"data":[{"id":"293snodt1_78rlc8","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard","created_at":"2026-05-14T19:32:24.879336Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:32:24.879336Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143","owner":"test-team","scope_query":"kind:service","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard"},"relationships":{"policy_scope":{"data":{"id":"293snodt1_78rlc8","type":"policy-scope"}},"scope":{"data":{"id":"ae07a16e-1319-5e61-bdba-b3026bc2bdcd","type":"entity-scope"}},"scorecard":{"data":{"id":"OOHYJ3BR3uGK","type":"scorecard"}}}}],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 39.735875ms
+        duration: 59.202542ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/scorecard/rules/insg1_1w3e5zzag1
+        url: https://api.datadoghq.com/api/v2/scorecard/rules/293snodt1_78rlc8
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -193,15 +193,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 652
+        content_length: 766
         uncompressed: false
-        body: '{"data":{"id":"insg1_1w3e5zzag1","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard","created_at":"2026-05-14T19:28:19.355696Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:28:19.355696Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897","owner":"test-team","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778786897-scorecard"},"relationships":{"policy_scope":{"data":{"id":"insg1_1w3e5zzag1","type":"policy-scope"}},"scorecard":{"data":{"id":"HXVXewxHEtmg","type":"scorecard"}}}}}'
+        body: '{"data":{"id":"293snodt1_78rlc8","type":"rule","attributes":{"category":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard","created_at":"2026-05-14T19:32:24.879336Z","custom":true,"description":"Test rule description","enabled":true,"level":1,"modified_at":"2026-05-14T19:32:24.879336Z","name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143","owner":"test-team","scope_query":"kind:service","scorecard_name":"tf-TestAccDatadogScorecardRuleDataSource_Basic-local-1778787143-scorecard"},"relationships":{"policy_scope":{"data":{"id":"293snodt1_78rlc8","type":"policy-scope"}},"scope":{"data":{"id":"ae07a16e-1319-5e61-bdba-b3026bc2bdcd","type":"entity-scope"}},"scorecard":{"data":{"id":"OOHYJ3BR3uGK","type":"scorecard"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 726.699583ms
+        duration: 727.113333ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -218,7 +218,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1&page%5Bsize%5D=1
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8&page%5Bsize%5D=1
         method: GET
       response:
         proto: HTTP/1.1
@@ -228,13 +228,13 @@ interactions:
         trailer: {}
         content_length: 143
         uncompressed: false
-        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
+        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 37.739166ms
+        duration: 40.754083ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -251,7 +251,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1&page%5Bsize%5D=1
+        url: https://api.datadoghq.com/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8&page%5Bsize%5D=1
         method: GET
       response:
         proto: HTTP/1.1
@@ -261,10 +261,10 @@ interactions:
         trailer: {}
         content_length: 143
         uncompressed: false
-        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=insg1_1w3e5zzag1\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
+        body: '{"data":[],"links":{"next":"/api/v2/scorecard/rules?filter%5Brule%5D%5Bid%5D=293snodt1_78rlc8\u0026page%5Blimit%5D=1\u0026page%5Boffset%5D=1"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 87.048708ms
+        duration: 41.07375ms

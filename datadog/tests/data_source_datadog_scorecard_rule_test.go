@@ -24,6 +24,7 @@ func TestAccDatadogScorecardRuleDataSource_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("data.datadog_scorecard_rule.test", "name", uniq),
 					resource.TestCheckResourceAttr("data.datadog_scorecard_rule.test", "scorecard_name", uniq+"-scorecard"),
 					resource.TestCheckResourceAttr("data.datadog_scorecard_rule.test", "description", "Test rule description"),
+					resource.TestCheckResourceAttr("data.datadog_scorecard_rule.test", "scope_query", "kind:service"),
 					resource.TestCheckResourceAttr("data.datadog_scorecard_rule.test", "enabled", "true"),
 					resource.TestCheckResourceAttr("data.datadog_scorecard_rule.test", "level", "1"),
 				),
@@ -38,6 +39,7 @@ resource "datadog_scorecard_rule" "foo" {
   name           = "%[1]s"
   scorecard_name = "%[1]s-scorecard"
   description    = "Test rule description"
+  scope_query    = "kind:service"
   enabled        = true
   level          = "1"
   owner          = "test-team"
