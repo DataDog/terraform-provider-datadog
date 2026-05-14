@@ -500,6 +500,7 @@ func eventQueryVariableSchema() map[string]*schema.Schema {
 		"compute": {
 			Type:        schema.TypeList,
 			Required:    true,
+			MinItems:    1,
 			Description: "The compute options.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
