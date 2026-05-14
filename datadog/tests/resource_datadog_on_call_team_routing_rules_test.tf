@@ -75,4 +75,48 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     escalation_policy = datadog_on_call_escalation_policy.team_rules_test.id
     urgency = "dynamic"
   }
+
+  rule {
+    query = "tags.service:test"
+    action {
+      escalation_policy {
+        policy_id = datadog_on_call_escalation_policy.team_rules_test.id
+        ack_timeout_minutes = 30
+        urgency = "low"
+        support_hours {
+          time_zone = "America/New_York"
+          restriction {
+            start_day = "monday"
+            start_time = "09:00:00"
+            end_day = "friday"
+            end_time = "17:00:00"
+          }
+          restriction {
+            start_day  = "tuesday"
+            start_time = "09:00:00"
+            end_day    = "tuesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "wednesday"
+            start_time = "09:00:00"
+            end_day    = "wednesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "thursday"
+            start_time = "09:00:00"
+            end_day    = "thursday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "friday"
+            start_time = "09:00:00"
+            end_day    = "friday"
+            end_time   = "17:00:00"
+          }
+        }
+      }
+    }
+  }
 }

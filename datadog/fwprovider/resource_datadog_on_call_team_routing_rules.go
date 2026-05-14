@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -46,8 +47,9 @@ type teamTimeRestrictionsModel struct {
 	Restrictions []*restrictionsModel `tfsdk:"restriction"`
 }
 type teamRuleActionModel struct {
-	Slack *slackMessageModel `tfsdk:"send_slack_message"`
-	Teams *teamsMessageModel `tfsdk:"send_teams_message"`
+	Slack            *slackMessageModel           `tfsdk:"send_slack_message"`
+	Teams            *teamsMessageModel           `tfsdk:"send_teams_message"`
+	EscalationPolicy *escalationPolicyActionModel `tfsdk:"escalation_policy"`
 }
 
 type slackMessageModel struct {
@@ -59,6 +61,18 @@ type teamsMessageModel struct {
 	Tenant  types.String `tfsdk:"tenant"`
 	Team    types.String `tfsdk:"team"`
 	Channel types.String `tfsdk:"channel"`
+}
+
+type escalationPolicyActionModel struct {
+	PolicyId          types.String                       `tfsdk:"policy_id"`
+	AckTimeoutMinutes types.Int64                        `tfsdk:"ack_timeout_minutes"`
+	Urgency           types.String                       `tfsdk:"urgency"`
+	SupportHours      *escalationPolicySupportHoursModel `tfsdk:"support_hours"`
+}
+
+type escalationPolicySupportHoursModel struct {
+	TimeZone     types.String         `tfsdk:"time_zone"`
+	Restrictions []*restrictionsModel `tfsdk:"restriction"`
 }
 
 func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
@@ -76,11 +90,29 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 			}
 		}
 
+		hasEscalationPolicyAction := false
+
 		for actionIdx, action := range rule.Actions {
 			actionPath := root.AtName("action").AtListIndex(actionIdx)
-			if action.Teams == nil && action.Slack == nil {
-				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message or send_teams_message")
+
+			// Only one of `send_slack_message`, `send_teams_message`, `escalation_policy` is allowed per action.
+			actionTypeCount := 0
+			if action.Slack != nil {
+				actionTypeCount++
 			}
+			if action.Teams != nil {
+				actionTypeCount++
+			}
+			if action.EscalationPolicy != nil {
+				actionTypeCount++
+			}
+			if actionTypeCount == 0 {
+				diags.AddAttributeError(actionPath, "missing actions", "actions must specify one of send_slack_message, send_teams_message, or escalation_policy")
+			}
+			if actionTypeCount > 1 {
+				diags.AddAttributeError(actionPath, "too many actions", "action can only specify one of send_slack_message, send_teams_message, or escalation_policy")
+			}
+
 			if action.Teams != nil {
 				teamsPath := actionPath.AtName("send_teams_message")
 				if action.Teams.Team.IsNull() {
@@ -102,6 +134,30 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 					diags.AddAttributeError(teamsPath, "missing channel", "channel is required")
 				}
 			}
+			if action.EscalationPolicy != nil {
+				escalationPolicyPath := actionPath.AtName("escalation_policy")
+				if hasEscalationPolicyAction {
+					diags.AddAttributeError(escalationPolicyPath, "duplicate escalation_policy action", "at most one escalation_policy action is allowed per rule")
+				}
+				hasEscalationPolicyAction = true
+				if action.EscalationPolicy.PolicyId.IsNull() {
+					diags.AddAttributeError(escalationPolicyPath, "missing policy_id", "policy_id is required")
+				}
+				if action.EscalationPolicy.SupportHours != nil {
+					supportHoursPath := escalationPolicyPath.AtName("support_hours")
+					if action.EscalationPolicy.SupportHours.TimeZone.IsNull() {
+						diags.AddAttributeError(supportHoursPath, "missing time_zone", "support_hours must specify time_zone")
+					}
+					if len(action.EscalationPolicy.SupportHours.Restrictions) == 0 {
+						diags.AddAttributeError(supportHoursPath, "missing restrictions", "support_hours must specify at least one restriction")
+					}
+				}
+			}
+		}
+
+		if hasEscalationPolicyAction && !rule.EscalationPolicy.IsNull() {
+			rootEscalationPolicyPath := root.AtName("escalation_policy")
+			diags.AddAttributeError(rootEscalationPolicyPath, "conflicting escalation policy configuration", "cannot combine rule-level `escalation_policy` attribute with an `escalation_policy` action in the same rule. Use one or the other.")
 		}
 	}
 
@@ -224,6 +280,61 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"team": schema.StringAttribute{
 												Optional:    true,
 												Description: "Teams team ID.",
+											},
+										},
+									},
+									"escalation_policy": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"policy_id": schema.StringAttribute{
+												Optional:    true,
+												Description: "Escalation policy ID.",
+											},
+											"ack_timeout_minutes": schema.Int64Attribute{
+												Optional:    true,
+												Description: "Number of minutes before an acknowledged page is re-triggered.",
+												Validators:  []validator.Int64{int64validator.Between(30, 1440)},
+											},
+											"urgency": schema.StringAttribute{
+												Optional:    true,
+												Description: "Urgency for pages created via this action.",
+												Validators:  []validator.String{stringvalidator.OneOf("high", "low", "dynamic")},
+											},
+										},
+										Blocks: map[string]schema.Block{
+											"support_hours": schema.SingleNestedBlock{
+												Description: "Support hours during which the escalation policy will execute.",
+												Attributes: map[string]schema.Attribute{
+													"time_zone": schema.StringAttribute{
+														Optional:    true,
+														Description: "Specifies the time zone applicable to the restrictions, e.g. `America/New_York`.",
+													},
+												},
+												Blocks: map[string]schema.Block{
+													"restriction": schema.ListNestedBlock{
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"end_day": schema.StringAttribute{
+																	Optional:    true,
+																	Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+																	Description: "The weekday when the restriction period ends.",
+																},
+																"end_time": schema.StringAttribute{
+																	Optional:    true,
+																	Description: "The time of day when the restriction ends (hh:mm:ss).",
+																},
+																"start_day": schema.StringAttribute{
+																	Optional:    true,
+																	Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewWeekdayFromValue)},
+																	Description: "The weekday when the restriction period starts.",
+																},
+																"start_time": schema.StringAttribute{
+																	Optional:    true,
+																	Description: "The time of day when the restriction begins (hh:mm:ss).",
+																},
+															},
+														},
+													},
+												},
 											},
 										},
 									},
