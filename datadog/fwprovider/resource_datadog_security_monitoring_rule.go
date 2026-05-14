@@ -1300,7 +1300,7 @@ func extractTfOptions(ctx context.Context, options datadogV2.SecurityMonitoringR
 	if impossibleTravelOptions, ok := options.GetImpossibleTravelOptionsOk(); ok {
 		tfOptions.ImpossibleTravelOptions = []impossibleTravelOptionsModel{extractImpossibleTravelOptions(impossibleTravelOptions)}
 	}
-	if anomalyDetectionOptions, ok := options.GetAnomalyDetectionOptionsOk(); ok {
+	if anomalyDetectionOptions, ok := options.GetAnomalyDetectionOptionsOk(); ok && len(priorOption.AnomalyDetectionOptions) > 0 {
 		tfOptions.AnomalyDetectionOptions = []anomalyDetectionOptionsModel{extractAnomalyDetectionOptions(anomalyDetectionOptions)}
 	}
 	if thirdPartyOptions, ok := options.GetThirdPartyRuleOptionsOk(); ok {
