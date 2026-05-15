@@ -643,6 +643,7 @@ var dataSourceToQueryType = map[string]string{
 	"profiling":            "event_query",
 	"audit":                "event_query",
 	"rum":                  "event_query",
+	"errors":               "event_query",
 	"process":              "process_query",
 	"slo":                  "slo_query",
 	"cloud_cost":           "cloud_cost_query",
