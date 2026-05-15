@@ -752,6 +752,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 								Attributes: map[string]schema.Attribute{
 									"bucket_duration": schema.Int64Attribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Duration in seconds of the time buckets used to aggregate events matched by the rule. Valid values are 300, 600, 900, 1800, 3600, 10800.",
 										Validators: []validator.Int64{
 											validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptionsBucketDurationFromValue),
@@ -759,6 +760,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 									},
 									"learning_duration": schema.Int64Attribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Learning duration in hours. Anomaly detection waits for at least this amount of historical data before it starts evaluating. Valid values are 1, 6, 12, 24, 48, 168, 336.",
 										Validators: []validator.Int64{
 											validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptionsLearningDurationFromValue),
@@ -766,6 +768,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 									},
 									"detection_tolerance": schema.Int64Attribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "An optional parameter that sets how permissive anomaly detection is. Higher values require higher deviations before triggering a signal. Valid values are 1, 2, 3, 4, 5.",
 										Validators: []validator.Int64{
 											validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleAnomalyDetectionOptionsDetectionToleranceFromValue),
