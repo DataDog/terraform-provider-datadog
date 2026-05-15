@@ -214,7 +214,7 @@ func (r *appsecWafExclusionFilterResource) Create(ctx context.Context, request r
 		return nil
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AppsecWafExclusionFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating AppsecWafExclusionFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -259,7 +259,7 @@ func (r *appsecWafExclusionFilterResource) Update(ctx context.Context, request r
 		return nil
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AppsecWafExclusionFilter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating AppsecWafExclusionFilter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

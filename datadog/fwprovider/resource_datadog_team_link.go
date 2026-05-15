@@ -134,7 +134,7 @@ func (r *teamLinkResource) Create(ctx context.Context, request resource.CreateRe
 
 	resp, _, err := r.Api.CreateTeamLink(r.Auth, teamId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamLink"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating TeamLink"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -166,7 +166,7 @@ func (r *teamLinkResource) Update(ctx context.Context, request resource.UpdateRe
 
 	resp, _, err := r.Api.UpdateTeamLink(r.Auth, teamId, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamLink"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating TeamLink"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

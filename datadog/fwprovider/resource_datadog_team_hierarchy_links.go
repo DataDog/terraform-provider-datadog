@@ -127,7 +127,7 @@ func (r *teamHierarchyLinksResource) Create(ctx context.Context, request resourc
 
 	resp, _, err := r.Api.AddTeamHierarchyLink(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamHierarchyLinks"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating TeamHierarchyLinks"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

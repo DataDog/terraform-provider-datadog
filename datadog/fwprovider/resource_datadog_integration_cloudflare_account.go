@@ -125,7 +125,7 @@ func (r *integrationCloudflareAccountResource) Create(ctx context.Context, reque
 
 	resp, _, err := r.Api.CreateCloudflareAccount(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationCloudflareAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating IntegrationCloudflareAccount"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -155,7 +155,7 @@ func (r *integrationCloudflareAccountResource) Update(ctx context.Context, reque
 
 	resp, _, err := r.Api.UpdateCloudflareAccount(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationCloudflareAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating IntegrationCloudflareAccount"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

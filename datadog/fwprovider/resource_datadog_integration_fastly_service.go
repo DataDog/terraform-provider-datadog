@@ -140,7 +140,7 @@ func (r *integrationFastlyServiceResource) Create(ctx context.Context, request r
 
 	resp, _, err := r.Api.CreateFastlyService(r.Auth, accountId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationFastlyService"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating IntegrationFastlyService"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -174,7 +174,7 @@ func (r *integrationFastlyServiceResource) Update(ctx context.Context, request r
 
 	resp, _, err := r.Api.UpdateFastlyService(r.Auth, accountID, serviceID, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationFastlyService"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating IntegrationFastlyService"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

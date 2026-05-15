@@ -274,7 +274,7 @@ func (r *appsecWafCustomRuleResource) Create(ctx context.Context, request resour
 		return nil
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AppsecWafCustomRule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating AppsecWafCustomRule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -319,7 +319,7 @@ func (r *appsecWafCustomRuleResource) Update(ctx context.Context, request resour
 		return nil
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AppsecWafCustomRule"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating AppsecWafCustomRule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

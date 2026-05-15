@@ -145,7 +145,7 @@ func (r *rumApplicationResource) Create(ctx context.Context, request resource.Cr
 
 	resp, _, err := r.Api.CreateRUMApplication(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumApplication"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating RumApplication"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

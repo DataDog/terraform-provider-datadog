@@ -347,7 +347,7 @@ func (r *syntheticsGlobalVariableResource) Create(ctx context.Context, request r
 
 	resp, _, err := r.Api.CreateGlobalVariable(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving SyntheticsGlobalVariable"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating SyntheticsGlobalVariable"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -383,7 +383,7 @@ func (r *syntheticsGlobalVariableResource) Update(ctx context.Context, request r
 
 	resp, _, err := r.Api.EditGlobalVariable(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving SyntheticsGlobalVariable"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating SyntheticsGlobalVariable"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

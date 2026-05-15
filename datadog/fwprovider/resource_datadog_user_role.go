@@ -136,7 +136,7 @@ func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRe
 	roleId := state.RoleId.ValueString()
 	resp, _, err := r.Api.AddUserToRole(r.Auth, roleId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving UserRole"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating UserRole"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

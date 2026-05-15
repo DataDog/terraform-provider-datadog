@@ -150,7 +150,7 @@ func (r *integrationConfluentResourceResource) Create(ctx context.Context, reque
 
 	resp, _, err := r.Api.CreateConfluentResource(r.Auth, accountId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationConfluentResource"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating IntegrationConfluentResource"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -184,7 +184,7 @@ func (r *integrationConfluentResourceResource) Update(ctx context.Context, reque
 
 	resp, _, err := r.Api.UpdateConfluentResource(r.Auth, accountID, resourceID, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationConfluentResource"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating IntegrationConfluentResource"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {

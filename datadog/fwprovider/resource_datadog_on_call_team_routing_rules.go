@@ -334,7 +334,7 @@ func (r *onCallTeamRoutingRulesResource) Update(ctx context.Context, request res
 		Include: &include,
 	})
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating OnCallTeamRoutingRules"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating OnCallTeamRoutingRules"))
 		return
 	}
 
