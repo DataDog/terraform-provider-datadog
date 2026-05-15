@@ -1834,21 +1834,23 @@ func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 
 		widgetJSON := map[string]interface{}{"definition": defJSON}
 
-		// Include widget_layout if present
+		// Include widget_layout if present.
+		//
+		// x, y, width, height are always emitted — even when zero — so the
+		// Datadog API receives an explicit `x`/`y` field on every widget.
+		// Stripping zero-valued x/y produced 400 responses of the form
+		// "MSL widget out of grid. 'x' is a required property" for any
+		// widget at the dashboard origin (or row/column 0). See #3750.
 		if layoutList, ok := widget["widget_layout"].([]interface{}); ok && len(layoutList) > 0 {
 			if layoutMap, ok := layoutList[0].(map[string]interface{}); ok {
 				layout := map[string]interface{}{}
 				for _, key := range []string{"x", "y", "width", "height"} {
-					if v := getIntFromMap(layoutMap, key); v != 0 {
-						layout[key] = v
-					}
+					layout[key] = getIntFromMap(layoutMap, key)
 				}
 				if getBoolFromMap(layoutMap, "is_column_break") {
 					layout["is_column_break"] = true
 				}
-				if len(layout) > 0 {
-					widgetJSON["layout"] = layout
-				}
+				widgetJSON["layout"] = layout
 			}
 		}
 
