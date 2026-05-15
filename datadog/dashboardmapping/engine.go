@@ -1839,7 +1839,13 @@ func buildWidgetEngineJSONFromMap(widget map[string]interface{}) map[string]inte
 		if layoutList, ok := widget["widget_layout"].([]interface{}); ok && len(layoutList) > 0 {
 			if layoutMap, ok := layoutList[0].(map[string]interface{}); ok {
 				layout := map[string]interface{}{}
-				for _, key := range []string{"x", "y", "width", "height"} {
+				// Zero is a valid x/y coordinate, unlike width and height.
+				for _, key := range []string{"x", "y"} {
+					if _, ok := layoutMap[key]; ok {
+						layout[key] = getIntFromMap(layoutMap, key)
+					}
+				}
+				for _, key := range []string{"width", "height"} {
 					if v := getIntFromMap(layoutMap, key); v != 0 {
 						layout[key] = v
 					}
