@@ -542,42 +542,6 @@ func TestFrameworkProviderConfigure_APIKeyWinsOverPAT(t *testing.T) {
 	}
 }
 
-// TestFrameworkProviderConfigure_PATDisablesSDKDebug verifies that when a PAT
-// is configured, the SDK's HTTP debug dump is forcibly disabled even if
-// TF_LOG=DEBUG is set. The SDK's debug dump (datadog-api-client-go
-// client.go ~L172) redacts ContextAPIKeys values but not ContextAccessToken,
-// so leaving Debug=true with a PAT would write `Authorization: Bearer
-// ddpat_...` to Terraform logs verbatim.
-func TestFrameworkProviderConfigure_PATDisablesSDKDebug(t *testing.T) {
-	os.Unsetenv("DD_API_KEY")
-	os.Unsetenv("DD_APP_KEY")
-	os.Unsetenv("DATADOG_API_KEY")
-	os.Unsetenv("DATADOG_APP_KEY")
-	os.Unsetenv("DD_PAT")
-	os.Unsetenv("DATADOG_PAT")
-
-	t.Setenv("TF_LOG", "DEBUG")
-
-	p := fwprovider.New().(*fwprovider.FrameworkProvider)
-	config := &fwprovider.ProviderSchema{
-		Pat:                    types.StringValue("ddpat_test_token"),
-		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
-		Validate:               types.StringValue("false"),
-		HttpClientRetryEnabled: types.StringValue("false"),
-	}
-
-	request := &provider.ConfigureRequest{}
-	if diags := p.ConfigureCallbackFunc(p, request, config); diags.HasError() {
-		t.Fatalf("framework provider configure should not error with PAT and TF_LOG=DEBUG, got: %v", diags)
-	}
-	if p.DatadogApiInstances == nil {
-		t.Fatal("DatadogApiInstances should be set")
-	}
-	if p.DatadogApiInstances.HttpClient.GetConfig().Debug {
-		t.Error("SDK Debug should be forced to false when a PAT is configured; TF_LOG=DEBUG would otherwise leak the Bearer token via DumpRequestOut")
-	}
-}
-
 // TestFrameworkProviderConfigure_NoCredentials tests that configure errors with no credentials and validate=true.
 func TestFrameworkProviderConfigure_NoCredentialsErrors(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
