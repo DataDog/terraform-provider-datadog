@@ -142,6 +142,7 @@ type Variable struct {
 	CloudCostQuery          []CloudCostQuery          `tfsdk:"cloud_cost_query"`
 	DataQualityQuery        []DataQualityQuery        `tfsdk:"data_quality_query"`
 	AggregateAugmentedQuery []AggregateAugmentedQuery `tfsdk:"aggregate_augmented_query"`
+	AggregateFilteredQuery  []AggregateFilteredQuery  `tfsdk:"aggregate_filtered_query"`
 }
 
 type EventQuery struct {
@@ -175,8 +176,8 @@ type GroupBy struct {
 type AggregateAugmentedQuery struct {
 	Name                  types.String             `tfsdk:"name"`
 	DataSource            types.String             `tfsdk:"data_source"`
-	AugmentReferenceTable []AugmentReferenceTable  `tfsdk:"augment_reference_table"`
-	AugmentEventQuery     []EventQuery             `tfsdk:"augment_event_query"`
+	AugmentReferenceTable []ReferenceTableMonitorVariable `tfsdk:"augment_reference_table"`
+	AugmentEventQuery     []EventQuery                    `tfsdk:"augment_event_query"`
 	BaseMetricsQuery      []BaseMetricsQuery       `tfsdk:"base_metrics_query"`
 	BaseEventQuery        []EventQuery             `tfsdk:"base_event_query"`
 	JoinCondition         []AggregateJoinCondition `tfsdk:"join_condition"`
@@ -184,13 +185,33 @@ type AggregateAugmentedQuery struct {
 	GroupBy               []GroupBy                `tfsdk:"group_by"`
 }
 
-// AugmentReferenceTable is the reference-table branch of an augment query.
-type AugmentReferenceTable struct {
+// ReferenceTableMonitorVariable is the reference-table branch of an aggregate augment or filter query.
+type ReferenceTableMonitorVariable struct {
 	Name        types.String     `tfsdk:"name"`
 	DataSource  types.String     `tfsdk:"data_source"`
 	TableName   types.String     `tfsdk:"table_name"`
 	QueryFilter types.String     `tfsdk:"query_filter"`
 	Columns     []RefTableColumn `tfsdk:"columns"`
+}
+
+// AggregateFilteredQuery is a formula monitor variable of type aggregate_filtered_query.
+type AggregateFilteredQuery struct {
+	Name                  types.String                    `tfsdk:"name"`
+	DataSource            types.String                    `tfsdk:"data_source"`
+	FilterReferenceTable  []ReferenceTableMonitorVariable `tfsdk:"filter_reference_table"`
+	FilterEventQuery      []EventQuery                    `tfsdk:"filter_event_query"`
+	BaseMetricsQuery      []BaseMetricsQuery              `tfsdk:"base_metrics_query"`
+	BaseEventQuery        []EventQuery                    `tfsdk:"base_event_query"`
+	Filters               []AggregateQueryFilter          `tfsdk:"filters"`
+	Compute               []Compute                       `tfsdk:"compute"`
+	GroupBy               []GroupBy                       `tfsdk:"group_by"`
+}
+
+// AggregateQueryFilter maps base and filter attributes for aggregate_filtered_query.
+type AggregateQueryFilter struct {
+	BaseAttribute   types.String `tfsdk:"base_attribute"`
+	FilterAttribute types.String `tfsdk:"filter_attribute"`
+	Exclude         types.Bool   `tfsdk:"exclude"`
 }
 
 // RefTableColumn is a column in a reference table augment query.
@@ -405,6 +426,207 @@ func (r *monitorResource) variablesEventQueryListBlock(description string) schem
 										"aggregation": schema.StringAttribute{
 											Required:    true,
 											Description: "The aggregation methods for the event platform queries.",
+											Validators: []validator.String{
+												stringvalidator.OneOf(r.getAllowEventQueryAggregation()...),
+											},
+										},
+										"metric": schema.StringAttribute{
+											Optional:    true,
+											Description: "The metric used for sorting group by results.",
+										},
+										"order": schema.StringAttribute{
+											Optional:    true,
+											Description: "Direction of sort.",
+											Validators: []validator.String{
+												stringvalidator.OneOf(r.getAllowEventQueryOrder()...),
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+// variablesAggregateFilteredQueryListBlock returns the schema for aggregate_filtered_query monitor variables.
+func (r *monitorResource) variablesAggregateFilteredQueryListBlock() schema.Block {
+	return schema.ListNestedBlock{
+		Description: "Aggregate-filtered composite query variables (filter a metrics or events base query using a reference table or events filter query).",
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"name": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the query for use in formulas.",
+				},
+				"data_source": schema.StringAttribute{
+					Required:    true,
+					Description: "Must be `aggregate_filtered_query`.",
+					Validators: []validator.String{
+						stringvalidator.OneOf(r.getAllowAggregateFilteredDataSource()...),
+					},
+				},
+			},
+			Blocks: map[string]schema.Block{
+				"filter_reference_table": schema.ListNestedBlock{
+					Description: "Reference table filter query. Conflicts with `filter_event_query` in configuration.",
+					Validators: []validator.List{
+						listvalidator.SizeAtMost(1),
+					},
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"name": schema.StringAttribute{
+								Optional:    true,
+								Description: "Name of the filter sub-query.",
+							},
+							"data_source": schema.StringAttribute{
+								Required:    true,
+								Description: "Must be `reference_table`.",
+								Validators: []validator.String{
+									stringvalidator.OneOf(r.getAllowReferenceTableDataSource()...),
+								},
+							},
+							"table_name": schema.StringAttribute{
+								Required:    true,
+								Description: "Name of the reference table.",
+							},
+							"query_filter": schema.StringAttribute{
+								Optional:    true,
+								Description: "Optional filter expression for the reference table query.",
+							},
+						},
+						Blocks: map[string]schema.Block{
+							"columns": schema.ListNestedBlock{
+								Description: "Columns to retrieve from the reference table.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"name": schema.StringAttribute{
+											Required:    true,
+											Description: "Reference table column name.",
+										},
+										"alias": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional alias for the column.",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				"filter_event_query": r.variablesEventQueryListBlock("Events filter query. Conflicts with `filter_reference_table` in configuration."),
+				"base_metrics_query": schema.ListNestedBlock{
+					Description: "Metrics base query. Conflicts with `base_event_query` in configuration.",
+					Validators: []validator.List{
+						listvalidator.SizeAtMost(1),
+					},
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"data_source": schema.StringAttribute{
+								Required:    true,
+								Description: "The data source for metrics queries.",
+								Validators: []validator.String{
+									stringvalidator.OneOf(r.getAllowMetricsDataSource()...),
+								},
+							},
+							"name": schema.StringAttribute{
+								Optional:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+							"query": schema.StringAttribute{
+								Required:    true,
+								Description: "The metrics query definition.",
+							},
+							"aggregator": schema.StringAttribute{
+								Optional:    true,
+								Description: "The aggregation method for metrics queries.",
+								Validators: []validator.String{
+									stringvalidator.OneOf(r.getAllowMetricsAggregator()...),
+								},
+							},
+						},
+					},
+				},
+				"base_event_query": r.variablesEventQueryListBlock("Events base query. Conflicts with `base_metrics_query` in configuration."),
+				"filters": schema.ListNestedBlock{
+					Description: "Filter conditions mapping base query attributes to filter query attributes. At least one block is required.",
+					Validators: []validator.List{
+						listvalidator.SizeAtLeast(1),
+					},
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"base_attribute": schema.StringAttribute{
+								Required:    true,
+								Description: "Attribute from the base query to filter on.",
+							},
+							"filter_attribute": schema.StringAttribute{
+								Required:    true,
+								Description: "Attribute from the filter query to match against.",
+							},
+							"exclude": schema.BoolAttribute{
+								Optional:    true,
+								Description: "When true, exclude matching records instead of including them.",
+							},
+						},
+					},
+				},
+				"compute": schema.ListNestedBlock{
+					Description: "Optional compute aggregations for the aggregate-filtered query.",
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"aggregation": schema.StringAttribute{
+								Required:    true,
+								Description: "The aggregation methods for compute steps.",
+								Validators: []validator.String{
+									stringvalidator.OneOf(r.getAllowEventQueryAggregation()...),
+								},
+							},
+							"interval": schema.Int64Attribute{
+								Optional:    true,
+								Description: "A time interval in milliseconds.",
+							},
+							"metric": schema.StringAttribute{
+								Optional:    true,
+								Description: "The measurable attribute to compute.",
+							},
+							"name": schema.StringAttribute{
+								Optional:    true,
+								Description: "The name assigned to this aggregation when multiple aggregations are defined.",
+							},
+						},
+					},
+				},
+				"group_by": schema.ListNestedBlock{
+					Description: "Optional group by options for the aggregate-filtered query.",
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"facet": schema.StringAttribute{
+								Required:    true,
+								Description: "The facet to group by.",
+							},
+							"source": schema.StringAttribute{
+								Optional:    true,
+								Description: "Identifies which sub-query this facet refers to (for example `filter_query`).",
+							},
+							"limit": schema.Int64Attribute{
+								Optional:    true,
+								Description: "The number of groups to return.",
+							},
+						},
+						Blocks: map[string]schema.Block{
+							"sort": schema.ListNestedBlock{
+								Description: "Sort options for group by.",
+								Validators: []validator.List{
+									listvalidator.SizeAtMost(1),
+								},
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"aggregation": schema.StringAttribute{
+											Required:    true,
+											Description: "The aggregation methods for sorting.",
 											Validators: []validator.String{
 												stringvalidator.OneOf(r.getAllowEventQueryAggregation()...),
 											},
@@ -1142,6 +1364,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 								},
 							},
 						},
+						"aggregate_filtered_query": r.variablesAggregateFilteredQueryListBlock(),
 					},
 				},
 			},
@@ -1492,6 +1715,9 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if aggReq := r.buildAggregateAugmentedQueryStruct(ctx, variable.AggregateAugmentedQuery); len(aggReq) > 0 {
 		variablesReq = append(variablesReq, aggReq...)
 	}
+	if aggFil := r.buildAggregateFilteredQueryStruct(ctx, variable.AggregateFilteredQuery); len(aggFil) > 0 {
+		variablesReq = append(variablesReq, aggFil...)
+	}
 	return variablesReq
 }
 
@@ -1732,6 +1958,126 @@ func (r *monitorResource) buildAggregateAugmentedQueryStruct(ctx context.Context
 	return out
 }
 
+func (r *monitorResource) buildAggregateFilteredQueryStruct(ctx context.Context, aggs []AggregateFilteredQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	if len(aggs) == 0 {
+		return nil
+	}
+	out := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+	for _, a := range aggs {
+		var filterQuery datadogV1.MonitorFormulaAndFunctionAggregateFilterQuery
+		if frts := a.FilterReferenceTable; len(frts) > 0 {
+			art := frts[0]
+			ref := datadogV1.NewMonitorFormulaAndFunctionReferenceTableQueryDefinition(
+				datadogV1.MonitorFormulaAndFunctionReferenceTableDataSource(art.DataSource.ValueString()),
+				art.TableName.ValueString(),
+			)
+			fwutils.SetOptString(art.Name, ref.SetName)
+			fwutils.SetOptString(art.QueryFilter, ref.SetQueryFilter)
+			if cols := art.Columns; len(cols) > 0 {
+				colOut := make([]datadogV1.MonitorFormulaAndFunctionReferenceTableColumn, 0, len(cols))
+				for _, c := range cols {
+					col := datadogV1.NewMonitorFormulaAndFunctionReferenceTableColumn(c.Name.ValueString())
+					fwutils.SetOptString(c.Alias, col.SetAlias)
+					colOut = append(colOut, *col)
+				}
+				ref.SetColumns(colOut)
+			}
+			filterQuery = datadogV1.MonitorFormulaAndFunctionReferenceTableQueryDefinitionAsMonitorFormulaAndFunctionAggregateFilterQuery(ref)
+		} else if feq := r.buildEventQueryStruct(ctx, a.FilterEventQuery); len(feq) > 0 {
+			filterQuery = datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionAggregateFilterQuery(feq[0].MonitorFormulaAndFunctionEventQueryDefinition)
+		} else {
+			continue
+		}
+
+		var base datadogV1.MonitorFormulaAndFunctionAggregateBaseQuery
+		if bms := a.BaseMetricsQuery; len(bms) > 0 {
+			b := bms[0]
+			mq := datadogV1.NewMonitorFormulaAndFunctionMetricsQueryDefinition(
+				datadogV1.MonitorFormulaAndFunctionMetricsDataSource(b.DataSource.ValueString()),
+				b.Query.ValueString(),
+			)
+			fwutils.SetOptString(b.Name, mq.SetName)
+			if !b.Aggregator.IsNull() {
+				mq.SetAggregator(datadogV1.MonitorFormulaAndFunctionMetricsAggregator(b.Aggregator.ValueString()))
+			}
+			base = datadogV1.MonitorFormulaAndFunctionMetricsQueryDefinitionAsMonitorFormulaAndFunctionAggregateBaseQuery(mq)
+		} else if beq := r.buildEventQueryStruct(ctx, a.BaseEventQuery); len(beq) > 0 {
+			base = datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionAggregateBaseQuery(beq[0].MonitorFormulaAndFunctionEventQueryDefinition)
+		} else {
+			continue
+		}
+
+		if len(a.Filters) == 0 {
+			continue
+		}
+		filters := make([]datadogV1.MonitorFormulaAndFunctionAggregateQueryFilter, 0, len(a.Filters))
+		for _, f := range a.Filters {
+			fl := datadogV1.NewMonitorFormulaAndFunctionAggregateQueryFilter(
+				f.BaseAttribute.ValueString(),
+				f.FilterAttribute.ValueString(),
+			)
+			if !f.Exclude.IsNull() && f.Exclude.ValueBool() {
+				fl.SetExclude(true)
+			}
+			filters = append(filters, *fl)
+		}
+
+		def := datadogV1.NewMonitorFormulaAndFunctionAggregateFilteredQueryDefinition(
+			base,
+			datadogV1.MonitorFormulaAndFunctionAggregateFilteredDataSource(a.DataSource.ValueString()),
+			filterQuery,
+			filters,
+		)
+		fwutils.SetOptString(a.Name, def.SetName)
+
+		if len(a.Compute) > 0 {
+			computes := []datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionCompute{}
+			for _, c := range a.Compute {
+				cr := datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinitionCompute(
+					datadogV1.MonitorFormulaAndFunctionEventAggregation(c.Aggregation.ValueString()),
+				)
+				fwutils.SetOptInt64(c.Interval, cr.SetInterval)
+				fwutils.SetOptString(c.Metric, cr.SetMetric)
+				fwutils.SetOptString(c.Name, cr.SetName)
+				computes = append(computes, *cr)
+			}
+			def.SetCompute(computes)
+		}
+
+		if len(a.GroupBy) > 0 {
+			groupBy := []datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
+			for _, g := range a.GroupBy {
+				gb := datadogV1.NewMonitorFormulaAndFunctionEventQueryGroupBy(g.Facet.ValueString())
+				if !g.Source.IsNull() && g.Source.ValueString() != "" {
+					if gb.AdditionalProperties == nil {
+						gb.AdditionalProperties = map[string]interface{}{}
+					}
+					gb.AdditionalProperties["source"] = g.Source.ValueString()
+				}
+				fwutils.SetOptInt64(g.Limit, gb.SetLimit)
+				if sortList := g.Sort; len(sortList) > 0 {
+					sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
+					sort := sortList[0]
+					fwutils.SetOptString(sort.Metric, sortReq.SetMetric)
+					if !sort.Aggregation.IsNull() {
+						sortReq.SetAggregation(datadogV1.MonitorFormulaAndFunctionEventAggregation(sort.Aggregation.ValueString()))
+					}
+					if !sort.Order.IsNull() {
+						sortReq.SetOrder(datadogV1.QuerySortOrder(sort.Order.ValueString()))
+					}
+					gb.SetSort(sortReq)
+				}
+				groupBy = append(groupBy, *gb)
+			}
+			def.SetGroupBy(groupBy)
+		}
+
+		wrapped := datadogV1.MonitorFormulaAndFunctionAggregateFilteredQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(def)
+		out = append(out, wrapped)
+	}
+	return out
+}
+
 func (r *monitorResource) buildAssetsStruct(ctx context.Context, tfAssets []MonitorAsset) []datadogV1.MonitorAsset {
 	if len(tfAssets) == 0 {
 		return nil
@@ -1906,6 +2252,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	CloudCostQueryStates := []CloudCostQuery{}
 	DataQualityQueryStates := []DataQualityQuery{}
 	aggregateAugmentedStates := []AggregateAugmentedQuery{}
+	aggregateFilteredStates := []AggregateFilteredQuery{}
 
 	for _, v := range *variables {
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
@@ -1920,12 +2267,16 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if aggState := r.buildAggregateAugmentedQueryState(ctx, v.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition); aggState != nil {
 			aggregateAugmentedStates = append(aggregateAugmentedStates, *aggState)
 		}
+		if aggFilState := r.buildAggregateFilteredQueryState(ctx, v.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition); aggFilState != nil {
+			aggregateFilteredStates = append(aggregateFilteredStates, *aggFilState)
+		}
 	}
 	state.Variables = []Variable{{
 		EventQuery:              eventQueryStates,
 		CloudCostQuery:          CloudCostQueryStates,
 		DataQualityQuery:        DataQualityQueryStates,
 		AggregateAugmentedQuery: aggregateAugmentedStates,
+		AggregateFilteredQuery:  aggregateFilteredStates,
 	}}
 }
 
@@ -1997,7 +2348,7 @@ func (r *monitorResource) buildAggregateAugmentedQueryState(ctx context.Context,
 	aq := def.GetAugmentQuery()
 	if aq.MonitorFormulaAndFunctionReferenceTableQueryDefinition != nil {
 		ref := aq.MonitorFormulaAndFunctionReferenceTableQueryDefinition
-		art := AugmentReferenceTable{
+		art := ReferenceTableMonitorVariable{
 			DataSource:  types.StringValue(string(ref.GetDataSource())),
 			TableName:   types.StringValue(ref.GetTableName()),
 			Name:        fwutils.ToTerraformStr(ref.GetNameOk()),
@@ -2011,7 +2362,7 @@ func (r *monitorResource) buildAggregateAugmentedQueryState(ctx context.Context,
 				})
 			}
 		}
-		out.AugmentReferenceTable = []AugmentReferenceTable{art}
+		out.AugmentReferenceTable = []ReferenceTableMonitorVariable{art}
 	} else if aq.MonitorFormulaAndFunctionEventQueryDefinition != nil {
 		if ev := r.buildEventQueryState(ctx, aq.MonitorFormulaAndFunctionEventQueryDefinition); ev != nil {
 			out.AugmentEventQuery = []EventQuery{*ev}
@@ -2039,6 +2390,102 @@ func (r *monitorResource) buildAggregateAugmentedQueryState(ctx context.Context,
 		BaseAttribute:    types.StringValue(jc.GetBaseAttribute()),
 		JoinType:         types.StringValue(string(jc.GetJoinType())),
 	}}
+
+	if computes, ok := def.GetComputeOk(); ok && computes != nil {
+		for _, c := range *computes {
+			out.Compute = append(out.Compute, Compute{
+				Aggregation: types.StringValue(string(c.GetAggregation())),
+				Interval:    fwutils.ToTerraformInt64(c.GetIntervalOk()),
+				Metric:      fwutils.ToTerraformStr(c.GetMetricOk()),
+				Name:        fwutils.ToTerraformStr(c.GetNameOk()),
+			})
+		}
+	}
+
+	if groups, ok := def.GetGroupByOk(); ok && groups != nil {
+		for _, g := range *groups {
+			gb := GroupBy{
+				Facet:  fwutils.ToTerraformStr(g.GetFacetOk()),
+				Source: types.StringNull(),
+				Limit:  fwutils.ToTerraformInt64(g.GetLimitOk()),
+			}
+			if g.AdditionalProperties != nil {
+				if s, ok := g.AdditionalProperties["source"].(string); ok && s != "" {
+					gb.Source = types.StringValue(s)
+				}
+			}
+			if sort, ok := g.GetSortOk(); ok && sort != nil {
+				s := Sort{
+					Aggregation: types.StringValue(string(sort.Aggregation)),
+					Metric:      fwutils.ToTerraformStr(sort.GetMetricOk()),
+				}
+				if order, ok := sort.GetOrderOk(); ok && order != nil {
+					s.Order = types.StringValue(string(*order))
+				}
+				gb.Sort = []Sort{s}
+			}
+			out.GroupBy = append(out.GroupBy, gb)
+		}
+	}
+
+	return &out
+}
+
+func (r *monitorResource) buildAggregateFilteredQueryState(ctx context.Context, def *datadogV1.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition) *AggregateFilteredQuery {
+	if def == nil {
+		return nil
+	}
+	out := AggregateFilteredQuery{
+		Name:       fwutils.ToTerraformStr(def.GetNameOk()),
+		DataSource: types.StringValue(string(def.GetDataSource())),
+	}
+
+	fq := def.GetFilterQuery()
+	if fq.MonitorFormulaAndFunctionReferenceTableQueryDefinition != nil {
+		ref := fq.MonitorFormulaAndFunctionReferenceTableQueryDefinition
+		art := ReferenceTableMonitorVariable{
+			DataSource:  types.StringValue(string(ref.GetDataSource())),
+			TableName:   types.StringValue(ref.GetTableName()),
+			Name:        fwutils.ToTerraformStr(ref.GetNameOk()),
+			QueryFilter: fwutils.ToTerraformStr(ref.GetQueryFilterOk()),
+		}
+		if cols, ok := ref.GetColumnsOk(); ok && cols != nil {
+			for _, c := range *cols {
+				art.Columns = append(art.Columns, RefTableColumn{
+					Name:  types.StringValue(c.GetName()),
+					Alias: fwutils.ToTerraformStr(c.GetAliasOk()),
+				})
+			}
+		}
+		out.FilterReferenceTable = []ReferenceTableMonitorVariable{art}
+	} else if fq.MonitorFormulaAndFunctionEventQueryDefinition != nil {
+		if ev := r.buildEventQueryState(ctx, fq.MonitorFormulaAndFunctionEventQueryDefinition); ev != nil {
+			out.FilterEventQuery = []EventQuery{*ev}
+		}
+	}
+
+	bq := def.GetBaseQuery()
+	if bq.MonitorFormulaAndFunctionMetricsQueryDefinition != nil {
+		mq := bq.MonitorFormulaAndFunctionMetricsQueryDefinition
+		out.BaseMetricsQuery = []BaseMetricsQuery{{
+			DataSource: types.StringValue(string(mq.GetDataSource())),
+			Query:      types.StringValue(mq.GetQuery()),
+			Name:       fwutils.ToTerraformStr(mq.GetNameOk()),
+			Aggregator: fwutils.ToTerraformStr(mq.GetAggregatorOk()),
+		}}
+	} else if bq.MonitorFormulaAndFunctionEventQueryDefinition != nil {
+		if ev := r.buildEventQueryState(ctx, bq.MonitorFormulaAndFunctionEventQueryDefinition); ev != nil {
+			out.BaseEventQuery = []EventQuery{*ev}
+		}
+	}
+
+	for _, f := range def.GetFilters() {
+		out.Filters = append(out.Filters, AggregateQueryFilter{
+			BaseAttribute:   types.StringValue(f.GetBaseAttribute()),
+			FilterAttribute: types.StringValue(f.GetFilterAttribute()),
+			Exclude:         types.BoolValue(f.GetExclude()),
+		})
+	}
 
 	if computes, ok := def.GetComputeOk(); ok && computes != nil {
 		for _, c := range *computes {
@@ -2197,6 +2644,10 @@ func (r *monitorResource) getAllowMonitorAssetResourceType() []string {
 
 func (r *monitorResource) getAllowAggregateAugmentedDataSource() []string {
 	return enumStrings((*datadogV1.MonitorFormulaAndFunctionAggregateAugmentedDataSource)(nil).GetAllowedValues())
+}
+
+func (r *monitorResource) getAllowAggregateFilteredDataSource() []string {
+	return enumStrings((*datadogV1.MonitorFormulaAndFunctionAggregateFilteredDataSource)(nil).GetAllowedValues())
 }
 
 func (r *monitorResource) getAllowReferenceTableDataSource() []string {

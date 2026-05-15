@@ -813,6 +813,233 @@ func aggregateAugmentedQueryVariableSchema() map[string]*schema.Schema {
 	}
 }
 
+// aggregateFilteredQueryVariableSchema defines variables for aggregate_filtered_query (formula monitors).
+func aggregateFilteredQueryVariableSchema() map[string]*schema.Schema {
+	refTableCol := map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "Reference table column name.",
+		},
+		"alias": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Optional alias for the column.",
+		},
+	}
+	computeElem := map[string]*schema.Schema{
+		"aggregation": {
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionEventAggregationFromValue),
+			Description:      "The aggregation methods for compute steps.",
+		},
+		"interval": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Description: "A time interval in milliseconds.",
+		},
+		"metric": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The measurable attribute to compute.",
+		},
+		"name": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The name assigned to this aggregation when multiple aggregations are defined.",
+		},
+	}
+	groupByElem := map[string]*schema.Schema{
+		"facet": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The facet to group by.",
+		},
+		"source": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Identifies which sub-query this facet refers to (for example `filter_query`).",
+		},
+		"limit": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Description: "The number of groups to return.",
+		},
+		"sort": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Sort options for group by.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"aggregation": {
+						Type:             schema.TypeString,
+						Required:         true,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionEventAggregationFromValue),
+						Description:      "The aggregation methods for sorting.",
+					},
+					"metric": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "The metric used for sorting group by results.",
+					},
+					"order": {
+						Type:             schema.TypeString,
+						Optional:         true,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewQuerySortOrderFromValue),
+						Description:      "Direction of sort.",
+					},
+				},
+			},
+		},
+	}
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Name of the query for use in formulas.",
+		},
+		"data_source": {
+			Type:             schema.TypeString,
+			Required:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionAggregateFilteredDataSourceFromValue),
+			Description:      "The data source for aggregate-filtered composite queries. Must be `aggregate_filtered_query`.",
+		},
+		"filter_reference_table": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Reference table filter query. Do not set `filter_event_query` in the same block.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Name of the filter sub-query.",
+					},
+					"data_source": {
+						Type:             schema.TypeString,
+						Required:         true,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionReferenceTableDataSourceFromValue),
+						Description:      "Must be `reference_table`.",
+					},
+					"table_name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Name of the reference table.",
+					},
+					"query_filter": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Optional filter expression for the reference table query.",
+					},
+					"columns": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Columns to retrieve from the reference table.",
+						Elem: &schema.Resource{
+							Schema: refTableCol,
+						},
+					},
+				},
+			},
+		},
+		"filter_event_query": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Events filter query. Do not set `filter_reference_table` in the same block.",
+			Elem: &schema.Resource{
+				Schema: eventQueryVariableSchema(),
+			},
+		},
+		"base_metrics_query": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Metrics base query. Do not set `base_event_query` in the same block.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"data_source": {
+						Type:             schema.TypeString,
+						Required:         true,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionMetricsDataSourceFromValue),
+						Description:      "The data source for metrics queries.",
+					},
+					"name": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "The name of the query for use in formulas.",
+					},
+					"query": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "The metrics query definition.",
+					},
+					"aggregator": {
+						Type:             schema.TypeString,
+						Optional:         true,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionMetricsAggregatorFromValue),
+						Description:      "The aggregation method for metrics queries.",
+					},
+				},
+			},
+		},
+		"base_event_query": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "Events base query. Do not set `base_metrics_query` in the same block.",
+			Elem: &schema.Resource{
+				Schema: eventQueryVariableSchema(),
+			},
+		},
+		"filters": {
+			Type:        schema.TypeList,
+			Required:    true,
+			MinItems:    1,
+			Description: "Filter conditions mapping base query attributes to filter query attributes.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"base_attribute": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Attribute from the base query to filter on.",
+					},
+					"filter_attribute": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Attribute from the filter query to match against.",
+					},
+					"exclude": {
+						Type:        schema.TypeBool,
+						Optional:    true,
+						Default:     false,
+						Description: "When true, exclude matching records instead of including them.",
+					},
+				},
+			},
+		},
+		"compute": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Optional compute aggregations for the aggregate-filtered query.",
+			Elem: &schema.Resource{
+				Schema: computeElem,
+			},
+		},
+		"group_by": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Optional group by options for the aggregate-filtered query.",
+			Elem: &schema.Resource{
+				Schema: groupByElem,
+			},
+		},
+	}
+}
+
 // Monitor specific schema for formula and functions. Should be a strict
 // subset of getFormulaQuerySchema with the appropriate types.
 func getMonitorFormulaQuerySchema() *schema.Schema {
@@ -951,6 +1178,14 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 					Description: "Aggregate-augmented composite query variables (reference table augment joined to a metrics or events base query).",
 					Elem: &schema.Resource{
 						Schema: aggregateAugmentedQueryVariableSchema(),
+					},
+				},
+				"aggregate_filtered_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Aggregate-filtered composite query variables (filter base query results using a reference table or events filter query).",
+					Elem: &schema.Resource{
+						Schema: aggregateFilteredQueryVariableSchema(),
 					},
 				},
 			},
@@ -1161,6 +1396,19 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionAggregateAugmentedQuery(queryMap))
 					}
 				}
+				if query, ok := m["aggregate_filtered_query"]; ok {
+					queries := query.([]interface{})
+					for _, q := range queries {
+						if q == nil {
+							continue
+						}
+						queryMap, ok := q.(map[string]interface{})
+						if !ok {
+							panic("variables.aggregate_filtered_query: expected a map/object but got invalid type")
+						}
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionAggregateFilteredQuery(queryMap))
+					}
+				}
 				o.SetVariables(monitorVariables)
 			}
 		}
@@ -1321,50 +1569,36 @@ func buildEventQueryComputesFromTerraform(computeList []interface{}) []datadogV1
 	return out
 }
 
-func buildMonitorFormulaAndFunctionAggregateAugmentedQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
-	var name string
-	if v, ok := data["name"].(string); ok {
-		name = v
+func buildMonitorReferenceTableQueryDefinitionFromMap(m map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionReferenceTableQueryDefinition {
+	ds := datadogV1.MonitorFormulaAndFunctionReferenceTableDataSource(m["data_source"].(string))
+	ref := datadogV1.NewMonitorFormulaAndFunctionReferenceTableQueryDefinition(ds, m["table_name"].(string))
+	if n, ok := m["name"].(string); ok && n != "" {
+		ref.SetName(n)
 	}
-	dataSource := datadogV1.MonitorFormulaAndFunctionAggregateAugmentedDataSource(data["data_source"].(string))
-
-	var augment datadogV1.MonitorFormulaAndFunctionAggregateAugmentQuery
-	if art, ok := data["augment_reference_table"].([]interface{}); ok && len(art) > 0 && art[0] != nil {
-		m := art[0].(map[string]interface{})
-		ds := datadogV1.MonitorFormulaAndFunctionReferenceTableDataSource(m["data_source"].(string))
-		ref := datadogV1.NewMonitorFormulaAndFunctionReferenceTableQueryDefinition(ds, m["table_name"].(string))
-		if n, ok := m["name"].(string); ok && n != "" {
-			ref.SetName(n)
-		}
-		if qf, ok := m["query_filter"].(string); ok && qf != "" {
-			ref.SetQueryFilter(qf)
-		}
-		if cols, ok := m["columns"].([]interface{}); ok && len(cols) > 0 {
-			outCols := make([]datadogV1.MonitorFormulaAndFunctionReferenceTableColumn, 0, len(cols))
-			for _, c := range cols {
-				if c == nil {
-					continue
-				}
-				cm := c.(map[string]interface{})
-				col := datadogV1.NewMonitorFormulaAndFunctionReferenceTableColumn(cm["name"].(string))
-				if alias, ok := cm["alias"].(string); ok && alias != "" {
-					col.SetAlias(alias)
-				}
-				outCols = append(outCols, *col)
-			}
-			if len(outCols) > 0 {
-				ref.SetColumns(outCols)
-			}
-		}
-		augment = datadogV1.MonitorFormulaAndFunctionReferenceTableQueryDefinitionAsMonitorFormulaAndFunctionAggregateAugmentQuery(ref)
-	} else if aeq, ok := data["augment_event_query"].([]interface{}); ok && len(aeq) > 0 && aeq[0] != nil {
-		ev := buildMonitorFormulaAndFunctionEventQuery(aeq[0].(map[string]interface{}))
-		augment = datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionAggregateAugmentQuery(ev.MonitorFormulaAndFunctionEventQueryDefinition)
-	} else {
-		panic("aggregate_augmented_query: set either augment_reference_table or augment_event_query")
+	if qf, ok := m["query_filter"].(string); ok && qf != "" {
+		ref.SetQueryFilter(qf)
 	}
+	if cols, ok := m["columns"].([]interface{}); ok && len(cols) > 0 {
+		outCols := make([]datadogV1.MonitorFormulaAndFunctionReferenceTableColumn, 0, len(cols))
+		for _, c := range cols {
+			if c == nil {
+				continue
+			}
+			cm := c.(map[string]interface{})
+			col := datadogV1.NewMonitorFormulaAndFunctionReferenceTableColumn(cm["name"].(string))
+			if alias, ok := cm["alias"].(string); ok && alias != "" {
+				col.SetAlias(alias)
+			}
+			outCols = append(outCols, *col)
+		}
+		if len(outCols) > 0 {
+			ref.SetColumns(outCols)
+		}
+	}
+	return ref
+}
 
-	var base datadogV1.MonitorFormulaAndFunctionAggregateBaseQuery
+func buildAggregateBaseQueryFromTerraformMap(data map[string]interface{}, errCtx string) datadogV1.MonitorFormulaAndFunctionAggregateBaseQuery {
 	if bmq, ok := data["base_metrics_query"].([]interface{}); ok && len(bmq) > 0 && bmq[0] != nil {
 		m := bmq[0].(map[string]interface{})
 		mq := datadogV1.NewMonitorFormulaAndFunctionMetricsQueryDefinition(
@@ -1375,16 +1609,36 @@ func buildMonitorFormulaAndFunctionAggregateAugmentedQuery(data map[string]inter
 			mq.SetName(n)
 		}
 		if ag, ok := m["aggregator"].(string); ok && ag != "" {
-			a := datadogV1.MonitorFormulaAndFunctionMetricsAggregator(ag)
-			mq.SetAggregator(a)
+			mq.SetAggregator(datadogV1.MonitorFormulaAndFunctionMetricsAggregator(ag))
 		}
-		base = datadogV1.MonitorFormulaAndFunctionMetricsQueryDefinitionAsMonitorFormulaAndFunctionAggregateBaseQuery(mq)
-	} else if beq, ok := data["base_event_query"].([]interface{}); ok && len(beq) > 0 && beq[0] != nil {
-		ev := buildMonitorFormulaAndFunctionEventQuery(beq[0].(map[string]interface{}))
-		base = datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionAggregateBaseQuery(ev.MonitorFormulaAndFunctionEventQueryDefinition)
-	} else {
-		panic("aggregate_augmented_query: set either base_metrics_query or base_event_query")
+		return datadogV1.MonitorFormulaAndFunctionMetricsQueryDefinitionAsMonitorFormulaAndFunctionAggregateBaseQuery(mq)
 	}
+	if beq, ok := data["base_event_query"].([]interface{}); ok && len(beq) > 0 && beq[0] != nil {
+		ev := buildMonitorFormulaAndFunctionEventQuery(beq[0].(map[string]interface{}))
+		return datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionAggregateBaseQuery(ev.MonitorFormulaAndFunctionEventQueryDefinition)
+	}
+	panic(errCtx + ": set either base_metrics_query or base_event_query")
+}
+
+func buildMonitorFormulaAndFunctionAggregateAugmentedQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	var name string
+	if v, ok := data["name"].(string); ok {
+		name = v
+	}
+	dataSource := datadogV1.MonitorFormulaAndFunctionAggregateAugmentedDataSource(data["data_source"].(string))
+
+	var augment datadogV1.MonitorFormulaAndFunctionAggregateAugmentQuery
+	if art, ok := data["augment_reference_table"].([]interface{}); ok && len(art) > 0 && art[0] != nil {
+		ref := buildMonitorReferenceTableQueryDefinitionFromMap(art[0].(map[string]interface{}))
+		augment = datadogV1.MonitorFormulaAndFunctionReferenceTableQueryDefinitionAsMonitorFormulaAndFunctionAggregateAugmentQuery(ref)
+	} else if aeq, ok := data["augment_event_query"].([]interface{}); ok && len(aeq) > 0 && aeq[0] != nil {
+		ev := buildMonitorFormulaAndFunctionEventQuery(aeq[0].(map[string]interface{}))
+		augment = datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionAggregateAugmentQuery(ev.MonitorFormulaAndFunctionEventQueryDefinition)
+	} else {
+		panic("aggregate_augmented_query: set either augment_reference_table or augment_event_query")
+	}
+
+	base := buildAggregateBaseQueryFromTerraformMap(data, "aggregate_augmented_query")
 
 	jcList := data["join_condition"].([]interface{})
 	jc := jcList[0].(map[string]interface{})
@@ -1414,6 +1668,62 @@ func buildMonitorFormulaAndFunctionAggregateAugmentedQuery(data map[string]inter
 		def.SetName(name)
 	}
 	out := datadogV1.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(def)
+	return &out
+}
+
+func buildMonitorFormulaAndFunctionAggregateFilteredQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	var name string
+	if v, ok := data["name"].(string); ok {
+		name = v
+	}
+	dataSource := datadogV1.MonitorFormulaAndFunctionAggregateFilteredDataSource(data["data_source"].(string))
+
+	var filterQuery datadogV1.MonitorFormulaAndFunctionAggregateFilterQuery
+	if frt, ok := data["filter_reference_table"].([]interface{}); ok && len(frt) > 0 && frt[0] != nil {
+		ref := buildMonitorReferenceTableQueryDefinitionFromMap(frt[0].(map[string]interface{}))
+		filterQuery = datadogV1.MonitorFormulaAndFunctionReferenceTableQueryDefinitionAsMonitorFormulaAndFunctionAggregateFilterQuery(ref)
+	} else if feq, ok := data["filter_event_query"].([]interface{}); ok && len(feq) > 0 && feq[0] != nil {
+		ev := buildMonitorFormulaAndFunctionEventQuery(feq[0].(map[string]interface{}))
+		filterQuery = datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionAggregateFilterQuery(ev.MonitorFormulaAndFunctionEventQueryDefinition)
+	} else {
+		panic("aggregate_filtered_query: set either filter_reference_table or filter_event_query")
+	}
+
+	base := buildAggregateBaseQueryFromTerraformMap(data, "aggregate_filtered_query")
+
+	filtersList := data["filters"].([]interface{})
+	filters := make([]datadogV1.MonitorFormulaAndFunctionAggregateQueryFilter, 0, len(filtersList))
+	for _, f := range filtersList {
+		if f == nil {
+			continue
+		}
+		fm := f.(map[string]interface{})
+		fl := datadogV1.NewMonitorFormulaAndFunctionAggregateQueryFilter(
+			fm["base_attribute"].(string),
+			fm["filter_attribute"].(string),
+		)
+		if ex, ok := fm["exclude"].(bool); ok && ex {
+			fl.SetExclude(ex)
+		}
+		filters = append(filters, *fl)
+	}
+
+	def := datadogV1.NewMonitorFormulaAndFunctionAggregateFilteredQueryDefinition(
+		base,
+		dataSource,
+		filterQuery,
+		filters,
+	)
+	if name != "" {
+		def.SetName(name)
+	}
+	if computeList, ok := data["compute"].([]interface{}); ok && len(computeList) > 0 {
+		def.SetCompute(buildEventQueryComputesFromTerraform(computeList))
+	}
+	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+		def.SetGroupBy(buildEventQueryGroupBysFromTerraform(terraformGroupBys))
+	}
+	out := datadogV1.MonitorFormulaAndFunctionAggregateFilteredQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(def)
 	return &out
 }
 
@@ -1953,6 +2263,34 @@ func terraformEventQueryDefinitionToMap(ev *datadogV1.MonitorFormulaAndFunctionE
 	return terraformQuery
 }
 
+func terraformReferenceTableQueryDefinitionToMap(ref *datadogV1.MonitorFormulaAndFunctionReferenceTableQueryDefinition) map[string]interface{} {
+	if ref == nil {
+		return map[string]interface{}{}
+	}
+	m := map[string]interface{}{
+		"data_source": ref.GetDataSource(),
+		"table_name":  ref.GetTableName(),
+	}
+	if n, ok := ref.GetNameOk(); ok {
+		m["name"] = n
+	}
+	if qf, ok := ref.GetQueryFilterOk(); ok {
+		m["query_filter"] = qf
+	}
+	if cols, ok := ref.GetColumnsOk(); ok && len(*cols) > 0 {
+		colList := make([]map[string]interface{}, 0, len(*cols))
+		for _, c := range *cols {
+			cm := map[string]interface{}{"name": c.GetName()}
+			if alias, ok := c.GetAliasOk(); ok {
+				cm["alias"] = alias
+			}
+			colList = append(colList, cm)
+		}
+		m["columns"] = colList
+	}
+	return m
+}
+
 func terraformAggregateAugmentedDefinitionToMap(def *datadogV1.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition) map[string]interface{} {
 	out := map[string]interface{}{}
 	if def == nil {
@@ -1965,29 +2303,7 @@ func terraformAggregateAugmentedDefinitionToMap(def *datadogV1.MonitorFormulaAnd
 
 	aq := def.GetAugmentQuery()
 	if aq.MonitorFormulaAndFunctionReferenceTableQueryDefinition != nil {
-		ref := aq.MonitorFormulaAndFunctionReferenceTableQueryDefinition
-		m := map[string]interface{}{
-			"data_source": ref.GetDataSource(),
-			"table_name":  ref.GetTableName(),
-		}
-		if n, ok := ref.GetNameOk(); ok {
-			m["name"] = n
-		}
-		if qf, ok := ref.GetQueryFilterOk(); ok {
-			m["query_filter"] = qf
-		}
-		if cols, ok := ref.GetColumnsOk(); ok && len(*cols) > 0 {
-			colList := make([]map[string]interface{}, 0, len(*cols))
-			for _, c := range *cols {
-				cm := map[string]interface{}{"name": c.GetName()}
-				if alias, ok := c.GetAliasOk(); ok {
-					cm["alias"] = alias
-				}
-				colList = append(colList, cm)
-			}
-			m["columns"] = colList
-		}
-		out["augment_reference_table"] = []interface{}{m}
+		out["augment_reference_table"] = []interface{}{terraformReferenceTableQueryDefinitionToMap(aq.MonitorFormulaAndFunctionReferenceTableQueryDefinition)}
 	} else if aq.MonitorFormulaAndFunctionEventQueryDefinition != nil {
 		out["augment_event_query"] = []interface{}{terraformEventQueryDefinitionToMap(aq.MonitorFormulaAndFunctionEventQueryDefinition)}
 	}
@@ -2068,15 +2384,116 @@ func terraformAggregateAugmentedDefinitionToMap(def *datadogV1.MonitorFormulaAnd
 	return out
 }
 
+func terraformAggregateFilteredDefinitionToMap(def *datadogV1.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition) map[string]interface{} {
+	out := map[string]interface{}{}
+	if def == nil {
+		return out
+	}
+	if n, ok := def.GetNameOk(); ok {
+		out["name"] = *n
+	}
+	out["data_source"] = def.GetDataSource()
+
+	fq := def.GetFilterQuery()
+	if fq.MonitorFormulaAndFunctionReferenceTableQueryDefinition != nil {
+		out["filter_reference_table"] = []interface{}{terraformReferenceTableQueryDefinitionToMap(fq.MonitorFormulaAndFunctionReferenceTableQueryDefinition)}
+	} else if fq.MonitorFormulaAndFunctionEventQueryDefinition != nil {
+		out["filter_event_query"] = []interface{}{terraformEventQueryDefinitionToMap(fq.MonitorFormulaAndFunctionEventQueryDefinition)}
+	}
+
+	bq := def.GetBaseQuery()
+	if bq.MonitorFormulaAndFunctionMetricsQueryDefinition != nil {
+		mq := bq.MonitorFormulaAndFunctionMetricsQueryDefinition
+		m := map[string]interface{}{
+			"data_source": mq.GetDataSource(),
+			"query":       mq.GetQuery(),
+		}
+		if n, ok := mq.GetNameOk(); ok {
+			m["name"] = n
+		}
+		if ag, ok := mq.GetAggregatorOk(); ok {
+			m["aggregator"] = ag
+		}
+		out["base_metrics_query"] = []interface{}{m}
+	} else if bq.MonitorFormulaAndFunctionEventQueryDefinition != nil {
+		out["base_event_query"] = []interface{}{terraformEventQueryDefinitionToMap(bq.MonitorFormulaAndFunctionEventQueryDefinition)}
+	}
+
+	filters := def.GetFilters()
+	tfFilters := make([]map[string]interface{}, 0, len(filters))
+	for _, f := range filters {
+		fm := map[string]interface{}{
+			"base_attribute":   f.GetBaseAttribute(),
+			"filter_attribute": f.GetFilterAttribute(),
+			"exclude":          f.GetExclude(),
+		}
+		tfFilters = append(tfFilters, fm)
+	}
+	out["filters"] = tfFilters
+
+	if computes, ok := def.GetComputeOk(); ok && len(*computes) > 0 {
+		tfComputes := make([]map[string]interface{}, 0, len(*computes))
+		for _, c := range *computes {
+			cm := map[string]interface{}{"aggregation": c.GetAggregation()}
+			if interval, ok := c.GetIntervalOk(); ok {
+				cm["interval"] = interval
+			}
+			if metric, ok := c.GetMetricOk(); ok {
+				cm["metric"] = metric
+			}
+			if n, ok := c.GetNameOk(); ok {
+				cm["name"] = n
+			}
+			tfComputes = append(tfComputes, cm)
+		}
+		out["compute"] = tfComputes
+	}
+
+	if groups, ok := def.GetGroupByOk(); ok && len(*groups) > 0 {
+		terraformGroupBys := make([]map[string]interface{}, len(*groups))
+		for i, groupBy := range *groups {
+			tg := map[string]interface{}{"facet": groupBy.GetFacet()}
+			if groupBy.AdditionalProperties != nil {
+				if s, ok := groupBy.AdditionalProperties["source"].(string); ok && s != "" {
+					tg["source"] = s
+				}
+			}
+			if v, ok := groupBy.GetLimitOk(); ok {
+				tg["limit"] = *v
+			}
+			if v, ok := groupBy.GetSortOk(); ok {
+				terraformSort := map[string]interface{}{}
+				if metric, ok := v.GetMetricOk(); ok {
+					terraformSort["metric"] = metric
+				}
+				if order, ok := v.GetOrderOk(); ok {
+					terraformSort["order"] = order
+				}
+				if aggregation, ok := v.GetAggregationOk(); ok {
+					terraformSort["aggregation"] = aggregation
+				}
+				tg["sort"] = []map[string]interface{}{terraformSort}
+			}
+			terraformGroupBys[i] = tg
+		}
+		out["group_by"] = terraformGroupBys
+	}
+
+	return out
+}
+
 func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
 	root := map[string]interface{}{}
 	var eventQueries []map[string]interface{}
 	var aggAug []map[string]interface{}
+	var aggFiltered []map[string]interface{}
 	for _, query := range datadogVariables {
 		if query.MonitorFormulaAndFunctionEventQueryDefinition != nil {
 			eventQueries = append(eventQueries, terraformEventQueryDefinitionToMap(query.MonitorFormulaAndFunctionEventQueryDefinition))
 		} else if query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil {
 			aggAug = append(aggAug, terraformAggregateAugmentedDefinitionToMap(query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition))
+		} else if query.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition != nil {
+			aggFiltered = append(aggFiltered, terraformAggregateFilteredDefinitionToMap(query.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition))
 		}
 	}
 	if len(eventQueries) > 0 {
@@ -2084,6 +2501,9 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	}
 	if len(aggAug) > 0 {
 		root["aggregate_augmented_query"] = aggAug
+	}
+	if len(aggFiltered) > 0 {
+		root["aggregate_filtered_query"] = aggFiltered
 	}
 	if len(root) == 0 {
 		return nil
