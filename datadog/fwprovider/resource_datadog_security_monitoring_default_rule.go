@@ -27,8 +27,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &securityMonitoringDefaultRuleResource{}
-	_ resource.ResourceWithImportState = &securityMonitoringDefaultRuleResource{}
+	_ resource.ResourceWithConfigure    = &securityMonitoringDefaultRuleResource{}
+	_ resource.ResourceWithImportState  = &securityMonitoringDefaultRuleResource{}
+	_ resource.ResourceWithUpgradeState = &securityMonitoringDefaultRuleResource{}
 )
 
 type securityMonitoringDefaultRuleResource struct {
@@ -94,7 +95,15 @@ func (r *securityMonitoringDefaultRuleResource) Metadata(_ context.Context, requ
 }
 
 func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
-	response.Schema = schema.Schema{
+	response.Schema = securityMonitoringDefaultRuleSchema(1)
+}
+
+// securityMonitoringDefaultRuleSchema returns the versioned schema. Version 0 is
+// the SDKv2-era schema (same shape); version 1 is the current FW schema after
+// migration. Keeping them in one function prevents attribute drift between versions.
+func securityMonitoringDefaultRuleSchema(version int64) schema.Schema {
+	return schema.Schema{
+		Version:     version,
 		Description: "Provides a Datadog Security Monitoring Rule API resource for default rules. It can only be imported, you can't create a default rule.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
@@ -291,6 +300,32 @@ func (r *securityMonitoringDefaultRuleResource) Schema(_ context.Context, _ reso
 	}
 }
 
+// UpgradeState migrates state written by SDKv2 (schema version 0) to version 1.
+// SDKv2 declared case/query/options as Optional+Computed and auto-populated all
+// API-returned blocks into state even when the user didn't declare them. FW blocks
+// cannot be Computed, so those extra rows must be stripped here. After the upgrade,
+// Read will repopulate only the blocks whose statuses/indices are present in the
+// user's actual config (via the prior-state filter in Read).
+func (r *securityMonitoringDefaultRuleResource) UpgradeState(_ context.Context) map[int64]resource.StateUpgrader {
+	v0 := securityMonitoringDefaultRuleSchema(0)
+	return map[int64]resource.StateUpgrader{
+		0: {
+			PriorSchema: &v0,
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				var state securityMonitoringDefaultRuleResourceModel
+				resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Cases = nil
+				state.Options = nil
+				state.Queries = nil
+				resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			},
+		},
+	}
+}
+
 func securityMonitoringDefaultRuleDeprecationWarning(rule *datadogV2.SecurityMonitoringStandardRuleResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
 	if deprecationTimestampMs, ok := rule.GetDeprecationDateOk(); ok {
@@ -337,13 +372,29 @@ func (r *securityMonitoringDefaultRuleResource) Read(ctx context.Context, reques
 		return
 	}
 
+	priorCases := state.Cases
 	priorOptions := state.Options
 	priorCustomMessage := state.CustomMessage
 	priorCustomName := state.CustomName
 	priorQueries := state.Queries
 
-	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, rule, priorCustomMessage, priorCustomName, priorQueries)...)
+	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, rule, priorCustomMessage, priorCustomName, priorQueries, priorCases)...)
 
+	// Status-based filter for case: keep only API cases whose status appeared
+	// in the prior state. If prior was empty (fresh import or user never declared
+	// cases), set to nil so state matches a no-block config.
+	state.Cases = filterCasesByPriorStatuses(state.Cases, priorCases)
+
+	// Index-based truncation for query: keep only as many API queries as the
+	// prior state had. Queries are positional; the user must declare all of
+	// them to touch any, so prior count equals what the user declared.
+	if len(priorQueries) == 0 {
+		state.Queries = nil
+	} else if len(state.Queries) > len(priorQueries) {
+		state.Queries = state.Queries[:len(priorQueries)]
+	}
+
+	// Options: keep only when prior state had an options block.
 	if len(priorOptions) == 0 {
 		state.Options = nil
 	}
@@ -352,14 +403,38 @@ func (r *securityMonitoringDefaultRuleResource) Read(ctx context.Context, reques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
+// filterCasesByPriorStatuses returns only the API cases whose status appears in
+// priorCases. When priorCases is empty, returns nil (no cases in state), which
+// matches a config with no case blocks declared.
+func filterCasesByPriorStatuses(apiCases []defaultRuleCaseModel, priorCases []defaultRuleCaseModel) []defaultRuleCaseModel {
+	if len(priorCases) == 0 {
+		return nil
+	}
+	priorStatuses := make(map[string]bool, len(priorCases))
+	for _, c := range priorCases {
+		priorStatuses[c.Status.ValueString()] = true
+	}
+	var filtered []defaultRuleCaseModel
+	for _, c := range apiCases {
+		if priorStatuses[c.Status.ValueString()] {
+			filtered = append(filtered, c)
+		}
+	}
+	return filtered
+}
+
 // updateDefaultRuleResourceDataFromResponse populates state from the API response.
-// Most fields are read directly from the API. custom_message and custom_name carry
-// forward only when the reference holds "" (the explicit-clear sentinel): the API
-// omits these fields after they are cleared, so without the carry-forward a config
-// value of "" would cause a perpetual diff ("" → null on every plan). Any other
-// non-empty prior value is NOT carried forward so that external API changes surface
-// as plan diffs. custom_query_extension follows the same rule inside extractDefaultRuleQueries.
-func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *securityMonitoringDefaultRuleResourceModel, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse, referenceCustomMessage, referenceCustomName types.String, referenceQueries []defaultRuleQueryModel) diag.Diagnostics {
+// "" sentinel carry-forwards for custom_message, custom_name, custom_query_extension,
+// and case notifications prevent perpetual diffs when the API omits a field after
+// it was explicitly cleared by setting it to "".
+func updateDefaultRuleResourceDataFromResponse(
+	ctx context.Context,
+	state *securityMonitoringDefaultRuleResourceModel,
+	ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse,
+	referenceCustomMessage, referenceCustomName types.String,
+	referenceQueries []defaultRuleQueryModel,
+	referenceCases []defaultRuleCaseModel,
+) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	state.Enabled = types.BoolValue(ruleResponse.GetIsEnabled())
@@ -380,7 +455,7 @@ func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *secur
 	}
 
 	var caseDiags diag.Diagnostics
-	state.Cases, caseDiags = extractDefaultRuleCases(ctx, ruleResponse.GetCases())
+	state.Cases, caseDiags = extractDefaultRuleCases(ctx, ruleResponse.GetCases(), referenceCases)
 	diags.Append(caseDiags...)
 
 	if filters, ok := ruleResponse.GetFiltersOk(); ok {
@@ -412,27 +487,53 @@ func updateDefaultRuleResourceDataFromResponse(ctx context.Context, state *secur
 	return diags
 }
 
-// extractDefaultRuleCases builds case state from the API response. status,
-// notifications, and custom_status all come directly from the API. custom_status
-// is present in the response when set and omitted when not set
-func extractDefaultRuleCases(ctx context.Context, responseRuleCases []datadogV2.SecurityMonitoringRuleCase) ([]defaultRuleCaseModel, diag.Diagnostics) {
+// extractDefaultRuleCases builds case state from the API response.
+//
+// notifications carry-forward: when the API returns empty notifications ([]) and
+// the matching prior case had null Notifications (user never declared the field),
+// we restore null so the plan value (null) equals state (null) and no perpetual
+// diff occurs. If the prior held an explicit empty list, we keep the empty list so
+// the user's explicit "= []" is honoured.
+func extractDefaultRuleCases(ctx context.Context, responseRuleCases []datadogV2.SecurityMonitoringRuleCase, referenceCases []defaultRuleCaseModel) ([]defaultRuleCaseModel, diag.Diagnostics) {
 	var diags diag.Diagnostics
+
+	refByStatus := make(map[string]defaultRuleCaseModel, len(referenceCases))
+	for _, rc := range referenceCases {
+		refByStatus[rc.Status.ValueString()] = rc
+	}
+
 	stateCases := make([]defaultRuleCaseModel, len(responseRuleCases))
 	for idx, apiCase := range responseRuleCases {
 		stateCase := defaultRuleCaseModel{
 			Status:        types.StringValue(string(apiCase.GetStatus())),
 			Notifications: types.ListNull(types.StringType),
 		}
+
 		if rawCS, ok := apiCase.GetCustomStatusOk(); ok && rawCS != nil {
 			if v := string(*rawCS); v != "" {
 				stateCase.CustomStatus = types.StringValue(v)
 			}
 		}
+
 		if notifications, ok := apiCase.GetNotificationsOk(); ok {
-			var listDiags diag.Diagnostics
-			stateCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notifications)
-			diags.Append(listDiags...)
+			if len(*notifications) == 0 {
+				// API returned empty. Carry forward null when prior was null to
+				// prevent a null ↔ [] perpetual diff.
+				ref, hasRef := refByStatus[string(apiCase.GetStatus())]
+				if hasRef && ref.Notifications.IsNull() {
+					stateCase.Notifications = types.ListNull(types.StringType)
+				} else {
+					var listDiags diag.Diagnostics
+					stateCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notifications)
+					diags.Append(listDiags...)
+				}
+			} else {
+				var listDiags diag.Diagnostics
+				stateCase.Notifications, listDiags = types.ListValueFrom(ctx, types.StringType, *notifications)
+				diags.Append(listDiags...)
+			}
 		}
+
 		stateCases[idx] = stateCase
 	}
 	return stateCases, diags
@@ -582,13 +683,42 @@ func (r *securityMonitoringDefaultRuleResource) Update(ctx context.Context, requ
 		updatedRule = updateResponse.SecurityMonitoringStandardRuleResponse
 	}
 
+	// Use plan as the source of truth for blocks so that post-apply state equals
+	// plan exactly — the FW consistency requirement. Only scalar fields that the
+	// API owns are overridden from the API response.
 	state := plan
 	state.ID = types.StringValue(ruleID)
 
-	response.Diagnostics.Append(updateDefaultRuleResourceDataFromResponse(ctx, &state, updatedRule, plan.CustomMessage, plan.CustomName, plan.Queries)...)
-	if len(plan.Options) == 0 {
-		state.Options = nil
+	state.Enabled = types.BoolValue(updatedRule.GetIsEnabled())
+
+	if ruleType, ok := updatedRule.GetTypeOk(); ok {
+		state.Type = types.StringValue(string(*ruleType))
 	}
+
+	if customMessage, ok := updatedRule.GetCustomMessageOk(); ok {
+		state.CustomMessage = types.StringValue(*customMessage)
+	} else if plan.CustomMessage == types.StringValue("") {
+		state.CustomMessage = types.StringValue("")
+	} else {
+		state.CustomMessage = types.StringNull()
+	}
+	if customName, ok := updatedRule.GetCustomNameOk(); ok {
+		state.CustomName = types.StringValue(*customName)
+	} else if plan.CustomName == types.StringValue("") {
+		state.CustomName = types.StringValue("")
+	} else {
+		state.CustomName = types.StringNull()
+	}
+
+	var tagsDiags diag.Diagnostics
+	state.CustomTags, tagsDiags = extractDefaultRuleCustomTags(ctx, updatedRule.GetTags(), updatedRule.GetDefaultTags())
+	response.Diagnostics.Append(tagsDiags...)
+
+	if filters, ok := updatedRule.GetFiltersOk(); ok {
+		state.Filters = extractDefaultRuleFilters(*filters)
+	}
+
+	// Blocks (Cases, Queries, Options) stay verbatim from plan (set via state := plan above).
 
 	response.Diagnostics.Append(securityMonitoringDefaultRuleDeprecationWarning(updatedRule)...)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -616,8 +746,6 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 		updatedRuleCase[i] = ruleCase
 
 		if planCase, ok := findRuleCaseForStatus(plan.Cases, ruleCase.GetStatus()); ok {
-
-			// Update rule case notifications when rule added to terraform configuration
 
 			matchedCases++
 
@@ -648,23 +776,15 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 				shouldUpdate = true
 			}
 
-		} else {
-
-			// Clear rule case notifications when rule case removed from terraform configuration
-
-			emptyNotifications := []string{}
-			if !stringSliceEquals(emptyNotifications, ruleCase.GetNotifications()) {
-				modifiedCases++
-				shouldUpdate = true
-				updatedRuleCase[i].Notifications = emptyNotifications
-			}
 		}
+		// Un-declared cases are left identity (no notification changes sent to API) —
+		// the block is the "I manage this case" toggle. Within a declared case, an
+		// absent or empty notifications field clears them via the API (handled above).
 	}
 
 	if !isSignalCorrelation && len(plan.Queries) > 0 {
 		payloadQueries := make([]datadogV2.SecurityMonitoringRuleQuery, len(plan.Queries))
 		for idx, planQuery := range plan.Queries {
-			// For default rules, merge with existing query to preserve unspecified fields
 			var existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery
 			if idx < len(currentState.GetQueries()) {
 				existingQuery = &currentState.GetQueries()[idx]
@@ -676,15 +796,11 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 		}
 		payload.SetQueries(payloadQueries)
 
-		// Compare queries including custom_query_extension
 		if !compareQueries(currentState.GetQueries(), payloadQueries) {
 			shouldUpdate = true
 		}
 	}
 
-	// custom_message: send whenever plan has a known value (including ""),
-	// so removing the user override propagates to the API.
-	// When null (not set in config), explicitly clear any existing value.
 	if !plan.CustomMessage.IsNull() && !plan.CustomMessage.IsUnknown() {
 		customMessage := plan.CustomMessage.ValueString()
 		payload.SetCustomMessage(customMessage)
@@ -696,7 +812,6 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 			shouldUpdate = true
 		}
 	} else if _, ok := currentState.GetCustomMessageOk(); ok {
-		// config removed custom_message — clear it in the API
 		payload.SetCustomMessage("")
 		shouldUpdate = true
 	}
@@ -712,13 +827,11 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 			shouldUpdate = true
 		}
 	} else if _, ok := currentState.GetCustomNameOk(); ok {
-		// config removed custom_name — clear it in the API
 		payload.SetCustomName("")
 		shouldUpdate = true
 	}
 
 	if matchedCases < len(plan.Cases) {
-		// Enable partial state so that we don't persist the changes
 		diags.AddError(
 			"invalid case",
 			"attempted to update notifications for non-existing case for rule "+currentState.GetId(),
@@ -807,7 +920,6 @@ func buildUpdateDefaultRuleQuery(planQuery *defaultRuleQueryModel, existingQuery
 		}
 	}
 
-	// custom_query_extension is the only writable field. null means removed from config → clear.
 	if !planQuery.CustomQueryExtension.IsNull() && !planQuery.CustomQueryExtension.IsUnknown() {
 		payloadQuery.SetCustomQueryExtension(planQuery.CustomQueryExtension.ValueString())
 	} else {
@@ -819,8 +931,7 @@ func buildUpdateDefaultRuleQuery(planQuery *defaultRuleQueryModel, existingQuery
 }
 
 // compareQueries reports whether the query payloads represent no change.
-// Only custom_query_extension is writable on default rules; all other fields
-// are always echoed back from the API, so only that field needs comparison.
+// Only custom_query_extension is writable on default rules.
 func compareQueries(currentQueries []datadogV2.SecurityMonitoringStandardRuleQuery, payloadQueries []datadogV2.SecurityMonitoringRuleQuery) bool {
 	if len(currentQueries) != len(payloadQueries) {
 		return false
@@ -881,7 +992,6 @@ func compareOptions(currentOptions, payloadOptions *datadogV2.SecurityMonitoring
 	if currentOptions == nil || payloadOptions == nil {
 		return false
 	}
-	// Compare decrease_criticality_based_on_env
 	return currentOptions.GetDecreaseCriticalityBasedOnEnv() == payloadOptions.GetDecreaseCriticalityBasedOnEnv()
 }
 
