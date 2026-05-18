@@ -1,0 +1,187 @@
+package test
+
+import (
+	"context"
+	"fmt"
+	"testing"
+
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+const databricksTestIntegration = "databricks"
+
+func TestAccIntegrationDatabricksAccountOAuth(t *testing.T) {
+	t.Parallel()
+	if !isReplaying() {
+		t.Skip("This test is replay only")
+	}
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	resourceName := "datadog_integration_databricks_account.oauth"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationDatabricksAccountDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationDatabricksAccountOAuth(uniq, true, "0 * * * *"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationDatabricksAccountExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", uniq),
+					resource.TestCheckResourceAttr(resourceName, "workspace_url", "https://example.cloud.databricks.com"),
+					resource.TestCheckResourceAttr(resourceName, "djm_enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "ccm_enabled", "false"),
+					resource.TestCheckResourceAttr(resourceName, "do_crawlers_cron", "0 * * * *"),
+					resource.TestCheckResourceAttr(resourceName, "auth_config.oauth.client_id", "client-id-123"),
+					resource.TestCheckResourceAttr(resourceName, "auth_config.oauth.databricks_account_id", "11111111-2222-3333-4444-555555555555"),
+				),
+			},
+			{
+				// Toggle djm_enabled off and change the cron to verify update + drift.
+				Config: testAccCheckDatadogIntegrationDatabricksAccountOAuth(uniq, false, "0 0 * * *"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationDatabricksAccountExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "djm_enabled", "false"),
+					resource.TestCheckResourceAttr(resourceName, "do_crawlers_cron", "0 0 * * *"),
+				),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+				// Secrets are never returned by the API, so they cannot appear in
+				// imported state. Same for the auth_config.oauth block — without
+				// the secret we cannot reconstruct it; the user must re-declare.
+				ImportStateVerifyIgnore: []string{
+					"auth_config",
+					"dd_api_key_secret",
+				},
+			},
+		},
+	})
+}
+
+func TestAccIntegrationDatabricksAccountPat(t *testing.T) {
+	t.Parallel()
+	if !isReplaying() {
+		t.Skip("This test is replay only")
+	}
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	resourceName := "datadog_integration_databricks_account.pat"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationDatabricksAccountDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationDatabricksAccountPat(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationDatabricksAccountExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", uniq),
+					resource.TestCheckResourceAttr(resourceName, "workspace_url", "https://example.cloud.databricks.com"),
+					resource.TestCheckResourceAttr(resourceName, "auth_config.pat.token", "dapi-test-token"),
+					resource.TestCheckResourceAttr(resourceName, "djm_enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "serverless_jobs_enabled", "true"),
+				),
+			},
+			{
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"auth_config"},
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogIntegrationDatabricksAccountOAuth(uniq string, djmEnabled bool, cron string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_databricks_account" "oauth" {
+    name          = "%s"
+    workspace_url = "https://example.cloud.databricks.com"
+
+    auth_config {
+        oauth {
+            client_id             = "client-id-123"
+            client_secret         = "client-secret-456"
+            databricks_account_id = "11111111-2222-3333-4444-555555555555"
+        }
+    }
+
+    djm_enabled      = %t
+    do_crawlers_cron = "%s"
+}`, uniq, djmEnabled, cron)
+}
+
+func testAccCheckDatadogIntegrationDatabricksAccountPat(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_databricks_account" "pat" {
+    name          = "%s"
+    workspace_url = "https://example.cloud.databricks.com"
+
+    auth_config {
+        pat {
+            token = "dapi-test-token"
+        }
+    }
+}`, uniq)
+}
+
+func testAccCheckDatadogIntegrationDatabricksAccountDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		return integrationDatabricksAccountDestroyHelper(auth, s, apiInstances)
+	}
+}
+
+func integrationDatabricksAccountDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	return utils.Retry(2, 10, func() error {
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_integration_databricks_account" {
+				continue
+			}
+			id := r.Primary.ID
+
+			_, httpResp, err := apiInstances.GetWebIntegrationsApiV2().GetWebIntegrationAccount(auth, databricksTestIntegration, id)
+			if err != nil {
+				if httpResp != nil && httpResp.StatusCode == 404 {
+					return nil
+				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving databricks account: %s", err)}
+			}
+			return &utils.RetryableError{Prob: "databricks account still exists"}
+		}
+		return nil
+	})
+}
+
+func testAccCheckDatadogIntegrationDatabricksAccountExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		return integrationDatabricksAccountExistsHelper(auth, s, apiInstances)
+	}
+}
+
+func integrationDatabricksAccountExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_integration_databricks_account" {
+			continue
+		}
+		id := r.Primary.ID
+
+		_, httpResp, err := apiInstances.GetWebIntegrationsApiV2().GetWebIntegrationAccount(auth, databricksTestIntegration, id)
+		if err != nil {
+			return utils.TranslateClientError(err, httpResp, "error retrieving databricks account")
+		}
+	}
+	return nil
+}
