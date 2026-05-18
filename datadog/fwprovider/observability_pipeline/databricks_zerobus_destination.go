@@ -16,10 +16,10 @@ type DatabricksZerobusAuthModel struct {
 
 // DatabricksZerobusDestinationModel represents the Terraform model for the DatabricksZerobus destination.
 type DatabricksZerobusDestinationModel struct {
-	IngestionEndpoint    types.String                 `tfsdk:"ingestion_endpoint"`
-	TableName            types.String                 `tfsdk:"table_name"`
-	UnityCatalogEndpoint types.String                 `tfsdk:"unity_catalog_endpoint"`
-	Auth                 []DatabricksZerobusAuthModel `tfsdk:"auth"`
+	IngestionEndpointKey    types.String                 `tfsdk:"ingestion_endpoint_key"`
+	TableName               types.String                 `tfsdk:"table_name"`
+	UnityCatalogEndpointKey types.String                 `tfsdk:"unity_catalog_endpoint_key"`
+	Auth                    []DatabricksZerobusAuthModel `tfsdk:"auth"`
 }
 
 // DatabricksZerobusDestinationSchema returns the schema for the DatabricksZerobus destination.
@@ -28,18 +28,18 @@ func DatabricksZerobusDestinationSchema() schema.ListNestedBlock {
 		Description: "The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
-				"ingestion_endpoint": schema.StringAttribute{
-					Required:    true,
-					Description: "The Databricks Zerobus ingestion endpoint URL.",
-				},
+			"ingestion_endpoint_key": schema.StringAttribute{
+				Optional:    true,
+				Description: "The name of the secret or environment variable holding the Databricks Zerobus ingestion endpoint URL.",
+			},
 				"table_name": schema.StringAttribute{
 					Required:    true,
 					Description: "The name of the Databricks table to ingest logs into.",
 				},
-				"unity_catalog_endpoint": schema.StringAttribute{
-					Required:    true,
-					Description: "The Databricks Unity Catalog endpoint URL.",
-				},
+			"unity_catalog_endpoint_key": schema.StringAttribute{
+				Optional:    true,
+				Description: "The name of the secret or environment variable holding the Databricks Unity Catalog endpoint URL.",
+			},
 			},
 			Blocks: map[string]schema.Block{
 				"auth": schema.ListNestedBlock{
@@ -71,9 +71,13 @@ func ExpandDatabricksZerobusDestination(ctx context.Context, id string, inputs t
 	inputs.ElementsAs(ctx, &inputsList, false)
 	dest.SetInputs(inputsList)
 
-	dest.SetIngestionEndpoint(src.IngestionEndpoint.ValueString())
+	if !src.IngestionEndpointKey.IsNull() && !src.IngestionEndpointKey.IsUnknown() {
+		dest.SetIngestionEndpointKey(src.IngestionEndpointKey.ValueString())
+	}
 	dest.SetTableName(src.TableName.ValueString())
-	dest.SetUnityCatalogEndpoint(src.UnityCatalogEndpoint.ValueString())
+	if !src.UnityCatalogEndpointKey.IsNull() && !src.UnityCatalogEndpointKey.IsUnknown() {
+		dest.SetUnityCatalogEndpointKey(src.UnityCatalogEndpointKey.ValueString())
+	}
 
 	if len(src.Auth) > 0 {
 		auth := datadogV2.NewObservabilityPipelineDatabricksZerobusDestinationAuthWithDefaults()
@@ -96,9 +100,19 @@ func FlattenDatabricksZerobusDestination(ctx context.Context, src *datadogV2.Obs
 	}
 
 	model := &DatabricksZerobusDestinationModel{
-		IngestionEndpoint:    types.StringValue(src.GetIngestionEndpoint()),
-		TableName:            types.StringValue(src.GetTableName()),
-		UnityCatalogEndpoint: types.StringValue(src.GetUnityCatalogEndpoint()),
+		TableName: types.StringValue(src.GetTableName()),
+	}
+
+	if v, ok := src.GetIngestionEndpointKeyOk(); ok {
+		model.IngestionEndpointKey = types.StringValue(*v)
+	} else {
+		model.IngestionEndpointKey = types.StringNull()
+	}
+
+	if v, ok := src.GetUnityCatalogEndpointKeyOk(); ok {
+		model.UnityCatalogEndpointKey = types.StringValue(*v)
+	} else {
+		model.UnityCatalogEndpointKey = types.StringNull()
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {
