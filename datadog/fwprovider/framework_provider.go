@@ -611,6 +611,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateWebIntegrationAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteWebIntegrationAccount", true)
+
 	// Enable Logs Restriction Queries
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateRestrictionQuery", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetRestrictionQuery", true)
