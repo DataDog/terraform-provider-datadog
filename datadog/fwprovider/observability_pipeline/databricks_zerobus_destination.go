@@ -28,18 +28,18 @@ func DatabricksZerobusDestinationSchema() schema.ListNestedBlock {
 		Description: "The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
-			"ingestion_endpoint_key": schema.StringAttribute{
-				Optional:    true,
-				Description: "The name of the secret or environment variable holding the Databricks Zerobus ingestion endpoint URL.",
-			},
+				"ingestion_endpoint_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "The name of the secret or environment variable holding the Databricks Zerobus ingestion endpoint URL.",
+				},
 				"table_name": schema.StringAttribute{
 					Required:    true,
 					Description: "The name of the Databricks table to ingest logs into.",
 				},
-			"unity_catalog_endpoint_key": schema.StringAttribute{
-				Optional:    true,
-				Description: "The name of the secret or environment variable holding the Databricks Unity Catalog endpoint URL.",
-			},
+				"unity_catalog_endpoint_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "The name of the secret or environment variable holding the Databricks Unity Catalog endpoint URL.",
+				},
 			},
 			Blocks: map[string]schema.Block{
 				"auth": schema.ListNestedBlock{

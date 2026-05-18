@@ -7075,17 +7075,17 @@ resource "datadog_observability_pipeline" "databricks_zerobus" {
     }
   }
 }`,
-			Check: resource.ComposeTestCheckFunc(
-				testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-1"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_secret_key", "DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"),
-			),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_secret_key", "DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"),
+				),
 			},
 		},
 	})
@@ -7126,14 +7126,14 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
     }
   }
 }`,
-			Check: resource.ComposeTestCheckFunc(
-				testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-basic-1"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
-				resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
-			),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-basic-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
+				),
 			},
 		},
 	})
