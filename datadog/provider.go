@@ -445,6 +445,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
+	} else if pat != "" {
+		// PAT takes precedence over api_key/app_key when both are set: a configured
+		// PAT is an explicit signal to use Bearer auth, matching the schema doc.
+		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	} else if apiKey != "" || appKey != "" {
 		auth = context.WithValue(
 			auth,
@@ -458,8 +462,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				},
 			},
 		)
-	} else if pat != "" {
-		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	}
 
 	config := datadog.NewConfiguration()
@@ -577,6 +579,18 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
+		} else if pat != "" {
+			// PAT takes precedence over api_key/app_key (matches the auth context
+			// selection above). /api/v1/validate is API-key-only, so hit
+			// /api/v2/validate_keys with the PAT in the DD-APPLICATION-KEY slot —
+			// the authn-validation backend accepts PATs there.
+			validateAuth := context.WithValue(auth, datadog.ContextAPIKeys, map[string]datadog.APIKey{
+				"appKeyAuth": {Key: pat},
+			})
+			if _, _, err := apiInstances.GetKeyManagementApiV2().ValidateAPIKey(validateAuth); err != nil {
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
 		} else if apiKey != "" || appKey != "" { // Validate the API and APP keys
 			resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
 			if err != nil {
@@ -586,17 +600,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			valid, ok := resp.GetValidOk()
 			if (ok && !*valid) || !ok {
 				err := errors.New(`Invalid or missing credentials provided to the Datadog Provider. Please confirm your API and APP keys are valid and are for the correct region, see https://www.terraform.io/docs/providers/datadog/ for more information on providing credentials for the Datadog Provider`)
-				log.Printf("[ERROR] Datadog Client validation error: %v", err)
-				return nil, diag.FromErr(err)
-			}
-		} else if pat != "" {
-			// /api/v1/validate is API-key-only. Hit /api/v2/validate_keys with the
-			// PAT in the DD-APPLICATION-KEY slot — the authn-validation backend
-			// accepts PATs there.
-			validateAuth := context.WithValue(auth, datadog.ContextAPIKeys, map[string]datadog.APIKey{
-				"appKeyAuth": {Key: pat},
-			})
-			if _, _, err := apiInstances.GetKeyManagementApiV2().ValidateAPIKey(validateAuth); err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}

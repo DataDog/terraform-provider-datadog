@@ -1246,6 +1246,134 @@ func TestProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 	}
 }
 
+// TestProviderConfigure_PATOnly tests that PAT (Bearer) auth works when only `pat` is set.
+func TestProviderConfigure_PATOnly(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_PAT")
+	os.Unsetenv("DATADOG_PAT")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"pat":      "ddpat_test_token",
+		"api_url":  "https://api.datad0g.com",
+		"validate": "false", // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with PAT only, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Bearer auth should be plumbed via ContextAccessToken on config.Auth.
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the PAT, got %q (ok=%v)", got, ok)
+	}
+	// API key context should NOT be set when only PAT is provided.
+	if _, ok := config.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when only PAT is provided")
+	}
+	// DelegatedTokenConfig should NOT be set when only PAT is provided.
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig != nil {
+		t.Error("DelegatedTokenConfig should NOT be set when using PAT auth")
+	}
+}
+
+// TestProviderConfigure_PATEnvVar tests env-var fallback for PAT (DD_PAT).
+func TestProviderConfigure_PATEnvVar(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Setenv("DD_PAT", "ddpat_from_env")
+	defer os.Unsetenv("DD_PAT")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_url":  "https://api.datad0g.com",
+		"validate": "false",
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with PAT env var, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_from_env" {
+		t.Errorf("ContextAccessToken should be set from DD_PAT, got %q (ok=%v)", got, ok)
+	}
+}
+
+// TestProviderConfigure_PATWinsOverAPIKey tests that PAT takes precedence over API keys
+// when both are configured: only the Bearer token is plumbed, no DD-API-KEY/DD-APPLICATION-KEY headers.
+func TestProviderConfigure_PATWinsOverAPIKey(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_PAT")
+	os.Unsetenv("DATADOG_PAT")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_key":  "test_api_key",
+		"app_key":  "test_app_key",
+		"pat":      "ddpat_test_token",
+		"api_url":  "https://api.datad0g.com",
+		"validate": "false",
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with PAT + API keys, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the PAT when both PAT and API keys are provided (PAT wins), got %q (ok=%v)", got, ok)
+	}
+	if _, ok := config.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when PAT is also provided (PAT takes precedence)")
+	}
+}
+
+// TestProviderConfigure_NoCredentialsErrors tests that configure errors with no credentials and validate=true.
+func TestProviderConfigure_NoCredentialsErrors(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_PAT")
+	os.Unsetenv("DATADOG_PAT")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_url":  "https://api.datad0g.com",
+		"validate": "true",
+	})
+
+	p := datadog.Provider()
+	_, diags := p.ConfigureContextFunc(context.Background(), d)
+	if !diags.HasError() {
+		t.Error("providerConfigure should error when no credentials are provided and validate=true")
+	}
+}
+
 func testAccPreCheck(t *testing.T) {
 	// Unset all regular env to avoid mistakenly running tests against wrong org
 	var envVars []string

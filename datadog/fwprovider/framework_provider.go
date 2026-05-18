@@ -597,6 +597,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
 		}
+	} else if pat != "" {
+		// PAT takes precedence over api_key/app_key when both are set: a configured
+		// PAT is an explicit signal to use Bearer auth, matching the schema doc.
+		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	} else if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
 		auth = context.WithValue(
 			auth,
@@ -610,8 +614,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 				},
 			},
 		)
-	} else if pat != "" {
-		auth = context.WithValue(auth, datadog.ContextAccessToken, pat)
 	}
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
