@@ -2675,3 +2675,117 @@ resource "datadog_monitor" "data_quality_empty_group_by" {
   }
 }`, uniq)
 }
+
+// TestAccDatadogMonitor_DataJobs_Basic tests basic data-jobs monitor functionality
+func TestAccDatadogMonitor_DataJobs_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataJobsMonitorBasic(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "type", "data-jobs alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "query", `formula("failed_runs(run_query)").by(job_name,workspace_name).last(10d) > 0`),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "variables.0.data_jobs_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "variables.0.data_jobs_query.0.name", "run_query"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "variables.0.data_jobs_query.0.jobs_query", "job_name:*"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "variables.0.data_jobs_query.0.job_type", "databricks.job"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_basic", "variables.0.data_jobs_query.0.query_dialect", "metric"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataJobsMonitorBasic(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_jobs_basic" {
+  name    = "%s"
+  type    = "data-jobs alert"
+  message = "Data jobs alert triggered"
+  query   = "formula(\"failed_runs(run_query)\").by(job_name,workspace_name).last(10d) > 0"
+
+  monitor_thresholds {
+    critical = 0
+  }
+
+  variables {
+    data_jobs_query {
+      name          = "run_query"
+      jobs_query    = "job_name:*"
+      job_type      = "databricks.job"
+      query_dialect = "metric"
+    }
+  }
+}`, uniq)
+}
+
+// TestAccDatadogMonitor_DataJobs_CustomJobType tests that custom.ol.* job types are accepted
+func TestAccDatadogMonitor_DataJobs_CustomJobType(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataJobsMonitorCustomJobType(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_custom_type", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_custom_type", "type", "data-jobs alert"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_custom_type", "variables.0.data_jobs_query.0.job_type", "custom.ol.my_pipeline"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_jobs_custom_type", "variables.0.data_jobs_query.0.query_dialect", "metric"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogDataJobsMonitorCustomJobType(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "data_jobs_custom_type" {
+  name    = "%s"
+  type    = "data-jobs alert"
+  message = "Custom data-jobs alert"
+  query   = "formula(\"failed_runs(run_query)\").by(job_name).last(1h) > 0"
+
+  monitor_thresholds {
+    critical = 0
+  }
+
+  variables {
+    data_jobs_query {
+      name          = "run_query"
+      jobs_query    = "service:my-service"
+      job_type      = "custom.ol.my_pipeline"
+      query_dialect = "metric"
+    }
+  }
+}`, uniq)
+}
