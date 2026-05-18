@@ -1380,7 +1380,7 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 }
 
 func (r *monitorResource) buildDataJobsQueryStruct(dataJobsQs []DataJobsQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
-	if dataJobsQs == nil || len(dataJobsQs) == 0 {
+	if len(dataJobsQs) == 0 {
 		return nil
 	}
 	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
