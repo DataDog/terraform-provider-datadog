@@ -733,10 +733,7 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 	isEnabled := plan.Enabled.ValueBool()
 	payload.IsEnabled = &isEnabled
 
-	shouldUpdate := false
-	if currentState.GetIsEnabled() != isEnabled {
-		shouldUpdate = true
-	}
+	shouldUpdate := currentState.GetIsEnabled() != isEnabled
 
 	matchedCases := 0
 	modifiedCases := 0
