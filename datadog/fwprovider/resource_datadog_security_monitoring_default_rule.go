@@ -780,6 +780,14 @@ func buildSecMonDefaultRuleUpdatePayload(ctx context.Context, currentState *data
 	}
 
 	if !isSignalCorrelation && len(plan.Queries) > 0 {
+		if len(plan.Queries) != len(currentState.GetQueries()) {
+			diags.AddError(
+				"query block count mismatch",
+				fmt.Sprintf("rule %s has %d query blocks in the API; declare all of them (at minimum as empty) to manage any",
+					currentState.GetId(), len(currentState.GetQueries())),
+			)
+			return nil, false, diags
+		}
 		payloadQueries := make([]datadogV2.SecurityMonitoringRuleQuery, len(plan.Queries))
 		for idx, planQuery := range plan.Queries {
 			var existingQuery *datadogV2.SecurityMonitoringStandardRuleQuery
