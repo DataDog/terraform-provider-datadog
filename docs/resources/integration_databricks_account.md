@@ -82,27 +82,24 @@ resource "datadog_integration_databricks_account" "pat_example" {
 
 Optional:
 
-- `oauth` (Block, Optional) OAuth (service principal) authentication. Recommended for new deployments. (see [below for nested schema](#nestedblock--auth_config--oauth))
+- `oauth` (Block, Optional) OAuth (service principal) authentication. Recommended for new deployments. `client_id`, `client_secret`, and `databricks_account_id` must be provided together. (see [below for nested schema](#nestedblock--auth_config--oauth))
 - `pat` (Block, Optional) Personal Access Token authentication. Deprecated in favor of `oauth`; kept for backwards compatibility. (see [below for nested schema](#nestedblock--auth_config--pat))
 
 <a id="nestedblock--auth_config--oauth"></a>
 ### Nested Schema for `auth_config.oauth`
 
-Required:
-
-- `client_id` (String) OAuth Client ID for the Databricks service principal.
-- `client_secret` (String, Sensitive) OAuth Client Secret for the Databricks service principal. This value is write-only; changes made outside of Terraform will not be drift-detected.
-- `databricks_account_id` (String) Databricks Account ID (UUID format). Found in your Databricks profile in the upper-right corner.
-
 Optional:
 
 - `azure_tenant_id` (String) Azure Tenant ID (UUID format) for authenticating via Microsoft Entra ID. Only set when using Azure Entra ID OAuth.
+- `client_id` (String) OAuth Client ID for the Databricks service principal.
+- `client_secret` (String, Sensitive) OAuth Client Secret for the Databricks service principal. This value is write-only; changes made outside of Terraform will not be drift-detected.
+- `databricks_account_id` (String) Databricks Account ID (UUID format). Found in your Databricks profile in the upper-right corner.
 
 
 <a id="nestedblock--auth_config--pat"></a>
 ### Nested Schema for `auth_config.pat`
 
-Required:
+Optional:
 
 - `token` (String, Sensitive) Databricks Personal Access Token (PAT). Generate from Settings > Developer > Access tokens. This value is write-only; changes made outside of Terraform will not be drift-detected.
 
