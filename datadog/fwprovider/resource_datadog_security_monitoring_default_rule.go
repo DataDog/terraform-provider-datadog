@@ -317,10 +317,31 @@ func (r *securityMonitoringDefaultRuleResource) UpgradeState(_ context.Context) 
 				if resp.Diagnostics.HasError() {
 					return
 				}
+
+				hadCases := len(state.Cases) > 0
+				hadOptions := len(state.Options) > 0
+				hadQueries := len(state.Queries) > 0
+
 				state.Cases = nil
 				state.Options = nil
 				state.Queries = nil
 				resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+
+				// Emit a one-time warning only when blocks needed to be stripped so
+				// users know what to expect on the next plan.
+				if hadCases || hadOptions || hadQueries {
+					resp.Diagnostics.AddWarning(
+						"One-time plan diff expected after provider upgrade",
+						"This resource had `case`, `query`, or `options` blocks in the "+
+							"previous provider version. The new provider framework cannot "+
+							"carry these blocks forward automatically during state migration. "+
+							"If your configuration declares any of these blocks, the next "+
+							"`terraform plan` will show them as additions. The diff is "+
+							"cosmetic: the API already holds those values. Running "+
+							"`terraform apply` once will re-align state and subsequent "+
+							"plans will be clean.",
+					)
+				}
 			},
 		},
 	}
