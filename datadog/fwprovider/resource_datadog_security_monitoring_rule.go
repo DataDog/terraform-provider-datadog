@@ -2298,6 +2298,11 @@ func isDeprecatedDataSourceAlias(prior, api string) bool {
 // it as the tiebreaker when the API response is ambiguous. When no prior is
 // available (e.g., Import), default to typed-null — that's what an omitted
 // config maps to. Real, non-empty API values always pass through unchanged.
+//
+// Special case: `metric` is deprecated/Optional-only. The API derives and
+// echoes it back from `metrics` even when the user never configured it.
+// Whenever the prior had `metric = null`, we restore null so the post-apply
+// state matches the plan.
 func reconcileEmptyQueryFields(apiState, prior []ruleQueryModel) {
 	for i := range apiState {
 		hasPrior := i < len(prior)
@@ -2321,6 +2326,14 @@ func reconcileEmptyQueryFields(apiState, prior []ruleQueryModel) {
 			} else {
 				apiState[i].Name = types.StringNull()
 			}
+		}
+		// metric is Optional-only (not Computed): the API echoes it back derived
+		// from metrics even when the user never set it. Null it out whenever the
+		// prior had it null (user never configured it) or there is no prior (e.g.
+		// import) — the dominant use-case is metrics-only configs, and the
+		// one-time + diff on import is acceptable for the deprecated metric field.
+		if !apiState[i].Metric.IsNull() && (!hasPrior || prior[i].Metric.IsNull()) {
+			apiState[i].Metric = types.StringNull()
 		}
 	}
 }
