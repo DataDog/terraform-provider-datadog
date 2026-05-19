@@ -77,7 +77,7 @@ func TestAccIntegrationDatabricksAccountPat(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationDatabricksAccountExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", uniq),
-					resource.TestCheckResourceAttr(resourceName, "workspace_url", "https://example.cloud.databricks.com"),
+					resource.TestCheckResourceAttr(resourceName, "workspace_url", "https://dbc-097db9cd-e3d9.cloud.databricks.com/"),
 					resource.TestCheckResourceAttr(resourceName, "auth_config.pat.token", "dapi-test-token"),
 					resource.TestCheckResourceAttr(resourceName, "djm_enabled", "true"),
 					resource.TestCheckResourceAttr(resourceName, "serverless_jobs_enabled", "false"),
@@ -117,7 +117,7 @@ func testAccCheckDatadogIntegrationDatabricksAccountPat(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_databricks_account" "pat" {
     name          = "%s"
-    workspace_url = "https://example.cloud.databricks.com"
+    workspace_url = "https://dbc-097db9cd-e3d9.cloud.databricks.com/"
 
     auth_config {
         pat {
