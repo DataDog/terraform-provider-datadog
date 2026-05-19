@@ -21,6 +21,12 @@ const databricksTestIntegration = "databricks"
 
 func TestAccIntegrationDatabricksAccountPat(t *testing.T) {
 	t.Parallel()
+	// Skip in live mode (RECORD=none). The AMS API validates credentials
+	// end-to-end against the real Databricks workspace at create time, so a
+	// recorded cassette is required for this test to run in CI.
+	if !isReplaying() && !isRecording() {
+		t.Skip("Requires RECORD=true (record) or RECORD=false (replay)")
+	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_integration_databricks_account.pat"
