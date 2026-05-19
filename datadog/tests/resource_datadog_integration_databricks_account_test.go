@@ -16,9 +16,6 @@ const databricksTestIntegration = "databricks"
 
 func TestAccIntegrationDatabricksAccountOAuth(t *testing.T) {
 	t.Parallel()
-	if !isReplaying() {
-		t.Skip("This test is replay only")
-	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_integration_databricks_account.oauth"
@@ -67,9 +64,6 @@ func TestAccIntegrationDatabricksAccountOAuth(t *testing.T) {
 
 func TestAccIntegrationDatabricksAccountPat(t *testing.T) {
 	t.Parallel()
-	if !isReplaying() {
-		t.Skip("This test is replay only")
-	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	resourceName := "datadog_integration_databricks_account.pat"
@@ -86,7 +80,7 @@ func TestAccIntegrationDatabricksAccountPat(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "workspace_url", "https://example.cloud.databricks.com"),
 					resource.TestCheckResourceAttr(resourceName, "auth_config.pat.token", "dapi-test-token"),
 					resource.TestCheckResourceAttr(resourceName, "djm_enabled", "true"),
-					resource.TestCheckResourceAttr(resourceName, "serverless_jobs_enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "serverless_jobs_enabled", "false"),
 				),
 			},
 			{
@@ -113,8 +107,9 @@ resource "datadog_integration_databricks_account" "oauth" {
         }
     }
 
-    djm_enabled      = %t
-    do_crawlers_cron = "%s"
+    djm_enabled             = %t
+    do_crawlers_cron        = "%s"
+    serverless_jobs_enabled = false
 }`, uniq, djmEnabled, cron)
 }
 
@@ -129,6 +124,8 @@ resource "datadog_integration_databricks_account" "pat" {
             token = "dapi-test-token"
         }
     }
+
+    serverless_jobs_enabled = false
 }`, uniq)
 }
 

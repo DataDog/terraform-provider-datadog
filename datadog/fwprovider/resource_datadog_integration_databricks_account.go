@@ -103,9 +103,17 @@ func (r *integrationDatabricksAccountResource) Metadata(_ context.Context, reque
 
 func (r *integrationDatabricksAccountResource) ConfigValidators(_ context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
+		// Either OAuth (service principal) or PAT, never both.
 		resourcevalidator.ExactlyOneOf(
-			databricksOauthPath,
-			databricksPatPath,
+			databricksOauthPath.AtName("client_id"),
+			databricksPatPath.AtName("token"),
+		),
+		// Within OAuth, client_id + client_secret + databricks_account_id are
+		// all required together (azure_tenant_id is the optional Azure Entra ID variant).
+		resourcevalidator.RequiredTogether(
+			databricksOauthPath.AtName("client_id"),
+			databricksOauthPath.AtName("client_secret"),
+			databricksOauthPath.AtName("databricks_account_id"),
 		),
 	}
 }
@@ -225,20 +233,21 @@ func (r *integrationDatabricksAccountResource) Schema(_ context.Context, _ resou
 					"Exactly one of `oauth` or `pat` must be provided.",
 				Blocks: map[string]schema.Block{
 					"oauth": schema.SingleNestedBlock{
-						Description: "OAuth (service principal) authentication. Recommended for new deployments.",
+						Description: "OAuth (service principal) authentication. Recommended for new deployments. " +
+							"`client_id`, `client_secret`, and `databricks_account_id` must be provided together.",
 						Attributes: map[string]schema.Attribute{
 							"client_id": schema.StringAttribute{
-								Required:    true,
+								Optional:    true,
 								Description: "OAuth Client ID for the Databricks service principal.",
 							},
 							"client_secret": schema.StringAttribute{
-								Required:      true,
+								Optional:      true,
 								Sensitive:     true,
 								Description:   "OAuth Client Secret for the Databricks service principal. This value is write-only; changes made outside of Terraform will not be drift-detected.",
 								PlanModifiers: secretStateModifiers,
 							},
 							"databricks_account_id": schema.StringAttribute{
-								Required:    true,
+								Optional:    true,
 								Description: "Databricks Account ID (UUID format). Found in your Databricks profile in the upper-right corner.",
 							},
 							"azure_tenant_id": schema.StringAttribute{
@@ -251,7 +260,7 @@ func (r *integrationDatabricksAccountResource) Schema(_ context.Context, _ resou
 						Description: "Personal Access Token authentication. Deprecated in favor of `oauth`; kept for backwards compatibility.",
 						Attributes: map[string]schema.Attribute{
 							"token": schema.StringAttribute{
-								Required:      true,
+								Optional:      true,
 								Sensitive:     true,
 								Description:   "Databricks Personal Access Token (PAT). Generate from Settings > Developer > Access tokens. This value is write-only; changes made outside of Terraform will not be drift-detected.",
 								PlanModifiers: secretStateModifiers,
