@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func dataSourceDatadogSecurityMonitoringFilters() *schema.Resource {
@@ -92,4 +93,66 @@ func dataSourceDatadogSecurityFiltersRead(ctx context.Context, d *schema.Resourc
 func buildUniqueId(ids []string) string {
 	// build a unique id from filters ids
 	return strings.Join(ids, "--")
+}
+
+func securityMonitoringFilterSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the security filter.",
+		},
+		"version": {
+			Type:        schema.TypeInt,
+			Description: "The version of the security filter.",
+			Computed:    true,
+		},
+		"query": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The query of the security filter.",
+		},
+		"is_enabled": {
+			Type:        schema.TypeBool,
+			Required:    true,
+			Description: "Whether the security filter is enabled.",
+		},
+		"exclusion_filter": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Exclusion filters to exclude some logs from the security filter.",
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Exclusion filter name.",
+					},
+					"query": {
+						Type:        schema.TypeString,
+						Required:    true,
+						Description: "Exclusion filter query. Logs that match this query are excluded from the security filter.",
+					},
+				},
+			},
+		},
+		"filtered_data_type": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The filtered data type.",
+			Default:     "logs",
+		},
+	}
+}
+
+func extractExclusionFiltersTF(attributes datadogV2.SecurityFilterAttributes) []map[string]interface{} {
+	exclusionFiltersTF := make([]map[string]interface{}, len(attributes.GetExclusionFilters()))
+	for idx := range attributes.GetExclusionFilters() {
+		exclusionFilterTF := make(map[string]interface{})
+		exclusionFilter := attributes.GetExclusionFilters()[idx]
+		exclusionFilterTF["name"] = exclusionFilter.GetName()
+		exclusionFilterTF["query"] = exclusionFilter.GetQuery()
+		exclusionFiltersTF[idx] = exclusionFilterTF
+	}
+	return exclusionFiltersTF
 }

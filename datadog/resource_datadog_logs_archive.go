@@ -109,6 +109,13 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
+				"compression_method": {
+					Description:      "The compression method for the archive.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					Default:          string(datadogV2.LOGSARCHIVEATTRIBUTESCOMPRESSIONMETHOD_GZIP),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsArchiveAttributesCompressionMethodFromValue),
+				},
 			}
 		},
 	}
@@ -163,6 +170,12 @@ func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArc
 	rehydrationMaxSizeValue := ddArchive.Data.Attributes.RehydrationMaxScanSizeInGb.Get()
 	if rehydrationMaxSizeValue != nil {
 		if err = d.Set("rehydration_max_scan_size_in_gb", rehydrationMaxSizeValue); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if v, ok := ddArchive.Data.Attributes.GetCompressionMethodOk(); ok {
+		if err = d.Set("compression_method", *v); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -304,6 +317,9 @@ func buildDatadogArchiveCreateReq(d *schema.ResourceData) (*datadogV2.LogsArchiv
 	} else {
 		attributes.SetRehydrationMaxScanSizeInGbNil()
 	}
+
+	compressionMethod := d.Get("compression_method").(string)
+	attributes.SetCompressionMethod(datadogV2.LogsArchiveAttributesCompressionMethod(compressionMethod))
 
 	definition := datadogV2.NewLogsArchiveCreateRequestDefinitionWithDefaults()
 	definition.SetAttributes(*attributes)

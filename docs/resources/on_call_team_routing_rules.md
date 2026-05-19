@@ -74,6 +74,7 @@ Optional:
 
 - `send_slack_message` (Block List) (see [below for nested schema](#nestedblock--rule--action--send_slack_message))
 - `send_teams_message` (Block List) (see [below for nested schema](#nestedblock--rule--action--send_teams_message))
+- `trigger_workflow_automation` (Block List) (see [below for nested schema](#nestedblock--rule--action--trigger_workflow_automation))
 
 <a id="nestedblock--rule--action--send_slack_message"></a>
 ### Nested Schema for `rule.action.send_slack_message`
@@ -92,6 +93,14 @@ Required:
 - `channel` (String) Teams channel ID.
 - `team` (String) Teams team ID.
 - `tenant` (String) Teams tenant ID.
+
+
+<a id="nestedblock--rule--action--trigger_workflow_automation"></a>
+### Nested Schema for `rule.action.trigger_workflow_automation`
+
+Required:
+
+- `handle` (String) The handle of the Workflow Automation to trigger.
 
 
 

@@ -103,6 +103,7 @@ type ApiInstances struct {
 	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
 	ccmApiV2                       *datadogV2.CloudCostManagementApi
 	deploymentGatesV2              *datadogV2.DeploymentGatesApi
+	webIntegrationsApiV2           *datadogV2.WebIntegrationsApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -821,4 +822,12 @@ func (i *ApiInstances) GetReferenceTablesApiV2() *datadogV2.ReferenceTablesApi {
 		i.referenceTablesApiV2 = datadogV2.NewReferenceTablesApi(i.HttpClient)
 	}
 	return i.referenceTablesApiV2
+}
+
+// GetWebIntegrationsApiV2 get instance of WebIntegrationsApi
+func (i *ApiInstances) GetWebIntegrationsApiV2() *datadogV2.WebIntegrationsApi {
+	if i.webIntegrationsApiV2 == nil {
+		i.webIntegrationsApiV2 = datadogV2.NewWebIntegrationsApi(i.HttpClient)
+	}
+	return i.webIntegrationsApiV2
 }

@@ -46,8 +46,9 @@ type teamTimeRestrictionsModel struct {
 	Restrictions []*restrictionsModel `tfsdk:"restriction"`
 }
 type teamRuleActionModel struct {
-	Slack *slackMessageModel `tfsdk:"send_slack_message"`
-	Teams *teamsMessageModel `tfsdk:"send_teams_message"`
+	Slack    *slackMessageModel              `tfsdk:"send_slack_message"`
+	Teams    *teamsMessageModel              `tfsdk:"send_teams_message"`
+	Workflow *triggerWorkflowAutomationModel `tfsdk:"trigger_workflow_automation"`
 }
 
 type slackMessageModel struct {
@@ -59,6 +60,10 @@ type teamsMessageModel struct {
 	Tenant  types.String `tfsdk:"tenant"`
 	Team    types.String `tfsdk:"team"`
 	Channel types.String `tfsdk:"channel"`
+}
+
+type triggerWorkflowAutomationModel struct {
+	Handle types.String `tfsdk:"handle"`
 }
 
 func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
@@ -78,8 +83,8 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 
 		for actionIdx, action := range rule.Actions {
 			actionPath := root.AtName("action").AtListIndex(actionIdx)
-			if action.Teams == nil && action.Slack == nil {
-				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message or send_teams_message")
+			if action.Teams == nil && action.Slack == nil && action.Workflow == nil {
+				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message, send_teams_message or trigger_workflow_automation")
 			}
 			if action.Teams != nil {
 				teamsPath := actionPath.AtName("send_teams_message")
@@ -100,6 +105,12 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 				}
 				if action.Slack.Channel.IsNull() {
 					diags.AddAttributeError(teamsPath, "missing channel", "channel is required")
+				}
+			}
+			if action.Workflow != nil {
+				workflowPath := actionPath.AtName("trigger_workflow_automation")
+				if action.Workflow.Handle.IsNull() {
+					diags.AddAttributeError(workflowPath, "missing handle", "handle is required")
 				}
 			}
 		}
@@ -224,6 +235,14 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"team": schema.StringAttribute{
 												Optional:    true,
 												Description: "Teams team ID.",
+											},
+										},
+									},
+									"trigger_workflow_automation": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"handle": schema.StringAttribute{
+												Optional:    true,
+												Description: "The handle of the Workflow Automation to trigger.",
 											},
 										},
 									},
@@ -447,6 +466,12 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 						Channel: types.StringValue(action.SendTeamsMessageAction.Channel),
 					},
 				})
+			} else if action.TriggerWorkflowAutomationAction != nil {
+				stateActions = append(stateActions, &teamRuleActionModel{
+					Workflow: &triggerWorkflowAutomationModel{
+						Handle: types.StringValue(action.TriggerWorkflowAutomationAction.Handle),
+					},
+				})
 			}
 		}
 
@@ -487,11 +512,21 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 		actions := []datadogV2.RoutingRuleAction{}
 		for actionIndex, plannedAction := range plannedRule.Actions {
 			action := datadogV2.RoutingRuleAction{}
-			if plannedAction.Teams != nil && plannedAction.Slack != nil {
+			configured := 0
+			if plannedAction.Teams != nil {
+				configured++
+			}
+			if plannedAction.Slack != nil {
+				configured++
+			}
+			if plannedAction.Workflow != nil {
+				configured++
+			}
+			if configured > 1 {
 				diags.AddAttributeError(
 					rulePath.AtName("action").AtListIndex(actionIndex),
 					"action can only have one configuration",
-					"only one of `send_slack_message`, `send_teams_message` is allowed per action. Consider adding a separate `action` block.")
+					"only one of `send_slack_message`, `send_teams_message`, `trigger_workflow_automation` is allowed per action. Consider adding a separate `action` block.")
 				return nil, diags
 			}
 			if plannedAction.Teams != nil {
@@ -506,6 +541,11 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 				action.SendSlackMessageAction.Type = datadogV2.SENDSLACKMESSAGEACTIONTYPE_SEND_SLACK_MESSAGE
 				action.SendSlackMessageAction.Channel = plannedAction.Slack.Channel.ValueString()
 				action.SendSlackMessageAction.Workspace = plannedAction.Slack.Workspace.ValueString()
+			}
+			if plannedAction.Workflow != nil {
+				action.TriggerWorkflowAutomationAction = datadogV2.NewTriggerWorkflowAutomationActionWithDefaults()
+				action.TriggerWorkflowAutomationAction.Type = datadogV2.TRIGGERWORKFLOWAUTOMATIONACTIONTYPE_TRIGGER_WORKFLOW_AUTOMATION
+				action.TriggerWorkflowAutomationAction.Handle = plannedAction.Workflow.Handle.ValueString()
 			}
 			actions = append(actions, action)
 		}

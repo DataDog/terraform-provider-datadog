@@ -1,7 +1,11 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
+<<<<<<< lucinda.zhou/CRED-2570/add-pat-bearer-auth-support
 	github.com/DataDog/datadog-api-client-go/v2 v2.59.1-0.20260512205120-0d69104e7dd3
+=======
+	github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260518111551-0a0cde4d45b2
+>>>>>>> master
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/google/go-cmp v0.7.0
@@ -22,7 +26,6 @@ require (
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	gopkg.in/DataDog/dd-trace-go.v1 v1.34.0
 	gopkg.in/dnaeon/go-vcr.v3 v3.1.2
-	gopkg.in/warnings.v0 v0.1.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -87,16 +90,16 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/zclconf/go-cty v1.17.0 // indirect
-	golang.org/x/crypto v0.48.0 // indirect
+	golang.org/x/crypto v0.51.0 // indirect
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df // indirect
-	golang.org/x/mod v0.33.0 // indirect
-	golang.org/x/net v0.49.0 // indirect
+	golang.org/x/mod v0.36.0 // indirect
+	golang.org/x/net v0.54.0 // indirect
 	golang.org/x/oauth2 v0.34.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
-	golang.org/x/text v0.34.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
+	golang.org/x/text v0.37.0 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
-	golang.org/x/tools v0.41.0 // indirect
+	golang.org/x/tools v0.45.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect

@@ -703,6 +703,36 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"data_jobs_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    5,
+					Description: "The Data Jobs query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Name of the query for use in formulas. Must be `run_query`.",
+							},
+							"jobs_query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Filter expression used to select the jobs to monitor.",
+							},
+							"job_type": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `dbt.model`, `dbt.test`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.",
+							},
+							"query_dialect": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "Query dialect for data jobs queries. Currently only `metric` is supported.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -896,6 +926,22 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 							panic(fmt.Sprintf("variables.data_quality_query[%d]: expected a map/object but got invalid type", i))
 						}
 						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionDataQualityQuery(queryMap))
+					}
+				}
+				if query, ok := m["data_jobs_query"]; ok {
+					queries, ok := query.([]interface{})
+					if !ok {
+						panic("variables.data_jobs_query: expected a list but got invalid type")
+					}
+					for i, q := range queries {
+						if q == nil {
+							continue
+						}
+						queryMap, ok := q.(map[string]interface{})
+						if !ok {
+							panic(fmt.Sprintf("variables.data_jobs_query[%d]: expected a map/object but got invalid type", i))
+						}
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionDataJobsQuery(queryMap))
 					}
 				}
 				o.SetVariables(monitorVariables)
@@ -1193,6 +1239,17 @@ func buildMonitorFormulaAndFunctionDataQualityQuery(data map[string]interface{})
 	return &definition
 }
 
+func buildMonitorFormulaAndFunctionDataJobsQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	name := getRequiredString(data, "name", "data_jobs_query")
+	jobsQuery := getRequiredString(data, "jobs_query", "data_jobs_query")
+	jobType := getRequiredString(data, "job_type", "data_jobs_query")
+	queryDialect := getRequiredString(data, "query_dialect", "data_jobs_query")
+
+	dataJobsQuery := datadogV1.NewMonitorFormulaAndFunctionDataJobsQueryDefinition(jobType, jobsQuery, name, queryDialect)
+	definition := datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(dataJobsQuery)
+	return &definition
+}
+
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
@@ -1406,6 +1463,11 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 			}
 		} else if m.GetType() == datadogV1.MonitorType("data-quality alert") {
 			terraformVariables := buildTerraformDataQualityMonitorVariables(*variables)
+			if err := d.Set("variables", terraformVariables); err != nil {
+				return diag.FromErr(err)
+			}
+		} else if m.GetType() == datadogV1.MonitorType("data-jobs alert") {
+			terraformVariables := buildTerraformDataJobsMonitorVariables(*variables)
 			if err := d.Set("variables", terraformVariables); err != nil {
 				return diag.FromErr(err)
 			}
@@ -1656,6 +1718,35 @@ func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.Moni
 	terraformVariables[0] = map[string]interface{}{"data_quality_query": queries}
 
 	log.Printf("[INFO] data_quality_query variables: %+v", terraformVariables)
+	return terraformVariables
+}
+
+func buildTerraformDataJobsMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogVariables))
+
+	for i, query := range datadogVariables {
+		terraformQuery := map[string]interface{}{}
+		def := query.MonitorFormulaAndFunctionDataJobsQueryDefinition
+		if def != nil {
+			if name, ok := def.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if jobsQuery, ok := def.GetJobsQueryOk(); ok {
+				terraformQuery["jobs_query"] = jobsQuery
+			}
+			if jobType, ok := def.GetJobTypeOk(); ok {
+				terraformQuery["job_type"] = jobType
+			}
+			if queryDialect, ok := def.GetQueryDialectOk(); ok {
+				terraformQuery["query_dialect"] = queryDialect
+			}
+			queries[i] = terraformQuery
+		}
+	}
+	terraformVariables := make([]map[string]interface{}, 1)
+	terraformVariables[0] = map[string]interface{}{"data_jobs_query": queries}
+
+	log.Printf("[INFO] data_jobs_query variables: %+v", terraformVariables)
 	return terraformVariables
 }
 
