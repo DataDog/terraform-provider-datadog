@@ -3,7 +3,7 @@
 
 package tools
 
-//go:generate go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@latest
+//go:generate go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@v0.25.0
 
 import (
 	// docs generator
