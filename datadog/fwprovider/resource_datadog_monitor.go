@@ -174,15 +174,15 @@ type GroupBy struct {
 
 // AggregateAugmentedQuery is a formula monitor variable of type aggregate_augmented_query.
 type AggregateAugmentedQuery struct {
-	Name                  types.String             `tfsdk:"name"`
-	DataSource            types.String             `tfsdk:"data_source"`
+	Name                  types.String                    `tfsdk:"name"`
+	DataSource            types.String                    `tfsdk:"data_source"`
 	AugmentReferenceTable []ReferenceTableMonitorVariable `tfsdk:"augment_reference_table"`
 	AugmentEventQuery     []EventQuery                    `tfsdk:"augment_event_query"`
-	BaseMetricsQuery      []BaseMetricsQuery       `tfsdk:"base_metrics_query"`
-	BaseEventQuery        []EventQuery             `tfsdk:"base_event_query"`
-	JoinCondition         []AggregateJoinCondition `tfsdk:"join_condition"`
-	Compute               []Compute                `tfsdk:"compute"`
-	GroupBy               []GroupBy                `tfsdk:"group_by"`
+	BaseMetricsQuery      []BaseMetricsQuery              `tfsdk:"base_metrics_query"`
+	BaseEventQuery        []EventQuery                    `tfsdk:"base_event_query"`
+	JoinCondition         []AggregateJoinCondition        `tfsdk:"join_condition"`
+	Compute               []Compute                       `tfsdk:"compute"`
+	GroupBy               []GroupBy                       `tfsdk:"group_by"`
 }
 
 // ReferenceTableMonitorVariable is the reference-table branch of an aggregate augment or filter query.
@@ -196,15 +196,15 @@ type ReferenceTableMonitorVariable struct {
 
 // AggregateFilteredQuery is a formula monitor variable of type aggregate_filtered_query.
 type AggregateFilteredQuery struct {
-	Name                  types.String                    `tfsdk:"name"`
-	DataSource            types.String                    `tfsdk:"data_source"`
-	FilterReferenceTable  []ReferenceTableMonitorVariable `tfsdk:"filter_reference_table"`
-	FilterEventQuery      []EventQuery                    `tfsdk:"filter_event_query"`
-	BaseMetricsQuery      []BaseMetricsQuery              `tfsdk:"base_metrics_query"`
-	BaseEventQuery        []EventQuery                    `tfsdk:"base_event_query"`
-	Filters               []AggregateQueryFilter          `tfsdk:"filters"`
-	Compute               []Compute                       `tfsdk:"compute"`
-	GroupBy               []GroupBy                       `tfsdk:"group_by"`
+	Name                 types.String                    `tfsdk:"name"`
+	DataSource           types.String                    `tfsdk:"data_source"`
+	FilterReferenceTable []ReferenceTableMonitorVariable `tfsdk:"filter_reference_table"`
+	FilterEventQuery     []EventQuery                    `tfsdk:"filter_event_query"`
+	BaseMetricsQuery     []BaseMetricsQuery              `tfsdk:"base_metrics_query"`
+	BaseEventQuery       []EventQuery                    `tfsdk:"base_event_query"`
+	Filters              []AggregateQueryFilter          `tfsdk:"filters"`
+	Compute              []Compute                       `tfsdk:"compute"`
+	GroupBy              []GroupBy                       `tfsdk:"group_by"`
 }
 
 // AggregateQueryFilter maps base and filter attributes for aggregate_filtered_query.

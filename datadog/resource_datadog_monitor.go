@@ -2488,11 +2488,12 @@ func buildTerraformCompositeMonitorVariables(datadogVariables []datadogV1.Monito
 	var aggAug []map[string]interface{}
 	var aggFiltered []map[string]interface{}
 	for _, query := range datadogVariables {
-		if query.MonitorFormulaAndFunctionEventQueryDefinition != nil {
+		switch {
+		case query.MonitorFormulaAndFunctionEventQueryDefinition != nil:
 			eventQueries = append(eventQueries, terraformEventQueryDefinitionToMap(query.MonitorFormulaAndFunctionEventQueryDefinition))
-		} else if query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil {
+		case query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition != nil:
 			aggAug = append(aggAug, terraformAggregateAugmentedDefinitionToMap(query.MonitorFormulaAndFunctionAggregateAugmentedQueryDefinition))
-		} else if query.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition != nil {
+		case query.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition != nil:
 			aggFiltered = append(aggFiltered, terraformAggregateFilteredDefinitionToMap(query.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition))
 		}
 	}
