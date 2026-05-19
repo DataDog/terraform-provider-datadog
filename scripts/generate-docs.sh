@@ -22,6 +22,10 @@ if [ "${#exclude_files[@]}" -ne 0 ] && [ "$(git status --porcelain "${exclude_fi
   exit 1
 fi
 
+# Surface the active terraform version: tfplugindocs introspects the provider schema via
+# `terraform providers schema -json`, and write-only attribute rendering requires Terraform >= 1.11.
+echo "Active terraform: $(terraform version 2>/dev/null | head -1 || echo 'not found on PATH')"
+
 tfplugindocs generate --provider-name datadog --rendered-provider-name "terraform-provider-datadog"
 
 # Remove the changes to files we don't autogenerate
