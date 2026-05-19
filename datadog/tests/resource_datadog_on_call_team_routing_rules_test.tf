@@ -55,9 +55,8 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
   rule {
     query = "tags.service:test"
     action {
-      send_slack_message {
-        workspace = "workspace"
-        channel = "channel"
+      trigger_workflow_automation {
+        handle = "oncall_cassette_workflow"
       }
     }
     time_restrictions {
