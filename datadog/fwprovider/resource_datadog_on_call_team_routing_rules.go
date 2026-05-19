@@ -47,9 +47,10 @@ type teamTimeRestrictionsModel struct {
 	Restrictions []*restrictionsModel `tfsdk:"restriction"`
 }
 type teamRuleActionModel struct {
-	Slack            *slackMessageModel           `tfsdk:"send_slack_message"`
-	Teams            *teamsMessageModel           `tfsdk:"send_teams_message"`
-	EscalationPolicy *escalationPolicyActionModel `tfsdk:"escalation_policy"`
+	Slack            *slackMessageModel              `tfsdk:"send_slack_message"`
+	Teams            *teamsMessageModel              `tfsdk:"send_teams_message"`
+	Workflow         *triggerWorkflowAutomationModel `tfsdk:"trigger_workflow_automation"`
+	EscalationPolicy *escalationPolicyActionModel    `tfsdk:"escalation_policy"`
 }
 
 type slackMessageModel struct {
@@ -61,6 +62,10 @@ type teamsMessageModel struct {
 	Tenant  types.String `tfsdk:"tenant"`
 	Team    types.String `tfsdk:"team"`
 	Channel types.String `tfsdk:"channel"`
+}
+
+type triggerWorkflowAutomationModel struct {
+	Handle types.String `tfsdk:"handle"`
 }
 
 type escalationPolicyActionModel struct {
@@ -94,25 +99,9 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 
 		for actionIdx, action := range rule.Actions {
 			actionPath := root.AtName("action").AtListIndex(actionIdx)
-
-			// Only one of `send_slack_message`, `send_teams_message`, `escalation_policy` is allowed per action.
-			actionTypeCount := 0
-			if action.Slack != nil {
-				actionTypeCount++
+			if action.Teams == nil && action.Slack == nil && action.Workflow == nil && action.EscalationPolicy == nil {
+				diags.AddAttributeError(actionPath, "missing actions", "action must specify one of send_slack_message, send_teams_message, trigger_workflow_automation, or escalation_policy")
 			}
-			if action.Teams != nil {
-				actionTypeCount++
-			}
-			if action.EscalationPolicy != nil {
-				actionTypeCount++
-			}
-			if actionTypeCount == 0 {
-				diags.AddAttributeError(actionPath, "missing actions", "actions must specify one of send_slack_message, send_teams_message, or escalation_policy")
-			}
-			if actionTypeCount > 1 {
-				diags.AddAttributeError(actionPath, "too many actions", "action can only specify one of send_slack_message, send_teams_message, or escalation_policy")
-			}
-
 			if action.Teams != nil {
 				teamsPath := actionPath.AtName("send_teams_message")
 				if action.Teams.Team.IsNull() {
@@ -134,6 +123,12 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 					diags.AddAttributeError(teamsPath, "missing channel", "channel is required")
 				}
 			}
+			if action.Workflow != nil {
+				workflowPath := actionPath.AtName("trigger_workflow_automation")
+				if action.Workflow.Handle.IsNull() {
+					diags.AddAttributeError(workflowPath, "missing handle", "handle is required")
+				}
+			}
 			if action.EscalationPolicy != nil {
 				escalationPolicyPath := actionPath.AtName("escalation_policy")
 				if hasEscalationPolicyAction {
@@ -150,6 +145,9 @@ func (m *onCallTeamRoutingRulesModel) Validate() diag.Diagnostics {
 					}
 					if len(action.EscalationPolicy.SupportHours.Restrictions) == 0 {
 						diags.AddAttributeError(supportHoursPath, "missing restrictions", "support_hours must specify at least one restriction")
+					}
+					if rule.TimeRestrictions != nil {
+						diags.AddAttributeError(supportHoursPath, "conflicting time restriction configuration", "cannot combine the rule-level `time_restrictions` block with `support_hours` on an `escalation_policy` action in the same rule. Use one or the other.")
 					}
 				}
 			}
@@ -280,6 +278,14 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"team": schema.StringAttribute{
 												Optional:    true,
 												Description: "Teams team ID.",
+											},
+										},
+									},
+									"trigger_workflow_automation": schema.SingleNestedBlock{
+										Attributes: map[string]schema.Attribute{
+											"handle": schema.StringAttribute{
+												Optional:    true,
+												Description: "The handle of the Workflow Automation to trigger.",
 											},
 										},
 									},
@@ -558,6 +564,35 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 						Channel: types.StringValue(action.SendTeamsMessageAction.Channel),
 					},
 				})
+			} else if action.TriggerWorkflowAutomationAction != nil {
+				stateActions = append(stateActions, &teamRuleActionModel{
+					Workflow: &triggerWorkflowAutomationModel{
+						Handle: types.StringValue(action.TriggerWorkflowAutomationAction.Handle),
+					},
+				})
+			} else if action.RoutingRuleEscalationPolicyAction != nil {
+				var stateSupportHours *escalationPolicySupportHoursModel
+				if action.RoutingRuleEscalationPolicyAction.SupportHours != nil {
+					stateSupportHours = &escalationPolicySupportHoursModel{
+						TimeZone: types.StringValue(action.RoutingRuleEscalationPolicyAction.SupportHours.TimeZone),
+					}
+					for _, restriction := range action.RoutingRuleEscalationPolicyAction.SupportHours.Restrictions {
+						stateSupportHours.Restrictions = append(stateSupportHours.Restrictions, &restrictionsModel{
+							EndDay:    types.StringValue(string(restriction.GetEndDay())),
+							EndTime:   types.StringValue(restriction.GetEndTime()),
+							StartDay:  types.StringValue(string(restriction.GetStartDay())),
+							StartTime: types.StringValue(restriction.GetStartTime()),
+						})
+					}
+				}
+				stateActions = append(stateActions, &teamRuleActionModel{
+					EscalationPolicy: &escalationPolicyActionModel{
+						PolicyId:          types.StringValue(action.RoutingRuleEscalationPolicyAction.PolicyId),
+						AckTimeoutMinutes: types.Int64PointerValue(action.RoutingRuleEscalationPolicyAction.AckTimeoutMinutes),
+						Urgency:           types.StringPointerValue((*string)(action.RoutingRuleEscalationPolicyAction.Urgency)),
+						SupportHours:      stateSupportHours,
+					},
+				})
 			}
 		}
 
@@ -598,11 +633,24 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 		actions := []datadogV2.RoutingRuleAction{}
 		for actionIndex, plannedAction := range plannedRule.Actions {
 			action := datadogV2.RoutingRuleAction{}
-			if plannedAction.Teams != nil && plannedAction.Slack != nil {
+			configured := 0
+			if plannedAction.Teams != nil {
+				configured++
+			}
+			if plannedAction.Slack != nil {
+				configured++
+			}
+			if plannedAction.Workflow != nil {
+				configured++
+			}
+			if plannedAction.EscalationPolicy != nil {
+				configured++
+			}
+			if configured > 1 {
 				diags.AddAttributeError(
 					rulePath.AtName("action").AtListIndex(actionIndex),
 					"action can only have one configuration",
-					"only one of `send_slack_message`, `send_teams_message` is allowed per action. Consider adding a separate `action` block.")
+					"only one of `send_slack_message`, `send_teams_message`, `trigger_workflow_automation`, `escalation_policy` is allowed per action. Consider adding a separate `action` block.")
 				return nil, diags
 			}
 			if plannedAction.Teams != nil {
@@ -617,6 +665,44 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 				action.SendSlackMessageAction.Type = datadogV2.SENDSLACKMESSAGEACTIONTYPE_SEND_SLACK_MESSAGE
 				action.SendSlackMessageAction.Channel = plannedAction.Slack.Channel.ValueString()
 				action.SendSlackMessageAction.Workspace = plannedAction.Slack.Workspace.ValueString()
+			}
+			if plannedAction.Workflow != nil {
+				action.TriggerWorkflowAutomationAction = datadogV2.NewTriggerWorkflowAutomationActionWithDefaults()
+				action.TriggerWorkflowAutomationAction.Type = datadogV2.TRIGGERWORKFLOWAUTOMATIONACTIONTYPE_TRIGGER_WORKFLOW_AUTOMATION
+				action.TriggerWorkflowAutomationAction.Handle = plannedAction.Workflow.Handle.ValueString()
+			}
+			if plannedAction.EscalationPolicy != nil {
+				epAction := datadogV2.NewRoutingRuleEscalationPolicyActionWithDefaults()
+				epAction.Type = datadogV2.ROUTINGRULEESCALATIONPOLICYACTIONTYPE_ESCALATION_POLICY
+				epAction.PolicyId = plannedAction.EscalationPolicy.PolicyId.ValueString()
+				if !plannedAction.EscalationPolicy.AckTimeoutMinutes.IsNull() {
+					epAction.AckTimeoutMinutes = plannedAction.EscalationPolicy.AckTimeoutMinutes.ValueInt64Pointer()
+				}
+				if !plannedAction.EscalationPolicy.Urgency.IsNull() {
+					epAction.Urgency = (*datadogV2.Urgency)(plannedAction.EscalationPolicy.Urgency.ValueStringPointer())
+				}
+				if plannedAction.EscalationPolicy.SupportHours != nil {
+					sh := datadogV2.NewRoutingRuleEscalationPolicyActionSupportHoursWithDefaults()
+					sh.TimeZone = plannedAction.EscalationPolicy.SupportHours.TimeZone.ValueString()
+					for _, plannedRestriction := range plannedAction.EscalationPolicy.SupportHours.Restrictions {
+						restriction := datadogV2.TimeRestriction{}
+						if !plannedRestriction.EndDay.IsNull() {
+							restriction.SetEndDay(datadogV2.Weekday(plannedRestriction.EndDay.ValueString()))
+						}
+						if !plannedRestriction.EndTime.IsNull() {
+							restriction.SetEndTime(plannedRestriction.EndTime.ValueString())
+						}
+						if !plannedRestriction.StartDay.IsNull() {
+							restriction.SetStartDay(datadogV2.Weekday(plannedRestriction.StartDay.ValueString()))
+						}
+						if !plannedRestriction.StartTime.IsNull() {
+							restriction.SetStartTime(plannedRestriction.StartTime.ValueString())
+						}
+						sh.Restrictions = append(sh.Restrictions, restriction)
+					}
+					epAction.SupportHours = sh
+				}
+				action.RoutingRuleEscalationPolicyAction = epAction
 			}
 			actions = append(actions, action)
 		}

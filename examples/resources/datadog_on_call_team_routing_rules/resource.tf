@@ -23,4 +23,24 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
     escalation_policy = "00000000-aba2-0000-0000-000000000000"
     urgency           = "dynamic"
   }
+
+  rule {
+    query = "tags.service:payment"
+    action {
+      escalation_policy {
+        policy_id           = "00000000-aba2-0000-0000-000000000000"
+        ack_timeout_minutes = 30
+        urgency             = "low"
+        support_hours {
+          time_zone = "America/New_York"
+          restriction {
+            start_day  = "monday"
+            start_time = "09:00:00"
+            end_day    = "friday"
+            end_time   = "17:00:00"
+          }
+        }
+      }
+    }
+  }
 }

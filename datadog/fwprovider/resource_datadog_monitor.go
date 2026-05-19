@@ -141,6 +141,7 @@ type Variable struct {
 	EventQuery       []EventQuery       `tfsdk:"event_query"`
 	CloudCostQuery   []CloudCostQuery   `tfsdk:"cloud_cost_query"`
 	DataQualityQuery []DataQualityQuery `tfsdk:"data_quality_query"`
+	DataJobsQuery    []DataJobsQuery    `tfsdk:"data_jobs_query"`
 }
 
 type EventQuery struct {
@@ -198,6 +199,13 @@ type DataQualityMonitorOptions struct {
 	GroupByColumns    types.List   `tfsdk:"group_by_columns"`
 	CrontabOverride   types.String `tfsdk:"crontab_override"`
 	ModelTypeOverride types.String `tfsdk:"model_type_override"`
+}
+
+type DataJobsQuery struct {
+	Name         types.String `tfsdk:"name"`
+	JobsQuery    types.String `tfsdk:"jobs_query"`
+	JobType      types.String `tfsdk:"job_type"`
+	QueryDialect types.String `tfsdk:"query_dialect"`
 }
 
 type monitorResource struct {
@@ -875,6 +883,32 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 								},
 							},
 						},
+						"data_jobs_query": schema.ListNestedBlock{
+							Description: "The Data Jobs query using formulas and functions.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(5),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Required:    true,
+										Description: "Name of the query for use in formulas. Must be `run_query`.",
+									},
+									"jobs_query": schema.StringAttribute{
+										Required:    true,
+										Description: "Filter expression used to select the jobs to monitor.",
+									},
+									"job_type": schema.StringAttribute{
+										Required:    true,
+										Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `dbt.model`, `dbt.test`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.",
+									},
+									"query_dialect": schema.StringAttribute{
+										Required:    true,
+										Description: "Query dialect for data jobs queries. Currently only `metric` is supported.",
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -1222,6 +1256,9 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if dataQualityReq := r.buildDataQualityQueryStruct(ctx, variable.DataQualityQuery); len(dataQualityReq) > 0 {
 		variablesReq = append(variablesReq, dataQualityReq...)
 	}
+	if dataJobsReq := r.buildDataJobsQueryStruct(variable.DataJobsQuery); len(dataJobsReq) > 0 {
+		variablesReq = append(variablesReq, dataJobsReq...)
+	}
 	return variablesReq
 }
 
@@ -1337,6 +1374,24 @@ func (r *monitorResource) buildDataQualityQueryStruct(ctx context.Context, dataQ
 			dataQualityQueryReq.SetMonitorOptions(monitorOptsReq)
 		}
 		variableReq.MonitorFormulaAndFunctionDataQualityQueryDefinition = &dataQualityQueryReq
+		variablesReq = append(variablesReq, variableReq)
+	}
+	return variablesReq
+}
+
+func (r *monitorResource) buildDataJobsQueryStruct(dataJobsQs []DataJobsQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	if len(dataJobsQs) == 0 {
+		return nil
+	}
+	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+	for _, dataJobsQ := range dataJobsQs {
+		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+		dataJobsQueryReq := datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinition{}
+		fwutils.SetOptString(dataJobsQ.Name, dataJobsQueryReq.SetName)
+		fwutils.SetOptString(dataJobsQ.JobsQuery, dataJobsQueryReq.SetJobsQuery)
+		fwutils.SetOptString(dataJobsQ.JobType, dataJobsQueryReq.SetJobType)
+		fwutils.SetOptString(dataJobsQ.QueryDialect, dataJobsQueryReq.SetQueryDialect)
+		variableReq.MonitorFormulaAndFunctionDataJobsQueryDefinition = &dataJobsQueryReq
 		variablesReq = append(variablesReq, variableReq)
 	}
 	return variablesReq
@@ -1515,6 +1570,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	eventQueryStates := []EventQuery{}
 	CloudCostQueryStates := []CloudCostQuery{}
 	DataQualityQueryStates := []DataQualityQuery{}
+	DataJobsQueryStates := []DataJobsQuery{}
 
 	for _, v := range *variables {
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
@@ -1526,11 +1582,15 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if dataQualityQState := r.buildDataQualityQueryState(ctx, v.MonitorFormulaAndFunctionDataQualityQueryDefinition); dataQualityQState != nil {
 			DataQualityQueryStates = append(DataQualityQueryStates, *dataQualityQState)
 		}
+		if dataJobsQState := r.buildDataJobsQueryState(v.MonitorFormulaAndFunctionDataJobsQueryDefinition); dataJobsQState != nil {
+			DataJobsQueryStates = append(DataJobsQueryStates, *dataJobsQState)
+		}
 	}
 	state.Variables = []Variable{{
 		EventQuery:       eventQueryStates,
 		CloudCostQuery:   CloudCostQueryStates,
 		DataQualityQuery: DataQualityQueryStates,
+		DataJobsQuery:    DataJobsQueryStates,
 	}}
 }
 
@@ -1633,6 +1693,18 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 		dataQualityQueryState.MonitorOptions = []DataQualityMonitorOptions{monitorOptsState}
 	}
 	return &dataQualityQueryState
+}
+
+func (r *monitorResource) buildDataJobsQueryState(dataJobsQ *datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinition) *DataJobsQuery {
+	if dataJobsQ == nil {
+		return nil
+	}
+	return &DataJobsQuery{
+		Name:         fwutils.ToTerraformStr(dataJobsQ.GetNameOk()),
+		JobsQuery:    fwutils.ToTerraformStr(dataJobsQ.GetJobsQueryOk()),
+		JobType:      fwutils.ToTerraformStr(dataJobsQ.GetJobTypeOk()),
+		QueryDialect: fwutils.ToTerraformStr(dataJobsQ.GetQueryDialectOk()),
+	}
 }
 
 func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, diag.Diagnostics) {

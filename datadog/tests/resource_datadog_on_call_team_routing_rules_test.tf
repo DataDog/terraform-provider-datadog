@@ -31,6 +31,23 @@ resource "datadog_on_call_schedule" "team_rules_test" {
   }
 }
 
+resource "datadog_workflow_automation" "team_rules_test" {
+  name        = "Team Rules Test Workflow UNIQ"
+  description = "Workflow used by on-call team routing rules test."
+  tags        = ["service:foo", "team:bar"]
+  published   = true
+  spec_json = jsonencode({
+    handle = "team-rules-test-workflow-UNIQ"
+    steps  = []
+    triggers = [
+      {
+        startStepNames = []
+        onCallTrigger  = {}
+      }
+    ]
+  })
+}
+
 resource "datadog_on_call_escalation_policy" "team_rules_test" {
   name                        = "POLICY_NAME"
   resolve_page_on_policy_end = true
@@ -51,13 +68,13 @@ resource "datadog_on_call_escalation_policy" "team_rules_test" {
 }
 
 resource "datadog_on_call_team_routing_rules" "team_rules_test" {
-  id = datadog_team.team_rules_test.id
+  id         = datadog_team.team_rules_test.id
+  depends_on = [datadog_workflow_automation.team_rules_test]
   rule {
     query = "tags.service:test"
     action {
-      send_slack_message {
-        workspace = "workspace"
-        channel = "channel"
+      trigger_workflow_automation {
+        handle = "team-rules-test-workflow-UNIQ"
       }
     }
     time_restrictions {
@@ -77,7 +94,7 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
   }
 
   rule {
-    query = "tags.service:test"
+    query = "tags.service:payment"
     action {
       escalation_policy {
         policy_id = datadog_on_call_escalation_policy.team_rules_test.id
