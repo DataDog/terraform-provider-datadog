@@ -22,7 +22,6 @@ require (
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	gopkg.in/DataDog/dd-trace-go.v1 v1.34.0
 	gopkg.in/dnaeon/go-vcr.v3 v3.1.2
-	gopkg.in/warnings.v0 v0.1.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -65,7 +64,6 @@ require (
 	github.com/hashicorp/yamux v0.1.2 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
-	github.com/kisielk/errcheck v1.20.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/cli v1.1.5 // indirect
