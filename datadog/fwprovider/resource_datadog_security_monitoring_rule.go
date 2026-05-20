@@ -296,10 +296,10 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 							Description: "Name of the case.",
 						},
 						"condition": schema.StringAttribute{
-							Optional:    true,
-							Computed:    true,
-							Default:     stringdefault.StaticString(""),
-							Description: "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
+							Optional:      true,
+							Computed:      true,
+							PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+							Description:   "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
 						},
 						"notifications": schema.ListAttribute{
 							Optional:    true,
