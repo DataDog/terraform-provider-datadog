@@ -51,6 +51,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
+	NewIntegrationDatabricksAccountResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpResource,
