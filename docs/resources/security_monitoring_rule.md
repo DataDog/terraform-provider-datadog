@@ -101,7 +101,7 @@ Required:
 Optional:
 
 - `action` (Block List) Action to perform when the case trigger (see [below for nested schema](#nestedblock--case--action))
-- `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries. Defaults to `""`.
+- `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.
 - `name` (String) Name of the case. Defaults to `""`.
 - `notifications` (List of String) Notification targets for each rule case.
 

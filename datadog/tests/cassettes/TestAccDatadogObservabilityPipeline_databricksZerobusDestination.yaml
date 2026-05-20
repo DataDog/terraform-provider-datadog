@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 564
+        content_length: 593
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id","client_secret_key":"DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"},"id":"databricks-zerobus-dest-1","ingestion_endpoint":"https://ingest.databricks.example.com/v1/logs","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint":"https://unity.databricks.example.com"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"databricks zerobus pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id","client_secret_key":"DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"},"id":"databricks-zerobus-dest-1","ingestion_endpoint_key":"DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint_key":"DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"}],"pipeline_type":"logs","sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"databricks zerobus pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 646
+        content_length: 675
         uncompressed: false
         body: |
-            {"data":{"id":"27a97454-43f8-11f1-9be7-da7ad0900002","type":"pipelines","attributes":{"name":"databricks zerobus pipeline","config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id","client_secret_key":"DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"},"id":"databricks-zerobus-dest-1","ingestion_endpoint":"https://ingest.databricks.example.com/v1/logs","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint":"https://unity.databricks.example.com"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"cdfa409a-5456-11f1-8af5-da7ad0900002","type":"pipelines","attributes":{"name":"databricks zerobus pipeline","config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id","client_secret_key":"DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"},"id":"databricks-zerobus-dest-1","ingestion_endpoint_key":"DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint_key":"DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 1.125309417s
+        duration: 921.18775ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/27a97454-43f8-11f1-9be7-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/cdfa409a-5456-11f1-8af5-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 646
+        content_length: 675
         uncompressed: false
         body: |
-            {"data":{"id":"27a97454-43f8-11f1-9be7-da7ad0900002","type":"pipelines","attributes":{"name":"databricks zerobus pipeline","config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id","client_secret_key":"DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"},"id":"databricks-zerobus-dest-1","ingestion_endpoint":"https://ingest.databricks.example.com/v1/logs","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint":"https://unity.databricks.example.com"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+            {"data":{"id":"cdfa409a-5456-11f1-8af5-da7ad0900002","type":"pipelines","attributes":{"name":"databricks zerobus pipeline","config":{"destinations":[{"auth":{"client_id":"my-oauth-client-id","client_secret_key":"DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"},"id":"databricks-zerobus-dest-1","ingestion_endpoint_key":"DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT","inputs":["source-1"],"table_name":"my_catalog.my_schema.my_table","type":"databricks_zerobus","unity_catalog_endpoint_key":"DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 314.560667ms
+        duration: 308.700708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/27a97454-43f8-11f1-9be7-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/cdfa409a-5456-11f1-8af5-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 768.21675ms
+        duration: 1.372054083s

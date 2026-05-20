@@ -1,3 +1,27 @@
+## 4.10.0 (May 20, 2026)
+
+### BUGFIXES
+* [datadog_security_monitoring_rule] Fix anomaly_detection_options Computed drift by @hachem-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3784
+* [datadog_security_monitoring_rule] Mark anomaly_detection_options fields as Computed by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3792
+* [datadog_dashboard_v2] Preserve zero layout coordinates by @brlee19 in https://github.com/DataDog/terraform-provider-datadog/pull/3793
+* [datadog_security_monitoring_rule] Fix anomaly detection rule condition field to handle dynamic API default by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3801
+### IMPROVEMENTS
+* [datadog_logs_archive] Add compression_method to Log Archives resource by @mateo-villa in https://github.com/DataDog/terraform-provider-datadog/pull/3781
+* [datadog_security_monitoring_filter] Migrate to plugin framework by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3773
+* [datadog_security_monitoring_default_rule] Migrate to plugin framework by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3780
+### FEATURES
+* [datadog_dashboard_v2] Allow errors data source in formula event queries by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3775
+* [datadog_monitor] Add data-jobs alert monitor type support by @pawel-big-lebowski in https://github.com/DataDog/terraform-provider-datadog/pull/3795
+* [datadog_integration_databricks_account] Add Terraform resource for Databricks AMS integration by @guttymora in https://github.com/DataDog/terraform-provider-datadog/pull/3797
+* [datadog_observability_pipeline] Update databricks_zerobus destination, use identifiers for unity_catalog_endpoint and ingestion_endpoint by @petere-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3798
+
+## New Contributors
+* @mateo-villa made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3781
+* @guttymora made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3787
+* @pawel-big-lebowski made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3795
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.9.0...v4.10.0
+
 ## 4.9.0 (May 13, 2026)
 
 ### IMPROVEMENTS
