@@ -1171,9 +1171,10 @@ resource "datadog_observability_pipeline" "http_server" {
         decoding      = "json"
 
         tls {
-          crt_file = "/etc/ssl/certs/http.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/http.key"
+          crt_file           = "/etc/ssl/certs/http.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/http.key"
+          verify_certificate = true
         }
       }
     }
@@ -1197,6 +1198,7 @@ resource "datadog_observability_pipeline" "http_server" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.verify_certificate", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "http-source-1"),
 				),
 			},
@@ -4533,9 +4535,10 @@ resource "datadog_observability_pipeline" "socket_tcp" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+          crt_file           = "/etc/ssl/certs/socket.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/socket.key"
+          verify_certificate = true
         }
       }
     }
@@ -4557,6 +4560,7 @@ resource "datadog_observability_pipeline" "socket_tcp" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.crt_file", "/etc/ssl/certs/socket.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.key_file", "/etc/ssl/private/socket.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.verify_certificate", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "socket-source-1"),
 				),
 			},

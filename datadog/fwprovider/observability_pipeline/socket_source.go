@@ -12,10 +12,10 @@ import (
 
 // SocketSourceModel represents the Terraform model for socket source configuration
 type SocketSourceModel struct {
-	AddressKey types.String              `tfsdk:"address_key"`
-	Mode       types.String              `tfsdk:"mode"`
-	Framing    []SocketFramingModel      `tfsdk:"framing"`
-	Tls        []MtlsServerTlsModel      `tfsdk:"tls"`
+	AddressKey types.String         `tfsdk:"address_key"`
+	Mode       types.String         `tfsdk:"mode"`
+	Framing    []SocketFramingModel `tfsdk:"framing"`
+	Tls        []MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 // ExpandSocketSource converts the Terraform model to the Datadog API model
