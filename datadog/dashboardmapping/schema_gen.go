@@ -124,10 +124,27 @@ func FieldSpecToSDKv2(f FieldSpec) *schema.Schema {
 			Schema: FieldSpecsToSDKv2Schema(f.Children),
 		}
 
+	case TypeJSON:
+		s.Type = schema.TypeString
+
 	case TypeBlockList:
 		s.Type = schema.TypeList
-		s.Elem = &schema.Resource{
-			Schema: FieldSpecsToSDKv2Schema(f.Children),
+		if f.Discriminator != nil {
+			// Discriminated union per list item — merge variant children
+			// into a single flat schema (same as TypeOneOf).
+			merged := make(map[string]*schema.Schema)
+			for _, child := range f.Children {
+				for key, childSchema := range FieldSpecsToSDKv2Schema([]FieldSpec{child}) {
+					childSchema.Required = false
+					childSchema.Optional = true
+					merged[key] = childSchema
+				}
+			}
+			s.Elem = &schema.Resource{Schema: merged}
+		} else {
+			s.Elem = &schema.Resource{
+				Schema: FieldSpecsToSDKv2Schema(f.Children),
+			}
 		}
 		if f.MaxItems > 0 {
 			s.MaxItems = f.MaxItems

@@ -44,7 +44,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 - `query` (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`, `data-quality alert`, `network-path alert`.
+- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`, `data-quality alert`, `network-path alert`, `data-jobs alert`.
 
 ### Optional
 
@@ -175,6 +175,7 @@ Optional:
 
 - `aggregate_augmented_query` (Block List) Aggregate-augmented composite query variables (reference table augment joined to a metrics or events base query). (see [below for nested schema](#nestedblock--variables--aggregate_augmented_query))
 - `cloud_cost_query` (Block List, Max: 5) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--variables--cloud_cost_query))
+- `data_jobs_query` (Block List, Max: 5) The Data Jobs query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_jobs_query))
 - `data_quality_query` (Block List, Max: 5) The Data Quality query using formulas and functions. (see [below for nested schema](#nestedblock--variables--data_quality_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
 
@@ -428,6 +429,17 @@ Required:
 - `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
+
+
+<a id="nestedblock--variables--data_jobs_query"></a>
+### Nested Schema for `variables.data_jobs_query`
+
+Required:
+
+- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `dbt.model`, `dbt.test`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.
+- `jobs_query` (String) Filter expression used to select the jobs to monitor.
+- `name` (String) Name of the query for use in formulas. Must be `run_query`.
+- `query_dialect` (String) Query dialect for data jobs queries. Currently only `metric` is supported.
 
 
 <a id="nestedblock--variables--data_quality_query"></a>

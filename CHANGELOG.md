@@ -1,3 +1,18 @@
+## 4.9.0 (May 13, 2026)
+
+### IMPROVEMENTS
+* [datadog_security_monitoring_rule] Migrate to plugin framework by @alvizi-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3716
+* [datadog_dashboard_v2] Add bar_chart, sankey, and wildcard widget types by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3678
+### FEATURES
+* [datadog_agentless_scanning_aws_scan_options] Add compliance_host to AWS and GCP scan options by @BraisCaboFelpete in https://github.com/DataDog/terraform-provider-datadog/pull/3762
+* [datadog_agentless_scanning_azure_scan_options] Add Terraform resource for Azure scan options by @BraisCaboFelpete in https://github.com/DataDog/terraform-provider-datadog/pull/3767
+
+## New Contributors
+* @cperryk made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3768
+* @BraisCaboFelpete made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3762
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.8.0...v4.9.0
+
 ## 4.8.0 (May 7, 2026)
 
 ### IMPROVEMENTS

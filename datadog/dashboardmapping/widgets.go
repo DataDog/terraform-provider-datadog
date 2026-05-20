@@ -757,7 +757,33 @@ var ChangeWidgetSpec = WidgetSpec{
 	},
 }
 
+// distributionHistogramQueryFields holds the children of the singular `query`
+// block on a histogram-mode DistributionWidgetRequest. The OpenAPI spec
+// (DistributionWidgetHistogramRequestQuery) lists three valid query variants:
+// metric, event, and apm_resource_stats. We reuse the same FieldSpec children
+// already declared for plural-formula queries — flattenFormulaQueryJSON and
+// buildQueryFromMapAttrs both dispatch by data_source over this exact shape.
+var distributionHistogramQueryFields = []FieldSpec{
+	{HCLKey: "metric_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Metric query for histogram-mode distribution.",
+		Children:    formulaAndFunctionMetricQueryFields},
+	{HCLKey: "event_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Event query for histogram-mode distribution.",
+		Children:    formulaAndFunctionEventQueryFields},
+	{HCLKey: "apm_resource_stats_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "APM resource stats query for histogram-mode distribution.",
+		Children:    formulaAndFunctionApmResourceStatsQueryFields},
+}
+
 // DistributionWidgetSpec corresponds to OpenAPI DistributionWidgetDefinition.
+//
+// Distribution requests have two coexisting modes in the same flat schema
+// (per OpenAPI DistributionWidgetRequest):
+//   - Aggregated: queries[]/formulas[]/response_format (handled by the
+//     standard formula request path).
+//   - Histogram: request_type=histogram + a singular `query` block (one of
+//     three FormulaAndFunction query types). Surfaced in HCL as the
+//     `histogram_query` block and dispatched in post-processing.
 var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "q", Type: TypeString, OmitEmpty: true,
 		Deprecated:    "Use queries and formulas instead.",
@@ -770,6 +796,17 @@ var distributionWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "apm_stats_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The APM stats query to use in the widget.",
 		Children:    apmStatsQueryFields},
+	// Histogram-mode distribution request fields. request_type acts as the
+	// discriminator for histogram mode; histogram_query carries the singular
+	// query body. histogram_query is SchemaOnly because the JSON key it maps
+	// to (`query`) conflicts with the existing plural `query` TypeBlockList
+	// in standardQueryFields — handled in post-processing.
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
+		Description: "Set to 'histogram' for distribution-of-point-values requests.",
+		ValidValues: []string{"histogram"}},
+	{HCLKey: "histogram_query", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "Singular query block for histogram-mode distribution requests.",
+		Children:    distributionHistogramQueryFields},
 }, standardQueryFields...)
 
 // distributionWidgetXAxisFields corresponds to OpenAPI DistributionWidgetXAxis.
@@ -1446,6 +1483,9 @@ var allWidgetSpecs = []WidgetSpec{
 	PowerpackWidgetSpec,
 	// Funnel widget (unique request structure; request_type injected by post-process hook)
 	FunnelWidgetSpec,
+	BarChartWidgetSpec,
+	SankeyWidgetSpec,
+	WildcardWidgetSpec,
 }
 
 // FunnelWidgetSpec corresponds to OpenAPI FunnelWidgetDefinition.
@@ -1459,6 +1499,70 @@ var FunnelWidgetSpec = WidgetSpec{
 			MaxItems:    1,
 			Description: "A nested block describing the request to use when displaying the widget. Only one `request` block is allowed.",
 			Children:    funnelWidgetRequestFields},
+	},
+}
+
+// BarChartWidgetSpec corresponds to OpenAPI BarChartWidgetDefinition.
+// Formula-capable with scalar response_format; uses scalarWithConditionalFormatsConfig.
+var BarChartWidgetSpec = WidgetSpec{
+	HCLKey:      "bar_chart_definition",
+	JSONType:    "bar_chart",
+	Description: "The definition for a Bar Chart widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+			Description: "Style customization for the bar chart widget.",
+			Children:    barChartWidgetStyleFields},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			MaxItems:    1,
+			Description: "A nested block describing the request to use when displaying the widget.",
+			Children:    barChartWidgetRequestFields},
+		widgetCustomLinkField,
+	},
+}
+
+// SankeyWidgetSpec corresponds to OpenAPI SankeyWidgetDefinition.
+// Requests use a discriminated TypeBlockList — each request item is dispatched
+// by request_type to either rum_request or network_request variant.
+var SankeyWidgetSpec = WidgetSpec{
+	HCLKey:      "sankey_definition",
+	JSONType:    "sankey",
+	Description: "The definition for a Sankey diagram widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "sort_nodes", Type: TypeBool, OmitEmpty: true,
+			Description: "Whether to sort nodes in the Sankey diagram."},
+		{HCLKey: "show_other_links", Type: TypeBool, OmitEmpty: true,
+			Description: "Whether to show links for the 'other' category."},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Discriminator: &OneOfDiscriminator{JSONKey: "request_type"},
+			Description:   "A nested block describing the request to use when displaying the widget.",
+			Children: []FieldSpec{
+				{HCLKey: "rum_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "sankey"},
+					Description:   "RUM request for the Sankey widget.",
+					Children:      sankeyRumRequestFields},
+				{HCLKey: "network_request", Type: TypeBlock, OmitEmpty: true,
+					Discriminator: &OneOfDiscriminator{Value: "netflow_sankey"},
+					Description:   "Network request for the Sankey widget.",
+					Children:      sankeyNetworkRequestFields},
+			}},
+	},
+}
+
+// WildcardWidgetSpec corresponds to OpenAPI WildcardWidgetDefinition.
+// Custom visualization widget using Vega or Vega-Lite specifications.
+// Request build/flatten is handled in post-processing.
+var WildcardWidgetSpec = WidgetSpec{
+	HCLKey:      "wildcard_definition",
+	JSONType:    "wildcard",
+	Description: "The definition for a Wildcard (custom visualization) widget using Vega or Vega-Lite specifications.",
+	Fields: []FieldSpec{
+		{HCLKey: "specification", Type: TypeBlock, OmitEmpty: false,
+			Description: "The Vega or Vega-Lite specification for custom visualization rendering.",
+			Children:    wildcardWidgetSpecificationFields},
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Description: "A nested block describing the data requests for the widget.",
+			Children:    wildcardWidgetRequestFields},
+		widgetCustomLinkField,
 	},
 }
 

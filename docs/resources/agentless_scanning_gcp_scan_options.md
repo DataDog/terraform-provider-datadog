@@ -18,6 +18,7 @@ resource "datadog_agentless_scanning_gcp_scan_options" "example" {
   gcp_project_id     = "company-project-prod"
   vuln_containers_os = true
   vuln_host_os       = true
+  # compliance_host  = true  # Optional. Defaults to false. Enables host compliance benchmark scanning.
 }
 ```
 
@@ -29,6 +30,10 @@ resource "datadog_agentless_scanning_gcp_scan_options" "example" {
 - `gcp_project_id` (String) The GCP project ID for which agentless scanning is configured. Must be a valid GCP project ID: 6–30 characters, start with a lowercase letter, and include only lowercase letters, digits, or hyphens.
 - `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
 - `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
+
+### Optional
+
+- `compliance_host` (Boolean) Indicates if host compliance scanning is enabled. Defaults to `false`.
 
 ### Read-Only
 

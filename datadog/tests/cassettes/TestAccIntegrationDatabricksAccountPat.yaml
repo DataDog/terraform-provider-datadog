@@ -1,0 +1,204 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 568
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"name":"tf-TestAccIntegrationDatabricksAccountPat-local-1779187263","secrets":{"token":"dapi-test-token"},"settings":{"ccm_enabled":false,"djm_cluster_policy_enabled":false,"djm_enabled":true,"djm_global_init_script_enabled":false,"do_crawlers_cron":"0 * * * *","do_enabled":false,"model_serving_metrics_enabled":false,"script_gpum_enabled":false,"script_logs_enabled":false,"serverless_jobs_enabled":false,"table_lineage_enabled":false,"workspace_url":"https://dbc-097db9cd-e3d9.cloud.databricks.com/"}},"type":"Account"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/web-integrations/databricks/accounts
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 552
+        uncompressed: false
+        body: '{"data":{"id":"9b2d5c76-4807-4124-8d88-a6b256580aa3","type":"Account","attributes":{"name":"tf-TestAccIntegrationDatabricksAccountPat-local-1779187263","settings":{"ccm_enabled":false,"djm_cluster_policy_enabled":false,"djm_enabled":true,"djm_global_init_script_enabled":false,"do_crawlers_cron":"0 * * * *","do_enabled":false,"model_serving_metrics_enabled":false,"script_gpum_enabled":false,"script_logs_enabled":false,"serverless_jobs_enabled":false,"table_lineage_enabled":false,"workspace_url":"https://dbc-097db9cd-e3d9.cloud.databricks.com/"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 693.051708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/web-integrations/databricks/accounts/9b2d5c76-4807-4124-8d88-a6b256580aa3
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 552
+        uncompressed: false
+        body: '{"data":{"id":"9b2d5c76-4807-4124-8d88-a6b256580aa3","type":"Account","attributes":{"name":"tf-TestAccIntegrationDatabricksAccountPat-local-1779187263","settings":{"ccm_enabled":false,"djm_cluster_policy_enabled":false,"djm_enabled":true,"djm_global_init_script_enabled":false,"do_crawlers_cron":"0 * * * *","do_enabled":false,"model_serving_metrics_enabled":false,"script_gpum_enabled":false,"script_logs_enabled":false,"serverless_jobs_enabled":false,"table_lineage_enabled":false,"workspace_url":"https://dbc-097db9cd-e3d9.cloud.databricks.com/"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 181.458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/web-integrations/databricks/accounts/9b2d5c76-4807-4124-8d88-a6b256580aa3
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 552
+        uncompressed: false
+        body: '{"data":{"id":"9b2d5c76-4807-4124-8d88-a6b256580aa3","type":"Account","attributes":{"name":"tf-TestAccIntegrationDatabricksAccountPat-local-1779187263","settings":{"ccm_enabled":false,"djm_cluster_policy_enabled":false,"djm_enabled":true,"djm_global_init_script_enabled":false,"do_crawlers_cron":"0 * * * *","do_enabled":false,"model_serving_metrics_enabled":false,"script_gpum_enabled":false,"script_logs_enabled":false,"serverless_jobs_enabled":false,"table_lineage_enabled":false,"workspace_url":"https://dbc-097db9cd-e3d9.cloud.databricks.com/"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 166.135875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/web-integrations/databricks/accounts/9b2d5c76-4807-4124-8d88-a6b256580aa3
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 552
+        uncompressed: false
+        body: '{"data":{"id":"9b2d5c76-4807-4124-8d88-a6b256580aa3","type":"Account","attributes":{"name":"tf-TestAccIntegrationDatabricksAccountPat-local-1779187263","settings":{"ccm_enabled":false,"djm_cluster_policy_enabled":false,"djm_enabled":true,"djm_global_init_script_enabled":false,"do_crawlers_cron":"0 * * * *","do_enabled":false,"model_serving_metrics_enabled":false,"script_gpum_enabled":false,"script_logs_enabled":false,"serverless_jobs_enabled":false,"table_lineage_enabled":false,"workspace_url":"https://dbc-097db9cd-e3d9.cloud.databricks.com/"}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 196.578958ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/web-integrations/databricks/accounts/9b2d5c76-4807-4124-8d88-a6b256580aa3
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 227.129166ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/web-integrations/databricks/accounts/9b2d5c76-4807-4124-8d88-a6b256580aa3
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 78
+        uncompressed: false
+        body: '{"errors":[{"status":"404","title":"Not Found","detail":"account not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 156.006167ms

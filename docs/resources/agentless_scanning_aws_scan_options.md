@@ -20,6 +20,7 @@ resource "datadog_agentless_scanning_aws_scan_options" "example" {
   sensitive_data     = false
   vuln_containers_os = true
   vuln_host_os       = true
+  # compliance_host  = true  # Optional. Defaults to false. Enables host compliance benchmark scanning.
 }
 ```
 
@@ -33,6 +34,10 @@ resource "datadog_agentless_scanning_aws_scan_options" "example" {
 - `sensitive_data` (Boolean) Indicates if scanning for sensitive data is enabled.
 - `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
 - `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
+
+### Optional
+
+- `compliance_host` (Boolean) Indicates if host compliance scanning is enabled. Defaults to `false`.
 
 ### Read-Only
 
