@@ -317,11 +317,9 @@ func (r *monitorResource) Metadata(_ context.Context, request resource.MetadataR
 	response.TypeName = "monitor"
 }
 
-// variablesEventQueryListBlock returns the nested list block schema for formula monitor variable event queries.
-func (r *monitorResource) variablesEventQueryListBlock(description string) schema.Block {
-	return schema.ListNestedBlock{
-		Description: description,
-		NestedObject: schema.NestedBlockObject{
+// variablesEventQueryNestedObject returns the nested object schema for formula monitor variable event queries (shared by event_query and aggregate-augmented augment/base branches).
+func (r *monitorResource) variablesEventQueryNestedObject() schema.NestedBlockObject {
+	return schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"data_source": schema.StringAttribute{
 					Required:    true,
@@ -435,7 +433,6 @@ func (r *monitorResource) variablesEventQueryListBlock(description string) schem
 					},
 				},
 			},
-		},
 	}
 }
 
@@ -834,7 +831,10 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				},
 				NestedObject: schema.NestedBlockObject{
 					Blocks: map[string]schema.Block{
-						"event_query": r.variablesEventQueryListBlock("A timeseries formula and functions events query."),
+						"event_query": schema.ListNestedBlock{
+							Description:  "A timeseries formula and functions events query.",
+							NestedObject: r.variablesEventQueryNestedObject(),
+						},
 						"cloud_cost_query": schema.ListNestedBlock{
 							Description: "The Cloud Cost query using formulas and functions.",
 							Validators: []validator.List{
@@ -1005,7 +1005,13 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 											},
 										},
 									},
-									"augment_event_query": r.variablesEventQueryListBlock("Events augment query. Conflicts with `augment_reference_table` in configuration."),
+									"augment_event_query": schema.ListNestedBlock{
+										Description: "Events augment query. Conflicts with `augment_reference_table` in configuration.",
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: r.variablesEventQueryNestedObject(),
+									},
 									"base_metrics_query": schema.ListNestedBlock{
 										Description: "Metrics base query. Conflicts with `base_event_query` in configuration.",
 										Validators: []validator.List{
@@ -1038,7 +1044,13 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 											},
 										},
 									},
-									"base_event_query": r.variablesEventQueryListBlock("Events base query. Conflicts with `base_metrics_query` in configuration."),
+									"base_event_query": schema.ListNestedBlock{
+										Description: "Events base query. Conflicts with `base_metrics_query` in configuration.",
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: r.variablesEventQueryNestedObject(),
+									},
 									"join_condition": schema.ListNestedBlock{
 										Description: "Join condition between augment and base queries.",
 										Validators: []validator.List{
