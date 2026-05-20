@@ -295,6 +295,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_rum_retention_filter_test":                                   "rum-retention-filter",
 	"tests/resource_datadog_rum_retention_filters_order_test":                            "rum-retention-filters-order",
 	"tests/resource_datadog_screenboard_test":                                            "dashboards",
+	"tests/resource_datadog_security_monitoring_default_rule_migration_test":             "security-monitoring",
 	"tests/resource_datadog_security_monitoring_default_rule_test":                       "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                             "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_migration_test":                   "security-monitoring",
