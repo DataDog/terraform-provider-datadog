@@ -1566,12 +1566,7 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 			for _, groupBy := range groupBys {
 				groupByReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
 				fwutils.SetOptString(groupBy.Facet, groupByReq.SetFacet)
-				if !groupBy.Source.IsNull() && groupBy.Source.ValueString() != "" {
-					if groupByReq.AdditionalProperties == nil {
-						groupByReq.AdditionalProperties = map[string]interface{}{}
-					}
-					groupByReq.AdditionalProperties["source"] = groupBy.Source.ValueString()
-				}
+				fwutils.SetOptString(groupBy.Source, groupByReq.SetSource)
 				fwutils.SetOptInt64(groupBy.Limit, groupByReq.SetLimit)
 				if sortList := groupBy.Sort; len(sortList) > 0 {
 					sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
@@ -1732,12 +1727,7 @@ func (r *monitorResource) buildAggregateAugmentedQueryStruct(ctx context.Context
 		groupBy := []datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
 		for _, g := range a.GroupBy {
 			gb := datadogV1.NewMonitorFormulaAndFunctionEventQueryGroupBy(g.Facet.ValueString())
-			if !g.Source.IsNull() && g.Source.ValueString() != "" {
-				if gb.AdditionalProperties == nil {
-					gb.AdditionalProperties = map[string]interface{}{}
-				}
-				gb.AdditionalProperties["source"] = g.Source.ValueString()
-			}
+			fwutils.SetOptString(g.Source, gb.SetSource)
 			fwutils.SetOptInt64(g.Limit, gb.SetLimit)
 			if sortList := g.Sort; len(sortList) > 0 {
 				sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
@@ -2020,13 +2010,8 @@ func (r *monitorResource) buildEventQueryState(ctx context.Context, eventQ *data
 		for _, groupBy := range *groupBys {
 			groupByState := GroupBy{
 				Facet:  fwutils.ToTerraformStr(groupBy.GetFacetOk()),
-				Source: types.StringNull(),
+				Source: fwutils.ToTerraformStr(groupBy.GetSourceOk()),
 				Limit:  fwutils.ToTerraformInt64(groupBy.GetLimitOk()),
-			}
-			if groupBy.AdditionalProperties != nil {
-				if s, ok := groupBy.AdditionalProperties["source"].(string); ok && s != "" {
-					groupByState.Source = types.StringValue(s)
-				}
 			}
 			if sort, ok := groupBy.GetSortOk(); ok && sort != nil {
 				sortState := Sort{
@@ -2115,13 +2100,8 @@ func (r *monitorResource) buildAggregateAugmentedQueryState(ctx context.Context,
 		for _, g := range *groups {
 			gb := GroupBy{
 				Facet:  fwutils.ToTerraformStr(g.GetFacetOk()),
-				Source: types.StringNull(),
+				Source: fwutils.ToTerraformStr(g.GetSourceOk()),
 				Limit:  fwutils.ToTerraformInt64(g.GetLimitOk()),
-			}
-			if g.AdditionalProperties != nil {
-				if s, ok := g.AdditionalProperties["source"].(string); ok && s != "" {
-					gb.Source = types.StringValue(s)
-				}
 			}
 			if sort, ok := g.GetSortOk(); ok && sort != nil {
 				s := Sort{

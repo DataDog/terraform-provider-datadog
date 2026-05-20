@@ -1317,10 +1317,7 @@ func buildEventQueryGroupBysFromTerraform(terraformGroupBys []interface{}) []dat
 		groupBy := g.(map[string]interface{})
 		datadogGroupBy := datadogV1.NewMonitorFormulaAndFunctionEventQueryGroupBy(groupBy["facet"].(string))
 		if src, ok := groupBy["source"].(string); ok && src != "" {
-			if datadogGroupBy.AdditionalProperties == nil {
-				datadogGroupBy.AdditionalProperties = map[string]interface{}{}
-			}
-			datadogGroupBy.AdditionalProperties["source"] = src
+			datadogGroupBy.SetSource(src)
 		}
 		if v, ok := groupBy["limit"].(int); ok && v != 0 {
 			datadogGroupBy.SetLimit(int64(v))
@@ -1987,10 +1984,8 @@ func terraformEventQueryDefinitionToMap(ev *datadogV1.MonitorFormulaAndFunctionE
 			terraformGroupBy := map[string]interface{}{
 				"facet": groupBy.GetFacet(),
 			}
-			if groupBy.AdditionalProperties != nil {
-				if s, ok := groupBy.AdditionalProperties["source"].(string); ok && s != "" {
-					terraformGroupBy["source"] = s
-				}
+			if s, ok := groupBy.GetSourceOk(); ok && s != nil {
+				terraformGroupBy["source"] = *s
 			}
 			if v, ok := groupBy.GetLimitOk(); ok {
 				terraformGroupBy["limit"] = *v
@@ -2101,10 +2096,8 @@ func terraformAggregateAugmentedDefinitionToMap(def *datadogV1.MonitorFormulaAnd
 		terraformGroupBys := make([]map[string]interface{}, len(*groups))
 		for i, groupBy := range *groups {
 			tg := map[string]interface{}{"facet": groupBy.GetFacet()}
-			if groupBy.AdditionalProperties != nil {
-				if s, ok := groupBy.AdditionalProperties["source"].(string); ok && s != "" {
-					tg["source"] = s
-				}
+			if s, ok := groupBy.GetSourceOk(); ok {
+				tg["source"] = *s
 			}
 			if v, ok := groupBy.GetLimitOk(); ok {
 				tg["limit"] = *v
