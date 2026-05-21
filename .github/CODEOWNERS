@@ -31,7 +31,7 @@ datadog/*datadog_security_monitoring*       @DataDog/k9-cloud-siem
 datadog/*datadog_security_notification_rule* @DataDog/k9-shared-capabilities
 datadog/*datadog_service_definition*       @DataDog/service-catalog
 datadog/*datadog_service_level_objective*  @DataDog/slo-app
-datadog/*datadog_synthetics*               @DataDog/synthetics-managing
+datadog/*datadog_synthetics*               @DataDog/synthetics-orchestrating-managing
 datadog/*datadog_timeboard*                @DataDog/dashboards-backend
 datadog/*datadog_permissions*              @DataDog/team-aaa
 datadog/*datadog_user*                     @DataDog/team-aaa
@@ -90,7 +90,7 @@ datadog/**/*datadog_sensitive_data_scanner*      @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*             @DataDog/team-aaa
 datadog/**/*datadog_software_catalog*            @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics*                  @DataDog/synthetics-managing
+datadog/**/*datadog_synthetics*                  @DataDog/synthetics-orchestrating-managing
 datadog/**/*datadog_team*                        @DataDog/aaa-omg
 datadog/**/*datadog_user*                        @DataDog/team-aaa
 datadog/**/*datadog_webhook*                     @DataDog/collaboration-integrations
