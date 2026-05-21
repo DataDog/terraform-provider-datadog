@@ -1,7 +1,7 @@
 package test
 
 import (
-	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -20,7 +20,7 @@ var (
 
 func TestAccDatadogDataset_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -39,7 +39,7 @@ func TestAccDatadogDataset_Basic(t *testing.T) {
 
 func TestAccDatadogDataset_Update(t *testing.T) {
 	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -72,7 +72,7 @@ func TestAccDatadogDataset_Update(t *testing.T) {
 
 func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 	t.Parallel()
-	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
 	invalidProduct := "ci-visibility"
 
@@ -147,6 +147,30 @@ func testAccCheckDatadogDatasetEmptyProductFilters(datasetName string) string {
 	}`, datasetName)
 }
 
+func TestAccDatadogDatasetImport(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
+	datasetName := uniqueDatasetName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDatasetDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogDataset(datasetName, product),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDatasetExists(providers.frameworkProvider),
+				),
+			},
+			{
+				ResourceName:      "datadog_dataset.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogDatasetExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
@@ -172,24 +196,21 @@ func testAccCheckDatadogDatasetDestroy(accProvider *fwprovider.FrameworkProvider
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		err := utils.Retry(2, 10, func() error {
-			for _, r := range s.RootModule().Resources {
-				if r.Type != "resource_datadog_dataset" {
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_dataset" {
+				continue
+			}
+			id := r.Primary.ID
+
+			_, httpResp, err := apiInstances.GetDatasetsApiV2().GetDataset(auth, id)
+			if err != nil {
+				if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
 					continue
 				}
-				id := r.Primary.ID
-
-				_, httpResp, err := apiInstances.GetDatasetsApiV2().GetDataset(auth, id)
-				if err != nil {
-					if httpResp != nil && httpResp.StatusCode == http.StatusNotFound {
-						return nil
-					}
-					return utils.TranslateClientError(err, httpResp, "error retrieving dataset")
-				}
-				return fmt.Errorf("dataset still exists")
+				return utils.TranslateClientError(err, httpResp, "error retrieving dataset")
 			}
-			return nil
-		})
-		return err
+			return errors.New("dataset still exists")
+		}
+		return nil
 	}
 }
