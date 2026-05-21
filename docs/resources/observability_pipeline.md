@@ -488,13 +488,13 @@ Optional:
 
 Required:
 
-- `ingestion_endpoint` (String) The Databricks Zerobus ingestion endpoint URL.
 - `table_name` (String) The name of the Databricks table to ingest logs into.
-- `unity_catalog_endpoint` (String) The Databricks Unity Catalog endpoint URL.
 
 Optional:
 
 - `auth` (Block List) OAuth client credentials used to authenticate with Databricks. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--auth))
+- `ingestion_endpoint_key` (String) The name of the secret or environment variable holding the Databricks Zerobus ingestion endpoint URL.
+- `unity_catalog_endpoint_key` (String) The name of the secret or environment variable holding the Databricks Unity Catalog endpoint URL.
 
 <a id="nestedblock--config--destination--databricks_zerobus--auth"></a>
 ### Nested Schema for `config.destination.databricks_zerobus.auth`

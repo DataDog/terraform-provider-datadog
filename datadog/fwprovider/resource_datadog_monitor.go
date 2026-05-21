@@ -143,6 +143,7 @@ type Variable struct {
 	DataQualityQuery        []DataQualityQuery        `tfsdk:"data_quality_query"`
 	AggregateAugmentedQuery []AggregateAugmentedQuery `tfsdk:"aggregate_augmented_query"`
 	AggregateFilteredQuery  []AggregateFilteredQuery  `tfsdk:"aggregate_filtered_query"`
+	DataJobsQuery           []DataJobsQuery           `tfsdk:"data_jobs_query"`
 }
 
 type EventQuery struct {
@@ -267,6 +268,13 @@ type DataQualityMonitorOptions struct {
 	ModelTypeOverride types.String `tfsdk:"model_type_override"`
 }
 
+type DataJobsQuery struct {
+	Name         types.String `tfsdk:"name"`
+	JobsQuery    types.String `tfsdk:"jobs_query"`
+	JobType      types.String `tfsdk:"job_type"`
+	QueryDialect types.String `tfsdk:"query_dialect"`
+}
+
 type monitorResource struct {
 	Api         *datadogV1.MonitorsApi
 	Auth        context.Context
@@ -330,11 +338,9 @@ func (r *monitorResource) Metadata(_ context.Context, request resource.MetadataR
 	response.TypeName = "monitor"
 }
 
-// variablesEventQueryListBlock returns the nested list block schema for formula monitor variable event queries.
-func (r *monitorResource) variablesEventQueryListBlock(description string) schema.Block {
-	return schema.ListNestedBlock{
-		Description: description,
-		NestedObject: schema.NestedBlockObject{
+// variablesEventQueryNestedObject returns the nested object schema for formula monitor variable event queries (shared by event_query and aggregate-augmented augment/base branches).
+func (r *monitorResource) variablesEventQueryNestedObject() schema.NestedBlockObject {
+	return schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"data_source": schema.StringAttribute{
 					Required:    true,
@@ -448,7 +454,6 @@ func (r *monitorResource) variablesEventQueryListBlock(description string) schem
 					},
 				},
 			},
-		},
 	}
 }
 
@@ -517,7 +522,13 @@ func (r *monitorResource) variablesAggregateFilteredQueryListBlock() schema.Bloc
 						},
 					},
 				},
-				"filter_event_query": r.variablesEventQueryListBlock("Events filter query. Conflicts with `filter_reference_table` in configuration."),
+				"filter_event_query": schema.ListNestedBlock{
+					Description: "Events filter query. Conflicts with `filter_reference_table` in configuration.",
+					Validators: []validator.List{
+						listvalidator.SizeAtMost(1),
+					},
+					NestedObject: r.variablesEventQueryNestedObject(),
+				},
 				"base_metrics_query": schema.ListNestedBlock{
 					Description: "Metrics base query. Conflicts with `base_event_query` in configuration.",
 					Validators: []validator.List{
@@ -550,7 +561,13 @@ func (r *monitorResource) variablesAggregateFilteredQueryListBlock() schema.Bloc
 						},
 					},
 				},
-				"base_event_query": r.variablesEventQueryListBlock("Events base query. Conflicts with `base_metrics_query` in configuration."),
+				"base_event_query": schema.ListNestedBlock{
+					Description: "Events base query. Conflicts with `base_metrics_query` in configuration.",
+					Validators: []validator.List{
+						listvalidator.SizeAtMost(1),
+					},
+					NestedObject: r.variablesEventQueryNestedObject(),
+				},
 				"filters": schema.ListNestedBlock{
 					Description: "Filter conditions mapping base query attributes to filter query attributes. At least one block is required.",
 					Validators: []validator.List{
@@ -1048,7 +1065,10 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				},
 				NestedObject: schema.NestedBlockObject{
 					Blocks: map[string]schema.Block{
-						"event_query": r.variablesEventQueryListBlock("A timeseries formula and functions events query."),
+						"event_query": schema.ListNestedBlock{
+							Description:  "A timeseries formula and functions events query.",
+							NestedObject: r.variablesEventQueryNestedObject(),
+						},
 						"cloud_cost_query": schema.ListNestedBlock{
 							Description: "The Cloud Cost query using formulas and functions.",
 							Validators: []validator.List{
@@ -1219,7 +1239,13 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 											},
 										},
 									},
-									"augment_event_query": r.variablesEventQueryListBlock("Events augment query. Conflicts with `augment_reference_table` in configuration."),
+									"augment_event_query": schema.ListNestedBlock{
+										Description: "Events augment query. Conflicts with `augment_reference_table` in configuration.",
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: r.variablesEventQueryNestedObject(),
+									},
 									"base_metrics_query": schema.ListNestedBlock{
 										Description: "Metrics base query. Conflicts with `base_event_query` in configuration.",
 										Validators: []validator.List{
@@ -1252,7 +1278,13 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 											},
 										},
 									},
-									"base_event_query": r.variablesEventQueryListBlock("Events base query. Conflicts with `base_metrics_query` in configuration."),
+									"base_event_query": schema.ListNestedBlock{
+										Description: "Events base query. Conflicts with `base_metrics_query` in configuration.",
+										Validators: []validator.List{
+											listvalidator.SizeAtMost(1),
+										},
+										NestedObject: r.variablesEventQueryNestedObject(),
+									},
 									"join_condition": schema.ListNestedBlock{
 										Description: "Join condition between augment and base queries.",
 										Validators: []validator.List{
@@ -1365,6 +1397,32 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							},
 						},
 						"aggregate_filtered_query": r.variablesAggregateFilteredQueryListBlock(),
+						"data_jobs_query": schema.ListNestedBlock{
+							Description: "The Data Jobs query using formulas and functions.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(5),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Required:    true,
+										Description: "Name of the query for use in formulas. Must be `run_query`.",
+									},
+									"jobs_query": schema.StringAttribute{
+										Required:    true,
+										Description: "Filter expression used to select the jobs to monitor.",
+									},
+									"job_type": schema.StringAttribute{
+										Required:    true,
+										Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `dbt.model`, `dbt.test`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.",
+									},
+									"query_dialect": schema.StringAttribute{
+										Required:    true,
+										Description: "Query dialect for data jobs queries. Currently only `metric` is supported.",
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -1718,6 +1776,9 @@ func (r *monitorResource) buildVariablesStruct(ctx context.Context, variables []
 	if aggFil := r.buildAggregateFilteredQueryStruct(ctx, variable.AggregateFilteredQuery); len(aggFil) > 0 {
 		variablesReq = append(variablesReq, aggFil...)
 	}
+	if dataJobsReq := r.buildDataJobsQueryStruct(variable.DataJobsQuery); len(dataJobsReq) > 0 {
+		variablesReq = append(variablesReq, dataJobsReq...)
+	}
 	return variablesReq
 }
 
@@ -1755,12 +1816,7 @@ func (r *monitorResource) buildEventQueryStruct(ctx context.Context, eventQs []E
 			for _, groupBy := range groupBys {
 				groupByReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
 				fwutils.SetOptString(groupBy.Facet, groupByReq.SetFacet)
-				if !groupBy.Source.IsNull() && groupBy.Source.ValueString() != "" {
-					if groupByReq.AdditionalProperties == nil {
-						groupByReq.AdditionalProperties = map[string]interface{}{}
-					}
-					groupByReq.AdditionalProperties["source"] = groupBy.Source.ValueString()
-				}
+				fwutils.SetOptString(groupBy.Source, groupByReq.SetSource)
 				fwutils.SetOptInt64(groupBy.Limit, groupByReq.SetLimit)
 				if sortList := groupBy.Sort; len(sortList) > 0 {
 					sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
@@ -1921,12 +1977,7 @@ func (r *monitorResource) buildAggregateAugmentedQueryStruct(ctx context.Context
 		groupBy := []datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy{}
 		for _, g := range a.GroupBy {
 			gb := datadogV1.NewMonitorFormulaAndFunctionEventQueryGroupBy(g.Facet.ValueString())
-			if !g.Source.IsNull() && g.Source.ValueString() != "" {
-				if gb.AdditionalProperties == nil {
-					gb.AdditionalProperties = map[string]interface{}{}
-				}
-				gb.AdditionalProperties["source"] = g.Source.ValueString()
-			}
+			fwutils.SetOptString(g.Source, gb.SetSource)
 			fwutils.SetOptInt64(g.Limit, gb.SetLimit)
 			if sortList := g.Sort; len(sortList) > 0 {
 				sortReq := datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
@@ -2076,6 +2127,24 @@ func (r *monitorResource) buildAggregateFilteredQueryStruct(ctx context.Context,
 		out = append(out, wrapped)
 	}
 	return out
+}
+
+func (r *monitorResource) buildDataJobsQueryStruct(dataJobsQs []DataJobsQuery) []datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	if len(dataJobsQs) == 0 {
+		return nil
+	}
+	variablesReq := []datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+	for _, dataJobsQ := range dataJobsQs {
+		variableReq := datadogV1.MonitorFormulaAndFunctionQueryDefinition{}
+		dataJobsQueryReq := datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinition{}
+		fwutils.SetOptString(dataJobsQ.Name, dataJobsQueryReq.SetName)
+		fwutils.SetOptString(dataJobsQ.JobsQuery, dataJobsQueryReq.SetJobsQuery)
+		fwutils.SetOptString(dataJobsQ.JobType, dataJobsQueryReq.SetJobType)
+		fwutils.SetOptString(dataJobsQ.QueryDialect, dataJobsQueryReq.SetQueryDialect)
+		variableReq.MonitorFormulaAndFunctionDataJobsQueryDefinition = &dataJobsQueryReq
+		variablesReq = append(variablesReq, variableReq)
+	}
+	return variablesReq
 }
 
 func (r *monitorResource) buildAssetsStruct(ctx context.Context, tfAssets []MonitorAsset) []datadogV1.MonitorAsset {
@@ -2253,6 +2322,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 	DataQualityQueryStates := []DataQualityQuery{}
 	aggregateAugmentedStates := []AggregateAugmentedQuery{}
 	aggregateFilteredStates := []AggregateFilteredQuery{}
+	DataJobsQueryStates := []DataJobsQuery{}
 
 	for _, v := range *variables {
 		if eventQState := r.buildEventQueryState(ctx, v.MonitorFormulaAndFunctionEventQueryDefinition); eventQState != nil {
@@ -2270,6 +2340,9 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		if aggFilState := r.buildAggregateFilteredQueryState(ctx, v.MonitorFormulaAndFunctionAggregateFilteredQueryDefinition); aggFilState != nil {
 			aggregateFilteredStates = append(aggregateFilteredStates, *aggFilState)
 		}
+		if dataJobsQState := r.buildDataJobsQueryState(v.MonitorFormulaAndFunctionDataJobsQueryDefinition); dataJobsQState != nil {
+			DataJobsQueryStates = append(DataJobsQueryStates, *dataJobsQState)
+		}
 	}
 	state.Variables = []Variable{{
 		EventQuery:              eventQueryStates,
@@ -2277,6 +2350,7 @@ func (r *monitorResource) updateVariablesState(ctx context.Context, state *monit
 		DataQualityQuery:        DataQualityQueryStates,
 		AggregateAugmentedQuery: aggregateAugmentedStates,
 		AggregateFilteredQuery:  aggregateFilteredStates,
+		DataJobsQuery:           DataJobsQueryStates,
 	}}
 }
 
@@ -2311,13 +2385,8 @@ func (r *monitorResource) buildEventQueryState(ctx context.Context, eventQ *data
 		for _, groupBy := range *groupBys {
 			groupByState := GroupBy{
 				Facet:  fwutils.ToTerraformStr(groupBy.GetFacetOk()),
-				Source: types.StringNull(),
+				Source: fwutils.ToTerraformStr(groupBy.GetSourceOk()),
 				Limit:  fwutils.ToTerraformInt64(groupBy.GetLimitOk()),
-			}
-			if groupBy.AdditionalProperties != nil {
-				if s, ok := groupBy.AdditionalProperties["source"].(string); ok && s != "" {
-					groupByState.Source = types.StringValue(s)
-				}
 			}
 			if sort, ok := groupBy.GetSortOk(); ok && sort != nil {
 				sortState := Sort{
@@ -2406,13 +2475,8 @@ func (r *monitorResource) buildAggregateAugmentedQueryState(ctx context.Context,
 		for _, g := range *groups {
 			gb := GroupBy{
 				Facet:  fwutils.ToTerraformStr(g.GetFacetOk()),
-				Source: types.StringNull(),
+				Source: fwutils.ToTerraformStr(g.GetSourceOk()),
 				Limit:  fwutils.ToTerraformInt64(g.GetLimitOk()),
-			}
-			if g.AdditionalProperties != nil {
-				if s, ok := g.AdditionalProperties["source"].(string); ok && s != "" {
-					gb.Source = types.StringValue(s)
-				}
 			}
 			if sort, ok := g.GetSortOk(); ok && sort != nil {
 				s := Sort{
@@ -2577,6 +2641,18 @@ func (r *monitorResource) buildDataQualityQueryState(ctx context.Context, dataQu
 		dataQualityQueryState.MonitorOptions = []DataQualityMonitorOptions{monitorOptsState}
 	}
 	return &dataQualityQueryState
+}
+
+func (r *monitorResource) buildDataJobsQueryState(dataJobsQ *datadogV1.MonitorFormulaAndFunctionDataJobsQueryDefinition) *DataJobsQuery {
+	if dataJobsQ == nil {
+		return nil
+	}
+	return &DataJobsQuery{
+		Name:         fwutils.ToTerraformStr(dataJobsQ.GetNameOk()),
+		JobsQuery:    fwutils.ToTerraformStr(dataJobsQ.GetJobsQueryOk()),
+		JobType:      fwutils.ToTerraformStr(dataJobsQ.GetJobTypeOk()),
+		QueryDialect: fwutils.ToTerraformStr(dataJobsQ.GetQueryDialectOk()),
+	}
 }
 
 func (r *monitorResource) getMonitorId(state *monitorResourceModel) (*int64, diag.Diagnostics) {
