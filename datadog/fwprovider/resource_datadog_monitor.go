@@ -341,111 +341,110 @@ func (r *monitorResource) Metadata(_ context.Context, request resource.MetadataR
 // variablesEventQueryNestedObject returns the nested object schema for formula monitor variable event queries (shared by event_query and aggregate-augmented augment/base branches).
 func (r *monitorResource) variablesEventQueryNestedObject() schema.NestedBlockObject {
 	return schema.NestedBlockObject{
-			Attributes: map[string]schema.Attribute{
-				"data_source": schema.StringAttribute{
-					Required:    true,
-					Description: "The data source for event platform-based queries.",
-					Validators: []validator.String{
-						stringvalidator.OneOf(r.getAllowEventQueryDataSource()...),
-					},
-				},
-				"indexes": schema.ListAttribute{
-					Optional:    true,
-					ElementType: types.StringType,
-					Description: "An array of index names to query in the stream.",
-				},
-				"name": schema.StringAttribute{
-					Required:    true,
-					Description: "The name of query for use in formulas.",
+		Attributes: map[string]schema.Attribute{
+			"data_source": schema.StringAttribute{
+				Required:    true,
+				Description: "The data source for event platform-based queries.",
+				Validators: []validator.String{
+					stringvalidator.OneOf(r.getAllowEventQueryDataSource()...),
 				},
 			},
-			Blocks: map[string]schema.Block{
-				"search": schema.ListNestedBlock{
-					Description: "The search options.",
-					Validators: []validator.List{
-						listvalidator.IsRequired(),
-						listvalidator.SizeAtMost(1),
-					},
-					NestedObject: schema.NestedBlockObject{
-						Attributes: map[string]schema.Attribute{
-							"query": schema.StringAttribute{
-								Required:    true,
-								Description: "The events search string.",
-							},
+			"indexes": schema.ListAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "An array of index names to query in the stream.",
+			},
+			"name": schema.StringAttribute{
+				Required:    true,
+				Description: "The name of query for use in formulas.",
+			},
+		},
+		Blocks: map[string]schema.Block{
+			"search": schema.ListNestedBlock{
+				Description: "The search options.",
+				Validators: []validator.List{
+					listvalidator.IsRequired(),
+					listvalidator.SizeAtMost(1),
+				},
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"query": schema.StringAttribute{
+							Required:    true,
+							Description: "The events search string.",
 						},
 					},
 				},
-				"compute": schema.ListNestedBlock{
-					Description: "The compute options.",
-					Validators: []validator.List{
-						listvalidator.IsRequired(),
-					},
-					NestedObject: schema.NestedBlockObject{
-						Attributes: map[string]schema.Attribute{
-							"aggregation": schema.StringAttribute{
-								Required:    true,
-								Description: "The aggregation methods for event platform queries.",
-								Validators: []validator.String{
-									stringvalidator.OneOf(r.getAllowEventQueryAggregation()...),
-								},
+			},
+			"compute": schema.ListNestedBlock{
+				Description: "The compute options.",
+				Validators: []validator.List{
+					listvalidator.IsRequired(),
+				},
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"aggregation": schema.StringAttribute{
+							Required:    true,
+							Description: "The aggregation methods for event platform queries.",
+							Validators: []validator.String{
+								stringvalidator.OneOf(r.getAllowEventQueryAggregation()...),
 							},
-							"interval": schema.Int64Attribute{
-								Optional:    true,
-								Description: "A time interval in milliseconds.",
-							},
-							"metric": schema.StringAttribute{
-								Optional:    true,
-								Description: "The measurable attribute to compute.",
-							},
-							"name": schema.StringAttribute{
-								Optional:    true,
-								Description: "The name assigned to this aggregation when multiple aggregations are defined for a query.",
-							},
+						},
+						"interval": schema.Int64Attribute{
+							Optional:    true,
+							Description: "A time interval in milliseconds.",
+						},
+						"metric": schema.StringAttribute{
+							Optional:    true,
+							Description: "The measurable attribute to compute.",
+						},
+						"name": schema.StringAttribute{
+							Optional:    true,
+							Description: "The name assigned to this aggregation when multiple aggregations are defined for a query.",
 						},
 					},
 				},
-				"group_by": schema.ListNestedBlock{
-					Description: "Group by options.",
-					NestedObject: schema.NestedBlockObject{
-						Attributes: map[string]schema.Attribute{
-							"facet": schema.StringAttribute{
-								Required:    true,
-								Description: "The event facet.",
-							},
-							"source": schema.StringAttribute{
-								Optional:    true,
-								Description: "For composite aggregate-augmented queries, identifies which sub-query this group-by facet refers to (for example `filter_query`).",
-							},
-							"limit": schema.Int64Attribute{
-								Optional:    true,
-								Description: "The number of groups to return.",
-							},
+			},
+			"group_by": schema.ListNestedBlock{
+				Description: "Group by options.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"facet": schema.StringAttribute{
+							Required:    true,
+							Description: "The event facet.",
 						},
-						Blocks: map[string]schema.Block{
-							"sort": schema.ListNestedBlock{
-								Description: "The options for sorting group by results.",
-								Validators: []validator.List{
-									listvalidator.SizeAtMost(1),
-								},
-								NestedObject: schema.NestedBlockObject{
-									Attributes: map[string]schema.Attribute{
-										"aggregation": schema.StringAttribute{
-											Required:    true,
-											Description: "The aggregation methods for the event platform queries.",
-											Validators: []validator.String{
-												stringvalidator.OneOf(r.getAllowEventQueryAggregation()...),
-											},
+						"source": schema.StringAttribute{
+							Optional:    true,
+							Description: "For composite aggregate-augmented queries, identifies which sub-query this group-by facet refers to (for example `filter_query`).",
+						},
+						"limit": schema.Int64Attribute{
+							Optional:    true,
+							Description: "The number of groups to return.",
+						},
+					},
+					Blocks: map[string]schema.Block{
+						"sort": schema.ListNestedBlock{
+							Description: "The options for sorting group by results.",
+							Validators: []validator.List{
+								listvalidator.SizeAtMost(1),
+							},
+							NestedObject: schema.NestedBlockObject{
+								Attributes: map[string]schema.Attribute{
+									"aggregation": schema.StringAttribute{
+										Required:    true,
+										Description: "The aggregation methods for the event platform queries.",
+										Validators: []validator.String{
+											stringvalidator.OneOf(r.getAllowEventQueryAggregation()...),
 										},
-										"metric": schema.StringAttribute{
-											Optional:    true,
-											Description: "The metric used for sorting group by results.",
-										},
-										"order": schema.StringAttribute{
-											Optional:    true,
-											Description: "Direction of sort.",
-											Validators: []validator.String{
-												stringvalidator.OneOf(r.getAllowEventQueryOrder()...),
-											},
+									},
+									"metric": schema.StringAttribute{
+										Optional:    true,
+										Description: "The metric used for sorting group by results.",
+									},
+									"order": schema.StringAttribute{
+										Optional:    true,
+										Description: "Direction of sort.",
+										Validators: []validator.String{
+											stringvalidator.OneOf(r.getAllowEventQueryOrder()...),
 										},
 									},
 								},
@@ -454,6 +453,7 @@ func (r *monitorResource) variablesEventQueryNestedObject() schema.NestedBlockOb
 					},
 				},
 			},
+		},
 	}
 }
 

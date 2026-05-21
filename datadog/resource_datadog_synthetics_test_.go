@@ -13,6 +13,7 @@ import (
 	"io"
 	"maps"
 	_nethttp "net/http"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -245,7 +246,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"call_type": {
-				Description:      "The type of gRPC call to perform.",
+				Description:      "The type of gRPC call to perform, or the MCP step call (`init`, `tool_list`, `tool_call`).",
 				Type:             schema.TypeString,
 				Optional:         true,
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestCallTypeFromValue),
@@ -254,6 +255,28 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "The gRPC service on which you want to perform the gRPC call.",
 				Type:        schema.TypeString,
 				Optional:    true,
+			},
+			"mcp_protocol_version": {
+				Description: "For MCP API steps, the MCP protocol version used by the request.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"tool_name": {
+				Description: "For MCP API steps, the name of the tool to call. Required when `call_type` is `tool_call`.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"tool_args": {
+				Description: "For MCP API steps, the JSON-encoded arguments to pass to the tool when `call_type` is `tool_call`.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				DiffSuppressFunc: func(_, old, new string, _ *schema.ResourceData) bool {
+					var oldJSON, newJSON interface{}
+					if json.Unmarshal([]byte(old), &oldJSON) != nil || json.Unmarshal([]byte(new), &newJSON) != nil {
+						return false
+					}
+					return reflect.DeepEqual(oldJSON, newJSON)
+				},
 			},
 			"certificate_domains": {
 				Description: "By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.",
@@ -542,6 +565,8 @@ func syntheticsAPIAssertion() *schema.Schema {
 						datadogV1.NewSyntheticsAssertionTypeFromValue,
 						datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue,
 						datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue,
+						datadogV1.NewSyntheticsAssertionMCPRespectsSpecificationTypeFromValue,
+						datadogV1.NewSyntheticsAssertionMCPServerCapabilitiesTypeFromValue,
 					),
 					Required: true,
 				},
@@ -655,6 +680,22 @@ func syntheticsAPIAssertion() *schema.Schema {
 					Type:             schema.TypeString,
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTimingsScopeFromValue),
+				},
+				"target_mcp_capabilities": {
+					Description: "Expected MCP server capabilities if `type` is `mcpServerCapabilities`. Exactly one nested block is allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"capabilities": {
+								Description: "List of MCP server capabilities to assert against.",
+								Type:        schema.TypeList,
+								Required:    true,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -2751,7 +2792,8 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 					step.SyntheticsAPITestStep.GetSubtype() == "websocket" ||
 					step.SyntheticsAPITestStep.GetSubtype() == "tcp" ||
 					step.SyntheticsAPITestStep.GetSubtype() == "udp" ||
-					step.SyntheticsAPITestStep.GetSubtype() == "icmp" {
+					step.SyntheticsAPITestStep.GetSubtype() == "icmp" ||
+					step.SyntheticsAPITestStep.GetSubtype() == "mcp" {
 					// the schema defines a default value of `http_version` for any kind of step,
 					// but it's not supported for `grpc` - so we save `any` in the local state to avoid diffs
 					localRequest["http_version"] = datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY
@@ -3421,6 +3463,28 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						if v, ok := requestMap["should_track_hops"].(bool); ok {
 							request.SetShouldTrackHops(v)
 						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "mcp" {
+						request.SetUrl(requestMap["url"].(string))
+						if v, ok := requestMap["call_type"].(string); ok && v != "" {
+							request.SetCallType(datadogV1.SyntheticsTestCallType(v))
+						}
+						if v, ok := requestMap["mcp_protocol_version"].(string); ok && v != "" {
+							request.SetMcpProtocolVersion(datadogV1.SyntheticsMCPProtocolVersion(v))
+						}
+						if v, ok := requestMap["tool_name"].(string); ok && v != "" {
+							request.SetToolName(v)
+						}
+						if v, ok := requestMap["tool_args"].(string); ok && v != "" {
+							var args map[string]interface{}
+							if err := json.Unmarshal([]byte(v), &args); err != nil {
+								diags = append(diags, diag.Diagnostic{
+									Severity: diag.Error,
+									Summary:  fmt.Sprintf("`request_definition.tool_args` for MCP step %q must be a JSON object: %s", stepMap["name"], err),
+								})
+							} else {
+								request.SetToolArgs(args)
+							}
+						}
 					}
 				}
 				// Override the request client certificate with the one from the config
@@ -3961,6 +4025,27 @@ func buildDatadogAssertions(attr []interface{}) ([]datadogV1.SyntheticsAssertion
 					assertionJavascript.SetCode((assertionCode))
 				}
 				assertions = append(assertions, datadogV1.SyntheticsAssertionJavascriptAsSyntheticsAssertion(assertionJavascript))
+			} else if assertionType == string(datadogV1.SYNTHETICSASSERTIONMCPRESPECTSSPECIFICATIONTYPE_MCP_RESPECTS_SPECIFICATION) {
+				// MCP "respects specification" assertion has no operator and no target.
+				assertionMCPRespects := datadogV1.NewSyntheticsAssertionMCPRespectsSpecificationWithDefaults()
+				assertionMCPRespects.SetType(datadogV1.SYNTHETICSASSERTIONMCPRESPECTSSPECIFICATIONTYPE_MCP_RESPECTS_SPECIFICATION)
+				assertions = append(assertions, datadogV1.SyntheticsAssertionMCPRespectsSpecificationAsSyntheticsAssertion(assertionMCPRespects))
+			} else if assertionType == string(datadogV1.SYNTHETICSASSERTIONMCPSERVERCAPABILITIESTYPE_MCP_SERVER_CAPABILITIES) {
+				operatorValue, _ := assertionMap["operator"].(string)
+				assertionMCPCapabilities := datadogV1.NewSyntheticsAssertionMCPServerCapabilitiesTargetWithDefaults()
+				assertionMCPCapabilities.SetType(datadogV1.SYNTHETICSASSERTIONMCPSERVERCAPABILITIESTYPE_MCP_SERVER_CAPABILITIES)
+				assertionMCPCapabilities.SetOperator(datadogV1.SyntheticsAssertionOperator(operatorValue))
+				if v, ok := assertionMap["target_mcp_capabilities"].([]interface{}); ok && len(v) > 0 {
+					targetMap := v[0].(map[string]interface{})
+					if caps, ok := targetMap["capabilities"].([]interface{}); ok {
+						capabilities := make([]datadogV1.SyntheticsMCPServerCapability, 0, len(caps))
+						for _, c := range caps {
+							capabilities = append(capabilities, datadogV1.SyntheticsMCPServerCapability(c.(string)))
+						}
+						assertionMCPCapabilities.SetTarget(capabilities)
+					}
+				}
+				assertions = append(assertions, datadogV1.SyntheticsAssertionMCPServerCapabilitiesTargetAsSyntheticsAssertion(assertionMCPCapabilities))
 			} else if v, ok := assertionMap["operator"]; ok {
 				assertionOperator := v.(string)
 				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
@@ -4273,6 +4358,27 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 
 			if v, ok := assertionTarget.GetCodeOk(); ok {
 				localAssertion["code"] = v
+			}
+		} else if assertion.SyntheticsAssertionMCPRespectsSpecification != nil {
+			if v, ok := assertion.SyntheticsAssertionMCPRespectsSpecification.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionMCPServerCapabilitiesTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionMCPServerCapabilitiesTarget
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				capabilities := make([]string, 0, len(*target))
+				for _, c := range *target {
+					capabilities = append(capabilities, string(c))
+				}
+				localAssertion["target_mcp_capabilities"] = []map[string]interface{}{
+					{"capabilities": capabilities},
+				}
 			}
 		}
 		localAssertions[i] = localAssertion
@@ -5687,6 +5793,23 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 	if request.HasIsMessageBase64Encoded() {
 		localRequest["is_message_base64_encoded"] = request.GetIsMessageBase64Encoded()
 	}
+	if request.HasMcpProtocolVersion() {
+		localRequest["mcp_protocol_version"] = string(request.GetMcpProtocolVersion())
+	}
+	if request.HasToolName() {
+		localRequest["tool_name"] = request.GetToolName()
+	}
+	if request.HasToolArgs() {
+		serialized, err := json.Marshal(request.GetToolArgs())
+		if err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Error serializing tool_args to JSON: %v", err),
+			})
+			return nil, diags
+		}
+		localRequest["tool_args"] = string(serialized)
+	}
 
 	if request.HasCompressedJsonDescriptor() {
 		var value, err = decompressAndDecodeValue(request.GetCompressedJsonDescriptor(), false)
@@ -6453,6 +6576,8 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 		datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
 		datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
 		datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_HEALTHCHECK_STATUS,
+		datadogV1.SYNTHETICSASSERTIONTYPE_MCP_TOOL_NAME_LENGTH,
+		datadogV1.SYNTHETICSASSERTIONTYPE_MCP_TOOL_COUNT,
 	} {
 		if assertionType == intTargetAssertionType {
 			return true
@@ -6497,7 +6622,8 @@ func isApiSubtype(subtype datadogV1.SyntheticsAPITestStepSubtype) bool {
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_TCP ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_UDP ||
 		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_ICMP ||
-		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_WEBSOCKET
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_WEBSOCKET ||
+		subtype == datadogV1.SYNTHETICSAPITESTSTEPSUBTYPE_MCP
 }
 
 func getConfigCertAndKeyContent(d *schema.ResourceData, stepIndex int) (*string, *string) {
