@@ -334,7 +334,7 @@ EOT
 
 
 # Example Usage (Synthetics MCP API test)
-# Create a new Datadog Synthetics Multistep API test that exercises an MCP server
+# Create a new Datadog Synthetics Multistep API test against an MCP server
 resource "datadog_synthetics_test" "test_mcp" {
   name      = "MCP API test"
   type      = "api"
