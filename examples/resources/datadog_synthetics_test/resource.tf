@@ -370,6 +370,10 @@ resource "datadog_synthetics_test" "test_mcp" {
       call_type            = "init"
       mcp_protocol_version = "2025-06-18"
     }
+
+    request_headers = {
+      "api-key" = "YOUR-API-KEY"
+    }
   }
 
   api_step {
@@ -399,6 +403,10 @@ resource "datadog_synthetics_test" "test_mcp" {
       call_type            = "tool_list"
       mcp_protocol_version = "2025-06-18"
     }
+
+    request_headers = {
+      "api-key" = "YOUR-API-KEY"
+    }
   }
 
   api_step {
@@ -421,6 +429,10 @@ resource "datadog_synthetics_test" "test_mcp" {
       mcp_protocol_version = "2025-06-18"
       tool_name            = "search"
       tool_args            = jsonencode({ query = "datadog synthetics", limit = 5 })
+    }
+
+    request_headers = {
+      "api-key" = "YOUR-API-KEY"
     }
   }
 
