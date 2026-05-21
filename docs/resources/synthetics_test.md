@@ -374,6 +374,103 @@ EOT
 }
 
 
+# Example Usage (Synthetics MCP API test)
+# Create a new Datadog Synthetics Multistep API test that exercises an MCP server
+resource "datadog_synthetics_test" "test_mcp" {
+  name      = "MCP API test"
+  type      = "api"
+  subtype   = "multi"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "env:test"]
+
+  api_step {
+    name    = "Initialize MCP session"
+    subtype = "mcp"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    assertion {
+      type = "mcpRespectsSpecification"
+    }
+
+    assertion {
+      type     = "mcpServerCapabilities"
+      operator = "contains"
+      target_mcp_capabilities {
+        capabilities = ["tools"]
+      }
+    }
+
+    request_definition {
+      url                  = "https://example.org/mcp"
+      call_type            = "init"
+      mcp_protocol_version = "2025-06-18"
+    }
+  }
+
+  api_step {
+    name    = "List MCP tools"
+    subtype = "mcp"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    assertion {
+      type     = "mcpToolCount"
+      operator = "moreThan"
+      target   = "0"
+    }
+
+    assertion {
+      type     = "mcpToolNameLength"
+      operator = "lessThan"
+      target   = "64"
+    }
+
+    request_definition {
+      url                  = "https://example.org/mcp"
+      call_type            = "tool_list"
+      mcp_protocol_version = "2025-06-18"
+    }
+  }
+
+  api_step {
+    name    = "Call MCP search tool"
+    subtype = "mcp"
+
+    assertion {
+      type     = "responseTime"
+      operator = "lessThan"
+      target   = "5000"
+    }
+
+    assertion {
+      type = "mcpRespectsSpecification"
+    }
+
+    request_definition {
+      url                  = "https://example.org/mcp"
+      call_type            = "tool_call"
+      mcp_protocol_version = "2025-06-18"
+      tool_name            = "search"
+      tool_args            = jsonencode({ query = "datadog synthetics", limit = 5 })
+    }
+  }
+
+  options_list {
+    tick_every = 900
+  }
+}
+
+
 # Example Usage (Synthetics Browser test)
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
 resource "datadog_synthetics_test" "test_browser" {
@@ -1047,7 +1144,7 @@ Optional:
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
 - `subtest_public_id` (String) Public ID of the test to be played as part of a `playSubTest` step type.
-- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`, `grpc`, `ssl`, `dns`, `tcp`, `udp`, `icmp`, `websocket`, `wait`, `playSubTest`. Defaults to `"http"`.
+- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`, `grpc`, `ssl`, `dns`, `tcp`, `udp`, `icmp`, `websocket`, `mcp`, `wait`, `playSubTest`. Defaults to `"http"`.
 - `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
 
 Read-Only:
@@ -1059,7 +1156,7 @@ Read-Only:
 
 Required:
 
-- `type` (String) Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-a-network-path-test). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `multiNetworkHop`, `jitter`, `bodyHash`, `javascript`.
+- `type` (String) Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-a-network-path-test). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `multiNetworkHop`, `jitter`, `mcpToolNameLength`, `mcpToolCount`, `bodyHash`, `javascript`, `mcpRespectsSpecification`, `mcpServerCapabilities`.
 
 Optional:
 
@@ -1067,10 +1164,19 @@ Optional:
 - `operator` (String) Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). Valid values are `contains`, `doesNotContain`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`, `matches`, `doesNotMatch`, `validates`, `isInMoreThan`, `isInLessThan`, `doesNotExist`, `isUndefined`, `validatesJSONPath`, `validatesJSONSchema`, `validatesXPath`, `md5`, `sha1`, `sha256`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`.
 - `property` (String) If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max`, or `stddev`.
 - `target` (String) Expected value. **Note:** Depends on the assertion type. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
+- `target_mcp_capabilities` (Block List, Max: 1) Expected MCP server capabilities if `type` is `mcpServerCapabilities`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--target_mcp_capabilities))
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
 - `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
 - `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
+
+<a id="nestedblock--api_step--assertion--target_mcp_capabilities"></a>
+### Nested Schema for `api_step.assertion.target_mcp_capabilities`
+
+Required:
+
+- `capabilities` (List of String) List of MCP server capabilities to assert against.
+
 
 <a id="nestedblock--api_step--assertion--targetjsonpath"></a>
 ### Nested Schema for `api_step.assertion.targetjsonpath`
@@ -1199,7 +1305,7 @@ Optional:
 - `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
-- `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
+- `call_type` (String) The type of gRPC call to perform, or the MCP step call (`init`, `tool_list`, `tool_call`). Valid values are `healthcheck`, `unary`, `init`, `tool_list`, `tool_call`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `check_certificate_revocation` (Boolean) For SSL tests, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `destination_service` (String) For Network Path tests, an optional label displayed for the destination host in the Network Path visualization.
@@ -1213,6 +1319,7 @@ Optional:
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `is_message_base64_encoded` (Boolean) For Websocket tests, whether the message is treated as a base64-encoded string in the server.
 - `max_ttl` (Number) For Network Path tests, the maximum time-to-live (max number of hops) used in outgoing probe packets.
+- `mcp_protocol_version` (String) For MCP API steps, the MCP protocol version used by the request.
 - `message` (String) For gRPC, UDP, and Websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
@@ -1227,6 +1334,8 @@ Optional:
 - `source_service` (String) For Network Path tests, an optional label displayed for the source host in the Network Path visualization
 - `tcp_method` (String) For TCP Network Path tests, the TCP traceroute strategy.
 - `timeout` (Number) Timeout in seconds for the test.
+- `tool_args` (String) For MCP API steps, the JSON-encoded arguments to pass to the tool when `call_type` is `tool_call`.
+- `tool_name` (String) For MCP API steps, the name of the tool to call. Required when `call_type` is `tool_call`.
 - `traceroute_queries` (Number) For Network Path tests, the number of traceroute path tracings.
 - `url` (String) The URL to send the request to.
 
@@ -1278,7 +1387,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-a-network-path-test). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `multiNetworkHop`, `jitter`, `bodyHash`, `javascript`.
+- `type` (String) Type of assertion. **Note:** Only some combinations of `type` and `operator` are valid. For API tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). For Network Path tests, refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-a-network-path-test). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `multiNetworkHop`, `jitter`, `mcpToolNameLength`, `mcpToolCount`, `bodyHash`, `javascript`, `mcpRespectsSpecification`, `mcpServerCapabilities`.
 
 Optional:
 
@@ -1286,10 +1395,19 @@ Optional:
 - `operator` (String) Assertion operator. **Note:** Only some combinations of `type` and `operator` are valid. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test). Valid values are `contains`, `doesNotContain`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`, `matches`, `doesNotMatch`, `validates`, `isInMoreThan`, `isInLessThan`, `doesNotExist`, `isUndefined`, `validatesJSONPath`, `validatesJSONSchema`, `validatesXPath`, `md5`, `sha1`, `sha256`, `is`, `isNot`, `lessThan`, `lessThanOrEqual`, `moreThan`, `moreThanOrEqual`.
 - `property` (String) If assertion type is `header` or `grpcMetadata`, this is the header name. For other assertion types, this is an aggregation property: `avg`, `min`, `max`, or `stddev`.
 - `target` (String) Expected value. **Note:** Depends on the assertion type. Refer to `config.assertions` in the [Datadog API reference](https://docs.datadoghq.com/api/latest/synthetics/#create-an-api-test).
+- `target_mcp_capabilities` (Block List, Max: 1) Expected MCP server capabilities if `type` is `mcpServerCapabilities`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--target_mcp_capabilities))
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
 - `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
 - `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
+
+<a id="nestedblock--assertion--target_mcp_capabilities"></a>
+### Nested Schema for `assertion.target_mcp_capabilities`
+
+Required:
+
+- `capabilities` (List of String) List of MCP server capabilities to assert against.
+
 
 <a id="nestedblock--assertion--targetjsonpath"></a>
 ### Nested Schema for `assertion.targetjsonpath`
@@ -1826,7 +1944,7 @@ Optional:
 
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
-- `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
+- `call_type` (String) The type of gRPC call to perform, or the MCP step call (`init`, `tool_list`, `tool_call`). Valid values are `healthcheck`, `unary`, `init`, `tool_list`, `tool_call`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `destination_service` (String) For Network Path tests, an optional label displayed for the destination host in the Network Path visualization.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
@@ -1837,6 +1955,7 @@ Optional:
 - `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `is_message_base64_encoded` (Boolean) For Websocket tests, whether the message is treated as a base64-encoded string in the server.
 - `max_ttl` (Number) For Network Path tests, the maximum time-to-live (max number of hops) used in outgoing probe packets.
+- `mcp_protocol_version` (String) For MCP API steps, the MCP protocol version used by the request.
 - `message` (String) For gRPC, UDP, and Websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
@@ -1851,6 +1970,8 @@ Optional:
 - `source_service` (String) For Network Path tests, an optional label displayed for the source host in the Network Path visualization
 - `tcp_method` (String) For TCP Network Path tests, the TCP traceroute strategy.
 - `timeout` (Number) Timeout in seconds for the test.
+- `tool_args` (String) For MCP API steps, the JSON-encoded arguments to pass to the tool when `call_type` is `tool_call`.
+- `tool_name` (String) For MCP API steps, the name of the tool to call. Required when `call_type` is `tool_call`.
 - `traceroute_queries` (Number) For Network Path tests, the number of traceroute path tracings.
 - `url` (String) The URL to send the request to.
 
