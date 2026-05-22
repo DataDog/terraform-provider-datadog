@@ -745,7 +745,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 									"baseline_user_locations_duration": schema.Int64Attribute{
 										Optional:    true,
 										Computed:    true,
-										Description: "The duration in days during which Datadog learns a user's access locations before generating signals. Accepted values are between 1 and 30. Defaults to `1` if unset. Only applicable when `baseline_user_locations` is `true`.",
+										Description: "The duration in days during which Datadog learns a user's access locations before generating signals. Only applicable when `baseline_user_locations` is `true`. Defaults to `1` if unset. ",
 										Validators: []validator.Int64{
 											int64validator.Between(1, 30),
 										},

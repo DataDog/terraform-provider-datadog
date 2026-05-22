@@ -169,7 +169,7 @@ Optional:
 Optional:
 
 - `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access. Defaults to `false`.
-- `baseline_user_locations_duration` (Number) The duration in days during which Datadog learns a user's access locations before generating signals. Accepted values are between 1 and 30. Defaults to `1` if unset. Only applicable when `baseline_user_locations` is `true`. Value must be between 1 and 30.
+- `baseline_user_locations_duration` (Number) The duration in days during which Datadog learns a user's access locations before generating signals. Only applicable when `baseline_user_locations` is `true`. Defaults to `1` if unset. . Value must be between 1 and 30.
 
 
 <a id="nestedblock--options--new_value_options"></a>
