@@ -307,6 +307,39 @@ func (r *costBudgetResource) ModifyPlan(ctx context.Context, req resource.Modify
 		return
 	}
 
+	// Validate parent_tag_filters/child_tag_filters pairing in budget_line
+	if hasBudgetLine {
+		var budgetLines []budgetLine
+		plan.BudgetLine.ElementsAs(ctx, &budgetLines, false)
+		for _, line := range budgetLines {
+			hasParent := !line.ParentTagFilters.IsNull() && !line.ParentTagFilters.IsUnknown() && len(line.ParentTagFilters.Elements()) > 0
+			hasChild := !line.ChildTagFilters.IsNull() && !line.ChildTagFilters.IsUnknown() && len(line.ChildTagFilters.Elements()) > 0
+			hasTags := !line.TagFilters.IsNull() && !line.TagFilters.IsUnknown() && len(line.TagFilters.Elements()) > 0
+
+			if hasParent && !hasChild {
+				resp.Diagnostics.AddError(
+					"Invalid budget_line Configuration",
+					"'parent_tag_filters' must be used together with 'child_tag_filters'. For non-hierarchical budgets, use 'tag_filters' instead.",
+				)
+				return
+			}
+			if hasChild && !hasParent {
+				resp.Diagnostics.AddError(
+					"Invalid budget_line Configuration",
+					"'child_tag_filters' must be used together with 'parent_tag_filters'. For non-hierarchical budgets, use 'tag_filters' instead.",
+				)
+				return
+			}
+			if hasTags && (hasParent || hasChild) {
+				resp.Diagnostics.AddError(
+					"Conflicting budget_line Configuration",
+					"'tag_filters' cannot be used together with 'parent_tag_filters'/'child_tag_filters'. Use either 'tag_filters' for non-hierarchical budgets or 'parent_tag_filters'/'child_tag_filters' for hierarchical budgets.",
+				)
+				return
+			}
+		}
+	}
+
 	// Skip validation if required fields are unknown
 	if plan.MetricsQuery.IsUnknown() || plan.StartMonth.IsUnknown() || plan.EndMonth.IsUnknown() {
 		return
@@ -459,8 +492,49 @@ func convertBudgetLineToFlatEntries(ctx context.Context, budgetLines []budgetLin
 	return flatEntries
 }
 
-// convertFlatEntriesToBudgetLine converts flat API entries to budget_line (grouped schema)
-func convertFlatEntriesToBudgetLine(ctx context.Context, flatEntries []budgetEntry) []budgetLine {
+// tagLayout describes which filter fields were used for a given tag combination
+type tagLayout struct {
+	tagFilters       []tagFilter
+	parentTagFilters []tagFilter
+	childTagFilters  []tagFilter
+}
+
+// buildTagLayoutMap builds a map from tag signature to the original field assignment
+// from the user's configured budget lines
+func buildTagLayoutMap(ctx context.Context, originalLines []budgetLine) map[string]*tagLayout {
+	layouts := make(map[string]*tagLayout)
+	for _, line := range originalLines {
+		var allTags []tagFilter
+
+		var tf, ptf, ctf []tagFilter
+		if !line.TagFilters.IsNull() && !line.TagFilters.IsUnknown() {
+			line.TagFilters.ElementsAs(ctx, &tf, false)
+			allTags = append(allTags, tf...)
+		}
+		if !line.ParentTagFilters.IsNull() && !line.ParentTagFilters.IsUnknown() {
+			line.ParentTagFilters.ElementsAs(ctx, &ptf, false)
+			allTags = append(allTags, ptf...)
+		}
+		if !line.ChildTagFilters.IsNull() && !line.ChildTagFilters.IsUnknown() {
+			line.ChildTagFilters.ElementsAs(ctx, &ctf, false)
+			allTags = append(allTags, ctf...)
+		}
+
+		key := tagSignature(allTags)
+		layouts[key] = &tagLayout{
+			tagFilters:       tf,
+			parentTagFilters: ptf,
+			childTagFilters:  ctf,
+		}
+	}
+	return layouts
+}
+
+// convertFlatEntriesToBudgetLine converts flat API entries to budget_line (grouped schema).
+// originalLines provides the user's configured budget lines so that the correct filter
+// field assignment (tag_filters vs parent_tag_filters/child_tag_filters) is preserved
+// on read-back from the API.
+func convertFlatEntriesToBudgetLine(ctx context.Context, flatEntries []budgetEntry, originalLines []budgetLine) []budgetLine {
 	type tagGroup struct {
 		tags   []tagFilter
 		months map[string]float64
@@ -481,24 +555,45 @@ func convertFlatEntriesToBudgetLine(ctx context.Context, flatEntries []budgetEnt
 		groups[key].months[strconv.FormatInt(entry.Month.ValueInt64(), 10)] = entry.Amount.ValueFloat64()
 	}
 
+	// Build layout map from original budget lines to preserve field assignment
+	layoutMap := buildTagLayoutMap(ctx, originalLines)
+
 	budgetLines := make([]budgetLine, 0, len(groups))
 	tagObjType := types.ObjectType{AttrTypes: tagFilterAttrTypes()}
 
-	for _, group := range groups {
+	for key, group := range groups {
 		amountsMap, _ := types.MapValueFrom(ctx, types.Float64Type, group.months)
 		line := budgetLine{Amounts: amountsMap}
 
-		if len(group.tags) == 2 {
-			line.ParentTagFilters, _ = types.ListValueFrom(ctx, tagObjType, []tagFilter{group.tags[0]})
-			line.ChildTagFilters, _ = types.ListValueFrom(ctx, tagObjType, []tagFilter{group.tags[1]})
-			line.TagFilters = types.ListNull(tagObjType)
-		} else {
-			line.ParentTagFilters = types.ListNull(tagObjType)
-			line.ChildTagFilters = types.ListNull(tagObjType)
-			if len(group.tags) > 0 {
-				line.TagFilters, _ = types.ListValueFrom(ctx, tagObjType, group.tags)
+		if layout, ok := layoutMap[key]; ok {
+			// Preserve the original field assignment from the user's config
+			if len(layout.parentTagFilters) > 0 || len(layout.childTagFilters) > 0 {
+				line.ParentTagFilters, _ = types.ListValueFrom(ctx, tagObjType, layout.parentTagFilters)
+				line.ChildTagFilters, _ = types.ListValueFrom(ctx, tagObjType, layout.childTagFilters)
+				line.TagFilters = types.ListNull(tagObjType)
+			} else if len(layout.tagFilters) > 0 {
+				line.TagFilters, _ = types.ListValueFrom(ctx, tagObjType, layout.tagFilters)
+				line.ParentTagFilters = types.ListNull(tagObjType)
+				line.ChildTagFilters = types.ListNull(tagObjType)
 			} else {
 				line.TagFilters = types.ListNull(tagObjType)
+				line.ParentTagFilters = types.ListNull(tagObjType)
+				line.ChildTagFilters = types.ListNull(tagObjType)
+			}
+		} else {
+			// Fallback for tag groups not in the original config (e.g., import)
+			if len(group.tags) == 2 {
+				line.ParentTagFilters, _ = types.ListValueFrom(ctx, tagObjType, []tagFilter{group.tags[0]})
+				line.ChildTagFilters, _ = types.ListValueFrom(ctx, tagObjType, []tagFilter{group.tags[1]})
+				line.TagFilters = types.ListNull(tagObjType)
+			} else {
+				line.ParentTagFilters = types.ListNull(tagObjType)
+				line.ChildTagFilters = types.ListNull(tagObjType)
+				if len(group.tags) > 0 {
+					line.TagFilters, _ = types.ListValueFrom(ctx, tagObjType, group.tags)
+				} else {
+					line.TagFilters = types.ListNull(tagObjType)
+				}
 			}
 		}
 
@@ -611,7 +706,11 @@ func setModelFromBudgetWithEntries(ctx context.Context, model *costBudgetModel, 
 	usingBudgetLine := !model.BudgetLine.IsNull() && !model.BudgetLine.IsUnknown()
 
 	if usingBudgetLine {
-		model.BudgetLine, _ = types.SetValueFrom(ctx, types.ObjectType{AttrTypes: budgetLineAttrTypes()}, convertFlatEntriesToBudgetLine(ctx, entries))
+		// Extract original budget lines to preserve filter field assignment on read-back
+		var originalLines []budgetLine
+		model.BudgetLine.ElementsAs(ctx, &originalLines, false)
+
+		model.BudgetLine, _ = types.SetValueFrom(ctx, types.ObjectType{AttrTypes: budgetLineAttrTypes()}, convertFlatEntriesToBudgetLine(ctx, entries, originalLines))
 		model.Entries = types.ListNull(types.ObjectType{AttrTypes: budgetEntryAttrTypes()})
 	} else {
 		model.Entries, _ = types.ListValueFrom(ctx, types.ObjectType{AttrTypes: budgetEntryAttrTypes()}, entries)

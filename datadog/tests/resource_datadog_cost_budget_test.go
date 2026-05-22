@@ -724,6 +724,48 @@ resource "datadog_cost_budget" "foo" {
 }`,
 			expectError: `Either 'entries' or 'budget_line' must be specified`,
 		},
+		// Validate parent_tag_filters requires child_tag_filters
+		{
+			name: "ParentTagWithoutChild",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-parent-without-child"
+  metrics_query = "sum:aws.cost.amortized{*} by {account}"
+  start_month = 202601
+  end_month = 202601
+  budget_line {
+    amounts = {
+      "202601" = 1000
+    }
+    parent_tag_filters {
+      tag_key = "account"
+      tag_value = "production"
+    }
+  }
+}`,
+			expectError: `parent_tag_filters.*must be used together with.*child_tag_filters`,
+		},
+		// Validate child_tag_filters requires parent_tag_filters
+		{
+			name: "ChildTagWithoutParent",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-child-without-parent"
+  metrics_query = "sum:aws.cost.amortized{*} by {account}"
+  start_month = 202601
+  end_month = 202601
+  budget_line {
+    amounts = {
+      "202601" = 1000
+    }
+    child_tag_filters {
+      tag_key = "account"
+      tag_value = "production"
+    }
+  }
+}`,
+			expectError: `child_tag_filters.*must be used together with.*parent_tag_filters`,
+		},
 		// Validate all tag combinations have entries for all months
 		{
 			name: "MissingMonths",
