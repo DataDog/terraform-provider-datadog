@@ -449,7 +449,7 @@ Required:
 
 Optional:
 
-- `exclude` (Boolean) When true, exclude matching records instead of including them. Defaults to `false`.
+- `exclude` (Boolean) When true, exclude matching records instead of including them.
 
 
 <a id="nestedblock--variables--aggregate_filtered_query--base_event_query"></a>

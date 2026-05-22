@@ -1015,7 +1015,6 @@ func aggregateFilteredQueryVariableSchema() map[string]*schema.Schema {
 					"exclude": {
 						Type:        schema.TypeBool,
 						Optional:    true,
-						Default:     false,
 						Description: "When true, exclude matching records instead of including them.",
 					},
 				},
@@ -2480,7 +2479,10 @@ func terraformAggregateFilteredDefinitionToMap(def *datadogV1.MonitorFormulaAndF
 		fm := map[string]interface{}{
 			"base_attribute":   f.GetBaseAttribute(),
 			"filter_attribute": f.GetFilterAttribute(),
-			"exclude":          f.GetExclude(),
+		}
+		// API may return exclude=false even when omitted on create; only persist true in state.
+		if exclude, ok := f.GetExcludeOk(); ok && exclude != nil && *exclude {
+			fm["exclude"] = true
 		}
 		tfFilters = append(tfFilters, fm)
 	}

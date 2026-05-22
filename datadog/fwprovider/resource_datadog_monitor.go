@@ -2544,11 +2544,16 @@ func (r *monitorResource) buildAggregateFilteredQueryState(ctx context.Context, 
 	}
 
 	for _, f := range def.GetFilters() {
-		out.Filters = append(out.Filters, AggregateQueryFilter{
+		filter := AggregateQueryFilter{
 			BaseAttribute:   types.StringValue(f.GetBaseAttribute()),
 			FilterAttribute: types.StringValue(f.GetFilterAttribute()),
-			Exclude:         types.BoolValue(f.GetExclude()),
-		})
+			Exclude:         types.BoolNull(),
+		}
+		// API may return exclude=false even when omitted on create; only persist true in state.
+		if exclude, ok := f.GetExcludeOk(); ok && exclude != nil && *exclude {
+			filter.Exclude = types.BoolValue(true)
+		}
+		out.Filters = append(out.Filters, filter)
 	}
 
 	if computes, ok := def.GetComputeOk(); ok && computes != nil {
