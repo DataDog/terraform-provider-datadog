@@ -2240,20 +2240,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--fluent_bit--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--fluent_bit--tls))
 
 <a id="nestedblock--config--source--fluent_bit--tls"></a>
 ### Nested Schema for `config.source.fluent_bit.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2263,20 +2264,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--fluentd--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--fluentd--tls))
 
 <a id="nestedblock--config--source--fluentd--tls"></a>
 ### Nested Schema for `config.source.fluentd.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2363,7 +2365,7 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `password_key` (String) Name of the environment variable or secret that holds the password.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
 - `username_key` (String) Name of the environment variable or secret that holds the username.
 
 <a id="nestedblock--config--source--http_server--tls"></a>
@@ -2371,13 +2373,14 @@ Optional:
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2439,20 +2442,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--logstash--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--logstash--tls))
 
 <a id="nestedblock--config--source--logstash--tls"></a>
 ### Nested Schema for `config.source.logstash.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2463,20 +2467,21 @@ Optional:
 
 - `grpc_address_key` (String) Environment variable name containing the gRPC server address for receiving OTLP data.
 - `http_address_key` (String) Environment variable name containing the HTTP server address for receiving OTLP data.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
 
 <a id="nestedblock--config--source--opentelemetry--tls"></a>
 ### Nested Schema for `config.source.opentelemetry.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2487,20 +2492,21 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `mode` (String) Protocol used by the syslog source to receive messages.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--rsyslog--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--rsyslog--tls))
 
 <a id="nestedblock--config--source--rsyslog--tls"></a>
 ### Nested Schema for `config.source.rsyslog.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2515,7 +2521,7 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the socket.
 - `framing` (Block List) Defines the framing method for incoming messages. (see [below for nested schema](#nestedblock--config--source--socket--framing))
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--socket--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--socket--tls))
 
 <a id="nestedblock--config--source--socket--framing"></a>
 ### Nested Schema for `config.source.socket.framing`
@@ -2542,13 +2548,14 @@ Required:
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2559,20 +2566,21 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
 - `store_hec_token` (Boolean) When `true`, the Splunk HEC token from the incoming request is stored in the event, allowing downstream components to forward it to other Splunk HEC destinations.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>
 ### Nested Schema for `config.source.splunk_hec.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2582,20 +2590,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
 
 <a id="nestedblock--config--source--splunk_tcp--tls"></a>
 ### Nested Schema for `config.source.splunk_tcp.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2614,20 +2623,21 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `mode` (String) Protocol used by the syslog source to receive messages.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--syslog_ng--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--syslog_ng--tls))
 
 <a id="nestedblock--config--source--syslog_ng--tls"></a>
 ### Nested Schema for `config.source.syslog_ng.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 ## Import
 
