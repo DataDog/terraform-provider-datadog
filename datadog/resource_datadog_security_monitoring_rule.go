@@ -234,6 +234,13 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									Default:     false,
 									Description: "If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.",
 								},
+								"baseline_user_locations_duration": {
+									Type:         schema.TypeInt,
+									Optional:     true,
+									Computed:     true,
+									Description:  "The duration in days during which Datadog learns a user's access locations before generating signals. Only applicable when `baseline_user_locations` is `true`. Defaults to `1` if unset. ",
+									ValidateFunc: validation.IntBetween(1, 30),
+								},
 							},
 						},
 					},
@@ -825,6 +832,11 @@ func buildPayloadImpossibleTravelOptions(tfOptionsList []interface{}) (*datadogV
 		options.BaselineUserLocations = &shouldBaselineUserLocations
 	}
 
+	if v, ok := tfOptions["baseline_user_locations_duration"]; ok && v.(int) != 0 {
+		hasPayload = true
+		options.SetBaselineUserLocationsDuration(int32(v.(int))) //nolint:gosec // schema-validated range 1-30 fits int32
+	}
+
 	return options, hasPayload
 }
 
@@ -1137,6 +1149,9 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 	if impossibleTravelOptions, ok := options.GetImpossibleTravelOptionsOk(); ok {
 		tfImpossibleTravelOptions := make(map[string]interface{})
 		tfImpossibleTravelOptions["baseline_user_locations"] = impossibleTravelOptions.GetBaselineUserLocations()
+		if v, ok := impossibleTravelOptions.GetBaselineUserLocationsDurationOk(); ok {
+			tfImpossibleTravelOptions["baseline_user_locations_duration"] = int(*v)
+		}
 		tfOptions["impossible_travel_options"] = []map[string]interface{}{tfImpossibleTravelOptions}
 	}
 	if anomalyDetectionOptions, ok := options.GetAnomalyDetectionOptionsOk(); ok {
