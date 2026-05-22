@@ -1633,6 +1633,8 @@ Optional:
 - `add_env_vars` (Block List) The `add_env_vars` processor adds environment variable values to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_env_vars))
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_fields))
 - `add_hostname` (Block List) The `add_hostname` processor adds the hostname to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_hostname))
+- `add_metric_tags` (Block List) The `add_metric_tags` processor adds static tags to metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_metric_tags))
+- `aggregate` (Block List) The `aggregate` processor combines metrics that share the same name and tags into a single metric over a configurable interval. (see [below for nested schema](#nestedblock--config--processor_group--processor--aggregate))
 - `custom_processor` (Block List) The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities. (see [below for nested schema](#nestedblock--config--processor_group--processor--custom_processor))
 - `datadog_tags` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--datadog_tags))
 - `dedupe` (Block List) The `dedupe` processor removes duplicate fields in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--dedupe))
@@ -1650,9 +1652,11 @@ Optional:
 - `reduce` (Block List) The `reduce` processor aggregates and merges logs based on matching keys and merge strategies. (see [below for nested schema](#nestedblock--config--processor_group--processor--reduce))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--remove_fields))
 - `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_fields))
+- `rename_metric_tags` (Block List) The `rename_metric_tags` processor changes the keys of tags on metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_metric_tags))
 - `sample` (Block List) The `sample` processor allows probabilistic sampling of logs at a fixed rate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sample))
 - `sensitive_data_scanner` (Block List) The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner))
 - `split_array` (Block List) The `split_array` processor splits array fields into separate events based on configured rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array))
+- `tag_cardinality_limit` (Block List) The `tag_cardinality_limit` processor caps the number of distinct tag value combinations on metrics, dropping tags or events once the limit is exceeded. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit))
 - `throttle` (Block List) The `throttle` processor limits the number of events that pass through over a given time window. (see [below for nested schema](#nestedblock--config--processor_group--processor--throttle))
 
 <a id="nestedblock--config--processor_group--processor--add_env_vars"></a>
@@ -1691,6 +1695,32 @@ Required:
 
 <a id="nestedblock--config--processor_group--processor--add_hostname"></a>
 ### Nested Schema for `config.processor_group.processor.add_hostname`
+
+
+<a id="nestedblock--config--processor_group--processor--add_metric_tags"></a>
+### Nested Schema for `config.processor_group.processor.add_metric_tags`
+
+Optional:
+
+- `tag` (Block List) A list of static tags to add to each metric. Up to 15 tags may be defined. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_metric_tags--tag))
+
+<a id="nestedblock--config--processor_group--processor--add_metric_tags--tag"></a>
+### Nested Schema for `config.processor_group.processor.add_metric_tags.tag`
+
+Required:
+
+- `name` (String) The tag name.
+- `value` (String) The tag value.
+
+
+
+<a id="nestedblock--config--processor_group--processor--aggregate"></a>
+### Nested Schema for `config.processor_group.processor.aggregate`
+
+Required:
+
+- `interval_secs` (Number) The interval, in seconds, over which metrics are aggregated. Must be between 1 and 60. Value must be between 1 and 60.
+- `mode` (String) The aggregation mode. One of `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`. Valid values are `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`.
 
 
 <a id="nestedblock--config--processor_group--processor--custom_processor"></a>
@@ -2160,6 +2190,23 @@ Required:
 
 
 
+<a id="nestedblock--config--processor_group--processor--rename_metric_tags"></a>
+### Nested Schema for `config.processor_group.processor.rename_metric_tags`
+
+Optional:
+
+- `tag` (Block List) A list of rename rules. Up to 15 tags may be defined. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_metric_tags--tag))
+
+<a id="nestedblock--config--processor_group--processor--rename_metric_tags--tag"></a>
+### Nested Schema for `config.processor_group.processor.rename_metric_tags.tag`
+
+Required:
+
+- `rename_to` (String) The new tag key to assign in place of the original.
+- `tag` (String) The original tag key on the metric event.
+
+
+
 <a id="nestedblock--config--processor_group--processor--sample"></a>
 ### Nested Schema for `config.processor_group.processor.sample`
 
@@ -2304,6 +2351,47 @@ Required:
 
 - `field` (String) The path to the array field to split.
 - `include` (String) A Datadog search query used to determine which logs this array split operation targets.
+
+
+
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit`
+
+Required:
+
+- `limit_exceeded_action` (String) The default action to take when the cardinality limit is exceeded. One of `drop_tag`, `drop_event`. Valid values are `drop_tag`, `drop_event`.
+- `value_limit` (Number) The default maximum number of distinct tag value combinations allowed per metric. Between 0 and 1000000. Value must be between 0 and 1000000.
+
+Optional:
+
+- `per_metric_limit` (Block List) Per-metric cardinality overrides that take precedence over the default `value_limit`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit))
+
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit`
+
+Required:
+
+- `metric_name` (String) The metric name this override applies to.
+- `mode` (String) How the per-metric override is applied. One of `tracked`, `excluded`. Valid values are `tracked`, `excluded`.
+
+Optional:
+
+- `limit_exceeded_action` (String) The action to take on this metric when the limit is exceeded. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Valid values are `drop_tag`, `drop_event`.
+- `per_tag_limit` (Block List) Per-tag cardinality overrides that apply within this metric. Must be omitted when `mode` is `excluded`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit))
+- `value_limit` (Number) The cardinality cap for this metric. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit.per_tag_limit`
+
+Required:
+
+- `mode` (String) How the per-tag override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
+- `tag_key` (String) The tag key this override applies to.
+
+Optional:
+
+- `value_limit` (Number) The cardinality cap for this tag. Required when `mode` is `limit_override`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+
 
 
 
