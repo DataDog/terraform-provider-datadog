@@ -1255,6 +1255,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"always_execute": {
+					Description: "Determines whether or not to always execute this step even if the previous step failed or was skipped.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"is_critical": {
 					Description: "Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.",
 					Type:        schema.TypeBool,
@@ -2835,6 +2840,11 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
 				localStep["exit_if_succeed"] = step.SyntheticsAPITestStep.GetExitIfSucceed()
 				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
+				if alwaysExecute, ok := step.SyntheticsAPITestStep.AdditionalProperties["always_execute"]; ok {
+					if v, ok := alwaysExecute.(bool); ok {
+						localStep["always_execute"] = v
+					}
+				}
 				localStep["extracted_values_from_script"] = step.SyntheticsAPITestStep.GetExtractedValuesFromScript()
 
 				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
@@ -2857,6 +2867,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["name"] = step.SyntheticsAPISubtestStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPISubtestStep.GetSubtype()
 				localStep["subtest_public_id"] = step.SyntheticsAPISubtestStep.GetSubtestPublicId()
+				localStep["always_execute"] = step.SyntheticsAPISubtestStep.GetAlwaysExecute()
 			}
 
 			localSteps[i] = localStep
@@ -3507,6 +3518,12 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
 				step.SyntheticsAPITestStep.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
 				step.SyntheticsAPITestStep.SetIsCritical(stepMap["is_critical"].(bool))
+				if alwaysExecute, ok := stepMap["always_execute"].(bool); ok {
+					if step.SyntheticsAPITestStep.AdditionalProperties == nil {
+						step.SyntheticsAPITestStep.AdditionalProperties = make(map[string]interface{})
+					}
+					step.SyntheticsAPITestStep.AdditionalProperties["always_execute"] = alwaysExecute
+				}
 				step.SyntheticsAPITestStep.SetExtractedValuesFromScript(stepMap["extracted_values_from_script"].(string))
 
 				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
@@ -3539,6 +3556,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 				step.SyntheticsAPISubtestStep.SetSubtype(datadogV1.SyntheticsAPISubtestStepSubtype(stepMap["subtype"].(string)))
 				if subtestPublicID, ok := stepMap["subtest_public_id"].(string); ok && subtestPublicID != "" {
 					step.SyntheticsAPISubtestStep.SetSubtestPublicId(subtestPublicID)
+				}
+				if alwaysExecute, ok := stepMap["always_execute"].(bool); ok {
+					step.SyntheticsAPISubtestStep.SetAlwaysExecute(alwaysExecute)
 				}
 			}
 
