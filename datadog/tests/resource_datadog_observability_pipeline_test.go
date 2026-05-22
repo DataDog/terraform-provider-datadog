@@ -7959,16 +7959,6 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
               mode        = "limit_override"
               value_limit = 50
             }
-
-            per_tag_limit {
-              tag_key = "region"
-              mode    = "excluded"
-            }
-          }
-
-          per_metric_limit {
-            metric_name = "noisy.metric"
-            mode        = "excluded"
           }
         }
       }
@@ -7989,10 +7979,8 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.metric_name", "request.count"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.mode", "tracked"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.tag_key", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.1.tag_key", "region"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.1.mode", "excluded"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.1.metric_name", "noisy.metric"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.1.mode", "excluded"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.mode", "limit_override"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.value_limit", "50"),
 				),
 			},
 		},

@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 780
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["tag-cardinality-limit-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"tag-cardinality-limit-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"tag-cardinality-limit-processor","include":"*","limit_exceeded_action":"drop_tag","per_metric_limits":[{"limit_exceeded_action":"drop_tag","metric_name":"request.count","mode":"tracked","per_tag_limits":[{"mode":"limit_override","tag_key":"env","value_limit":50}],"value_limit":1000}],"type":"tag_cardinality_limit","value_limit":5000}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]},"name":"tag cardinality limit processor test (rich)"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"67c8c660-5592-11f1-a164-da7ad0900001","type":"pipelines","attributes":{"name":"tag cardinality limit processor test (rich)","config":{"destinations":[{"id":"destination-1","inputs":["tag-cardinality-limit-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"tag-cardinality-limit-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"tag-cardinality-limit-processor","include":"*","limit_exceeded_action":"drop_tag","per_metric_limits":[{"limit_exceeded_action":"drop_tag","metric_name":"request.count","mode":"tracked","per_tag_limits":[{"mode":"limit_override","tag_key":"env","value_limit":50}],"value_limit":1000}],"type":"tag_cardinality_limit","value_limit":5000}]}],"processors":[{"enabled":true,"id":"tag-cardinality-limit-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"tag-cardinality-limit-processor","include":"*","limit_exceeded_action":"drop_tag","per_metric_limits":[{"limit_exceeded_action":"drop_tag","metric_name":"request.count","mode":"tracked","per_tag_limits":[{"mode":"limit_override","tag_key":"env","value_limit":50}],"value_limit":1000}],"type":"tag_cardinality_limit","value_limit":5000}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 342.779394ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/obs-pipelines/pipelines/67c8c660-5592-11f1-a164-da7ad0900001
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"67c8c660-5592-11f1-a164-da7ad0900001","type":"pipelines","attributes":{"name":"tag cardinality limit processor test (rich)","config":{"destinations":[{"id":"destination-1","inputs":["tag-cardinality-limit-group-1"],"type":"datadog_metrics"}],"pipeline_type":"metrics","processor_groups":[{"enabled":true,"id":"tag-cardinality-limit-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"tag-cardinality-limit-processor","include":"*","limit_exceeded_action":"drop_tag","per_metric_limits":[{"limit_exceeded_action":"drop_tag","metric_name":"request.count","mode":"tracked","per_tag_limits":[{"mode":"limit_override","tag_key":"env","value_limit":50}],"value_limit":1000}],"type":"tag_cardinality_limit","value_limit":5000}]}],"processors":[{"enabled":true,"id":"tag-cardinality-limit-group-1","include":"*","inputs":["source-1"],"processors":[{"enabled":true,"id":"tag-cardinality-limit-processor","include":"*","limit_exceeded_action":"drop_tag","per_metric_limits":[{"limit_exceeded_action":"drop_tag","metric_name":"request.count","mode":"tracked","per_tag_limits":[{"mode":"limit_override","tag_key":"env","value_limit":50}],"value_limit":1000}],"type":"tag_cardinality_limit","value_limit":5000}]}],"sources":[{"id":"source-1","type":"datadog_agent"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 160.269679ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datad0g.com/api/v2/obs-pipelines/pipelines/67c8c660-5592-11f1-a164-da7ad0900001
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 395.087987ms
