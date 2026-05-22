@@ -2766,6 +2766,80 @@ resource "datadog_monitor" "aggregate_augmented" {
 }`, uniq)
 }
 
+func TestAccDatadogMonitor_AggregateFilteredQuery(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorAggregateFilteredConfig(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "name", monitorName),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "type", "metric alert"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "variables.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "variables.0.aggregate_filtered_query.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "variables.0.aggregate_filtered_query.0.data_source", "aggregate_filtered_query"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "variables.0.aggregate_filtered_query.0.name", "query1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "variables.0.aggregate_filtered_query.0.filter_reference_table.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "variables.0.aggregate_filtered_query.0.base_metrics_query.#", "1"),
+					resource.TestCheckResourceAttr("datadog_monitor.aggregate_filtered", "variables.0.aggregate_filtered_query.0.filters.#", "1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorAggregateFilteredConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "aggregate_filtered" {
+  name    = "%s"
+  type    = "query alert"
+  message = "aggregate filtered test"
+  query   = "formula(\"query1\").rollup(\"sum\").last(\"5m\") > 124"
+
+  monitor_thresholds {
+    critical = "124"
+  }
+
+  variables {
+    aggregate_filtered_query {
+      name        = "query1"
+      data_source = "aggregate_filtered_query"
+
+      filter_reference_table {
+        name         = "filter_query"
+        data_source  = "reference_table"
+        table_name   = "test_table"
+        columns {
+          name = "org_id"
+        }
+        columns {
+          name = "name"
+        }
+      }
+
+      base_metrics_query {
+        data_source = "metrics"
+        name        = "query1"
+        query       = "avg:dd{*} by {org_id}.as_count()"
+      }
+
+      filters {
+        base_attribute   = "org_id"
+        filter_attribute = "org_id"
+      }
+    }
+  }
+}`, uniq)
+}
+
 // TestAccDatadogMonitor_DataJobs_Basic tests basic data-jobs monitor functionality
 func TestAccDatadogMonitor_DataJobs_Basic(t *testing.T) {
 	t.Parallel()
