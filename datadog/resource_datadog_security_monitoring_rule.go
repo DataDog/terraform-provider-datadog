@@ -834,7 +834,7 @@ func buildPayloadImpossibleTravelOptions(tfOptionsList []interface{}) (*datadogV
 
 	if v, ok := tfOptions["baseline_user_locations_duration"]; ok && v.(int) != 0 {
 		hasPayload = true
-		options.SetBaselineUserLocationsDuration(int32(v.(int)))
+		options.SetBaselineUserLocationsDuration(int32(v.(int))) //nolint:gosec // schema-validated range 1-30 fits int32
 	}
 
 	return options, hasPayload
