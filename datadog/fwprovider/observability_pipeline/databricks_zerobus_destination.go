@@ -30,7 +30,7 @@ func DatabricksZerobusDestinationSchema() schema.ListNestedBlock {
 			Attributes: map[string]schema.Attribute{
 				"ingestion_endpoint_key": schema.StringAttribute{
 					Optional:    true,
-					Description: "Name of the environment variable or the secret identifier that references the Databricks Zerobus ingestion endpoint, which is used to stream data directly into your Databricks Lakehouse.",
+					Description: "The name of the secret or environment variable holding the Databricks Zerobus ingestion endpoint URL.",
 				},
 				"table_name": schema.StringAttribute{
 					Required:    true,
@@ -38,7 +38,7 @@ func DatabricksZerobusDestinationSchema() schema.ListNestedBlock {
 				},
 				"unity_catalog_endpoint_key": schema.StringAttribute{
 					Optional:    true,
-					Description: "Name of the environment variable or the secret identifier that references your Databricks workspace URL, which is used to communicate with the Unity Catalog API.",
+					Description: "The name of the secret or environment variable holding the Databricks Unity Catalog endpoint URL.",
 				},
 			},
 			Blocks: map[string]schema.Block{
@@ -71,11 +71,11 @@ func ExpandDatabricksZerobusDestination(ctx context.Context, id string, inputs t
 	inputs.ElementsAs(ctx, &inputsList, false)
 	dest.SetInputs(inputsList)
 
-	if !src.IngestionEndpointKey.IsNull() {
+	if !src.IngestionEndpointKey.IsNull() && !src.IngestionEndpointKey.IsUnknown() {
 		dest.SetIngestionEndpointKey(src.IngestionEndpointKey.ValueString())
 	}
 	dest.SetTableName(src.TableName.ValueString())
-	if !src.UnityCatalogEndpointKey.IsNull() {
+	if !src.UnityCatalogEndpointKey.IsNull() && !src.UnityCatalogEndpointKey.IsUnknown() {
 		dest.SetUnityCatalogEndpointKey(src.UnityCatalogEndpointKey.ValueString())
 	}
 
@@ -102,11 +102,17 @@ func FlattenDatabricksZerobusDestination(ctx context.Context, src *datadogV2.Obs
 	model := &DatabricksZerobusDestinationModel{
 		TableName: types.StringValue(src.GetTableName()),
 	}
+
 	if v, ok := src.GetIngestionEndpointKeyOk(); ok {
 		model.IngestionEndpointKey = types.StringValue(*v)
+	} else {
+		model.IngestionEndpointKey = types.StringNull()
 	}
+
 	if v, ok := src.GetUnityCatalogEndpointKeyOk(); ok {
 		model.UnityCatalogEndpointKey = types.StringValue(*v)
+	} else {
+		model.UnityCatalogEndpointKey = types.StringNull()
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {

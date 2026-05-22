@@ -921,6 +921,23 @@ func TestAccDatadogSyntheticsTestMultistepApi_AllSubtypes(t *testing.T) {
 	})
 }
 
+// Requires the synthetics-mcp-api-testing experiment enabled on the test org.
+func TestAccDatadogSyntheticsTestMultistepApi_MCP(t *testing.T) {
+	cleanupSyntheticsTests(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMultistepAPITestMCP(ctx, accProvider, t),
+		},
+	})
+}
+
 // When conciliating the config and the state, the provider is not updating the ML in the state as
 // a side effect of the diffSuppressFunc, but it nonetheless updates the other fields.
 // So after reordering the steps in the config, the state contains steps with mixed up MLs.
@@ -9301,6 +9318,144 @@ resource "datadog_synthetics_test" "multiple_orphan_drags" {
 					value = "#another-element"
 				}
 			}
+		}
+	}
+}
+`, testName)
+}
+
+func createSyntheticsMultistepAPITestMCP(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+
+	return resource.TestStep{
+		Config: createSyntheticsMultistepAPITestConfigMCP(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "type", "api"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "subtype", "multi"),
+			// Step 0: init
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.subtype", "mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.request_definition.0.call_type", "init"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.request_definition.0.mcp_protocol_version", "2025-06-18"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.request_definition.0.url", "https://example.org/mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.1.type", "mcpRespectsSpecification"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.2.type", "mcpServerCapabilities"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.2.operator", "contains"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.0.assertion.2.target_mcp_capabilities.0.capabilities.0", "tools"),
+			// Step 1: tool_list
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.subtype", "mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.request_definition.0.call_type", "tool_list"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.1.type", "mcpToolCount"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.1.target", "0"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.2.type", "mcpToolNameLength"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.1.assertion.2.target", "64"),
+			// Step 2: tool_call
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.subtype", "mcp"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.request_definition.0.call_type", "tool_call"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.request_definition.0.tool_name", "search"),
+			resource.TestCheckResourceAttr("datadog_synthetics_test.test_mcp", "api_step.2.request_definition.0.tool_args", `{"limit":5,"query":"datadog synthetics"}`),
+		),
+	}
+}
+
+func createSyntheticsMultistepAPITestConfigMCP(testName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "test_mcp" {
+	type      = "api"
+	subtype   = "multi"
+	status    = "paused"
+	name      = "%[1]s"
+	message   = "Notify @datadog.user"
+	tags      = ["env:sandbox"]
+	locations = ["aws:us-east-1"]
+
+	options_list {
+		tick_every           = 900
+		min_failure_duration = 0
+		min_location_failed  = 1
+	}
+
+	api_step {
+		name    = "Initialize MCP session"
+		subtype = "mcp"
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+		assertion {
+			type = "mcpRespectsSpecification"
+		}
+		assertion {
+			type     = "mcpServerCapabilities"
+			operator = "contains"
+			target_mcp_capabilities {
+				capabilities = ["tools"]
+			}
+		}
+
+		request_definition {
+			url                  = "https://example.org/mcp"
+			call_type            = "init"
+			mcp_protocol_version = "2025-06-18"
+		}
+	}
+
+	api_step {
+		name    = "List MCP tools"
+		subtype = "mcp"
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+		assertion {
+			type     = "mcpToolCount"
+			operator = "moreThan"
+			target   = "0"
+		}
+		assertion {
+			type     = "mcpToolNameLength"
+			operator = "lessThan"
+			target   = "64"
+		}
+		assertion {
+			type = "mcpRespectsSpecification"
+		}
+
+		request_definition {
+			url                  = "https://example.org/mcp"
+			call_type            = "tool_list"
+			mcp_protocol_version = "2025-06-18"
+		}
+	}
+
+	api_step {
+		name    = "Call MCP search tool"
+		subtype = "mcp"
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+		assertion {
+			type     = "responseTime"
+			operator = "lessThan"
+			target   = "5000"
+		}
+		assertion {
+			type = "mcpRespectsSpecification"
+		}
+
+		request_definition {
+			url                  = "https://example.org/mcp"
+			call_type            = "tool_call"
+			mcp_protocol_version = "2025-06-18"
+			tool_name            = "search"
+			tool_args            = jsonencode({ limit = 5, query = "datadog synthetics" })
 		}
 	}
 }

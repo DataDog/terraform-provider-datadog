@@ -1,0 +1,253 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1859
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"type":"mcpRespectsSpecification"},{"operator":"contains","target":["tools"],"type":"mcpServerCapabilities"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Initialize MCP session","request":{"allow_insecure":false,"callType":"init","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"moreThan","target":0,"type":"mcpToolCount"},{"operator":"lessThan","target":64,"type":"mcpToolNameLength"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"List MCP tools","request":{"allow_insecure":false,"callType":"tool_list","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":5000,"type":"responseTime"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Call MCP search tool","request":{"allow_insecure":false,"callType":"tool_call","mcpProtocolVersion":"2025-06-18","timeout":0,"toolArgs":{"limit":5,"query":"datadog synthetics"},"toolName":"search","url":"https://example.org/mcp"},"subtype":"mcp"}]},"locations":["aws:us-east-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_MCP-local-1779295130","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"paused","subtype":"multi","tags":["env:sandbox"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"uh6-x83-e9n","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_MCP-local-1779295130","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2026-05-20T16:38:53.081308+00:00","modified_at":"2026-05-20T16:38:53.081308+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"type":"mcpRespectsSpecification"},{"operator":"contains","target":["tools"],"type":"mcpServerCapabilities"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Initialize MCP session","request":{"allow_insecure":false,"callType":"init","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"3tp-taj-ebk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"moreThan","target":0,"type":"mcpToolCount"},{"operator":"lessThan","target":64,"type":"mcpToolNameLength"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"List MCP tools","request":{"allow_insecure":false,"callType":"tool_list","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"xmt-u7i-3kk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":5000,"type":"responseTime"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Call MCP search tool","request":{"allow_insecure":false,"callType":"tool_call","mcpProtocolVersion":"2025-06-18","timeout":0,"toolArgs":{"limit":5,"query":"datadog synthetics"},"toolName":"search","url":"https://example.org/mcp"},"subtype":"mcp","id":"su5-izs-7tp"}]},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900,"bits_ai_auto_investigate":false},"locations":["aws:us-east-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":285320718,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"creation_source":"terraform"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.051535167s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/uh6-x83-e9n
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"uh6-x83-e9n","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_MCP-local-1779295130","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2026-05-20T16:38:53.081308+00:00","modified_at":"2026-05-20T16:38:53.081308+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"type":"mcpRespectsSpecification"},{"operator":"contains","target":["tools"],"type":"mcpServerCapabilities"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Initialize MCP session","request":{"allow_insecure":false,"callType":"init","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"3tp-taj-ebk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"moreThan","target":0,"type":"mcpToolCount"},{"operator":"lessThan","target":64,"type":"mcpToolNameLength"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"List MCP tools","request":{"allow_insecure":false,"callType":"tool_list","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"xmt-u7i-3kk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":5000,"type":"responseTime"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Call MCP search tool","request":{"allow_insecure":false,"callType":"tool_call","mcpProtocolVersion":"2025-06-18","timeout":0,"toolArgs":{"limit":5,"query":"datadog synthetics"},"toolName":"search","url":"https://example.org/mcp"},"subtype":"mcp","id":"su5-izs-7tp"}]},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":285320718,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 231.731166ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/uh6-x83-e9n
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"uh6-x83-e9n","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_MCP-local-1779295130","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2026-05-20T16:38:53.081308+00:00","modified_at":"2026-05-20T16:38:53.081308+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"type":"mcpRespectsSpecification"},{"operator":"contains","target":["tools"],"type":"mcpServerCapabilities"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Initialize MCP session","request":{"allow_insecure":false,"callType":"init","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"3tp-taj-ebk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"moreThan","target":0,"type":"mcpToolCount"},{"operator":"lessThan","target":64,"type":"mcpToolNameLength"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"List MCP tools","request":{"allow_insecure":false,"callType":"tool_list","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"xmt-u7i-3kk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":5000,"type":"responseTime"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Call MCP search tool","request":{"allow_insecure":false,"callType":"tool_call","mcpProtocolVersion":"2025-06-18","timeout":0,"toolArgs":{"limit":5,"query":"datadog synthetics"},"toolName":"search","url":"https://example.org/mcp"},"subtype":"mcp","id":"su5-izs-7tp"}]},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":285320718,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 242.489792ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/uh6-x83-e9n
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"uh6-x83-e9n","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_MCP-local-1779295130","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2026-05-20T16:38:53.081308+00:00","modified_at":"2026-05-20T16:38:53.081308+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"type":"mcpRespectsSpecification"},{"operator":"contains","target":["tools"],"type":"mcpServerCapabilities"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Initialize MCP session","request":{"allow_insecure":false,"callType":"init","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"3tp-taj-ebk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"moreThan","target":0,"type":"mcpToolCount"},{"operator":"lessThan","target":64,"type":"mcpToolNameLength"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"List MCP tools","request":{"allow_insecure":false,"callType":"tool_list","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"xmt-u7i-3kk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":5000,"type":"responseTime"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Call MCP search tool","request":{"allow_insecure":false,"callType":"tool_call","mcpProtocolVersion":"2025-06-18","timeout":0,"toolArgs":{"limit":5,"query":"datadog synthetics"},"toolName":"search","url":"https://example.org/mcp"},"subtype":"mcp","id":"su5-izs-7tp"}]},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":285320718,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.067ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/uh6-x83-e9n
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"uh6-x83-e9n","name":"tf-TestAccDatadogSyntheticsTestMultistepApi_MCP-local-1779295130","status":"paused","type":"api","subtype":"multi","tags":["env:sandbox"],"created_at":"2026-05-20T16:38:53.081308+00:00","modified_at":"2026-05-20T16:38:53.081308+00:00","config":{"assertions":[],"configVariables":[],"steps":[{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"type":"mcpRespectsSpecification"},{"operator":"contains","target":["tools"],"type":"mcpServerCapabilities"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Initialize MCP session","request":{"allow_insecure":false,"callType":"init","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"3tp-taj-ebk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"moreThan","target":0,"type":"mcpToolCount"},{"operator":"lessThan","target":64,"type":"mcpToolNameLength"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"List MCP tools","request":{"allow_insecure":false,"callType":"tool_list","mcpProtocolVersion":"2025-06-18","timeout":0,"url":"https://example.org/mcp"},"subtype":"mcp","id":"xmt-u7i-3kk"},{"allowFailure":false,"assertions":[{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":5000,"type":"responseTime"},{"type":"mcpRespectsSpecification"}],"exitIfSucceed":false,"extractedValues":[],"extractedValuesFromScript":"","isCritical":false,"name":"Call MCP search tool","request":{"allow_insecure":false,"callType":"tool_call","mcpProtocolVersion":"2025-06-18","timeout":0,"toolArgs":{"limit":5,"query":"datadog synthetics"},"toolName":"search","url":"https://example.org/mcp"},"subtype":"mcp","id":"su5-izs-7tp"}]},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:us-east-1"],"monitor_id":285320718,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 229.497709ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["uh6-x83-e9n"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"uh6-x83-e9n","deleted_at":"2026-05-20T16:38:55.358902+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 738.038ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/uh6-x83-e9n
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 743.684458ms
