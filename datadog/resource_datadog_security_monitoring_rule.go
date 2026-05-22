@@ -238,7 +238,7 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 									Type:         schema.TypeInt,
 									Optional:     true,
 									Computed:     true,
-									Description:  "The duration in days during which Datadog learns a user's access locations before generating signals. Accepted values are between 1 and 30. Defaults to `1` if unset. Only applicable when `baseline_user_locations` is `true`.",
+									Description:  "The duration in days during which Datadog learns a user's access locations before generating signals. Only applicable when `baseline_user_locations` is `true`. Defaults to `1` if unset. ",
 									ValidateFunc: validation.IntBetween(1, 30),
 								},
 							},
