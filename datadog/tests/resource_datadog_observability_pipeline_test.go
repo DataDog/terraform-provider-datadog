@@ -7063,9 +7063,9 @@ resource "datadog_observability_pipeline" "databricks_zerobus" {
       inputs = ["source-1"]
 
       databricks_zerobus {
-        ingestion_endpoint    = "https://ingest.databricks.example.com/v1/logs"
-        table_name            = "my_catalog.my_schema.my_table"
-        unity_catalog_endpoint = "https://unity.databricks.example.com"
+        ingestion_endpoint_key    = "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"
+        table_name                = "my_catalog.my_schema.my_table"
+        unity_catalog_endpoint_key = "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"
 
         auth {
           client_id        = "my-oauth-client-id"
@@ -7080,9 +7080,9 @@ resource "datadog_observability_pipeline" "databricks_zerobus" {
 
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint", "https://ingest.databricks.example.com/v1/logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint", "https://unity.databricks.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_secret_key", "DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"),
 				),
@@ -7117,9 +7117,9 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
       inputs = ["source-1"]
 
       databricks_zerobus {
-        ingestion_endpoint    = "https://ingest.databricks.example.com/v1/logs"
-        table_name            = "my_catalog.my_schema.my_table"
-        unity_catalog_endpoint = "https://unity.databricks.example.com"
+        ingestion_endpoint_key    = "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"
+        table_name                = "my_catalog.my_schema.my_table"
+        unity_catalog_endpoint_key = "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"
 
         auth {
           client_id = "my-oauth-client-id"
@@ -7133,9 +7133,9 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
 
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-basic-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint", "https://ingest.databricks.example.com/v1/logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint", "https://unity.databricks.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
 				),
 			},
