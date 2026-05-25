@@ -283,7 +283,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"pat": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "Datadog Personal Access Token (PAT) used as a Bearer credential. When set, the provider authenticates with `Authorization: Bearer <pat>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_PAT` or `DATADOG_PAT` environment variable.",
+				Description: "Datadog access token used as a Bearer credential. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_PAT` or `DATADOG_PAT` environment variable.",
 			},
 			"api_url": schema.StringAttribute{
 				Optional:    true,

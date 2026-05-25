@@ -52,7 +52,7 @@ provider "datadog" {
 - `http_client_retry_max_retries` (Number) The HTTP request maximum retry number. Defaults to 3.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.
 - `org_uuid` (String) The organization UUID; used for cloud-provider-based authentication. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.
-- `pat` (String, Sensitive) Datadog Personal Access Token (PAT) used as a Bearer credential. When set, the provider authenticates with `Authorization: Bearer <pat>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_PAT` or `DATADOG_PAT` environment variable.
+- `pat` (String, Sensitive) Datadog access token used as a Bearer credential. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_PAT` or `DATADOG_PAT` environment variable.
 - `validate` (String) Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.
 
 <a id="nestedblock--default_tags"></a>
