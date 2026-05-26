@@ -37,7 +37,7 @@ func TestAccDatadogOrgGroupPoliciesDataSource_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(dsFiltered, "policies.#", "1"),
 					resource.TestCheckTypeSetElemNestedAttrs(dsFiltered, "policies.*", map[string]string{
 						"policy_name":      "is_widget_copy_paste_enabled",
-						"enforcement_tier": "DEFAULT",
+						"enforcement_tier": "OVERRIDE_ALLOWED",
 						"policy_type":      "org_config",
 					}),
 				),
@@ -56,14 +56,14 @@ resource "datadog_org_group_policy" "widget" {
   org_group_id     = datadog_org_group.foo.id
   policy_name      = "is_widget_copy_paste_enabled"
   content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
 }
 
 resource "datadog_org_group_policy" "dashboard" {
   org_group_id     = datadog_org_group.foo.id
   policy_name      = "is_dashboard_reports_enabled"
   content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
 }
 
 data "datadog_org_group_policies" "all" {

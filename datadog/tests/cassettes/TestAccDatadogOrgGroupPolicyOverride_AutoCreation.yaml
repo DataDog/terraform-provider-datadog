@@ -185,7 +185,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"content":{"org_config":true},"enforcement_tier":"ENFORCE","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}},"type":"org_group_policies"}}
+            {"data":{"attributes":{"content":{"org_config":true},"enforcement_tier":"GROUP_MANAGED","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}},"type":"org_group_policies"}}
         form: {}
         headers:
             Accept:
@@ -202,7 +202,7 @@ interactions:
         trailer: {}
         content_length: 421
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"ENFORCE","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"GROUP_MANAGED","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -301,7 +301,7 @@ interactions:
         trailer: {}
         content_length: 421
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"ENFORCE","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"GROUP_MANAGED","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -367,7 +367,7 @@ interactions:
         trailer: {}
         content_length: 421
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"ENFORCE","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-a035-7da5-84e3-aaff8d07f407","type":"org_group_policies","attributes":{"content":{"org_config":true},"enforced_at":"2026-04-23T23:53:50.396173Z","enforcement_tier":"GROUP_MANAGED","modified_at":"2026-04-23T23:53:50.396173Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -582,7 +582,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}},"type":"org_group_policies"}}
+            {"data":{"attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}},"type":"org_group_policies"}}
         form: {}
         headers:
             Accept:
@@ -599,7 +599,7 @@ interactions:
         trailer: {}
         content_length: 378
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -731,7 +731,7 @@ interactions:
         trailer: {}
         content_length: 378
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -797,7 +797,7 @@ interactions:
         trailer: {}
         content_length: 378
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-af25-7877-8d27-d52c2827fd2d","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","modified_at":"2026-04-23T23:53:54.219353Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-9f85-7a57-aab6-bef1a5060386","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json

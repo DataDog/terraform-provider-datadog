@@ -149,7 +149,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}},"type":"org_group_policies"}}
+            {"data":{"attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}},"type":"org_group_policies"}}
         form: {}
         headers:
             Accept:
@@ -166,7 +166,7 @@ interactions:
         trailer: {}
         content_length: 378
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-5022-7d03-922f-1c5180409db2","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:29.894048Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-5022-7d03-922f-1c5180409db2","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","modified_at":"2026-04-23T23:53:29.894048Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -436,7 +436,7 @@ interactions:
         trailer: {}
         content_length: 378
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-5022-7d03-922f-1c5180409db2","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:29.894048Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-5022-7d03-922f-1c5180409db2","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","modified_at":"2026-04-23T23:53:29.894048Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -634,7 +634,7 @@ interactions:
         trailer: {}
         content_length: 378
         uncompressed: false
-        body: '{"data":{"id":"019dbcc3-5022-7d03-922f-1c5180409db2","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"DEFAULT","modified_at":"2026-04-23T23:53:29.894048Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}}}}'
+        body: '{"data":{"id":"019dbcc3-5022-7d03-922f-1c5180409db2","type":"org_group_policies","attributes":{"content":{"org_config":false},"enforcement_tier":"OVERRIDE_ALLOWED","modified_at":"2026-04-23T23:53:29.894048Z","policy_name":"is_widget_copy_paste_enabled","policy_type":"org_config"},"relationships":{"org_group":{"data":{"id":"019dbcc3-4fe8-7ecf-b67a-0498ef23dd95","type":"org_groups"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
