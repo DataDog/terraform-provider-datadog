@@ -89,11 +89,6 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
   }
 
   rule {
-    escalation_policy = datadog_on_call_escalation_policy.team_rules_test.id
-    urgency = "dynamic"
-  }
-
-  rule {
     query = "tags.service:payment"
     action {
       escalation_policy {
@@ -135,5 +130,10 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
         }
       }
     }
+  }
+
+  rule {
+    escalation_policy = datadog_on_call_escalation_policy.team_rules_test.id
+    urgency = "dynamic"
   }
 }
