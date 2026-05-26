@@ -2,12 +2,10 @@ cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMT
 dario.cat/mergo v1.0.0 h1:AGCNq9Evsj31mOgNPcLyXc+4PNABt905YmuqPYYpBWk=
 dario.cat/mergo v1.0.0/go.mod h1:uNxQE+84aUszobStD9th8a29P2fMDhsBdgRYvZOxGmk=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260522105410-e52cd99f85bb h1:NWZA4yXJSI8mk1nJs1vg/I0Ah96hlFyBY6QMgKTnkUM=
-github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260522105410-e52cd99f85bb/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
-github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260522223127-1d6a4d837988 h1:OQz6l8YdHu/JsbUhcqmZ6KPn0BInJURLmIRtIMpF8+4=
-github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260522223127-1d6a4d837988/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
-github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260526154013-025c3eb719e9 h1:1oiVCMvstKHrSHIlBrK6k582Sl3tDU38sGF8471YdyM=
-github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260526154013-025c3eb719e9/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
+github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260526171205-30631e656873 h1:YquVaVxEVaqxdQoxR5/W12sChlvQlvTry8ERXT1eifU=
+github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260526171205-30631e656873/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
+github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260526185834-6f6d53eb415c h1:8N2uY2mHWglssm2qAhrqnReANr5P9OFyLYNVv1oz3io=
+github.com/DataDog/datadog-api-client-go/v2 v2.60.1-0.20260526185834-6f6d53eb415c/go.mod h1:d3tOEgUd2kfsr9uuHQdY+nXrWp4uikgTgVCPdKNK30U=
 github.com/DataDog/datadog-go v4.4.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/datadog-go v4.8.3+incompatible h1:fNGaYSuObuQb5nzeTQqowRAd9bpDIRRV4/gUtIBjh8Q=
 github.com/DataDog/datadog-go v4.8.3+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
