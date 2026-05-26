@@ -57,7 +57,7 @@ jobs:
       - name: Build skip list for flaky tests
         id: skip-list
         run: |
-          SKIP_REGEX=$(python3 scripts/build_skip_regex.py)
+          SKIP_REGEX=$(python3 scripts/build_skip_regex.py --escape-for-make)
           if [ -n "$SKIP_REGEX" ]; then
             echo "test_args=-skip '${SKIP_REGEX}'" >> "$GITHUB_OUTPUT"
             echo "Skipping flaky tests: ${SKIP_REGEX}"

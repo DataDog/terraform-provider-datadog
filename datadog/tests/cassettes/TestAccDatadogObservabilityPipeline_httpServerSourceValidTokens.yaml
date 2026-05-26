@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 560
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"auth_strategy":"none","decoding":"json","id":"http-source-1","type":"http_server","valid_tokens":[{"enabled":true,"field_to_add":{"key":"team","value":"observability"},"path_to_token":{"header":"X-Auth-Token"},"token_key":"HTTP_SERVER_TOKEN_PRIMARY"},{"enabled":true,"path_to_token":"path","token_key":"HTTP_SERVER_TOKEN_SECONDARY"}]}]},"name":"http-server-valid-tokens-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 642
+        uncompressed: false
+        body: |
+            {"data":{"id":"1c5d8a7c-55e1-11f1-b3fe-da7ad0900002","type":"pipelines","attributes":{"name":"http-server-valid-tokens-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","decoding":"json","id":"http-source-1","type":"http_server","valid_tokens":[{"enabled":true,"field_to_add":{"key":"team","value":"observability"},"path_to_token":{"header":"X-Auth-Token"},"token_key":"HTTP_SERVER_TOKEN_PRIMARY"},{"enabled":true,"path_to_token":"path","token_key":"HTTP_SERVER_TOKEN_SECONDARY"}]}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 864.88125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1c5d8a7c-55e1-11f1-b3fe-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 642
+        uncompressed: false
+        body: |
+            {"data":{"id":"1c5d8a7c-55e1-11f1-b3fe-da7ad0900002","type":"pipelines","attributes":{"name":"http-server-valid-tokens-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","decoding":"json","id":"http-source-1","type":"http_server","valid_tokens":[{"enabled":true,"field_to_add":{"key":"team","value":"observability"},"path_to_token":{"header":"X-Auth-Token"},"token_key":"HTTP_SERVER_TOKEN_PRIMARY"},{"enabled":true,"path_to_token":"path","token_key":"HTTP_SERVER_TOKEN_SECONDARY"}]}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 246.003125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1c5d8a7c-55e1-11f1-b3fe-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 641.998292ms

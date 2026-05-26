@@ -1171,9 +1171,10 @@ resource "datadog_observability_pipeline" "http_server" {
         decoding      = "json"
 
         tls {
-          crt_file = "/etc/ssl/certs/http.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/http.key"
+          crt_file           = "/etc/ssl/certs/http.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/http.key"
+          verify_certificate = true
         }
       }
     }
@@ -1197,7 +1198,84 @@ resource "datadog_observability_pipeline" "http_server" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.verify_certificate", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "http-source-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpServerSourceValidTokens(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_server_valid_tokens"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_server_valid_tokens" {
+  name = "http-server-valid-tokens-pipeline"
+
+  config {
+    source {
+      id = "http-source-1"
+
+      http_server {
+        auth_strategy = "none"
+        decoding      = "json"
+
+        valid_token {
+          token_key = "HTTP_SERVER_TOKEN_PRIMARY"
+          enabled   = true
+
+          field_to_add {
+            key   = "team"
+            value = "observability"
+          }
+
+          path_to_token {
+            header = "X-Auth-Token"
+          }
+        }
+
+        valid_token {
+          token_key = "HTTP_SERVER_TOKEN_SECONDARY"
+
+          path_to_token {
+            location = "path"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["http-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "http-server-valid-tokens-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "http-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.token_key", "HTTP_SERVER_TOKEN_PRIMARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.field_to_add.0.key", "team"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.field_to_add.0.value", "observability"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.path_to_token.0.header", "X-Auth-Token"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.1.token_key", "HTTP_SERVER_TOKEN_SECONDARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.1.path_to_token.0.location", "path"),
 				),
 			},
 		},
@@ -1353,6 +1431,67 @@ resource "datadog_observability_pipeline" "splunk_hec" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.crt_file", "/etc/ssl/certs/splunk.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.key_file", "/etc/ssl/private/splunk.key"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_splunkHecSourceValidTokens(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.splunk_hec_valid_tokens"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_valid_tokens" {
+  name = "splunk-hec-valid-tokens-pipeline"
+
+  config {
+    source {
+      id = "splunk-hec-source-1"
+
+      splunk_hec {
+        valid_token {
+          token_key = "SPLUNK_HEC_TOKEN_PRIMARY"
+          enabled   = true
+
+          field_to_add {
+            key   = "team"
+            value = "observability"
+          }
+        }
+
+        valid_token {
+          token_key = "SPLUNK_HEC_TOKEN_SECONDARY"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["splunk-hec-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "splunk-hec-valid-tokens-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-hec-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.token_key", "SPLUNK_HEC_TOKEN_PRIMARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.field_to_add.0.key", "team"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.field_to_add.0.value", "observability"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.1.token_key", "SPLUNK_HEC_TOKEN_SECONDARY"),
 				),
 			},
 		},
@@ -4533,9 +4672,10 @@ resource "datadog_observability_pipeline" "socket_tcp" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+          crt_file           = "/etc/ssl/certs/socket.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/socket.key"
+          verify_certificate = true
         }
       }
     }
@@ -4557,6 +4697,7 @@ resource "datadog_observability_pipeline" "socket_tcp" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.crt_file", "/etc/ssl/certs/socket.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.key_file", "/etc/ssl/private/socket.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.verify_certificate", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "socket-source-1"),
 				),
 			},

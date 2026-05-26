@@ -97,3 +97,5 @@ jobs:
               repo: context.repo.repo,
               labels: ["changelog/no-changelog"],
             });
+
+            core.notice(pr.html_url, { title: 'Release PR created' });

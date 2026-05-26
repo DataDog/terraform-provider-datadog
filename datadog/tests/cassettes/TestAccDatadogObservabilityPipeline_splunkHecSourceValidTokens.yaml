@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 450
+        content_length: 462
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["socket-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"framing":{"method":"newline_delimited"},"id":"socket-source-1","mode":"tcp","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/socket.crt","key_file":"/etc/ssl/private/socket.key","verify_certificate":true},"type":"socket"}]},"name":"socket-pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["splunk-hec-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"id":"splunk-hec-source-1","type":"splunk_hec","valid_tokens":[{"enabled":true,"field_to_add":{"key":"team","value":"observability"},"token_key":"SPLUNK_HEC_TOKEN_PRIMARY"},{"enabled":true,"token_key":"SPLUNK_HEC_TOKEN_SECONDARY"}]}]},"name":"splunk-hec-valid-tokens-pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 532
+        content_length: 544
         uncompressed: false
         body: |
-            {"data":{"id":"1065a9f6-5457-11f1-8d23-da7ad0900002","type":"pipelines","attributes":{"name":"socket-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["socket-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"framing":{"method":"newline_delimited"},"id":"socket-source-1","mode":"tcp","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/socket.crt","key_file":"/etc/ssl/private/socket.key","verify_certificate":true},"type":"socket"}]}}}}
+            {"data":{"id":"2e131566-55e1-11f1-b400-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-hec-valid-tokens-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-hec-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"splunk-hec-source-1","type":"splunk_hec","valid_tokens":[{"enabled":true,"field_to_add":{"key":"team","value":"observability"},"token_key":"SPLUNK_HEC_TOKEN_PRIMARY"},{"enabled":true,"token_key":"SPLUNK_HEC_TOKEN_SECONDARY"}]}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 554.975125ms
+        duration: 986.663ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1065a9f6-5457-11f1-8d23-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2e131566-55e1-11f1-b400-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 532
+        content_length: 544
         uncompressed: false
         body: |
-            {"data":{"id":"1065a9f6-5457-11f1-8d23-da7ad0900002","type":"pipelines","attributes":{"name":"socket-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["socket-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"framing":{"method":"newline_delimited"},"id":"socket-source-1","mode":"tcp","tls":{"ca_file":"/etc/ssl/certs/ca.crt","crt_file":"/etc/ssl/certs/socket.crt","key_file":"/etc/ssl/private/socket.key","verify_certificate":true},"type":"socket"}]}}}}
+            {"data":{"id":"2e131566-55e1-11f1-b400-da7ad0900002","type":"pipelines","attributes":{"name":"splunk-hec-valid-tokens-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["splunk-hec-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"id":"splunk-hec-source-1","type":"splunk_hec","valid_tokens":[{"enabled":true,"field_to_add":{"key":"team","value":"observability"},"token_key":"SPLUNK_HEC_TOKEN_PRIMARY"},{"enabled":true,"token_key":"SPLUNK_HEC_TOKEN_SECONDARY"}]}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 501.418958ms
+        duration: 412.825ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/1065a9f6-5457-11f1-8d23-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2e131566-55e1-11f1-b400-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 776.636458ms
+        duration: 783.559667ms

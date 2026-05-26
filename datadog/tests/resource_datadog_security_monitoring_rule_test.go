@@ -108,6 +108,10 @@ func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRule(ruleName),
 				Check:  testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider, ruleName),
 			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleNullDuration(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorCheckImpossibleTravelRuleNullDuration(accProvider, ruleName),
+			},
 		},
 	})
 }
@@ -910,7 +914,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         keep_alive = 600
         max_signal_duration = 900
         impossible_travel_options {
-            baseline_user_locations = true
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 20
         }
     }
 
@@ -954,6 +959,8 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations_duration", "20"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1306,7 +1313,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         keep_alive = 600
         max_signal_duration = 900
         impossible_travel_options {
-            baseline_user_locations = true
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 25
         }
     }
 
@@ -1350,10 +1358,63 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvi
 			tfSecurityRuleName, "options.0.detection_method", "impossible_travel"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations_duration", "25"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleNullDuration(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered (no duration)"
+    enabled = false
+
+    query {
+        name = "my_updated_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metric = "@usr.handle"
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "new case name (updated)"
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations = true
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitorCheckImpossibleTravelRuleNullDuration(accProvider *fwprovider.FrameworkProvider, ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations", "true"),
+		// When duration is omitted on update, the API returns it as null in
+		// the response (no materialised default echoed back). The presence-
+		// aware extractor must keep state null instead of writing 0, so this
+		// assertion both verifies the null-preservation path and guards
+		// against the SEC-30852 null-vs-zero bug.
+		resource.TestCheckNoResourceAttr(tfSecurityRuleName, "options.0.impossible_travel_options.0.baseline_user_locations_duration"),
 	)
 }
 

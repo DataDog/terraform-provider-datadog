@@ -333,6 +333,115 @@ EOT
 }
 
 
+# Example Usage (Synthetics MCP API test)
+# Create a new Datadog Synthetics Multistep API test against an MCP server
+resource "datadog_synthetics_test" "test_mcp" {
+  name      = "MCP API test"
+  type      = "api"
+  subtype   = "multi"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "env:test"]
+
+  api_step {
+    name    = "Initialize MCP session"
+    subtype = "mcp"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    assertion {
+      type = "mcpRespectsSpecification"
+    }
+
+    assertion {
+      type     = "mcpServerCapabilities"
+      operator = "contains"
+      target_mcp_capabilities {
+        capabilities = ["tools"]
+      }
+    }
+
+    request_definition {
+      url                  = "https://example.org/mcp"
+      call_type            = "init"
+      mcp_protocol_version = "2025-06-18"
+    }
+
+    request_headers = {
+      "api-key" = "YOUR-API-KEY"
+    }
+  }
+
+  api_step {
+    name    = "List MCP tools"
+    subtype = "mcp"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    assertion {
+      type     = "mcpToolCount"
+      operator = "moreThan"
+      target   = "0"
+    }
+
+    assertion {
+      type     = "mcpToolNameLength"
+      operator = "lessThan"
+      target   = "64"
+    }
+
+    request_definition {
+      url                  = "https://example.org/mcp"
+      call_type            = "tool_list"
+      mcp_protocol_version = "2025-06-18"
+    }
+
+    request_headers = {
+      "api-key" = "YOUR-API-KEY"
+    }
+  }
+
+  api_step {
+    name    = "Call MCP search tool"
+    subtype = "mcp"
+
+    assertion {
+      type     = "responseTime"
+      operator = "lessThan"
+      target   = "5000"
+    }
+
+    assertion {
+      type = "mcpRespectsSpecification"
+    }
+
+    request_definition {
+      url                  = "https://example.org/mcp"
+      call_type            = "tool_call"
+      mcp_protocol_version = "2025-06-18"
+      tool_name            = "search"
+      tool_args            = jsonencode({ query = "datadog synthetics", limit = 5 })
+    }
+
+    request_headers = {
+      "api-key" = "YOUR-API-KEY"
+    }
+  }
+
+  options_list {
+    tick_every = 900
+  }
+}
+
+
 # Example Usage (Synthetics Browser test)
 # Create a new Datadog Synthetics Browser test starting on https://www.example.org
 resource "datadog_synthetics_test" "test_browser" {
