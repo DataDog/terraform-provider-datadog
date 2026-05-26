@@ -103,7 +103,7 @@ Optional:
 Optional:
 
 - `query` (String) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
-- `sample_attribute` (String) The attribute used to consistently sample logs. When set, logs are bucketed by the value of this attribute and the same fraction of buckets is sampled across runs, ensuring that all logs sharing the attribute value are either fully kept or fully excluded together. Example: `@lambda.request_id` keeps or excludes every log line for a given Lambda invocation as a unit.
+- `sample_attribute` (String) When present, buckets logs by the value of this attribute.
 - `sample_rate` (Number) The fraction of logs excluded by the exclusion filter, when active.
 
 ## Import

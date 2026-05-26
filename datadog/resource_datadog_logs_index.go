@@ -138,7 +138,7 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 					Optional:    true,
 				},
 				"sample_attribute": {
-					Description: "The attribute used to consistently sample logs. When set, logs are bucketed by the value of this attribute and the same fraction of buckets is sampled across runs, ensuring that all logs sharing the attribute value are either fully kept or fully excluded together. Example: `@lambda.request_id` keeps or excludes every log line for a given Lambda invocation as a unit.",
+					Description: "When present, buckets logs by the value of this attribute.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
