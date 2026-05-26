@@ -2367,6 +2367,7 @@ Optional:
 - `password_key` (String) Name of the environment variable or secret that holds the password.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
 - `username_key` (String) Name of the environment variable or secret that holds the username.
+- `valid_token` (Block List) A token accepted for authenticating incoming HTTP requests. Cannot be combined with the `plain` auth strategy. (see [below for nested schema](#nestedblock--config--source--http_server--valid_token))
 
 <a id="nestedblock--config--source--http_server--tls"></a>
 ### Nested Schema for `config.source.http_server.tls`
@@ -2381,6 +2382,38 @@ Optional:
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+<a id="nestedblock--config--source--http_server--valid_token"></a>
+### Nested Schema for `config.source.http_server.valid_token`
+
+Required:
+
+- `token_key` (String) Name of the environment variable or secret that holds the expected token value.
+
+Optional:
+
+- `enabled` (Boolean) Whether this token is currently accepted. Defaults to `true`.
+- `field_to_add` (Block List) An optional metadata field attached to every event authenticated by the token. Both `key` and `value` must match `^[A-Za-z0-9_]+$`. (see [below for nested schema](#nestedblock--config--source--http_server--valid_token--field_to_add))
+- `path_to_token` (Block List) Specifies where the worker extracts the token from the incoming HTTP request. Set either `location` for a built-in source or `header` to read it from a request header. (see [below for nested schema](#nestedblock--config--source--http_server--valid_token--path_to_token))
+
+<a id="nestedblock--config--source--http_server--valid_token--field_to_add"></a>
+### Nested Schema for `config.source.http_server.valid_token.field_to_add`
+
+Required:
+
+- `key` (String) The metadata field name to add to incoming events.
+- `value` (String) The metadata field value to add to incoming events.
+
+
+<a id="nestedblock--config--source--http_server--valid_token--path_to_token"></a>
+### Nested Schema for `config.source.http_server.valid_token.path_to_token`
+
+Optional:
+
+- `header` (String) The name of the HTTP header that carries the token.
+- `location` (String) Built-in token location on the incoming HTTP request. One of `path`, `address`. Valid values are `path`, `address`.
+
 
 
 
@@ -2567,6 +2600,7 @@ Optional:
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
 - `store_hec_token` (Boolean) When `true`, the Splunk HEC token from the incoming request is stored in the event, allowing downstream components to forward it to other Splunk HEC destinations.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
+- `valid_token` (Block List) A HEC token accepted for authenticating incoming Splunk HEC requests. (see [below for nested schema](#nestedblock--config--source--splunk_hec--valid_token))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>
 ### Nested Schema for `config.source.splunk_hec.tls`
@@ -2581,6 +2615,28 @@ Optional:
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+<a id="nestedblock--config--source--splunk_hec--valid_token"></a>
+### Nested Schema for `config.source.splunk_hec.valid_token`
+
+Required:
+
+- `token_key` (String) Name of the environment variable or secret that holds the expected HEC token value.
+
+Optional:
+
+- `enabled` (Boolean) Whether this token is currently accepted. Defaults to `true`.
+- `field_to_add` (Block List) An optional metadata field attached to every event authenticated by the token. Both `key` and `value` must match `^[A-Za-z0-9_]+$`. (see [below for nested schema](#nestedblock--config--source--splunk_hec--valid_token--field_to_add))
+
+<a id="nestedblock--config--source--splunk_hec--valid_token--field_to_add"></a>
+### Nested Schema for `config.source.splunk_hec.valid_token.field_to_add`
+
+Required:
+
+- `key` (String) The metadata field name to add to incoming events.
+- `value` (String) The metadata field value to add to incoming events.
+
 
 
 
