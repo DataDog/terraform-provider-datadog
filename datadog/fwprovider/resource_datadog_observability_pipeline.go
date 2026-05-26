@@ -492,13 +492,38 @@ type httpServerSourceModel struct {
 	Decoding     types.String                      `tfsdk:"decoding"`
 	PasswordKey  types.String                      `tfsdk:"password_key"`
 	UsernameKey  types.String                      `tfsdk:"username_key"`
+	ValidTokens  []httpServerValidTokenModel       `tfsdk:"valid_token"`
 	Tls          []observability_pipeline.TlsModel `tfsdk:"tls"`
+}
+
+type httpServerValidTokenModel struct {
+	TokenKey    types.String                           `tfsdk:"token_key"`
+	Enabled     types.Bool                             `tfsdk:"enabled"`
+	FieldToAdd  []validTokenFieldToAddModel            `tfsdk:"field_to_add"`
+	PathToToken []httpServerValidTokenPathToTokenModel `tfsdk:"path_to_token"`
+}
+
+type httpServerValidTokenPathToTokenModel struct {
+	Location types.String `tfsdk:"location"`
+	Header   types.String `tfsdk:"header"`
 }
 
 type splunkHecSourceModel struct {
 	AddressKey    types.String                      `tfsdk:"address_key"`
 	StoreHecToken types.Bool                        `tfsdk:"store_hec_token"`
+	ValidTokens   []splunkHecValidTokenModel        `tfsdk:"valid_token"`
 	Tls           []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+}
+
+type splunkHecValidTokenModel struct {
+	TokenKey   types.String                `tfsdk:"token_key"`
+	Enabled    types.Bool                  `tfsdk:"enabled"`
+	FieldToAdd []validTokenFieldToAddModel `tfsdk:"field_to_add"`
+}
+
+type validTokenFieldToAddModel struct {
+	Key   types.String `tfsdk:"key"`
+	Value types.String `tfsdk:"value"`
 }
 
 type generateMetricsProcessorModel struct {
@@ -946,6 +971,29 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 											Blocks: map[string]schema.Block{
 												"tls": observability_pipeline.TlsSchema(),
+												"valid_token": schema.ListNestedBlock{
+													Description: "A token accepted for authenticating incoming HTTP requests. Cannot be combined with the `plain` auth strategy.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1000),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"token_key": schema.StringAttribute{
+																Required:    true,
+																Description: "Name of the environment variable or secret that holds the expected token value.",
+															},
+															"enabled": schema.BoolAttribute{
+																Optional:    true,
+																Computed:    true,
+																Description: "Whether this token is currently accepted. Defaults to `true`.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"field_to_add":  validTokenFieldToAddSchema(),
+															"path_to_token": httpServerValidTokenPathToTokenSchema(),
+														},
+													},
+												},
 											},
 										},
 									},
@@ -990,6 +1038,28 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											},
 											Blocks: map[string]schema.Block{
 												"tls": observability_pipeline.TlsSchema(),
+												"valid_token": schema.ListNestedBlock{
+													Description: "A HEC token accepted for authenticating incoming Splunk HEC requests.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1000),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{
+															"token_key": schema.StringAttribute{
+																Required:    true,
+																Description: "Name of the environment variable or secret that holds the expected HEC token value.",
+															},
+															"enabled": schema.BoolAttribute{
+																Optional:    true,
+																Computed:    true,
+																Description: "Whether this token is currently accepted. Defaults to `true`.",
+															},
+														},
+														Blocks: map[string]schema.Block{
+															"field_to_add": validTokenFieldToAddSchema(),
+														},
+													},
+												},
 											},
 										},
 									},
@@ -5367,6 +5437,9 @@ func expandHttpServerSource(src *httpServerSourceModel, id string) datadogV2.Obs
 	if !src.UsernameKey.IsNull() {
 		s.SetUsernameKey(src.UsernameKey.ValueString())
 	}
+	if len(src.ValidTokens) > 0 {
+		s.SetValidTokens(expandHttpServerValidTokens(src.ValidTokens))
+	}
 	s.Tls = observability_pipeline.ExpandTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -5392,6 +5465,9 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 	if v, ok := src.GetUsernameKeyOk(); ok {
 		out.UsernameKey = types.StringValue(*v)
 	}
+	if tokens, ok := src.GetValidTokensOk(); ok && tokens != nil {
+		out.ValidTokens = flattenHttpServerValidTokens(*tokens)
+	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
@@ -5407,6 +5483,9 @@ func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.Obser
 	}
 	if !src.StoreHecToken.IsNull() {
 		s.SetStoreHecToken(src.StoreHecToken.ValueBool())
+	}
+	if len(src.ValidTokens) > 0 {
+		s.SetValidTokens(expandSplunkHecValidTokens(src.ValidTokens))
 	}
 	if src.Tls != nil {
 		s.Tls = observability_pipeline.ExpandTls(src.Tls)
@@ -5429,11 +5508,168 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 	if src.HasStoreHecToken() {
 		out.StoreHecToken = types.BoolValue(src.GetStoreHecToken())
 	}
+	if tokens, ok := src.GetValidTokensOk(); ok && tokens != nil {
+		out.ValidTokens = flattenSplunkHecValidTokens(*tokens)
+	}
 	if src.Tls != nil {
 		out.Tls = observability_pipeline.FlattenTls(src.Tls)
 	}
 
 	return out
+}
+
+func expandSplunkHecValidTokens(src []splunkHecValidTokenModel) []datadogV2.ObservabilityPipelineSplunkHecSourceValidToken {
+	out := make([]datadogV2.ObservabilityPipelineSplunkHecSourceValidToken, 0, len(src))
+	for _, t := range src {
+		token := datadogV2.NewObservabilityPipelineSplunkHecSourceValidTokenWithDefaults()
+		token.SetTokenKey(t.TokenKey.ValueString())
+		if !t.Enabled.IsNull() && !t.Enabled.IsUnknown() {
+			token.SetEnabled(t.Enabled.ValueBool())
+		}
+		if len(t.FieldToAdd) > 0 {
+			token.SetFieldToAdd(expandValidTokenFieldToAdd(&t.FieldToAdd[0]))
+		}
+		out = append(out, *token)
+	}
+	return out
+}
+
+func flattenSplunkHecValidTokens(src []datadogV2.ObservabilityPipelineSplunkHecSourceValidToken) []splunkHecValidTokenModel {
+	out := make([]splunkHecValidTokenModel, 0, len(src))
+	for _, t := range src {
+		model := splunkHecValidTokenModel{
+			TokenKey: types.StringValue(t.GetTokenKey()),
+			Enabled:  types.BoolValue(t.GetEnabled()),
+		}
+		if fa, ok := t.GetFieldToAddOk(); ok && fa != nil {
+			model.FieldToAdd = []validTokenFieldToAddModel{flattenValidTokenFieldToAdd(fa)}
+		}
+		out = append(out, model)
+	}
+	return out
+}
+
+func expandHttpServerValidTokens(src []httpServerValidTokenModel) []datadogV2.ObservabilityPipelineHttpServerSourceValidToken {
+	out := make([]datadogV2.ObservabilityPipelineHttpServerSourceValidToken, 0, len(src))
+	for _, t := range src {
+		token := datadogV2.NewObservabilityPipelineHttpServerSourceValidTokenWithDefaults()
+		token.SetTokenKey(t.TokenKey.ValueString())
+		if !t.Enabled.IsNull() && !t.Enabled.IsUnknown() {
+			token.SetEnabled(t.Enabled.ValueBool())
+		}
+		if len(t.FieldToAdd) > 0 {
+			token.SetFieldToAdd(expandValidTokenFieldToAdd(&t.FieldToAdd[0]))
+		}
+		if len(t.PathToToken) > 0 {
+			token.SetPathToToken(expandHttpServerValidTokenPathToToken(&t.PathToToken[0]))
+		}
+		out = append(out, *token)
+	}
+	return out
+}
+
+func flattenHttpServerValidTokens(src []datadogV2.ObservabilityPipelineHttpServerSourceValidToken) []httpServerValidTokenModel {
+	out := make([]httpServerValidTokenModel, 0, len(src))
+	for _, t := range src {
+		model := httpServerValidTokenModel{
+			TokenKey: types.StringValue(t.GetTokenKey()),
+			Enabled:  types.BoolValue(t.GetEnabled()),
+		}
+		if fa, ok := t.GetFieldToAddOk(); ok && fa != nil {
+			model.FieldToAdd = []validTokenFieldToAddModel{flattenValidTokenFieldToAdd(fa)}
+		}
+		if pt, ok := t.GetPathToTokenOk(); ok && pt != nil {
+			if mapped := flattenHttpServerValidTokenPathToToken(pt); mapped != nil {
+				model.PathToToken = []httpServerValidTokenPathToTokenModel{*mapped}
+			}
+		}
+		out = append(out, model)
+	}
+	return out
+}
+
+func expandValidTokenFieldToAdd(src *validTokenFieldToAddModel) datadogV2.ObservabilityPipelineSourceValidTokenFieldToAdd {
+	return datadogV2.ObservabilityPipelineSourceValidTokenFieldToAdd{
+		Key:   src.Key.ValueString(),
+		Value: src.Value.ValueString(),
+	}
+}
+
+func flattenValidTokenFieldToAdd(src *datadogV2.ObservabilityPipelineSourceValidTokenFieldToAdd) validTokenFieldToAddModel {
+	return validTokenFieldToAddModel{
+		Key:   types.StringValue(src.GetKey()),
+		Value: types.StringValue(src.GetValue()),
+	}
+}
+
+func expandHttpServerValidTokenPathToToken(src *httpServerValidTokenPathToTokenModel) datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToToken {
+	if !src.Header.IsNull() && src.Header.ValueString() != "" {
+		header := datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToTokenHeader{
+			Header: src.Header.ValueString(),
+		}
+		return datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToTokenHeaderAsObservabilityPipelineHttpServerSourceValidTokenPathToToken(&header)
+	}
+	location := datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToTokenLocation(src.Location.ValueString())
+	return datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToTokenLocationAsObservabilityPipelineHttpServerSourceValidTokenPathToToken(&location)
+}
+
+func flattenHttpServerValidTokenPathToToken(src *datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToToken) *httpServerValidTokenPathToTokenModel {
+	switch v := src.GetActualInstance().(type) {
+	case *datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToTokenLocation:
+		return &httpServerValidTokenPathToTokenModel{
+			Location: types.StringValue(string(*v)),
+		}
+	case *datadogV2.ObservabilityPipelineHttpServerSourceValidTokenPathToTokenHeader:
+		return &httpServerValidTokenPathToTokenModel{
+			Header: types.StringValue(v.Header),
+		}
+	}
+	return nil
+}
+
+func validTokenFieldToAddSchema() schema.ListNestedBlock {
+	return schema.ListNestedBlock{
+		Description: "An optional metadata field attached to every event authenticated by the token. Both `key` and `value` must match `^[A-Za-z0-9_]+$`.",
+		Validators: []validator.List{
+			listvalidator.SizeAtMost(1),
+		},
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"key": schema.StringAttribute{
+					Required:    true,
+					Description: "The metadata field name to add to incoming events.",
+				},
+				"value": schema.StringAttribute{
+					Required:    true,
+					Description: "The metadata field value to add to incoming events.",
+				},
+			},
+		},
+	}
+}
+
+func httpServerValidTokenPathToTokenSchema() schema.ListNestedBlock {
+	return schema.ListNestedBlock{
+		Description: "Specifies where the worker extracts the token from the incoming HTTP request. Set either `location` for a built-in source or `header` to read it from a request header.",
+		Validators: []validator.List{
+			listvalidator.SizeAtMost(1),
+		},
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"location": schema.StringAttribute{
+					Optional:    true,
+					Description: "Built-in token location on the incoming HTTP request. One of `path`, `address`.",
+					Validators: []validator.String{
+						stringvalidator.OneOf("path", "address"),
+					},
+				},
+				"header": schema.StringAttribute{
+					Optional:    true,
+					Description: "The name of the HTTP header that carries the token.",
+				},
+			},
+		},
+	}
 }
 
 func expandGoogleCloudStorageDestination(ctx context.Context, destModel *destinationModel, d *gcsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
