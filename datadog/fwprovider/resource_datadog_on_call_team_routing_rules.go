@@ -298,7 +298,7 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"ack_timeout_minutes": schema.Int64Attribute{
 												Optional:    true,
 												Description: "Number of minutes before an acknowledged page is re-triggered.",
-												Validators:  []validator.Int64{int64validator.Between(30, 1440)},
+												Validators:  []validator.Int64{int64validator.Between(30, 4320)},
 											},
 											"urgency": schema.StringAttribute{
 												Optional:    true,
@@ -385,7 +385,7 @@ func (r *onCallTeamRoutingRulesResource) Read(ctx context.Context, request resou
 		return
 	}
 
-	state = *r.stateFromResponse(&resp)
+	state = *r.stateFromResponse(&resp, &state)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -423,7 +423,7 @@ func (r *onCallTeamRoutingRulesResource) Create(ctx context.Context, request res
 		return
 	}
 
-	state := r.stateFromResponse(&resp)
+	state := r.stateFromResponse(&resp, &plan)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -461,7 +461,7 @@ func (r *onCallTeamRoutingRulesResource) Update(ctx context.Context, request res
 		return
 	}
 
-	state := r.stateFromResponse(&resp)
+	state := r.stateFromResponse(&resp, &plan)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -512,7 +512,15 @@ func clearUnknownPolicyActions(resp *datadogV2.TeamRoutingRules) {
 	}
 }
 
-func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamRoutingRules) *onCallTeamRoutingRulesModel {
+// stateFromResponse projects the API response into Terraform state.
+//
+// For escalation policies, the API returns a dual view: legacy rule-level
+// fields (policy_id, urgency) and an equivalent action entry. Terraform
+// exposes these as two distinct shapes, so we use `prior` to pick which
+// shape the user wrote and drop the other. When prior shows action-form,
+// we reconstruct the action from prior (the response action is ignored);
+// otherwise we keep the legacy fields and emit no action.
+func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamRoutingRules, prior *onCallTeamRoutingRulesModel) *onCallTeamRoutingRulesModel {
 	state := &onCallTeamRoutingRulesModel{}
 	state.ID = types.StringValue(resp.Data.GetId())
 
@@ -533,6 +541,17 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 		if relationships.Policy != nil && relationships.Policy.Data != nil {
 			policyId = types.StringValue(fullRule.Relationships.Policy.Data.Id)
 		}
+
+		var priorEscalationAction *escalationPolicyActionModel
+		if prior != nil && i < len(prior.Rules) && prior.Rules[i] != nil {
+			for _, a := range prior.Rules[i].Actions {
+				if a.EscalationPolicy != nil {
+					priorEscalationAction = a.EscalationPolicy
+					break
+				}
+			}
+		}
+
 		var stateRestrictions *teamTimeRestrictionsModel
 		if attributes.TimeRestriction != nil {
 			stateRestrictions = &teamTimeRestrictionsModel{
@@ -570,37 +589,24 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 						Handle: types.StringValue(action.TriggerWorkflowAutomationAction.Handle),
 					},
 				})
-			} else if action.RoutingRuleEscalationPolicyAction != nil {
-				var stateSupportHours *escalationPolicySupportHoursModel
-				if action.RoutingRuleEscalationPolicyAction.SupportHours != nil {
-					stateSupportHours = &escalationPolicySupportHoursModel{
-						TimeZone: types.StringValue(action.RoutingRuleEscalationPolicyAction.SupportHours.TimeZone),
-					}
-					for _, restriction := range action.RoutingRuleEscalationPolicyAction.SupportHours.Restrictions {
-						stateSupportHours.Restrictions = append(stateSupportHours.Restrictions, &restrictionsModel{
-							EndDay:    types.StringValue(string(restriction.GetEndDay())),
-							EndTime:   types.StringValue(restriction.GetEndTime()),
-							StartDay:  types.StringValue(string(restriction.GetStartDay())),
-							StartTime: types.StringValue(restriction.GetStartTime()),
-						})
-					}
-				}
-				stateActions = append(stateActions, &teamRuleActionModel{
-					EscalationPolicy: &escalationPolicyActionModel{
-						PolicyId:          types.StringValue(action.RoutingRuleEscalationPolicyAction.PolicyId),
-						AckTimeoutMinutes: types.Int64PointerValue(action.RoutingRuleEscalationPolicyAction.AckTimeoutMinutes),
-						Urgency:           types.StringPointerValue((*string)(action.RoutingRuleEscalationPolicyAction.Urgency)),
-						SupportHours:      stateSupportHours,
-					},
-				})
 			}
+		}
+
+		ruleUrgency := types.StringPointerValue((*string)(attributes.Urgency))
+		ruleEscalationPolicy := policyId
+		if priorEscalationAction != nil {
+			stateActions = append(stateActions, &teamRuleActionModel{
+				EscalationPolicy: priorEscalationAction,
+			})
+			ruleUrgency = types.StringNull()
+			ruleEscalationPolicy = types.StringNull()
 		}
 
 		state.Rules[i] = &teamRuleModel{
 			Id:               types.StringValue(rule.Id),
 			Query:            types.StringPointerValue(fullRule.GetAttributes().Query),
-			Urgency:          types.StringPointerValue((*string)(attributes.Urgency)),
-			EscalationPolicy: policyId,
+			Urgency:          ruleUrgency,
+			EscalationPolicy: ruleEscalationPolicy,
 			TimeRestrictions: stateRestrictions,
 			Actions:          stateActions,
 		}
