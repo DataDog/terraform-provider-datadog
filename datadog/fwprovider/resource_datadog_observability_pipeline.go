@@ -124,8 +124,8 @@ type sourceModel struct {
 }
 
 type logstashSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"`
+	AddressKey types.String                                `tfsdk:"address_key"`
+	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type datadogAgentSourceModel struct {
@@ -477,23 +477,23 @@ type sampleProcessorModel struct {
 }
 
 type fluentdSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"`
+	AddressKey types.String                                `tfsdk:"address_key"`
+	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type fluentBitSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"`
+	AddressKey types.String                                `tfsdk:"address_key"`
+	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type httpServerSourceModel struct {
-	AddressKey   types.String                      `tfsdk:"address_key"`
-	AuthStrategy types.String                      `tfsdk:"auth_strategy"`
-	Decoding     types.String                      `tfsdk:"decoding"`
-	PasswordKey  types.String                      `tfsdk:"password_key"`
-	UsernameKey  types.String                      `tfsdk:"username_key"`
-	ValidTokens  []httpServerValidTokenModel       `tfsdk:"valid_token"`
-	Tls          []observability_pipeline.TlsModel `tfsdk:"tls"`
+	AddressKey   types.String                                `tfsdk:"address_key"`
+	AuthStrategy types.String                                `tfsdk:"auth_strategy"`
+	Decoding     types.String                                `tfsdk:"decoding"`
+	PasswordKey  types.String                                `tfsdk:"password_key"`
+	UsernameKey  types.String                                `tfsdk:"username_key"`
+	ValidTokens  []httpServerValidTokenModel                 `tfsdk:"valid_token"`
+	Tls          []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type httpServerValidTokenModel struct {
@@ -509,10 +509,10 @@ type httpServerValidTokenPathToTokenModel struct {
 }
 
 type splunkHecSourceModel struct {
-	AddressKey    types.String                      `tfsdk:"address_key"`
-	StoreHecToken types.Bool                        `tfsdk:"store_hec_token"`
-	ValidTokens   []splunkHecValidTokenModel        `tfsdk:"valid_token"`
-	Tls           []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+	AddressKey    types.String                                `tfsdk:"address_key"`
+	StoreHecToken types.Bool                                  `tfsdk:"store_hec_token"`
+	ValidTokens   []splunkHecValidTokenModel                  `tfsdk:"valid_token"`
+	Tls           []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type splunkHecValidTokenModel struct {
@@ -544,8 +544,8 @@ type generatedMetricValue struct {
 }
 
 type splunkTcpSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"` // TLS encryption settings for secure transmission.
+	AddressKey types.String                                `tfsdk:"address_key"`
+	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type gcsDestinationModel struct {
@@ -579,15 +579,15 @@ type headerCustomFieldModel struct {
 }
 
 type rsyslogSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Mode       types.String                      `tfsdk:"mode"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"`
+	AddressKey types.String                                `tfsdk:"address_key"`
+	Mode       types.String                                `tfsdk:"mode"`
+	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type syslogNgSourceModel struct {
-	AddressKey types.String                      `tfsdk:"address_key"`
-	Mode       types.String                      `tfsdk:"mode"`
-	Tls        []observability_pipeline.TlsModel `tfsdk:"tls"`
+	AddressKey types.String                                `tfsdk:"address_key"`
+	Mode       types.String                                `tfsdk:"mode"`
+	Tls        []observability_pipeline.MtlsServerTlsModel `tfsdk:"tls"`
 }
 
 type rsyslogDestinationModel struct {
@@ -926,7 +926,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 											},
 										},
 									},
@@ -940,7 +940,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 											},
 										},
 									},
@@ -970,7 +970,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 												"valid_token": schema.ListNestedBlock{
 													Description: "A token accepted for authenticating incoming HTTP requests. Cannot be combined with the `plain` auth strategy.",
 													Validators: []validator.List{
@@ -1037,7 +1037,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 												"valid_token": schema.ListNestedBlock{
 													Description: "A HEC token accepted for authenticating incoming Splunk HEC requests.",
 													Validators: []validator.List{
@@ -1073,7 +1073,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 											},
 										},
 									},
@@ -1091,7 +1091,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 											},
 										},
 									},
@@ -1109,7 +1109,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 											},
 										},
 									},
@@ -1221,7 +1221,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.MtlsServerTlsSchema(),
 											},
 										},
 									},
@@ -5359,7 +5359,7 @@ func expandFluentdSource(src *fluentdSourceModel, id string) datadogV2.Observabi
 	if !src.AddressKey.IsNull() {
 		source.SetAddressKey(src.AddressKey.ValueString())
 	}
-	source.Tls = observability_pipeline.ExpandTls(src.Tls)
+	source.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineFluentdSource: source,
@@ -5373,7 +5373,7 @@ func expandFluentBitSource(src *fluentBitSourceModel, id string) datadogV2.Obser
 		source.SetAddressKey(src.AddressKey.ValueString())
 	}
 	if src.Tls != nil {
-		source.Tls = observability_pipeline.ExpandTls(src.Tls)
+		source.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -5391,7 +5391,7 @@ func flattenFluentdSource(src *datadogV2.ObservabilityPipelineFluentdSource) *fl
 		out.AddressKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 
 	return out
@@ -5407,7 +5407,7 @@ func flattenFluentBitSource(src *datadogV2.ObservabilityPipelineFluentBitSource)
 		out.AddressKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 
 	return out
@@ -5440,7 +5440,7 @@ func expandHttpServerSource(src *httpServerSourceModel, id string) datadogV2.Obs
 	if len(src.ValidTokens) > 0 {
 		s.SetValidTokens(expandHttpServerValidTokens(src.ValidTokens))
 	}
-	s.Tls = observability_pipeline.ExpandTls(src.Tls)
+	s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineHttpServerSource: s,
@@ -5469,7 +5469,7 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 		out.ValidTokens = flattenHttpServerValidTokens(*tokens)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 
 	return out
@@ -5488,7 +5488,7 @@ func expandSplunkHecSource(src *splunkHecSourceModel, id string) datadogV2.Obser
 		s.SetValidTokens(expandSplunkHecValidTokens(src.ValidTokens))
 	}
 	if src.Tls != nil {
-		s.Tls = observability_pipeline.ExpandTls(src.Tls)
+		s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 	}
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
@@ -5512,7 +5512,7 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 		out.ValidTokens = flattenSplunkHecValidTokens(*tokens)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 
 	return out
@@ -5831,7 +5831,7 @@ func expandSplunkTcpSource(src *splunkTcpSourceModel, id string) datadogV2.Obser
 	if !src.AddressKey.IsNull() {
 		s.SetAddressKey(src.AddressKey.ValueString())
 	}
-	s.Tls = observability_pipeline.ExpandTls(src.Tls)
+	s.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSplunkTcpSource: s,
@@ -5847,7 +5847,7 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 		out.AddressKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 	return out
 }
@@ -5993,7 +5993,7 @@ func expandRsyslogSource(src *rsyslogSourceModel, id string) datadogV2.Observabi
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
-	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
+	obj.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineRsyslogSource: obj,
 	}
@@ -6011,7 +6011,7 @@ func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rs
 		out.Mode = types.StringValue(string(*v))
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 	return out
 }
@@ -6025,7 +6025,7 @@ func expandSyslogNgSource(src *syslogNgSourceModel, id string) datadogV2.Observa
 	if !src.Mode.IsNull() {
 		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
 	}
-	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
+	obj.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineSyslogNgSource: obj,
 	}
@@ -6043,7 +6043,7 @@ func flattenSyslogNgSource(src *datadogV2.ObservabilityPipelineSyslogNgSource) *
 		out.Mode = types.StringValue(string(*v))
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 	return out
 }
@@ -6599,7 +6599,7 @@ func expandLogstashSource(src *logstashSourceModel, id string) datadogV2.Observa
 	if !src.AddressKey.IsNull() {
 		logstash.SetAddressKey(src.AddressKey.ValueString())
 	}
-	logstash.Tls = observability_pipeline.ExpandTls(src.Tls)
+	logstash.Tls = observability_pipeline.ExpandMtlsServerTls(src.Tls)
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineLogstashSource: logstash,
 	}
@@ -6614,7 +6614,7 @@ func flattenLogstashSource(src *datadogV2.ObservabilityPipelineLogstashSource) *
 		out.AddressKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenMtlsServerTls(src.Tls)
 	}
 	return out
 }
