@@ -36,6 +36,30 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
           restriction {
             start_day  = "monday"
             start_time = "09:00:00"
+            end_day    = "monday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "tuesday"
+            start_time = "09:00:00"
+            end_day    = "tuesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "wednesday"
+            start_time = "09:00:00"
+            end_day    = "wednesday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "thursday"
+            start_time = "09:00:00"
+            end_day    = "thursday"
+            end_time   = "17:00:00"
+          }
+          restriction {
+            start_day  = "friday"
+            start_time = "09:00:00"
             end_day    = "friday"
             end_time   = "17:00:00"
           }
