@@ -681,12 +681,8 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 				epAction := datadogV2.NewRoutingRuleEscalationPolicyActionWithDefaults()
 				epAction.Type = datadogV2.ROUTINGRULEESCALATIONPOLICYACTIONTYPE_ESCALATION_POLICY
 				epAction.PolicyId = plannedAction.EscalationPolicy.PolicyId.ValueString()
-				if !plannedAction.EscalationPolicy.AckTimeoutMinutes.IsNull() {
-					epAction.AckTimeoutMinutes = plannedAction.EscalationPolicy.AckTimeoutMinutes.ValueInt64Pointer()
-				}
-				if !plannedAction.EscalationPolicy.Urgency.IsNull() {
-					epAction.Urgency = (*datadogV2.Urgency)(plannedAction.EscalationPolicy.Urgency.ValueStringPointer())
-				}
+				epAction.AckTimeoutMinutes = plannedAction.EscalationPolicy.AckTimeoutMinutes.ValueInt64Pointer()
+				epAction.Urgency = (*datadogV2.Urgency)(plannedAction.EscalationPolicy.Urgency.ValueStringPointer())
 				if plannedAction.EscalationPolicy.SupportHours != nil {
 					sh := datadogV2.NewRoutingRuleEscalationPolicyActionSupportHoursWithDefaults()
 					sh.TimeZone = plannedAction.EscalationPolicy.SupportHours.TimeZone.ValueString()
