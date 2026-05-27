@@ -89,14 +89,15 @@ type datadogMetricsDestinationModel struct {
 }
 
 type httpClientDestinationModel struct {
-	Encoding     types.String                            `tfsdk:"encoding"`
-	TokenKey     types.String                            `tfsdk:"token_key"`
-	PasswordKey  types.String                            `tfsdk:"password_key"`
-	UriKey       types.String                            `tfsdk:"uri_key"`
-	UsernameKey  types.String                            `tfsdk:"username_key"`
-	Compression  []httpClientDestinationCompressionModel `tfsdk:"compression"`
-	AuthStrategy types.String                            `tfsdk:"auth_strategy"`
-	Tls          []observability_pipeline.TlsModel       `tfsdk:"tls"`
+	Encoding     types.String                                `tfsdk:"encoding"`
+	TokenKey     types.String                                `tfsdk:"token_key"`
+	PasswordKey  types.String                                `tfsdk:"password_key"`
+	UriKey       types.String                                `tfsdk:"uri_key"`
+	UsernameKey  types.String                                `tfsdk:"username_key"`
+	Compression  []httpClientDestinationCompressionModel     `tfsdk:"compression"`
+	AuthStrategy types.String                                `tfsdk:"auth_strategy"`
+	Tls          []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Buffer       []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
 type httpClientDestinationCompressionModel struct {
@@ -2326,7 +2327,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 												},
-												"tls": observability_pipeline.TlsSchema(),
+												"tls":    observability_pipeline.TlsSchema(),
+												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
 									},
@@ -5319,6 +5321,13 @@ func expandHttpClientDestination(ctx context.Context, dest *destinationModel, sr
 
 	d.Tls = observability_pipeline.ExpandTls(src.Tls)
 
+	if len(src.Buffer) > 0 {
+		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			d.SetBuffer(*buffer)
+		}
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineHttpClientDestination: d,
 	}
@@ -5357,6 +5366,13 @@ func flattenHttpClientDestination(ctx context.Context, src *datadogV2.Observabil
 			{
 				Algorithm: types.StringValue(string(comp.GetAlgorithm())),
 			},
+		}
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := observability_pipeline.FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []observability_pipeline.BufferOptionsModel{*outBuffer}
 		}
 	}
 

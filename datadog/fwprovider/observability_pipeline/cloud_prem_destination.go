@@ -12,7 +12,8 @@ import (
 
 // CloudPremDestinationModel represents the Terraform model for cloud_prem destination configuration
 type CloudPremDestinationModel struct {
-	EndpointUrlKey types.String `tfsdk:"endpoint_url_key"`
+	EndpointUrlKey types.String         `tfsdk:"endpoint_url_key"`
+	Buffer         []BufferOptionsModel `tfsdk:"buffer"`
 }
 
 // ExpandCloudPremDestination converts the Terraform model to the Datadog API model
@@ -25,6 +26,13 @@ func ExpandCloudPremDestination(ctx context.Context, id string, inputs types.Lis
 	d.SetInputs(inputsList)
 	if !src.EndpointUrlKey.IsNull() {
 		d.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
+	}
+
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			d.SetBuffer(*buffer)
+		}
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -42,6 +50,12 @@ func FlattenCloudPremDestination(ctx context.Context, src *datadogV2.Observabili
 	if v, ok := src.GetEndpointUrlKeyOk(); ok {
 		out.EndpointUrlKey = types.StringValue(*v)
 	}
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			out.Buffer = []BufferOptionsModel{*outBuffer}
+		}
+	}
 	return out
 }
 
@@ -56,7 +70,9 @@ func CloudPremDestinationSchema() schema.ListNestedBlock {
 					Description: "Name of the environment variable or secret that holds the endpoint URL.",
 				},
 			},
-			Blocks: map[string]schema.Block{},
+			Blocks: map[string]schema.Block{
+				"buffer": BufferOptionsSchema(),
+			},
 		},
 		Validators: []validator.List{
 			listvalidator.SizeAtMost(1),
