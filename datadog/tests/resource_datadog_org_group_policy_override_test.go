@@ -128,10 +128,10 @@ func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 					}
 					api := providers.frameworkProvider.DatadogApiInstances.GetOrgGroupsApiV2()
 					attrs := datadogV2.NewOrgGroupPolicyUpdateAttributes()
-					attrs.SetEnforcementTier(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_GROUP_MANAGED)
+					attrs.SetEnforcementTier(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_ENFORCE)
 					data := datadogV2.NewOrgGroupPolicyUpdateData(*attrs, policyID, datadogV2.ORGGROUPPOLICYTYPE_ORG_GROUP_POLICIES)
 					if _, _, err := api.UpdateOrgGroupPolicy(providers.frameworkProvider.Auth, policyID, *datadogV2.NewOrgGroupPolicyUpdateRequest(*data)); err != nil {
-						t.Fatalf("failed to flip policy to GROUP_MANAGED: %s", err)
+						t.Fatalf("failed to flip policy to ENFORCE: %s", err)
 					}
 				},
 				Config:             testAccCheckDatadogOrgGroupPolicyOverrideConfigBasic(orgGroupName, orgUUID, "datadog_org_group_policy.foo.id"),
