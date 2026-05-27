@@ -625,13 +625,46 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	return &providerConfig, nil
 }
 
-// custom diff function that changes plan to take default tags into account
+// custom diff function that changes plan to take default + ignored tags into account
 func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
+
+	// ignore_tag_keys: replace plan entries with state values for any tag key the resource marked as ignored. 
+	// no ops when the resource doesn't declare the ignore_tag_keys attribute.
+	if raw, ok := d.GetOk("ignore_tag_keys"); ok {
+		ignoreSet := raw.(*schema.Set)
+		oldRaw, newRaw := d.GetChange("tags")
+		if planSet, ok := newRaw.(*schema.Set); ok && planSet != nil {
+			ignoreKeys := make([]string, 0, ignoreSet.Len())
+			for _, v := range ignoreSet.List() {
+				ignoreKeys = append(ignoreKeys, v.(string))
+			}
+			planTags := make([]string, 0, planSet.Len())
+			for _, v := range planSet.List() {
+				planTags = append(planTags, v.(string))
+			}
+			var stateTags []string
+			if stateSet, ok := oldRaw.(*schema.Set); ok && stateSet != nil {
+				stateTags = make([]string, 0, stateSet.Len())
+				for _, v := range stateSet.List() {
+					stateTags = append(stateTags, v.(string))
+				}
+			}
+			filtered := utils.StripIgnoredTags(planTags, stateTags, ignoreKeys)
+			filteredIface := make([]interface{}, len(filtered))
+			for i, s := range filtered {
+				filteredIface[i] = s
+			}
+			if err := d.SetNew("tags", schema.NewSet(planSet.F, filteredIface)); err != nil {
+				return fmt.Errorf("error applying ignore_tag_keys: %w", err)
+			}
+		}
+	}
+
 	if len(providerConf.DefaultTags) == 0 {
 		return nil
 	}
-	resourceTags := d.Get("tags")
+	resourceTags := d.Get("tags") // reads the ignore-filtered set if ignore_tag_keys is set. reads resource tags if not.
 	if resourceTags == nil { // if the "tags" attribute does not exist in the resource schema
 		return nil
 	}
