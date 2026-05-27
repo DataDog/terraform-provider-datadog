@@ -298,6 +298,17 @@ func resourceDatadogMonitor() *schema.Resource {
 					Computed: true,
 					Elem:     &schema.Schema{Type: schema.TypeString},
 				},
+				"ignore_tag_keys": {
+					Type:        schema.TypeSet,
+					Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (e.g. by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally.",
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+						StateFunc: func(val any) string {
+							return utils.NormalizeTag(val.(string))
+						},
+					},
+				},
 				"groupby_simple_monitor": {
 					Description: "Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.",
 					Type:        schema.TypeBool,
