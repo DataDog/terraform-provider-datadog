@@ -102,12 +102,14 @@ type MonitorAsset struct {
 }
 
 type MonitorThreshold struct {
-	Ok               customtypes.FloatStringValue `tfsdk:"ok"`
-	Unknown          customtypes.FloatStringValue `tfsdk:"unknown"`
-	Warning          customtypes.FloatStringValue `tfsdk:"warning"`
-	WarningRecovery  customtypes.FloatStringValue `tfsdk:"warning_recovery"`
-	Critical         customtypes.FloatStringValue `tfsdk:"critical"`
-	CriticalRecovery customtypes.FloatStringValue `tfsdk:"critical_recovery"`
+	Ok                    customtypes.FloatStringValue `tfsdk:"ok"`
+	Unknown               customtypes.FloatStringValue `tfsdk:"unknown"`
+	Warning               customtypes.FloatStringValue `tfsdk:"warning"`
+	WarningRecovery       customtypes.FloatStringValue `tfsdk:"warning_recovery"`
+	Critical              customtypes.FloatStringValue `tfsdk:"critical"`
+	CriticalRecovery      customtypes.FloatStringValue `tfsdk:"critical_recovery"`
+	CriticalQuery         types.String                 `tfsdk:"critical_query"`
+	CriticalRecoveryQuery types.String                 `tfsdk:"critical_recovery_query"`
 }
 
 type MonitorThresholdWindow struct {
@@ -963,6 +965,14 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 							Optional:   true,
 							CustomType: customtypes.FloatStringType{},
 						},
+						"critical_query": schema.StringAttribute{
+							Description: "Query evaluated as a dynamic `CRITICAL` threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.",
+							Optional:    true,
+						},
+						"critical_recovery_query": schema.StringAttribute{
+							Description: "Query evaluated as a dynamic `CRITICAL` recovery threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.",
+							Optional:    true,
+						},
 					},
 				},
 			},
@@ -1692,6 +1702,12 @@ func (r *monitorResource) buildMonitorStruct(ctx context.Context, state *monitor
 		if v := r.parseFloat(thresholdObj.CriticalRecovery); v != nil {
 			thresholds.SetCriticalRecovery(*v)
 		}
+		if v := thresholdObj.CriticalQuery.ValueString(); v != "" {
+			thresholds.SetCriticalQuery(v)
+		}
+		if v := thresholdObj.CriticalRecoveryQuery.ValueString(); v != "" {
+			thresholds.SetCriticalRecoveryQuery(v)
+		}
 		if v := r.parseFloat(thresholdObj.Warning); v != nil {
 			thresholds.SetWarning(*v)
 		}
@@ -2239,12 +2255,14 @@ func (r *monitorResource) updateState(ctx context.Context, state *monitorResourc
 
 	if monitorThresholds, ok := m.Options.GetThresholdsOk(); ok && monitorThresholds != nil {
 		state.MonitorThresholds = []MonitorThreshold{{
-			Ok:               r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetOkOk())),
-			Unknown:          r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetUnknownOk())),
-			Warning:          r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetWarningOk())),
-			WarningRecovery:  r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetWarningRecoveryOk())),
-			Critical:         r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetCriticalOk())),
-			CriticalRecovery: r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryOk())),
+			Ok:                    r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetOkOk())),
+			Unknown:               r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetUnknownOk())),
+			Warning:               r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetWarningOk())),
+			WarningRecovery:       r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetWarningRecoveryOk())),
+			Critical:              r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetCriticalOk())),
+			CriticalRecovery:      r.buildFloatStringValue(fwutils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryOk())),
+			CriticalQuery:         fwutils.ToTerraformStr(monitorThresholds.GetCriticalQueryOk()),
+			CriticalRecoveryQuery: fwutils.ToTerraformStr(monitorThresholds.GetCriticalRecoveryQueryOk()),
 		}}
 	}
 	if thresholdWindow, ok := m.Options.GetThresholdWindowsOk(); ok && thresholdWindow != nil {
