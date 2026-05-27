@@ -133,6 +133,17 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 						return schema.HashString(utils.NormalizeTag(v.(string)) + ";")
 					},
 				},
+				"ignore_tag_keys": {
+					Type:     schema.TypeSet,
+					Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (e.g. by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally.",
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+						StateFunc: func(val any) string {
+							return utils.NormalizeTag(val.(string))
+						},
+					},
+				},
 				"thresholds": {
 					Description: "A list of thresholds and targets that define the service level objectives from the provided SLIs.",
 					Type:        schema.TypeList,
