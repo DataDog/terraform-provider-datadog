@@ -83,11 +83,11 @@ func (r *OrgGroupPolicyResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"enforcement_tier": schema.StringAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The enforcement tier of the policy. `DEFAULT` means the policy is set but member orgs may mutate it. `ENFORCE` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.",
+				Description: "The enforcement tier of the policy. `OVERRIDE_ALLOWED` means the policy is set but member orgs may mutate it. `GROUP_MANAGED` means the policy is strictly controlled and mutations are blocked for affected orgs. `DELEGATE` means each member org controls its own value.",
 				Validators: []validator.String{
 					stringvalidator.OneOf(
-						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DEFAULT),
-						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_ENFORCE),
+						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_OVERRIDE_ALLOWED),
+						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_GROUP_MANAGED),
 						string(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_DELEGATE),
 					),
 				},

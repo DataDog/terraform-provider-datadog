@@ -66,7 +66,7 @@ resource "datadog_org_group_policy" "foo" {
   org_group_id     = datadog_org_group.foo.id
   policy_name      = "is_widget_copy_paste_enabled"
   content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
 }
 
 resource "datadog_org_group_policy_override" "foo" {
