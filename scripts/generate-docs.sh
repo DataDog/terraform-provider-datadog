@@ -26,7 +26,7 @@ fi
 # `terraform providers schema -json`, and write-only attribute rendering requires Terraform >= 1.11.
 echo "Active terraform: $(terraform version 2>/dev/null | head -1 || echo 'not found on PATH')"
 
-tfplugindocs generate --provider-name datadog --rendered-provider-name "terraform-provider-datadog"
+go tool tfplugindocs generate --provider-name datadog --rendered-provider-name "terraform-provider-datadog"
 
 # Remove the changes to files we don't autogenerate
 git checkout HEAD -- "${exclude_files[@]}"

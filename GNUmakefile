@@ -85,10 +85,7 @@ sweep:
 license-check:
 	@sh -c "'$(CURDIR)/scripts/license-check.sh'"
 
-tools:
-	go generate -tags tools tools/tools.go
-
-docs: tools
+docs:
 	@sh -c "'$(CURDIR)/scripts/generate-docs.sh'"
 
 check-docs: docs
@@ -106,4 +103,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile tools get-test-deps license-check sweep
+.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile get-test-deps license-check sweep
