@@ -9,7 +9,7 @@ interactions:
         content_length: 565
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
@@ -20,7 +20,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/obs-pipelines/pipelines
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
         method: POST
       response:
         proto: HTTP/2.0
@@ -46,7 +46,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/obs-pipelines/pipelines/4b5c0ff0-5592-11f1-a15e-da7ad0900001
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/4b5c0ff0-5592-11f1-a15e-da7ad0900001
         method: GET
       response:
         proto: HTTP/2.0
@@ -80,7 +80,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/obs-pipelines/pipelines/4b5c0ff0-5592-11f1-a15e-da7ad0900001
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/4b5c0ff0-5592-11f1-a15e-da7ad0900001
         method: DELETE
       response:
         proto: HTTP/2.0
