@@ -629,7 +629,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 
-	// ignore_tag_keys: replace plan entries with state values for any tag key the resource marked as ignored. 
+	// ignore_tag_keys: replace plan entries with state values for any tag key the resource marked as ignored.
 	// no ops when the resource doesn't declare the ignore_tag_keys attribute.
 	if raw, ok := d.GetOk("ignore_tag_keys"); ok {
 		ignoreSet := raw.(*schema.Set)
@@ -665,7 +665,7 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 		return nil
 	}
 	resourceTags := d.Get("tags") // reads the ignore-filtered set if ignore_tag_keys is set. reads resource tags if not.
-	if resourceTags == nil { // if the "tags" attribute does not exist in the resource schema
+	if resourceTags == nil {      // if the "tags" attribute does not exist in the resource schema
 		return nil
 	}
 	tags := make(map[string]interface{})
