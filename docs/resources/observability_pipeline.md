@@ -251,6 +251,7 @@ Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--auth))
 - `batch_settings` (Block List) Event batching settings. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--batch_settings))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--buffer))
 - `compression` (Block List) Compression configuration. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--compression))
 - `encoding` (Block List) Encoding format for the destination. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--encoding))
 - `key_prefix` (String) Optional prefix for object keys.
@@ -272,6 +273,34 @@ Optional:
 
 - `batch_size` (Number) Maximum batch size in bytes.
 - `timeout_secs` (Number) Maximum number of seconds to wait before flushing the batch.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--buffer"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--buffer--memory))
+
+<a id="nestedblock--config--destination--amazon_s3_generic--buffer--disk"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--buffer--memory"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 <a id="nestedblock--config--destination--amazon_s3_generic--compression"></a>
@@ -410,7 +439,36 @@ Optional:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
+
+<a id="nestedblock--config--destination--cloud_prem--buffer"></a>
+### Nested Schema for `config.destination.cloud_prem.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer--memory))
+
+<a id="nestedblock--config--destination--cloud_prem--buffer--disk"></a>
+### Nested Schema for `config.destination.cloud_prem.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--cloud_prem--buffer--memory"></a>
+### Nested Schema for `config.destination.cloud_prem.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 
 <a id="nestedblock--config--destination--crowdstrike_next_gen_siem"></a>
@@ -881,12 +939,41 @@ Required:
 Optional:
 
 - `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer))
 - `compression` (Block List) Compression configuration for HTTP requests. (see [below for nested schema](#nestedblock--config--destination--http_client--compression))
 - `password_key` (String) Name of the environment variable or secret that holds the password.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
 - `token_key` (String) Name of the environment variable or secret that holds the authentication token.
 - `uri_key` (String) Name of the environment variable or secret that holds the request URI.
 - `username_key` (String) Name of the environment variable or secret that holds the username.
+
+<a id="nestedblock--config--destination--http_client--buffer"></a>
+### Nested Schema for `config.destination.http_client.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer--memory))
+
+<a id="nestedblock--config--destination--http_client--buffer--disk"></a>
+### Nested Schema for `config.destination.http_client.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--http_client--buffer--memory"></a>
+### Nested Schema for `config.destination.http_client.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--http_client--compression"></a>
 ### Nested Schema for `config.destination.http_client.compression`
@@ -922,6 +1009,7 @@ Required:
 Optional:
 
 - `bootstrap_servers_key` (String) Name of the environment variable or secret that holds the Kafka bootstrap servers.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--kafka--buffer))
 - `compression` (String) Compression codec for Kafka messages. Valid values are `none`, `gzip`, `snappy`, `lz4`, `zstd`.
 - `headers_key` (String) The field name to use for Kafka message headers.
 - `key_field` (String) The field name to use as the Kafka message key.
@@ -932,6 +1020,34 @@ Optional:
 - `sasl` (Block List) Specifies the SASL mechanism for authenticating with a Kafka cluster. (see [below for nested schema](#nestedblock--config--destination--kafka--sasl))
 - `socket_timeout_ms` (Number) Socket timeout in milliseconds for network requests.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--kafka--tls))
+
+<a id="nestedblock--config--destination--kafka--buffer"></a>
+### Nested Schema for `config.destination.kafka.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--kafka--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--kafka--buffer--memory))
+
+<a id="nestedblock--config--destination--kafka--buffer--disk"></a>
+### Nested Schema for `config.destination.kafka.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--kafka--buffer--memory"></a>
+### Nested Schema for `config.destination.kafka.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--kafka--librdkafka_option"></a>
 ### Nested Schema for `config.destination.kafka.librdkafka_option`
