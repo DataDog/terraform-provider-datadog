@@ -439,18 +439,18 @@ func TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 	}
 }
 
-// TestFrameworkProviderConfigure_PATOnly tests that PAT (Bearer) auth works when only `pat` is set.
-func TestFrameworkProviderConfigure_PATOnly(t *testing.T) {
+// TestFrameworkProviderConfigure_BearerTokenOnly tests that Bearer auth works when only `bearer_token` is set.
+func TestFrameworkProviderConfigure_BearerTokenOnly(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
 	os.Unsetenv("DD_APP_KEY")
 	os.Unsetenv("DATADOG_API_KEY")
 	os.Unsetenv("DATADOG_APP_KEY")
-	os.Unsetenv("DD_PAT")
-	os.Unsetenv("DATADOG_PAT")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
 
 	p := fwprovider.New().(*fwprovider.FrameworkProvider)
 	config := &fwprovider.ProviderSchema{
-		Pat:                    types.StringValue("ddpat_test_token"),
+		BearerToken:            types.StringValue("ddpat_test_token"),
 		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
 		Validate:               types.StringValue("false"),
 		HttpClientRetryEnabled: types.StringValue("false"),
@@ -460,7 +460,7 @@ func TestFrameworkProviderConfigure_PATOnly(t *testing.T) {
 	diags := p.ConfigureCallbackFunc(p, request, config)
 
 	if diags.HasError() {
-		t.Errorf("framework provider configure should not error with PAT only, got: %v", diags)
+		t.Errorf("framework provider configure should not error with bearer_token only, got: %v", diags)
 	}
 	if p.DatadogApiInstances == nil {
 		t.Fatal("DatadogApiInstances should be set")
@@ -468,22 +468,22 @@ func TestFrameworkProviderConfigure_PATOnly(t *testing.T) {
 
 	// Bearer auth should be plumbed via ContextAccessToken on p.Auth.
 	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
-		t.Errorf("ContextAccessToken should be set to the PAT, got %q (ok=%v)", got, ok)
+		t.Errorf("ContextAccessToken should be set to the bearer token, got %q (ok=%v)", got, ok)
 	}
-	// API key context should NOT be set when only PAT is provided.
+	// API key context should NOT be set when only bearer_token is provided.
 	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
-		t.Error("ContextAPIKeys should NOT be set when only PAT is provided")
+		t.Error("ContextAPIKeys should NOT be set when only bearer_token is provided")
 	}
 }
 
-// TestFrameworkProviderConfigure_PATEnvVar tests env-var fallback for PAT.
-func TestFrameworkProviderConfigure_PATEnvVar(t *testing.T) {
+// TestFrameworkProviderConfigure_BearerTokenEnvVar tests env-var fallback for bearer_token.
+func TestFrameworkProviderConfigure_BearerTokenEnvVar(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
 	os.Unsetenv("DD_APP_KEY")
 	os.Unsetenv("DATADOG_API_KEY")
 	os.Unsetenv("DATADOG_APP_KEY")
-	os.Setenv("DD_PAT", "ddpat_from_env")
-	defer os.Unsetenv("DD_PAT")
+	os.Setenv("DD_BEARER_TOKEN", "ddpat_from_env")
+	defer os.Unsetenv("DD_BEARER_TOKEN")
 
 	p := fwprovider.New().(*fwprovider.FrameworkProvider)
 	config := &fwprovider.ProviderSchema{
@@ -496,34 +496,34 @@ func TestFrameworkProviderConfigure_PATEnvVar(t *testing.T) {
 	if diags := p.ConfigureConfigDefaults(ctx, config); diags.HasError() {
 		t.Fatalf("ConfigureConfigDefaults failed: %v", diags)
 	}
-	if got := config.Pat.ValueString(); got != "ddpat_from_env" {
-		t.Errorf("Pat should be populated from DD_PAT, got %q", got)
+	if got := config.BearerToken.ValueString(); got != "ddpat_from_env" {
+		t.Errorf("BearerToken should be populated from DD_BEARER_TOKEN, got %q", got)
 	}
 
 	request := &provider.ConfigureRequest{}
 	if diags := p.ConfigureCallbackFunc(p, request, config); diags.HasError() {
-		t.Errorf("framework provider configure should not error with PAT env var, got: %v", diags)
+		t.Errorf("framework provider configure should not error with bearer_token env var, got: %v", diags)
 	}
 	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_from_env" {
-		t.Errorf("ContextAccessToken should be set from DD_PAT, got %q (ok=%v)", got, ok)
+		t.Errorf("ContextAccessToken should be set from DD_BEARER_TOKEN, got %q (ok=%v)", got, ok)
 	}
 }
 
-// TestFrameworkProviderConfigure_PATWinsOverAPIKey tests that PAT takes precedence over API keys
+// TestFrameworkProviderConfigure_BearerTokenWinsOverAPIKey tests that bearer_token takes precedence over API keys
 // when both are configured: only the Bearer token is plumbed, no DD-API-KEY/DD-APPLICATION-KEY headers.
-func TestFrameworkProviderConfigure_PATWinsOverAPIKey(t *testing.T) {
+func TestFrameworkProviderConfigure_BearerTokenWinsOverAPIKey(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
 	os.Unsetenv("DD_APP_KEY")
 	os.Unsetenv("DATADOG_API_KEY")
 	os.Unsetenv("DATADOG_APP_KEY")
-	os.Unsetenv("DD_PAT")
-	os.Unsetenv("DATADOG_PAT")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
 
 	p := fwprovider.New().(*fwprovider.FrameworkProvider)
 	config := &fwprovider.ProviderSchema{
 		ApiKey:                 types.StringValue("test_api_key"),
 		AppKey:                 types.StringValue("test_app_key"),
-		Pat:                    types.StringValue("ddpat_test_token"),
+		BearerToken:            types.StringValue("ddpat_test_token"),
 		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
 		Validate:               types.StringValue("false"),
 		HttpClientRetryEnabled: types.StringValue("false"),
@@ -532,13 +532,13 @@ func TestFrameworkProviderConfigure_PATWinsOverAPIKey(t *testing.T) {
 	request := &provider.ConfigureRequest{}
 	diags := p.ConfigureCallbackFunc(p, request, config)
 	if diags.HasError() {
-		t.Errorf("framework provider configure should not error with PAT + API keys, got: %v", diags)
+		t.Errorf("framework provider configure should not error with bearer_token + API keys, got: %v", diags)
 	}
 	if got, ok := p.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
-		t.Errorf("ContextAccessToken should be set to the PAT when both PAT and API keys are provided (PAT wins), got %q (ok=%v)", got, ok)
+		t.Errorf("ContextAccessToken should be set to the bearer token when both bearer_token and API keys are provided (bearer_token wins), got %q (ok=%v)", got, ok)
 	}
 	if _, ok := p.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
-		t.Error("ContextAPIKeys should NOT be set when PAT is also provided (PAT takes precedence)")
+		t.Error("ContextAPIKeys should NOT be set when bearer_token is also provided (bearer_token takes precedence)")
 	}
 }
 
@@ -548,8 +548,8 @@ func TestFrameworkProviderConfigure_NoCredentialsErrors(t *testing.T) {
 	os.Unsetenv("DD_APP_KEY")
 	os.Unsetenv("DATADOG_API_KEY")
 	os.Unsetenv("DATADOG_APP_KEY")
-	os.Unsetenv("DD_PAT")
-	os.Unsetenv("DATADOG_PAT")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
 
 	p := fwprovider.New().(*fwprovider.FrameworkProvider)
 	config := &fwprovider.ProviderSchema{
