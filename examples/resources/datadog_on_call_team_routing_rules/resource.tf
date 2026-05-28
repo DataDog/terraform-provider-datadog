@@ -6,6 +6,10 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
       send_slack_message {
         workspace = "workspace"
         channel   = "channel"
+        customizable_content {
+          include_description = true
+          include_source      = true
+        }
       }
     }
     time_restrictions {

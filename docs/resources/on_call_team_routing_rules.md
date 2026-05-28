@@ -21,6 +21,10 @@ resource "datadog_on_call_team_routing_rules" "team_rules_test" {
       send_slack_message {
         workspace = "workspace"
         channel   = "channel"
+        customizable_content {
+          include_description = true
+          include_source      = true
+        }
       }
     }
     time_restrictions {
@@ -83,6 +87,18 @@ Required:
 
 - `channel` (String) Slack channel ID.
 - `workspace` (String) Slack workspace ID.
+
+Optional:
+
+- `customizable_content` (Block, Optional) Controls what alert context is included in the Slack message. If omitted, the API default (title only) is used. (see [below for nested schema](#nestedblock--rule--action--send_slack_message--customizable_content))
+
+<a id="nestedblock--rule--action--send_slack_message--customizable_content"></a>
+### Nested Schema for `rule.action.send_slack_message.customizable_content`
+
+Optional:
+
+- `include_description` (Boolean) Whether to include the alert description in the Slack message.
+- `include_source` (Boolean) Whether to include the alert source in the Slack message.
 
 
 <a id="nestedblock--rule--action--send_teams_message"></a>

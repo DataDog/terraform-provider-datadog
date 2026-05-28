@@ -52,8 +52,14 @@ type teamRuleActionModel struct {
 }
 
 type slackMessageModel struct {
-	Workspace types.String `tfsdk:"workspace"`
-	Channel   types.String `tfsdk:"channel"`
+	Workspace           types.String                   `tfsdk:"workspace"`
+	Channel             types.String                   `tfsdk:"channel"`
+	CustomizableContent *slackCustomizableContentModel `tfsdk:"customizable_content"`
+}
+
+type slackCustomizableContentModel struct {
+	IncludeDescription types.Bool `tfsdk:"include_description"`
+	IncludeSource      types.Bool `tfsdk:"include_source"`
 }
 
 type teamsMessageModel struct {
@@ -219,6 +225,21 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 											"workspace": schema.StringAttribute{
 												Optional:    true,
 												Description: "Slack workspace ID.",
+											},
+										},
+										Blocks: map[string]schema.Block{
+											"customizable_content": schema.SingleNestedBlock{
+												Description: "Controls what alert context is included in the Slack message. If omitted, the API default (title only) is used.",
+												Attributes: map[string]schema.Attribute{
+													"include_description": schema.BoolAttribute{
+														Optional:    true,
+														Description: "Whether to include the alert description in the Slack message.",
+													},
+													"include_source": schema.BoolAttribute{
+														Optional:    true,
+														Description: "Whether to include the alert source in the Slack message.",
+													},
+												},
 											},
 										},
 									},
@@ -452,12 +473,30 @@ func (r *onCallTeamRoutingRulesResource) stateFromResponse(resp *datadogV2.TeamR
 		stateActions := []*teamRuleActionModel{}
 		for _, action := range attributes.Actions {
 			if action.SendSlackMessageAction != nil {
-				stateActions = append(stateActions, &teamRuleActionModel{
-					Slack: &slackMessageModel{
-						Workspace: types.StringValue(action.SendSlackMessageAction.Workspace),
-						Channel:   types.StringValue(action.SendSlackMessageAction.Channel),
-					},
-				})
+				slack := &slackMessageModel{
+					Workspace: types.StringValue(action.SendSlackMessageAction.Workspace),
+					Channel:   types.StringValue(action.SendSlackMessageAction.Channel),
+				}
+				// customizable_content is not yet a typed field on SendSlackMessageAction
+				// in datadog-api-client-go; round-trip it via AdditionalProperties. When
+				// the API spec adds this field and the client is regenerated, swap to
+				// the typed accessors.
+				if raw, ok := action.SendSlackMessageAction.AdditionalProperties["customizable_content"]; ok {
+					if cc, ok := raw.(map[string]interface{}); ok {
+						ccModel := &slackCustomizableContentModel{
+							IncludeDescription: types.BoolNull(),
+							IncludeSource:      types.BoolNull(),
+						}
+						if v, ok := cc["include_description"].(bool); ok {
+							ccModel.IncludeDescription = types.BoolValue(v)
+						}
+						if v, ok := cc["include_source"].(bool); ok {
+							ccModel.IncludeSource = types.BoolValue(v)
+						}
+						slack.CustomizableContent = ccModel
+					}
+				}
+				stateActions = append(stateActions, &teamRuleActionModel{Slack: slack})
 			} else if action.SendTeamsMessageAction != nil {
 				stateActions = append(stateActions, &teamRuleActionModel{
 					Teams: &teamsMessageModel{
@@ -541,6 +580,22 @@ func (r *onCallTeamRoutingRulesResource) teamRoutingRulesRequestFromModel(state 
 				action.SendSlackMessageAction.Type = datadogV2.SENDSLACKMESSAGEACTIONTYPE_SEND_SLACK_MESSAGE
 				action.SendSlackMessageAction.Channel = plannedAction.Slack.Channel.ValueString()
 				action.SendSlackMessageAction.Workspace = plannedAction.Slack.Workspace.ValueString()
+				// customizable_content is not yet a typed field on SendSlackMessageAction
+				// in datadog-api-client-go; serialize via AdditionalProperties (works because
+				// the SDK's MarshalJSON folds AdditionalProperties into the output). Migrate
+				// to typed accessors once the client is regenerated.
+				if plannedAction.Slack.CustomizableContent != nil {
+					cc := map[string]interface{}{}
+					if !plannedAction.Slack.CustomizableContent.IncludeDescription.IsNull() {
+						cc["include_description"] = plannedAction.Slack.CustomizableContent.IncludeDescription.ValueBool()
+					}
+					if !plannedAction.Slack.CustomizableContent.IncludeSource.IsNull() {
+						cc["include_source"] = plannedAction.Slack.CustomizableContent.IncludeSource.ValueBool()
+					}
+					action.SendSlackMessageAction.AdditionalProperties = map[string]interface{}{
+						"customizable_content": cc,
+					}
+				}
 			}
 			if plannedAction.Workflow != nil {
 				action.TriggerWorkflowAutomationAction = datadogV2.NewTriggerWorkflowAutomationActionWithDefaults()
