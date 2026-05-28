@@ -62,6 +62,7 @@ type monitorResourceModel struct {
 	Query                   customtypes.TrimSpaceStringValue `tfsdk:"query"`
 	Priority                types.String                     `tfsdk:"priority"`
 	Tags                    types.Set                        `tfsdk:"tags"`
+	IgnoreTagKeys           types.Set                        `tfsdk:"ignore_tag_keys"`
 	EffectiveTags           types.Set                        `tfsdk:"effective_tags"`
 	NotifyNoData            types.Bool                       `tfsdk:"notify_no_data"`
 	OnMissingData           types.String                     `tfsdk:"on_missing_data"`
@@ -850,6 +851,11 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+			"ignore_tag_keys": schema.SetAttribute{
+				Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (e.g. by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally.",
 				Optional:    true,
 				ElementType: types.StringType,
 			},
