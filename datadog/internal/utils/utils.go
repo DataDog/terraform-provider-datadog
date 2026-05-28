@@ -40,6 +40,9 @@ const DDAPIUrlEnvName = "DD_HOST"
 // DDOrgUUIDEnvName name of env var for Org UUID
 const DDOrgUUIDEnvName = "DD_ORG_UUID"
 
+// DDBearerTokenEnvName name of env var for the Bearer-token credential (PATs, SATs, etc.)
+const DDBearerTokenEnvName = "DD_BEARER_TOKEN" //#nosec G101 -- env var name, not a credential value
+
 // DatadogAPPKeyEnvName name of env var for APP key
 const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
 
@@ -48,6 +51,9 @@ const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
 
 // DatadogOrgUUIDEnvName name of env var for Org UUID
 const DatadogOrgUUIDEnvName = "DATADOG_ORG_UUID"
+
+// DatadogBearerTokenEnvName name of env var for the Bearer-token credential (PATs, SATs, etc.)
+const DatadogBearerTokenEnvName = "DATADOG_BEARER_TOKEN" //#nosec G101 -- env var name, not a credential value
 
 // DatadogAPIUrlEnvName name of env var for API key
 const DatadogAPIUrlEnvName = "DATADOG_HOST"
@@ -87,6 +93,9 @@ var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
 
 // OrgUUIDEnvVars names of env var for Org UUID
 var OrgUUIDEnvVars = []string{DDOrgUUIDEnvName, DatadogOrgUUIDEnvName}
+
+// BearerTokenEnvVars names of env vars for the Bearer-token credential (PATs, SATs, etc.)
+var BearerTokenEnvVars = []string{DDBearerTokenEnvName, DatadogBearerTokenEnvName}
 
 // APIUrlEnvVars names of env var for API key
 var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
