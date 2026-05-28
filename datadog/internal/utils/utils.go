@@ -41,7 +41,7 @@ const DDAPIUrlEnvName = "DD_HOST"
 const DDOrgUUIDEnvName = "DD_ORG_UUID"
 
 // DDBearerTokenEnvName name of env var for the Bearer-token credential (PATs, SATs, etc.)
-const DDBearerTokenEnvName = "DD_BEARER_TOKEN"
+const DDBearerTokenEnvName = "DD_BEARER_TOKEN" //#nosec G101 -- env var name, not a credential value
 
 // DatadogAPPKeyEnvName name of env var for APP key
 const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
@@ -53,7 +53,7 @@ const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
 const DatadogOrgUUIDEnvName = "DATADOG_ORG_UUID"
 
 // DatadogBearerTokenEnvName name of env var for the Bearer-token credential (PATs, SATs, etc.)
-const DatadogBearerTokenEnvName = "DATADOG_BEARER_TOKEN"
+const DatadogBearerTokenEnvName = "DATADOG_BEARER_TOKEN" //#nosec G101 -- env var name, not a credential value
 
 // DatadogAPIUrlEnvName name of env var for API key
 const DatadogAPIUrlEnvName = "DATADOG_HOST"
