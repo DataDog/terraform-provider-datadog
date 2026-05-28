@@ -7508,6 +7508,7 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
       splunk_hec_metrics {
         endpoint_url_key = "SPLUNK_HEC_ENDPOINT_URL"
         token_key        = "SPLUNK_HEC_TOKEN"
+        compression      = "none"
       }
     }
   }
@@ -7520,6 +7521,7 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec_metrics.0.endpoint_url_key", "SPLUNK_HEC_ENDPOINT_URL"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec_metrics.0.token_key", "SPLUNK_HEC_TOKEN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec_metrics.0.compression", "none"),
 				),
 			},
 			{
