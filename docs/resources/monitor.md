@@ -120,7 +120,9 @@ Optional:
 Optional:
 
 - `critical` (String) The monitor `CRITICAL` threshold. Must be a number.
+- `critical_query` (String) Query evaluated as a dynamic `CRITICAL` threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.
 - `critical_recovery` (String) The monitor `CRITICAL` recovery threshold. Must be a number.
+- `critical_recovery_query` (String) Query evaluated as a dynamic `CRITICAL` recovery threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.
 - `ok` (String) The monitor `OK` threshold. Only supported in monitor type `service check`. Must be a number.
 - `unknown` (String) The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.
 - `warning` (String) The monitor `WARNING` threshold. Must be a number.

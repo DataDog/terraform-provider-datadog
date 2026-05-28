@@ -85,6 +85,12 @@ func Provider() *schema.Provider {
 				Sensitive:   true,
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
 			},
+			"bearer_token": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
+			},
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -342,6 +348,11 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		appKey, _ = utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
 	}
 
+	bearerToken := d.Get("bearer_token").(string)
+	if bearerToken == "" {
+		bearerToken, _ = utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
+	}
+
 	apiURL := d.Get("api_url").(string)
 	if apiURL == "" {
 		apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
@@ -384,8 +395,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	if validate {
-		if cloudProviderType == "" && (apiKey == "" || appKey == "") {
-			return nil, diag.FromErr(errors.New("api_key and app_key or orgUUID must be set unless validate = false"))
+		if cloudProviderType == "" && bearerToken == "" && (apiKey == "" || appKey == "") {
+			return nil, diag.FromErr(errors.New("api_key and app_key, bearer_token, or orgUUID must be set unless validate = false"))
 		} else if cloudProviderType != "" && orgUUID == "" {
 			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
 		}
@@ -432,6 +443,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}
+	} else if bearerToken != "" {
+		// bearer_token takes precedence over api_key/app_key when both are set:
+		// a configured bearer token is an explicit signal to use Bearer auth.
+		auth = context.WithValue(auth, datadog.ContextAccessToken, bearerToken)
 	} else if apiKey != "" || appKey != "" {
 		auth = context.WithValue(
 			auth,
@@ -562,7 +577,19 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
 				return nil, diag.FromErr(err)
 			}
-		} else { // Validate the API and APP keys
+		} else if bearerToken != "" {
+			// bearer_token takes precedence over api_key/app_key (matches the auth
+			// context selection above). /api/v1/validate is API-key-only, so hit
+			// /api/v2/validate_keys with the bearer token in the DD-APPLICATION-KEY
+			// slot — the authn-validation backend accepts PATs/SATs there.
+			validateAuth := context.WithValue(auth, datadog.ContextAPIKeys, map[string]datadog.APIKey{
+				"appKeyAuth": {Key: bearerToken},
+			})
+			if _, _, err := apiInstances.GetKeyManagementApiV2().ValidateAPIKey(validateAuth); err != nil {
+				log.Printf("[ERROR] Datadog Client validation error: %v", err)
+				return nil, diag.FromErr(err)
+			}
+		} else if apiKey != "" || appKey != "" { // Validate the API and APP keys
 			resp, _, err := apiInstances.GetAuthenticationApiV1().Validate(auth)
 			if err != nil {
 				log.Printf("[ERROR] Datadog Client validation error: %v", err)
