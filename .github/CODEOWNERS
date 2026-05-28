@@ -75,7 +75,6 @@ datadog/**/*datadog_integration_aws*             @DataDog/aws-integrations
 datadog/**/*datadog_integration_azure*           @DataDog/azure-integrations
 datadog/**/*datadog_integration_cloudflare*      @DataDog/saas-integrations
 datadog/**/*datadog_integration_confluent*       @DataDog/saas-integrations
-datadog/**/*datadog_integration_databricks*      @DataDog/saas-integrations
 datadog/**/*datadog_integration_fastly*          @DataDog/saas-integrations
 datadog/**/*datadog_integration_gcp*             @DataDog/gcp-integrations
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/chat-integrations
