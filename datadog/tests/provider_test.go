@@ -248,7 +248,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_azure_test":                                      "integration-azure",
 	"tests/resource_datadog_integration_cloudflare_account_test":                         "integration-cloudflare",
 	"tests/resource_datadog_integration_confluent_account_test":                          "integration-confluend-account",
-	"tests/resource_datadog_integration_databricks_account_test":                         "integration-databricks-account",
 	"tests/resource_datadog_integration_confluent_resource_test":                         "integration-confluend-resource",
 	"tests/resource_datadog_integration_fastly_account_test":                             "integration-fastly-account",
 	"tests/resource_datadog_integration_gcp_sts_test":                                    "integration-gcp",
