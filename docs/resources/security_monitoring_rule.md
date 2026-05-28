@@ -101,7 +101,7 @@ Required:
 Optional:
 
 - `action` (Block List) Action to perform when the case trigger (see [below for nested schema](#nestedblock--case--action))
-- `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries. Defaults to `""`.
+- `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.
 - `name` (String) Name of the case. Defaults to `""`.
 - `notifications` (List of String) Notification targets for each rule case.
 
@@ -169,6 +169,7 @@ Optional:
 Optional:
 
 - `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access. Defaults to `false`.
+- `baseline_user_locations_duration` (Number) The duration in days during which Datadog learns a user's access locations before generating signals. Only applicable when `baseline_user_locations` is `true`. Defaults to `1` if unset. . Value must be between 1 and 30.
 
 
 <a id="nestedblock--options--new_value_options"></a>

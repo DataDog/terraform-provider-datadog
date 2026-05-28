@@ -11,12 +11,12 @@ resource "datadog_org_group_policy" "widget_copy_paste" {
   org_group_id     = datadog_org_group.prod.id
   policy_name      = "is_widget_copy_paste_enabled"
   content          = jsonencode({ "org_config" : false })
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
 }
 
 # Exempts the given organization from the widget_copy_paste policy.
 # The org keeps its current value for is_widget_copy_paste_enabled regardless
-# of the policy. The resource must target a policy whose tier is not ENFORCE.
+# of the policy. The resource must target a policy whose tier is not GROUP_MANAGED.
 resource "datadog_org_group_policy_override" "example" {
   org_group_id = datadog_org_group.prod.id
   policy_id    = datadog_org_group_policy.widget_copy_paste.id

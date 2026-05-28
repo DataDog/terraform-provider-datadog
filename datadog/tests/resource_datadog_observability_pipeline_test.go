@@ -1171,9 +1171,10 @@ resource "datadog_observability_pipeline" "http_server" {
         decoding      = "json"
 
         tls {
-          crt_file = "/etc/ssl/certs/http.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/http.key"
+          crt_file           = "/etc/ssl/certs/http.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/http.key"
+          verify_certificate = true
         }
       }
     }
@@ -1197,7 +1198,84 @@ resource "datadog_observability_pipeline" "http_server" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.tls.0.verify_certificate", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "http-source-1"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_httpServerSourceValidTokens(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_server_valid_tokens"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_server_valid_tokens" {
+  name = "http-server-valid-tokens-pipeline"
+
+  config {
+    source {
+      id = "http-source-1"
+
+      http_server {
+        auth_strategy = "none"
+        decoding      = "json"
+
+        valid_token {
+          token_key = "HTTP_SERVER_TOKEN_PRIMARY"
+          enabled   = true
+
+          field_to_add {
+            key   = "team"
+            value = "observability"
+          }
+
+          path_to_token {
+            header = "X-Auth-Token"
+          }
+        }
+
+        valid_token {
+          token_key = "HTTP_SERVER_TOKEN_SECONDARY"
+
+          path_to_token {
+            location = "path"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["http-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "http-server-valid-tokens-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "http-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.auth_strategy", "none"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.token_key", "HTTP_SERVER_TOKEN_PRIMARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.field_to_add.0.key", "team"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.field_to_add.0.value", "observability"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.0.path_to_token.0.header", "X-Auth-Token"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.1.token_key", "HTTP_SERVER_TOKEN_SECONDARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_server.0.valid_token.1.path_to_token.0.location", "path"),
 				),
 			},
 		},
@@ -1353,6 +1431,67 @@ resource "datadog_observability_pipeline" "splunk_hec" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.crt_file", "/etc/ssl/certs/splunk.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.tls.0.key_file", "/etc/ssl/private/splunk.key"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_splunkHecSourceValidTokens(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.splunk_hec_valid_tokens"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_valid_tokens" {
+  name = "splunk-hec-valid-tokens-pipeline"
+
+  config {
+    source {
+      id = "splunk-hec-source-1"
+
+      splunk_hec {
+        valid_token {
+          token_key = "SPLUNK_HEC_TOKEN_PRIMARY"
+          enabled   = true
+
+          field_to_add {
+            key   = "team"
+            value = "observability"
+          }
+        }
+
+        valid_token {
+          token_key = "SPLUNK_HEC_TOKEN_SECONDARY"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["splunk-hec-source-1"]
+
+      datadog_logs {
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "splunk-hec-valid-tokens-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "splunk-hec-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.token_key", "SPLUNK_HEC_TOKEN_PRIMARY"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.enabled", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.field_to_add.0.key", "team"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.0.field_to_add.0.value", "observability"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.splunk_hec.0.valid_token.1.token_key", "SPLUNK_HEC_TOKEN_SECONDARY"),
 				),
 			},
 		},
@@ -4533,9 +4672,10 @@ resource "datadog_observability_pipeline" "socket_tcp" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+          crt_file           = "/etc/ssl/certs/socket.crt"
+          ca_file            = "/etc/ssl/certs/ca.crt"
+          key_file           = "/etc/ssl/private/socket.key"
+          verify_certificate = true
         }
       }
     }
@@ -4557,6 +4697,7 @@ resource "datadog_observability_pipeline" "socket_tcp" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.crt_file", "/etc/ssl/certs/socket.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.key_file", "/etc/ssl/private/socket.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.socket.0.tls.0.verify_certificate", "true"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "socket-source-1"),
 				),
 			},
@@ -4831,6 +4972,51 @@ resource "datadog_observability_pipeline" "cloud_prem_dest" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_cloudPremDestinationBuffer(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.cloud_prem_dest_buffer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "cloud_prem_dest_buffer" {
+  name = "cloud-prem-destination-buffer-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "cloud-prem-dest-buffer-1"
+      inputs = ["source-1"]
+      cloud_prem {
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "block"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.buffer.0.disk.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_kafkaDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -4944,6 +5130,55 @@ resource "datadog_observability_pipeline" "kafka_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.tls.0.crt_file", "/etc/ssl/certs/client.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.tls.0.key_file", "/etc/ssl/private/client.key"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_kafkaDestinationBuffer(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.kafka_dest_buffer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "kafka_dest_buffer" {
+  name = "kafka-destination-buffer-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "kafka-dest-buffer-1"
+      inputs = ["source-1"]
+
+      kafka {
+        encoding = "json"
+        topic    = "logs-topic"
+
+        buffer {
+          memory {
+            max_events = 5000
+            when_full  = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.buffer.0.memory.0.max_events", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.kafka.0.buffer.0.memory.0.when_full", "drop_newest"),
 				),
 			},
 		},
@@ -5273,6 +5508,63 @@ resource "datadog_observability_pipeline" "amazon_s3_generic_basic" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.storage_class", "STANDARD"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.encoding.0.type", "json"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.compression.0.algorithm", "snappy"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_amazonS3GenericDestinationBuffer(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_generic_buffer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_generic_buffer" {
+  name = "amazon-s3-generic-buffer-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "amazon-s3-generic-buffer-1"
+      inputs = ["source-1"]
+
+      amazon_s3_generic {
+        bucket        = "my-generic-bucket"
+        region        = "us-east-1"
+        storage_class = "STANDARD"
+
+        encoding {
+          type = "json"
+        }
+        compression {
+          algorithm = "snappy"
+        }
+
+        buffer {
+          memory {
+            max_size  = 268435456
+            when_full = "block"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.buffer.0.memory.0.max_size", "268435456"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3_generic.0.buffer.0.memory.0.when_full", "block"),
 				),
 			},
 		},
@@ -6187,6 +6479,54 @@ resource "datadog_observability_pipeline" "http_client_dest_minimal" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_httpClientDestinationBuffer(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_client_dest_buffer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_client_dest_buffer" {
+  name = "http-client-destination-buffer-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "http-client-dest-buffer-1"
+      inputs = ["source-1"]
+
+      http_client {
+        encoding = "json"
+
+        buffer {
+          disk {
+            max_size  = 2147483648
+            when_full = "drop_newest"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.buffer.0.disk.0.max_size", "2147483648"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.buffer.0.disk.0.when_full", "drop_newest"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_metricsFullPipeline(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -7063,9 +7403,9 @@ resource "datadog_observability_pipeline" "databricks_zerobus" {
       inputs = ["source-1"]
 
       databricks_zerobus {
-        ingestion_endpoint    = "https://ingest.databricks.example.com/v1/logs"
-        table_name            = "my_catalog.my_schema.my_table"
-        unity_catalog_endpoint = "https://unity.databricks.example.com"
+        ingestion_endpoint_key    = "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"
+        table_name                = "my_catalog.my_schema.my_table"
+        unity_catalog_endpoint_key = "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"
 
         auth {
           client_id        = "my-oauth-client-id"
@@ -7080,9 +7420,9 @@ resource "datadog_observability_pipeline" "databricks_zerobus" {
 
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint", "https://ingest.databricks.example.com/v1/logs"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_INGESTION_ENDPOINT"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint", "https://unity.databricks.example.com"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint_key", "DESTINATION_DATABRICKS_ZEROBUS_UNITY_CATALOG_ENDPOINT"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_secret_key", "DESTINATION_DATABRICKS_ZEROBUS_OAUTH_CLIENT_SECRET"),
 				),
@@ -7117,9 +7457,7 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
       inputs = ["source-1"]
 
       databricks_zerobus {
-        ingestion_endpoint    = "https://ingest.databricks.example.com/v1/logs"
-        table_name            = "my_catalog.my_schema.my_table"
-        unity_catalog_endpoint = "https://unity.databricks.example.com"
+        table_name = "my_catalog.my_schema.my_table"
 
         auth {
           client_id = "my-oauth-client-id"
@@ -7133,9 +7471,7 @@ resource "datadog_observability_pipeline" "databricks_zerobus_basic" {
 
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "databricks-zerobus-dest-basic-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.ingestion_endpoint", "https://ingest.databricks.example.com/v1/logs"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.table_name", "my_catalog.my_schema.my_table"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.unity_catalog_endpoint", "https://unity.databricks.example.com"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.databricks_zerobus.0.auth.0.client_id", "my-oauth-client-id"),
 				),
 			},

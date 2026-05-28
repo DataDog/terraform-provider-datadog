@@ -244,7 +244,6 @@ func Provider() *schema.Provider {
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
 			"datadog_powerpack":                            resourceDatadogPowerpack(),
 			"datadog_role":                                 resourceDatadogRole(),
-			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_sensitive_data_scanner_group":         resourceDatadogSensitiveDataScannerGroup(),
 			"datadog_sensitive_data_scanner_rule":          resourceDatadogSensitiveDataScannerRule(),
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),

@@ -40,6 +40,7 @@ var Resources = []func() resource.Resource{
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
 	NewIntegrationAwsAccountResource,
+	NewIntegrationAwsAccountCcmConfigResource,
 	NewCatalogEntityResource,
 	NewDashboardListResource,
 	NewDatasetResource,
@@ -106,6 +107,7 @@ var Resources = []func() resource.Resource{
 	NewOrgGroupPolicyResource,
 	NewOrgGroupPolicyOverrideResource,
 	NewComplianceResourceEvaluationFilter,
+	NewSecurityMonitoringDefaultRuleResource,
 	NewSecurityMonitoringFilterResource,
 	NewSecurityMonitoringRuleResource,
 	NewSecurityMonitoringRuleJSONResource,
@@ -643,6 +645,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteRestrictionQuery", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.AddRoleToRestrictionQuery", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.RemoveRoleFromRestrictionQuery", true)
+
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSAccountCCMConfig", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)

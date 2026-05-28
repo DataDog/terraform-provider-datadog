@@ -167,7 +167,8 @@ type newValueOptionsModel struct {
 }
 
 type impossibleTravelOptionsModel struct {
-	BaselineUserLocations types.Bool `tfsdk:"baseline_user_locations"`
+	BaselineUserLocations         types.Bool  `tfsdk:"baseline_user_locations"`
+	BaselineUserLocationsDuration types.Int64 `tfsdk:"baseline_user_locations_duration"`
 }
 
 type anomalyDetectionOptionsModel struct {
@@ -296,10 +297,10 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 							Description: "Name of the case.",
 						},
 						"condition": schema.StringAttribute{
-							Optional:    true,
-							Computed:    true,
-							Default:     stringdefault.StaticString(""),
-							Description: "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
+							Optional:      true,
+							Computed:      true,
+							PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+							Description:   "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
 						},
 						"notifications": schema.ListAttribute{
 							Optional:    true,
@@ -428,6 +429,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 							Default:     stringdefault.StaticString(string(datadogV2.SECURITYMONITORINGSTANDARDDATASOURCE_LOGS)),
 							Description: "Source of events.",
 							Validators: []validator.String{
+								validators.SecurityMonitoringDataSourceWarningValidator(),
 								validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
 							},
 						},
@@ -739,6 +741,14 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 										Computed:    true,
 										Default:     booldefault.StaticBool(false),
 										Description: "If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.",
+									},
+									"baseline_user_locations_duration": schema.Int64Attribute{
+										Optional:    true,
+										Computed:    true,
+										Description: "The duration in days during which Datadog learns a user's access locations before generating signals. Only applicable when `baseline_user_locations` is `true`. Defaults to `1` if unset. ",
+										Validators: []validator.Int64{
+											int64validator.Between(1, 30),
+										},
 									},
 								},
 							},
@@ -1376,10 +1386,18 @@ func extractNewValueOptions(newValueOptions *datadogV2.SecurityMonitoringRuleNew
 }
 
 func extractImpossibleTravelOptions(impossibleTravelOptions *datadogV2.SecurityMonitoringRuleImpossibleTravelOptions) impossibleTravelOptionsModel {
-	return impossibleTravelOptionsModel{
+	m := impossibleTravelOptionsModel{
 		// Optional+Computed with default false — always set
-		BaselineUserLocations: types.BoolValue(impossibleTravelOptions.GetBaselineUserLocations()),
+		BaselineUserLocations:         types.BoolValue(impossibleTravelOptions.GetBaselineUserLocations()),
+		BaselineUserLocationsDuration: types.Int64Null(),
 	}
+	// Override the null default with the real value when the API returned one.
+	// Using ...Ok() (not Get...) so the API omitting the field stays null in
+	// state, preventing drift on the next plan.
+	if v, ok := impossibleTravelOptions.GetBaselineUserLocationsDurationOk(); ok && v != nil {
+		m.BaselineUserLocationsDuration = types.Int64Value(int64(*v))
+	}
+	return m
 }
 
 func extractAnomalyDetectionOptions(anomalyDetectionOptions *datadogV2.SecurityMonitoringRuleAnomalyDetectionOptions) anomalyDetectionOptionsModel {
@@ -1493,9 +1511,9 @@ func extractSequenceDetectionOptions(seqOptions *datadogV2.SecurityMonitoringRul
 	return tfSeqOptions
 }
 
-func isSignalCorrelationSchema(model *securityMonitoringRuleResourceModel) bool {
-	if !model.Type.IsNull() && !model.Type.IsUnknown() {
-		_, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(model.Type.ValueString())
+func isSignalCorrelationSchema(ruleType types.String) bool {
+	if !ruleType.IsNull() && !ruleType.IsUnknown() {
+		_, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(ruleType.ValueString())
 		return err == nil
 	}
 	return false
@@ -1505,7 +1523,7 @@ func checkQueryConsistency(model *securityMonitoringRuleResourceModel) error {
 	if len(model.Queries) > 0 && len(model.SignalQueries) > 0 {
 		return fmt.Errorf("query list and signal query list cannot be both populated")
 	}
-	isSignalCorrelation := isSignalCorrelationSchema(model)
+	isSignalCorrelation := isSignalCorrelationSchema(model.Type)
 	if !isSignalCorrelation && len(model.SignalQueries) > 0 {
 		return fmt.Errorf("signal query list should not be populated for this rule type")
 	}
@@ -1521,7 +1539,7 @@ func buildCreatePayloadFromModel(ctx context.Context, model *securityMonitoringR
 		diags.AddError("invalid query configuration", err.Error())
 		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, diags
 	}
-	if isSignalCorrelationSchema(model) {
+	if isSignalCorrelationSchema(model.Type) {
 		payload, d := buildCreateSignalPayload(ctx, model)
 		diags.Append(d...)
 		createPayload := datadogV2.SecurityMonitoringSignalRuleCreatePayloadAsSecurityMonitoringRuleCreatePayload(payload)
@@ -1539,7 +1557,7 @@ func buildValidatePayloadFromModel(ctx context.Context, model *securityMonitorin
 		diags.AddError("invalid query configuration", err.Error())
 		return &datadogV2.SecurityMonitoringRuleValidatePayload{}, diags
 	}
-	if isSignalCorrelationSchema(model) {
+	if isSignalCorrelationSchema(model.Type) {
 		payload, d := buildSignalPayload(ctx, model)
 		diags.Append(d...)
 		createPayload := datadogV2.SecurityMonitoringSignalRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
@@ -1835,6 +1853,10 @@ func buildPayloadImpossibleTravelOptions(opts []impossibleTravelOptionsModel) (*
 		v := o.BaselineUserLocations.ValueBool()
 		options.BaselineUserLocations = &v
 	}
+	if !o.BaselineUserLocationsDuration.IsNull() && !o.BaselineUserLocationsDuration.IsUnknown() {
+		hasPayload = true
+		options.SetBaselineUserLocationsDuration(int32(o.BaselineUserLocationsDuration.ValueInt64())) //nolint:gosec // schema-validated range 1-30 fits int32
+	}
 	return options, hasPayload
 }
 
@@ -2105,7 +2127,7 @@ func buildUpdatePayloadFromModel(ctx context.Context, model, prior *securityMoni
 		diags.AddError("invalid query configuration", err.Error())
 		return &payload, diags
 	}
-	isSignalCorrelation := isSignalCorrelationSchema(model)
+	isSignalCorrelation := isSignalCorrelationSchema(model.Type)
 
 	if isThirdPartyRule(model) {
 		payloadThirdPartyCases := make([]datadogV2.SecurityMonitoringThirdPartyRuleCase, len(model.ThirdPartyCases))

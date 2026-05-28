@@ -251,6 +251,7 @@ Optional:
 
 - `auth` (Block List) AWS authentication credentials used for accessing AWS services. If omitted, the system's default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--auth))
 - `batch_settings` (Block List) Event batching settings. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--batch_settings))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--buffer))
 - `compression` (Block List) Compression configuration. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--compression))
 - `encoding` (Block List) Encoding format for the destination. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--encoding))
 - `key_prefix` (String) Optional prefix for object keys.
@@ -272,6 +273,34 @@ Optional:
 
 - `batch_size` (Number) Maximum batch size in bytes.
 - `timeout_secs` (Number) Maximum number of seconds to wait before flushing the batch.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--buffer"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--buffer--memory))
+
+<a id="nestedblock--config--destination--amazon_s3_generic--buffer--disk"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--amazon_s3_generic--buffer--memory"></a>
+### Nested Schema for `config.destination.amazon_s3_generic.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
 
 
 <a id="nestedblock--config--destination--amazon_s3_generic--compression"></a>
@@ -410,7 +439,36 @@ Optional:
 
 Optional:
 
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
+
+<a id="nestedblock--config--destination--cloud_prem--buffer"></a>
+### Nested Schema for `config.destination.cloud_prem.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer--memory))
+
+<a id="nestedblock--config--destination--cloud_prem--buffer--disk"></a>
+### Nested Schema for `config.destination.cloud_prem.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--cloud_prem--buffer--memory"></a>
+### Nested Schema for `config.destination.cloud_prem.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 
 <a id="nestedblock--config--destination--crowdstrike_next_gen_siem"></a>
@@ -488,13 +546,13 @@ Optional:
 
 Required:
 
-- `ingestion_endpoint` (String) The Databricks Zerobus ingestion endpoint URL.
 - `table_name` (String) The name of the Databricks table to ingest logs into.
-- `unity_catalog_endpoint` (String) The Databricks Unity Catalog endpoint URL.
 
 Optional:
 
 - `auth` (Block List) OAuth client credentials used to authenticate with Databricks. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus--auth))
+- `ingestion_endpoint_key` (String) The name of the secret or environment variable holding the Databricks Zerobus ingestion endpoint URL.
+- `unity_catalog_endpoint_key` (String) The name of the secret or environment variable holding the Databricks Unity Catalog endpoint URL.
 
 <a id="nestedblock--config--destination--databricks_zerobus--auth"></a>
 ### Nested Schema for `config.destination.databricks_zerobus.auth`
@@ -881,12 +939,41 @@ Required:
 Optional:
 
 - `auth_strategy` (String) HTTP authentication strategy. Valid values are `none`, `basic`, `bearer`.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer))
 - `compression` (Block List) Compression configuration for HTTP requests. (see [below for nested schema](#nestedblock--config--destination--http_client--compression))
 - `password_key` (String) Name of the environment variable or secret that holds the password.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
 - `token_key` (String) Name of the environment variable or secret that holds the authentication token.
 - `uri_key` (String) Name of the environment variable or secret that holds the request URI.
 - `username_key` (String) Name of the environment variable or secret that holds the username.
+
+<a id="nestedblock--config--destination--http_client--buffer"></a>
+### Nested Schema for `config.destination.http_client.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer--memory))
+
+<a id="nestedblock--config--destination--http_client--buffer--disk"></a>
+### Nested Schema for `config.destination.http_client.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--http_client--buffer--memory"></a>
+### Nested Schema for `config.destination.http_client.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--http_client--compression"></a>
 ### Nested Schema for `config.destination.http_client.compression`
@@ -922,6 +1009,7 @@ Required:
 Optional:
 
 - `bootstrap_servers_key` (String) Name of the environment variable or secret that holds the Kafka bootstrap servers.
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--kafka--buffer))
 - `compression` (String) Compression codec for Kafka messages. Valid values are `none`, `gzip`, `snappy`, `lz4`, `zstd`.
 - `headers_key` (String) The field name to use for Kafka message headers.
 - `key_field` (String) The field name to use as the Kafka message key.
@@ -932,6 +1020,34 @@ Optional:
 - `sasl` (Block List) Specifies the SASL mechanism for authenticating with a Kafka cluster. (see [below for nested schema](#nestedblock--config--destination--kafka--sasl))
 - `socket_timeout_ms` (Number) Socket timeout in milliseconds for network requests.
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--kafka--tls))
+
+<a id="nestedblock--config--destination--kafka--buffer"></a>
+### Nested Schema for `config.destination.kafka.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--kafka--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--kafka--buffer--memory))
+
+<a id="nestedblock--config--destination--kafka--buffer--disk"></a>
+### Nested Schema for `config.destination.kafka.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--kafka--buffer--memory"></a>
+### Nested Schema for `config.destination.kafka.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
 
 <a id="nestedblock--config--destination--kafka--librdkafka_option"></a>
 ### Nested Schema for `config.destination.kafka.librdkafka_option`
@@ -2240,20 +2356,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--fluent_bit--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--fluent_bit--tls))
 
 <a id="nestedblock--config--source--fluent_bit--tls"></a>
 ### Nested Schema for `config.source.fluent_bit.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2263,20 +2380,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--fluentd--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--fluentd--tls))
 
 <a id="nestedblock--config--source--fluentd--tls"></a>
 ### Nested Schema for `config.source.fluentd.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2363,21 +2481,55 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `password_key` (String) Name of the environment variable or secret that holds the password.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--http_server--tls))
 - `username_key` (String) Name of the environment variable or secret that holds the username.
+- `valid_token` (Block List) A token accepted for authenticating incoming HTTP requests. Cannot be combined with the `plain` auth strategy. (see [below for nested schema](#nestedblock--config--source--http_server--valid_token))
 
 <a id="nestedblock--config--source--http_server--tls"></a>
 ### Nested Schema for `config.source.http_server.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+<a id="nestedblock--config--source--http_server--valid_token"></a>
+### Nested Schema for `config.source.http_server.valid_token`
+
+Required:
+
+- `token_key` (String) Name of the environment variable or secret that holds the expected token value.
+
+Optional:
+
+- `enabled` (Boolean) Whether this token is currently accepted. Defaults to `true`.
+- `field_to_add` (Block List) An optional metadata field attached to every event authenticated by the token. Both `key` and `value` must match `^[A-Za-z0-9_]+$`. (see [below for nested schema](#nestedblock--config--source--http_server--valid_token--field_to_add))
+- `path_to_token` (Block List) Specifies where the worker extracts the token from the incoming HTTP request. Set either `location` for a built-in source or `header` to read it from a request header. (see [below for nested schema](#nestedblock--config--source--http_server--valid_token--path_to_token))
+
+<a id="nestedblock--config--source--http_server--valid_token--field_to_add"></a>
+### Nested Schema for `config.source.http_server.valid_token.field_to_add`
+
+Required:
+
+- `key` (String) The metadata field name to add to incoming events.
+- `value` (String) The metadata field value to add to incoming events.
+
+
+<a id="nestedblock--config--source--http_server--valid_token--path_to_token"></a>
+### Nested Schema for `config.source.http_server.valid_token.path_to_token`
+
+Optional:
+
+- `header` (String) The name of the HTTP header that carries the token.
+- `location` (String) Built-in token location on the incoming HTTP request. One of `path`, `address`. Valid values are `path`, `address`.
+
 
 
 
@@ -2439,20 +2591,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--logstash--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--logstash--tls))
 
 <a id="nestedblock--config--source--logstash--tls"></a>
 ### Nested Schema for `config.source.logstash.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2463,20 +2616,21 @@ Optional:
 
 - `grpc_address_key` (String) Environment variable name containing the gRPC server address for receiving OTLP data.
 - `http_address_key` (String) Environment variable name containing the HTTP server address for receiving OTLP data.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--opentelemetry--tls))
 
 <a id="nestedblock--config--source--opentelemetry--tls"></a>
 ### Nested Schema for `config.source.opentelemetry.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2487,20 +2641,21 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `mode` (String) Protocol used by the syslog source to receive messages.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--rsyslog--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--rsyslog--tls))
 
 <a id="nestedblock--config--source--rsyslog--tls"></a>
 ### Nested Schema for `config.source.rsyslog.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2515,7 +2670,7 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the socket.
 - `framing` (Block List) Defines the framing method for incoming messages. (see [below for nested schema](#nestedblock--config--source--socket--framing))
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--socket--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--socket--tls))
 
 <a id="nestedblock--config--source--socket--framing"></a>
 ### Nested Schema for `config.source.socket.framing`
@@ -2542,13 +2697,14 @@ Required:
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2559,20 +2715,44 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the HEC API.
 - `store_hec_token` (Boolean) When `true`, the Splunk HEC token from the incoming request is stored in the event, allowing downstream components to forward it to other Splunk HEC destinations.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_hec--tls))
+- `valid_token` (Block List) A HEC token accepted for authenticating incoming Splunk HEC requests. (see [below for nested schema](#nestedblock--config--source--splunk_hec--valid_token))
 
 <a id="nestedblock--config--source--splunk_hec--tls"></a>
 ### Nested Schema for `config.source.splunk_hec.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+<a id="nestedblock--config--source--splunk_hec--valid_token"></a>
+### Nested Schema for `config.source.splunk_hec.valid_token`
+
+Required:
+
+- `token_key` (String) Name of the environment variable or secret that holds the expected HEC token value.
+
+Optional:
+
+- `enabled` (Boolean) Whether this token is currently accepted. Defaults to `true`.
+- `field_to_add` (Block List) An optional metadata field attached to every event authenticated by the token. Both `key` and `value` must match `^[A-Za-z0-9_]+$`. (see [below for nested schema](#nestedblock--config--source--splunk_hec--valid_token--field_to_add))
+
+<a id="nestedblock--config--source--splunk_hec--valid_token--field_to_add"></a>
+### Nested Schema for `config.source.splunk_hec.valid_token.field_to_add`
+
+Required:
+
+- `key` (String) The metadata field name to add to incoming events.
+- `value` (String) The metadata field value to add to incoming events.
+
 
 
 
@@ -2582,20 +2762,21 @@ Optional:
 Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address for the Splunk TCP receiver.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--splunk_tcp--tls))
 
 <a id="nestedblock--config--source--splunk_tcp--tls"></a>
 ### Nested Schema for `config.source.splunk_tcp.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 
 
@@ -2614,20 +2795,21 @@ Optional:
 
 - `address_key` (String) Name of the environment variable or secret that holds the listen address.
 - `mode` (String) Protocol used by the syslog source to receive messages.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--syslog_ng--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external connecting clients. (see [below for nested schema](#nestedblock--config--source--syslog_ng--tls))
 
 <a id="nestedblock--config--source--syslog_ng--tls"></a>
 ### Nested Schema for `config.source.syslog_ng.tls`
 
 Required:
 
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+- `crt_file` (String) Path to the TLS server certificate file used to identify the pipeline component to connecting clients.
 
 Optional:
 
-- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
-- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate connecting clients' TLS certificates.
+- `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
 
 ## Import
 

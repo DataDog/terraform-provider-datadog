@@ -29,27 +29,27 @@ func TestAccDatadogOrgGroupPolicy_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogOrgGroupPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, policyName, `{"org_config":false}`, "DEFAULT"),
+				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, policyName, `{"org_config":false}`, "OVERRIDE_ALLOWED"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "policy_name", policyName),
-					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "DEFAULT"),
+					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "OVERRIDE_ALLOWED"),
 					resource.TestCheckResourceAttr(resourceName, "policy_type", "org_config"),
 					resource.TestCheckResourceAttr(resourceName, "content", `{"org_config":false}`),
 					resource.TestCheckResourceAttrSet(resourceName, "org_group_id"),
 				),
 			},
 			{
-				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, policyName, `{"org_config":true}`, "ENFORCE"),
+				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, policyName, `{"org_config":true}`, "GROUP_MANAGED"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOrgGroupPolicyExists(providers.frameworkProvider, resourceName),
-					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "ENFORCE"),
+					resource.TestCheckResourceAttr(resourceName, "enforcement_tier", "GROUP_MANAGED"),
 					resource.TestCheckResourceAttr(resourceName, "content", `{"org_config":true}`),
 				),
 			},
 			{
 				// Changing policy_name must force replacement.
-				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, replacementPolicyName, `{"org_config":true}`, "ENFORCE"),
+				Config: testAccCheckDatadogOrgGroupPolicyConfig(orgGroupName, replacementPolicyName, `{"org_config":true}`, "GROUP_MANAGED"),
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction(resourceName, plancheck.ResourceActionDestroyBeforeCreate),

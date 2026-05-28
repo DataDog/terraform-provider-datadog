@@ -21,6 +21,7 @@ type AmazonS3GenericDestinationModel struct {
 	Compression   []AmazonS3GenericCompressionModel   `tfsdk:"compression"`
 	Auth          []AwsAuthModel                      `tfsdk:"auth"`
 	BatchSettings []AmazonS3GenericBatchSettingsModel `tfsdk:"batch_settings"`
+	Buffer        []BufferOptionsModel                `tfsdk:"buffer"`
 }
 
 // AmazonS3GenericEncodingModel represents the encoding format for the destination.
@@ -126,6 +127,7 @@ func AmazonS3GenericDestinationSchema() schema.ListNestedBlock {
 						listvalidator.SizeAtMost(1),
 					},
 				},
+				"buffer": BufferOptionsSchema(),
 			},
 		},
 		Validators: []validator.List{
@@ -165,6 +167,13 @@ func ExpandAmazonS3GenericDestination(ctx context.Context, id string, inputs typ
 
 	if len(src.BatchSettings) > 0 {
 		dest.SetBatchSettings(expandS3GenericBatchSettings(src.BatchSettings[0]))
+	}
+
+	if len(src.Buffer) > 0 {
+		buffer := ExpandBufferOptions(src.Buffer[0])
+		if buffer != nil {
+			dest.SetBuffer(*buffer)
+		}
 	}
 
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
@@ -241,6 +250,13 @@ func FlattenAmazonS3GenericDestination(src *datadogV2.ObservabilityPipelineAmazo
 
 	if bs, ok := src.GetBatchSettingsOk(); ok {
 		model.BatchSettings = []AmazonS3GenericBatchSettingsModel{flattenS3GenericBatchSettings(bs)}
+	}
+
+	if buffer, ok := src.GetBufferOk(); ok {
+		outBuffer := FlattenBufferOptions(buffer)
+		if outBuffer != nil {
+			model.Buffer = []BufferOptionsModel{*outBuffer}
+		}
 	}
 
 	return model

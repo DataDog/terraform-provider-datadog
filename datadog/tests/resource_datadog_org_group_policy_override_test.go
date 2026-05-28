@@ -80,7 +80,7 @@ func TestAccDatadogOrgGroupPolicyOverride_Basic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
+func TestAccDatadogOrgGroupPolicyOverride_GroupManagedCascade(t *testing.T) {
 	if !isRecording() && !isReplaying() {
 		t.Skip("org_group requires a special test org setup not available in live CI runs")
 	}
@@ -117,7 +117,7 @@ func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 				),
 			},
 			{
-				// Flip the parent policy's tier to ENFORCE via direct API call. The
+				// Flip the parent policy's tier to GROUP_MANAGED via direct API call. The
 				// server cascades the override delete; Terraform's refresh surfaces it
 				// as drift. Check asserts the cascade by confirming the override is
 				// 404 server-side (distinguishes a real cascade from unrelated drift).
@@ -128,10 +128,10 @@ func TestAccDatadogOrgGroupPolicyOverride_EnforceCascade(t *testing.T) {
 					}
 					api := providers.frameworkProvider.DatadogApiInstances.GetOrgGroupsApiV2()
 					attrs := datadogV2.NewOrgGroupPolicyUpdateAttributes()
-					attrs.SetEnforcementTier(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_ENFORCE)
+					attrs.SetEnforcementTier(datadogV2.ORGGROUPPOLICYENFORCEMENTTIER_GROUP_MANAGED)
 					data := datadogV2.NewOrgGroupPolicyUpdateData(*attrs, policyID, datadogV2.ORGGROUPPOLICYTYPE_ORG_GROUP_POLICIES)
 					if _, _, err := api.UpdateOrgGroupPolicy(providers.frameworkProvider.Auth, policyID, *datadogV2.NewOrgGroupPolicyUpdateRequest(*data)); err != nil {
-						t.Fatalf("failed to flip policy to ENFORCE: %s", err)
+						t.Fatalf("failed to flip policy to GROUP_MANAGED: %s", err)
 					}
 				},
 				Config:             testAccCheckDatadogOrgGroupPolicyOverrideConfigBasic(orgGroupName, orgUUID, "datadog_org_group_policy.foo.id"),
@@ -180,28 +180,28 @@ func TestAccDatadogOrgGroupPolicyOverride_AutoCreation(t *testing.T) {
 		CheckDestroy:             composeOrgGroupStackDestroyChecks(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				// Step 1: move org into the test group and pin its config via an ENFORCE
-				// policy with value=true. ENFORCE propagation sets the org's
+				// Step 1: move org into the test group and pin its config via a GROUP_MANAGED
+				// policy with value=true. GROUP_MANAGED propagation sets the org's
 				// is_widget_copy_paste_enabled=true.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationStep1(orgGroupName, orgUUID),
 			},
 			{
-				// Step 2: delete the ENFORCE policy on its own. The org retains its true
-				// value (enforce deletion does not reset org_config). This isolation is
-				// required: if the DEFAULT policy were created in the same apply, Terraform
+				// Step 2: delete the GROUP_MANAGED policy on its own. The org retains its true
+				// value (GROUP_MANAGED deletion does not reset org_config). This isolation is
+				// required: if the OVERRIDE_ALLOWED policy were created in the same apply, Terraform
 				// could issue the create before the destroy, and the server would treat
-				// the new DEFAULT as an in-place update of the existing ENFORCE (since
+				// the new OVERRIDE_ALLOWED as an in-place update of the existing GROUP_MANAGED (since
 				// policies are keyed by name+org_group), skipping the override computation.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationStep2(orgGroupName, orgUUID),
 			},
 			{
-				// Step 3: create a brand-new DEFAULT policy with value=false. The
+				// Step 3: create a brand-new OVERRIDE_ALLOWED policy with value=false. The
 				// server's policy-propagation path detects the org's retained true
 				// value ≠ false and auto-creates an override. The Check just confirms
 				// the override exists server-side; the fact that subsequent refreshes
 				// don't fail is our "provider can read a server-created row" coverage.
 				Config: testAccCheckDatadogOrgGroupPolicyOverrideAutoCreationStep3(orgGroupName, orgUUID),
-				Check:  testAccCheckAutoCreatedOverrideExists(providers.frameworkProvider, "datadog_org_group.grp", "datadog_org_group_policy.dflt", orgUUID),
+				Check:  testAccCheckAutoCreatedOverrideExists(providers.frameworkProvider, "datadog_org_group.grp", "datadog_org_group_policy.override_allowed", orgUUID),
 			},
 			// Restore membership so the org_group can be destroyed cleanly.
 			{
@@ -226,7 +226,7 @@ resource "datadog_org_group_policy" "foo" {
   org_group_id     = datadog_org_group.foo.id
   policy_name      = "is_widget_copy_paste_enabled"
   content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
 }
 
 resource "datadog_org_group_policy_override" "foo" {
@@ -253,14 +253,14 @@ resource "datadog_org_group_policy" "foo" {
   org_group_id     = datadog_org_group.foo.id
   policy_name      = "is_widget_copy_paste_enabled"
   content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
 }
 
 resource "datadog_org_group_policy" "bar" {
   org_group_id     = datadog_org_group.foo.id
   policy_name      = "is_dashboard_reports_enabled"
   content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
 }
 
 resource "datadog_org_group_policy_override" "foo" {
@@ -298,11 +298,11 @@ resource "datadog_org_group_membership" "org" {
   org_uuid     = "%s"
 }
 
-resource "datadog_org_group_policy" "enforce" {
+resource "datadog_org_group_policy" "group_managed" {
   org_group_id     = datadog_org_group.grp.id
   policy_name      = "is_widget_copy_paste_enabled"
   content          = jsonencode({"org_config": true})
-  enforcement_tier = "ENFORCE"
+  enforcement_tier = "GROUP_MANAGED"
   depends_on       = [datadog_org_group_membership.org]
 }`, orgGroupName, orgUUID)
 }
@@ -330,11 +330,11 @@ resource "datadog_org_group_membership" "org" {
   org_uuid     = "%s"
 }
 
-resource "datadog_org_group_policy" "dflt" {
+resource "datadog_org_group_policy" "override_allowed" {
   org_group_id     = datadog_org_group.grp.id
   policy_name      = "is_widget_copy_paste_enabled"
   content          = jsonencode({"org_config": false})
-  enforcement_tier = "DEFAULT"
+  enforcement_tier = "OVERRIDE_ALLOWED"
   depends_on       = [datadog_org_group_membership.org]
 }`, orgGroupName, orgUUID)
 }
