@@ -8,7 +8,29 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+// ApplyIgnoreTagKeys re-injects the values of ignored tag keys from state into planTags, so Terraform neither reports drift on those keys nor strips them on apply.
+func ApplyIgnoreTagKeys(ctx context.Context, planTags, stateTags, ignoreKeys types.Set) (types.Set, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if ignoreKeys.IsNull() || ignoreKeys.IsUnknown() {
+		return planTags, diags
+	}
+
+	var plan, state, keys []string
+	diags.Append(planTags.ElementsAs(ctx, &plan, false)...)
+	diags.Append(stateTags.ElementsAs(ctx, &state, false)...)
+	diags.Append(ignoreKeys.ElementsAs(ctx, &keys, false)...)
+	if diags.HasError() {
+		return planTags, diags
+	}
+
+	result, d := types.SetValueFrom(ctx, types.StringType, utils.StripIgnoredTags(plan, state, keys))
+	diags.Append(d...)
+	return result, diags
+}
 
 func CombineTags(ctx context.Context, rawInputTags types.Set, defaultTags map[string]string) (types.Set, diag.Diagnostics) {
 	if len(defaultTags) == 0 && rawInputTags.IsNull() {

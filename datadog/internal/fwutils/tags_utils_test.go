@@ -61,3 +61,55 @@ func TestCombineTags(t *testing.T) {
 		}
 	}
 }
+
+func TestApplyIgnoreTagKeys(t *testing.T) {
+	cases := map[string]struct {
+		planTags    []string
+		priorTags   []string
+		ignoreKeys  []string // nil means the attribute is unset (null)
+		ignoreUnset bool
+		expected    []string
+	}{
+		"unset ignore_tag_keys is a passthrough": {
+			planTags:    []string{"a:1", "b:2"},
+			priorTags:   []string{"a:1", "b:9"},
+			ignoreUnset: true,
+			expected:    []string{"a:1", "b:2"},
+		},
+		"re-injects the prior value of an ignored key": {
+			planTags:   []string{"a:1", "test:wrong"},
+			priorTags:  []string{"a:1", "test:right"},
+			ignoreKeys: []string{"test"},
+			expected:   []string{"a:1", "test:right"},
+		},
+		"create has no prior value to re-inject": {
+			planTags:   []string{"a:1"},
+			priorTags:  []string{},
+			ignoreKeys: []string{"test"},
+			expected:   []string{"a:1"},
+		},
+		"non-ignored keys keep their planned values": {
+			planTags:   []string{"a:1", "b:new", "test:wrong"},
+			priorTags:  []string{"a:1", "b:old", "test:right"},
+			ignoreKeys: []string{"test"},
+			expected:   []string{"a:1", "b:new", "test:right"},
+		},
+	}
+	for name, tc := range cases {
+		ctx := context.Background()
+		planTags, _ := types.SetValueFrom(ctx, types.StringType, tc.planTags)
+		priorTags, _ := types.SetValueFrom(ctx, types.StringType, tc.priorTags)
+		ignoreKeys := types.SetNull(types.StringType)
+		if !tc.ignoreUnset {
+			ignoreKeys, _ = types.SetValueFrom(ctx, types.StringType, tc.ignoreKeys)
+		}
+		expected, _ := types.SetValueFrom(ctx, types.StringType, tc.expected)
+		result, diags := ApplyIgnoreTagKeys(ctx, planTags, priorTags, ignoreKeys)
+		if diags.HasError() {
+			t.Errorf("%s: unexpected diagnostics: %v", name, diags)
+		}
+		if !result.Equal(expected) {
+			t.Errorf("%s: expected '%s', got '%s' instead.", name, expected, result)
+		}
+	}
+}
