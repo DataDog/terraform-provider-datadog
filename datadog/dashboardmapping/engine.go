@@ -2586,7 +2586,11 @@ func buildTabsJSONFromMap(data map[string]interface{}, builtWidgets []interface{
 // Parallel to MarshalDashboardJSON in engine.go.
 // The trailing newline matches behavior of json.NewEncoder used when cassettes were recorded.
 func MarshalDashboardJSONFromMap(data map[string]interface{}, id string) (string, error) {
-	body, err := json.Marshal(BuildDashboardEngineJSONFromMap(data, id))
+	bodyMap := BuildDashboardEngineJSONFromMap(data, id)
+	if err := ApplyDefaultTimeframeToDashboardJSON(bodyMap, data); err != nil {
+		return "", err
+	}
+	body, err := json.Marshal(bodyMap)
 	if err != nil {
 		return "", fmt.Errorf("error marshaling dashboard JSON: %s", err)
 	}

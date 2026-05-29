@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -173,6 +174,7 @@ func resourceDatadogDashboard() *schema.Resource {
 						},
 					},
 				},
+				"default_timeframe": dashboardmapping.DashboardDefaultTimeframeSchema(),
 			}
 		},
 	}
@@ -347,6 +349,15 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 
+	// Set default_timeframe — always call d.Set so stale state is cleared when removed
+	var terraformDefaultTimeframe []interface{}
+	if apiDefaultTimeframe := getDashboardDefaultTimeframeFromAPI(dashboard); apiDefaultTimeframe != nil {
+		terraformDefaultTimeframe = dashboardmapping.FlattenDefaultTimeframe(apiDefaultTimeframe)
+	}
+	if err := d.Set("default_timeframe", terraformDefaultTimeframe); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return nil
 }
 
@@ -477,17 +488,35 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	templateVariablePresets := d.Get("template_variable_preset").([]interface{})
 	dashboard.TemplateVariablePresets = *buildDatadogTemplateVariablePresets(&templateVariablePresets)
 
-	// Build Tabs
+	// Build Tabs and default_timeframe via AdditionalProperties until the API client models them.
+	additionalProps := dashboard.AdditionalProperties
+	if additionalProps == nil {
+		additionalProps = make(map[string]interface{})
+	}
 	if v, ok := d.GetOk("tab"); ok {
 		terraformTabs := v.([]interface{})
-		tabs := buildDatadogTabs(&terraformTabs)
-		if dashboard.AdditionalProperties == nil {
-			dashboard.AdditionalProperties = make(map[string]interface{})
-		}
-		dashboard.AdditionalProperties["tabs"] = tabs
+		additionalProps["tabs"] = buildDatadogTabs(&terraformTabs)
+	}
+	data := map[string]interface{}{
+		"default_timeframe": dashboardmapping.CollectDefaultTimeframeData(d),
+	}
+	if err := dashboardmapping.ApplyDefaultTimeframeToDashboardJSON(additionalProps, data); err != nil {
+		return nil, err
+	}
+	if len(additionalProps) > 0 {
+		dashboard.AdditionalProperties = additionalProps
 	}
 
 	return &dashboard, nil
+}
+
+func getDashboardDefaultTimeframeFromAPI(dashboard *datadogV1.Dashboard) map[string]interface{} {
+	if dashboard.AdditionalProperties != nil {
+		if dtf, ok := dashboard.AdditionalProperties["default_timeframe"].(map[string]interface{}); ok {
+			return dtf
+		}
+	}
+	return nil
 }
 
 //

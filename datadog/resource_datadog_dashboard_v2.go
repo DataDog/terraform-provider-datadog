@@ -78,6 +78,7 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 			Schema: widgetSchema,
 		},
 	}
+	topSchema["default_timeframe"] = dashboardmapping.DashboardDefaultTimeframeSchema()
 
 	return topSchema
 }
@@ -203,6 +204,7 @@ func collectDashboardData(d *schema.ResourceData) map[string]interface{} {
 		}
 	}
 	data["widget"] = d.Get("widget")
+	data["default_timeframe"] = dashboardmapping.CollectDefaultTimeframeData(d)
 	return data
 }
 
@@ -308,6 +310,17 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 		if err := d.Set("tab", flatTabs); err != nil {
 			diags = append(diags, diag.FromErr(err)...)
 		}
+	} else if err := d.Set("tab", []interface{}{}); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
+	}
+
+	// default_timeframe — always call d.Set so stale state is cleared when removed
+	var terraformDefaultTimeframe []interface{}
+	if dtf, ok := resp["default_timeframe"].(map[string]interface{}); ok && dtf != nil {
+		terraformDefaultTimeframe = dashboardmapping.FlattenDefaultTimeframe(dtf)
+	}
+	if err := d.Set("default_timeframe", terraformDefaultTimeframe); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// dashboard_lists_removed: clear after apply
