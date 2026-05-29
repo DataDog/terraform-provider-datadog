@@ -851,7 +851,10 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
+				// Optional+Computed: ignore_tag_keys lets ModifyPlan rewrite tags so the plan reflects
+				// the values actually on the monitor for ignored keys, rather than stale config.
 				Optional:    true,
+				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"ignore_tag_keys": schema.SetAttribute{
@@ -1570,15 +1573,32 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	// ignore_tag_keys: re-inject the prior values of ignored tag keys into the planned `tags`
+	// so the plan shows what's actually on the monitor instead of stale config. effective_tags
+	// holds the last value read from the API. `tags` is Optional+Computed so the provider may
+	// plan a value that differs from config. This runs before the validation skip below so the
+	// plan stays correct even when validate = false; on create there is no prior state, so it
+	// is a no-op.
+	plannedTags, diags := fwutils.ApplyIgnoreTagKeys(ctx, plan.Tags, state.EffectiveTags, plan.IgnoreTagKeys)
+	if diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+	plan.Tags = plannedTags
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("tags"), plannedTags)...)
+
+	combinedTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
+	if diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+	plan.EffectiveTags = combinedTags
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), combinedTags)...)
+
 	if !plan.Validate.IsNull() && !plan.Validate.ValueBool() {
 		// Explicitly skip validation
 		return
 	}
-	combinedTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
-	if diags.HasError() {
-		return
-	}
-	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), combinedTags)...)
 	m, _, diags := r.buildMonitorStruct(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
