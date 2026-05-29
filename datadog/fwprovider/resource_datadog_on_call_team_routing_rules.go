@@ -19,8 +19,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &onCallTeamRoutingRulesResource{}
-	_ resource.ResourceWithImportState = &onCallTeamRoutingRulesResource{}
+	_ resource.ResourceWithConfigure      = &onCallTeamRoutingRulesResource{}
+	_ resource.ResourceWithImportState    = &onCallTeamRoutingRulesResource{}
+	_ resource.ResourceWithValidateConfig = &onCallTeamRoutingRulesResource{}
 )
 
 type onCallTeamRoutingRulesResource struct {
@@ -174,6 +175,17 @@ func (r *onCallTeamRoutingRulesResource) Configure(_ context.Context, request re
 
 func (r *onCallTeamRoutingRulesResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "on_call_team_routing_rules"
+}
+
+// ValidateConfig returns cross-field validation errors during `terraform plan`
+// rather than at apply time. The same checks are also run from Create/Update.
+func (r *onCallTeamRoutingRulesResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var cfg onCallTeamRoutingRulesModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &cfg)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	response.Diagnostics.Append(cfg.Validate()...)
 }
 
 func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
