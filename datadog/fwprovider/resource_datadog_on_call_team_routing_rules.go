@@ -320,7 +320,7 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 										},
 										Blocks: map[string]schema.Block{
 											"support_hours": schema.SingleNestedBlock{
-												Description: "Support hours during which the escalation policy will execute.",
+												Description: "Support hours during which the escalation policy will trigger.",
 												Attributes: map[string]schema.Attribute{
 													"time_zone": schema.StringAttribute{
 														Optional:    true,
