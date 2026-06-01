@@ -180,6 +180,7 @@ Optional:
 - `unit` (String) Unit of the live timeframe span. Required when `type` is `live`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
 - `value` (Number) Value of the live timeframe span. Required when `type` is `live`.
 
+
 <a id="nestedblock--tab"></a>
 ### Nested Schema for `tab`
 
