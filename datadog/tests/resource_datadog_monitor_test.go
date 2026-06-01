@@ -850,6 +850,84 @@ func TestAccDatadogMonitor_FormulaFunction_Cost(t *testing.T) {
 	})
 }
 
+// TestAccDatadogMonitor_DynamicEmptyVariables exercises the wrapper-module pattern
+// from https://github.com/DataDog/terraform-provider-datadog/issues/3149 where a
+// `dynamic "variables"` block produces a single empty `variables {}` block (no
+// inner cloud_cost_query / event_query). Before the fix, this caused
+// `terraform plan` to crash inside buildMonitorStruct with
+// `interface conversion: interface {} is nil, not map[string]interface {}`.
+// The empty block must result in no `variables` field on the API request,
+// which is the same behavior as omitting the block entirely.
+func TestAccDatadogMonitor_DynamicEmptyVariables(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorDynamicEmptyVariables(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "type", "metric alert"),
+					// The empty `variables {}` block produces zero entries on
+					// the API side, so state should reflect zero
+					// cloud_cost_query entries inside the (single) variables
+					// block.
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.cloud_cost_query.#", "0"),
+				),
+			},
+		},
+	})
+}
+
+// testAccCheckDatadogMonitorDynamicEmptyVariables mirrors the wrapper-module
+// pattern that triggered issue #3149: an outer `dynamic "variables"` that
+// always produces one block, with an inner `dynamic "cloud_cost_query"` that
+// resolves to an empty list. The result is a single `variables {}` block with
+// no inner content — exactly the input shape that crashes buildMonitorStruct
+// without the nil-guard fix.
+func testAccCheckDatadogMonitorDynamicEmptyVariables(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%[1]s"
+  type    = "metric alert"
+  message = "%[1]s"
+
+  query = "avg(last_1h):avg:system.load.5{*} > 4"
+
+  monitor_thresholds {
+    critical = "4"
+  }
+
+  dynamic "variables" {
+    # Always create exactly one variables block, like the wrapper module
+    # in issue #3149 does when monitoring_variables is non-null.
+    for_each = [{ cloud_cost_queries = [] }]
+    content {
+      dynamic "cloud_cost_query" {
+        # cloud_cost_queries is empty, so this produces zero inner blocks.
+        for_each = variables.value.cloud_cost_queries
+        content {
+          data_source = cloud_cost_query.value.data_source
+          name        = cloud_cost_query.value.name
+          query       = cloud_cost_query.value.query
+          aggregator  = cloud_cost_query.value.aggregator
+        }
+      }
+    }
+  }
+}`, uniq)
+}
+
 func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
