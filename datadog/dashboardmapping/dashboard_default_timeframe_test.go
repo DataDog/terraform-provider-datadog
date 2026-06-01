@@ -76,3 +76,22 @@ func TestApplyDefaultTimeframeToDashboardJSON_omit(t *testing.T) {
 	_, ok := result["default_timeframe"]
 	assert.False(t, ok)
 }
+
+func TestDefaultTimeframeBuildFlattenRoundTrip(t *testing.T) {
+	t.Parallel()
+
+	block := map[string]interface{}{
+		"type":  "live",
+		"unit":  "week",
+		"value": 1,
+	}
+	built, err := BuildDefaultTimeframeJSONFromMap(block)
+	require.NoError(t, err)
+
+	flattened := FlattenDefaultTimeframe(built)
+	require.Len(t, flattened, 1)
+	got := flattened[0].(map[string]interface{})
+	assert.Equal(t, "live", got["type"])
+	assert.Equal(t, "week", got["unit"])
+	assert.Equal(t, 1, got["value"])
+}

@@ -740,6 +740,7 @@ resource "datadog_dashboard" "free_dashboard" {
 ### Optional
 
 - `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
+- `default_timeframe` (Block List, Max: 1) The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured. (see [below for nested schema](#nestedblock--default_timeframe))
 - `description` (String) The description of the dashboard.
 - `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard. Defaults to `false`.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
@@ -756,6 +757,20 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - `dashboard_lists_removed` (Set of Number) A list of dashboard lists this dashboard should be removed from. Internal only.
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--default_timeframe"></a>
+### Nested Schema for `default_timeframe`
+
+Required:
+
+- `type` (String) The type of timeframe. Valid values are `live`, `fixed`.
+
+Optional:
+
+- `from` (Number) Start time in milliseconds since epoch. Required when `type` is `fixed`.
+- `to` (Number) End time in milliseconds since epoch. Required when `type` is `fixed`.
+- `unit` (String) Unit of the live timeframe span. Required when `type` is `live`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the live timeframe span. Required when `type` is `live`.
 
 <a id="nestedblock--tab"></a>
 ### Nested Schema for `tab`

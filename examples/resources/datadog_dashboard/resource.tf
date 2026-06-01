@@ -4,12 +4,6 @@ resource "datadog_dashboard" "ordered_dashboard" {
   description = "Created using the Datadog provider in Terraform"
   layout_type = "ordered"
 
-  default_timeframe {
-    type  = "live"
-    unit  = "week"
-    value = 1
-  }
-
   widget {
     alert_graph_definition {
       alert_id  = "895605"
