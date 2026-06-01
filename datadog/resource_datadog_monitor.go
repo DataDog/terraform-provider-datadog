@@ -1398,18 +1398,41 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		if len(variables) > 0 {
 			// we always have either zero or one
 			for _, v := range variables {
-				m := v.(map[string]interface{})
+				if v == nil {
+					// Empty `variables {}` block (e.g. produced by a dynamic block
+					// whose inner content is itself empty) shows up as a nil
+					// element. Skip it instead of panicking on the type assertion.
+					continue
+				}
+				m, ok := v.(map[string]interface{})
+				if !ok {
+					continue
+				}
 				var monitorVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition
 				if query, ok := m["event_query"]; ok {
-					queries := query.([]interface{})
+					queries, _ := query.([]interface{})
 					for _, q := range queries {
-						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{})))
+						if q == nil {
+							continue // Skip nil query entries
+						}
+						queryMap, ok := q.(map[string]interface{})
+						if !ok {
+							continue
+						}
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(queryMap))
 					}
 				}
 				if query, ok := m["cloud_cost_query"]; ok {
-					queries := query.([]interface{})
+					queries, _ := query.([]interface{})
 					for _, q := range queries {
-						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{})))
+						if q == nil {
+							continue // Skip nil query entries
+						}
+						queryMap, ok := q.(map[string]interface{})
+						if !ok {
+							continue
+						}
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(queryMap))
 					}
 				}
 				if query, ok := m["data_quality_query"]; ok {
