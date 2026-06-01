@@ -249,23 +249,14 @@ func (r *datadogCustomAllocationRuleResource) Schema(_ context.Context, _ resour
 			"last_modified_user_uuid": schema.StringAttribute{
 				Computed:    true,
 				Description: "The UUID of the user who last modified the rule.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"updated": schema.StringAttribute{
 				Computed:    true,
 				Description: "The timestamp (in ISO 8601 format) when the rule was last updated.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"version": schema.Int64Attribute{
 				Computed:    true,
 				Description: "The version number of the rule. This increments each time the rule is updated.",
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 			"rule_name": schema.StringAttribute{
 				Required:    true,
