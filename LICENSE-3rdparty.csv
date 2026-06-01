@@ -257,4 +257,12 @@ go.sum,github.com/bmatcuk/doublestar/v4,MIT,2014 Bob Matcuk
 go.sum,github.com/hashicorp/cli,MPL-2.0,
 go.sum,github.com/yuin/goldmark-meta,MIT,2019 Yusuke Inuzuka
 go.sum,go.abhg.dev/goldmark/frontmatter,BSD-3-Clause,2023 Abhinav Gupta
+go.sum,github.com/pb33f/libopenapi,MIT,2022-Present pb33f / Dave Shanley
+go.sum,github.com/pb33f/jsonpath,MIT,2022-Present pb33f / Dave Shanley
+go.sum,github.com/pb33f/ordered-map/v2,MIT,2022-Present pb33f / Dave Shanley
+go.sum,github.com/spf13/cobra,Apache-2.0,2013 Steve Francia
+go.sum,github.com/bahlo/generic-list-go,MIT,2021 Nils Müller
+go.sum,github.com/buger/jsonparser,MIT,2016 Yuriy Vasiyarov
+go.sum,github.com/inconshreveable/mousetrap,Apache-2.0,2014 Alan Shreve
+go.sum,go.yaml.in/yaml/v4,MIT and Apache-2.0,2006-2011 Kirill Simonov and 2011-2019 Canonical Ltd
 
