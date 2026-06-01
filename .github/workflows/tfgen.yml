@@ -5,11 +5,11 @@ permissions:
 
 on:
   pull_request:
-    branches:
-      - master
     paths:
       - ".generator-v2/internal/**"
       - ".generator-v2/cmd/tfgen/**"
+      - ".generator-v2/go.mod"
+      - ".generator-v2/go.sum"
       - ".github/workflows/tfgen.yml"
 
 concurrency:
