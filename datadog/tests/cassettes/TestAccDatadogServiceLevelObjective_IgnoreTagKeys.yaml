@@ -1,0 +1,428 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 423
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"SLO for ignore_tag_keys integration test","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["team:original","env:prod"],"target_threshold":99.5,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8}],"timeframe":"7d","type":"metric","warning_threshold":99.8}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["env:prod","team:original"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332980,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 129.012041ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["env:prod","team:original"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332980,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 139.83375ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["env:prod","team:original"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332980,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.588083ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["env:prod","team:original"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332980,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 73.519833ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["team:original","env:prod"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332980,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 164.458833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["team:original","env:prod"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332980,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 84.4545ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["env:prod","team:original"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332980,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 104.301625ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 462
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"SLO for ignore_tag_keys integration test","id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"tags":["team:original","env:dev"],"target_threshold":99.5,"thresholds":[{"target":99.5,"timeframe":"7d","warning":99.8}],"timeframe":"7d","type":"metric","warning_threshold":99.8}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["team:original","env:dev"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332983,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 273.915167ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["env:dev","team:original"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332983,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 70.827459ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"d2aca5e892f75dec9b31d58d3ea3af2a","name":"tf-TestAccDatadogServiceLevelObjective_IgnoreTagKeys-local-1780332979","tags":["team:original","env:dev"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.5,"target_display":"99.5","warning":99.8,"warning_display":"99.8"}],"type":"metric","type_id":1,"description":"SLO for ignore_tag_keys integration test","timeframe":"7d","warning_threshold":99.8,"target_threshold":99.5,"query":{"denominator":"sum:my.metric{*}.as_count()","numerator":"sum:my.metric{type:good}.as_count()"},"creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com"},"created_at":1780332980,"modified_at":1780332983,"sli_specification":{"count":{"queries":[{"data_source":"metrics","name":"query1","query":"sum:my.metric{type:good}.as_count()"},{"data_source":"metrics","name":"query2","query":"sum:my.metric{*}.as_count()"}],"good_events_formula":{"formula":"query1"},"total_events_formula":{"formula":"query2"}}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 66.171584ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":["d2aca5e892f75dec9b31d58d3ea3af2a"],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 260.436ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/d2aca5e892f75dec9b31d58d3ea3af2a
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["SLO not found: d2aca5e892f75dec9b31d58d3ea3af2a not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 71.012875ms
