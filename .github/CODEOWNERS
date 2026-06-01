@@ -119,6 +119,8 @@ examples/**/datadog_org_group*/**                @DataDog/org-management
 templates/**/org_group*.md.tmpl                  @DataDog/org-management
 
 # Team-specific
-docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
-scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management
-docs/resources/secure_embed_dashboard.md         @DataDog/api-reliability @DataDog/reporting-and-sharing
+docs/resources/observability_pipeline.md              @DataDog/observability-pipelines
+scripts/*cloud-cost-import-existing-resources*        @DataDog/cloud-cost-management
+docs/resources/secure_embed_dashboard.md              @DataDog/api-reliability @DataDog/reporting-and-sharing
+docs/resources/on_call_team_routing_rules.md          @DataDog/on-call
+examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call
