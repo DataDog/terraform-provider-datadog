@@ -103,7 +103,7 @@ Optional:
 Optional:
 
 - `query` (String) Only logs matching the filter criteria and the query of the parent index will be considered for this exclusion filter.
-- `sample_attribute` (String) When present, buckets logs by the value of this attribute.
+- `sample_attribute` (String) The log attribute used as the sampling key. When present, logs sharing the same value are excluded or kept together at the configured sample rate (a single attribute path, e.g. `@lambda.request_id`).
 - `sample_rate` (Number) The fraction of logs excluded by the exclusion filter, when active.
 
 ## Import

@@ -138,7 +138,7 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 					Optional:    true,
 				},
 				"sample_attribute": {
-					Description: "When present, buckets logs by the value of this attribute.",
+					Description: "The log attribute used as the sampling key. When present, logs sharing the same value are excluded or kept together at the configured sample rate (a single attribute path, e.g. `@lambda.request_id`).",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
