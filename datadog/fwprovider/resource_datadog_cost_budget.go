@@ -567,15 +567,16 @@ func convertFlatEntriesToBudgetLine(ctx context.Context, flatEntries []budgetEnt
 
 		if layout, ok := layoutMap[key]; ok {
 			// Preserve the original field assignment from the user's config
-			if len(layout.parentTagFilters) > 0 || len(layout.childTagFilters) > 0 {
+			switch {
+			case len(layout.parentTagFilters) > 0 || len(layout.childTagFilters) > 0:
 				line.ParentTagFilters, _ = types.ListValueFrom(ctx, tagObjType, layout.parentTagFilters)
 				line.ChildTagFilters, _ = types.ListValueFrom(ctx, tagObjType, layout.childTagFilters)
 				line.TagFilters = types.ListNull(tagObjType)
-			} else if len(layout.tagFilters) > 0 {
+			case len(layout.tagFilters) > 0:
 				line.TagFilters, _ = types.ListValueFrom(ctx, tagObjType, layout.tagFilters)
 				line.ParentTagFilters = types.ListNull(tagObjType)
 				line.ChildTagFilters = types.ListNull(tagObjType)
-			} else {
+			default:
 				line.TagFilters = types.ListNull(tagObjType)
 				line.ParentTagFilters = types.ListNull(tagObjType)
 				line.ChildTagFilters = types.ListNull(tagObjType)
