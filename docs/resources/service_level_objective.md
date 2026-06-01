@@ -167,7 +167,7 @@ resource "datadog_service_level_objective" "time_slice_slo" {
 - `description` (String) A description of this service level objective.
 - `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, dashboards).
 - `groups` (Set of String) A static set of groups to filter monitor-based SLOs
-- `ignore_tag_keys` (Set of String) Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (e.g. by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally.
+- `ignore_tag_keys` (Set of String) Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (for example, by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally.
 - `monitor_ids` (Set of Number) A static set of monitor IDs to use as part of the SLO
 - `query` (Block List, Max: 1) The metric query of good / total events. Use this for metric SLOs as an alternative to `sli_specification`. (see [below for nested schema](#nestedblock--query))
 - `sli_specification` (Block List, Max: 1) A generic SLI specification. This is used for both time-slice SLOs and count-based (metric) SLOs. (see [below for nested schema](#nestedblock--sli_specification))
