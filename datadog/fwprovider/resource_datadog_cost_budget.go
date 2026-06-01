@@ -310,7 +310,10 @@ func (r *costBudgetResource) ModifyPlan(ctx context.Context, req resource.Modify
 	// Validate parent_tag_filters/child_tag_filters pairing in budget_line
 	if hasBudgetLine {
 		var budgetLines []budgetLine
-		plan.BudgetLine.ElementsAs(ctx, &budgetLines, false)
+		if diags := plan.BudgetLine.ElementsAs(ctx, &budgetLines, false); diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+			return
+		}
 		for _, line := range budgetLines {
 			hasParent := !line.ParentTagFilters.IsNull() && !line.ParentTagFilters.IsUnknown() && len(line.ParentTagFilters.Elements()) > 0
 			hasChild := !line.ChildTagFilters.IsNull() && !line.ChildTagFilters.IsUnknown() && len(line.ChildTagFilters.Elements()) > 0
@@ -604,7 +607,8 @@ func convertFlatEntriesToBudgetLine(ctx context.Context, flatEntries []budgetEnt
 	return budgetLines
 }
 
-// tagSignature creates a unique identifier for grouping entries by tag combination
+// tagSignature creates a unique identifier for grouping entries by tag combination.
+// Parts are sorted so the signature is stable regardless of tag ordering.
 func tagSignature(tags []tagFilter) string {
 	if len(tags) == 0 {
 		return ""
@@ -613,6 +617,7 @@ func tagSignature(tags []tagFilter) string {
 	for _, t := range tags {
 		parts = append(parts, t.TagKey.ValueString()+"="+t.TagValue.ValueString())
 	}
+	sort.Strings(parts)
 	return strings.Join(parts, ",")
 }
 

@@ -766,6 +766,35 @@ resource "datadog_cost_budget" "foo" {
 }`,
 			expectError: `child_tag_filters.*must be used together with.*parent_tag_filters`,
 		},
+		// Validate tag_filters cannot be mixed with parent_tag_filters/child_tag_filters
+		{
+			name: "TagFiltersWithParentChild",
+			config: `
+resource "datadog_cost_budget" "foo" {
+  name = "test-tag-filters-conflict"
+  metrics_query = "sum:aws.cost.amortized{*} by {account,region}"
+  start_month = 202601
+  end_month = 202601
+  budget_line {
+    amounts = {
+      "202601" = 1000
+    }
+    tag_filters {
+      tag_key = "region"
+      tag_value = "us-east-1"
+    }
+    parent_tag_filters {
+      tag_key = "account"
+      tag_value = "production"
+    }
+    child_tag_filters {
+      tag_key = "team"
+      tag_value = "backend"
+    }
+  }
+}`,
+			expectError: `tag_filters.*cannot be used together with`,
+		},
 		// Validate all tag combinations have entries for all months
 		{
 			name: "MissingMonths",
