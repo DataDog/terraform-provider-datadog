@@ -50,7 +50,7 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 	err := retry.RetryContext(ctx, d.Timeout(schema.TimeoutRead), func() *retry.RetryError {
 		dashResponse, httpresp, err := apiInstances.GetDashboardsApiV1().ListDashboards(auth)
 		if err != nil {
-			if httpresp != nil && (httpresp.StatusCode == 504 || httpresp.StatusCode == 502) {
+			if utils.IsRetriableResponse(httpresp) {
 				return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error querying dashboard, retrying"))
 			}
 			return retry.NonRetryableError(utils.TranslateClientError(err, httpresp, "error querying dashboard"))

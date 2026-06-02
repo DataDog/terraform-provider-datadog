@@ -179,6 +179,17 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 	return fmt.Errorf(msg+": %s", err.Error())
 }
 
+func IsRetriableResponse(resp *http.Response) bool {
+	if resp == nil {
+		return false
+	}
+	switch resp.StatusCode {
+	case http.StatusBadGateway, http.StatusGatewayTimeout:
+		return true
+	}
+	return false
+}
+
 // CheckForUnparsed takes in a API response object and returns an error if it contains an unparsed element
 func CheckForUnparsed(resp interface{}) error {
 	if unparsed, invalidPart := datadog.ContainsUnparsedObject(resp); unparsed {

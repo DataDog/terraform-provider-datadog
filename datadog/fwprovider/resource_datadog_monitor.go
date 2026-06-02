@@ -1593,7 +1593,7 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 		_, httpresp, err = r.Api.ValidateMonitor(r.Auth, *m)
 	}
 	if err != nil {
-		if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
+		if utils.IsRetriableResponse(httpresp) {
 			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating monitor, retrying"))
 		}
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating monitor"))

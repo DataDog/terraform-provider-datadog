@@ -1991,7 +1991,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 			_, httpresp, err = apiInstances.GetMonitorsApiV1().ValidateMonitor(auth, *m)
 		}
 		if err != nil {
-			if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
+			if utils.IsRetriableResponse(httpresp) {
 				return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor, retrying"))
 			}
 			return retry.NonRetryableError(utils.TranslateClientError(err, httpresp, "error validating monitor"))
@@ -2732,7 +2732,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 				if httpresp.StatusCode == 404 {
 					d.SetId("")
 					return nil
-				} else if httpresp.StatusCode == 502 {
+				} else if utils.IsRetriableResponse(httpresp) {
 					return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error getting monitor, retrying"))
 				}
 			}
