@@ -27,10 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     if: (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'ci/integrations')) || github.event_name == 'schedule'
     steps:
-      - name: Start the Datadog Agent locally
-        uses: datadog/agent-github-action@8240b406d73cb84cd5085a3919a78f59c258da3a
-        with:
-          api_key: ${{ secrets.DD_API_KEY }}
       - name: Checkout code
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
       - name: Install Go
@@ -69,15 +65,9 @@ jobs:
         env:
           RECORD: "none"
           CI: "true"
-          DD_AGENT_HOST: localhost
-          DD_PROFILER_API_KEY: ${{ secrets.DD_API_KEY }}
           DD_TEST_CLIENT_API_KEY: ${{ secrets.DD_CLIENT_API_KEY }}
           DD_TEST_CLIENT_APP_KEY: ${{ secrets.DD_CLIENT_APP_KEY }}
           DD_HTTP_CLIENT_RETRY_ENABLED: "true"
-          DD_ENV: prod
-          DD_SERVICE: terraform-provider-datadog
-          DD_VERSION: ${{ github.run_id }}
-          DD_TAGS: "team:integrations-tools-and-libraries"
           TF_ACC_TERRAFORM_PATH: "/home/runner/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"
           TESTARGS: ${{ steps.skip-list.outputs.test_args }}
