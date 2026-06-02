@@ -4,6 +4,7 @@ import (
 	"errors"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
@@ -126,5 +127,62 @@ func TestLoadSpecMaxDepthFailsFastNotAsCycle(t *testing.T) {
 	var depthErr *MaxDepthError
 	if !errors.As(err, &depthErr) {
 		t.Errorf("expected a typed *MaxDepthError, got %T: %v", err, err)
+	}
+}
+
+// TestLoadSpecPopulatesTracking checks the end-to-end wiring: flagged
+// operations get decoded tracking metadata, unflagged ones stay nil.
+func TestLoadSpecPopulatesTracking(t *testing.T) {
+	spec, err := LoadSpec(filepath.Join("../testdata/parser", "tracking_valid.yaml"))
+	if err != nil {
+		t.Fatalf("LoadSpec: %v", err)
+	}
+	byID := make(map[string]*model.Operation, len(spec.Operations))
+	for _, op := range spec.Operations {
+		byID[op.OperationId] = op
+	}
+
+	if res := byID["CreateIncidentType"]; res == nil || res.Tracking == nil {
+		t.Fatalf("CreateIncidentType tracking not populated: %+v", res)
+	} else if res.Tracking.ArtifactKind != model.ArtifactKindResource || res.Tracking.ArtifactName != "incident_type" {
+		t.Errorf("resource tracking = %+v", res.Tracking)
+	}
+
+	if ds := byID["GetTeam"]; ds == nil || ds.Tracking == nil || ds.Tracking.ArtifactKind != model.ArtifactKindDataSource {
+		t.Fatalf("GetTeam tracking = %+v", ds)
+	}
+
+	if h := byID["GetHealth"]; h == nil || h.Tracking != nil {
+		t.Errorf("unflagged GetHealth should have nil tracking, got %+v", h)
+	}
+}
+
+// TestLoadSpecDuplicateArtifactNamesReturnsTypedError covers the AC: two
+// operations resolving to the same artifact_name fail with the aggregated typed
+// error naming both source locations.
+func TestLoadSpecDuplicateArtifactNamesReturnsTypedError(t *testing.T) {
+	_, err := LoadSpec(filepath.Join("../testdata/parser", "tracking_duplicate.yaml"))
+	var dup *DuplicateArtifactNameError
+	if !errors.As(err, &dup) {
+		t.Fatalf("error %v (%T) is not a *DuplicateArtifactNameError", err, err)
+	}
+	for _, want := range []string{"ListTeams", "GetTeam"} {
+		if !strings.Contains(dup.Error(), want) {
+			t.Errorf("duplicate error missing source %q:\n%s", want, dup.Error())
+		}
+	}
+}
+
+// TestLoadSpecMalformedTrackingReturnsTypedError covers the AC: a malformed
+// extension fails with a typed error carrying the real OpenAPI path threaded
+// through a genuine libopenapi parse.
+func TestLoadSpecMalformedTrackingReturnsTypedError(t *testing.T) {
+	_, err := LoadSpec(filepath.Join("../testdata/parser", "tracking_malformed.yaml"))
+	var te *TrackingError
+	if !errors.As(err, &te) {
+		t.Fatalf("error %v (%T) is not a *TrackingError", err, err)
+	}
+	if te.Path != "/widgets" {
+		t.Errorf("TrackingError.Path = %q, want %q", te.Path, "/widgets")
 	}
 }

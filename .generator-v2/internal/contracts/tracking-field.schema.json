@@ -1,0 +1,72 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://datadog.github.io/terraform-provider-datadog/contracts/tracking-field.schema.json",
+    "title": "x-datadog-tf-generator",
+    "description": "OpenAPI 3.0 vendor extension that opts an operation in to Datadog Terraform provider generation.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["artifact_kind", "artifact_name"],
+    "properties": {
+      "artifact_kind": {
+        "type": "string",
+        "enum": ["resource", "data_source"],
+        "description": "Whether this operation should be exposed as a Terraform resource (with full CRUD lifecycle) or a Terraform data source (read-only)."
+      },
+      "artifact_name": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "minLength": 1,
+        "maxLength": 64,
+        "description": "Terraform-facing artifact name without the 'datadog_' prefix. Must be lowercase snake_case. Must be unique across the entire spec."
+      },
+      "group": {
+        "type": "object",
+        "description": "Declares which OpenAPI operations form the C/R/U/D quadruple. May reference operations by their operationId.",
+        "additionalProperties": false,
+        "properties": {
+          "create": { "type": "string", "description": "operationId of the Create endpoint." },
+          "read":   { "type": "string", "description": "operationId of the Read endpoint." },
+          "update": { "type": "string", "description": "operationId of the Update endpoint. May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec." },
+          "delete": { "type": "string", "description": "operationId of the Delete endpoint." }
+        },
+        "required": ["read"]
+      },
+      "id_strategy": {
+        "type": "string",
+        "enum": ["data.id", "data.attributes.id", "data.attributes.uuid", "header.location"],
+        "default": "data.id",
+        "description": "How to derive the Terraform resource ID from the API response on Create/Read."
+      },
+      "sensitive": {
+        "type": "boolean",
+        "default": false,
+        "description": "When attached to a Schema Object, marks the attribute as Terraform-sensitive (suppressed in plan output)."
+      },
+      "skip": {
+        "type": "boolean",
+        "default": false,
+        "description": "Explicitly disable generation for this operation while keeping the annotation in place. Equivalent to removing the extension, but documented in-spec so reviewers see the choice."
+      }
+    },
+    "examples": [
+      {
+        "artifact_kind": "data_source",
+        "artifact_name": "team",
+        "group":{
+          "read": "GetTeam"
+        }
+      },
+      {
+        "artifact_kind": "resource",
+        "artifact_name": "incident_type",
+        "group": {
+          "create": "CreateIncidentType",
+          "read": "GetIncidentType",
+          "update": "UpdateIncidentType",
+          "delete": "DeleteIncidentType"
+        },
+        "id_strategy": "data.id"
+      }
+    ]
+  }
+  
