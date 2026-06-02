@@ -184,7 +184,7 @@ func IsRetriableResponse(resp *http.Response) bool {
 		return false
 	}
 	switch resp.StatusCode {
-	case http.StatusBadGateway, http.StatusGatewayTimeout:
+	case http.StatusBadGateway, http.StatusServiceUnavailable, http.StatusGatewayTimeout:
 		return true
 	}
 	return false
