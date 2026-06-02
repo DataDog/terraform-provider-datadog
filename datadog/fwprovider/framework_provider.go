@@ -249,6 +249,11 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
 	}
 
+	if utils.IsDatabricksIntegrationEnabled() {
+		databricksResource := NewIntegrationDatabricksAccountResource()
+		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&databricksResource) })
+	}
+
 	return wrappedResources
 }
 
