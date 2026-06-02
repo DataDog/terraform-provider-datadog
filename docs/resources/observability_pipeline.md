@@ -128,6 +128,7 @@ Optional:
 - `sentinel_one` (Block List) The `sentinel_one` destination sends logs to SentinelOne. (see [below for nested schema](#nestedblock--config--destination--sentinel_one))
 - `socket` (Block List) The `socket` destination sends logs over TCP or UDP to a remote server. (see [below for nested schema](#nestedblock--config--destination--socket))
 - `splunk_hec` (Block List) The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC). (see [below for nested schema](#nestedblock--config--destination--splunk_hec))
+- `splunk_hec_metrics` (Block List) The `splunk_hec_metrics` destination forwards metrics to Splunk using the HTTP Event Collector (HEC). (see [below for nested schema](#nestedblock--config--destination--splunk_hec_metrics))
 - `sumo_logic` (Block List) The `sumo_logic` destination forwards logs to Sumo Logic. (see [below for nested schema](#nestedblock--config--destination--sumo_logic))
 - `syslog_ng` (Block List) The `syslog_ng` destination forwards logs to an external `syslog-ng` server over TCP or UDP using the syslog protocol. (see [below for nested schema](#nestedblock--config--destination--syslog_ng))
 
@@ -1437,6 +1438,64 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+
+<a id="nestedblock--config--destination--splunk_hec_metrics"></a>
+### Nested Schema for `config.destination.splunk_hec_metrics`
+
+Optional:
+
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--splunk_hec_metrics--buffer))
+- `compression` (String) Compression algorithm applied when sending metrics to Splunk HEC. Valid values are `none`, `gzip`.
+- `default_namespace` (String) Optional default namespace for metrics sent to Splunk HEC.
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the Splunk HEC endpoint URL.
+- `index` (String) Optional name of the Splunk index where metrics are written.
+- `source` (String) The Splunk source field value for metric events.
+- `sourcetype` (String) The Splunk sourcetype to assign to metric events.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--splunk_hec_metrics--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the Splunk HEC token.
+
+<a id="nestedblock--config--destination--splunk_hec_metrics--buffer"></a>
+### Nested Schema for `config.destination.splunk_hec_metrics.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--splunk_hec_metrics--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--splunk_hec_metrics--buffer--memory))
+
+<a id="nestedblock--config--destination--splunk_hec_metrics--buffer--disk"></a>
+### Nested Schema for `config.destination.splunk_hec_metrics.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--splunk_hec_metrics--buffer--memory"></a>
+### Nested Schema for `config.destination.splunk_hec_metrics.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--splunk_hec_metrics--tls"></a>
+### Nested Schema for `config.destination.splunk_hec_metrics.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
