@@ -310,6 +310,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_sensitive_data_scanner_rule_test":                            "sensitive-data-scanner",
 	"tests/resource_datadog_service_account_application_key_test":                        "users",
 	"tests/resource_datadog_service_account_test":                                        "users",
+	"tests/resource_datadog_service_access_token_test":                                   "users",
 	"tests/resource_datadog_service_definition_yaml_test":                                "service-definition",
 	"tests/resource_datadog_service_level_objective_test":                                "service-level-objectives",
 	"tests/resource_datadog_slo_correction_test":                                         "slo_correction",

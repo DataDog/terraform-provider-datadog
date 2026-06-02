@@ -87,6 +87,9 @@ datadog/**/*datadog_restriction_policy*          @DataDog/aaa-granular-access
 datadog/**/*datadog_logs_restriction_query*      @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*      @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*             @DataDog/team-aaa
+datadog/**/*datadog_service_access_token*        @DataDog/credential-management
+docs/resources/service_access_token.md           @DataDog/credential-management
+examples/resources/datadog_service_access_token/ @DataDog/credential-management
 datadog/**/*datadog_software_catalog*            @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics*                  @DataDog/synthetics-orchestrating-managing
