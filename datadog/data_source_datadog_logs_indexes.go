@@ -130,6 +130,11 @@ var dataSourceLogsIndexesExclusionFilterSchema = map[string]*schema.Schema{
 					Type:        schema.TypeFloat,
 					Computed:    true,
 				},
+				"sample_attribute": {
+					Description: "The attribute to use for sampling logs for this exclusion filter.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
 			},
 		},
 	},
