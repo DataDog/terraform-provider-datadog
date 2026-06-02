@@ -7628,3 +7628,88 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_websocketSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.websocket"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "websocket" {
+  name = "websocket-source-pipeline"
+
+  config {
+    source {
+      id = "ws-source-1"
+      websocket {
+        decoding      = "json"
+        auth_strategy = "none"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ws-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "ws-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.auth_strategy", "none"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "websocket" {
+  name = "websocket-source-pipeline-tls"
+
+  config {
+    source {
+      id = "ws-source-1"
+      websocket {
+        uri_key       = "WEBSOCKET_URI"
+        decoding      = "json"
+        auth_strategy = "bearer"
+        token_key     = "BEARER_TOKEN"
+        tls {
+          mode     = "with_client_cert"
+          crt_file = "/certs/client.crt"
+          ca_file  = "/certs/ca.crt"
+          key_file = "/certs/client.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ws-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "ws-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.uri_key", "WEBSOCKET_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.auth_strategy", "bearer"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.token_key", "BEARER_TOKEN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.mode", "with_client_cert"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.crt_file", "/certs/client.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.ca_file", "/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.key_file", "/certs/client.key"),
+				),
+			},
+		},
+	})
+}
