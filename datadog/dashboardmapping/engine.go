@@ -158,6 +158,13 @@ type FieldSpec struct {
 	// returned by the API, so refreshed state never matches the config.
 	IgnoreChanges bool
 
+	// NullOnClear: if true, emit explicit JSON null when the block value in the
+	// HCL data map is nil (cleared). This is distinct from OmitEmpty — OmitEmpty
+	// skips the field entirely; NullOnClear emits {"field": null} so that an API
+	// that distinguishes absent from null receives the explicit clear signal.
+	// Only meaningful on TypeBlock fields.
+	NullOnClear bool
+
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
 	Discriminator *OneOfDiscriminator
@@ -1912,6 +1919,11 @@ func buildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec, ctx
 			setAtJSONPath(result, f.effectiveJSONPath(), ints)
 
 		case TypeBlock:
+			rawVal := data[f.HCLKey]
+			if rawVal == nil && f.NullOnClear {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			child := getBlockFromMap(data, f.HCLKey)
 			if child == nil {
 				continue
