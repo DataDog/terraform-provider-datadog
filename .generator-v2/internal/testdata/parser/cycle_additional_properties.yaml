@@ -1,0 +1,13 @@
+# Dict is a map whose values are Dict — a $ref cycle through
+# additionalProperties. Exercises the map edge of the walk.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Dict:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/Dict'
