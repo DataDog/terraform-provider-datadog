@@ -16,9 +16,9 @@ type globalFlags struct {
 
 func newRootCmd(version string, flags *globalFlags) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "tfgen",
-		Short:   "Datadog Terraform Provider Generator",
-		Version: version,
+		Use:          "tfgen",
+		Short:        "Datadog Terraform Provider Generator",
+		Version:      version,
 		SilenceUsage: true,
 	}
 
