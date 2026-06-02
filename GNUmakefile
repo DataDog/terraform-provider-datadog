@@ -11,6 +11,7 @@ DEV_TFRC=$(HOME)/.terraform.d/dev/datadog.tfrc
 ZORKIAN_VERSION?=master
 API_CLIENT_VERSION?=master
 LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
+GO?=go
 
 default: build
 
@@ -95,6 +96,16 @@ test-compile: get-test-deps
 		exit 1; \
 	fi
 	gotestsum --format testname -- -c $(TEST) $(TESTARGS)
+	
+# Build the tfgen binary into bin/tfgen (generator lives in its own module under .generator-v2)
+tfgen-build:
+	cd .generator-v2 && $(GO) build -o $(CURDIR)/bin/tfgen ./cmd/tfgen
+	@echo "Built tfgen -> bin/tfgen"
+
+# Run the tfgen module's unit tests
+tfgen-test:
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/...
+	@echo "tfgen tests passed"
 
 update-go-client:
 	echo "Updating the Zorkian client to ${ZORKIAN_VERSION} and the API Client to ${API_CLIENT_VERSION}"
@@ -130,4 +141,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build dev-build dev-clean check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile get-test-deps license-check sweep
+.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile get-test-deps license-check sweep
