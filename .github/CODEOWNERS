@@ -75,6 +75,7 @@ datadog/**/*datadog_integration_aws*             @DataDog/aws-integrations
 datadog/**/*datadog_integration_azure*           @DataDog/azure-integrations
 datadog/**/*datadog_integration_cloudflare*      @DataDog/saas-integrations
 datadog/**/*datadog_integration_confluent*       @DataDog/saas-integrations
+datadog/**/*datadog_integration_databricks*      @DataDog/saas-integrations
 datadog/**/*datadog_integration_fastly*          @DataDog/saas-integrations
 datadog/**/*datadog_integration_gcp*             @DataDog/gcp-integrations
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/chat-integrations
@@ -87,6 +88,9 @@ datadog/**/*datadog_restriction_policy*          @DataDog/aaa-granular-access
 datadog/**/*datadog_logs_restriction_query*      @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*      @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*             @DataDog/team-aaa
+datadog/**/*datadog_service_access_token*        @DataDog/credential-management
+docs/resources/service_access_token.md           @DataDog/credential-management
+examples/resources/datadog_service_access_token/ @DataDog/credential-management
 datadog/**/*datadog_software_catalog*            @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics*                  @DataDog/synthetics-orchestrating-managing
@@ -119,6 +123,8 @@ examples/**/datadog_org_group*/**                @DataDog/org-management
 templates/**/org_group*.md.tmpl                  @DataDog/org-management
 
 # Team-specific
-docs/resources/observability_pipeline.md         @DataDog/observability-pipelines
-scripts/*cloud-cost-import-existing-resources*   @DataDog/cloud-cost-management
-docs/resources/secure_embed_dashboard.md         @DataDog/api-reliability @DataDog/reporting-and-sharing
+docs/resources/observability_pipeline.md              @DataDog/observability-pipelines
+scripts/*cloud-cost-import-existing-resources*        @DataDog/cloud-cost-management
+docs/resources/secure_embed_dashboard.md              @DataDog/api-reliability @DataDog/reporting-and-sharing
+docs/resources/on_call_team_routing_rules.md          @DataDog/on-call
+examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call

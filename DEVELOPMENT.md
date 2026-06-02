@@ -25,6 +25,22 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 When adding secret/sensitive attributes to Framework resources, use the write-only helpers in [`datadog/internal/fwutils`](./datadog/internal/fwutils/README.md#write-only-secret-helpers-writeonly_helpersgo). These generate the three-attribute pattern (`<attr>`, `<attr>_wo`, `<attr>_wo_version`) required by Terraform 1.11+ write-only support while maintaining backwards compatibility.
 
+## Env-gated resources
+
+Some resources are gated behind environment variables so they are only registered when explicitly enabled. This is used to ship resources to a closed set of customers (private beta) without publishing them in the Terraform Registry.
+
+Currently gated resources:
+
+| Resource | Env var | Default |
+|---|---|---|
+| `datadog_integration_databricks_account` | `DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED` | `false` |
+
+When working locally:
+
+- Set `DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED=true` to make the resource visible to `terraform plan`/`apply` and to local acceptance tests.
+- The CI test job exports this variable, so cassette replay always sees the resource registered.
+- If you run `make docs` with the env var set, `tfplugindocs` will regenerate `docs/resources/integration_databricks_account.md` and the example under `examples/resources/datadog_integration_databricks_account/`. Revert those files before pushing — gated resources are intentionally excluded from public registry documentation.
+
 ## Linting
 
 This project uses [golangci-lint](https://golangci-lint.run/) (v2) for static analysis. Install it locally:

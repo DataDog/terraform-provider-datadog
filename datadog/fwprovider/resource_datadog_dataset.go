@@ -130,6 +130,7 @@ func (r *DatasetResource) Read(ctx context.Context, request resource.ReadRequest
 	}
 
 	r.updateState(ctx, &data, &resp)
+	response.Diagnostics.Append(response.State.Set(ctx, &data)...)
 }
 
 func (r *DatasetResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {

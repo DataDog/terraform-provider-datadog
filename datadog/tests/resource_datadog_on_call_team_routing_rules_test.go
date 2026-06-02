@@ -46,6 +46,16 @@ func TestAccOnCallTeamRoutingRulesCreateAndUpdate(t *testing.T) {
 					testAccCheckDatadogOnCallTeamRoutingRulesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_on_call_team_routing_rules.team_rules_test", "rule.0.query", "tags.service:test"),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_team_routing_rules.team_rules_test", "rule.1.query", "tags.service:payment"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_on_call_team_routing_rules.team_rules_test", "rule.1.action.0.escalation_policy.policy_id"),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_team_routing_rules.team_rules_test", "rule.1.action.0.escalation_policy.ack_timeout_minutes", "30"),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_team_routing_rules.team_rules_test", "rule.1.action.0.escalation_policy.urgency", "low"),
+					resource.TestCheckResourceAttr(
+						"datadog_on_call_team_routing_rules.team_rules_test", "rule.1.action.0.escalation_policy.support_hours.restriction.#", "5"),
 				),
 			},
 		},

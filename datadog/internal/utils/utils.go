@@ -621,6 +621,10 @@ func UseMonitorFrameworkProvider() bool {
 	return getEnv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "false") == "true"
 }
 
+func IsDatabricksIntegrationEnabled() bool {
+	return getEnv("DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED", "false") == "true"
+}
+
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
