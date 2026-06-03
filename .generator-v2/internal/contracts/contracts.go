@@ -14,7 +14,3 @@ import _ "embed"
 //
 //go:embed tracking-field.schema.json
 var TrackingFieldSchema []byte
-
-// TrackingFieldSchemaID is the schema's canonical $id — the URL it is
-// registered and compiled under by the validator.
-const TrackingFieldSchemaID = "https://datadog.github.io/terraform-provider-datadog/contracts/tracking-field.schema.json"

@@ -145,9 +145,6 @@ func TestCheckDuplicateArtifactNamesDeterministic(t *testing.T) {
 // uniqueness is scoped per artifact_kind. Terraform keeps resources and data
 // sources in separate namespaces, so a resource and a data source may share a
 // name; two artifacts of the SAME kind sharing a name is still a collision.
-//
-// NOTE: encodes the desired post-fix behavior — the "across kinds" case is red
-// against name-only keying until uniqueness keys on (kind, name).
 func TestCheckDuplicateArtifactNamesIsPerKind(t *testing.T) {
 	t.Run("same name across kinds is allowed", func(t *testing.T) {
 		spec := &model.Spec{Operations: []*model.Operation{

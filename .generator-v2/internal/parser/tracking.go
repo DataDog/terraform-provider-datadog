@@ -17,8 +17,9 @@ import (
 // decodes by default. It can be overridden via WithTrackingFieldName (the
 // --tracking-field flag), which is reserved for generator-internal fixture
 // tests.
-
-// TODO: will have to be changed later once global cli flags are wired. Default value should be set there.
+//
+// TODO: once the global CLI flags are wired, the default should be set there
+// (on the --tracking-field flag) rather than here.
 const DefaultTrackingFieldName = "x-datadog-tf-generator"
 
 // compiledSchema compiles the embedded tracking-field schema exactly once for
@@ -31,11 +32,21 @@ var compiledSchema = sync.OnceValues(func() (*jsonschema.Schema, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parser: parsing embedded tracking-field schema: %w", err)
 	}
+	// Register and compile under the schema's own $id, so the JSON file is the
+	// single source of truth for that identifier.
+	obj, ok := doc.(map[string]any)
+	if !ok {
+		return nil, fmt.Errorf("parser: embedded tracking-field schema is not a JSON object")
+	}
+	id, ok := obj["$id"].(string)
+	if !ok || id == "" {
+		return nil, fmt.Errorf("parser: embedded tracking-field schema has no $id")
+	}
 	c := jsonschema.NewCompiler()
-	if err := c.AddResource(contracts.TrackingFieldSchemaID, doc); err != nil {
+	if err := c.AddResource(id, doc); err != nil {
 		return nil, fmt.Errorf("parser: registering tracking-field schema: %w", err)
 	}
-	sch, err := c.Compile(contracts.TrackingFieldSchemaID)
+	sch, err := c.Compile(id)
 	if err != nil {
 		return nil, fmt.Errorf("parser: compiling tracking-field schema: %w", err)
 	}

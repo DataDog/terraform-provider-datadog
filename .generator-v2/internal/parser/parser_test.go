@@ -189,10 +189,7 @@ func TestLoadSpecMalformedTrackingReturnsTypedError(t *testing.T) {
 
 // TestLoadSpecAllowsSameNameAcrossKinds is the LoadSpec-level counterpart to
 // Finding #1: a spec with a resource and a data source sharing one artifact_name
-// must load without a duplicate error, and both must decode with their kinds.
-//
-// NOTE: encodes the desired post-fix behavior — red until uniqueness keys on
-// (kind, name).
+// loads without a duplicate error, and both decode with their kinds.
 func TestLoadSpecAllowsSameNameAcrossKinds(t *testing.T) {
 	spec, err := LoadSpec(filepath.Join("../testdata/parser", "tracking_cross_kind_names.yaml"))
 	if err != nil {
