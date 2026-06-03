@@ -22,6 +22,13 @@ func trackedOp(path, method, operationId, artifactName string) *model.Operation 
 	}
 }
 
+// kindedOp is trackedOp with an explicit artifact kind, for cross-kind tests.
+func kindedOp(path, method, operationId, artifactName string, kind model.ArtifactKind) *model.Operation {
+	op := trackedOp(path, method, operationId, artifactName)
+	op.Tracking.ArtifactKind = kind
+	return op
+}
+
 func TestCheckDuplicateArtifactNamesUnique(t *testing.T) {
 	spec := &model.Spec{Operations: []*model.Operation{
 		trackedOp("/a", "GET", "GetA", "alpha"),
@@ -132,4 +139,41 @@ func TestCheckDuplicateArtifactNamesDeterministic(t *testing.T) {
 	if errA.Error() != errB.Error() {
 		t.Errorf("non-deterministic output:\nA:\n%s\nB:\n%s", errA.Error(), errB.Error())
 	}
+}
+
+// TestCheckDuplicateArtifactNamesIsPerKind pins Finding #1: artifact_name
+// uniqueness is scoped per artifact_kind. Terraform keeps resources and data
+// sources in separate namespaces, so a resource and a data source may share a
+// name; two artifacts of the SAME kind sharing a name is still a collision.
+//
+// NOTE: encodes the desired post-fix behavior — the "across kinds" case is red
+// against name-only keying until uniqueness keys on (kind, name).
+func TestCheckDuplicateArtifactNamesIsPerKind(t *testing.T) {
+	t.Run("same name across kinds is allowed", func(t *testing.T) {
+		spec := &model.Spec{Operations: []*model.Operation{
+			kindedOp("/teams", "POST", "CreateTeam", "team", model.ArtifactKindResource),
+			kindedOp("/teams/{id}", "GET", "GetTeam", "team", model.ArtifactKindDataSource),
+		}}
+		if err := CheckDuplicateArtifactNames(spec); err != nil {
+			t.Fatalf("a resource and a data source named %q must be allowed, got: %v", "team", err)
+		}
+	})
+
+	t.Run("same name same kind collides", func(t *testing.T) {
+		spec := &model.Spec{Operations: []*model.Operation{
+			kindedOp("/teams", "GET", "ListTeams", "team", model.ArtifactKindDataSource),
+			kindedOp("/teams/{id}", "GET", "GetTeam", "team", model.ArtifactKindDataSource),
+		}}
+		err := CheckDuplicateArtifactNames(spec)
+		var dup *DuplicateArtifactNameError
+		if !errors.As(err, &dup) {
+			t.Fatalf("two data_sources named %q must collide, got: %v", "team", err)
+		}
+		// The message must disambiguate by kind — not just say "team".
+		for _, want := range []string{"ListTeams", "GetTeam", string(model.ArtifactKindDataSource)} {
+			if !strings.Contains(dup.Error(), want) {
+				t.Errorf("collision message missing %q:\n%s", want, dup.Error())
+			}
+		}
+	})
 }

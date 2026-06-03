@@ -186,3 +186,26 @@ func TestLoadSpecMalformedTrackingReturnsTypedError(t *testing.T) {
 		t.Errorf("TrackingError.Path = %q, want %q", te.Path, "/widgets")
 	}
 }
+
+// TestLoadSpecAllowsSameNameAcrossKinds is the LoadSpec-level counterpart to
+// Finding #1: a spec with a resource and a data source sharing one artifact_name
+// must load without a duplicate error, and both must decode with their kinds.
+//
+// NOTE: encodes the desired post-fix behavior — red until uniqueness keys on
+// (kind, name).
+func TestLoadSpecAllowsSameNameAcrossKinds(t *testing.T) {
+	spec, err := LoadSpec(filepath.Join("../testdata/parser", "tracking_cross_kind_names.yaml"))
+	if err != nil {
+		t.Fatalf("a resource and data source sharing a name must load without error, got: %v", err)
+	}
+	byID := make(map[string]*model.Operation, len(spec.Operations))
+	for _, op := range spec.Operations {
+		byID[op.OperationId] = op
+	}
+	if r := byID["CreateTeam"]; r == nil || r.Tracking == nil || r.Tracking.ArtifactKind != model.ArtifactKindResource {
+		t.Errorf("CreateTeam resource tracking = %+v", r)
+	}
+	if d := byID["GetTeam"]; d == nil || d.Tracking == nil || d.Tracking.ArtifactKind != model.ArtifactKindDataSource {
+		t.Errorf("GetTeam data_source tracking = %+v", d)
+	}
+}

@@ -17,7 +17,7 @@
         "pattern": "^[a-z][a-z0-9_]*$",
         "minLength": 1,
         "maxLength": 64,
-        "description": "Terraform-facing artifact name without the 'datadog_' prefix. Must be lowercase snake_case. Must be unique across the entire spec."
+        "description": "Terraform-facing artifact name without the 'datadog_' prefix. Must be lowercase snake_case. Must be unique per artifact_kind — resources and data sources are separate Terraform namespaces, so a resource and a data source may share a name."
       },
       "group": {
         "type": "object",
