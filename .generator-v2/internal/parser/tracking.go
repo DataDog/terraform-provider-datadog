@@ -82,12 +82,25 @@ func DecodeTracking(op *v3.Operation, path, method, extensionName string) (*mode
 		return &TrackingError{Path: path, Method: method, OperationId: op.OperationId, Cause: cause}
 	}
 
-	// Decode once into a generic value to validate against the JSON schema —
-	// the single source of truth for the extension's shape.
+	// Decode once into a generic value. It must stay `any`: the validator works
+	// on JSON-native values (map[string]any/…), not Go structs, and the model
+	// declares no yaml tags — so decoding straight into the struct would both
+	// fail validation and silently drop the snake_case keys.
 	var raw any
 	if err := node.Decode(&raw); err != nil {
 		return nil, wrap(fmt.Errorf("decoding extension node: %w", err))
 	}
+
+	// Honor an explicit skip:true before validating: it is a documented opt-out
+	// equivalent to removing the extension, so a skipped operation is out of
+	// scope and must not surface shape errors. Only a real boolean true counts;
+	// any other value falls through to validation (a non-bool skip is invalid).
+	if m, ok := raw.(map[string]any); ok {
+		if skip, _ := m["skip"].(bool); skip {
+			return nil, nil
+		}
+	}
+
 	sch, err := compiledSchema()
 	if err != nil {
 		return nil, err // committed-contract bug, not author-attributable
@@ -107,9 +120,6 @@ func DecodeTracking(op *v3.Operation, path, method, extensionName string) (*mode
 	var meta model.TrackingFieldMetadata
 	if err := json.Unmarshal(jsonBytes, &meta); err != nil {
 		return nil, wrap(fmt.Errorf("decoding extension into metadata: %w", err))
-	}
-	if meta.Skip {
-		return nil, nil
 	}
 	if meta.IdStrategy == "" {
 		meta.IdStrategy = model.IdStrategyDataID // schema default "data.id"

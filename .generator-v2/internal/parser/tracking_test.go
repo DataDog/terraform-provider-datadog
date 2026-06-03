@@ -61,6 +61,16 @@ func TestDecodeTrackingOutOfScopeReturnsNil(t *testing.T) {
 			t.Fatalf("got (%v, %v), want (nil, nil)", got, err)
 		}
 	})
+	// skip:true must short-circuit BEFORE validation — a skipped operation is
+	// out of scope, so even an otherwise-malformed extension produces no error.
+	t.Run("skip true bypasses validation", func(t *testing.T) {
+		op := opWithExt(t, "Op", DefaultTrackingFieldName,
+			"artifact_kind: widget\nbogus: 1\nskip: true\n") // bad kind, unknown prop, missing name
+		got, err := DecodeTracking(op, trackPath, trackMethod, DefaultTrackingFieldName)
+		if got != nil || err != nil {
+			t.Fatalf("got (%v, %v), want (nil, nil) — skip must bypass validation", got, err)
+		}
+	})
 }
 
 func TestDecodeTrackingValidResource(t *testing.T) {
@@ -114,39 +124,79 @@ group:
 	}
 }
 
-func TestDecodeTrackingDefaultsIdStrategy(t *testing.T) {
-	op := opWithExt(t, "GetTeam", DefaultTrackingFieldName, `
-artifact_kind: data_source
-artifact_name: team
-group:
-  read: GetTeam
-`)
-	got, err := DecodeTracking(op, trackPath, trackMethod, DefaultTrackingFieldName)
-	if err != nil {
-		t.Fatalf("DecodeTracking: %v", err)
-	}
-	if got.IdStrategy != model.IdStrategyDataID {
-		t.Errorf("IdStrategy = %q, want applied default %q", got.IdStrategy, model.IdStrategyDataID)
-	}
-}
+// TestDecodeTrackingOptionalFields covers each non-required field both present
+// and omitted. The required pair (artifact_kind + artifact_name) alone is a
+// schema-valid extension, so it is the base every case builds on.
+func TestDecodeTrackingOptionalFields(t *testing.T) {
+	const required = "artifact_kind: data_source\nartifact_name: team\n"
 
-// TestDecodeTrackingSensitiveAccepted proves additionalProperties:false does
-// not reject the declared optional sensitive property.
-func TestDecodeTrackingSensitiveAccepted(t *testing.T) {
-	op := opWithExt(t, "GetSecret", DefaultTrackingFieldName, `
-artifact_kind: data_source
-artifact_name: secret
-group:
-  read: GetSecret
-sensitive: true
-`)
-	got, err := DecodeTracking(op, trackPath, trackMethod, DefaultTrackingFieldName)
-	if err != nil {
-		t.Fatalf("DecodeTracking: %v", err)
+	decode := func(t *testing.T, body string) *model.TrackingFieldMetadata {
+		t.Helper()
+		op := opWithExt(t, "Op", DefaultTrackingFieldName, body)
+		got, err := DecodeTracking(op, trackPath, trackMethod, DefaultTrackingFieldName)
+		if err != nil {
+			t.Fatalf("DecodeTracking: %v", err)
+		}
+		if got == nil {
+			t.Fatal("expected metadata, got nil")
+		}
+		return got
 	}
-	if got == nil || !got.Sensitive {
-		t.Fatalf("got %+v, want Sensitive=true", got)
-	}
+
+	// All four optional fields omitted: group nil, id_strategy defaulted,
+	// sensitive/skip false. Also confirms a groupless extension is schema-valid.
+	t.Run("all omitted", func(t *testing.T) {
+		got := decode(t, required)
+		if got.Group != nil {
+			t.Errorf("Group = %+v, want nil when omitted", got.Group)
+		}
+		if got.IdStrategy != model.IdStrategyDataID {
+			t.Errorf("IdStrategy = %q, want default %q", got.IdStrategy, model.IdStrategyDataID)
+		}
+		if got.Sensitive {
+			t.Error("Sensitive = true, want false when omitted")
+		}
+		if got.Skip {
+			t.Error("Skip = true, want false when omitted")
+		}
+	})
+
+	t.Run("group present", func(t *testing.T) {
+		got := decode(t, required+"group:\n  create: C\n  read: R\n  update: U\n  delete: D\n")
+		if got.Group == nil {
+			t.Fatal("Group = nil, want populated")
+		}
+		if got.Group.Create != "C" || got.Group.Read != "R" || got.Group.Update != "U" || got.Group.Delete != "D" {
+			t.Errorf("Group = %+v, want C/R/U/D", got.Group)
+		}
+	})
+
+	t.Run("id_strategy present", func(t *testing.T) {
+		got := decode(t, required+"id_strategy: data.attributes.uuid\n")
+		if got.IdStrategy != model.IdStrategyDataAttributesUID {
+			t.Errorf("IdStrategy = %q, want %q", got.IdStrategy, model.IdStrategyDataAttributesUID)
+		}
+	})
+
+	// sensitive present also proves additionalProperties:false does not reject
+	// the declared optional property.
+	t.Run("sensitive present", func(t *testing.T) {
+		got := decode(t, required+"sensitive: true\n")
+		if !got.Sensitive {
+			t.Error("Sensitive = false, want true")
+		}
+	})
+
+	// skip:true is the one optional field whose presence changes control flow —
+	// it short-circuits to (nil, nil) before validation (covered in
+	// TestDecodeTrackingOutOfScopeReturnsNil). An explicit skip:false decodes
+	// normally.
+	t.Run("skip false present", func(t *testing.T) {
+		got := decode(t, required+"skip: false\n")
+		if got.Skip {
+			t.Error("Skip = true, want false")
+		}
+	})
 }
 
 func TestDecodeTrackingMalformedReturnsTrackingError(t *testing.T) {
