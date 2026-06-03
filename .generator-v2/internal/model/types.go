@@ -66,6 +66,8 @@ type Spec struct {
 	Operations []*Operation
 	// Components is the shared component set, retained for lazy $ref resolution.
 	Components *v3.Components
+	// Hash is the lowercase hex SHA-256 of the spec source
+	Hash string
 }
 
 // Operation is a single OpenAPI operation, tagged with whether it is in scope
