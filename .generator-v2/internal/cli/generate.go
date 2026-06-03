@@ -12,7 +12,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 		Use:   "generate",
 		Short: "Generate Terraform artifacts from the OpenAPI spec",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// TODO: implement in T033
+			// TODO: implement
 			return nil
 		},
 	}
