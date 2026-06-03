@@ -123,4 +123,8 @@ func TestLoadSpecMaxDepthFailsFastNotAsCycle(t *testing.T) {
 	if errors.As(err, &cycleErr) {
 		t.Errorf("deep-but-acyclic refs must not be reported as a cycle: %v", err)
 	}
+	var depthErr *MaxDepthError
+	if !errors.As(err, &depthErr) {
+		t.Errorf("expected a typed *MaxDepthError, got %T: %v", err, err)
+	}
 }

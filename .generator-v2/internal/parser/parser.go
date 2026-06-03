@@ -12,7 +12,6 @@ import (
 )
 
 // DefaultMaxDepth bounds recursive $ref expansion when no override is supplied.
-// It matches the --max-depth CLI default documented in contracts/cli.md.
 const DefaultMaxDepth = 8
 
 // Option configures LoadSpec.

@@ -1,9 +1,9 @@
 package parser
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/pb33f/libopenapi"
@@ -81,8 +81,12 @@ func TestCycleWalkerDepthBoundError(t *testing.T) {
 	if err == nil {
 		t.Fatal("enter b should exceed --max-depth 1")
 	}
-	if !strings.Contains(err.Error(), "max-depth") {
-		t.Errorf("error should mention max-depth: %v", err)
+	var depthErr *MaxDepthError
+	if !errors.As(err, &depthErr) {
+		t.Fatalf("error %v (%T) is not a *MaxDepthError", err, err)
+	}
+	if depthErr.MaxDepth != 1 || depthErr.Ref != "b" {
+		t.Errorf("MaxDepthError = %+v, want MaxDepth=1 Ref=b", depthErr)
 	}
 	if w.onStack["b"] || len(w.stack) != 1 {
 		t.Errorf("a failed enter must not push: stack=%v", w.stack)
@@ -305,6 +309,46 @@ func TestDetectComponentRefCyclesViaAdditionalProperties(t *testing.T) {
 	}
 	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Dict" {
 		t.Fatalf("got %+v, want a single Dict cycle (additionalProperties edge)", cycles)
+	}
+}
+
+func TestDetectComponentRefCyclesViaOneOf(t *testing.T) {
+	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_oneof.yaml"), 16)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Tree" {
+		t.Fatalf("got %+v, want a single Tree cycle (oneOf edge)", cycles)
+	}
+}
+
+func TestDetectComponentRefCyclesViaAnyOf(t *testing.T) {
+	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_anyof.yaml"), 16)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Graph" {
+		t.Fatalf("got %+v, want a single Graph cycle (anyOf edge)", cycles)
+	}
+}
+
+func TestDetectComponentRefCyclesViaNot(t *testing.T) {
+	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_not.yaml"), 16)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Excluded" {
+		t.Fatalf("got %+v, want a single Excluded cycle (not edge)", cycles)
+	}
+}
+
+func TestDetectComponentRefCyclesViaPrefixItems(t *testing.T) {
+	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_prefixitems.yaml"), 16)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Tuple" {
+		t.Fatalf("got %+v, want a single Tuple cycle (prefixItems edge)", cycles)
 	}
 }
 

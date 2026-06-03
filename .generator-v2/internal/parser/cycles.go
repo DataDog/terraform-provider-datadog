@@ -35,6 +35,22 @@ func (e *RefCycleError) Error() string {
 	return msg
 }
 
+// MaxDepthError reports that $ref expansion hit the --max-depth bound before a
+// path terminated. Ref is the $ref that would have pushed past the limit, Chain
+// is the path of $refs leading to it, and MaxDepth is the bound that was hit. It
+// is returned instead of a *RefCycleError so callers can tell "too deep" from a
+// genuine cycle via errors.As.
+type MaxDepthError struct {
+	Ref      string
+	Chain    []string
+	MaxDepth int
+}
+
+func (e *MaxDepthError) Error() string {
+	return fmt.Sprintf("parser: $ref expansion exceeded --max-depth %d at %q (chain: %s)",
+		e.MaxDepth, e.Ref, strings.Join(e.Chain, " -> "))
+}
+
 // DetectRefCycles walks the schema graph rooted at root. It follows $ref
 // references and every structural child (properties, items, prefixItems,
 // allOf/oneOf/anyOf, not, additionalProperties) and reports each distinct $ref
@@ -143,9 +159,11 @@ func (w *cycleWalker) enter(ref string, edge bool) (bool, error) {
 		return false, nil
 	}
 	if edge && w.maxDepth > 0 && w.depth >= w.maxDepth {
-		chain := append(append([]string{}, w.stack...), ref)
-		return false, fmt.Errorf("parser: $ref expansion exceeded --max-depth %d at %q (chain: %s)",
-			w.maxDepth, ref, strings.Join(chain, " -> "))
+		return false, &MaxDepthError{
+			Ref:      ref,
+			Chain:    append(append([]string{}, w.stack...), ref),
+			MaxDepth: w.maxDepth,
+		}
 	}
 	w.stack = append(w.stack, ref)
 	w.onStack[ref] = true
