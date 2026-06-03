@@ -11,7 +11,7 @@ func newVerifyCmd(flags *globalFlags) *cobra.Command {
 		Use:   "verify",
 		Short: "Run post-generation checks without writing files",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			// TODO: implement in T065
+			// TODO: implement
 			return nil
 		},
 	}
