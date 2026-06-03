@@ -105,3 +105,14 @@ func TestAccDatadogDashboardV2Change_import(t *testing.T) {
 	config, name := dashboardV2Config(datadogDashboardChangeConfigImport, "datadog_dashboard.change_dashboard")
 	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardChange_import", config, name)
 }
+
+// DefaultTimeframe — dashboard-level live/fixed timeframe block
+func TestAccDatadogDashboardV2DefaultTimeframe(t *testing.T) {
+	config, name := dashboardV2Config(datadogDashboardDefaultTimeframeConfig, "datadog_dashboard.default_timeframe_dashboard")
+	testAccDatadogDashboardV2WidgetUtil(t, "TestAccDatadogDashboardDefaultTimeframe", config, name, datadogDashboardDefaultTimeframeAsserts)
+}
+
+func TestAccDatadogDashboardV2DefaultTimeframe_import(t *testing.T) {
+	config, name := dashboardV2Config(datadogDashboardDefaultTimeframeConfig, "datadog_dashboard.default_timeframe_dashboard")
+	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardDefaultTimeframe_import", config, name)
+}
