@@ -1,3 +1,21 @@
+## 4.12.0 (June 3, 2026)
+
+### BUGFIXES
+* [datadog_cost_budget] Add validation for parent/child tag filter pairing by @kemal-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3813
+* [datadog_dataset] Fix Read not writing state after import by @drewtempelmeyer in https://github.com/DataDog/terraform-provider-datadog/pull/3776
+### FEATURES
+* [datadog_service_access_token] CRED-2421 Add service_access_token resource for managing SATs by @tausman in https://github.com/DataDog/terraform-provider-datadog/pull/3761
+* [datadog_integration_databricks_account] Add Databricks Resource under env var by @guttymora in https://github.com/DataDog/terraform-provider-datadog/pull/3848
+* [datadog_observability_pipelines] Add splunk_hec_metrics destination by @petere-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3822
+
+## New Contributors
+* @kemal-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3813
+* @alychoi-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3788
+* @drewtempelmeyer made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3776
+* @tausman made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3761
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.11.0...v4.12.0
+
 ## 4.11.0 (June 1, 2026)
 
 ### IMPROVEMENTS
