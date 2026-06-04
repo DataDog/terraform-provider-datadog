@@ -104,7 +104,7 @@ tfgen-build:
 
 # Run the tfgen module's unit tests
 tfgen-test:
-	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/...
+	cd .generator-v2 && $(GO) test ./internal/... ./cmd/tfgen/... -race -cover
 	@echo "tfgen tests passed"
 
 update-go-client:
