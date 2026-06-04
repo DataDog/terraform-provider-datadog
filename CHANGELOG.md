@@ -40,30 +40,6 @@
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.10.0...v4.11.0
 
-## 4.11.0 (May 29, 2026)
-
-### IMPROVEMENTS
-* [datadog_org_group_policy] Rename enforcement tiers to OVERRIDE_ALLOWED / GROUP_MANAGED by @k-phan in https://github.com/DataDog/terraform-provider-datadog/pull/3823
-### FEATURES
-* [datadog_synthetics_test] Add MCP step subtype for Synthetics multistep API tests by @RemiGonin in https://github.com/DataDog/terraform-provider-datadog/pull/3808
-* [datadog_security_monitoring_rule] Add baseline_user_locations_duration to impossible travel rule options by @Nicolnegg in https://github.com/DataDog/terraform-provider-datadog/pull/3809
-* [datadog_monitor] Add support for metrics augmented queries by @kevinpombo-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3770
-* [datadog_integration_aws_account_ccm_config] Add Terraform resource for AWS CCM CUR2.0 config by @dhan0779 in https://github.com/DataDog/terraform-provider-datadog/pull/3426
-* [datadog_observability_pipeline]  Add Valid Tokens to HTTP and Splunk Source by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3816
-* [datadog_observability_pipeline] add tls.verify_certificate field to multiple server based sources by @tessneau in https://github.com/DataDog/terraform-provider-datadog/pull/3805
-* [datadog_observability_pipeline] Adding support for more buffer configurations in additional destinations by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3821
-* [datadog_provider] Add native PAT (Bearer) auth support by @luczhou in https://github.com/DataDog/terraform-provider-datadog/pull/3757
-* [datadog_monitor] Add monitor dynamic threshold support (critical_query / critical_recovery_query) by @jasminezh1 in https://github.com/DataDog/terraform-provider-datadog/pull/3826
-
-## New Contributors
-* @RemiGonin made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3808
-* @Nicolnegg made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3809
-* @jaluna0 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3812
-* @luczhou made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3757
-* @jasminezh1 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3826
-
-**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.10.0...v4.11.0
-
 ## 4.10.0 (May 20, 2026)
 
 ### BUGFIXES
