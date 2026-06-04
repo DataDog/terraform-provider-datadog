@@ -11,7 +11,8 @@ type TrackingFieldMetadata struct {
 	// Required.
 	ArtifactKind ArtifactKind `json:"artifact_kind"`
 	// ArtifactName is the Terraform-facing name without the datadog_ prefix,
-	// lowercase snake_case, unique across the spec. Required.
+	// lowercase snake_case, unique per artifact_kind (resources and data
+	// sources are separate Terraform namespaces). Required.
 	ArtifactName string `json:"artifact_name"`
 	// Group declares which operations form the C/R/U/D quadruple. Required for
 	// resources; for data sources only Read is meaningful.
