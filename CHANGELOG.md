@@ -1,3 +1,15 @@
+## 4.12.1 (June 4, 2026)
+
+### BUGFIXES
+* [datadog_on_call_team_routing_rules] remove ValidateConfig by @bndbsh in https://github.com/DataDog/terraform-provider-datadog/pull/3864
+### IMPROVEMENTS
+* [datadog_logs_index] Add sample_attribute support to exclusion filters by @tpeon-adobe in https://github.com/DataDog/terraform-provider-datadog/pull/3843
+
+## New Contributors
+* @tpeon-adobe made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3843
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.12.0...v4.12.1
+
 ## 4.12.0 (June 3, 2026)
 
 ### BUGFIXES
