@@ -6,7 +6,9 @@ toolchain go1.26.1
 
 require (
 	github.com/pb33f/libopenapi v0.37.2
+	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
 	github.com/spf13/cobra v1.10.2
+	go.yaml.in/yaml/v4 v4.0.0-rc.4
 )
 
 require (
@@ -16,6 +18,6 @@ require (
 	github.com/pb33f/jsonpath v0.8.2 // indirect
 	github.com/pb33f/ordered-map/v2 v2.3.1 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
-	go.yaml.in/yaml/v4 v4.0.0-rc.4 // indirect
 	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 )

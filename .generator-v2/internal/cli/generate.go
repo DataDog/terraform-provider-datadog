@@ -14,7 +14,9 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 		Use:   "generate",
 		Short: "Generate Terraform artifacts from the OpenAPI spec",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			spec, err := parser.LoadSpec(flags.spec, parser.WithMaxDepth(flags.maxDepth))
+			spec, err := parser.LoadSpec(flags.spec,
+				parser.WithMaxDepth(flags.maxDepth),
+				parser.WithTrackingFieldName(flags.trackingField))
 			if err != nil {
 				return err
 			}
