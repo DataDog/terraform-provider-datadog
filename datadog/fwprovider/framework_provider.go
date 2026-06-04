@@ -52,7 +52,6 @@ var Resources = []func() resource.Resource{
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
-	NewIntegrationDatabricksAccountResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpResource,
@@ -68,6 +67,7 @@ var Resources = []func() resource.Resource{
 	NewRumRetentionFiltersOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
+	NewServiceAccessTokenResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
 	NewSyntheticsGlobalVariableResource,
@@ -211,6 +211,7 @@ type FrameworkProvider struct {
 type ProviderSchema struct {
 	ApiKey                           types.String `tfsdk:"api_key"`
 	AppKey                           types.String `tfsdk:"app_key"`
+	BearerToken                      types.String `tfsdk:"bearer_token"`
 	ApiUrl                           types.String `tfsdk:"api_url"`
 	Validate                         types.String `tfsdk:"validate"`
 	CloudProviderType                types.String `tfsdk:"cloud_provider_type"`
@@ -249,6 +250,11 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&monitorResource) })
 	}
 
+	if utils.IsDatabricksIntegrationEnabled() {
+		databricksResource := NewIntegrationDatabricksAccountResource()
+		wrappedResources = append(wrappedResources, func() resource.Resource { return NewFrameworkResourceWrapper(&databricksResource) })
+	}
+
 	return wrappedResources
 }
 
@@ -281,6 +287,11 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Sensitive:   true,
 				Description: "(Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.",
+			},
+			"bearer_token": schema.StringAttribute{
+				Optional:    true,
+				Sensitive:   true,
+				Description: "Datadog credential sent in the `Authorization: Bearer <token>` header. Accepts personal access tokens (`ddpat_*`) and service-account access tokens (`ddsat_*`). When set, the provider authenticates with `Authorization: Bearer <token>` instead of the `DD-API-KEY` / `DD-APPLICATION-KEY` headers. This can also be set via the `DD_BEARER_TOKEN` or `DATADOG_BEARER_TOKEN` environment variable.",
 			},
 			"api_url": schema.StringAttribute{
 				Optional:    true,
@@ -394,6 +405,13 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		appKey, err := utils.GetMultiEnvVar(utils.APPKeyEnvVars[:]...)
 		if err == nil {
 			config.AppKey = types.StringValue(appKey)
+		}
+	}
+
+	if config.BearerToken.IsNull() {
+		bearerToken, err := utils.GetMultiEnvVar(utils.BearerTokenEnvVars...)
+		if err == nil {
+			config.BearerToken = types.StringValue(bearerToken)
 		}
 	}
 
@@ -536,10 +554,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
+	bearerToken := config.BearerToken.ValueString()
 
 	if validate {
-		if cloudProviderType == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
-			diags.AddError("api_key and app_key or orgUUID must be set unless validate = false", "")
+		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
+			diags.AddError("api_key and app_key, bearer_token, or orgUUID must be set unless validate = false", "")
 			return diags
 		} else if cloudProviderType != "" && orgUUID == "" {
 			diags.AddError("orgUUID must be set when using cloud provider auth unless validate = false", "")
@@ -587,6 +606,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			diags.AddError("cloud_provider_type must be set to a valid value unless validate = false", "")
 			return diags
 		}
+	} else if bearerToken != "" {
+		// bearer_token takes precedence over api_key/app_key when both are set:
+		// a configured bearer token is an explicit signal to use Bearer auth.
+		auth = context.WithValue(auth, datadog.ContextAccessToken, bearerToken)
 	} else if config.ApiKey.ValueString() != "" || config.AppKey.ValueString() != "" {
 		auth = context.WithValue(
 			auth,

@@ -55,6 +55,7 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.name", "Filter coredns logs"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.is_enabled", "true"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.filter.0.query", "app:coredns"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.filter.0.sample_attribute", "@request_id"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.0.filter.0.sample_rate", "0.97"),
 				),
 			},
@@ -163,6 +164,7 @@ resource "datadog_logs_index" "sample_index" {
     is_enabled           = true
     filter {
       query              = "app:coredns"
+      sample_attribute   = "@request_id"
       sample_rate        = 0.97
     }
   }

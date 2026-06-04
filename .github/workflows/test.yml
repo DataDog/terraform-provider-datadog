@@ -67,6 +67,11 @@ jobs:
         run: make vet
       - name: License Check
         run: make license-check
+      - name: Setup terraform CLI
+        uses: hashicorp/setup-terraform@633666f66e0061ca3b725c73b2ec20cd13a8fdd1
+        with:
+          terraform_version: "1.13.1"
+          terraform_wrapper: false
       - name: Check Docs Are Up To Date
         run: make check-docs
 
@@ -108,7 +113,8 @@ jobs:
         env:
           RECORD: false
           TESTARGS: ${{ steps.shard.outputs.test_args }}
-  
+          DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED: "true"
+
   test-tofu:
     strategy:
       fail-fast: false
@@ -147,6 +153,7 @@ jobs:
         env:
           RECORD: false
           TESTARGS: ${{ steps.shard.outputs.test_args }}
+          DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED: "true"
 
   # Final job for branch protection rules - depends on all other jobs
   all-checks:

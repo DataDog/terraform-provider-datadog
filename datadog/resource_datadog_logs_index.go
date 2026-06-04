@@ -137,6 +137,11 @@ var exclusionFilterSchema = map[string]*schema.Schema{
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"sample_attribute": {
+					Description: "The log attribute used as the sampling key. When present, logs sharing the same value are excluded or kept together at the configured sample rate (a single attribute path, e.g. `@lambda.request_id`).",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"sample_rate": {
 					Description: "The fraction of logs excluded by the exclusion filter, when active.",
 					Type:        schema.TypeFloat,
@@ -416,6 +421,9 @@ func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) *datadogV1.Lo
 		if tfQuery, exist := tfFilter["query"].(string); exist {
 			ddFilter.SetQuery(tfQuery)
 		}
+		if tfSampleAttribute, exist := tfFilter["sample_attribute"].(string); exist && tfSampleAttribute != "" {
+			ddFilter.SetSampleAttribute(tfSampleAttribute)
+		}
 		if tfSampleRate, exist := tfFilter["sample_rate"].(float64); exist {
 			ddFilter.SetSampleRate(tfSampleRate)
 		}
@@ -436,8 +444,9 @@ func buildTerraformExclusionFilter(ddEFilter datadogV1.LogsExclusion) *map[strin
 	tfEFilter := make(map[string]interface{})
 	ddFilter := ddEFilter.GetFilter()
 	tfFilter := map[string]interface{}{
-		"query":       ddFilter.GetQuery(),
-		"sample_rate": ddFilter.GetSampleRate(),
+		"query":            ddFilter.GetQuery(),
+		"sample_attribute": ddFilter.GetSampleAttribute(),
+		"sample_rate":      ddFilter.GetSampleRate(),
 	}
 	tfEFilter["filter"] = []map[string]interface{}{tfFilter}
 	tfEFilter["name"] = ddEFilter.GetName()

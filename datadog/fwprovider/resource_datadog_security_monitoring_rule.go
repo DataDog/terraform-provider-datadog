@@ -654,7 +654,7 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 						"keep_alive": schema.Int64Attribute{
 							Optional:    true,
 							Computed:    true,
-							Default:     int64default.StaticInt64(0),
+							Default:     int64default.StaticInt64(int64(datadogV2.SECURITYMONITORINGRULEKEEPALIVE_ONE_HOUR)),
 							Description: "Once a signal is generated, the signal will remain \"open\" if a case is matched at least once within this keep alive window (in seconds).",
 							Validators: []validator.Int64{
 								validators.NewEnumValidator[validator.Int64](datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue),

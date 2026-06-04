@@ -63,6 +63,7 @@ Read-Only:
 Read-Only:
 
 - `query` (String)
+- `sample_attribute` (String)
 - `sample_rate` (Number)
 
 

@@ -311,6 +311,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_sensitive_data_scanner_rule_test":                            "sensitive-data-scanner",
 	"tests/resource_datadog_service_account_application_key_test":                        "users",
 	"tests/resource_datadog_service_account_test":                                        "users",
+	"tests/resource_datadog_service_access_token_test":                                   "users",
 	"tests/resource_datadog_service_definition_yaml_test":                                "service-definition",
 	"tests/resource_datadog_service_level_objective_test":                                "service-level-objectives",
 	"tests/resource_datadog_slo_correction_test":                                         "slo_correction",
@@ -1247,6 +1248,134 @@ func TestProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 	// Verify DelegatedTokenConfig IS set (cloud auth takes precedence)
 	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
 		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is explicitly configured (cloud auth takes precedence)")
+	}
+}
+
+// TestProviderConfigure_BearerTokenOnly tests that Bearer auth works when only `bearer_token` is set.
+func TestProviderConfigure_BearerTokenOnly(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"bearer_token": "ddpat_test_token",
+		"api_url":      "https://api.datad0g.com",
+		"validate":     "false", // Skip validation since we don't have real creds
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with bearer_token only, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	// Bearer auth should be plumbed via ContextAccessToken on config.Auth.
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the bearer token, got %q (ok=%v)", got, ok)
+	}
+	// API key context should NOT be set when only bearer_token is provided.
+	if _, ok := config.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when only bearer_token is provided")
+	}
+	// DelegatedTokenConfig should NOT be set when only bearer_token is provided.
+	if config.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig != nil {
+		t.Error("DelegatedTokenConfig should NOT be set when using Bearer auth")
+	}
+}
+
+// TestProviderConfigure_BearerTokenEnvVar tests env-var fallback for bearer_token (DD_BEARER_TOKEN).
+func TestProviderConfigure_BearerTokenEnvVar(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Setenv("DD_BEARER_TOKEN", "ddpat_from_env")
+	defer os.Unsetenv("DD_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_url":  "https://api.datad0g.com",
+		"validate": "false",
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with bearer_token env var, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_from_env" {
+		t.Errorf("ContextAccessToken should be set from DD_BEARER_TOKEN, got %q (ok=%v)", got, ok)
+	}
+}
+
+// TestProviderConfigure_BearerTokenWinsOverAPIKey tests that bearer_token takes precedence over API keys
+// when both are configured: only the Bearer token is plumbed, no DD-API-KEY/DD-APPLICATION-KEY headers.
+func TestProviderConfigure_BearerTokenWinsOverAPIKey(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_key":      "test_api_key",
+		"app_key":      "test_app_key",
+		"bearer_token": "ddpat_test_token",
+		"api_url":      "https://api.datad0g.com",
+		"validate":     "false",
+	})
+
+	p := datadog.Provider()
+	result, diags := p.ConfigureContextFunc(context.Background(), d)
+
+	if diags.HasError() {
+		t.Errorf("providerConfigure should not error with bearer_token + API keys, got: %v", diags)
+	}
+	if result == nil {
+		t.Fatal("providerConfigure should return a result")
+	}
+
+	config := result.(*datadog.ProviderConfiguration)
+	if got, ok := config.Auth.Value(common.ContextAccessToken).(string); !ok || got != "ddpat_test_token" {
+		t.Errorf("ContextAccessToken should be set to the bearer token when both bearer_token and API keys are provided (bearer_token wins), got %q (ok=%v)", got, ok)
+	}
+	if _, ok := config.Auth.Value(common.ContextAPIKeys).(map[string]common.APIKey); ok {
+		t.Error("ContextAPIKeys should NOT be set when bearer_token is also provided (bearer_token takes precedence)")
+	}
+}
+
+// TestProviderConfigure_NoCredentialsErrors tests that configure errors with no credentials and validate=true.
+func TestProviderConfigure_NoCredentialsErrors(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("DD_BEARER_TOKEN")
+	os.Unsetenv("DATADOG_BEARER_TOKEN")
+
+	d := schema.TestResourceDataRaw(t, datadog.Provider().Schema, map[string]interface{}{
+		"api_url":  "https://api.datad0g.com",
+		"validate": "true",
+	})
+
+	p := datadog.Provider()
+	_, diags := p.ConfigureContextFunc(context.Background(), d)
+	if !diags.HasError() {
+		t.Error("providerConfigure should error when no credentials are provided and validate=true")
 	}
 }
 

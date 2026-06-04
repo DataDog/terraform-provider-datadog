@@ -142,6 +142,16 @@ func resourceDatadogMonitor() *schema.Resource {
 								ValidateFunc: validators.ValidateFloatString,
 								Optional:     true,
 							},
+							"critical_query": {
+								Description: "Query evaluated as a dynamic `CRITICAL` threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"critical_recovery_query": {
+								Description: "Query evaluated as a dynamic `CRITICAL` recovery threshold. Only supported on metric monitors with a formula query and `options['variables']`. Cannot be combined with static thresholds. This field is in preview.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
 						},
 					},
 					DiffSuppressFunc: suppressDataDogFloatIntDiff,
@@ -1249,6 +1259,12 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		v, _ := json.Number(r.(string)).Float64()
 		thresholds.SetCriticalRecovery(v)
 	}
+	if r, ok := d.GetOk("monitor_thresholds.0.critical_query"); ok {
+		thresholds.SetCriticalQuery(r.(string))
+	}
+	if r, ok := d.GetOk("monitor_thresholds.0.critical_recovery_query"); ok {
+		thresholds.SetCriticalRecoveryQuery(r.(string))
+	}
 
 	var thresholdWindows datadogV1.MonitorThresholdWindowOptions
 
@@ -2023,6 +2039,12 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	}
 	if v, ok := m.Options.Thresholds.GetCriticalRecoveryOk(); ok {
 		thresholds["critical_recovery"] = fmt.Sprintf("%v", *v)
+	}
+	if v, ok := m.Options.Thresholds.GetCriticalQueryOk(); ok {
+		thresholds["critical_query"] = *v
+	}
+	if v, ok := m.Options.Thresholds.GetCriticalRecoveryQueryOk(); ok {
+		thresholds["critical_recovery_query"] = *v
 	}
 
 	thresholdWindows := make(map[string]string)

@@ -16,7 +16,8 @@ on:
 jobs:
   create_release:
     name: Create release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16-core-latest
+    environment: release
     if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/')
     steps:
       - name: Get GitHub App token
