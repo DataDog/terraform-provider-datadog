@@ -15,7 +15,7 @@ import (
 //
 // The summary block is derived from the artifact statuses rather than trusted
 // from the caller, so its counts always agree with the artifacts array. CI
-// will eventually gates on these counts, so they must not drift.
+// will eventually gate on these counts, so they must not drift.
 // The caller's report is not mutated.
 //
 // Output is deterministic: field order is fixed and a RunReport carries no maps,

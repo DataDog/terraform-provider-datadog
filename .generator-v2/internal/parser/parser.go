@@ -79,7 +79,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	spec := &model.Spec{
 		Source:     path,
 		Components: v3doc.Model.Components,
-		Hash: specHash(data),
+		Hash:       specHash(data),
 	}
 
 	// Fail fast on an unresolvable schema graph before enumerating anything:

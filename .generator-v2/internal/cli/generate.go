@@ -25,13 +25,11 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				return err
 			}
 			runReport := model.RunReport{
-				RunId: uuid.NewString(), 		// v4 uuid
-				GeneratorVersion: cmd.Version,	// Version stamped by main.go
-				SpecHash: spec.Hash,
-				StartedAt: time.Now(),
+				RunId:            uuid.NewString(),   // v4 uuid
+				GeneratorVersion: cmd.Root().Version, // Version stamped by main.go
+				SpecHash:         spec.Hash,
+				StartedAt:        time.Now(),
 			}
-
-
 
 			// TODO: model -> emit -> writer -> report, honoring --check and --include.
 			_ = spec
