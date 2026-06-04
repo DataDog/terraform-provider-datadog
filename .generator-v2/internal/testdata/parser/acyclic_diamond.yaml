@@ -1,0 +1,20 @@
+# Branch references Leaf twice (a diamond, shared but acyclic) — no cycle.
+openapi: 3.0.0
+info:
+  title: Acyclic
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Leaf:
+      type: object
+      properties:
+        value:
+          type: string
+    Branch:
+      type: object
+      properties:
+        left:
+          $ref: '#/components/schemas/Leaf'
+        right:
+          $ref: '#/components/schemas/Leaf'
