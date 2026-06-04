@@ -18,13 +18,26 @@ const DefaultMaxDepth = 8
 type Option func(*loadConfig)
 
 type loadConfig struct {
-	maxDepth int
+	maxDepth          int
+	trackingFieldName string
 }
 
 // WithMaxDepth sets the recursive $ref expansion limit — the value carried by
 // the --max-depth CLI flag. A value <= 0 disables the bound.
 func WithMaxDepth(n int) Option {
 	return func(c *loadConfig) { c.maxDepth = n }
+}
+
+// WithTrackingFieldName overrides the OpenAPI extension key LoadSpec decodes
+// tracking metadata from — the value carried by the --tracking-field flag. An
+// empty name keeps the default (DefaultTrackingFieldName); the override is
+// reserved for generator-internal fixture tests.
+func WithTrackingFieldName(name string) Option {
+	return func(c *loadConfig) {
+		if name != "" {
+			c.trackingFieldName = name
+		}
+	}
 }
 
 // LoadSpec reads and parses the OpenAPI v3 specification at path and projects
@@ -41,7 +54,7 @@ func WithMaxDepth(n int) Option {
 // LoadSpec populates Path, Method, OperationId and Tag on each Operation;
 // Tracking, RequestSchema and ResponseSchema are filled by later passes.
 func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
-	cfg := loadConfig{maxDepth: DefaultMaxDepth}
+	cfg := loadConfig{maxDepth: DefaultMaxDepth, trackingFieldName: DefaultTrackingFieldName}
 	for _, opt := range opts {
 		opt(&cfg)
 	}
@@ -86,11 +99,17 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 				if op == nil {
 					continue
 				}
+				upperMethod := strings.ToUpper(method)
+				tracking, err := DecodeTracking(op, opPath, upperMethod, cfg.trackingFieldName)
+				if err != nil {
+					return nil, err
+				}
 				spec.Operations = append(spec.Operations, &model.Operation{
 					Path:        opPath,
-					Method:      strings.ToUpper(method),
+					Method:      upperMethod,
 					OperationId: op.OperationId,
 					Tag:         firstTag(op.Tags),
+					Tracking:    tracking,
 				})
 			}
 		}
@@ -103,6 +122,10 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		}
 		return a.Method < b.Method
 	})
+
+	if err := CheckDuplicateArtifactNames(spec); err != nil {
+		return nil, err
+	}
 
 	return spec, nil
 }
