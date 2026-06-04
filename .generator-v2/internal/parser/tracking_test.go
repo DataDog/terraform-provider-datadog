@@ -53,16 +53,9 @@ func TestDecodeTrackingOutOfScopeReturnsNil(t *testing.T) {
 			t.Fatalf("got (%v, %v), want (nil, nil)", got, err)
 		}
 	})
-	t.Run("skip true", func(t *testing.T) {
-		op := opWithExt(t, "Op", DefaultTrackingFieldName,
-			"artifact_kind: resource\nartifact_name: thing\ngroup:\n  read: GetThing\nskip: true\n")
-		got, err := DecodeTracking(op, trackPath, trackMethod, DefaultTrackingFieldName)
-		if got != nil || err != nil {
-			t.Fatalf("got (%v, %v), want (nil, nil)", got, err)
-		}
-	})
-	// skip:true must short-circuit BEFORE validation — a skipped operation is
-	// out of scope, so even an otherwise-malformed extension produces no error.
+	// skip:true short-circuits BEFORE validation — a skipped operation is out of
+	// scope, so even an otherwise-malformed extension produces no error (which
+	// also subsumes a well-formed annotation carrying skip:true).
 	t.Run("skip true bypasses validation", func(t *testing.T) {
 		op := opWithExt(t, "Op", DefaultTrackingFieldName,
 			"artifact_kind: widget\nbogus: 1\nskip: true\n") // bad kind, unknown prop, missing name
