@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
 )
 
 type globalFlags struct {
@@ -26,7 +27,7 @@ func newRootCmd(version string, flags *globalFlags) *cobra.Command {
 	cmd.PersistentFlags().StringVar(&flags.outputRoot, "output-root", "datadog/fwprovider", "Root directory for generated artifacts")
 	cmd.PersistentFlags().StringVar(&flags.hooksRoot, "hooks-root", "datadog/fwprovider/hooks", "Root directory for hook subpackages")
 	cmd.PersistentFlags().StringVar(&flags.trackingField, "tracking-field", "x-datadog-tf-generator", "OpenAPI extension name for the tracking field")
-	cmd.PersistentFlags().IntVar(&flags.maxDepth, "max-depth", 8, "Hard limit on recursive $ref expansion")
+	cmd.PersistentFlags().IntVar(&flags.maxDepth, "max-depth", parser.DefaultMaxDepth, "Hard limit on recursive $ref expansion")
 	cmd.PersistentFlags().StringVar(&flags.report, "report", "-", "Where to write the run report (\"-\" = stdout)")
 	cmd.PersistentFlags().BoolVar(&flags.quiet, "quiet", false, "Suppress informational logging")
 
