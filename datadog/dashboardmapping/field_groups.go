@@ -1708,8 +1708,8 @@ var DashboardTopLevelFields = []FieldSpec{
 		Description: "List of tabs for organizing widgets.",
 		Children:    dashboardTabFields},
 
-	// default_timeframe: SchemaOnly — custom build/flatten handles explicit null on update.
-	{HCLKey: "default_timeframe", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+	// NullOnClear: removing the block sends JSON null to the API, clearing the server-side value.
+	{HCLKey: "default_timeframe", Type: TypeBlock, OmitEmpty: true, NullOnClear: true,
 		Description: "The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured.",
 		Children:    dashboardDefaultTimeframeFields},
 

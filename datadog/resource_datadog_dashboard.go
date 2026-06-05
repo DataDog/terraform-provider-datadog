@@ -497,11 +497,16 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 		terraformTabs := v.([]interface{})
 		additionalProps["tabs"] = buildDatadogTabs(&terraformTabs)
 	}
-	data := map[string]interface{}{
-		"default_timeframe": dashboardmapping.CollectDefaultTimeframeData(d),
-	}
-	if err := dashboardmapping.ApplyDefaultTimeframeToDashboardJSON(additionalProps, data); err != nil {
-		return nil, err
+	if blocks := d.Get("default_timeframe").([]interface{}); len(blocks) > 0 {
+		if block, ok := blocks[0].(map[string]interface{}); ok {
+			built, err := dashboardmapping.BuildDefaultTimeframeJSONFromMap(block)
+			if err != nil {
+				return nil, err
+			}
+			additionalProps["default_timeframe"] = built
+		}
+	} else if !d.IsNewResource() && d.HasChange("default_timeframe") {
+		additionalProps["default_timeframe"] = nil
 	}
 	if len(additionalProps) > 0 {
 		dashboard.AdditionalProperties = additionalProps

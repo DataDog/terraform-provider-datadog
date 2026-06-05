@@ -78,8 +78,6 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 			Schema: widgetSchema,
 		},
 	}
-	topSchema["default_timeframe"] = dashboardmapping.DashboardDefaultTimeframeSchema()
-
 	return topSchema
 }
 
@@ -204,7 +202,13 @@ func collectDashboardData(d *schema.ResourceData) map[string]interface{} {
 		}
 	}
 	data["widget"] = d.Get("widget")
-	data["default_timeframe"] = dashboardmapping.CollectDefaultTimeframeData(d)
+	// default_timeframe must send JSON null (not omit) when removed from an existing resource.
+	// The NullOnClear engine flag handles the null emission; we just need to set nil in the map.
+	if !d.IsNewResource() && d.HasChange("default_timeframe") {
+		if blocks, _ := data["default_timeframe"].([]interface{}); len(blocks) == 0 {
+			data["default_timeframe"] = nil
+		}
+	}
 	return data
 }
 
