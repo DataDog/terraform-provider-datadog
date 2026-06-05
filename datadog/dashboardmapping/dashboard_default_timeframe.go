@@ -23,6 +23,7 @@ var dashboardDefaultTimeframeFields = []FieldSpec{
 }
 
 // DashboardDefaultTimeframeSchema returns the SDKv2 schema for default_timeframe.
+// Used by the v1 datadog_dashboard resource.
 func DashboardDefaultTimeframeSchema() *schema.Schema {
 	return FieldSpecToSDKv2(FieldSpec{
 		HCLKey:      "default_timeframe",
@@ -33,46 +34,8 @@ func DashboardDefaultTimeframeSchema() *schema.Schema {
 	})
 }
 
-// CollectDefaultTimeframeData returns the value to store in a dashboard data map for JSON building.
-// An empty slice means omit the field; nil means send explicit null.
-func CollectDefaultTimeframeData(d *schema.ResourceData) interface{} {
-	blocks := d.Get("default_timeframe").([]interface{})
-	if len(blocks) > 0 {
-		return blocks
-	}
-	if !d.IsNewResource() && d.HasChange("default_timeframe") {
-		return nil
-	}
-	return []interface{}{}
-}
-
-// ApplyDefaultTimeframeToDashboardJSON sets default_timeframe on a dashboard JSON body.
-func ApplyDefaultTimeframeToDashboardJSON(result map[string]interface{}, data map[string]interface{}) error {
-	tf, ok := data["default_timeframe"]
-	if !ok {
-		return nil
-	}
-	if tf == nil {
-		result["default_timeframe"] = nil
-		return nil
-	}
-	blocks, ok := tf.([]interface{})
-	if !ok || len(blocks) == 0 {
-		return nil
-	}
-	block, ok := blocks[0].(map[string]interface{})
-	if !ok {
-		return fmt.Errorf("invalid default_timeframe block")
-	}
-	built, err := BuildDefaultTimeframeJSONFromMap(block)
-	if err != nil {
-		return err
-	}
-	result["default_timeframe"] = built
-	return nil
-}
-
 // BuildDefaultTimeframeJSONFromMap converts a Terraform default_timeframe block to API JSON.
+// Used by the v1 datadog_dashboard resource.
 func BuildDefaultTimeframeJSONFromMap(block map[string]interface{}) (map[string]interface{}, error) {
 	typeVal, ok := block["type"].(string)
 	if !ok || typeVal == "" {
@@ -107,6 +70,9 @@ func BuildDefaultTimeframeJSONFromMap(block map[string]interface{}) (map[string]
 }
 
 // FlattenDefaultTimeframe converts API default_timeframe JSON to Terraform state.
+// Initializes all schema fields explicitly so d.Set receives a complete map,
+// working around a Terraform 1.1.x issue where a partial map causes TypeInt
+// fields to be stored as 0 in state.
 func FlattenDefaultTimeframe(api map[string]interface{}) []interface{} {
 	if api == nil {
 		return nil
@@ -116,9 +82,6 @@ func FlattenDefaultTimeframe(api map[string]interface{}) []interface{} {
 		return nil
 	}
 
-	// Initialize all schema fields explicitly so d.Set receives a complete
-	// map. Passing a partial map (missing TypeInt fields) causes Terraform
-	// 1.1.x to store 0 for the value field in state.
 	block := map[string]interface{}{
 		"type":  typeVal,
 		"unit":  "",
