@@ -2,157 +2,138 @@ package parser
 
 import (
 	"errors"
-	"strings"
-	"testing"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// trackedOp builds a model.Operation carrying tracking metadata for the given
-// artifact name. The kind is irrelevant to duplicate detection.
-func trackedOp(path, method, operationId, artifactName string) *model.Operation {
-	return &model.Operation{
-		Path:        path,
-		Method:      method,
-		OperationId: operationId,
-		Tracking: &model.TrackingFieldMetadata{
-			ArtifactKind: model.ArtifactKindResource,
-			ArtifactName: artifactName,
-		},
-	}
-}
-
-// kindedOp is trackedOp with an explicit artifact kind, for cross-kind tests.
-func kindedOp(path, method, operationId, artifactName string, kind model.ArtifactKind) *model.Operation {
-	op := trackedOp(path, method, operationId, artifactName)
-	op.Tracking.ArtifactKind = kind
-	return op
-}
-
-func TestCheckDuplicateArtifactNamesUnique(t *testing.T) {
-	spec := &model.Spec{Operations: []*model.Operation{
-		trackedOp("/a", "GET", "GetA", "alpha"),
-		trackedOp("/b", "GET", "GetB", "beta"),
-		trackedOp("/c", "GET", "GetC", "gamma"),
-	}}
-	if err := CheckDuplicateArtifactNames(spec); err != nil {
-		t.Fatalf("expected nil, got %v", err)
-	}
-}
-
-func TestCheckDuplicateArtifactNamesIgnoresUntracked(t *testing.T) {
-	spec := &model.Spec{Operations: []*model.Operation{
-		trackedOp("/a", "GET", "GetA", "alpha"),
-		{Path: "/health", Method: "GET", OperationId: "GetHealth"}, // Tracking nil
-		nil, // defensive: nil entries are skipped
-		trackedOp("/b", "GET", "GetB", "beta"),
-	}}
-	if err := CheckDuplicateArtifactNames(spec); err != nil {
-		t.Fatalf("expected nil, got %v", err)
-	}
-}
-
-func TestCheckDuplicateArtifactNamesSingleCollision(t *testing.T) {
-	spec := &model.Spec{Operations: []*model.Operation{
-		trackedOp("/teams", "GET", "ListTeams", "team"),
-		trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
-	}}
-	err := CheckDuplicateArtifactNames(spec)
-	var dup *DuplicateArtifactNameError
-	if !errors.As(err, &dup) {
-		t.Fatalf("error %v (%T) is not a *DuplicateArtifactNameError", err, err)
-	}
-	if len(dup.Collisions) != 1 {
-		t.Fatalf("got %d collisions, want 1", len(dup.Collisions))
-	}
-	if len(dup.Collisions[0].Sources) != 2 {
-		t.Fatalf("got %d sources, want 2", len(dup.Collisions[0].Sources))
-	}
-	// message names the kind, the name, and both source operations.
-	msg := dup.Error()
-	for _, want := range []string{string(model.ArtifactKindResource), "team", "ListTeams", "GetTeam", "/teams", "/teams/{id}"} {
-		if !strings.Contains(msg, want) {
-			t.Errorf("error message missing %q:\n%s", want, msg)
+var _ = Describe("CheckDuplicateArtifactNames", func() {
+	trackedOp := func(path, method, operationId, artifactName string) *model.Operation {
+		return &model.Operation{
+			Path:        path,
+			Method:      method,
+			OperationId: operationId,
+			Tracking: &model.TrackingFieldMetadata{
+				ArtifactKind: model.ArtifactKindResource,
+				ArtifactName: artifactName,
+			},
 		}
 	}
-}
 
-func TestCheckDuplicateArtifactNamesListsAllSources(t *testing.T) {
-	spec := &model.Spec{Operations: []*model.Operation{
-		trackedOp("/teams", "GET", "ListTeams", "team"),
-		trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
-		trackedOp("/teams/search", "POST", "SearchTeams", "team"),
-	}}
-	err := CheckDuplicateArtifactNames(spec)
-	var dup *DuplicateArtifactNameError
-	if !errors.As(err, &dup) {
-		t.Fatalf("error %v (%T) is not a *DuplicateArtifactNameError", err, err)
+	kindedOp := func(path, method, operationId, artifactName string, kind model.ArtifactKind) *model.Operation {
+		op := trackedOp(path, method, operationId, artifactName)
+		op.Tracking.ArtifactKind = kind
+		return op
 	}
-	if n := len(dup.Collisions[0].Sources); n != 3 {
-		t.Fatalf("got %d sources, want all 3 listed", n)
-	}
-	for _, want := range []string{"ListTeams", "GetTeam", "SearchTeams"} {
-		if !strings.Contains(dup.Error(), want) {
-			t.Errorf("error message missing source %q", want)
-		}
-	}
-}
 
-func TestCheckDuplicateArtifactNamesMultipleCollisionsSortedByName(t *testing.T) {
-	spec := &model.Spec{Operations: []*model.Operation{
-		trackedOp("/z", "GET", "GetZ1", "zeta"),
-		trackedOp("/z2", "GET", "GetZ2", "zeta"),
-		trackedOp("/a", "GET", "GetA1", "alpha"),
-		trackedOp("/a2", "GET", "GetA2", "alpha"),
-	}}
-	err := CheckDuplicateArtifactNames(spec)
-	var dup *DuplicateArtifactNameError
-	if !errors.As(err, &dup) {
-		t.Fatalf("error %v (%T) is not a *DuplicateArtifactNameError", err, err)
+	asDuplicateErr := func(err error) *DuplicateArtifactNameError {
+		GinkgoHelper()
+		var dup *DuplicateArtifactNameError
+		Expect(errors.As(err, &dup)).To(BeTrue(), "error %v (%T) is not a *DuplicateArtifactNameError", err, err)
+		return dup
 	}
-	if len(dup.Collisions) != 2 {
-		t.Fatalf("got %d collisions, want 2", len(dup.Collisions))
-	}
-	if dup.Collisions[0].Name != "alpha" || dup.Collisions[1].Name != "zeta" {
-		t.Errorf("collisions not sorted by name: %q then %q", dup.Collisions[0].Name, dup.Collisions[1].Name)
-	}
-}
 
-func TestCheckDuplicateArtifactNamesDeterministic(t *testing.T) {
-	// Same collisions, different declaration orders, must yield identical output.
-	build := func(ops ...*model.Operation) *model.Spec { return &model.Spec{Operations: ops} }
-	a := build(
-		trackedOp("/teams", "GET", "ListTeams", "team"),
-		trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
-		trackedOp("/users", "GET", "ListUsers", "user"),
-		trackedOp("/users/{id}", "GET", "GetUser", "user"),
-	)
-	b := build(
-		trackedOp("/users/{id}", "GET", "GetUser", "user"),
-		trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
-		trackedOp("/users", "GET", "ListUsers", "user"),
-		trackedOp("/teams", "GET", "ListTeams", "team"),
-	)
-	errA, errB := CheckDuplicateArtifactNames(a), CheckDuplicateArtifactNames(b)
-	if errA == nil || errB == nil {
-		t.Fatal("expected duplicate errors from both specs")
-	}
-	if errA.Error() != errB.Error() {
-		t.Errorf("non-deterministic output:\nA:\n%s\nB:\n%s", errA.Error(), errB.Error())
-	}
-}
+	Context("when every artifact_name is unique within its kind", func() {
+		It("returns no error", func() {
+			spec := &model.Spec{Operations: []*model.Operation{
+				trackedOp("/a", "GET", "GetA", "alpha"),
+				trackedOp("/b", "GET", "GetB", "beta"),
+				trackedOp("/c", "GET", "GetC", "gamma"),
+			}}
+			Expect(CheckDuplicateArtifactNames(spec)).To(Succeed())
+		})
 
-// TestCheckDuplicateArtifactNamesIsPerKind pins Finding #1: artifact_name
-// uniqueness is scoped per artifact_kind. Terraform keeps resources and data
-// sources in separate namespaces, so a resource and a data source may share a
-// name without colliding. (The same-kind collision — including the kind in the
-// message — is covered by TestCheckDuplicateArtifactNamesSingleCollision.)
-func TestCheckDuplicateArtifactNamesIsPerKind(t *testing.T) {
-	spec := &model.Spec{Operations: []*model.Operation{
-		kindedOp("/teams", "POST", "CreateTeam", "team", model.ArtifactKindResource),
-		kindedOp("/teams/{id}", "GET", "GetTeam", "team", model.ArtifactKindDataSource),
-	}}
-	if err := CheckDuplicateArtifactNames(spec); err != nil {
-		t.Fatalf("a resource and a data source named %q must be allowed, got: %v", "team", err)
-	}
-}
+		It("ignores operations without tracking metadata", func() {
+			spec := &model.Spec{Operations: []*model.Operation{
+				trackedOp("/a", "GET", "GetA", "alpha"),
+				{Path: "/health", Method: "GET", OperationId: "GetHealth"},
+				nil,
+				trackedOp("/b", "GET", "GetB", "beta"),
+			}}
+			Expect(CheckDuplicateArtifactNames(spec)).To(Succeed())
+		})
+	})
+
+	Context("when the same artifact_name appears under different kinds", func() {
+		It("does not report a collision", func() {
+			spec := &model.Spec{Operations: []*model.Operation{
+				kindedOp("/teams", "POST", "CreateTeam", "team", model.ArtifactKindResource),
+				kindedOp("/teams/{id}", "GET", "GetTeam", "team", model.ArtifactKindDataSource),
+			}}
+			Expect(CheckDuplicateArtifactNames(spec)).To(Succeed(),
+				"a resource and a data source named %q must be allowed", "team")
+		})
+	})
+
+	Context("when two operations share an artifact_name within a kind", func() {
+		It("returns a single error naming the kind, the name, and both source locations", func() {
+			spec := &model.Spec{Operations: []*model.Operation{
+				trackedOp("/teams", "GET", "ListTeams", "team"),
+				trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
+			}}
+			dup := asDuplicateErr(CheckDuplicateArtifactNames(spec))
+			Expect(dup.Collisions).To(HaveLen(1))
+			Expect(dup.Collisions[0].Sources).To(HaveLen(2))
+			Expect(dup.Error()).To(SatisfyAll(
+				ContainSubstring(string(model.ArtifactKindResource)),
+				ContainSubstring("team"),
+				ContainSubstring("ListTeams"),
+				ContainSubstring("GetTeam"),
+				ContainSubstring("/teams"),
+				ContainSubstring("/teams/{id}"),
+			))
+		})
+
+		It("lists every colliding source, not just the first two", func() {
+			spec := &model.Spec{Operations: []*model.Operation{
+				trackedOp("/teams", "GET", "ListTeams", "team"),
+				trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
+				trackedOp("/teams/search", "POST", "SearchTeams", "team"),
+			}}
+			dup := asDuplicateErr(CheckDuplicateArtifactNames(spec))
+			Expect(dup.Collisions[0].Sources).To(HaveLen(3))
+			Expect(dup.Error()).To(SatisfyAll(
+				ContainSubstring("ListTeams"),
+				ContainSubstring("GetTeam"),
+				ContainSubstring("SearchTeams"),
+			))
+		})
+	})
+
+	Context("when several distinct artifact_names each collide", func() {
+		It("reports every collision sorted by name", func() {
+			spec := &model.Spec{Operations: []*model.Operation{
+				trackedOp("/z", "GET", "GetZ1", "zeta"),
+				trackedOp("/z2", "GET", "GetZ2", "zeta"),
+				trackedOp("/a", "GET", "GetA1", "alpha"),
+				trackedOp("/a2", "GET", "GetA2", "alpha"),
+			}}
+			dup := asDuplicateErr(CheckDuplicateArtifactNames(spec))
+			Expect(dup.Collisions).To(HaveLen(2))
+			Expect(dup.Collisions[0].Name).To(Equal("alpha"))
+			Expect(dup.Collisions[1].Name).To(Equal("zeta"))
+		})
+
+		It("produces identical output regardless of declaration order", func() {
+			build := func(ops ...*model.Operation) *model.Spec { return &model.Spec{Operations: ops} }
+			a := build(
+				trackedOp("/teams", "GET", "ListTeams", "team"),
+				trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
+				trackedOp("/users", "GET", "ListUsers", "user"),
+				trackedOp("/users/{id}", "GET", "GetUser", "user"),
+			)
+			b := build(
+				trackedOp("/users/{id}", "GET", "GetUser", "user"),
+				trackedOp("/teams/{id}", "GET", "GetTeam", "team"),
+				trackedOp("/users", "GET", "ListUsers", "user"),
+				trackedOp("/teams", "GET", "ListTeams", "team"),
+			)
+			errA, errB := CheckDuplicateArtifactNames(a), CheckDuplicateArtifactNames(b)
+			Expect(errA).To(HaveOccurred())
+			Expect(errB).To(HaveOccurred())
+			Expect(errA.Error()).To(Equal(errB.Error()))
+		})
+	})
+})
