@@ -265,4 +265,9 @@ go.sum,github.com/bahlo/generic-list-go,MIT,2021 Nils Müller
 go.sum,github.com/buger/jsonparser,MIT,2016 Yuriy Vasiyarov
 go.sum,github.com/inconshreveable/mousetrap,Apache-2.0,2014 Alan Shreve
 go.sum,go.yaml.in/yaml/v4,MIT and Apache-2.0,2006-2011 Kirill Simonov and 2011-2019 Canonical Ltd
+go.sum,go.yaml.in/yaml/v3,MIT and Apache-2.0,2006-2011 Kirill Simonov and 2011-2019 Canonical Ltd
+go.sum,github.com/santhosh-tekuri/jsonschema/v6,Apache-2.0,Santhosh Kumar Tekuri
+go.sum,github.com/dlclark/regexp2,MIT,Doug Clark
+go.sum,github.com/cpuguy83/go-md2man/v2,MIT,2014 Brian Goff
+go.sum,github.com/russross/blackfriday/v2,BSD-2-Clause,2011 Russ Ross
 
