@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"os"
 	"sort"
@@ -77,6 +79,7 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	spec := &model.Spec{
 		Source:     path,
 		Components: v3doc.Model.Components,
+		Hash:       specHash(data),
 	}
 
 	// Fail fast on an unresolvable schema graph before enumerating anything:
@@ -138,4 +141,9 @@ func firstTag(tags []string) string {
 		return tags[0]
 	}
 	return ""
+}
+
+func specHash(data []byte) string {
+	sum := sha256.Sum256(data)
+	return hex.EncodeToString(sum[:])
 }
