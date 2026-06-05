@@ -1,365 +1,261 @@
 package parser
 
 import (
-	"errors"
 	"os"
 	"path/filepath"
-	"testing"
 
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 	"github.com/pb33f/libopenapi"
 	"github.com/pb33f/libopenapi/datamodel/high/base"
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 )
 
 // -------------------------------------------------------------------
-//  Unit tests
-// -------------------------------------------------------------------
-// These will exercise the cycleWalker state machine directly, aka
-// operating enter/leave/recordCycle functions without a real OpenAPI Schema
-
-func TestCycleWalkerEnterLeaveMaintainsStackAndDepth(t *testing.T) {
-	w := newCycleWalker(0) // depth bound disabled
-
-	entered, err := w.enter("a", true)
-	if err != nil || !entered {
-		t.Fatalf("enter a: entered=%v err=%v", entered, err)
-	}
-	if !w.onStack["a"] || len(w.stack) != 1 || w.depth != 1 {
-		t.Fatalf("after enter a: onStack=%v stack=%v depth=%d", w.onStack["a"], w.stack, w.depth)
-	}
-
-	w.leave("a", true, true)
-	if w.onStack["a"] || len(w.stack) != 0 || w.depth != 0 {
-		t.Fatalf("after leave a: onStack=%v stack=%v depth=%d", w.onStack["a"], w.stack, w.depth)
-	}
-	if !w.done["a"] {
-		t.Error("leave(completed=true) should mark a done")
-	}
-}
-
-func TestCycleWalkerLeaveIncompleteDoesNotMarkDone(t *testing.T) {
-	w := newCycleWalker(0)
-	w.enter("a", true)
-	w.leave("a", false, true)
-
-	if w.done["a"] {
-		t.Error("leave(completed=false) must not mark done")
-	}
-	if w.depth != 0 || len(w.stack) != 0 {
-		t.Errorf("leave must pop and decrement: depth=%d stack=%v", w.depth, w.stack)
-	}
-}
-
-func TestCycleWalkerSeedDoesNotConsumeDepth(t *testing.T) {
-	w := newCycleWalker(2)
-
-	if _, err := w.enter("seed", false); err != nil { // seed is not a $ref edge
-		t.Fatalf("enter seed: %v", err)
-	}
-	if w.depth != 0 {
-		t.Fatalf("seed must not consume depth, got depth=%d", w.depth)
-	}
-	// Two real edges fit within maxDepth=2 precisely because the seed is free.
-	if _, err := w.enter("a", true); err != nil {
-		t.Fatalf("enter a: %v", err)
-	}
-	if _, err := w.enter("b", true); err != nil {
-		t.Fatalf("enter b: %v", err)
-	}
-	if _, err := w.enter("c", true); err == nil {
-		t.Fatal("enter c should exceed --max-depth 2")
-	}
-}
-
-func TestCycleWalkerDepthBoundError(t *testing.T) {
-	w := newCycleWalker(1)
-	if _, err := w.enter("a", true); err != nil {
-		t.Fatalf("enter a: %v", err)
-	}
-
-	_, err := w.enter("b", true)
-	if err == nil {
-		t.Fatal("enter b should exceed --max-depth 1")
-	}
-	var depthErr *MaxDepthError
-	if !errors.As(err, &depthErr) {
-		t.Fatalf("error %v (%T) is not a *MaxDepthError", err, err)
-	}
-	if depthErr.MaxDepth != 1 || depthErr.Ref != "b" {
-		t.Errorf("MaxDepthError = %+v, want MaxDepth=1 Ref=b", depthErr)
-	}
-	if w.onStack["b"] || len(w.stack) != 1 {
-		t.Errorf("a failed enter must not push: stack=%v", w.stack)
-	}
-}
-
-func TestCycleWalkerDepthBoundDisabled(t *testing.T) {
-	w := newCycleWalker(0)
-	for _, ref := range []string{"a", "b", "c", "d", "e"} {
-		if _, err := w.enter(ref, true); err != nil {
-			t.Fatalf("enter %s with bound disabled: %v", ref, err)
-		}
-	}
-}
-
-func TestCycleWalkerReentryRecordsCycle(t *testing.T) {
-	w := newCycleWalker(0)
-	w.enter("a", true)
-	w.enter("b", true)
-
-	entered, err := w.enter("a", true)
-	if entered || err != nil {
-		t.Fatalf("re-entering on-stack a: entered=%v err=%v", entered, err)
-	}
-	if len(w.cycles) != 1 {
-		t.Fatalf("expected 1 cycle, got %d", len(w.cycles))
-	}
-	if got := w.cycles[0]; got.Ref != "a" || !equal(got.Path, []string{"a", "b", "a"}) {
-		t.Errorf("cycle = %+v, want Ref=a Path=[a b a]", got)
-	}
-}
-
-func TestCycleWalkerCycleClosesMidStack(t *testing.T) {
-	w := newCycleWalker(0)
-	w.enter("a", true)
-	w.enter("b", true)
-	w.enter("c", true)
-
-	// c -> b closes a cycle on b, not a; the path must start at b.
-	w.enter("b", true)
-	if len(w.cycles) != 1 {
-		t.Fatalf("expected 1 cycle, got %d", len(w.cycles))
-	}
-	if got := w.cycles[0]; got.Ref != "b" || !equal(got.Path, []string{"b", "c", "b"}) {
-		t.Errorf("cycle = %+v, want Ref=b Path=[b c b]", got)
-	}
-}
-
-func TestCycleWalkerCycleTakesPrecedenceOverDepth(t *testing.T) {
-	w := newCycleWalker(1) // at the bound after a single edge
-	w.enter("a", true)     // depth now 1 == maxDepth
-
-	// Re-entering a must be reported as a cycle, not rejected as a depth error.
-	entered, err := w.enter("a", true)
-	if entered {
-		t.Fatal("re-entry must not proceed")
-	}
-	if err != nil {
-		t.Fatalf("re-entry at the depth bound must be a cycle, not an error: %v", err)
-	}
-	if len(w.cycles) != 1 {
-		t.Errorf("re-entry should record a cycle, got %d", len(w.cycles))
-	}
-}
-
-func TestCycleWalkerDoneRefIsPruned(t *testing.T) {
-	w := newCycleWalker(0)
-	w.done["x"] = true
-
-	entered, err := w.enter("x", true)
-	if entered || err != nil {
-		t.Fatalf("entering a done ref: entered=%v err=%v", entered, err)
-	}
-	if len(w.stack) != 0 || len(w.cycles) != 0 {
-		t.Errorf("done ref must be skipped without push or cycle: stack=%v cycles=%v", w.stack, w.cycles)
-	}
-}
-
-func TestCycleWalkerRecordCycleDedupes(t *testing.T) {
-	w := newCycleWalker(0)
-	w.enter("a", true)
-
-	w.recordCycle("a")
-	w.recordCycle("a")
-	if len(w.cycles) != 1 {
-		t.Errorf("recordCycle should dedupe by ref, got %d cycles", len(w.cycles))
-	}
-}
-
-// -------------------------------------------------------------------
-//  Fixture tests
+//  Helpers
 // -------------------------------------------------------------------
 
-func loadComponents(t *testing.T, fixture string) *v3.Components {
-	t.Helper()
+func loadComponents(fixture string) *v3.Components {
+	GinkgoHelper()
 	data, err := os.ReadFile(filepath.Join("../testdata/parser", fixture))
-	if err != nil {
-		t.Fatalf("read fixture: %v", err)
-	}
+	Expect(err).To(Succeed(), "read fixture %s", fixture)
 	doc, err := libopenapi.NewDocument(data)
-	if err != nil {
-		t.Fatalf("parse fixture: %v", err)
-	}
+	Expect(err).To(Succeed(), "parse fixture %s", fixture)
 	model, err := doc.BuildV3Model()
-	if err != nil {
-		t.Fatalf("build v3 model: %v", err)
-	}
+	Expect(err).To(Succeed(), "build v3 model for %s", fixture)
 	return model.Model.Components
 }
 
-func componentProxy(t *testing.T, comps *v3.Components, name string) *base.SchemaProxy {
-	t.Helper()
+func componentProxy(comps *v3.Components, name string) *base.SchemaProxy {
+	GinkgoHelper()
 	for k, v := range comps.Schemas.FromOldest() {
 		if k == name {
 			return v
 		}
 	}
-	t.Fatalf("component %q not found", name)
+	Fail("component " + name + " not found")
 	return nil
 }
 
-func TestDetectComponentRefCyclesSelfReference(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_self.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 {
-		t.Fatalf("got %d cycles, want 1: %+v", len(cycles), cycles)
-	}
-	ref := componentSchemaPrefix + "Node"
-	if cycles[0].Ref != ref {
-		t.Errorf("cycle ref = %q, want %q", cycles[0].Ref, ref)
-	}
-	if want := []string{ref, ref}; !equal(cycles[0].Path, want) {
-		t.Errorf("cycle path = %v, want %v", cycles[0].Path, want)
-	}
-}
+// -------------------------------------------------------------------
+//  cycleWalker unit tests
+// -------------------------------------------------------------------
 
-func TestDetectComponentRefCyclesIndirect(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_indirect.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 {
-		t.Fatalf("got %d cycles, want 1: %+v", len(cycles), cycles)
-	}
-	// Components iterate in document order (A before B), so the cycle is found
-	// from A: A -> B -> A.
-	want := []string{componentSchemaPrefix + "A", componentSchemaPrefix + "B", componentSchemaPrefix + "A"}
-	if !equal(cycles[0].Path, want) {
-		t.Errorf("cycle path = %v, want %v", cycles[0].Path, want)
-	}
-}
+var _ = Describe("cycleWalker", func() {
 
-func TestDetectComponentRefCyclesArrayItems(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_array_items.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Tree" {
-		t.Fatalf("got %+v, want a single Tree cycle", cycles)
-	}
-}
+	Context("enter and leave", func() {
+		It("maintains the stack and depth across a matched enter/leave pair", func() {
+			w := newCycleWalker(0)
 
-func TestDetectComponentRefCyclesAcyclic(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "acyclic_diamond.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 0 {
-		t.Errorf("got %d cycles, want 0: %+v", len(cycles), cycles)
-	}
-}
+			Expect(w.enter("a", true)).To(BeTrue())
+			Expect(w.onStack["a"]).To(BeTrue())
+			Expect(w.stack).To(HaveLen(1))
+			Expect(w.depth).To(Equal(1))
 
-func TestDetectComponentRefCyclesMaxDepthDisabledStillFindsCycle(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_self.yaml"), 0)
-	if err != nil {
-		t.Fatalf("unexpected error with depth bound disabled: %v", err)
-	}
-	if len(cycles) != 1 {
-		t.Errorf("got %d cycles, want 1", len(cycles))
-	}
-}
+			w.leave("a", true, true)
+			Expect(w.onStack["a"]).To(BeFalse())
+			Expect(w.stack).To(BeEmpty())
+			Expect(w.depth).To(Equal(0))
+			Expect(w.done["a"]).To(BeTrue())
+		})
 
-func TestDetectRefCyclesMaxDepth(t *testing.T) {
-	comps := loadComponents(t, "deep_chain.yaml")
-	root := componentProxy(t, comps, "S0") // S0 -> S1 -> ... -> S8 (8 refs deep)
+		It("does not mark a ref done when leave is called with completed=false", func() {
+			w := newCycleWalker(0)
+			Expect(w.enter("a", true)).To(BeTrue())
+			w.leave("a", false, true)
 
-	if _, err := DetectRefCycles(root, 4); err == nil {
-		t.Error("expected an error when the chain exceeds --max-depth 4, got nil")
-	}
+			Expect(w.done["a"]).To(BeFalse())
+			Expect(w.depth).To(Equal(0))
+			Expect(w.stack).To(BeEmpty())
+		})
 
-	cycles, err := DetectRefCycles(root, 8)
-	if err != nil {
-		t.Errorf("depth 8 should accommodate the chain, got error: %v", err)
-	}
-	if len(cycles) != 0 {
-		t.Errorf("deep chain is acyclic, got %d cycles", len(cycles))
-	}
+		It("seed entry does not consume a depth slot", func() {
+			w := newCycleWalker(2)
 
-	if _, err := DetectRefCycles(root, 0); err != nil {
-		t.Errorf("depth bound disabled should never error on an acyclic chain, got: %v", err)
-	}
-}
+			Expect(w.enter("seed", false)).To(BeTrue())
+			Expect(w.depth).To(Equal(0), "seed must not increment depth")
 
-func TestDetectComponentRefCyclesViaAllOf(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_allof.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Loop" {
-		t.Fatalf("got %+v, want a single Loop cycle (allOf edge)", cycles)
-	}
-}
+			// Two real edges fit exactly within maxDepth=2 because the seed is free.
+			Expect(w.enter("a", true)).To(BeTrue())
+			Expect(w.enter("b", true)).To(BeTrue())
+			_, err := w.enter("c", true)
+			Expect(err).To(HaveOccurred(), "third real edge should exceed --max-depth 2")
+		})
+	})
 
-func TestDetectComponentRefCyclesViaAdditionalProperties(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_additional_properties.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Dict" {
-		t.Fatalf("got %+v, want a single Dict cycle (additionalProperties edge)", cycles)
-	}
-}
+	Context("depth bounding", func() {
+		It("returns a *MaxDepthError naming the ref and bound when exceeded", func() {
+			w := newCycleWalker(1)
+			Expect(w.enter("a", true)).To(BeTrue())
 
-func TestDetectComponentRefCyclesViaOneOf(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_oneof.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Tree" {
-		t.Fatalf("got %+v, want a single Tree cycle (oneOf edge)", cycles)
-	}
-}
+			entered, err := w.enter("b", true)
+			Expect(entered).To(BeFalse())
+			Expect(err).To(HaveOccurred())
 
-func TestDetectComponentRefCyclesViaAnyOf(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_anyof.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Graph" {
-		t.Fatalf("got %+v, want a single Graph cycle (anyOf edge)", cycles)
-	}
-}
+			var depthErr *MaxDepthError
+			Expect(err).To(BeAssignableToTypeOf(depthErr))
+			// unwrap manually so we can inspect fields
+			_ = err.(*MaxDepthError)
+			Expect(err.(*MaxDepthError).MaxDepth).To(Equal(1))
+			Expect(err.(*MaxDepthError).Ref).To(Equal("b"))
+			Expect(w.stack).To(HaveLen(1), "a failed enter must not push")
+		})
 
-func TestDetectComponentRefCyclesViaNot(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_not.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Excluded" {
-		t.Fatalf("got %+v, want a single Excluded cycle (not edge)", cycles)
-	}
-}
+		It("never errors when the depth bound is 0 (disabled)", func() {
+			w := newCycleWalker(0)
+			for _, ref := range []string{"a", "b", "c", "d", "e"} {
+				Expect(w.enter(ref, true)).To(BeTrue(), "enter %s", ref)
+			}
+		})
 
-func TestDetectComponentRefCyclesViaPrefixItems(t *testing.T) {
-	cycles, err := DetectComponentRefCycles(loadComponents(t, "cycle_prefixitems.yaml"), 16)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(cycles) != 1 || cycles[0].Ref != componentSchemaPrefix+"Tuple" {
-		t.Fatalf("got %+v, want a single Tuple cycle (prefixItems edge)", cycles)
-	}
-}
+		It("reports a cycle rather than a depth error on re-entry at the bound", func() {
+			w := newCycleWalker(1)
+			Expect(w.enter("a", true)).To(BeTrue())
 
-func equal(a, b []string) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
-}
+			entered, err := w.enter("a", true)
+			Expect(entered).To(BeFalse())
+			Expect(err).To(Succeed(), "re-entry at the depth bound must be a cycle, not an error")
+			Expect(w.cycles).To(HaveLen(1))
+		})
+	})
+
+	Context("cycle recording", func() {
+		It("records a cycle when re-entering a ref already on the stack", func() {
+			w := newCycleWalker(0)
+			Expect(w.enter("a", true)).To(BeTrue())
+			Expect(w.enter("b", true)).To(BeTrue())
+
+			entered, err := w.enter("a", true)
+			Expect(entered).To(BeFalse())
+			Expect(err).To(Succeed())
+
+			Expect(w.cycles).To(HaveLen(1))
+			Expect(w.cycles[0].Ref).To(Equal("a"))
+			Expect(w.cycles[0].Path).To(Equal([]string{"a", "b", "a"}))
+		})
+
+		It("uses the sub-path from the actual cycle root when closing mid-stack", func() {
+			w := newCycleWalker(0)
+			Expect(w.enter("a", true)).To(BeTrue())
+			Expect(w.enter("b", true)).To(BeTrue())
+			Expect(w.enter("c", true)).To(BeTrue())
+
+			// c -> b closes a cycle on b, not a; the path must start at b.
+			_, _ = w.enter("b", true)
+			Expect(w.cycles).To(HaveLen(1))
+			Expect(w.cycles[0].Ref).To(Equal("b"))
+			Expect(w.cycles[0].Path).To(Equal([]string{"b", "c", "b"}))
+		})
+
+		It("deduplicates repeated recordCycle calls for the same ref", func() {
+			w := newCycleWalker(0)
+			Expect(w.enter("a", true)).To(BeTrue())
+
+			w.recordCycle("a")
+			w.recordCycle("a")
+			Expect(w.cycles).To(HaveLen(1))
+		})
+	})
+
+	Context("pruning", func() {
+		It("skips a ref already marked done without pushing or recording a cycle", func() {
+			w := newCycleWalker(0)
+			w.done["x"] = true
+
+			entered, err := w.enter("x", true)
+			Expect(entered).To(BeFalse())
+			Expect(err).To(Succeed())
+			Expect(w.stack).To(BeEmpty())
+			Expect(w.cycles).To(BeEmpty())
+		})
+	})
+})
+
+// -------------------------------------------------------------------
+//  DetectComponentRefCycles fixture tests
+// -------------------------------------------------------------------
+
+var _ = Describe("DetectComponentRefCycles", func() {
+
+	It("detects a self-referential cycle with the correct ref and path", func() {
+		cycles, err := DetectComponentRefCycles(loadComponents("cycle_self.yaml"), 16)
+		Expect(err).To(Succeed())
+		Expect(cycles).To(HaveLen(1))
+
+		ref := componentSchemaPrefix + "Node"
+		Expect(cycles[0].Ref).To(Equal(ref))
+		Expect(cycles[0].Path).To(Equal([]string{ref, ref}))
+	})
+
+	It("detects an indirect A→B→A cycle with the correct path", func() {
+		cycles, err := DetectComponentRefCycles(loadComponents("cycle_indirect.yaml"), 16)
+		Expect(err).To(Succeed())
+		Expect(cycles).To(HaveLen(1))
+
+		// Components iterate in document order (A before B).
+		Expect(cycles[0].Path).To(Equal([]string{
+			componentSchemaPrefix + "A",
+			componentSchemaPrefix + "B",
+			componentSchemaPrefix + "A",
+		}))
+	})
+
+	It("reports no cycles for an acyclic diamond graph", func() {
+		cycles, err := DetectComponentRefCycles(loadComponents("acyclic_diamond.yaml"), 16)
+		Expect(err).To(Succeed())
+		Expect(cycles).To(BeEmpty())
+	})
+
+	It("still finds cycles when the depth bound is disabled (0)", func() {
+		cycles, err := DetectComponentRefCycles(loadComponents("cycle_self.yaml"), 0)
+		Expect(err).To(Succeed())
+		Expect(cycles).To(HaveLen(1))
+	})
+
+	DescribeTable("detects a single cycle reached via",
+		func(fixture, wantComponent string) {
+			cycles, err := DetectComponentRefCycles(loadComponents(fixture), 16)
+			Expect(err).To(Succeed())
+			Expect(cycles).To(HaveLen(1))
+			Expect(cycles[0].Ref).To(Equal(componentSchemaPrefix + wantComponent))
+		},
+		Entry("array items edge", "cycle_array_items.yaml", "Tree"),
+		Entry("allOf edge", "cycle_allof.yaml", "Loop"),
+		Entry("additionalProperties edge", "cycle_additional_properties.yaml", "Dict"),
+		Entry("oneOf edge", "cycle_oneof.yaml", "Tree"),
+		Entry("anyOf edge", "cycle_anyof.yaml", "Graph"),
+		Entry("not edge", "cycle_not.yaml", "Excluded"),
+		Entry("prefixItems edge", "cycle_prefixitems.yaml", "Tuple"),
+	)
+})
+
+// -------------------------------------------------------------------
+//  DetectRefCycles fixture tests
+// -------------------------------------------------------------------
+
+var _ = Describe("DetectRefCycles", func() {
+
+	Context("on an 8-deep acyclic chain (S0→…→S8)", func() {
+		var root *base.SchemaProxy
+
+		BeforeEach(func() {
+			root = componentProxy(loadComponents("deep_chain.yaml"), "S0")
+		})
+
+		It("errors when the chain exceeds the depth limit", func() {
+			_, err := DetectRefCycles(root, 4)
+			Expect(err).To(HaveOccurred())
+		})
+
+		It("succeeds when depth equals chain length", func() {
+			cycles, err := DetectRefCycles(root, 8)
+			Expect(err).To(Succeed())
+			Expect(cycles).To(BeEmpty())
+		})
+
+		It("never errors when the depth bound is disabled (0)", func() {
+			_, err := DetectRefCycles(root, 0)
+			Expect(err).To(Succeed())
+		})
+	})
+})
