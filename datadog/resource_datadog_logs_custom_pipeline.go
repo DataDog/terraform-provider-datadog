@@ -20,6 +20,7 @@ var logCustomPipelineMutex = sync.Mutex{}
 
 const (
 	tfArithmeticProcessor           = "arithmetic_processor"
+	tfArrayMapProcessor             = "array_map_processor"
 	tfArrayProcessor                = "array_processor"
 	tfAttributeRemapperProcessor    = "attribute_remapper"
 	tfCategoryProcessor             = "category_processor"
@@ -47,6 +48,7 @@ const (
 
 var tfProcessorTypes = map[string]string{
 	tfArithmeticProcessor:           string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR),
+	tfArrayMapProcessor:             string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP),
 	tfArrayProcessor:                string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR),
 	tfAttributeRemapperProcessor:    string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
 	tfCategoryProcessor:             string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
@@ -75,6 +77,7 @@ var tfMapperTypes = map[string]string{
 
 var tfProcessors = map[string]*schema.Schema{
 	tfArithmeticProcessor:           arithmeticProcessor,
+	tfArrayMapProcessor:             arrayMapProcessor,
 	tfArrayProcessor:                arrayProcessor,
 	tfAttributeRemapperProcessor:    attributeRemapper,
 	tfCategoryProcessor:             categoryProcessor,
@@ -97,6 +100,7 @@ var tfProcessors = map[string]*schema.Schema{
 
 var ddProcessorTypes = map[string]string{
 	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):        tfArithmeticProcessor,
+	string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP):                     tfArrayMapProcessor,
 	string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):                  tfArrayProcessor,
 	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
 	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
@@ -318,6 +322,40 @@ var dateRemapper = &schema.Schema{
 	Optional:    true,
 	Elem: &schema.Resource{
 		Schema: sourceRemapper,
+	},
+}
+
+var arrayMapProcessor = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Array-Map Processor. Transforms each element of a source array by running sub-processors and writing results to a target array.",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":       {Description: "Name of the processor.", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"source":     {Description: "Attribute path of the source array.", Type: schema.TypeString, Required: true},
+			"target":     {Description: "Attribute path of the output array.", Type: schema.TypeString, Required: true},
+			"preserve_source": {
+				Description: "Remove or preserve the source array after processing.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+			},
+			"processors": {
+				Type:        schema.TypeList,
+				Required:    true,
+				Description: "Sub-processors applied to each element. Allowed types: attribute_remapper, string_builder_processor, arithmetic_processor, category_processor.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						tfAttributeRemapperProcessor: attributeRemapper,
+						tfStringBuilderProcessor:     stringBuilderProcessor,
+						tfArithmeticProcessor:        arithmeticProcessor,
+						tfCategoryProcessor:          categoryProcessor,
+					},
+				},
+			},
+		},
 	},
 }
 
@@ -870,6 +908,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	if ddProcessor.LogsArithmeticProcessor != nil {
 		tfProcessor = buildTerraformArithmeticProcessor(ddProcessor.LogsArithmeticProcessor)
 		processorType = string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR)
+	} else if ddProcessor.LogsArrayMapProcessor != nil {
+		tfProcessor, err = buildTerraformArrayMapProcessor(ddProcessor.LogsArrayMapProcessor)
+		processorType = string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP)
 	} else if ddProcessor.LogsArrayProcessor != nil {
 		tfProcessor = buildTerraformArrayProcessor(ddProcessor.LogsArrayProcessor)
 		processorType = string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR)
@@ -1269,6 +1310,69 @@ func buildTerraformDecoderProcessor(ddDecoder *datadogV1.LogsDecoderProcessor) m
 	}
 }
 
+func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) (map[string]interface{}, error) {
+	tfProc := map[string]interface{}{
+		"name":            ddProc.GetName(),
+		"is_enabled":      ddProc.GetIsEnabled(),
+		"source":          ddProc.GetSource(),
+		"target":          ddProc.GetTarget(),
+		"preserve_source": ddProc.GetPreserveSource(),
+	}
+	tfSubs := make([]interface{}, 0, len(ddProc.GetProcessors()))
+	for _, sub := range ddProc.GetProcessors() {
+		tfSub, err := buildTerraformProcessor(sub)
+		if err != nil {
+			return nil, err
+		}
+		// The backend forces sub-processor is_enabled to true; hardcode to avoid a plan diff on every apply.
+		for _, v := range tfSub {
+			if subList, ok := v.([]map[string]interface{}); ok && len(subList) > 0 {
+				subList[0]["is_enabled"] = true
+			}
+		}
+		tfSubs = append(tfSubs, tfSub)
+	}
+	tfProc["processors"] = tfSubs
+	return tfProc, nil
+}
+
+func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.LogsArrayMapProcessor, error) {
+	ddProc := datadogV1.NewLogsArrayMapProcessorWithDefaults()
+	if v, ok := tfProc["name"].(string); ok {
+		ddProc.SetName(v)
+	}
+	if v, ok := tfProc["is_enabled"].(bool); ok {
+		ddProc.SetIsEnabled(v)
+	}
+	if v, ok := tfProc["source"].(string); ok {
+		ddProc.SetSource(v)
+	}
+	if v, ok := tfProc["target"].(string); ok {
+		ddProc.SetTarget(v)
+	}
+	if v, ok := tfProc["preserve_source"].(bool); ok {
+		ddProc.SetPreserveSource(v)
+	}
+	if tfSubs, ok := tfProc["processors"].([]interface{}); ok {
+		ddSubs := make([]datadogV1.LogsProcessor, 0, len(tfSubs))
+		for _, rawSub := range tfSubs {
+			subMap := rawSub.(map[string]interface{})
+			for tfType, ddType := range tfProcessorTypes {
+				if subDetails, exists := subMap[tfType].([]interface{}); exists && len(subDetails) > 0 {
+					ddSub, err := buildDatadogProcessor(ddType, subDetails[0].(map[string]interface{}))
+					if err != nil {
+						return nil, err
+					}
+					ddSubs = append(ddSubs, *ddSub)
+					break
+				}
+			}
+		}
+		ddProc.SetProcessors(ddSubs)
+	}
+	return ddProc, nil
+}
+
 func buildTerraformSpanRemapper(ddSpanRemapper *datadogV1.LogsSpanRemapper) map[string]interface{} {
 	return map[string]interface{}{
 		"sources":    ddSpanRemapper.GetSources(),
@@ -1334,6 +1438,12 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	switch ddProcessorType {
 	case string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):
 		ddProcessor = datadogV1.LogsArithmeticProcessorAsLogsProcessor(buildDatadogArithmeticProcessor(tfProcessor))
+	case string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP):
+		ddArrayMapProcessor, err := buildDatadogArrayMapProcessor(tfProcessor)
+		if err != nil {
+			return &ddProcessor, err
+		}
+		ddProcessor = datadogV1.LogsArrayMapProcessorAsLogsProcessor(ddArrayMapProcessor)
 	case string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):
 		ddArrayProcessor, err := buildDatadogArrayProcessor(tfProcessor)
 		if err != nil {
