@@ -116,7 +116,16 @@ func FlattenDefaultTimeframe(api map[string]interface{}) []interface{} {
 		return nil
 	}
 
-	block := map[string]interface{}{"type": typeVal}
+	// Initialize all schema fields explicitly so d.Set receives a complete
+	// map. Passing a partial map (missing TypeInt fields) causes Terraform
+	// 1.1.x to store 0 for the value field in state.
+	block := map[string]interface{}{
+		"type":  typeVal,
+		"unit":  "",
+		"value": 0,
+		"from":  0,
+		"to":    0,
+	}
 	switch typeVal {
 	case "live":
 		if unit, ok := api["unit"].(string); ok {
