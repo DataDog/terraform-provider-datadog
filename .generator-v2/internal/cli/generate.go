@@ -1,8 +1,12 @@
 package cli
 
 import (
+	"time"
+
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
 )
 
@@ -20,11 +24,19 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			runReport := model.RunReport{
+				RunId:            uuid.NewString(),   // v4 uuid
+				GeneratorVersion: cmd.Root().Version, // Version stamped by main.go
+				SpecHash:         spec.Hash,
+				StartedAt:        time.Now(),
+			}
 
 			// TODO: model -> emit -> writer -> report, honoring --check and --include.
 			_ = spec
 			_ = check
 			_ = include
+
+			runReport.FinishedAt = time.Now()
 			return nil
 		},
 	}
