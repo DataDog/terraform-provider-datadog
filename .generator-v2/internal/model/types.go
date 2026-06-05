@@ -9,6 +9,8 @@
 package model
 
 import (
+	"time"
+
 	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 )
 
@@ -64,6 +66,8 @@ type Spec struct {
 	Operations []*Operation
 	// Components is the shared component set, retained for lazy $ref resolution.
 	Components *v3.Components
+	// Hash is the lowercase hex SHA-256 of the spec source
+	Hash string
 }
 
 // Operation is a single OpenAPI operation, tagged with whether it is in scope
@@ -204,4 +208,90 @@ type Mapper struct {
 	SdkPath string
 	// GoType is the Go type used at this mapping site, e.g. types.String.
 	GoType string
+}
+
+// ----------------------------------------------------------------------------
+// Run-report types
+//
+// Field names and JSON tags mirror contracts/run-report.schema.json so
+// report.WriteJSON can marshal a RunReport straight to the structured output
+// CI gates on.
+// ----------------------------------------------------------------------------
+
+// ArtifactStatus is the terminal state of an artifact in a generate run.
+type ArtifactStatus string
+
+const (
+	ArtifactStatusCreated   ArtifactStatus = "created"
+	ArtifactStatusUpdated   ArtifactStatus = "updated"
+	ArtifactStatusUnchanged ArtifactStatus = "unchanged"
+	ArtifactStatusSkipped   ArtifactStatus = "skipped"
+	ArtifactStatusFailed    ArtifactStatus = "failed"
+)
+
+// DiagnosticSeverity classifies a Diagnostic.
+type DiagnosticSeverity string
+
+const (
+	SeverityError   DiagnosticSeverity = "error"
+	SeverityWarning DiagnosticSeverity = "warning"
+	SeverityInfo    DiagnosticSeverity = "info"
+)
+
+// SkipReason explains why an operation produced no artifact.
+type SkipReason string
+
+const (
+	SkipReasonTrackingFieldAbsent SkipReason = "tracking_field_absent"
+	SkipReasonTrackingFieldSkip   SkipReason = "tracking_field_skip_true"
+)
+
+// RunReport is the structured output of a tfgen generate run.
+type RunReport struct {
+	RunId             string                `json:"run_id"`
+	GeneratorVersion  string                `json:"generator_version"`
+	SpecHash          string                `json:"spec_hash"`
+	StartedAt         time.Time             `json:"started_at"`
+	FinishedAt        time.Time             `json:"finished_at"`
+	Artifacts         []ArtifactReportEntry `json:"artifacts"`
+	SkippedOperations []SkippedOperation    `json:"skipped_operations,omitempty"`
+	Summary           *RunSummary           `json:"summary,omitempty"`
+}
+
+// RunSummary holds convenience counts for CI assertions, one per ArtifactStatus.
+type RunSummary struct {
+	Created   int `json:"created"`
+	Updated   int `json:"updated"`
+	Unchanged int `json:"unchanged"`
+	Skipped   int `json:"skipped"`
+	Failed    int `json:"failed"`
+}
+
+// ArtifactReportEntry is the per-artifact section of a RunReport.
+type ArtifactReportEntry struct {
+	Name        string         `json:"name"`
+	Kind        ArtifactKind   `json:"kind"`
+	Status      ArtifactStatus `json:"status"`
+	Path        string         `json:"path"`
+	Diagnostics []Diagnostic   `json:"diagnostics,omitempty"`
+	// OrphanedHooks lists hook functions declared but no longer referenced.
+	OrphanedHooks []string `json:"orphaned_hooks,omitempty"`
+}
+
+// Diagnostic is a single error/warning/info collected during generation.
+type Diagnostic struct {
+	Severity DiagnosticSeverity `json:"severity"`
+	Message  string             `json:"message"`
+	// Location is an optional source-side anchor,
+	// e.g. spec:components.schemas.Pet.properties.tags.
+	Location string `json:"location,omitempty"`
+}
+
+// SkippedOperation records an operation that produced no artifact, listed for
+// visibility rather than as a failure.
+type SkippedOperation struct {
+	OperationId string     `json:"operation_id"`
+	Path        string     `json:"path"`
+	Method      string     `json:"method"`
+	Reason      SkipReason `json:"reason"`
 }
