@@ -5,6 +5,7 @@ go 1.25.8
 toolchain go1.26.1
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/pb33f/libopenapi v0.37.2
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
 	github.com/spf13/cobra v1.10.2
