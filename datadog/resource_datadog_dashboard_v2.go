@@ -314,8 +314,6 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 		if err := d.Set("tab", flatTabs); err != nil {
 			diags = append(diags, diag.FromErr(err)...)
 		}
-	} else if err := d.Set("tab", []interface{}{}); err != nil {
-		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// default_timeframe — always call d.Set so stale state is cleared when removed

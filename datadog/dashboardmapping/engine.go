@@ -1526,26 +1526,10 @@ func getIntFromMap(data map[string]interface{}, key string) int {
 		switch iv := v.(type) {
 		case int:
 			return iv
-		case int32:
-			return int(iv)
 		case float64:
 			return int(iv)
 		case int64:
 			return int(iv)
-		case json.Number:
-			if parsed, err := iv.Int64(); err == nil {
-				return int(parsed)
-			}
-			if parsed, err := strconv.ParseFloat(string(iv), 64); err == nil {
-				return int(parsed)
-			}
-		case string:
-			if parsed, err := strconv.ParseInt(iv, 10, 64); err == nil {
-				return int(parsed)
-			}
-			if parsed, err := strconv.ParseFloat(iv, 64); err == nil {
-				return int(parsed)
-			}
 		}
 	}
 	return 0
@@ -2614,8 +2598,7 @@ func buildTabsJSONFromMap(data map[string]interface{}, builtWidgets []interface{
 // Parallel to MarshalDashboardJSON in engine.go.
 // The trailing newline matches behavior of json.NewEncoder used when cassettes were recorded.
 func MarshalDashboardJSONFromMap(data map[string]interface{}, id string) (string, error) {
-	bodyMap := BuildDashboardEngineJSONFromMap(data, id)
-	body, err := json.Marshal(bodyMap)
+	body, err := json.Marshal(BuildDashboardEngineJSONFromMap(data, id))
 	if err != nil {
 		return "", fmt.Errorf("error marshaling dashboard JSON: %s", err)
 	}

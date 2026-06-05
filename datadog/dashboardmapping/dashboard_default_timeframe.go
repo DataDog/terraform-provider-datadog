@@ -22,20 +22,26 @@ var dashboardDefaultTimeframeFields = []FieldSpec{
 		Description: "End time in milliseconds since epoch. Required when `type` is `fixed`."},
 }
 
-// DashboardDefaultTimeframeSchema returns the SDKv2 schema for default_timeframe.
-// Used by the v1 datadog_dashboard resource.
-func DashboardDefaultTimeframeSchema() *schema.Schema {
-	return FieldSpecToSDKv2(FieldSpec{
+// DashboardDefaultTimeframeField returns the top-level FieldSpec for default_timeframe.
+func DashboardDefaultTimeframeField() FieldSpec {
+	return FieldSpec{
 		HCLKey:      "default_timeframe",
 		Type:        TypeBlock,
 		OmitEmpty:   true,
+		NullOnClear: true,
 		Description: "The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured.",
 		Children:    dashboardDefaultTimeframeFields,
-	})
+	}
+}
+
+// DashboardDefaultTimeframeSchema returns the SDKv2 schema for default_timeframe.
+// Used by the v1 datadog_dashboard resource.
+func DashboardDefaultTimeframeSchema() *schema.Schema {
+	return FieldSpecToSDKv2(DashboardDefaultTimeframeField())
 }
 
 // BuildDefaultTimeframeJSONFromMap converts a Terraform default_timeframe block to API JSON.
-// Used by the v1 datadog_dashboard resource.
+// Used by the v1 datadog_dashboard resource until the API client models this field.
 func BuildDefaultTimeframeJSONFromMap(block map[string]interface{}) (map[string]interface{}, error) {
 	typeVal, ok := block["type"].(string)
 	if !ok || typeVal == "" {

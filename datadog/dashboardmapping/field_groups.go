@@ -1709,9 +1709,7 @@ var DashboardTopLevelFields = []FieldSpec{
 		Children:    dashboardTabFields},
 
 	// NullOnClear: removing the block sends JSON null to the API, clearing the server-side value.
-	{HCLKey: "default_timeframe", Type: TypeBlock, OmitEmpty: true, NullOnClear: true,
-		Description: "The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured.",
-		Children:    dashboardDefaultTimeframeFields},
+	DashboardDefaultTimeframeField(),
 
 	// notify_list: always send [], never omit (OmitEmpty: false)
 	{HCLKey: "notify_list", Type: TypeStringList, UseSet: true, OmitEmpty: false,
