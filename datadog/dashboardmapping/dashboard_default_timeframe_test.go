@@ -23,8 +23,8 @@ func TestFlattenDefaultTimeframe_live(t *testing.T) {
 	assert.Equal(t, "live", block["type"])
 	assert.Equal(t, "week", block["unit"])
 	assert.Equal(t, 1, block["value"])
-	assert.NotContains(t, block, "from")
-	assert.NotContains(t, block, "to")
+	assert.Equal(t, 0, block["from"])
+	assert.Equal(t, 0, block["to"])
 }
 
 func TestFlattenDefaultTimeframe_fixed(t *testing.T) {
@@ -40,8 +40,8 @@ func TestFlattenDefaultTimeframe_fixed(t *testing.T) {
 	assert.Equal(t, "fixed", block["type"])
 	assert.Equal(t, 1776000001000, block["from"])
 	assert.Equal(t, 1776003601000, block["to"])
-	assert.NotContains(t, block, "unit")
-	assert.NotContains(t, block, "value")
+	assert.Equal(t, "", block["unit"])
+	assert.Equal(t, 0, block["value"])
 }
 
 // TestFlattenDefaultTimeframeSDKv2State_live verifies that d.Set with a partial map
