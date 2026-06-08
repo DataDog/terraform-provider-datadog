@@ -1,6 +1,7 @@
 package dashboardmapping
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -25,6 +26,23 @@ func TestFlattenDefaultTimeframe_live(t *testing.T) {
 	assert.Equal(t, 1, block["value"])
 	assert.Equal(t, 0, block["from"])
 	assert.Equal(t, 0, block["to"])
+}
+
+// TestFlattenDefaultTimeframe_jsonNumber guards the regression where the datadog
+// API client decodes additionalProperties with json.Decoder.UseNumber(), so numeric
+// fields arrive as json.Number rather than float64. getIntFromMap must handle that
+// type or value silently flattens to 0 (see "expected 1, got 0" CI failure).
+func TestFlattenDefaultTimeframe_jsonNumber(t *testing.T) {
+	t.Parallel()
+
+	result := FlattenDefaultTimeframe(map[string]interface{}{
+		"type":  "live",
+		"unit":  "week",
+		"value": json.Number("1"),
+	})
+	require.Len(t, result, 1)
+	block := result[0].(map[string]interface{})
+	assert.Equal(t, 1, block["value"])
 }
 
 func TestFlattenDefaultTimeframe_fixed(t *testing.T) {

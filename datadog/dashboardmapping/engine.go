@@ -1517,7 +1517,9 @@ func getBoolFromMap(data map[string]interface{}, key string) bool {
 }
 
 // getIntFromMap returns an int value from a SDKv2 data map.
-// SDKv2 stores TypeInt as int.
+// SDKv2 stores TypeInt as int; API JSON decodes numbers as float64, and some
+// decoders (json.Number) or sources may hand us other numeric representations,
+// so accept the full range defensively.
 func getIntFromMap(data map[string]interface{}, key string) int {
 	if data == nil {
 		return 0
@@ -1526,10 +1528,25 @@ func getIntFromMap(data map[string]interface{}, key string) int {
 		switch iv := v.(type) {
 		case int:
 			return iv
-		case float64:
+		case int32:
 			return int(iv)
 		case int64:
 			return int(iv)
+		case float32:
+			return int(iv)
+		case float64:
+			return int(iv)
+		case json.Number:
+			if n, err := iv.Int64(); err == nil {
+				return int(n)
+			}
+			if f, err := iv.Float64(); err == nil {
+				return int(f)
+			}
+		case string:
+			if n, err := strconv.Atoi(iv); err == nil {
+				return n
+			}
 		}
 	}
 	return 0
