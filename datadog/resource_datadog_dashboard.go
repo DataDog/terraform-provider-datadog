@@ -174,7 +174,7 @@ func resourceDatadogDashboard() *schema.Resource {
 						},
 					},
 				},
-				"default_timeframe": dashboardmapping.DashboardDefaultTimeframeSchema(),
+				"default_timeframe": dashboardmapping.FieldSpecToSDKv2(dashboardmapping.DashboardDefaultTimeframeField()),
 			}
 		},
 	}
@@ -349,10 +349,15 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 
-	// Set default_timeframe — always call d.Set so stale state is cleared when removed
-	var terraformDefaultTimeframe []interface{}
+	// Set default_timeframe — always call d.Set so stale state is cleared when removed.
+	// Shares the TypeOneOf field spec and engine flatten with datadog_dashboard_v2.
+	var terraformDefaultTimeframe interface{}
 	if apiDefaultTimeframe := getDashboardDefaultTimeframeFromAPI(dashboard); apiDefaultTimeframe != nil {
-		terraformDefaultTimeframe = dashboardmapping.FlattenDefaultTimeframe(apiDefaultTimeframe)
+		dtfState := dashboardmapping.FlattenEngineJSON(
+			[]dashboardmapping.FieldSpec{dashboardmapping.DashboardDefaultTimeframeField()},
+			map[string]interface{}{"default_timeframe": apiDefaultTimeframe},
+		)
+		terraformDefaultTimeframe = dtfState["default_timeframe"]
 	}
 	if err := d.Set("default_timeframe", terraformDefaultTimeframe); err != nil {
 		return diag.FromErr(err)
@@ -497,16 +502,15 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 		terraformTabs := v.([]interface{})
 		additionalProps["tabs"] = buildDatadogTabs(&terraformTabs)
 	}
-	if blocks := d.Get("default_timeframe").([]interface{}); len(blocks) > 0 {
-		if block, ok := blocks[0].(map[string]interface{}); ok {
-			built, err := dashboardmapping.BuildDefaultTimeframeJSONFromMap(block)
-			if err != nil {
-				return nil, err
-			}
-			additionalProps["default_timeframe"] = built
-		}
-	} else if !d.IsNewResource() && d.HasChange("default_timeframe") {
-		additionalProps["default_timeframe"] = nil
+	// Build default_timeframe via the shared TypeOneOf engine (same as datadog_dashboard_v2).
+	// The NullOnClear flag emits JSON null when the block is removed from an existing resource.
+	dtfData := map[string]interface{}{"default_timeframe": d.Get("default_timeframe")}
+	if blocks, _ := dtfData["default_timeframe"].([]interface{}); len(blocks) == 0 && !d.IsNewResource() && d.HasChange("default_timeframe") {
+		dtfData["default_timeframe"] = nil
+	}
+	builtDTF := dashboardmapping.BuildEngineJSONFromMap(dtfData, []dashboardmapping.FieldSpec{dashboardmapping.DashboardDefaultTimeframeField()})
+	if v, ok := builtDTF["default_timeframe"]; ok {
+		additionalProps["default_timeframe"] = v
 	}
 	if len(additionalProps) > 0 {
 		dashboard.AdditionalProperties = additionalProps

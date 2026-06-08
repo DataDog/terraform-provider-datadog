@@ -16,9 +16,10 @@ resource "datadog_dashboard" "default_timeframe_dashboard" {
   description = "Created using the Datadog provider in Terraform"
 
   default_timeframe {
-    type  = "live"
-    unit  = "week"
-    value = 1
+    live {
+      unit  = "week"
+      value = 1
+    }
   }
 
   widget {
@@ -34,9 +35,9 @@ var datadogDashboardDefaultTimeframeAsserts = []string{
 	"layout_type = ordered",
 	"description = Created using the Datadog provider in Terraform",
 	"default_timeframe.# = 1",
-	"default_timeframe.0.type = live",
-	"default_timeframe.0.unit = week",
-	"default_timeframe.0.value = 1",
+	"default_timeframe.0.live.# = 1",
+	"default_timeframe.0.live.0.unit = week",
+	"default_timeframe.0.live.0.value = 1",
 	"widget.# = 1",
 }
 

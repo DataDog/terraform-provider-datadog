@@ -4,91 +4,12 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-// FlattenDefaultTimeframe is used by the v1 datadog_dashboard resource (flat schema).
-
-func TestFlattenDefaultTimeframe_live(t *testing.T) {
-	t.Parallel()
-
-	result := FlattenDefaultTimeframe(map[string]interface{}{
-		"type":  "live",
-		"unit":  "week",
-		"value": float64(1),
-	})
-	require.Len(t, result, 1)
-	block := result[0].(map[string]interface{})
-	assert.Equal(t, "live", block["type"])
-	assert.Equal(t, "week", block["unit"])
-	assert.Equal(t, 1, block["value"])
-	assert.Equal(t, 0, block["from"])
-	assert.Equal(t, 0, block["to"])
-}
-
-// TestFlattenDefaultTimeframe_jsonNumber guards the regression where the datadog
-// API client decodes additionalProperties with json.Decoder.UseNumber(), so numeric
-// fields arrive as json.Number rather than float64. getIntFromMap must handle that
-// type or value silently flattens to 0 (see "expected 1, got 0" CI failure).
-func TestFlattenDefaultTimeframe_jsonNumber(t *testing.T) {
-	t.Parallel()
-
-	result := FlattenDefaultTimeframe(map[string]interface{}{
-		"type":  "live",
-		"unit":  "week",
-		"value": json.Number("1"),
-	})
-	require.Len(t, result, 1)
-	block := result[0].(map[string]interface{})
-	assert.Equal(t, 1, block["value"])
-}
-
-func TestFlattenDefaultTimeframe_fixed(t *testing.T) {
-	t.Parallel()
-
-	result := FlattenDefaultTimeframe(map[string]interface{}{
-		"type": "fixed",
-		"from": float64(1776000001000),
-		"to":   float64(1776003601000),
-	})
-	require.Len(t, result, 1)
-	block := result[0].(map[string]interface{})
-	assert.Equal(t, "fixed", block["type"])
-	assert.Equal(t, 1776000001000, block["from"])
-	assert.Equal(t, 1776003601000, block["to"])
-	assert.Equal(t, "", block["unit"])
-	assert.Equal(t, 0, block["value"])
-}
-
-// TestFlattenDefaultTimeframeSDKv2State_live verifies that d.Set with a partial map
-// (missing from/to) still stores correct zero values via SDKv2 schema processing.
-func TestFlattenDefaultTimeframeSDKv2State_live(t *testing.T) {
-	t.Parallel()
-
-	d := schema.TestResourceDataRaw(t, map[string]*schema.Schema{
-		"default_timeframe": DashboardDefaultTimeframeSchema(),
-	}, map[string]interface{}{})
-
-	err := d.Set("default_timeframe", FlattenDefaultTimeframe(map[string]interface{}{
-		"type":  "live",
-		"unit":  "week",
-		"value": float64(1),
-	}))
-	require.NoError(t, err)
-
-	blocks := d.Get("default_timeframe").([]interface{})
-	require.Len(t, blocks, 1)
-	block := blocks[0].(map[string]interface{})
-	assert.Equal(t, "live", block["type"])
-	assert.Equal(t, "week", block["unit"])
-	assert.Equal(t, 1, block["value"])
-	assert.Equal(t, 0, block["from"])
-	assert.Equal(t, 0, block["to"])
-}
-
 // Engine flatten and build round-trips via DashboardDefaultTimeframeField (TypeOneOf).
+// Both datadog_dashboard (v1) and datadog_dashboard_v2 share this field spec.
 
 func TestEngineDefaultTimeframe_flattenLive(t *testing.T) {
 	t.Parallel()
@@ -112,6 +33,26 @@ func TestEngineDefaultTimeframe_flattenLive(t *testing.T) {
 	assert.Equal(t, "week", live["unit"])
 	assert.Equal(t, 1, live["value"])
 	assert.NotContains(t, outer, "fixed")
+}
+
+// TestEngineDefaultTimeframe_flattenJSONNumber guards the regression where the datadog
+// API client decodes additionalProperties with json.Decoder.UseNumber(), so numeric
+// fields arrive as json.Number rather than float64. The engine flatten must handle that
+// type or the value silently flattens to 0 (see "expected 1, got 0" CI failure).
+func TestEngineDefaultTimeframe_flattenJSONNumber(t *testing.T) {
+	t.Parallel()
+
+	resp := map[string]interface{}{
+		"default_timeframe": map[string]interface{}{
+			"type": "live", "unit": "week", "value": json.Number("1"),
+		},
+	}
+	state := FlattenEngineJSON([]FieldSpec{DashboardDefaultTimeframeField()}, resp)
+
+	dtf := state["default_timeframe"].([]interface{})
+	require.Len(t, dtf, 1)
+	live := dtf[0].(map[string]interface{})["live"].([]interface{})[0].(map[string]interface{})
+	assert.Equal(t, 1, live["value"])
 }
 
 func TestEngineDefaultTimeframe_flattenFixed(t *testing.T) {
