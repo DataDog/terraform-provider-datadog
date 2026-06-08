@@ -6,7 +6,24 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// dashboardDefaultTimeframeFields corresponds to OpenAPI DashboardDefaultTimeframe.
+// dashboardDefaultTimeframeLiveFields corresponds to the "live" variant of DashboardDefaultTimeframe.
+var dashboardDefaultTimeframeLiveFields = []FieldSpec{
+	{HCLKey: "unit", Type: TypeString, OmitEmpty: false, Required: true,
+		ValidValues: []string{"minute", "hour", "day", "week", "month", "year"},
+		Description: "Unit of the live timeframe span."},
+	{HCLKey: "value", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Value of the live timeframe span."},
+}
+
+// dashboardDefaultTimeframeFixedFields corresponds to the "fixed" variant of DashboardDefaultTimeframe.
+var dashboardDefaultTimeframeFixedFields = []FieldSpec{
+	{HCLKey: "from", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Start time in milliseconds since epoch."},
+	{HCLKey: "to", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "End time in milliseconds since epoch."},
+}
+
+// dashboardDefaultTimeframeFields is the flat field list used by the v1 datadog_dashboard resource.
 var dashboardDefaultTimeframeFields = []FieldSpec{
 	{HCLKey: "type", Type: TypeString, Required: true, OmitEmpty: false,
 		ValidValues: []string{"live", "fixed"},
@@ -22,26 +39,43 @@ var dashboardDefaultTimeframeFields = []FieldSpec{
 		Description: "End time in milliseconds since epoch. Required when `type` is `fixed`."},
 }
 
-// DashboardDefaultTimeframeField returns the top-level FieldSpec for default_timeframe.
+// DashboardDefaultTimeframeField returns the TypeOneOf FieldSpec for default_timeframe.
+// Used by the v2 datadog_dashboard_v2 resource via DashboardTopLevelFields.
 func DashboardDefaultTimeframeField() FieldSpec {
 	return FieldSpec{
 		HCLKey:      "default_timeframe",
-		Type:        TypeBlock,
+		Type:        TypeOneOf,
 		OmitEmpty:   true,
 		NullOnClear: true,
 		Description: "The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured.",
-		Children:    dashboardDefaultTimeframeFields,
+		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
+		Children: []FieldSpec{
+			{HCLKey: "live", Type: TypeBlock, OmitEmpty: true,
+				Discriminator: &OneOfDiscriminator{Value: "live"},
+				Description:   "A live timeframe applied when opening the dashboard.",
+				Children:      dashboardDefaultTimeframeLiveFields},
+			{HCLKey: "fixed", Type: TypeBlock, OmitEmpty: true,
+				Discriminator: &OneOfDiscriminator{Value: "fixed"},
+				Description:   "A fixed timeframe applied when opening the dashboard.",
+				Children:      dashboardDefaultTimeframeFixedFields},
+		},
 	}
 }
 
-// DashboardDefaultTimeframeSchema returns the SDKv2 schema for default_timeframe.
+// DashboardDefaultTimeframeSchema returns the flat SDKv2 schema for default_timeframe.
 // Used by the v1 datadog_dashboard resource.
 func DashboardDefaultTimeframeSchema() *schema.Schema {
-	return FieldSpecToSDKv2(DashboardDefaultTimeframeField())
+	return FieldSpecToSDKv2(FieldSpec{
+		HCLKey:      "default_timeframe",
+		Type:        TypeBlock,
+		OmitEmpty:   true,
+		Description: "The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured.",
+		Children:    dashboardDefaultTimeframeFields,
+	})
 }
 
-// BuildDefaultTimeframeJSONFromMap converts a Terraform default_timeframe block to API JSON.
-// Used by the v1 datadog_dashboard resource until the API client models this field.
+// BuildDefaultTimeframeJSONFromMap converts a v1 flat default_timeframe block to API JSON.
+// Used by the v1 datadog_dashboard resource.
 func BuildDefaultTimeframeJSONFromMap(block map[string]interface{}) (map[string]interface{}, error) {
 	typeVal, ok := block["type"].(string)
 	if !ok || typeVal == "" {
@@ -75,7 +109,11 @@ func BuildDefaultTimeframeJSONFromMap(block map[string]interface{}) (map[string]
 	return result, nil
 }
 
-// FlattenDefaultTimeframe converts API default_timeframe JSON to Terraform state.
+// FlattenDefaultTimeframe converts API default_timeframe JSON to flat Terraform state.
+// Used by the v1 datadog_dashboard resource.
+// Initializes all schema fields explicitly so d.Set receives a complete map,
+// working around a Terraform 1.1.x issue where a partial map causes TypeInt
+// fields to be stored as 0 in state.
 func FlattenDefaultTimeframe(api map[string]interface{}) []interface{} {
 	if api == nil {
 		return nil
@@ -85,7 +123,13 @@ func FlattenDefaultTimeframe(api map[string]interface{}) []interface{} {
 		return nil
 	}
 
-	block := map[string]interface{}{"type": typeVal}
+	block := map[string]interface{}{
+		"type":  typeVal,
+		"unit":  "",
+		"value": 0,
+		"from":  0,
+		"to":    0,
+	}
 	switch typeVal {
 	case "live":
 		if unit, ok := api["unit"].(string); ok {
