@@ -100,6 +100,7 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 
 	It("sorts the Required slice alphabetically regardless of spec declaration order", func() {
 		op := opByID(spec, "CreateObjectMultiRequired")
+		// Spec declares required in order: z_prop, a_prop, m_prop — must come out sorted.
 		Expect(op.RequestSchema.Required).To(Equal([]string{"a_prop", "m_prop", "z_prop"}))
 	})
 
@@ -197,11 +198,6 @@ var _ = Describe("NormalizeSchemas no-body cases", func() {
 	It("leaves ResponseSchema nil for an operation whose only response is a bodiless 204", func() {
 		op := opByID(spec, "CreateArray")
 		Expect(op.ResponseSchema).To(BeNil())
-	})
-
-	It("does not return an error when an operation has neither a request body nor a response body", func() {
-		_, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_kinds.yaml"))
-		Expect(err).To(Succeed())
 	})
 })
 
@@ -383,12 +379,5 @@ var _ = Describe("NormalizeSchemas determinism", func() {
 			Expect(op.ResponseSchema).To(Equal(match.ResponseSchema),
 				"ResponseSchema for %s diverged between runs", op.OperationId)
 		}
-	})
-
-	It("sorts the Required slice so its order does not depend on spec declaration order", func() {
-		spec := loadSpecMust("schema_normalize_kinds.yaml")
-		op := opByID(spec, "CreateObjectMultiRequired")
-		// Spec declares required in order: z_prop, a_prop, m_prop — must come out sorted.
-		Expect(op.RequestSchema.Required).To(Equal([]string{"a_prop", "m_prop", "z_prop"}))
 	})
 })
