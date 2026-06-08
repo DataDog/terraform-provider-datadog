@@ -1776,6 +1776,10 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			}
 
 		case TypeOneOf:
+			if data[f.HCLKey] == nil && f.NullOnClear {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			outer := getBlockFromMap(data, f.HCLKey)
 			if outer == nil {
 				if f.OmitEmpty {

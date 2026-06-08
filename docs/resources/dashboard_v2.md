@@ -93,9 +93,10 @@ resource "datadog_dashboard_v2" "ordered_dashboard" {
   }
 
   default_timeframe {
-    type  = "live"
-    unit  = "week"
-    value = 1
+    live {
+      unit  = "week"
+      value = 1
+    }
   }
 
   template_variable {
@@ -175,16 +176,28 @@ resource "datadog_dashboard_v2" "free_dashboard" {
 <a id="nestedblock--default_timeframe"></a>
 ### Nested Schema for `default_timeframe`
 
-Required:
-
-- `type` (String) The type of timeframe. Valid values are `live`, `fixed`.
-
 Optional:
 
-- `from` (Number) Start time in milliseconds since epoch. Required when `type` is `fixed`.
-- `to` (Number) End time in milliseconds since epoch. Required when `type` is `fixed`.
-- `unit` (String) Unit of the live timeframe span. Required when `type` is `live`. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
-- `value` (Number) Value of the live timeframe span. Required when `type` is `live`.
+- `fixed` (Block List, Max: 1) A fixed timeframe applied when opening the dashboard. (see [below for nested schema](#nestedblock--default_timeframe--fixed))
+- `live` (Block List, Max: 1) A live timeframe applied when opening the dashboard. (see [below for nested schema](#nestedblock--default_timeframe--live))
+
+<a id="nestedblock--default_timeframe--fixed"></a>
+### Nested Schema for `default_timeframe.fixed`
+
+Required:
+
+- `from` (Number) Start time in milliseconds since epoch.
+- `to` (Number) End time in milliseconds since epoch.
+
+
+<a id="nestedblock--default_timeframe--live"></a>
+### Nested Schema for `default_timeframe.live`
+
+Required:
+
+- `unit` (String) Unit of the live timeframe span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the live timeframe span.
+
 
 
 <a id="nestedblock--tab"></a>

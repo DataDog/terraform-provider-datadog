@@ -317,11 +317,11 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 	}
 
 	// default_timeframe — always call d.Set so stale state is cleared when removed
-	var terraformDefaultTimeframe []interface{}
-	if dtf, ok := resp["default_timeframe"].(map[string]interface{}); ok && dtf != nil {
-		terraformDefaultTimeframe = dashboardmapping.FlattenDefaultTimeframe(dtf)
-	}
-	if err := d.Set("default_timeframe", terraformDefaultTimeframe); err != nil {
+	dtfState := dashboardmapping.FlattenEngineJSON(
+		[]dashboardmapping.FieldSpec{dashboardmapping.DashboardDefaultTimeframeField()},
+		resp,
+	)
+	if err := d.Set("default_timeframe", dtfState["default_timeframe"]); err != nil {
 		diags = append(diags, diag.FromErr(err)...)
 	}
 
