@@ -43,11 +43,11 @@ var dashboardDefaultTimeframeFields = []FieldSpec{
 // Used by the v2 datadog_dashboard_v2 resource via DashboardTopLevelFields.
 func DashboardDefaultTimeframeField() FieldSpec {
 	return FieldSpec{
-		HCLKey:      "default_timeframe",
-		Type:        TypeOneOf,
-		OmitEmpty:   true,
-		NullOnClear: true,
-		Description: "The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured.",
+		HCLKey:        "default_timeframe",
+		Type:          TypeOneOf,
+		OmitEmpty:     true,
+		NullOnClear:   true,
+		Description:   "The default timeframe applied when opening the dashboard. Set to `null` to disable after it has been configured.",
 		Discriminator: &OneOfDiscriminator{JSONKey: "type"},
 		Children: []FieldSpec{
 			{HCLKey: "live", Type: TypeBlock, OmitEmpty: true,
