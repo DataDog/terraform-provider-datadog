@@ -291,6 +291,15 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = v
 			case int64:
 				result[f.HCLKey] = int(v)
+			case json.Number:
+				// Some decoders (e.g. the datadog client's UseNumber on
+				// additionalProperties) hand us json.Number; without this the
+				// value silently flattens to its zero value.
+				if n, err := v.Int64(); err == nil {
+					result[f.HCLKey] = int(n)
+				} else if fl, err := v.Float64(); err == nil {
+					result[f.HCLKey] = int(fl)
+				}
 			}
 
 		case TypeFloat:
@@ -299,6 +308,10 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = v
 			case int:
 				result[f.HCLKey] = float64(v)
+			case json.Number:
+				if fl, err := v.Float64(); err == nil {
+					result[f.HCLKey] = fl
+				}
 			}
 
 		case TypeJSON:

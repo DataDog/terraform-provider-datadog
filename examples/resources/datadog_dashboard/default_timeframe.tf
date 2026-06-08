@@ -3,9 +3,10 @@ resource "datadog_dashboard" "default_timeframe_dashboard" {
   layout_type = "ordered"
 
   default_timeframe {
-    type  = "live"
-    unit  = "week"
-    value = 1
+    live {
+      unit  = "week"
+      value = 1
+    }
   }
 
   widget {
