@@ -95,7 +95,6 @@ var _ = Describe("cycleWalker", func() {
 			var depthErr *MaxDepthError
 			Expect(err).To(BeAssignableToTypeOf(depthErr))
 			// unwrap manually so we can inspect fields
-			_ = err.(*MaxDepthError)
 			Expect(err.(*MaxDepthError).MaxDepth).To(Equal(1))
 			Expect(err.(*MaxDepthError).Ref).To(Equal("b"))
 			Expect(w.stack).To(HaveLen(1), "a failed enter must not push")
