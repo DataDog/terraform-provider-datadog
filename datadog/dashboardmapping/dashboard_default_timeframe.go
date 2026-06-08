@@ -111,6 +111,8 @@ func BuildDefaultTimeframeJSONFromMap(block map[string]interface{}) (map[string]
 
 // FlattenDefaultTimeframe converts API default_timeframe JSON to flat Terraform state.
 // Used by the v1 datadog_dashboard resource.
+// All five schema fields are pre-initialized so d.Set receives a complete map;
+// Terraform 1.1.x stores 0 for absent TypeInt fields when given a partial map.
 func FlattenDefaultTimeframe(api map[string]interface{}) []interface{} {
 	if api == nil {
 		return nil
@@ -120,7 +122,13 @@ func FlattenDefaultTimeframe(api map[string]interface{}) []interface{} {
 		return nil
 	}
 
-	block := map[string]interface{}{"type": typeVal}
+	block := map[string]interface{}{
+		"type":  typeVal,
+		"unit":  "",
+		"value": 0,
+		"from":  0,
+		"to":    0,
+	}
 	switch typeVal {
 	case "live":
 		if unit, ok := api["unit"].(string); ok {
