@@ -68,6 +68,50 @@ var _ = Describe("NormalizeSchemas kind classification", func() {
 })
 
 // -------------------------------------------------------------------
+//  Unsupported classification (dynamic / unrepresentable shapes)
+// -------------------------------------------------------------------
+
+var _ = Describe("NormalizeSchemas unsupported classification", func() {
+
+	var spec *model.Spec
+
+	BeforeEach(func() {
+		spec = loadSpecMust("schema_normalize_unsupported.yaml")
+	})
+
+	DescribeTable("classifies a node with no representable type or structure as unsupported, not primitive",
+		func(operationId string, wantKind model.SchemaKind) {
+			op := opByID(spec, operationId)
+			Expect(op.RequestSchema).NotTo(BeNil(), "operation %s must have a non-nil RequestSchema", operationId)
+			Expect(op.RequestSchema.Kind).To(Equal(wantKind))
+		},
+		Entry("type:object with no properties → unsupported", "CreateEmptyObject", model.SchemaKindUnsupported),
+		Entry("a typeless leaf → unsupported", "CreateUntyped", model.SchemaKindUnsupported),
+		Entry("type:array with no items → unsupported", "CreateArrayNoItems", model.SchemaKindUnsupported),
+		Entry("additionalProperties:{} → map (the value, not the map, is unsupported)", "CreateFreeFormMap", model.SchemaKindMap),
+		Entry("additionalProperties:true → map (the value, not the map, is unsupported)", "CreateBoolMap", model.SchemaKindMap),
+	)
+
+	It("carries an unsupported value schema for a free-form additionalProperties:{} map", func() {
+		op := opByID(spec, "CreateFreeFormMap")
+		Expect(op.RequestSchema.Items).NotTo(BeNil(), "a free-form map must still carry a value schema")
+		Expect(op.RequestSchema.Items.Kind).To(Equal(model.SchemaKindUnsupported))
+	})
+
+	It("synthesizes an unsupported value schema for an unconstrained additionalProperties:true map", func() {
+		op := opByID(spec, "CreateBoolMap")
+		Expect(op.RequestSchema.Items).NotTo(BeNil(), "additionalProperties:true must carry an unsupported sentinel value")
+		Expect(op.RequestSchema.Items.Kind).To(Equal(model.SchemaKindUnsupported))
+	})
+
+	It("still classifies a concrete scalar leaf as primitive, never unsupported", func() {
+		op := opByID(spec, "CreateTypedPrimitive")
+		Expect(op.RequestSchema.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(op.RequestSchema.Type).To(Equal("string"))
+	})
+})
+
+// -------------------------------------------------------------------
 //  Field carrying
 // -------------------------------------------------------------------
 

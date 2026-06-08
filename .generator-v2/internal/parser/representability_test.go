@@ -130,6 +130,57 @@ var _ = Describe("CheckSchemaRepresentability flagging", func() {
 	})
 })
 
+var _ = Describe("CheckSchemaRepresentability unsupported flagging", func() {
+
+	It("flags an unsupported request body at the request root", func() {
+		spec := &model.Spec{Operations: []*model.Operation{
+			resourceOp("CreateThing", "POST", "/things", "thing",
+				&model.OperationGroup{Create: "CreateThing", Read: "CreateThing"},
+				&model.Schema{Kind: model.SchemaKindUnsupported}, nil),
+		}}
+		ue := unrepresentableErr(CheckSchemaRepresentability(spec))
+		Expect(ue.Findings).To(HaveLen(1))
+		Expect(ue.Findings[0].Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(ue.Findings[0].SchemaPath).To(Equal("request"))
+	})
+
+	It("flags an unsupported node nested in an object property with its dotted path", func() {
+		spec := &model.Spec{Operations: []*model.Operation{
+			resourceOp("CreateThing", "POST", "/things", "thing",
+				&model.OperationGroup{Create: "CreateThing", Read: "CreateThing"},
+				&model.Schema{Kind: model.SchemaKindObject, Properties: map[string]*model.Schema{
+					"meta": {Kind: model.SchemaKindUnsupported},
+				}}, nil),
+		}}
+		ue := unrepresentableErr(CheckSchemaRepresentability(spec))
+		Expect(ue.Findings).To(HaveLen(1))
+		Expect(ue.Findings[0].Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(ue.Findings[0].SchemaPath).To(Equal("request.meta"))
+	})
+
+	It("flags an unsupported value inside a free-form map with a {} path segment", func() {
+		spec := &model.Spec{Operations: []*model.Operation{
+			resourceOp("CreateThing", "POST", "/things", "thing",
+				&model.OperationGroup{Create: "CreateThing", Read: "CreateThing"},
+				&model.Schema{Kind: model.SchemaKindMap, Items: &model.Schema{Kind: model.SchemaKindUnsupported}}, nil),
+		}}
+		ue := unrepresentableErr(CheckSchemaRepresentability(spec))
+		Expect(ue.Findings).To(HaveLen(1))
+		Expect(ue.Findings[0].Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(ue.Findings[0].SchemaPath).To(Equal("request{}"))
+	})
+
+	It("names the unsupported reason in the aggregated error message", func() {
+		spec := &model.Spec{Operations: []*model.Operation{
+			resourceOp("CreateThing", "POST", "/things", "thing",
+				&model.OperationGroup{Create: "CreateThing", Read: "CreateThing"},
+				&model.Schema{Kind: model.SchemaKindUnsupported}, nil),
+		}}
+		msg := unrepresentableErr(CheckSchemaRepresentability(spec)).Error()
+		Expect(msg).To(ContainSubstring("no Terraform-representable type or structure (unsupported)"))
+	})
+})
+
 var _ = Describe("CheckSchemaRepresentability artifact attribution", func() {
 
 	It("attributes a finding on an untracked group member back to its artifact", func() {
@@ -251,5 +302,21 @@ var _ = Describe("CheckSchemaRepresentability over loaded fixtures", func() {
 	It("returns nil for a fully representable loaded spec", func() {
 		spec := loadSpecMust("schema_normalize_crud.yaml")
 		Expect(CheckSchemaRepresentability(spec)).To(Succeed())
+	})
+
+	It("flags every unsupported body normalized from schema_normalize_unsupported.yaml and skips the primitive", func() {
+		spec := loadSpecMust("schema_normalize_unsupported.yaml")
+		ue := unrepresentableErr(CheckSchemaRepresentability(spec))
+
+		ids := make([]string, 0, len(ue.Findings))
+		for _, f := range ue.Findings {
+			Expect(f.Kind).To(Equal(model.SchemaKindUnsupported))
+			ids = append(ids, f.OperationId)
+		}
+		// CreateTypedPrimitive is representable and contributes no finding.
+		Expect(ids).To(ConsistOf(
+			"CreateEmptyObject", "CreateUntyped", "CreateArrayNoItems",
+			"CreateFreeFormMap", "CreateBoolMap",
+		))
 	})
 })

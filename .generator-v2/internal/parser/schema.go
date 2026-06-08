@@ -261,8 +261,8 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 	}
 
 	// The kind (set above by classifyKind) decides which children to recurse into
-	// and where to store them. A Primitive has no children, so it has no case and
-	// falls through with only the scalar fields (Type/Format/Enum) already set.
+	// and where to store them. Primitive and Unsupported have no children, so they
+	// have no case and fall through with only the scalar fields already set.
 	switch out.Kind {
 	case model.SchemaKindObject:
 		// Object: walk every named property into out.Properties, keyed by name.
@@ -289,13 +289,17 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 
 	case model.SchemaKindMap:
 		// Map: dynamic keys sharing one value schema (additionalProperties),
-		// also carried in out.Items.
+		// carried in out.Items. A boolean `additionalProperties: true` declares
+		// no value schema — its values are unconstrained, which TF cannot
+		// represent, so carry an Unsupported sentinel for the check to reject.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
 			value, err := n.normalizeProxy(s.AdditionalProperties.A, depth)
 			if err != nil {
 				return nil, err
 			}
 			out.Items = value
+		} else {
+			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported}
 		}
 
 	case model.SchemaKindVariant:
@@ -315,13 +319,12 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 	return out, nil
 }
 
-// classifyKind derives the SchemaKind from structure, not type alone. Precedence:
+// classifyKind derives the SchemaKind from structure, not type alone. Precedence
+// (first match wins, since a node can satisfy several at once):
 // oneOf/anyOf → variant; properties → object; type:array+items → array;
-// additionalProperties (no properties) → map; type:object → object; else primitive.
+// additionalProperties → map; a concrete scalar type → primitive; anything else
+// (free-form/empty object, typeless leaf, itemless array) → unsupported.
 func classifyKind(s *base.Schema) model.SchemaKind {
-	// Cases are ordered by precedence: a schema can satisfy several at once (e.g.
-	// type:object WITH oneOf), so the first match wins. Structure is checked
-	// before the declared type — properties make it an object even when untyped.
 	switch {
 	case len(s.OneOf) > 0 || len(s.AnyOf) > 0:
 		// "one of several shapes" outranks everything else.
@@ -330,17 +333,20 @@ func classifyKind(s *base.Schema) model.SchemaKind {
 		// Declared named fields → object, regardless of the type keyword.
 		return model.SchemaKindObject
 	case hasType(s, "array") && s.Items != nil:
-		// A list, but only if it actually says what its elements are.
+		// A list, but only if it says what its elements are. A type:array with
+		// no items has an unknown element type and falls through to unsupported.
 		return model.SchemaKindArray
 	case isMap(s):
 		// additionalProperties (and no declared properties) → dynamic-key map.
 		return model.SchemaKindMap
-	case hasType(s, "object"):
-		// type:object with no properties and no additionalProperties.
-		return model.SchemaKindObject
-	default:
-		// Anything left is a scalar leaf (string, integer, boolean, ...).
+	case isRepresentablePrimitive(s):
+		// A concrete scalar leaf (string, integer, number, boolean).
 		return model.SchemaKindPrimitive
+	default:
+		// No representable type or structure: a free-form/empty object
+		// (type:object with no properties), a typeless leaf (empty schema {}),
+		// an itemless array, etc. TF cannot emit these — reject, don't guess.
+		return model.SchemaKindUnsupported
 	}
 }
 
@@ -358,6 +364,19 @@ func isMap(s *base.Schema) bool {
 // allows multiple types).
 func hasType(s *base.Schema, t string) bool {
 	return slices.Contains(s.Type, t)
+}
+
+// isRepresentablePrimitive reports whether the schema's declared type is a
+// concrete scalar Terraform can emit. A node with no type — or one that reached
+// here with a non-scalar type, e.g. an itemless array — is not a primitive; it
+// is unsupported. The source spec is 3.0, so a single firstType suffices.
+func isRepresentablePrimitive(s *base.Schema) bool {
+	switch firstType(s) {
+	case "string", "integer", "number", "boolean":
+		return true
+	default:
+		return false
+	}
 }
 
 // firstType returns the schema's first declared type, or "" when untyped.

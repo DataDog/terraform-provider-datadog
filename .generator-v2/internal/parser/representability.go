@@ -40,23 +40,18 @@ func (e *UnrepresentableSchemaError) Error() string {
 }
 
 // CheckSchemaRepresentability reports every request/response schema node that
-// cannot become a Terraform Plugin Framework attribute — currently oneOf/anyOf
-// (SchemaKindVariant) and depth/cycle termini (SchemaKindRefCycle). It walks the
-// model.Schema trees NormalizeSchemas produced, so it must run after that pass;
-// running it before BuildAttributeTree lets the tree builder assume a clean,
-// representable input.
-//
-// All findings are collected and returned as a single *UnrepresentableSchemaError
-// (nil when everything is representable). This is the structural counterpart to
-// the post-tree representability check, which validates the built AttributeTree.
+// cannot become a Terraform Plugin Framework attribute — variant (oneOf/anyOf),
+// ref_cycle, and unsupported (no representable type or structure) nodes. It reads
+// the model.Schema trees from NormalizeSchemas, so it runs after that pass and
+// before BuildAttributeTree. Findings are aggregated into one
+// *UnrepresentableSchemaError (nil when everything is representable).
 func CheckSchemaRepresentability(spec *model.Spec) error {
 	if spec == nil {
 		return nil
 	}
 
-	// operationId → owning artifact, drawn from tracked operations' CRUD groups,
-	// so a finding on an untracked group member (e.g. the read op) still names its
-	// artifact. First match in sorted order wins.
+	// operationId → owning artifact, so a finding on an untracked group member
+	// (e.g. the read op) still names its artifact. First match wins.
 	artifactOf := make(map[string]artifactRef)
 	for _, op := range spec.Operations {
 		if op == nil || op.Tracking == nil {
@@ -102,14 +97,14 @@ type findingMeta struct {
 }
 
 // collectUnrepresentable walks s depth-first, appending a finding for each
-// variant/ref_cycle node. An unrepresentable node is terminal — its children are
-// not descended, since the whole node is already rejected.
+// variant/ref_cycle/unsupported node. An unrepresentable node is terminal — its
+// children are not descended, since the whole node is already rejected.
 func collectUnrepresentable(s *model.Schema, schemaPath string, meta findingMeta, out *[]RepresentabilityFinding) {
 	if s == nil {
 		return
 	}
 	switch s.Kind {
-	case model.SchemaKindVariant, model.SchemaKindRefCycle:
+	case model.SchemaKindVariant, model.SchemaKindRefCycle, model.SchemaKindUnsupported:
 		*out = append(*out, RepresentabilityFinding{
 			ArtifactKind: meta.kind,
 			ArtifactName: meta.name,
@@ -167,6 +162,8 @@ func representabilityReason(k model.SchemaKind) string {
 		return "oneOf/anyOf has no Terraform Plugin Framework equivalent (variant)"
 	case model.SchemaKindRefCycle:
 		return "$ref is circular or exceeds --max-depth (ref_cycle)"
+	case model.SchemaKindUnsupported:
+		return "no Terraform-representable type or structure (unsupported)"
 	default:
 		return string(k)
 	}

@@ -30,17 +30,21 @@ const (
 	ArtifactKindDataSource ArtifactKind = "data_source"
 )
 
-// SchemaKind classifies a normalized Schema node after allOf flattening and
-// oneOf/anyOf variant detection.
+// SchemaKind classifies a normalized Schema node by structure. Primitive,
+// Object, Array and Map are emittable as Terraform attributes. Variant
+// (oneOf/anyOf), RefCycle ($ref cycle or beyond --max-depth) and Unsupported
+// (no representable type or structure) are not — the representability check
+// rejects them rather than emitting a types.Dynamic escape hatch.
 type SchemaKind string
 
 const (
-	SchemaKindPrimitive SchemaKind = "primitive"
-	SchemaKindObject    SchemaKind = "object"
-	SchemaKindArray     SchemaKind = "array"
-	SchemaKindMap       SchemaKind = "map"
-	SchemaKindVariant   SchemaKind = "variant" // oneOf / anyOf
-	SchemaKindRefCycle  SchemaKind = "ref_cycle"
+	SchemaKindPrimitive   SchemaKind = "primitive"
+	SchemaKindObject      SchemaKind = "object"
+	SchemaKindArray       SchemaKind = "array"
+	SchemaKindMap         SchemaKind = "map"
+	SchemaKindVariant     SchemaKind = "variant"     // oneOf / anyOf
+	SchemaKindRefCycle    SchemaKind = "ref_cycle"   // $ref cycle or beyond --max-depth
+	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure; always rejected
 )
 
 // IdStrategy describes how the Terraform resource ID is derived from the API response.
