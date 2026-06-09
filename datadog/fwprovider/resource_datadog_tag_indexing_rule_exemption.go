@@ -1,7 +1,5 @@
 package fwprovider
 
-// NOTE: Blocked on datadog-api-client-go PR from datadog-api-spec#5837. See main resource file.
-
 import (
 	"context"
 
@@ -206,7 +204,7 @@ func (r *tagIndexingRuleExemptionResource) updateState(state *tagIndexingRuleExe
 	if v, ok := attrs.GetCreatedAtOk(); ok && v != nil {
 		state.CreatedAt = types.StringValue(v.String())
 	}
-	if v, ok := attrs.GetCreatedByHandleOk(); ok && v != "" {
-		state.CreatedByHandle = types.StringValue(v)
+	if v, ok := attrs.GetCreatedByHandleOk(); ok && v != nil {
+		state.CreatedByHandle = types.StringValue(*v)
 	}
 }

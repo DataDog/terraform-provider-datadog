@@ -1,10 +1,5 @@
 package fwprovider
 
-// NOTE: This file references datadogV2.TagIndexingRule* types and MetricsApi methods
-// that do not yet exist in the current datadog-api-client-go version. This PR is a
-// draft, blocked on the datadog-api-client-go PR generated from datadog-api-spec#5837.
-// Once that client PR merges, update go.mod and remove this comment.
-
 import (
 	"context"
 
@@ -459,7 +454,7 @@ func (r *tagIndexingRuleResource) buildUpdateRequest(_ context.Context, state *t
 
 func buildOptionsFromModel(m *tagIndexingRuleOptionsModel) datadogV2.TagIndexingRuleOptions {
 	opts := datadogV2.NewTagIndexingRuleOptionsWithDefaults()
-	opts.SetVersion(int32(m.Version.ValueInt64()))
+	opts.SetVersion(m.Version.ValueInt64())
 
 	if m.Data != nil {
 		d := datadogV2.NewTagIndexingRuleOptionsDataWithDefaults()
@@ -469,7 +464,7 @@ func buildOptionsFromModel(m *tagIndexingRuleOptionsModel) datadogV2.TagIndexing
 		if m.Data.DynamicTags != nil {
 			dt := datadogV2.NewTagIndexingRuleDynamicTagsWithDefaults()
 			if !m.Data.DynamicTags.QueriedTagsWindowSeconds.IsNull() {
-				dt.SetQueriedTagsWindowSeconds(int32(m.Data.DynamicTags.QueriedTagsWindowSeconds.ValueInt64()))
+				dt.SetQueriedTagsWindowSeconds(m.Data.DynamicTags.QueriedTagsWindowSeconds.ValueInt64())
 			}
 			if !m.Data.DynamicTags.RelatedAssetTags.IsNull() {
 				dt.SetRelatedAssetTags(m.Data.DynamicTags.RelatedAssetTags.ValueBool())
@@ -489,7 +484,7 @@ func buildOptionsFromModel(m *tagIndexingRuleOptionsModel) datadogV2.TagIndexing
 				mm.SetNotUsedInAssets(m.Data.MetricMatch.NotUsedInAssets.ValueBool())
 			}
 			if !m.Data.MetricMatch.QueriedWindowSeconds.IsNull() {
-				mm.SetQueriedWindowSeconds(int32(m.Data.MetricMatch.QueriedWindowSeconds.ValueInt64()))
+				mm.SetQueriedWindowSeconds(m.Data.MetricMatch.QueriedWindowSeconds.ValueInt64())
 			}
 			if !m.Data.MetricMatch.UsedInAssets.IsNull() {
 				mm.SetUsedInAssets(m.Data.MetricMatch.UsedInAssets.ValueBool())

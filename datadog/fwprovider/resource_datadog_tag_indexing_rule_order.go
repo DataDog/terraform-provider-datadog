@@ -1,7 +1,5 @@
 package fwprovider
 
-// NOTE: Blocked on datadog-api-client-go PR from datadog-api-spec#5837. See main resource file.
-
 import (
 	"context"
 	"sort"
@@ -106,7 +104,8 @@ func (r *tagIndexingRuleOrderResource) Read(ctx context.Context, request resourc
 
 	rules := resp.GetData()
 	sort.Slice(rules, func(i, j int) bool {
-		return rules[i].GetAttributes().GetRuleOrder() < rules[j].GetAttributes().GetRuleOrder()
+		ai, aj := rules[i].GetAttributes(), rules[j].GetAttributes()
+		return ai.GetRuleOrder() < aj.GetRuleOrder()
 	})
 
 	ids := make([]types.String, 0, len(rules))
