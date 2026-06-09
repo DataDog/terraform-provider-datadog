@@ -83,6 +83,44 @@ func TestAccDatadogCustomAllocationRuleUpdate(t *testing.T) {
 	})
 }
 
+func TestAccDatadogCustomAllocationRuleInPlaceUpdate(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCustomAllocationRuleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCustomAllocationRuleBasic(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogCustomAllocationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_custom_allocation_rule.foo", "costs_to_allocate.0.value", "AmazonEC2"),
+					resource.TestCheckResourceAttr(
+						"datadog_custom_allocation_rule.foo", "version", "1"),
+				),
+			},
+			{
+				// Change only costs_to_allocate (not rule_name) so this is an in-place
+				// PATCH, not a replacement. The API bumps `updated` and `version` on
+				// every update.
+				Config: testAccCheckDatadogCustomAllocationRuleInPlaceUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogCustomAllocationRuleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_custom_allocation_rule.foo", "rule_name", fmt.Sprintf("tf-test-rule-%s", uniq)),
+					resource.TestCheckResourceAttr(
+						"datadog_custom_allocation_rule.foo", "costs_to_allocate.0.value", "AmazonS3"),
+					resource.TestCheckResourceAttr(
+						"datadog_custom_allocation_rule.foo", "version", "2"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogCustomAllocationRuleImport(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -138,6 +176,30 @@ resource "datadog_custom_allocation_rule" "foo" {
     condition = "is"
     tag       = "aws_product"
     value     = "AmazonEC2"
+  }
+  enabled       = true
+  providernames = ["aws"]
+  rule_name     = "tf-test-rule-%s"
+  strategy {
+    allocated_by_tag_keys = ["team"]
+    based_on_costs {
+      condition = "is"
+      tag       = "aws_product"
+      value     = "AmazonEC2"
+    }
+    granularity = "daily"
+    method      = "even"
+  }
+}`, uniq)
+}
+
+func testAccCheckDatadogCustomAllocationRuleInPlaceUpdate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_custom_allocation_rule" "foo" {
+  costs_to_allocate {
+    condition = "is"
+    tag       = "aws_product"
+    value     = "AmazonS3"
   }
   enabled       = true
   providernames = ["aws"]
