@@ -43,7 +43,7 @@ resource "datadog_tag_indexing_rule_order" "example" {
 ### Required
 
 - `name` (String) A unique name for the order resource. Recommended to match the resource name. No corresponding field exists in the API.
-- `rule_ids` (List of String) Ordered list of tag indexing rule UUIDs. The server assigns rule_order 1, 2, … matching each rule's position in this list.
+- `rule_ids` (List of String) Ordered list of tag indexing rule UUIDs. The server assigns each rule a rule_order value (1, 2, 3, ...) corresponding to its position in this list.
 
 ### Read-Only
 
