@@ -201,6 +201,7 @@ type processorModel struct {
 	ParseXMLProcessor             []*parseXMLProcessorModel                           `tfsdk:"parse_xml"`
 	SplitArrayProcessor           []*splitArrayProcessorModel                         `tfsdk:"split_array"`
 	MetricTagsProcessor           []*metricTagsProcessorModel                         `tfsdk:"metric_tags"`
+	GenerateMetricsV2Processor    []*generateMetricsProcessorModel                    `tfsdk:"generate_metrics"`
 }
 
 type metricTagsProcessorModel struct {
@@ -2212,6 +2213,62 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
+												"generate_metrics": schema.ListNestedBlock{
+													Description: "The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"metric": schema.ListNestedBlock{
+																Description: "Configuration for generating individual metrics.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Name of the custom metric to be created.",
+																		},
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Datadog filter query to match logs for metric generation.",
+																		},
+																		"metric_type": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Type of metric to create.",
+																		},
+																		"group_by": schema.ListAttribute{
+																			Optional:    true,
+																			ElementType: types.StringType,
+																			Description: "Optional fields used to group the metric series.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"value": schema.ListNestedBlock{
+																			Description: "Specifies how the value of the generated metric is computed.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"strategy": schema.StringAttribute{
+																						Required:    true,
+																						Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
+																					},
+																					"field": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
+																				listvalidator.SizeAtMost(1),
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
 											},
 										},
 									},
@@ -3619,6 +3676,8 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenSplitArrayProcessor(ctx, p.ObservabilityPipelineSplitArrayProcessor)
 		} else if p.ObservabilityPipelineMetricTagsProcessor != nil {
 			procModel = flattenMetricTagsProcessor(ctx, p.ObservabilityPipelineMetricTagsProcessor)
+		} else if p.ObservabilityPipelineGenerateMetricsV2Processor != nil {
+			procModel = flattenGenerateMetricsV2Processor(ctx, p.ObservabilityPipelineGenerateMetricsV2Processor)
 		}
 
 		if procModel != nil {
@@ -3751,6 +3810,9 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.MetricTagsProcessor {
 		items = append(items, expandMetricTagsProcessorItem(ctx, common, p))
+	}
+	for _, p := range processor.GenerateMetricsV2Processor {
+		items = append(items, expandGenerateMetricsV2ProcessorItem(ctx, common, p))
 	}
 
 	return items
@@ -5203,6 +5265,75 @@ func expandMetricTagsProcessorItem(ctx context.Context, common observability_pip
 	proc.SetRules(rules)
 
 	return datadogV2.ObservabilityPipelineMetricTagsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.ObservabilityPipelineGenerateMetricsV2Processor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	genMetrics := &generateMetricsProcessorModel{}
+	for _, metric := range src.GetMetrics() {
+		groupByList, _ := types.ListValueFrom(ctx, types.StringType, metric.GetGroupBy())
+		m := generatedMetricModel{
+			Name:       types.StringValue(metric.GetName()),
+			Include:    types.StringValue(metric.GetInclude()),
+			MetricType: types.StringValue(string(metric.GetMetricType())),
+			GroupBy:    groupByList,
+		}
+		if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByOne != nil {
+			m.Value = []generatedMetricValue{
+				{Strategy: types.StringValue("increment_by_one")},
+			}
+		} else if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField != nil {
+			m.Value = []generatedMetricValue{
+				{
+					Strategy: types.StringValue("increment_by_field"),
+					Field:    types.StringValue(metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField.GetField()),
+				},
+			}
+		}
+		genMetrics.Metrics = append(genMetrics.Metrics, m)
+	}
+	model.GenerateMetricsV2Processor = append(model.GenerateMetricsV2Processor, genMetrics)
+	return model
+}
+
+func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
+	common.ApplyTo(proc)
+
+	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
+	for _, m := range src.Metrics {
+		groupBy := []string{}
+		m.GroupBy.ElementsAs(ctx, &groupBy, false)
+
+		val := datadogV2.ObservabilityPipelineMetricValue{}
+		if len(m.Value) > 0 {
+			switch m.Value[0].Strategy.ValueString() {
+			case "increment_by_one":
+				val.ObservabilityPipelineGeneratedMetricIncrementByOne = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByOne{
+					Strategy: "increment_by_one",
+				}
+			case "increment_by_field":
+				val.ObservabilityPipelineGeneratedMetricIncrementByField = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByField{
+					Strategy: "increment_by_field",
+					Field:    m.Value[0].Field.ValueString(),
+				}
+			}
+		}
+
+		metrics = append(metrics, datadogV2.ObservabilityPipelineGeneratedMetric{
+			Name:       m.Name.ValueString(),
+			Include:    m.Include.ValueString(),
+			MetricType: datadogV2.ObservabilityPipelineGeneratedMetricMetricType(m.MetricType.ValueString()),
+			Value:      val,
+			GroupBy:    groupBy,
+		})
+	}
+	proc.SetMetrics(metrics)
+
+	return datadogV2.ObservabilityPipelineGenerateMetricsV2ProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
 // ---------- Destinations ----------

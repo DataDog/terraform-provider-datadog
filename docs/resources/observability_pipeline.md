@@ -1640,6 +1640,7 @@ Optional:
 - `enrichment_table` (Block List) The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processor_group--processor--filter))
 - `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
+- `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
 - `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings or custom mapping configuration. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
@@ -1840,6 +1841,41 @@ Optional:
 
 <a id="nestedblock--config--processor_group--processor--generate_datadog_metrics--metric--value"></a>
 ### Nested Schema for `config.processor_group.processor.generate_datadog_metrics.metric.value`
+
+Required:
+
+- `strategy` (String) Metric value strategy: `increment_by_one` or `increment_by_field`.
+
+Optional:
+
+- `field` (String) Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).
+
+
+
+
+<a id="nestedblock--config--processor_group--processor--generate_metrics"></a>
+### Nested Schema for `config.processor_group.processor.generate_metrics`
+
+Optional:
+
+- `metric` (Block List) Configuration for generating individual metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics--metric))
+
+<a id="nestedblock--config--processor_group--processor--generate_metrics--metric"></a>
+### Nested Schema for `config.processor_group.processor.generate_metrics.metric`
+
+Required:
+
+- `include` (String) Datadog filter query to match logs for metric generation.
+- `metric_type` (String) Type of metric to create.
+- `name` (String) Name of the custom metric to be created.
+
+Optional:
+
+- `group_by` (List of String) Optional fields used to group the metric series.
+- `value` (Block List) Specifies how the value of the generated metric is computed. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics--metric--value))
+
+<a id="nestedblock--config--processor_group--processor--generate_metrics--metric--value"></a>
+### Nested Schema for `config.processor_group.processor.generate_metrics.metric.value`
 
 Required:
 
