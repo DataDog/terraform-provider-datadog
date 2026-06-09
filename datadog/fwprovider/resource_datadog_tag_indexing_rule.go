@@ -104,7 +104,7 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 				Optional:    true,
 				Computed:    true,
 				ElementType: types.StringType,
-				Description: "Tag keys managed by this rule.",
+				Description: "Tag keys this rule includes or excludes, depending on exclude_tags_mode.",
 			},
 			"exclude_tags_mode": schema.BoolAttribute{
 				Optional:    true,
@@ -152,7 +152,7 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 					},
 					"data": schema.SingleNestedAttribute{
 						Required:    true,
-						Description: "Options data payload.",
+						Description: "Behavioral options for how the rule applies to metrics, including backfill and override behavior.",
 						Attributes: map[string]schema.Attribute{
 							"override_previous_rules": schema.BoolAttribute{
 								Optional:    true,
@@ -172,7 +172,7 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 								Attributes: map[string]schema.Attribute{
 									"queried_tags_window_seconds": schema.Int64Attribute{
 										Optional:    true,
-										Description: "Window in seconds for evaluating queried tags.",
+										Description: "Lookback window for determining which tags were recently queried.",
 									},
 									"related_asset_tags": schema.BoolAttribute{
 										Optional:    true,

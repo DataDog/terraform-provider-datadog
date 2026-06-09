@@ -56,7 +56,7 @@ func (r *tagIndexingRuleOrderResource) Schema(_ context.Context, _ resource.Sche
 			"rule_ids": schema.ListAttribute{
 				Required:    true,
 				ElementType: types.StringType,
-				Description: "Ordered list of tag indexing rule UUIDs. The server assigns rule_order 1, 2, … matching each rule's position in this list.",
+				Description: "Ordered list of tag indexing rule UUIDs. The server assigns each rule a rule_order value (1, 2, 3, ...) corresponding to its position in this list.",
 			},
 		},
 	}
