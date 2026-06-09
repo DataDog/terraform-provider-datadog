@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/spf13/cobra"
+
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
 )
 
