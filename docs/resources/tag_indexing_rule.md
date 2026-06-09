@@ -76,7 +76,7 @@ Optional:
 
 Optional:
 
-- `queried_tags_window_seconds` (Number) Window in seconds for evaluating queried tags.
+- `queried_tags_window_seconds` (Number) Lookback window for determining which tags were recently queried
 - `related_asset_tags` (Boolean) When true, tags from related assets are included.
 
 
