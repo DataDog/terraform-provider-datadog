@@ -42,7 +42,7 @@ resource "datadog_tag_indexing_rule" "example" {
 - `exclude_tags_mode` (Boolean) When true, the rule excludes the listed tags and indexes all others. When false (default), the rule includes only the listed tags. Defaults to `false`.
 - `ignored_metric_name_matches` (List of String) Metric name prefixes excluded from the rule's scope.
 - `options` (Attributes) Versioned configuration options for the rule. (see [below for nested schema](#nestedatt--options))
-- `tags` (List of String) Tag keys managed by this rule.
+- `tags` (List of String) Tag keys this rule includes or excludes, depending on exclude_tags_mode.
 
 ### Read-Only
 
