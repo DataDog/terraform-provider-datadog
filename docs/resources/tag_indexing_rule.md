@@ -58,7 +58,7 @@ resource "datadog_tag_indexing_rule" "example" {
 
 Required:
 
-- `data` (Attributes) Options data payload. (see [below for nested schema](#nestedatt--options--data))
+- `data` (Attributes) Behavioral options for how the rule applies to metrics, including backfill and override behavior. (see [below for nested schema](#nestedatt--options--data))
 - `version` (Number) Options schema version. Only `1` is supported.
 
 <a id="nestedatt--options--data"></a>
