@@ -19,9 +19,9 @@ resource "datadog_tag_indexing_rule" "example" {
   tags                = ["env", "service", "version"]
   exclude_tags_mode   = false
 
-  options {
+  options = {
     version = 1
-    data {
+    data = {
       manage_preexisting_metrics = true
       override_previous_rules    = false
     }

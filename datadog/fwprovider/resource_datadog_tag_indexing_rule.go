@@ -143,7 +143,6 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 			},
 			"options": schema.SingleNestedAttribute{
 				Optional:    true,
-				Computed:    true,
 				Description: "Versioned configuration options for the rule.",
 				Attributes: map[string]schema.Attribute{
 					"version": schema.Int64Attribute{
@@ -335,7 +334,7 @@ func (r *tagIndexingRuleResource) updateState(_ context.Context, state *tagIndex
 	}
 	state.Tags, _ = types.ListValueFrom(context.Background(), types.StringType, tags)
 
-	if opts, ok := attrs.GetOptionsOk(); ok && opts != nil {
+	if opts, ok := attrs.GetOptionsOk(); ok && opts != nil && state.Options != nil {
 		optModel := &tagIndexingRuleOptionsModel{
 			Version: types.Int64Value(int64(opts.GetVersion())),
 		}

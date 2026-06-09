@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -16,6 +17,9 @@ func TestAccDatadogTagIndexingRuleExemption_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
+	// Metric names must start with a letter and contain only letters, numbers, dots, and underscores.
+	// uniqueEntityName may contain hyphens, so replace them with dots.
+	metricName := strings.ReplaceAll(uniq, "-", ".")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -23,9 +27,9 @@ func TestAccDatadogTagIndexingRuleExemption_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogTagIndexingRuleExemptionDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogTagIndexingRuleExemptionConfigBasic(uniq),
+				Config: testAccCheckDatadogTagIndexingRuleExemptionConfigBasic(metricName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("datadog_tag_indexing_rule_exemption.foo", "metric_name", fmt.Sprintf("tf.test.exemption.%s", uniq)),
+					resource.TestCheckResourceAttr("datadog_tag_indexing_rule_exemption.foo", "metric_name", metricName),
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule_exemption.foo", "reason", "Test exemption created by Terraform acceptance test"),
 					resource.TestCheckResourceAttrSet("datadog_tag_indexing_rule_exemption.foo", "id"),
 					resource.TestCheckResourceAttrSet("datadog_tag_indexing_rule_exemption.foo", "created_at"),
@@ -66,10 +70,10 @@ func datadogTagIndexingRuleExemptionDestroyHelper(_ context.Context, auth contex
 	return nil
 }
 
-func testAccCheckDatadogTagIndexingRuleExemptionConfigBasic(uniq string) string {
+func testAccCheckDatadogTagIndexingRuleExemptionConfigBasic(metricName string) string {
 	return fmt.Sprintf(`
 resource "datadog_tag_indexing_rule_exemption" "foo" {
-  metric_name = "tf.test.exemption.%s"
+  metric_name = %q
   reason      = "Test exemption created by Terraform acceptance test"
-}`, uniq)
+}`, metricName)
 }
