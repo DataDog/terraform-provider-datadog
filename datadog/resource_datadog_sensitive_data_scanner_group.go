@@ -15,6 +15,79 @@ import (
 
 var sensitiveDataScannerMutex = sync.Mutex{}
 
+func resourceDatadogSensitiveDataScannerGroupCustomizeDiff(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
+	if diff.HasChange("samplings") {
+		oldRaw, newRaw := diff.GetChange("samplings")
+		oldSamplings := oldRaw.([]interface{})
+		newSamplings := newRaw.([]interface{})
+
+		if err := validateSamplingsProductUniqueness(newSamplings); err != nil {
+			return err
+		}
+
+		if samplingsEqualOrderInsensitive(oldSamplings, newSamplings) {
+			return diff.SetNew("samplings", oldSamplings)
+		}
+	} else if samplings, ok := diff.GetOk("samplings"); ok {
+		if err := validateSamplingsProductUniqueness(samplings.([]interface{})); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func validateSamplingsProductUniqueness(samplingsList []interface{}) error {
+	productsSeen := make(map[string]bool)
+
+	for i, sampling := range samplingsList {
+		samplingMap := sampling.(map[string]interface{})
+		if product, exists := samplingMap["product"].(string); exists {
+			if productsSeen[product] {
+				return fmt.Errorf("sampling[%d]: product %q appears more than once in samplings configuration", i, product)
+			}
+			productsSeen[product] = true
+		}
+	}
+
+	return nil
+}
+
+func normalizeSamplings(samplingsList []interface{}) map[string]float64 {
+	result := make(map[string]float64, len(samplingsList))
+	for _, sampling := range samplingsList {
+		samplingMap := sampling.(map[string]interface{})
+		product := samplingMap["product"].(string)
+		rate := samplingMap["rate"].(float64)
+		result[product] = rate
+	}
+	return result
+}
+
+func samplingsEqualOrderInsensitive(oldSamplings, newSamplings []interface{}) bool {
+	if len(oldSamplings) != len(newSamplings) {
+		return false
+	}
+	if len(oldSamplings) == 0 {
+		return true
+	}
+
+	oldNormalized := normalizeSamplings(oldSamplings)
+	newNormalized := normalizeSamplings(newSamplings)
+	if len(oldNormalized) != len(newNormalized) {
+		return false
+	}
+
+	for product, oldRate := range oldNormalized {
+		newRate, ok := newNormalized[product]
+		if !ok || oldRate != newRate {
+			return false
+		}
+	}
+
+	return true
+}
+
 func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Sensitive Data Scanner group resource.",
@@ -25,23 +98,7 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-			if samplings, ok := diff.GetOk("samplings"); ok {
-				samplingsList := samplings.([]interface{})
-				productsSeen := make(map[string]bool)
-
-				for i, sampling := range samplingsList {
-					samplingMap := sampling.(map[string]interface{})
-					if product, exists := samplingMap["product"].(string); exists {
-						if productsSeen[product] {
-							return fmt.Errorf("sampling[%d]: product %q appears more than once in samplings configuration", i, product)
-						}
-						productsSeen[product] = true
-					}
-				}
-			}
-			return nil
-		},
+		CustomizeDiff: resourceDatadogSensitiveDataScannerGroupCustomizeDiff,
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"name": {
@@ -149,6 +206,26 @@ func buildTerraformSamplings(ddSamplings []datadogV2.SensitiveDataScannerSamplin
 	}
 
 	return tfSamplings
+}
+
+func alignTerraformSamplingsOrder(apiSamplings []interface{}, preferredOrder []interface{}) []interface{} {
+	if !samplingsEqualOrderInsensitive(apiSamplings, preferredOrder) {
+		return apiSamplings
+	}
+
+	byProduct := make(map[string]map[string]interface{}, len(apiSamplings))
+	for _, sampling := range apiSamplings {
+		samplingMap := sampling.(map[string]interface{})
+		byProduct[samplingMap["product"].(string)] = samplingMap
+	}
+
+	aligned := make([]interface{}, 0, len(preferredOrder))
+	for _, sampling := range preferredOrder {
+		samplingMap := sampling.(map[string]interface{})
+		aligned = append(aligned, byProduct[samplingMap["product"].(string)])
+	}
+
+	return aligned
 }
 
 func buildDatadogSamplings(tfSamplings []interface{}) []datadogV2.SensitiveDataScannerSamplings {
@@ -343,7 +420,11 @@ func updateSensitiveDataScannerGroupState(d *schema.ResourceData, groupAttribute
 		return diag.FromErr(err)
 	}
 	if samplings := groupAttributes.GetSamplings(); len(samplings) > 0 {
-		if err := d.Set("samplings", buildTerraformSamplings(samplings)); err != nil {
+		tfSamplings := buildTerraformSamplings(samplings)
+		if configSamplings, ok := d.GetOk("samplings"); ok {
+			tfSamplings = alignTerraformSamplingsOrder(tfSamplings, configSamplings.([]interface{}))
+		}
+		if err := d.Set("samplings", tfSamplings); err != nil {
 			return diag.FromErr(err)
 		}
 	}
