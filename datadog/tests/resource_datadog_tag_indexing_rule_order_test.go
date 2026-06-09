@@ -9,6 +9,7 @@ import (
 )
 
 func TestAccDatadogTagIndexingRuleOrder_Basic(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	_ = providers

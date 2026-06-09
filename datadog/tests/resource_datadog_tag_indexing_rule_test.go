@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
@@ -20,7 +21,19 @@ func metricSafeUniq(uniq string) string {
 	return strings.ReplaceAll(uniq, "-", ".")
 }
 
+// skipIfNoCassette skips the test in cassette-replay mode (RECORD=false) when no
+// cassette file has been recorded yet. Run `make cassettes` to record them.
+func skipIfNoCassette(t *testing.T) {
+	t.Helper()
+	if isReplaying() {
+		if _, err := os.Stat(fmt.Sprintf("cassettes/%s.yaml", t.Name())); os.IsNotExist(err) {
+			t.Skipf("cassette not yet recorded; run: RECORD=true TF_ACC=1 gotestsum --packages ./datadog/tests/... -- -run %s", t.Name())
+		}
+	}
+}
+
 func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -49,13 +62,23 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 				// modified_at advances between create and import read (server-side clock skew).
-				ImportStateVerifyIgnore: []string{"modified_at"},
+				// options.* appear after import because the API always returns default options
+				// even when the rule was created without configuring them explicitly.
+				ImportStateVerifyIgnore: []string{
+					"modified_at",
+					"options.%",
+					"options.data.%",
+					"options.data.manage_preexisting_metrics",
+					"options.data.override_previous_rules",
+					"options.version",
+				},
 			},
 		},
 	})
 }
 
 func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -89,6 +112,7 @@ func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 }
 
 func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
