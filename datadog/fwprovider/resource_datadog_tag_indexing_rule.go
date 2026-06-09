@@ -334,7 +334,10 @@ func (r *tagIndexingRuleResource) updateState(_ context.Context, state *tagIndex
 	}
 	state.Tags, _ = types.ListValueFrom(context.Background(), types.StringType, tags)
 
-	if opts, ok := attrs.GetOptionsOk(); ok && opts != nil && state.Options != nil {
+	// Populate options if they were configured (state.Options != nil) OR if this is
+	// an import read (CreatedAt not yet set, so prior state only has the ID).
+	isImport := state.CreatedAt.IsNull()
+	if opts, ok := attrs.GetOptionsOk(); ok && opts != nil && (state.Options != nil || isImport) {
 		optModel := &tagIndexingRuleOptionsModel{
 			Version: types.Int64Value(int64(opts.GetVersion())),
 		}
