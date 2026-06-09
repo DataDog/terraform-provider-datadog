@@ -13,13 +13,14 @@ func TestAccDatadogTagIndexingRuleOrder_Basic(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	_ = providers
 	uniq := uniqueEntityName(ctx, t)
+	mUniq := metricSafeUniq(uniq)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogTagIndexingRuleOrderConfig(uniq),
+				Config: testAccCheckDatadogTagIndexingRuleOrderConfig(uniq, mUniq),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule_order.order", "name", fmt.Sprintf("tf-test-order-%s", uniq)),
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule_order.order", "rule_ids.#", "2"),
@@ -28,7 +29,7 @@ func TestAccDatadogTagIndexingRuleOrder_Basic(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogTagIndexingRuleOrderConfigSwapped(uniq),
+				Config: testAccCheckDatadogTagIndexingRuleOrderConfigSwapped(uniq, mUniq),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule_order.order", "rule_ids.#", "2"),
 					resource.TestCheckResourceAttrPair("datadog_tag_indexing_rule_order.order", "rule_ids.0", "datadog_tag_indexing_rule.second", "id"),
@@ -39,7 +40,7 @@ func TestAccDatadogTagIndexingRuleOrder_Basic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogTagIndexingRuleOrderConfig(uniq string) string {
+func testAccCheckDatadogTagIndexingRuleOrderConfig(uniq, mUniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_tag_indexing_rule" "first" {
   name                = "tf-test-order-first-%s"
@@ -61,10 +62,10 @@ resource "datadog_tag_indexing_rule_order" "order" {
     datadog_tag_indexing_rule.first.id,
     datadog_tag_indexing_rule.second.id,
   ]
-}`, uniq, uniq, uniq, uniq, uniq)
+}`, uniq, mUniq, uniq, mUniq, uniq)
 }
 
-func testAccCheckDatadogTagIndexingRuleOrderConfigSwapped(uniq string) string {
+func testAccCheckDatadogTagIndexingRuleOrderConfigSwapped(uniq, mUniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_tag_indexing_rule" "first" {
   name                = "tf-test-order-first-%s"
@@ -86,5 +87,5 @@ resource "datadog_tag_indexing_rule_order" "order" {
     datadog_tag_indexing_rule.second.id,
     datadog_tag_indexing_rule.first.id,
   ]
-}`, uniq, uniq, uniq, uniq, uniq)
+}`, uniq, mUniq, uniq, mUniq, uniq)
 }

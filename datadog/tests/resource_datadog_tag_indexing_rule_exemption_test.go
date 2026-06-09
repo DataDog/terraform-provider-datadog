@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -16,10 +15,10 @@ import (
 func TestAccDatadogTagIndexingRuleExemption_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
-	// Metric names must start with a letter and contain only letters, numbers, dots, and underscores.
-	// uniqueEntityName may contain hyphens, so replace them with dots.
-	metricName := strings.ReplaceAll(uniq, "-", ".")
+
+	// The exemption API requires the metric to already exist in the org.
+	// system.cpu.user is a standard Datadog agent metric present in any org with a running agent.
+	const metricName = "system.cpu.user"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
