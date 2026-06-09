@@ -15,10 +15,10 @@ import (
 func TestAccDatadogTagIndexingRuleExemption_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	// The exemption API requires the metric to already exist in the org.
-	// system.cpu.user is a standard Datadog agent metric present in any org with a running agent.
-	const metricName = "system.cpu.user"
+	uniq := uniqueEntityName(ctx, t)
+	// Metric names only allow alphanumeric, dots, and underscores — no hyphens.
+	mUniq := metricSafeUniq(uniq)
+	metricName := fmt.Sprintf("tf.test.exemption.%s", mUniq)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -71,8 +71,15 @@ func datadogTagIndexingRuleExemptionDestroyHelper(_ context.Context, auth contex
 
 func testAccCheckDatadogTagIndexingRuleExemptionConfigBasic(metricName string) string {
 	return fmt.Sprintf(`
-resource "datadog_tag_indexing_rule_exemption" "foo" {
+# Register a custom metric so the exemption API accepts it.
+resource "datadog_metric_tag_configuration" "setup" {
   metric_name = %q
+  metric_type = "gauge"
+  tags        = ["env"]
+}
+
+resource "datadog_tag_indexing_rule_exemption" "foo" {
+  metric_name = datadog_metric_tag_configuration.setup.metric_name
   reason      = "Test exemption created by Terraform acceptance test"
 }`, metricName)
 }

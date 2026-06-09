@@ -14,8 +14,8 @@ import (
 )
 
 // metricSafeUniq converts uniqueEntityName output to a string safe for use in
-// metric name patterns: metric names and their glob patterns only allow
-// alphanumeric characters, dots, underscores, and asterisks (no hyphens).
+// metric name patterns: metric names and glob patterns only allow alphanumeric
+// characters, dots, underscores, and asterisks (no hyphens).
 func metricSafeUniq(uniq string) string {
 	return strings.ReplaceAll(uniq, "-", ".")
 }
@@ -45,9 +45,11 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:      "datadog_tag_indexing_rule.foo",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            "datadog_tag_indexing_rule.foo",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				// modified_at advances between create and import read (server-side clock skew).
+				ImportStateVerifyIgnore: []string{"modified_at"},
 			},
 		},
 	})
@@ -69,7 +71,7 @@ func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.bar", "name", fmt.Sprintf("tf-test-tag-indexing-options-%s", uniq)),
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.bar", "tags.#", "1"),
-					resource.TestCheckTypeSetElemAttr("datadog_tag_indexing_rule.bar", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_tag_indexing_rule.bar", "tags.*", "env"),
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.bar", "exclude_tags_mode", "true"),
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.bar", "options.version", "1"),
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.bar", "options.data.manage_preexisting_metrics", "true"),
@@ -77,9 +79,10 @@ func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:      "datadog_tag_indexing_rule.bar",
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            "datadog_tag_indexing_rule.bar",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"modified_at"},
 			},
 		},
 	})
@@ -108,8 +111,8 @@ func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.foo", "name", fmt.Sprintf("tf-test-tag-indexing-rule-updated-%s", uniq)),
 					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.foo", "tags.#", "2"),
-					resource.TestCheckTypeSetElemAttr("datadog_tag_indexing_rule.foo", "tags.*", "env:prod"),
-					resource.TestCheckTypeSetElemAttr("datadog_tag_indexing_rule.foo", "tags.*", "service:web"),
+					resource.TestCheckTypeSetElemAttr("datadog_tag_indexing_rule.foo", "tags.*", "env"),
+					resource.TestCheckTypeSetElemAttr("datadog_tag_indexing_rule.foo", "tags.*", "service"),
 				),
 			},
 		},
@@ -157,7 +160,7 @@ func testAccCheckDatadogTagIndexingRuleConfigUpdated(uniq, mUniq string) string 
 resource "datadog_tag_indexing_rule" "foo" {
   name                = "tf-test-tag-indexing-rule-updated-%s"
   metric_name_matches = ["tf.test.%s.*"]
-  tags                = ["env:prod", "service:web"]
+  tags                = ["env", "service"]
   exclude_tags_mode   = false
 }`, uniq, mUniq)
 }
@@ -167,7 +170,7 @@ func testAccCheckDatadogTagIndexingRuleConfigWithOptions(uniq, mUniq string) str
 resource "datadog_tag_indexing_rule" "bar" {
   name                = "tf-test-tag-indexing-options-%s"
   metric_name_matches = ["tf.test.options.%s.*"]
-  tags                = ["env:prod"]
+  tags                = ["env"]
   exclude_tags_mode   = true
 
   options = {
