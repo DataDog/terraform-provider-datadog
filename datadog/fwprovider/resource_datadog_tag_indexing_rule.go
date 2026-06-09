@@ -27,18 +27,18 @@ type tagIndexingRuleResource struct {
 }
 
 type tagIndexingRuleModel struct {
-	ID                       types.String                `tfsdk:"id"`
-	Name                     types.String                `tfsdk:"name"`
-	MetricNameMatches        types.List                  `tfsdk:"metric_name_matches"`
-	IgnoredMetricNameMatches types.List                  `tfsdk:"ignored_metric_name_matches"`
-	Tags                     types.List                  `tfsdk:"tags"`
-	ExcludeTagsMode          types.Bool                  `tfsdk:"exclude_tags_mode"`
+	ID                       types.String                 `tfsdk:"id"`
+	Name                     types.String                 `tfsdk:"name"`
+	MetricNameMatches        types.List                   `tfsdk:"metric_name_matches"`
+	IgnoredMetricNameMatches types.List                   `tfsdk:"ignored_metric_name_matches"`
+	Tags                     types.List                   `tfsdk:"tags"`
+	ExcludeTagsMode          types.Bool                   `tfsdk:"exclude_tags_mode"`
 	Options                  *tagIndexingRuleOptionsModel `tfsdk:"options"`
-	RuleOrder                types.Int64                 `tfsdk:"rule_order"`
-	CreatedAt                types.String                `tfsdk:"created_at"`
-	ModifiedAt               types.String                `tfsdk:"modified_at"`
-	CreatedByHandle          types.String                `tfsdk:"created_by_handle"`
-	ModifiedByHandle         types.String                `tfsdk:"modified_by_handle"`
+	RuleOrder                types.Int64                  `tfsdk:"rule_order"`
+	CreatedAt                types.String                 `tfsdk:"created_at"`
+	ModifiedAt               types.String                 `tfsdk:"modified_at"`
+	CreatedByHandle          types.String                 `tfsdk:"created_by_handle"`
+	ModifiedByHandle         types.String                 `tfsdk:"modified_by_handle"`
 }
 
 type tagIndexingRuleOptionsModel struct {
