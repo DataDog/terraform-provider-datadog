@@ -58,9 +58,8 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_custom_includ
 }
 
 resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_keywords" {
-  name        = "My library rule"
-  description = "A description"
-  group_id    = datadog_sensitive_data_scanner_group.mygroup.id
+  name     = "My library rule"
+  group_id = datadog_sensitive_data_scanner_group.mygroup.id
   // As standard_pattern_id is provided, the resource MUST NOT contain the "pattern" attribute
   standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.aws_sp.id
   excluded_namespaces = ["username"]
