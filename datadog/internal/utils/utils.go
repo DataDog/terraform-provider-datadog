@@ -73,6 +73,12 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
 
+// DDCloudProviderTypeEnvName name of env var for cloud provider type
+const DDCloudProviderTypeEnvName = "DD_CLOUD_PROVIDER_TYPE"
+
+// DatadogCloudProviderTypeEnvName name of env var for cloud provider type
+const DatadogCloudProviderTypeEnvName = "DATADOG_CLOUD_PROVIDER_TYPE"
+
 // AWSAccessKeyId name of env var for AWS Access Key Id
 const AWSAccessKeyId = "AWS_ACCESS_KEY_ID"
 
@@ -99,6 +105,9 @@ var BearerTokenEnvVars = []string{DDBearerTokenEnvName, DatadogBearerTokenEnvNam
 
 // APIUrlEnvVars names of env var for API key
 var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
+
+// CloudProviderTypeEnvVars names of env var for cloud provider type
+var CloudProviderTypeEnvVars = []string{DDCloudProviderTypeEnvName, DatadogCloudProviderTypeEnvName}
 
 // DatadogProvider holds a reference to the provider
 var DatadogProvider *schema.Provider

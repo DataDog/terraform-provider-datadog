@@ -303,7 +303,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"cloud_provider_type": schema.StringAttribute{
 				Optional:    true,
-				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
+				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This can also be set using the `DD_CLOUD_PROVIDER_TYPE` environment variable. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
 			},
 			"cloud_provider_region": schema.StringAttribute{
 				Optional:    true,
@@ -311,7 +311,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "The organization UUID; used for cloud-provider-based authentication. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; used for cloud-provider-based authentication. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": schema.StringAttribute{
 				Optional:    true,
@@ -422,6 +422,12 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		}
 	}
 
+	if config.CloudProviderType.IsNull() {
+		cloudProviderType, err := utils.GetMultiEnvVar(utils.CloudProviderTypeEnvVars...)
+		if err == nil {
+			config.CloudProviderType = types.StringValue(cloudProviderType)
+		}
+	}
 	if config.OrgUuid.IsNull() {
 		orgUUID, err := utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
 		if err == nil {
