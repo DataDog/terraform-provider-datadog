@@ -45,9 +45,9 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:            "datadog_tag_indexing_rule.foo",
-				ImportState:             true,
-				ImportStateVerify:       true,
+				ResourceName:      "datadog_tag_indexing_rule.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
 				// modified_at advances between create and import read (server-side clock skew).
 				ImportStateVerifyIgnore: []string{"modified_at"},
 			},
