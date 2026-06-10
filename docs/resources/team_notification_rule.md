@@ -86,7 +86,7 @@ Optional:
 
 Optional:
 
-- `channel` (String) Slack channel name for notifications, without a leading '#'. 
+- `channel` (String) Slack channel name for notifications, without a leading '#'.
 - `workspace` (String) Slack workspace name where the channel is located.
 
 ## Import
