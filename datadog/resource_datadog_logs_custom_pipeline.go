@@ -1320,7 +1320,18 @@ func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) (m
 	}
 	tfSubs := make([]interface{}, 0, len(ddProc.GetProcessors()))
 	for _, sub := range ddProc.GetProcessors() {
-		tfSub, err := buildTerraformProcessor(sub)
+		// Lift the sub-processor into a LogsProcessor so we can reuse buildTerraformProcessor.
+		var lp datadogV1.LogsProcessor
+		if sub.LogsAttributeRemapper != nil {
+			lp = datadogV1.LogsAttributeRemapperAsLogsProcessor(sub.LogsAttributeRemapper)
+		} else if sub.LogsStringBuilderProcessor != nil {
+			lp = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(sub.LogsStringBuilderProcessor)
+		} else if sub.LogsArithmeticProcessor != nil {
+			lp = datadogV1.LogsArithmeticProcessorAsLogsProcessor(sub.LogsArithmeticProcessor)
+		} else if sub.LogsCategoryProcessor != nil {
+			lp = datadogV1.LogsCategoryProcessorAsLogsProcessor(sub.LogsCategoryProcessor)
+		}
+		tfSub, err := buildTerraformProcessor(lp)
 		if err != nil {
 			return nil, err
 		}
@@ -1354,7 +1365,7 @@ func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.Lo
 		ddProc.SetPreserveSource(v)
 	}
 	if tfSubs, ok := tfProc["processors"].([]interface{}); ok {
-		ddSubs := make([]datadogV1.LogsProcessor, 0, len(tfSubs))
+		ddSubs := make([]datadogV1.LogsArrayMapSubProcessor, 0, len(tfSubs))
 		for _, rawSub := range tfSubs {
 			subMap := rawSub.(map[string]interface{})
 			for tfType, ddType := range tfProcessorTypes {
@@ -1363,7 +1374,18 @@ func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.Lo
 					if err != nil {
 						return nil, err
 					}
-					ddSubs = append(ddSubs, *ddSub)
+					// Narrow the LogsProcessor down to a LogsArrayMapSubProcessor.
+					var subProc datadogV1.LogsArrayMapSubProcessor
+					if ddSub.LogsAttributeRemapper != nil {
+						subProc = datadogV1.LogsAttributeRemapperAsLogsArrayMapSubProcessor(ddSub.LogsAttributeRemapper)
+					} else if ddSub.LogsStringBuilderProcessor != nil {
+						subProc = datadogV1.LogsStringBuilderProcessorAsLogsArrayMapSubProcessor(ddSub.LogsStringBuilderProcessor)
+					} else if ddSub.LogsArithmeticProcessor != nil {
+						subProc = datadogV1.LogsArithmeticProcessorAsLogsArrayMapSubProcessor(ddSub.LogsArithmeticProcessor)
+					} else if ddSub.LogsCategoryProcessor != nil {
+						subProc = datadogV1.LogsCategoryProcessorAsLogsArrayMapSubProcessor(ddSub.LogsCategoryProcessor)
+					}
+					ddSubs = append(ddSubs, subProc)
 					break
 				}
 			}
