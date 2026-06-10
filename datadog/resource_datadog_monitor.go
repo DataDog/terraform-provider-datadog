@@ -2135,8 +2135,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("evaluation_delay", m.Options.GetEvaluationDelay()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("notify_no_data", m.Options.GetNotifyNoData()); err != nil {
-		return diag.FromErr(err)
+	if v, ok := m.Options.GetNotifyNoDataOk(); ok {
+		if err := d.Set("notify_no_data", v); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("on_missing_data", m.Options.GetOnMissingData()); err != nil {
 		return diag.FromErr(err)
@@ -2144,8 +2146,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("group_retention_duration", m.Options.GetGroupRetentionDuration()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {
-		return diag.FromErr(err)
+	if v, ok := m.Options.GetNoDataTimeframeOk(); ok {
+		if err := d.Set("no_data_timeframe", v); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("renotify_interval", m.Options.GetRenotifyInterval()); err != nil {
 		return diag.FromErr(err)
