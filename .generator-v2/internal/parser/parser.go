@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/pb33f/libopenapi"
+	v3 "github.com/pb33f/libopenapi/datamodel/high/v3"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
@@ -53,8 +54,10 @@ func WithTrackingFieldName(name string) Option {
 // default DefaultMaxDepth) returns an error. A spec that cannot be resolved must
 // not silently produce partial output.
 //
-// LoadSpec populates Path, Method, OperationId and Tag on each Operation;
-// Tracking, RequestSchema and ResponseSchema are filled by later passes.
+// LoadSpec populates Path, Method, OperationId, Tag and Tracking on each
+// Operation, then runs NormalizeSchemas to fill RequestSchema and
+// ResponseSchema for every tracked operation's CRUD group. The result is a
+// fully-populated *model.Spec or an actionable error.
 func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	cfg := loadConfig{maxDepth: DefaultMaxDepth, trackingFieldName: DefaultTrackingFieldName}
 	for _, opt := range opts {
@@ -73,6 +76,12 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 
 	v3doc, err := doc.BuildV3Model()
 	if err != nil {
+		// libopenapi flags a $ref whose target component is missing during
+		// indexing. Surface it as a typed *UnresolvableRefError naming the ref
+		// rather than an opaque wrapped build error.
+		if refErr := asUnresolvableRefError(err); refErr != nil {
+			return nil, refErr
+		}
 		return nil, fmt.Errorf("building OpenAPI v3 model for %q: %w", path, err)
 	}
 
@@ -93,6 +102,10 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 		return nil, &RefCycleError{Cycles: cycles}
 	}
 
+	// rawOps maps each projected model.Operation back to the libopenapi
+	// operation it came from, so NormalizeSchemas can reach request/response
+	// bodies — which the decoupled model deliberately does not retain.
+	rawOps := make(map[*model.Operation]*v3.Operation)
 	if paths := v3doc.Model.Paths; paths != nil && paths.PathItems != nil {
 		for opPath, item := range paths.PathItems.FromOldest() {
 			if item == nil {
@@ -107,13 +120,15 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 				if err != nil {
 					return nil, err
 				}
-				spec.Operations = append(spec.Operations, &model.Operation{
+				mop := &model.Operation{
 					Path:        opPath,
 					Method:      upperMethod,
 					OperationId: op.OperationId,
 					Tag:         firstTag(op.Tags),
 					Tracking:    tracking,
-				})
+				}
+				spec.Operations = append(spec.Operations, mop)
+				rawOps[mop] = op
 			}
 		}
 	}
@@ -127,6 +142,10 @@ func LoadSpec(path string, opts ...Option) (*model.Spec, error) {
 	})
 
 	if err := CheckDuplicateArtifactNames(spec); err != nil {
+		return nil, err
+	}
+
+	if err := NormalizeSchemas(spec, rawOps, cfg.maxDepth, cfg.trackingFieldName); err != nil {
 		return nil, err
 	}
 
