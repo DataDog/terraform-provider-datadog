@@ -48,7 +48,7 @@ const (
 
 var tfProcessorTypes = map[string]string{
 	tfArithmeticProcessor:           string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR),
-	tfArrayMapProcessor:             string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP),
+	tfArrayMapProcessor:             string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR),
 	tfArrayProcessor:                string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR),
 	tfAttributeRemapperProcessor:    string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
 	tfCategoryProcessor:             string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
@@ -100,7 +100,7 @@ var tfProcessors = map[string]*schema.Schema{
 
 var ddProcessorTypes = map[string]string{
 	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):        tfArithmeticProcessor,
-	string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP):                     tfArrayMapProcessor,
+	string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR):                     tfArrayMapProcessor,
 	string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):                  tfArrayProcessor,
 	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
 	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
@@ -910,7 +910,7 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 		processorType = string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR)
 	} else if ddProcessor.LogsArrayMapProcessor != nil {
 		tfProcessor, err = buildTerraformArrayMapProcessor(ddProcessor.LogsArrayMapProcessor)
-		processorType = string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP)
+		processorType = string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR)
 	} else if ddProcessor.LogsArrayProcessor != nil {
 		tfProcessor = buildTerraformArrayProcessor(ddProcessor.LogsArrayProcessor)
 		processorType = string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR)
@@ -1460,7 +1460,7 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	switch ddProcessorType {
 	case string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):
 		ddProcessor = datadogV1.LogsArithmeticProcessorAsLogsProcessor(buildDatadogArithmeticProcessor(tfProcessor))
-	case string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP):
+	case string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR):
 		ddArrayMapProcessor, err := buildDatadogArrayMapProcessor(tfProcessor)
 		if err != nil {
 			return &ddProcessor, err
