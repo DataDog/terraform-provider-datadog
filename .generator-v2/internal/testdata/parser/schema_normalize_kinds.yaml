@@ -1,0 +1,220 @@
+openapi: 3.0.0
+info:
+  title: normalize schema kinds fixture
+  version: 1.0.0
+paths:
+  /primitives:
+    post:
+      operationId: CreatePrimitive
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: primitive_r
+        group:
+          create: CreatePrimitive
+          read: CreatePrimitive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              format: date-time
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+  /objects:
+    post:
+      operationId: CreateObject
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: object_r
+        group:
+          create: CreateObject
+          read: CreateObject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                count:
+                  type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+  /objects-multi-required:
+    post:
+      operationId: CreateObjectMultiRequired
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: object_multi_required_r
+        group:
+          create: CreateObjectMultiRequired
+          read: CreateObjectMultiRequired
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - z_prop
+                - a_prop
+                - m_prop
+              properties:
+                z_prop:
+                  type: string
+                a_prop:
+                  type: integer
+                m_prop:
+                  type: boolean
+      responses:
+        '204':
+          description: no content
+  /arrays:
+    post:
+      operationId: CreateArray
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: array_r
+        group:
+          create: CreateArray
+          read: CreateArray
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        '204':
+          description: no content
+  /maps:
+    post:
+      operationId: CreateMap
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: map_r
+        group:
+          create: CreateMap
+          read: CreateMap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties:
+                type: string
+      responses:
+        '204':
+          description: no content
+  /variants-oneof:
+    post:
+      operationId: CreateVariantOneOf
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: variant_oneof_r
+        group:
+          create: CreateVariantOneOf
+          read: CreateVariantOneOf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: string
+                - type: integer
+      responses:
+        '204':
+          description: no content
+  /variants-anyof:
+    post:
+      operationId: CreateVariantAnyOf
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: variant_anyof_r
+        group:
+          create: CreateVariantAnyOf
+          read: CreateVariantAnyOf
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - type: string
+                - type: integer
+      responses:
+        '204':
+          description: no content
+  /enums:
+    post:
+      operationId: CreateEnum
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: enum_r
+        group:
+          create: CreateEnum
+          read: CreateEnum
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              enum:
+                - active
+                - inactive
+                - pending
+      responses:
+        '204':
+          description: no content
+  /sensitives:
+    post:
+      operationId: CreateSensitive
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: sensitive_r
+        group:
+          create: CreateSensitive
+          read: CreateSensitive
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              x-datadog-tf-generator:
+                sensitive: true
+      responses:
+        '204':
+          description: no content
+  /get-no-body:
+    get:
+      operationId: GetNoBody
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: no_body_ds
+        group:
+          read: GetNoBody
+      responses:
+        '204':
+          description: no content
+  /untracked:
+    get:
+      operationId: GetUntracked
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
