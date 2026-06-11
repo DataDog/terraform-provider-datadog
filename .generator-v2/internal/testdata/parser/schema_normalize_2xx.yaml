@@ -1,0 +1,58 @@
+openapi: 3.0.0
+info:
+  title: normalize 2xx response selection fixture
+  version: 1.0.0
+paths:
+  /skip-bodiless:
+    post:
+      operationId: CreateSkipBodiless
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: skip_bodiless
+        group:
+          create: CreateSkipBodiless
+          read: CreateSkipBodiless
+      responses:
+        '201':
+          description: created (no JSON body)
+        '202':
+          description: accepted with JSON body
+          content:
+            application/json:
+              schema:
+                type: string
+  /prefer-lower:
+    post:
+      operationId: CreatePreferLower
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: prefer_lower
+        group:
+          create: CreatePreferLower
+          read: CreatePreferLower
+      responses:
+        '200':
+          description: ok — lower code wins
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+        '201':
+          description: created — higher code loses
+          content:
+            application/json:
+              schema:
+                type: integer
+  /only-204:
+    post:
+      operationId: CreateOnly204
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: only_204
+        group:
+          create: CreateOnly204
+          read: CreateOnly204
+      responses:
+        '204':
+          description: no content
