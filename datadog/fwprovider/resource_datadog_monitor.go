@@ -1589,7 +1589,11 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 		resp.Diagnostics.Append(diags...)
 		return
 	}
-	plan.EffectiveTags = effectiveTags
+	// Only set effective_tags on the response plan — Create/Update read it from there. Do NOT
+	// assign plan.EffectiveTags locally: the local `plan` is fed to buildMonitorStruct for the
+	// validate call below, and the original code left EffectiveTags unknown there so validate is
+	// sent without tags. Setting it would change every monitor's validate request body and break
+	// all pre-recorded monitor cassettes.
 	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), effectiveTags)...)
 
 	if !plan.Validate.IsNull() && !plan.Validate.ValueBool() {
