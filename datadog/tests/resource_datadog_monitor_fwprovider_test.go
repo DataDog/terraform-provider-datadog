@@ -1574,3 +1574,52 @@ resource "datadog_monitor" "r" {
   }
 }`, uniq)
 }
+
+func TestAccMonitor_Fwprovider_IgnoreTagKeys(t *testing.T) {
+	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{ // create: ignored key is kept as written (no prior state to pin against)
+				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "ignore_tag_keys.#", "1"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "ignore_tag_keys.*", "team"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
+				),
+			},
+			{ // changing the IGNORED key is a no-op on the live monitor: effective_tags keeps team:original
+				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					// tags is user input and is left exactly as written - this divergence is expected
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:changed"),
+					// effective_tags mirrors the API and is what the ignore feature pins
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
+				),
+			},
+			{ // control: a NON-ignored key flows through while the ignored key stays pinned
+				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "dev", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:dev"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
+				),
+			},
+		},
+	})
+}

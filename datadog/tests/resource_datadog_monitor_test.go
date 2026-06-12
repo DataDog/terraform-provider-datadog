@@ -2075,6 +2075,89 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 	})
 }
 
+// testAccCheckDatadogMonitorConfigIgnoreTagKeys builds a monitor whose "team" tag key is
+// listed in ignore_tag_keys. envTag/teamTag let each test step change either the ignored
+// ("team") or the normally-managed ("env") tag so we can prove the helper only pins the
+// ignored one.
+func testAccCheckDatadogMonitorConfigIgnoreTagKeys(uniq, envTag, teamTag string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%s"
+  type    = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  query   = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+    critical = "2.0"
+  }
+
+  tags            = ["env:%s", "team:%s"]
+  ignore_tag_keys = ["team"]
+}`, uniq, envTag, teamTag)
+}
+
+// TestAccDatadogMonitor_IgnoreTagKeys is the integration test for the ignore_tag_keys feature.
+// It drives a real plan/apply cycle (replayed from a cassette) so the resource schema input,
+// the tagDiff CustomizeDiff, and the utils.StripIgnoredTags helper are all exercised together
+// the same way they run for a user. The unit tests in utils/tags_test.go cover StripIgnoredTags
+// in isolation; this proves the wiring end to end.
+func TestAccDatadogMonitor_IgnoreTagKeys(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{ // Create: no prior state, so StripIgnoredTags returns the plan tags unchanged and both are written.
+				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "team:original"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "ignore_tag_keys.#", "1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "ignore_tag_keys.*", "team"),
+				),
+			},
+			{ // Change ONLY the ignored "team" tag. tagDiff -> StripIgnoredTags pins it back to the
+				// state value, so the plan is empty (no API write) and the tag stays "original".
+				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "prod", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "team:original"),
+				),
+			},
+			{ // Control: change a NON-ignored tag ("env") alongside the ignored one. env:dev flows
+				// through normally; team stays pinned to "original", proving only ignored keys are held.
+				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeys(monitorName, "dev", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "env:dev"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "team:original"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)

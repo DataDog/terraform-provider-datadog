@@ -1448,6 +1448,97 @@ func TestAccDatadogServiceLevelObjective_DefaultTags(t *testing.T) {
 	})
 }
 
+// testAccCheckDatadogServiceLevelObjectiveConfigIgnoreTagKeys builds an SLO whose "team" tag key
+// is listed in ignore_tag_keys. envTag/teamTag let each step change either the ignored ("team")
+// or the normally-managed ("env") tag. Note the SLO tags Set uses a custom hash function, so this
+// is a distinct code path from the monitor test even though both share utils.StripIgnoredTags.
+func testAccCheckDatadogServiceLevelObjectiveConfigIgnoreTagKeys(uniq, envTag, teamTag string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name        = "%s"
+  type        = "metric"
+  description = "SLO for ignore_tag_keys integration test"
+  query {
+    numerator   = "sum:my.metric{type:good}.as_count()"
+    denominator = "sum:my.metric{*}.as_count()"
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.5
+    warning   = 99.8
+  }
+
+  timeframe         = "7d"
+  target_threshold  = 99.5
+  warning_threshold = 99.8
+
+  tags            = ["env:%s", "team:%s"]
+  ignore_tag_keys = ["team"]
+}`, uniq, envTag, teamTag)
+}
+
+// TestAccDatadogServiceLevelObjective_IgnoreTagKeys is the SLO counterpart to
+// TestAccDatadogMonitor_IgnoreTagKeys. tagDiff is registered per resource and the SLO declares its
+// own ignore_tag_keys attribute and its own custom tags Set hash, so the monitor test does NOT
+// exercise this wiring — this proves it independently end to end.
+func TestAccDatadogServiceLevelObjective_IgnoreTagKeys(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{ // Create: no prior state, so StripIgnoredTags returns the plan tags unchanged and both are written.
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigIgnoreTagKeys(sloName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "team:original"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "ignore_tag_keys.#", "1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "ignore_tag_keys.*", "team"),
+				),
+			},
+			{ // Change ONLY the ignored "team" tag. tagDiff -> StripIgnoredTags pins it back to the
+				// state value, so the plan is empty (no API write) and the tag stays "original".
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigIgnoreTagKeys(sloName, "prod", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "team:original"),
+				),
+			},
+			{ // Control: change a NON-ignored tag ("env") alongside the ignored one. env:dev flows
+				// through normally; team stays pinned to "original", proving only ignored keys are held.
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigIgnoreTagKeys(sloName, "dev", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "env:dev"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "team:original"),
+				),
+			},
+		},
+	})
+}
+
 // helpers
 
 func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
