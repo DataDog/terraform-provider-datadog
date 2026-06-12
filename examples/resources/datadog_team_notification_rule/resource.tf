@@ -18,7 +18,7 @@ resource "datadog_team_notification_rule" "foo" {
     service_name = "my-service"
   }
   slack {
-    channel   = "#test-channel"
+    channel   = "test-channel"
     workspace = "Datadog"
   }
 }

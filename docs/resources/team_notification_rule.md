@@ -33,7 +33,7 @@ resource "datadog_team_notification_rule" "foo" {
     service_name = "my-service"
   }
   slack {
-    channel   = "#test-channel"
+    channel   = "test-channel"
     workspace = "Datadog"
   }
 }
@@ -86,7 +86,7 @@ Optional:
 
 Optional:
 
-- `channel` (String) Slack channel name for notifications (for example, #alerts or #team-notifications).
+- `channel` (String) Slack channel name for notifications, without a leading '#'.
 - `workspace` (String) Slack workspace name where the channel is located.
 
 ## Import
