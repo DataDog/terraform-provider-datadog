@@ -68,6 +68,7 @@ func TestApplyIgnoreTagKeys(t *testing.T) {
 		priorTags   []string
 		ignoreKeys  []string // nil means the attribute is unset (null)
 		ignoreUnset bool
+		priorUnset  bool // true means a zero-value (typeless) state Set, as on create
 		expected    []string
 	}{
 		"unset ignore_tag_keys is a passthrough": {
@@ -88,6 +89,12 @@ func TestApplyIgnoreTagKeys(t *testing.T) {
 			ignoreKeys: []string{"test"},
 			expected:   []string{"a:1"},
 		},
+		"zero-value state Set on create does not panic": {
+			planTags:   []string{"a:1", "test:set"},
+			priorUnset: true,
+			ignoreKeys: []string{"test"},
+			expected:   []string{"a:1", "test:set"},
+		},
 		"non-ignored keys keep their planned values": {
 			planTags:   []string{"a:1", "b:new", "test:wrong"},
 			priorTags:  []string{"a:1", "b:old", "test:right"},
@@ -98,7 +105,10 @@ func TestApplyIgnoreTagKeys(t *testing.T) {
 	for name, tc := range cases {
 		ctx := context.Background()
 		planTags, _ := types.SetValueFrom(ctx, types.StringType, tc.planTags)
-		priorTags, _ := types.SetValueFrom(ctx, types.StringType, tc.priorTags)
+		priorTags := types.Set{} // zero value, as a never-set state field is on create
+		if !tc.priorUnset {
+			priorTags, _ = types.SetValueFrom(ctx, types.StringType, tc.priorTags)
+		}
 		ignoreKeys := types.SetNull(types.StringType)
 		if !tc.ignoreUnset {
 			ignoreKeys, _ = types.SetValueFrom(ctx, types.StringType, tc.ignoreKeys)

@@ -18,6 +18,12 @@ func ApplyIgnoreTagKeys(ctx context.Context, planTags, stateTags, ignoreKeys typ
 	if ignoreKeys.IsNull() || ignoreKeys.IsUnknown() {
 		return planTags, diags
 	}
+	// On create there is no prior state, so state.EffectiveTags is a zero-value Set with no
+	// element type. Calling ElementsAs on it panics in ToTerraformValue. There is nothing to
+	// pin against anyway, so return the plan tags unchanged (matches StripIgnoredTags' empty-state path).
+	if stateTags.IsNull() || stateTags.IsUnknown() {
+		return planTags, diags
+	}
 
 	var plan, state, keys []string
 	diags.Append(planTags.ElementsAs(ctx, &plan, false)...)
