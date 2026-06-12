@@ -851,10 +851,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
-				// Optional+Computed: ignore_tag_keys lets ModifyPlan rewrite tags so the plan reflects
-				// the values actually on the monitor for ignored keys, rather than stale config.
 				Optional:    true,
-				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"ignore_tag_keys": schema.SetAttribute{
@@ -1573,27 +1570,27 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	// ignore_tag_keys: re-inject the prior values of ignored tag keys into the planned `tags`
-	// so the plan shows what's actually on the monitor instead of stale config. effective_tags
-	// holds the last value read from the API. `tags` is Optional+Computed so the provider may
-	// plan a value that differs from config. This runs before the validation skip below so the
-	// plan stays correct even when validate = false; on create there is no prior state, so it
-	// is a no-op.
-	plannedTags, diags := fwutils.ApplyIgnoreTagKeys(ctx, plan.Tags, state.EffectiveTags, plan.IgnoreTagKeys)
-	if diags.HasError() {
-		resp.Diagnostics.Append(diags...)
-		return
-	}
-	plan.Tags = plannedTags
-	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("tags"), plannedTags)...)
-
+	// effective_tags = tags + default_tags. It is Computed and is refreshed from the API on every
+	// Read, so it is the field that mirrors what's actually on the monitor (and the value we send).
 	combinedTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
 	if diags.HasError() {
 		resp.Diagnostics.Append(diags...)
 		return
 	}
-	plan.EffectiveTags = combinedTags
-	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), combinedTags)...)
+	// ignore_tag_keys: re-inject the prior values of ignored tag keys into effective_tags so
+	// Terraform neither reports drift on those keys nor strips them on apply. We operate on
+	// effective_tags (NOT the user-owned `tags`) because effective_tags is already Computed and
+	// already mirrors the API, so its prior state legally holds the live value — planning it here
+	// satisfies the framework's "computed value must equal config or own prior state" rule.
+	// `tags` is left exactly as the user wrote it. On create there is no prior state, so this is
+	// a no-op.
+	effectiveTags, diags := fwutils.ApplyIgnoreTagKeys(ctx, combinedTags, state.EffectiveTags, plan.IgnoreTagKeys)
+	if diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+	plan.EffectiveTags = effectiveTags
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), effectiveTags)...)
 
 	if !plan.Validate.IsNull() && !plan.Validate.ValueBool() {
 		// Explicitly skip validation
