@@ -81,13 +81,11 @@ type Operation struct {
 	Path string
 	// Method is the HTTP method (GET/POST/PUT/PATCH/DELETE).
 	Method string
-	// OperationId is the OpenAPI operationId, used as the SDK method anchor.
+	// OperationId is the OpenAPI operationId.
 	OperationId string
-	// Tag is the OpenAPI tag, driving SDK package selection. Must be non-empty
-	// when Tracking != nil.
+	// Tag is the OpenAPI tag, driving SDK package selection.
 	Tag string
-	// Tracking is the decoded tracking-field extension; nil iff the extension
-	// is absent. Defined by tracking.go.
+	// Tracking is the decoded tracking-field extension
 	Tracking *TrackingFieldMetadata
 	// RequestSchema is the resolved request body schema, if any.
 	RequestSchema *Schema
@@ -130,7 +128,7 @@ type Artifact struct {
 	// Schema is the Terraform schema derived from the response (and request,
 	// for resources).
 	Schema *AttributeTree
-	// Lifecycle is set for resources only; data sources carry only a Read.
+	// Lifecycle holds the SDK call bindings. For data sources only Read is set
 	Lifecycle *LifecycleBindings
 	// SourceFile is the output path, e.g. datadog/fwprovider/<file>.go.
 	SourceFile string
@@ -182,8 +180,8 @@ type ValidatorSpec struct {
 	Args []string
 }
 
-// LifecycleBindings maps each Terraform CRUD method to the SDK call that
-// implements it. Resources only.
+// LifecycleBindings maps Terraform lifecycle methods to their SDK calls.
+// For data sources only Read is populated; IdStrategy and Create/Update/Delete are zero.
 type LifecycleBindings struct {
 	Create     *SDKCall
 	Read       *SDKCall
@@ -192,26 +190,35 @@ type LifecycleBindings struct {
 	IdStrategy IdStrategy
 }
 
-// SDKCall is a single datadog-api-client-go invocation plus the mappers that
-// translate to and from the Terraform model.
+// SDKCall represents a single datadog-api-client-go invocation.
 type SDKCall struct {
-	// OperationId is used to resolve the SDK method via reflection.
-	OperationId string
-	// RequestMappers populate the request object from the Terraform model.
-	RequestMappers []Mapper
-	// ResponseMappers populate the Terraform model from the SDK response.
-	ResponseMappers []Mapper
-}
-
-// Mapper describes a single field-level translation between the Terraform
-// model and an SDK request/response type.
-type Mapper struct {
-	// TfPath is the dotted attribute path in the Terraform model, e.g. spec.replicas.
-	TfPath string
-	// SdkPath is the corresponding field path on the SDK type.
-	SdkPath string
-	// GoType is the Go type used at this mapping site, e.g. types.String.
-	GoType string
+	// GoPackage is the versioned SDK package, e.g. "datadogV2".
+	// Rule: "datadog" + strings.ToUpper(version), where version is the path
+	// segment after /api/ in Operation.Path (e.g. /api/v2/... → "datadogV2").
+	GoPackage string
+	// GoApiStruct is the API client struct name, e.g. "OrgGroupsApi".
+	// Rule: tag_to_class_name(Operation.Tag): replaces every non-alphanumeric
+	// character with a space, capitalizes each word and joins, then appends
+	// "Api". Preserves original casing within each word (so "APM" → "APMApi",
+	// not "ApmApi").
+	GoApiStruct string
+	// GoMethod is the method name on GoApiStruct, e.g. "CreateOrgGroup".
+	// Rule: Operation.OperationId, no transformation applied.
+	GoMethod string
+	// GoRequestType is the SDK request body type, e.g. "OrgGroupCreateRequest".
+	// Rule: last path component of the requestBody $ref
+	// (e.g. "#/components/schemas/OrgGroupCreateRequest" → "OrgGroupCreateRequest").
+	// Empty when the operation takes no request body (e.g. DELETE, GET-by-ID).
+	// NOTE: Schema has no Name field; the model-builder must read this from the
+	// raw libopenapi node, not from Operation.RequestSchema.
+	GoRequestType string
+	// GoResponseType is the SDK response type, e.g. "OrgGroupResponse".
+	// Rule: last path component of the 2xx response schema $ref
+	// (e.g. "#/components/schemas/OrgGroupResponse" → "OrgGroupResponse").
+	// Empty when the operation returns no body (e.g. 204 No Content).
+	// NOTE: Schema has no Name field; the model-builder must read this from the
+	// raw libopenapi node, not from Operation.ResponseSchema.
+	GoResponseType string
 }
 
 // ----------------------------------------------------------------------------
