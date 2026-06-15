@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","metrics_enabled":true,"metrics_enabled_default":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"tenant_name":"72dfe58f-d283-c39b-9d30-face9bc6a76c","usage_metrics_enabled":true}
+            {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","metrics_enabled":true,"metrics_enabled_default":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"tenant_name":"cfc87c04-922e-e69f-ed43-c04cff281020","usage_metrics_enabled":true}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 3.278028209s
+        duration: 1.4768865s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -66,13 +66,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"tenant_name":"72dfe58f-d283-c39b-9d30-face9bc6a76c","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"metrics_enabled":true,"metrics_enabled_default":true,"usage_metrics_enabled":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"errors":[],"warnings":[]}]
+            [{"tenant_name":"cfc87c04-922e-e69f-ed43-c04cff281020","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"metrics_enabled":true,"metrics_enabled_default":true,"usage_metrics_enabled":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"errors":[],"warnings":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 90.590208ms
+        duration: 106.925958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -85,7 +85,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compression_method":"GZIP","destination":{"container":"my-container","integration":{"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","tenant_id":"72dfe58f-d283-c39b-9d30-face9bc6a76c"},"path":"/path/blou","storage_account":"storageaccount","type":"azure"},"include_tags":false,"name":"my first azure archive","query":"service:toto","rehydration_max_scan_size_in_gb":null,"rehydration_tags":[]},"type":"archives"}}
+            {"data":{"attributes":{"compression_method":"GZIP","destination":{"container":"my-container","integration":{"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","tenant_id":"cfc87c04-922e-e69f-ed43-c04cff281020"},"path":"/path/blou","storage_account":"storageaccount","type":"azure"},"include_tags":false,"name":"my first azure archive","query":"service:toto","rehydration_max_scan_size_in_gb":null,"rehydration_tags":[]},"type":"archives"}}
         form: {}
         headers:
             Accept:
@@ -104,13 +104,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"archives","id":"QIqdmh_yRgy-nYHW1-s5sA","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"72dfe58f-d283-c39b-9d30-face9bc6a76c","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null,"compression_method":"GZIP"}}}
+            {"data":{"type":"archives","id":"7y0tXPshS7606Bh-QBQo-w","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"cfc87c04-922e-e69f-ed43-c04cff281020","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null,"compression_method":"GZIP","partitioning_attributes":[],"lookup_attributes":[]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 408.155333ms
+        duration: 123.04075ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -127,7 +127,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/archives/QIqdmh_yRgy-nYHW1-s5sA
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/7y0tXPshS7606Bh-QBQo-w
         method: GET
       response:
         proto: HTTP/1.1
@@ -139,13 +139,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"archives","id":"QIqdmh_yRgy-nYHW1-s5sA","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"72dfe58f-d283-c39b-9d30-face9bc6a76c","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null,"compression_method":"GZIP"}}}
+            {"data":{"type":"archives","id":"7y0tXPshS7606Bh-QBQo-w","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"cfc87c04-922e-e69f-ed43-c04cff281020","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null,"compression_method":"GZIP","partitioning_attributes":[],"lookup_attributes":[]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 105.571375ms
+        duration: 96.297959ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -174,13 +174,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            [{"tenant_name":"72dfe58f-d283-c39b-9d30-face9bc6a76c","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"metrics_enabled":true,"metrics_enabled_default":true,"usage_metrics_enabled":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"errors":[],"warnings":[]}]
+            [{"tenant_name":"cfc87c04-922e-e69f-ed43-c04cff281020","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"metrics_enabled":true,"metrics_enabled_default":true,"usage_metrics_enabled":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"errors":[],"warnings":[]}]
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 94.41075ms
+        duration: 87.264583ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -197,7 +197,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/archives/QIqdmh_yRgy-nYHW1-s5sA
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/7y0tXPshS7606Bh-QBQo-w
         method: GET
       response:
         proto: HTTP/1.1
@@ -209,13 +209,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"archives","id":"QIqdmh_yRgy-nYHW1-s5sA","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"72dfe58f-d283-c39b-9d30-face9bc6a76c","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null,"compression_method":"GZIP"}}}
+            {"data":{"type":"archives","id":"7y0tXPshS7606Bh-QBQo-w","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"cfc87c04-922e-e69f-ed43-c04cff281020","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null,"compression_method":"GZIP","partitioning_attributes":[],"lookup_attributes":[]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 114.816084ms
+        duration: 113.221083ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -232,7 +232,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/logs/config/archives/QIqdmh_yRgy-nYHW1-s5sA
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/7y0tXPshS7606Bh-QBQo-w
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -246,7 +246,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 161.453541ms
+        duration: 161.221209ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -259,7 +259,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","metrics_enabled":true,"metrics_enabled_default":true,"resource_collection_enabled":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"tenant_name":"72dfe58f-d283-c39b-9d30-face9bc6a76c","usage_metrics_enabled":true}
+            {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","metrics_enabled":true,"metrics_enabled_default":true,"resource_collection_enabled":true,"resource_provider_configs":[],"secretless_auth_enabled":false,"tenant_name":"cfc87c04-922e-e69f-ed43-c04cff281020","usage_metrics_enabled":true}
         form: {}
         headers:
             Accept:
@@ -283,7 +283,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 6.111105333s
+        duration: 6.200467458s
     - id: 8
       request:
         proto: HTTP/1.1
@@ -300,7 +300,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/logs/config/archives/QIqdmh_yRgy-nYHW1-s5sA
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/7y0tXPshS7606Bh-QBQo-w
         method: GET
       response:
         proto: HTTP/1.1
@@ -311,13 +311,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Archive QIqdmh_yRgy-nYHW1-s5sA not found"]}'
+        body: '{"errors":["Archive 7y0tXPshS7606Bh-QBQo-w not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 95.87925ms
+        duration: 1.4835945s
     - id: 9
       request:
         proto: HTTP/1.1
@@ -351,4 +351,4 @@ interactions:
                 - application/json
         status: 400 Bad Request
         code: 400
-        duration: 74.986625ms
+        duration: 53.995041ms
