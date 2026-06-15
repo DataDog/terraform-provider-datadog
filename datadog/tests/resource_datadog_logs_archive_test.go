@@ -185,6 +185,8 @@ resource "datadog_logs_archive" "my_s3_archive" {
   include_tags = true
 	rehydration_max_scan_size_in_gb = 123
   compression_method = "ZSTD"
+  partitioning_attributes = ["host", "service"]
+  lookup_attributes = ["trace_id"]
 }`, uniq, uniq, encryption)
 }
 
@@ -231,6 +233,12 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "compression_method", "ZSTD"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "partitioning_attributes.0", "host"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "partitioning_attributes.1", "service"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "lookup_attributes.0", "trace_id"),
 				),
 			},
 		},
