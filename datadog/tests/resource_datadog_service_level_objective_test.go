@@ -1575,19 +1575,21 @@ func TestAccDatadogServiceLevelObjective_ProviderIgnoreTagKeys(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	sloName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	// The harness configures the provider it gets from ProviderFactories, so Exists/CheckDestroy
+	// must read Meta() off that SAME (provider-ignore-configured) instance, not the base provider.
+	ignoreProvider := withIgnoreTagKeys(testAccProvider(t, accProviders), []string{"team"})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() { testAccPreCheck(t) },
 		ProviderFactories: map[string]func() (*schema.Provider, error){
-			"datadog": withIgnoreTagKeys(accProvider, []string{"team"}),
+			"datadog": ignoreProvider,
 		},
-		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(ignoreProvider),
 		Steps: []resource.TestStep{
 			{ // create: no prior state, both tags written; SLO declares no ignore_tag_keys
 				Config: testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly(sloName, "prod", "original"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					testAccCheckDatadogServiceLevelObjectiveExists(ignoreProvider, "datadog_service_level_objective.foo"),
 					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "env:prod"),
 					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "team:original"),
@@ -1597,7 +1599,7 @@ func TestAccDatadogServiceLevelObjective_ProviderIgnoreTagKeys(t *testing.T) {
 			{ // change the provider-ignored "team" tag: pinned back to state, plan is empty
 				Config: testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly(sloName, "prod", "changed"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					testAccCheckDatadogServiceLevelObjectiveExists(ignoreProvider, "datadog_service_level_objective.foo"),
 					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "env:prod"),
 					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "team:original"),
@@ -1606,7 +1608,7 @@ func TestAccDatadogServiceLevelObjective_ProviderIgnoreTagKeys(t *testing.T) {
 			{ // control: a NON-ignored tag ("env") flows through while "team" stays pinned
 				Config: testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly(sloName, "dev", "changed"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					testAccCheckDatadogServiceLevelObjectiveExists(ignoreProvider, "datadog_service_level_objective.foo"),
 					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "env:dev"),
 					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "team:original"),

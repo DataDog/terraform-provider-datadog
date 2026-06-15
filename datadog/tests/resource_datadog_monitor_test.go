@@ -2204,19 +2204,21 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	// The harness configures the provider it gets from ProviderFactories, so Exists/CheckDestroy
+	// must read Meta() off that SAME (provider-ignore-configured) instance, not the base provider.
+	ignoreProvider := withIgnoreTagKeys(testAccProvider(t, accProviders), []string{"team"})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() { testAccPreCheck(t) },
 		ProviderFactories: map[string]func() (*schema.Provider, error){
-			"datadog": withIgnoreTagKeys(accProvider, []string{"team"}),
+			"datadog": ignoreProvider,
 		},
-		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(ignoreProvider),
 		Steps: []resource.TestStep{
 			{ // create: no prior state, both tags written; resource declares no ignore_tag_keys
 				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "original"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
+					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
@@ -2226,7 +2228,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 			{ // change the provider-ignored "team" tag: pinned back to state, plan is empty
 				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "changed"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
+					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
@@ -2235,7 +2237,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 			{ // control: a NON-ignored tag ("env") flows through while "team" stays pinned
 				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "dev", "changed"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
+					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:dev"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
@@ -2252,19 +2254,19 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	ignoreProvider := withIgnoreTagKeys(testAccProvider(t, accProviders), []string{"team"})
 
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() { testAccPreCheck(t) },
 		ProviderFactories: map[string]func() (*schema.Provider, error){
-			"datadog": withIgnoreTagKeys(accProvider, []string{"team"}),
+			"datadog": ignoreProvider,
 		},
-		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(ignoreProvider),
 		Steps: []resource.TestStep{
 			{ // create: both tags written; resource overrides provider with ignore_tag_keys = ["env"]
 				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "prod", "original"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
+					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
@@ -2274,7 +2276,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 			{ // change BOTH keys: "env" is pinned (resource override), "team" flows (provider list replaced)
 				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "staging", "changed"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExists(accProvider),
+					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:changed"),
