@@ -13,14 +13,20 @@ import (
 func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var check bool
 	var include string
+	var spec          string
+	var outputRoot    string
+	var hooksRoot     string
+	var trackingField string
+	var maxDepth      int
+	var report        string
 
 	cmd := &cobra.Command{
 		Use:   "generate",
 		Short: "Generate Terraform artifacts from the OpenAPI spec",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			spec, err := parser.LoadSpec(flags.spec,
-				parser.WithMaxDepth(flags.maxDepth),
-				parser.WithTrackingFieldName(flags.trackingField))
+			spec, err := parser.LoadSpec(spec,
+				parser.WithMaxDepth(maxDepth),
+				parser.WithTrackingFieldName(trackingField))
 			if err != nil {
 				return err
 			}
@@ -41,8 +47,14 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolVar(&check, "check", false, "Read-only mode: exit 3 if any file would change")
-	cmd.Flags().StringVar(&include, "include", "", "Comma-separated artifact names to generate (empty = all)")
+	cmd.PersistentFlags().BoolVar(&check, "check", false, "Read-only mode: exit 3 if any file would change")
+	cmd.PersistentFlags().IntVar(&maxDepth, "max-depth", parser.DefaultMaxDepth, "Hard limit on recursive $ref expansion")
+	cmd.PersistentFlags().StringVar(&spec, "spec", ".generator/V2/openapi.yaml", "OpenAPI spec to read")
+	cmd.PersistentFlags().StringVar(&include, "include", "", "Comma-separated artifact names to generate (empty = all)")
+	cmd.PersistentFlags().StringVar(&outputRoot, "output-root", "datadog/fwprovider", "Root directory for generated artifacts")
+	cmd.PersistentFlags().StringVar(&hooksRoot, "hooks-root", "datadog/fwprovider/hooks", "Root directory for hook subpackages")
+	cmd.PersistentFlags().StringVar(&trackingField, "tracking-field", "x-datadog-tf-generator", "OpenAPI extension name for the tracking field")
+	cmd.PersistentFlags().StringVar(&report, "report", "-", "Where to write the run report (\"-\" = stdout)")
 
 	return cmd
 }
