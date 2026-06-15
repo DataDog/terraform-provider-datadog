@@ -2096,6 +2096,27 @@ resource "datadog_monitor" "foo" {
 }`, uniq, envTag, teamTag)
 }
 
+// testAccCheckDatadogMonitorConfigIgnoreTagKeysValidateFalse is testAccCheckDatadogMonitorConfigIgnoreTagKeys
+// with validate = false. It exercises the framework ModifyPlan branch where the API /validate call is
+// skipped, to prove effective_tags is still planned (and ignore_tag_keys pinning applied) on that path.
+func testAccCheckDatadogMonitorConfigIgnoreTagKeysValidateFalse(uniq, envTag, teamTag string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name     = "%s"
+  type     = "query alert"
+  message  = "some message Notify: @hipchat-channel"
+  query    = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+  validate = false
+
+  monitor_thresholds {
+    critical = "2.0"
+  }
+
+  tags            = ["env:%s", "team:%s"]
+  ignore_tag_keys = ["team"]
+}`, uniq, envTag, teamTag)
+}
+
 // TestAccDatadogMonitor_IgnoreTagKeys is the integration test for the ignore_tag_keys feature.
 // It drives a real plan/apply cycle (replayed from a cassette) so the resource schema input,
 // the tagDiff CustomizeDiff, and the utils.StripIgnoredTags helper are all exercised together

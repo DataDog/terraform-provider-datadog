@@ -128,7 +128,8 @@ func StripIgnoredTags(planTags, stateTags, ignoreKeys []string) []string {
 		}
 	}
 
-	// Pull state entries whose key IS ignored. Multi-valued keys
+	// Pull state entries whose key IS ignored. A key may appear multiple times
+	// (multi-valued tag), so every matching state entry is re-injected.
 	for _, key := range stateTags {
 		if _, ignored := ignoreSet[tagKey(key)]; ignored {
 			result = append(result, key)
