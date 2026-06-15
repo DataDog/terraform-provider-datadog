@@ -743,7 +743,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -1491,7 +1491,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -2130,7 +2130,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -2387,7 +2387,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -3221,7 +3221,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -4047,7 +4047,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -4795,7 +4795,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -5434,7 +5434,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -5691,7 +5691,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -6525,7 +6525,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -7177,7 +7177,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -7887,7 +7887,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -8499,7 +8499,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -8948,7 +8948,7 @@ Optional:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`, `issue_stream`.
 
 Optional:
 
@@ -9596,7 +9596,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -10398,7 +10398,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -10823,7 +10823,7 @@ Required:
 
 Required:
 
-- `data_source` (String) The data source for the Sankey network query. Valid values are `network_device_flows`.
+- `data_source` (String) The data source for the Sankey network query. Valid values are `network_device_flows`, `network`.
 - `group_by` (List of String) Fields to group by.
 - `limit` (Number) Maximum number of results.
 - `query_string` (String) The search query string.
@@ -11045,7 +11045,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -11530,7 +11530,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -12143,7 +12143,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -13175,7 +13175,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -14196,7 +14196,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -14986,7 +14986,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -15713,7 +15713,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -16027,7 +16027,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -16162,7 +16162,7 @@ Optional:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`, `issue_stream`.
 
 Optional:
 
@@ -16538,7 +16538,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -17197,7 +17197,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -17953,7 +17953,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -18663,7 +18663,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -19275,7 +19275,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -19724,7 +19724,7 @@ Optional:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`, `issue_stream`.
 
 Optional:
 
@@ -20456,7 +20456,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -21258,7 +21258,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -21683,7 +21683,7 @@ Required:
 
 Required:
 
-- `data_source` (String) The data source for the Sankey network query. Valid values are `network_device_flows`.
+- `data_source` (String) The data source for the Sankey network query. Valid values are `network_device_flows`, `network`.
 - `group_by` (List of String) Fields to group by.
 - `limit` (Number) Maximum number of results.
 - `query_string` (String) The search query string.
@@ -21905,7 +21905,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -22390,7 +22390,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -23003,7 +23003,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -23983,7 +23983,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -24570,7 +24570,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -25248,7 +25248,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -26050,7 +26050,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -26507,7 +26507,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -26992,7 +26992,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -27605,7 +27605,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -28452,7 +28452,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -29473,7 +29473,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -30263,7 +30263,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -30859,7 +30859,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -31627,7 +31627,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -32648,7 +32648,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -33438,7 +33438,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -34165,7 +34165,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -34479,7 +34479,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -34614,7 +34614,7 @@ Optional:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`, `issue_stream`.
 
 Optional:
 
@@ -34990,7 +34990,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:
@@ -35649,7 +35649,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
 - `name` (String) The name of query for use in formulas.
 
 Optional:

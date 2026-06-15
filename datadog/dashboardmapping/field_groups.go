@@ -304,7 +304,7 @@ var formulaAndFunctionEventQuerySearchFields = []FieldSpec{
 var formulaAndFunctionEventQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for event platform-based queries.",
-		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors"}},
+		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors", "llm_observability"}},
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
 		Description: "Option for storage location. Feature in Private Beta."},
 	{HCLKey: "search", Type: TypeBlock, OmitEmpty: true,
@@ -1081,7 +1081,7 @@ var listStreamQueryFields = []FieldSpec{
 			"logs_stream", "audit_stream", "ci_pipeline_stream", "ci_test_stream",
 			"rum_issue_stream", "apm_issue_stream", "trace_stream", "logs_issue_stream",
 			"logs_pattern_stream", "logs_transaction_stream", "event_stream", "rum_stream",
-			"llm_observability_stream",
+			"llm_observability_stream", "issue_stream",
 		},
 	},
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Description: "Widget query."},
@@ -1489,7 +1489,7 @@ var sankeyNetworkQuerySortFields = []FieldSpec{
 var sankeyNetworkQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for the Sankey network query.",
-		ValidValues: []string{"network_device_flows"}},
+		ValidValues: []string{"network_device_flows", "network"}},
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The search query string."},
 	{HCLKey: "mode", Type: TypeString, OmitEmpty: true,

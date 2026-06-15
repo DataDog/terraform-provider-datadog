@@ -10,9 +10,11 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/hashicorp/terraform-plugin-testing/tfversion"
 )
 
 func TestAccDatadogMonitor_Basic(t *testing.T) {
@@ -3030,4 +3032,61 @@ resource "datadog_monitor" "data_jobs_custom_type" {
     }
   }
 }`, uniq)
+}
+
+func TestAccDatadogMonitor_Import_OnMissingData_Conflict(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+
+	var monitorID string
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		TerraformVersionChecks: []tfversion.TerraformVersionCheck{
+			tfversion.SkipBelow(tfversion.Version1_5_0),
+		},
+		Steps: []resource.TestStep{
+			{
+				PreConfig: func() {
+					id, err := createOnMissingDataMonitor(ctx, providers.frameworkProvider, monitorName)
+					if err != nil {
+						t.Fatalf("failed to create on-missing-data monitor: %s", err)
+					}
+					monitorID = id
+				},
+				Config:          `provider "datadog" {}`,
+				ResourceName:    "datadog_monitor.foo",
+				ImportState:     true,
+				ImportStateKind: resource.ImportBlockWithID,
+				ImportStateIdFunc: func(_ *terraform.State) (string, error) {
+					return monitorID, nil
+				},
+				GenerateConfig: true,
+			},
+		},
+	})
+}
+
+func createOnMissingDataMonitor(ctx context.Context, p *fwprovider.FrameworkProvider, monitorName string) (string, error) {
+	thresholds := datadogV1.NewMonitorThresholds()
+	thresholds.SetCritical(2.0)
+
+	options := datadogV1.NewMonitorOptions()
+	options.SetThresholds(*thresholds)
+	options.SetOnMissingData(datadogV1.ONMISSINGDATAOPTION_SHOW_AND_NOTIFY_NO_DATA)
+
+	monitor := datadogV1.NewMonitor(
+		"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2",
+		datadogV1.MONITORTYPE_QUERY_ALERT,
+	)
+	monitor.SetName(monitorName)
+	monitor.SetMessage("some message Notify: @hipchat-channel")
+	monitor.SetOptions(*options)
+
+	created, _, err := p.DatadogApiInstances.GetMonitorsApiV1().CreateMonitor(p.Auth, *monitor)
+	if err != nil {
+		return "", err
+	}
+	return strconv.FormatInt(created.GetId(), 10), nil
 }
