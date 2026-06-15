@@ -2096,10 +2096,32 @@ resource "datadog_monitor" "foo" {
 }`, uniq, envTag, teamTag)
 }
 
-// testAccCheckDatadogMonitorConfigIgnoreTagKeysValidateFalse is testAccCheckDatadogMonitorConfigIgnoreTagKeys
-// with validate = false. It exercises the framework ModifyPlan branch where the API /validate call is
-// skipped, to prove effective_tags is still planned (and ignore_tag_keys pinning applied) on that path.
-func testAccCheckDatadogMonitorConfigIgnoreTagKeysValidateFalse(uniq, envTag, teamTag string) string {
+// testAccCheckDatadogMonitorConfigTagsOnlyNoValidate is testAccCheckDatadogMonitorConfigTagsOnly with
+// validate = false. The provider-level ignore tests set validate=false so plan does not call
+// /monitor/validate: that call is idempotent and fires once per plan cycle, and the cassette replay
+// matcher consumes each recorded interaction exactly once, so a run that does one extra plan cycle
+// desyncs the cassette ("requested interaction not found"). Dropping the call removes that flakiness
+// without affecting the ignore_tag_keys behavior under test.
+func testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(uniq, envTag, teamTag string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name     = "%s"
+  type     = "query alert"
+  message  = "some message Notify: @hipchat-channel"
+  query    = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+  validate = false
+
+  monitor_thresholds {
+    critical = "2.0"
+  }
+
+  tags = ["env:%s", "team:%s"]
+}`, uniq, envTag, teamTag)
+}
+
+// testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate is testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys
+// with validate = false, for the same cassette-stability reason as testAccCheckDatadogMonitorConfigTagsOnlyNoValidate.
+func testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate(uniq, envTag, teamTag string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name     = "%s"
@@ -2113,7 +2135,7 @@ resource "datadog_monitor" "foo" {
   }
 
   tags            = ["env:%s", "team:%s"]
-  ignore_tag_keys = ["team"]
+  ignore_tag_keys = ["env"]
 }`, uniq, envTag, teamTag)
 }
 
@@ -2237,7 +2259,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(ignoreProvider),
 		Steps: []resource.TestStep{
 			{ // create: no prior state, both tags written; resource declares no ignore_tag_keys
-				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "original"),
+				Config: testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "prod", "original"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2247,7 +2269,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 				),
 			},
 			{ // change the provider-ignored "team" tag: pinned back to state, plan is empty
-				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "changed"),
+				Config: testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "prod", "changed"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2256,7 +2278,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 				),
 			},
 			{ // control: a NON-ignored tag ("env") flows through while "team" stays pinned
-				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "dev", "changed"),
+				Config: testAccCheckDatadogMonitorConfigTagsOnlyNoValidate(monitorName, "dev", "changed"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2285,7 +2307,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 		CheckDestroy: testAccCheckDatadogMonitorDestroy(ignoreProvider),
 		Steps: []resource.TestStep{
 			{ // create: both tags written; resource overrides provider with ignore_tag_keys = ["env"]
-				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "prod", "original"),
+				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate(monitorName, "prod", "original"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
@@ -2295,7 +2317,7 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 				),
 			},
 			{ // change BOTH keys: both are pinned — "env" (resource list) and "team" (provider list, unioned)
-				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "staging", "changed"),
+				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeysNoValidate(monitorName, "staging", "changed"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),

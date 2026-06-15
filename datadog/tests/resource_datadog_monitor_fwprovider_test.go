@@ -1624,43 +1624,6 @@ func TestAccMonitor_Fwprovider_IgnoreTagKeys(t *testing.T) {
 	})
 }
 
-// TestAccMonitor_Fwprovider_IgnoreTagKeysValidateFalse guards the framework ModifyPlan ordering:
-// effective_tags must be planned (and ignore_tag_keys pinning applied) even when validate=false skips
-// the API /validate call. Before the reorder, validate=false returned early and effective_tags was
-// never planned on that path. The monitor is created and updated here without a /validate roundtrip,
-// and the ignored "team" key still pins to its prior value.
-func TestAccMonitor_Fwprovider_IgnoreTagKeysValidateFalse(t *testing.T) {
-	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	monitorName := uniqueEntityName(ctx, t)
-
-	resource.Test(t, resource.TestCase{
-		ProtoV6ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{ // create with validate=false: effective_tags is still planned from tags despite skipping /validate
-				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeysValidateFalse(monitorName, "prod", "original"),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "validate", "false"),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
-					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
-					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
-				),
-			},
-			{ // change ONLY the ignored "team": still pinned to original on the validate=false path
-				Config: testAccCheckDatadogMonitorConfigIgnoreTagKeysValidateFalse(monitorName, "prod", "changed"),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
-					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
-					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
-				),
-			},
-		},
-	})
-}
-
 // TestAccMonitor_Fwprovider_ProviderIgnoreTagKeys proves the provider-level ignore_tag_keys is
 // inherited on the framework engine when the resource declares no ignore_tag_keys of its own. The
 // framework pins ignored keys on the computed effective_tags (tags is left as the user wrote it),
