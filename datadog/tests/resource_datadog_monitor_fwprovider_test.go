@@ -1623,3 +1623,87 @@ func TestAccMonitor_Fwprovider_IgnoreTagKeys(t *testing.T) {
 		},
 	})
 }
+
+// TestAccMonitor_Fwprovider_ProviderIgnoreTagKeys proves the provider-level ignore_tag_keys is
+// inherited on the framework engine when the resource declares no ignore_tag_keys of its own. The
+// framework pins ignored keys on the computed effective_tags (tags is left as the user wrote it),
+// so assertions are on effective_tags.
+func TestAccMonitor_Fwprovider_ProviderIgnoreTagKeys(t *testing.T) {
+	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
+	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+			"datadog": withIgnoreTagKeysFw(ctx, providers, []string{"team"}),
+		},
+		CheckDestroy: testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{ // create: both tags written; resource declares no ignore_tag_keys
+				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "ignore_tag_keys.#", "0"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
+				),
+			},
+			{ // change the provider-ignored "team": no-op on the live monitor, effective_tags keeps team:original
+				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
+				),
+			},
+			{ // control: a NON-ignored key ("env") flows while "team" stays pinned
+				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "dev", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:dev"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
+				),
+			},
+		},
+	})
+}
+
+// TestAccMonitor_Fwprovider_ProviderIgnoreTagKeysOverride proves a non-empty resource-level
+// ignore_tag_keys (["env"]) replaces the provider-level list (["team"]) on the framework engine:
+// after the override "env" is pinned on effective_tags and "team" flows.
+func TestAccMonitor_Fwprovider_ProviderIgnoreTagKeysOverride(t *testing.T) {
+	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
+	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: map[string]func() (tfprotov6.ProviderServer, error){
+			"datadog": withIgnoreTagKeysFw(ctx, providers, []string{"team"}),
+		},
+		CheckDestroy: testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{ // create: resource overrides provider with ignore_tag_keys = ["env"]
+				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "ignore_tag_keys.*", "env"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
+				),
+			},
+			{ // change BOTH: "env" pinned (resource override), "team" flows (provider list replaced)
+				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "staging", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:changed"),
+				),
+			},
+		},
+	})
+}

@@ -1539,6 +1539,83 @@ func TestAccDatadogServiceLevelObjective_IgnoreTagKeys(t *testing.T) {
 	})
 }
 
+// testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly is the provider-level counterpart to
+// testAccCheckDatadogServiceLevelObjectiveConfigIgnoreTagKeys: the SLO sets tags but declares NO
+// ignore_tag_keys of its own, so the ignored keys come entirely from the provider block.
+func testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly(uniq, envTag, teamTag string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name        = "%s"
+  type        = "metric"
+  description = "SLO for provider-level ignore_tag_keys integration test"
+  query {
+    numerator   = "sum:my.metric{type:good}.as_count()"
+    denominator = "sum:my.metric{*}.as_count()"
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.5
+    warning   = 99.8
+  }
+
+  timeframe         = "7d"
+  target_threshold  = 99.5
+  warning_threshold = 99.8
+
+  tags = ["env:%s", "team:%s"]
+}`, uniq, envTag, teamTag)
+}
+
+// TestAccDatadogServiceLevelObjective_ProviderIgnoreTagKeys is the SLO counterpart to
+// TestAccDatadogMonitor_ProviderIgnoreTagKeys: it proves the provider-level ignore_tag_keys is
+// inherited by an SLO that declares no ignore_tag_keys of its own. tagDiff/ignoreTagKeysDiff are
+// registered per resource, so the monitor test does not cover the SLO's distinct schema + tag hash.
+func TestAccDatadogServiceLevelObjective_ProviderIgnoreTagKeys(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		ProviderFactories: map[string]func() (*schema.Provider, error){
+			"datadog": withIgnoreTagKeys(accProvider, []string{"team"}),
+		},
+		CheckDestroy: testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{ // create: no prior state, both tags written; SLO declares no ignore_tag_keys
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly(sloName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "team:original"),
+					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "ignore_tag_keys.#", "0"),
+				),
+			},
+			{ // change the provider-ignored "team" tag: pinned back to state, plan is empty
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly(sloName, "prod", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "team:original"),
+				),
+			},
+			{ // control: a NON-ignored tag ("env") flows through while "team" stays pinned
+				Config: testAccCheckDatadogServiceLevelObjectiveConfigTagsOnly(sloName, "dev", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr("datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "env:dev"),
+					resource.TestCheckTypeSetElemAttr("datadog_service_level_objective.foo", "tags.*", "team:original"),
+				),
+			},
+		},
+	})
+}
+
 // helpers
 
 func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {

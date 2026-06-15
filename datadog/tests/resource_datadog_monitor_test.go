@@ -2158,6 +2158,132 @@ func TestAccDatadogMonitor_IgnoreTagKeys(t *testing.T) {
 	})
 }
 
+// testAccCheckDatadogMonitorConfigTagsOnly is the provider-level counterpart to
+// testAccCheckDatadogMonitorConfigIgnoreTagKeys: the resource sets tags but declares NO
+// ignore_tag_keys of its own, so the ignored keys come entirely from the provider block.
+func testAccCheckDatadogMonitorConfigTagsOnly(uniq, envTag, teamTag string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%s"
+  type    = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  query   = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+    critical = "2.0"
+  }
+
+  tags = ["env:%s", "team:%s"]
+}`, uniq, envTag, teamTag)
+}
+
+// testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys sets a resource-level ignore_tag_keys of ["env"],
+// used to prove a non-empty resource list overrides (replaces) the provider-level ignore_tag_keys.
+func testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(uniq, envTag, teamTag string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name    = "%s"
+  type    = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  query   = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+    critical = "2.0"
+  }
+
+  tags            = ["env:%s", "team:%s"]
+  ignore_tag_keys = ["env"]
+}`, uniq, envTag, teamTag)
+}
+
+// TestAccDatadogMonitor_ProviderIgnoreTagKeys proves the provider-level ignore_tag_keys is inherited
+// by a resource that declares no ignore_tag_keys of its own (SDKv2 path, ignoreTagKeysDiff reading
+// providerConf.IgnoreTagKeys). Same three-step shape as TestAccDatadogMonitor_IgnoreTagKeys, but the
+// ignored key "team" is configured on the provider block instead of the resource.
+func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		ProviderFactories: map[string]func() (*schema.Provider, error){
+			"datadog": withIgnoreTagKeys(accProvider, []string{"team"}),
+		},
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{ // create: no prior state, both tags written; resource declares no ignore_tag_keys
+				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "ignore_tag_keys.#", "0"),
+				),
+			},
+			{ // change the provider-ignored "team" tag: pinned back to state, plan is empty
+				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "prod", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
+				),
+			},
+			{ // control: a NON-ignored tag ("env") flows through while "team" stays pinned
+				Config: testAccCheckDatadogMonitorConfigTagsOnly(monitorName, "dev", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:dev"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
+				),
+			},
+		},
+	})
+}
+
+// TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride proves a non-empty resource-level
+// ignore_tag_keys (["env"]) fully REPLACES the provider-level list (["team"]) for that resource:
+// after the override, "env" is pinned and "team" flows normally.
+func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		ProviderFactories: map[string]func() (*schema.Provider, error){
+			"datadog": withIgnoreTagKeys(accProvider, []string{"team"}),
+		},
+		CheckDestroy: testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{ // create: both tags written; resource overrides provider with ignore_tag_keys = ["env"]
+				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "prod", "original"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "ignore_tag_keys.*", "env"),
+				),
+			},
+			{ // change BOTH keys: "env" is pinned (resource override), "team" flows (provider list replaced)
+				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "staging", "changed"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:changed"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_WithRestrictionPolicy(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
