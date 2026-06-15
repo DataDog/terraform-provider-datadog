@@ -1,0 +1,102 @@
+{{/*
+  Shared partials for the data-source templates. These define the pieces that
+  are identical between the singular and plural shapes: the Go model structs,
+  the recursive schema attribute/block rendering, and the type / constructor /
+  Configure / Metadata boilerplate.
+
+  Whitespace here is intentionally loose: every rendered file is run through
+  go/format, which fixes all indentation and trailing space. Templates only
+  need to emit syntactically valid Go.
+*/}}
+
+{{/* modelStructs renders every Go struct in .Models, parent first. */}}
+{{- define "modelStructs" -}}
+{{- range .Models }}
+type {{ .Name }} struct {
+{{- range .Fields }}
+{{- if .Comment }}
+
+	// {{ .Comment }}
+{{- end }}
+	{{ .GoField }} {{ .GoType }} `tfsdk:"{{ .TFName }}"`
+{{- end }}
+}
+
+{{ end }}
+{{- end -}}
+
+{{/* schemaAttribute renders one leaf schema.*Attribute entry. */}}
+{{- define "schemaAttribute" -}}
+"{{ .TFName }}": {{ .TFType }}{
+	Description: {{ printf "%q" .Description }},
+{{- if .Required }}
+	Required: true,
+{{- end }}
+{{- if .Optional }}
+	Optional: true,
+{{- end }}
+{{- if .Computed }}
+	Computed: true,
+{{- end }}
+{{- if .Sensitive }}
+	Sensitive: true,
+{{- end }}
+},
+{{- end -}}
+
+{{/* nestedBody renders the Attributes/Blocks maps shared by both block kinds. */}}
+{{- define "nestedBody" -}}
+{{- if .Attributes }}
+Attributes: map[string]schema.Attribute{
+{{- range .Attributes }}
+{{ template "schemaAttribute" . }}
+{{- end }}
+},
+{{- end }}
+{{- if .Blocks }}
+Blocks: map[string]schema.Block{
+{{- range .Blocks }}
+{{ template "schemaBlock" . }}
+{{- end }}
+},
+{{- end }}
+{{- end -}}
+
+{{/* schemaBlock renders one nested block, recursing through nestedBody. */}}
+{{- define "schemaBlock" -}}
+{{- if .ListBlock }}
+"{{ .TFName }}": schema.ListNestedBlock{
+	Description: {{ printf "%q" .Description }},
+	NestedObject: schema.NestedBlockObject{
+{{ template "nestedBody" . }}
+	},
+},
+{{- else }}
+"{{ .TFName }}": schema.SingleNestedBlock{
+	Description: {{ printf "%q" .Description }},
+{{ template "nestedBody" . }}
+},
+{{- end }}
+{{- end -}}
+
+{{/* boilerplate renders the data-source struct, constructor, Configure, Metadata. */}}
+{{- define "boilerplate" -}}
+type {{ .GoName }}DataSource struct {
+	Api  *{{ .SDKPackage }}.{{ .APIStruct }}
+	Auth context.Context
+}
+
+func New{{ title .GoName }}DataSource() datasource.DataSource {
+	return &{{ .GoName }}DataSource{}
+}
+
+func (d *{{ .GoName }}DataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
+	d.Api = providerData.DatadogApiInstances.{{ .APIAccessor }}()
+	d.Auth = providerData.Auth
+}
+
+func (d *{{ .GoName }}DataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "{{ .TypeName }}"
+}
+{{- end -}}
