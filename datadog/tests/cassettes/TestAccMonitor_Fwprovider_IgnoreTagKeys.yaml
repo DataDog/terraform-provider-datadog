@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -37,7 +37,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 119.269ms
+        duration: 187.306542ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -74,7 +74,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 140.146833ms
+        duration: 137.539959ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -87,7 +87,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","tags":["env:prod","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","tags":["env:prod","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
@@ -106,13 +106,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:05.951954+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com","id":68341280}}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:54.923273+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","email":"jason.tenczar@datadoghq.com","id":68341280}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 393.640375ms
+        duration: 203.597417ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,14 +125,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -149,7 +149,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 84.346042ms
+        duration: 116.481042ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -166,7 +166,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/295709487?with_assets=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -178,13 +178,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:05.951954+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:54.923273+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 106.320958ms
+        duration: 157.31975ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -197,14 +197,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 72.144334ms
+        duration: 74.414708ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -238,7 +238,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/295709487?with_assets=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,13 +250,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:05.951954+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:54.923273+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 186.287167ms
+        duration: 153.233458ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -269,14 +269,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -293,7 +293,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 80.194375ms
+        duration: 142.713167ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -306,14 +306,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -330,7 +330,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 90.9885ms
+        duration: 145.389584ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -343,14 +343,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221
+        url: https://api.datadoghq.com/api/v1/monitor/295709487
         method: PUT
       response:
         proto: HTTP/1.1
@@ -362,13 +362,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:08.142517+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data"}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:57.299502+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 163.025708ms
+        duration: 159.496125ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -381,14 +381,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -405,7 +405,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 93.638708ms
+        duration: 84.112875ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -422,7 +422,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/295709487?with_assets=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -434,13 +434,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:08.142517+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:57.299502+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.183667ms
+        duration: 180.836625ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -453,14 +453,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:prod","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -477,7 +477,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 62.811625ms
+        duration: 95.351958ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -494,7 +494,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/295709487?with_assets=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -506,13 +506,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:08.142517+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:prod","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:57.299502+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 129.823ms
+        duration: 110.67625ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -525,14 +525,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -549,7 +549,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 71.455708ms
+        duration: 149.345667ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -562,14 +562,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -586,7 +586,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 660.239125ms
+        duration: 85.312292ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -599,14 +599,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:dev","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:dev","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221
+        url: https://api.datadoghq.com/api/v1/monitor/295709487
         method: PUT
       response:
         proto: HTTP/1.1
@@ -618,13 +618,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:dev","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:10.799053+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data"}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:dev","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:59.512284+00:00","deleted":null,"priority":null,"restricted_roles":null,"restriction_policy":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 204.777125ms
+        duration: 244.364708ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -637,14 +637,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:dev","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:dev","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -661,7 +661,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 75.539125ms
+        duration: 414.555458ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -678,7 +678,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221?with_assets=true
+        url: https://api.datadoghq.com/api/v1/monitor/295709487?with_assets=true
         method: GET
       response:
         proto: HTTP/1.1
@@ -690,13 +690,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":294685221,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","message":"some message Notify: @hipchat-channel","tags":["env:dev","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781290805000,"created":"2026-06-12T19:00:05.951954+00:00","modified":"2026-06-12T19:00:10.799053+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
+            {"id":295709487,"org_id":321813,"type":"query alert","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","message":"some message Notify: @hipchat-channel","tags":["env:dev","team:original"],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2.0},"silenced":{}},"multi":true,"created_at":1781545614000,"created":"2026-06-15T17:46:54.923273+00:00","modified":"2026-06-15T17:46:59.512284+00:00","deleted":null,"priority":null,"restricted_roles":null,"draft_status":"published","assets":[],"overall_state_modified":null,"overall_state":"No Data","creator":{"name":"Jason Tenczar","email":"jason.tenczar@datadoghq.com","handle":"jason.tenczar@datadoghq.com","id":68341280}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 118.628583ms
+        duration: 162.824458ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -709,14 +709,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781290804","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:dev","team:original"],"type":"query alert"}
+            {"draft_status":"published","message":"some message Notify: @hipchat-channel","name":"tf-TestAccMonitor_Fwprovider_IgnoreTagKeys-local-1781545612","options":{"include_tags":true,"new_host_delay":300,"notify_audit":false,"notify_no_data":false,"thresholds":{"critical":2}},"priority":null,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":["env:dev","team:original"],"type":"query alert"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221/validate
+        url: https://api.datadoghq.com/api/v1/monitor/295709487/validate
         method: POST
       response:
         proto: HTTP/1.1
@@ -733,7 +733,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 71.622084ms
+        duration: 88.66225ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -750,7 +750,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/monitor/294685221
+        url: https://api.datadoghq.com/api/v1/monitor/295709487
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -762,10 +762,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_monitor_id":294685221}
+            {"deleted_monitor_id":295709487}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 201.828792ms
+        duration: 194.036458ms
