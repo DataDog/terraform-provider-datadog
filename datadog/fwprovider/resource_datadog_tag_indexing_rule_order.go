@@ -56,7 +56,7 @@ func (r *tagIndexingRuleOrderResource) Schema(_ context.Context, _ resource.Sche
 			"rule_ids": schema.ListAttribute{
 				Required:    true,
 				ElementType: types.StringType,
-				Description: "Ordered list of tag indexing rule UUIDs. The server assigns each rule a rule_order value (1, 2, 3, ...) corresponding to its position in this list.",
+				Description: "Ordered list of ALL tag indexing rule UUIDs. The server assigns each rule a rule_order value (1, 2, 3, ...) corresponding to its position in this list. This resource claims full ownership of evaluation order: rules created outside Terraform (e.g. via the UI) will appear as configuration drift on the next plan. All rules must be listed here; omitting a rule ID will result in a 404 error from the API.",
 			},
 		},
 	}
