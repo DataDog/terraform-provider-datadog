@@ -857,7 +857,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				ElementType: types.StringType,
 			},
 			"ignore_tag_keys": schema.SetAttribute{
-				Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (e.g. by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Overrides the provider's `ignore_tag_keys` for this resource.",
+				Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (e.g. by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Merged with the provider's `ignore_tag_keys` for this resource.",
 				Optional:    true,
 				ElementType: types.StringType,
 			},
@@ -1587,18 +1587,16 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 	// `tags` is left exactly as the user wrote it. On create there is no prior state, so this is
 	// a no-op.
 	//
-	// Precedence: a non-empty resource-level ignore_tag_keys overrides the provider-level list;
-	// an empty/unset resource list inherits the provider-level ignore_tag_keys.
-	ignoreKeys := r.IgnoreTagKeys
+	// Precedence: the resource-level ignore_tag_keys is unioned with the provider-level list;
+	// the effective set is the union of both lists.
+	ignoreKeys := append([]string{}, r.IgnoreTagKeys...)
 	if !plan.IgnoreTagKeys.IsNull() && !plan.IgnoreTagKeys.IsUnknown() {
 		var resourceKeys []string
 		resp.Diagnostics.Append(plan.IgnoreTagKeys.ElementsAs(ctx, &resourceKeys, false)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-		if len(resourceKeys) > 0 {
-			ignoreKeys = resourceKeys
-		}
+		ignoreKeys = append(ignoreKeys, resourceKeys...)
 	}
 	effectiveTags, diags := fwutils.ApplyIgnoreTagKeys(ctx, combinedTags, state.EffectiveTags, ignoreKeys)
 	if diags.HasError() {

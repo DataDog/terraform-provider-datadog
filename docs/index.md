@@ -52,7 +52,7 @@ provider "datadog" {
 - `http_client_retry_enabled` (String) Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.
 - `http_client_retry_max_retries` (Number) The HTTP request maximum retry number. Defaults to 3.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.
-- `ignore_tag_keys` (Set of String) [Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` overrides this list for that resource. Any `:value` suffix is ignored.
+- `ignore_tag_keys` (Set of String) [Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.
 - `org_uuid` (String) The organization UUID; used for cloud-provider-based authentication. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.
 - `validate` (String) Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.
 

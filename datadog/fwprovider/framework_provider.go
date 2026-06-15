@@ -353,7 +353,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"ignore_tag_keys": schema.SetAttribute{
 				Optional:    true,
 				ElementType: types.StringType,
-				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` overrides this list for that resource. Any `:value` suffix is ignored.",
+				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.",
 			},
 		},
 		Blocks: map[string]schema.Block{

@@ -2199,7 +2199,7 @@ resource "datadog_monitor" "foo" {
 }
 
 // testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys sets a resource-level ignore_tag_keys of ["env"],
-// used to prove a non-empty resource list overrides (replaces) the provider-level ignore_tag_keys.
+// used to prove a resource list is unioned with the provider-level ignore_tag_keys.
 func testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(uniq, envTag, teamTag string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
@@ -2268,9 +2268,9 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeys(t *testing.T) {
 	})
 }
 
-// TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride proves a non-empty resource-level
-// ignore_tag_keys (["env"]) fully REPLACES the provider-level list (["team"]) for that resource:
-// after the override, "env" is pinned and "team" flows normally.
+// TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride proves a resource-level ignore_tag_keys
+// (["env"]) is UNIONED with the provider-level list (["team"]) for that resource: after the
+// change, both "env" (resource list) and "team" (provider list) are pinned.
 func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -2294,13 +2294,13 @@ func TestAccDatadogMonitor_ProviderIgnoreTagKeysOverride(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "ignore_tag_keys.*", "env"),
 				),
 			},
-			{ // change BOTH keys: "env" is pinned (resource override), "team" flows (provider list replaced)
+			{ // change BOTH keys: both are pinned — "env" (resource list) and "team" (provider list, unioned)
 				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "staging", "changed"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(ignoreProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "env:prod"),
-					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:changed"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "tags.*", "team:original"),
 				),
 			},
 		},

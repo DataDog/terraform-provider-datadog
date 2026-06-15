@@ -1708,9 +1708,9 @@ func TestAccMonitor_Fwprovider_ProviderIgnoreTagKeys(t *testing.T) {
 	})
 }
 
-// TestAccMonitor_Fwprovider_ProviderIgnoreTagKeysOverride proves a non-empty resource-level
-// ignore_tag_keys (["env"]) replaces the provider-level list (["team"]) on the framework engine:
-// after the override "env" is pinned on effective_tags and "team" flows.
+// TestAccMonitor_Fwprovider_ProviderIgnoreTagKeysOverride proves a resource-level ignore_tag_keys
+// (["env"]) is unioned with the provider-level list (["team"]) on the framework engine: after the
+// change both "env" (resource list) and "team" (provider list) are pinned on effective_tags.
 func TestAccMonitor_Fwprovider_ProviderIgnoreTagKeysOverride(t *testing.T) {
 	t.Setenv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "true")
 	ctx, providers, _ := testAccFrameworkMuxProviders(context.Background(), t)
@@ -1722,7 +1722,7 @@ func TestAccMonitor_Fwprovider_ProviderIgnoreTagKeysOverride(t *testing.T) {
 		},
 		CheckDestroy: testAccCheckDatadogMonitorDestroyFwprovider(providers.frameworkProvider),
 		Steps: []resource.TestStep{
-			{ // create: resource overrides provider with ignore_tag_keys = ["env"]
+			{ // create: resource sets ignore_tag_keys = ["env"], unioned with provider's ["team"]
 				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "prod", "original"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
@@ -1732,13 +1732,13 @@ func TestAccMonitor_Fwprovider_ProviderIgnoreTagKeysOverride(t *testing.T) {
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
 				),
 			},
-			{ // change BOTH: "env" pinned (resource override), "team" flows (provider list replaced)
+			{ // change BOTH: both pinned — "env" (resource list) and "team" (provider list, unioned)
 				Config: testAccCheckDatadogMonitorConfigIgnoreEnvTagKeys(monitorName, "staging", "changed"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExistsFwprovider(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_monitor.foo", "effective_tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "env:prod"),
-					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:changed"),
+					resource.TestCheckTypeSetElemAttr("datadog_monitor.foo", "effective_tags.*", "team:original"),
 				),
 			},
 		},

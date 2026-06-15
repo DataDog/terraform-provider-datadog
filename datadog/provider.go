@@ -214,7 +214,7 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
-				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` overrides this list for that resource. Any `:value` suffix is ignored.",
+				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.",
 			},
 		},
 
@@ -639,20 +639,18 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 // ignoreTagKeysDiff pins any tag key listed in ignore_tag_keys to its prior state value, so
 // Terraform reports no drift on those keys and apply doesn't strip them when they're managed
-// out-of-band. Precedence: a non-empty resource-level ignore_tag_keys overrides the provider-level
-// ignore_tag_keys; an empty/unset resource list inherits the provider-level list. Only wired on
-// resources that declare the attribute, and must run before tagDiff so default_tags merges over the
+// out-of-band. Precedence: the resource-level ignore_tag_keys is unioned with the provider-level
+// ignore_tag_keys; the effective set is the union of both lists. Only wired on resources that
+// declare the attribute, and must run before tagDiff so default_tags merges over the
 // ignore-filtered set.
 func ignoreTagKeysDiff(_ context.Context, d *schema.ResourceDiff, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 
-	var ignoreKeys []string
+	ignoreKeys := append([]string{}, providerConf.IgnoreTagKeys...)
 	if raw, ok := d.GetOk("ignore_tag_keys"); ok {
 		for _, v := range raw.(*schema.Set).List() {
 			ignoreKeys = append(ignoreKeys, v.(string))
 		}
-	} else {
-		ignoreKeys = providerConf.IgnoreTagKeys
 	}
 	if len(ignoreKeys) == 0 {
 		return nil
