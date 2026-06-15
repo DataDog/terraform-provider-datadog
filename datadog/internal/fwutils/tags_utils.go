@@ -13,9 +13,9 @@ import (
 )
 
 // ApplyIgnoreTagKeys re-injects the values of ignored tag keys from state into planTags, so Terraform neither reports drift on those keys nor strips them on apply.
-func ApplyIgnoreTagKeys(ctx context.Context, planTags, stateTags, ignoreKeys types.Set) (types.Set, diag.Diagnostics) {
+func ApplyIgnoreTagKeys(ctx context.Context, planTags, stateTags types.Set, ignoreKeys []string) (types.Set, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	if ignoreKeys.IsNull() || ignoreKeys.IsUnknown() {
+	if len(ignoreKeys) == 0 {
 		return planTags, diags
 	}
 	// On create there is no prior state, so state.EffectiveTags is a zero-value Set with no
@@ -25,15 +25,14 @@ func ApplyIgnoreTagKeys(ctx context.Context, planTags, stateTags, ignoreKeys typ
 		return planTags, diags
 	}
 
-	var plan, state, keys []string
+	var plan, state []string
 	diags.Append(planTags.ElementsAs(ctx, &plan, false)...)
 	diags.Append(stateTags.ElementsAs(ctx, &state, false)...)
-	diags.Append(ignoreKeys.ElementsAs(ctx, &keys, false)...)
 	if diags.HasError() {
 		return planTags, diags
 	}
 
-	result, d := types.SetValueFrom(ctx, types.StringType, utils.StripIgnoredTags(plan, state, keys))
+	result, d := types.SetValueFrom(ctx, types.StringType, utils.StripIgnoredTags(plan, state, ignoreKeys))
 	diags.Append(d...)
 	return result, diags
 }

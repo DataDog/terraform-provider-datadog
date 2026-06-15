@@ -92,7 +92,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		ReadContext:   resourceDatadogServiceLevelObjectiveRead,
 		UpdateContext: resourceDatadogServiceLevelObjectiveUpdate,
 		DeleteContext: resourceDatadogServiceLevelObjectiveDelete,
-		CustomizeDiff: customdiff.All(resourceDatadogServiceLevelObjectiveCustomizeDiff, tagDiff),
+		CustomizeDiff: customdiff.All(resourceDatadogServiceLevelObjectiveCustomizeDiff, ignoreTagKeysDiff, tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -135,7 +135,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 				},
 				"ignore_tag_keys": {
 					Type:        schema.TypeSet,
-					Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (for example, by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Any `:value` suffix is ignored.",
+					Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (for example, by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Any `:value` suffix is ignored. Overrides the provider's `ignore_tag_keys` for this resource.",
 					Optional:    true,
 					Elem: &schema.Schema{
 						Type: schema.TypeString,

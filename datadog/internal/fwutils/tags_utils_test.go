@@ -64,18 +64,16 @@ func TestCombineTags(t *testing.T) {
 
 func TestApplyIgnoreTagKeys(t *testing.T) {
 	cases := map[string]struct {
-		planTags    []string
-		priorTags   []string
-		ignoreKeys  []string // nil means the attribute is unset (null)
-		ignoreUnset bool
-		priorUnset  bool // true means a zero-value (typeless) state Set, as on create
-		expected    []string
+		planTags   []string
+		priorTags  []string
+		ignoreKeys []string // nil/empty means the resolved ignore list is empty (passthrough)
+		priorUnset bool     // true means a zero-value (typeless) state Set, as on create
+		expected   []string
 	}{
-		"unset ignore_tag_keys is a passthrough": {
-			planTags:    []string{"a:1", "b:2"},
-			priorTags:   []string{"a:1", "b:9"},
-			ignoreUnset: true,
-			expected:    []string{"a:1", "b:2"},
+		"empty ignore_tag_keys is a passthrough": {
+			planTags:  []string{"a:1", "b:2"},
+			priorTags: []string{"a:1", "b:9"},
+			expected:  []string{"a:1", "b:2"},
 		},
 		"re-injects the prior value of an ignored key": {
 			planTags:   []string{"a:1", "test:wrong"},
@@ -109,12 +107,8 @@ func TestApplyIgnoreTagKeys(t *testing.T) {
 		if !tc.priorUnset {
 			priorTags, _ = types.SetValueFrom(ctx, types.StringType, tc.priorTags)
 		}
-		ignoreKeys := types.SetNull(types.StringType)
-		if !tc.ignoreUnset {
-			ignoreKeys, _ = types.SetValueFrom(ctx, types.StringType, tc.ignoreKeys)
-		}
 		expected, _ := types.SetValueFrom(ctx, types.StringType, tc.expected)
-		result, diags := ApplyIgnoreTagKeys(ctx, planTags, priorTags, ignoreKeys)
+		result, diags := ApplyIgnoreTagKeys(ctx, planTags, priorTags, tc.ignoreKeys)
 		if diags.HasError() {
 			t.Errorf("%s: unexpected diagnostics: %v", name, diags)
 		}

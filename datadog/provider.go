@@ -210,6 +210,12 @@ func Provider() *schema.Provider {
 					},
 				},
 			},
+			"ignore_tag_keys": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` overrides this list for that resource. Any `:value` suffix is ignored.",
+			},
 		},
 
 		// NEW RESOURCES ARE NOT ALLOWED TO BE ADDED HERE
@@ -300,6 +306,7 @@ type ProviderConfiguration struct {
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
 	DefaultTags         map[string]interface{}
+	IgnoreTagKeys       []string
 
 	Now func() time.Time
 }
@@ -621,50 +628,71 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			providerConfig.DefaultTags = tags.(map[string]interface{})
 		}
 	}
+	if v, ok := d.GetOk("ignore_tag_keys"); ok {
+		for _, k := range v.(*schema.Set).List() {
+			providerConfig.IgnoreTagKeys = append(providerConfig.IgnoreTagKeys, k.(string))
+		}
+	}
 
 	return &providerConfig, nil
 }
 
-// custom diff function that changes plan to take default + ignored tags into account
-func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+// ignoreTagKeysDiff pins any tag key listed in ignore_tag_keys to its prior state value, so
+// Terraform reports no drift on those keys and apply doesn't strip them when they're managed
+// out-of-band. Precedence: a non-empty resource-level ignore_tag_keys overrides the provider-level
+// ignore_tag_keys; an empty/unset resource list inherits the provider-level list. Only wired on
+// resources that declare the attribute, and must run before tagDiff so default_tags merges over the
+// ignore-filtered set.
+func ignoreTagKeysDiff(_ context.Context, d *schema.ResourceDiff, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 
-	// ignore_tag_keys: replace plan entries with state values for any tag key the resource marked as ignored.
-	// no ops when the resource doesn't declare the ignore_tag_keys attribute.
+	var ignoreKeys []string
 	if raw, ok := d.GetOk("ignore_tag_keys"); ok {
-		ignoreSet := raw.(*schema.Set)
-		oldRaw, newRaw := d.GetChange("tags")
-		if planSet, ok := newRaw.(*schema.Set); ok && planSet != nil {
-			ignoreKeys := make([]string, 0, ignoreSet.Len())
-			for _, v := range ignoreSet.List() {
-				ignoreKeys = append(ignoreKeys, v.(string))
-			}
-			planTags := make([]string, 0, planSet.Len())
-			for _, v := range planSet.List() {
-				planTags = append(planTags, v.(string))
-			}
-			var stateTags []string
-			if stateSet, ok := oldRaw.(*schema.Set); ok && stateSet != nil {
-				stateTags = make([]string, 0, stateSet.Len())
-				for _, v := range stateSet.List() {
-					stateTags = append(stateTags, v.(string))
-				}
-			}
-			filtered := utils.StripIgnoredTags(planTags, stateTags, ignoreKeys)
-			filteredIface := make([]interface{}, len(filtered))
-			for i, s := range filtered {
-				filteredIface[i] = s
-			}
-			if err := d.SetNew("tags", schema.NewSet(planSet.F, filteredIface)); err != nil {
-				return fmt.Errorf("error applying ignore_tag_keys: %w", err)
-			}
+		for _, v := range raw.(*schema.Set).List() {
+			ignoreKeys = append(ignoreKeys, v.(string))
+		}
+	} else {
+		ignoreKeys = providerConf.IgnoreTagKeys
+	}
+	if len(ignoreKeys) == 0 {
+		return nil
+	}
+
+	oldRaw, newRaw := d.GetChange("tags")
+	planSet, ok := newRaw.(*schema.Set)
+	if !ok || planSet == nil {
+		return nil
+	}
+	planTags := make([]string, 0, planSet.Len())
+	for _, v := range planSet.List() {
+		planTags = append(planTags, v.(string))
+	}
+	var stateTags []string
+	if stateSet, ok := oldRaw.(*schema.Set); ok && stateSet != nil {
+		stateTags = make([]string, 0, stateSet.Len())
+		for _, v := range stateSet.List() {
+			stateTags = append(stateTags, v.(string))
 		}
 	}
 
+	filtered := utils.StripIgnoredTags(planTags, stateTags, ignoreKeys)
+	filteredIface := make([]interface{}, len(filtered))
+	for i, s := range filtered {
+		filteredIface[i] = s
+	}
+	if err := d.SetNew("tags", schema.NewSet(planSet.F, filteredIface)); err != nil {
+		return fmt.Errorf("error applying ignore_tag_keys: %w", err)
+	}
+	return nil
+}
+
+// custom diff function that changes plan to take default tags into account
+func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
 	if len(providerConf.DefaultTags) == 0 {
 		return nil
 	}
-	resourceTags := d.Get("tags") // reads the ignore-filtered set if ignore_tag_keys is set. reads resource tags if not.
+	resourceTags := d.Get("tags") // reads the ignore-filtered set when ignoreTagKeysDiff ran first; the resource tags otherwise.
 	if resourceTags == nil {      // if the "tags" attribute does not exist in the resource schema
 		return nil
 	}

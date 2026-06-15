@@ -205,6 +205,7 @@ type FrameworkProvider struct {
 	ConfigureCallbackFunc func(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics
 	Now                   func() time.Time
 	DefaultTags           map[string]string
+	IgnoreTagKeys         []string
 }
 
 // ProviderSchema struct
@@ -226,6 +227,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
 	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
+	IgnoreTagKeys                    types.Set    `tfsdk:"ignore_tag_keys"`
 }
 
 type DefaultTag struct {
@@ -347,6 +349,11 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"http_client_retry_max_retries": schema.Int64Attribute{
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
+			},
+			"ignore_tag_keys": schema.SetAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` overrides this list for that resource. Any `:value` suffix is ignored.",
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -804,6 +811,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		diags.Append(tagBlock.Tags.ElementsAs(auth, &defaultTags, false)...)
 	}
 	p.DefaultTags = defaultTags
+
+	var ignoreTagKeys []string
+	if !config.IgnoreTagKeys.IsNull() && !config.IgnoreTagKeys.IsUnknown() {
+		diags.Append(config.IgnoreTagKeys.ElementsAs(auth, &ignoreTagKeys, false)...)
+	}
+	p.IgnoreTagKeys = ignoreTagKeys
 	/*  Commented out due to duplicate validation in SDK provider - remove after Framework migration is complete.
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")
