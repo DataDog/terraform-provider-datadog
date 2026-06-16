@@ -92,7 +92,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		ReadContext:   resourceDatadogServiceLevelObjectiveRead,
 		UpdateContext: resourceDatadogServiceLevelObjectiveUpdate,
 		DeleteContext: resourceDatadogServiceLevelObjectiveDelete,
-		CustomizeDiff: customdiff.All(resourceDatadogServiceLevelObjectiveCustomizeDiff, ignoreTagKeysDiff, tagDiff),
+		CustomizeDiff: customdiff.All(ignoreTagKeysDiff, tagDiff, resourceDatadogServiceLevelObjectiveCustomizeDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
