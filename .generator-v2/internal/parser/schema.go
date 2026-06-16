@@ -285,7 +285,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 			if err != nil {
 				return nil, err
 			}
-			out.Items = item
+			out.Items = elementOrUnsupported(item)
 		}
 
 	case model.SchemaKindMap:
@@ -298,7 +298,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 			if err != nil {
 				return nil, err
 			}
-			out.Items = value
+			out.Items = elementOrUnsupported(value)
 		} else {
 			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported}
 		}
@@ -359,6 +359,23 @@ func isMap(s *base.Schema) bool {
 		return false
 	}
 	return ap.IsA() || (ap.IsB() && ap.B)
+}
+
+// elementOrUnsupported returns elem unless it is itself a collection (array or
+// map). A Terraform list/map element type must be a primitive or object, so a
+// collection-of-collection has no representable element; returning the Unsupported
+// sentinel lets CheckSchemaRepresentability reject it like any other unrepresentable
+// node and keeps the model builder's matching error unreachable in the pipeline.
+func elementOrUnsupported(elem *model.Schema) *model.Schema {
+	if elem == nil {
+		return &model.Schema{Kind: model.SchemaKindUnsupported}
+	}
+	switch elem.Kind {
+	case model.SchemaKindArray, model.SchemaKindMap:
+		return &model.Schema{Kind: model.SchemaKindUnsupported}
+	default:
+		return elem
+	}
 }
 
 // hasType reports whether t is in the schema's type set (a slice, since 3.1
