@@ -431,15 +431,21 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		)
 		switch cloudProviderType {
 		case "aws":
-			auth = context.WithValue(
-				auth,
-				datadog.ContextAWSVariables,
-				map[string]string{
-					datadog.AWSAccessKeyIdName:     awsAccessKeyId,
-					datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
-					datadog.AWSSessionTokenName:    awsSessionToken,
-				},
-			)
+			// Only inject static credentials when they are actually present.
+			// When absent (e.g. TFE dynamic provider credentials / IRSA), omitting
+			// ContextAWSVariables lets AWSAuth.GetCredentials fall through to the
+			// AWS_WEB_IDENTITY_TOKEN_FILE + AWS_ROLE_ARN exchange path.
+			if awsAccessKeyId != "" {
+				auth = context.WithValue(
+					auth,
+					datadog.ContextAWSVariables,
+					map[string]string{
+						datadog.AWSAccessKeyIdName:     awsAccessKeyId,
+						datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
+						datadog.AWSSessionTokenName:    awsSessionToken,
+					},
+				)
+			}
 		default:
 			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
 		}

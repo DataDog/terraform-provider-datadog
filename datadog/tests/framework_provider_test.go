@@ -444,6 +444,92 @@ func TestFrameworkProviderConfigure_CloudAuthWithOnlyAppKey(t *testing.T) {
 	}
 }
 
+// TestFrameworkProviderConfigure_CloudAuthWebIdentity verifies that when cloud_provider_type = "aws"
+// is configured without static AWS credentials, ContextAWSVariables is NOT injected into
+// the auth context — allowing AWSAuth.GetCredentials to fall through to the web identity
+// token exchange path (AWS_WEB_IDENTITY_TOKEN_FILE + AWS_ROLE_ARN).
+func TestFrameworkProviderConfigure_CloudAuthWebIdentity(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+	os.Unsetenv("AWS_ACCESS_KEY_ID")
+	os.Unsetenv("AWS_SECRET_ACCESS_KEY")
+	os.Unsetenv("AWS_SESSION_TOKEN")
+
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		OrgUuid:                types.StringValue("test-org-uuid"),
+		CloudProviderType:      types.StringValue("aws"),
+		CloudProviderRegion:    types.StringValue("us-east-1"),
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+
+	if diags.HasError() {
+		t.Fatalf("framework provider configure should not error with cloud auth + no static creds, got: %v", diags)
+	}
+	if p.DatadogApiInstances == nil {
+		t.Fatal("DatadogApiInstances should be set")
+	}
+
+	if p.DatadogApiInstances.HttpClient.GetConfig().DelegatedTokenConfig == nil {
+		t.Error("DelegatedTokenConfig should be set when cloud_provider_type is configured")
+	}
+
+	// Key assertion: ContextAWSVariables must NOT be injected when no static creds are
+	// present, so GetCredentials can fall through to the web identity exchange path.
+	if p.Auth.Value(common.ContextAWSVariables) != nil {
+		t.Error("ContextAWSVariables should NOT be set in auth context when no static AWS credentials are configured")
+	}
+}
+
+// TestFrameworkProviderConfigure_CloudAuthWithStaticCreds verifies that when cloud_provider_type = "aws"
+// is configured WITH static AWS credentials, ContextAWSVariables IS injected so GetCredentials
+// uses them directly (i.e. the guard doesn't break the existing static-creds path).
+func TestFrameworkProviderConfigure_CloudAuthWithStaticCreds(t *testing.T) {
+	os.Unsetenv("DD_API_KEY")
+	os.Unsetenv("DD_APP_KEY")
+	os.Unsetenv("DATADOG_API_KEY")
+	os.Unsetenv("DATADOG_APP_KEY")
+
+	// ConfigureCallbackFunc is called directly in tests, bypassing ConfigureConfigDefaults
+	// where env var fallback happens — so creds must be set on the schema struct directly.
+	p := fwprovider.New().(*fwprovider.FrameworkProvider)
+	config := &fwprovider.ProviderSchema{
+		OrgUuid:                types.StringValue("test-org-uuid"),
+		CloudProviderType:      types.StringValue("aws"),
+		CloudProviderRegion:    types.StringValue("us-east-1"),
+		ApiUrl:                 types.StringValue("https://api.datad0g.com"),
+		Validate:               types.StringValue("false"),
+		HttpClientRetryEnabled: types.StringValue("false"),
+		AWSAccessKeyId:         types.StringValue("test-key-id"),
+		AWSSecretAccessKey:     types.StringValue("test-secret-key"),
+		AWSSessionToken:        types.StringValue("test-session-token"),
+	}
+
+	request := &provider.ConfigureRequest{}
+	diags := p.ConfigureCallbackFunc(p, request, config)
+
+	if diags.HasError() {
+		t.Fatalf("framework provider configure should not error with cloud auth + static creds, got: %v", diags)
+	}
+
+	// Static creds must be injected via ContextAWSVariables so GetCredentials uses them directly.
+	ctxCreds := p.Auth.Value(common.ContextAWSVariables)
+	if ctxCreds == nil {
+		t.Fatal("ContextAWSVariables should be set in auth context when static AWS credentials are configured")
+	}
+	credsMap := ctxCreds.(map[string]string)
+	if credsMap[common.AWSAccessKeyIdName] != "test-key-id" {
+		t.Errorf("expected AWS_ACCESS_KEY_ID = test-key-id, got %q", credsMap[common.AWSAccessKeyIdName])
+	}
+}
+
 // TestFrameworkProviderConfigure_BearerTokenOnly tests that Bearer auth works when only `bearer_token` is set.
 func TestFrameworkProviderConfigure_BearerTokenOnly(t *testing.T) {
 	os.Unsetenv("DD_API_KEY")
