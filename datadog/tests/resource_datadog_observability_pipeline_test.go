@@ -7628,3 +7628,96 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_generateMetricsV2Processor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.generate_metrics_v2"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "generate_metrics_v2" {
+  name = "generate-metrics-v2-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "gen-metrics-v2-group"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "gen-metrics-v2-proc"
+        enabled = true
+        include = "*"
+
+        generate_metrics {
+          metric {
+            name        = "logs.processed"
+            include     = "service:billing"
+            metric_type = "count"
+            group_by    = ["service", "env"]
+
+            value {
+              strategy = "increment_by_field"
+              field    = "events.count"
+            }
+          }
+
+          metric {
+            name        = "logs.errors"
+            include     = "status:error"
+            metric_type = "count"
+
+            value {
+              strategy = "increment_by_one"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "splunk-metrics-dest"
+      inputs = ["gen-metrics-v2-proc.metrics"]
+
+      splunk_hec_metrics {
+        endpoint_url_key = "SPLUNK_HEC_ENDPOINT"
+        token_key        = "SPLUNK_HEC_TOKEN"
+        compression      = "none"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "gen-metrics-v2-group"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "gen-metrics-v2-proc"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.name", "logs.processed"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.include", "service:billing"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.metric_type", "count"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.group_by.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.group_by.1", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.value.0.strategy", "increment_by_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.value.0.field", "events.count"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.1.name", "logs.errors"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.1.value.0.strategy", "increment_by_one"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec_metrics.0.endpoint_url_key", "SPLUNK_HEC_ENDPOINT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec_metrics.0.token_key", "SPLUNK_HEC_TOKEN"),
+				),
+			},
+		},
+	})
+}
