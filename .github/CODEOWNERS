@@ -115,6 +115,7 @@ datadog/**/*datadog_tag_pipeline_ruleset*        @DataDog/cloud-cost-management
 datadog/**/*datadog_deployment_gate*             @DataDog/ci-app-backend
 datadog/**/*observability_pipeline*              @DataDog/observability-pipelines
 datadog/**/*datadog_secure_embed_dashboard*      @DataDog/api-reliability @DataDog/reporting-and-sharing
+datadog/**/*datadog_tag_indexing_rule*           @DataDog/metrics-experience
 
 # Examples (HCL snippets embedded in rendered docs)
 examples/**/datadog_org_group*/**                @DataDog/org-management
@@ -126,5 +127,7 @@ templates/**/org_group*.md.tmpl                  @DataDog/org-management
 docs/resources/observability_pipeline.md              @DataDog/observability-pipelines
 scripts/*cloud-cost-import-existing-resources*        @DataDog/cloud-cost-management
 docs/resources/secure_embed_dashboard.md              @DataDog/api-reliability @DataDog/reporting-and-sharing
+docs/resources/tag_indexing_rule*.md                  @DataDog/metrics-experience
+examples/resources/datadog_tag_indexing_rule*/**      @DataDog/metrics-experience
 docs/resources/on_call_team_routing_rules.md          @DataDog/on-call
 examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call

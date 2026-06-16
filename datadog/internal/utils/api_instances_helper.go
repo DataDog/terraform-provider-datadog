@@ -43,7 +43,7 @@ type ApiInstances struct {
 	usersApiV1                            *datadogV1.UsersApi
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
-	//V2 APIs
+	// V2 APIs
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	actionsDatastoresApiV2         *datadogV2.ActionsDatastoresApi
 	agentlessScanningApiV2         *datadogV2.AgentlessScanningApi
@@ -65,7 +65,6 @@ type ApiInstances struct {
 	eventsApiV2                    *datadogV2.EventsApi
 	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
 	gcpStsIntegrationApiV2         *datadogV2.GCPIntegrationApi
-	incidentServicesApiV2          *datadogV2.IncidentServicesApi
 	incidentsApiV2                 *datadogV2.IncidentsApi
 	ipAllowlistApiV2               *datadogV2.IPAllowlistApi
 	keyManagementApiV2             *datadogV2.KeyManagementApi
@@ -458,14 +457,6 @@ func (i *ApiInstances) GetGCPIntegrationApiV2() *datadogV2.GCPIntegrationApi {
 	return i.gcpStsIntegrationApiV2
 }
 
-// GetIncidentServicesApiV2 get instance of IncidentServicesApi
-func (i *ApiInstances) GetIncidentServicesApiV2() *datadogV2.IncidentServicesApi {
-	if i.incidentServicesApiV2 == nil {
-		i.incidentServicesApiV2 = datadogV2.NewIncidentServicesApi(i.HttpClient)
-	}
-	return i.incidentServicesApiV2
-}
-
 // GetIncidentsApiV2 get instance of IncidentsApi
 func (i *ApiInstances) GetIncidentsApiV2() *datadogV2.IncidentsApi {
 	if i.incidentsApiV2 == nil {
@@ -629,7 +620,6 @@ func (i *ApiInstances) GetSecurityMonitoringApiV2() *datadogV2.SecurityMonitorin
 		i.securityMonitoringApiV2 = datadogV2.NewSecurityMonitoringApi(i.HttpClient)
 	}
 	return i.securityMonitoringApiV2
-
 }
 
 // GetSensitiveDataScannerApiV2 get instance of SensitiveDataScannerApi
