@@ -219,6 +219,9 @@ type ProviderSchema struct {
 	AWSAccessKeyId                   types.String `tfsdk:"aws_access_key_id"`
 	AWSSecretAccessKey               types.String `tfsdk:"aws_secret_access_key"`
 	AWSSessionToken                  types.String `tfsdk:"aws_session_token"`
+	AWSWebIdentityTokenFile          types.String `tfsdk:"aws_web_identity_token_file"`
+	AWSRoleARN                       types.String `tfsdk:"aws_role_arn"`
+	AWSRoleSessionName               types.String `tfsdk:"aws_role_session_name"`
 	HttpClientRetryEnabled           types.String `tfsdk:"http_client_retry_enabled"`
 	HttpClientRetryTimeout           types.Int64  `tfsdk:"http_client_retry_timeout"`
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
@@ -321,6 +324,18 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				Sensitive:   true,
 				Description: "The AWS session token; used for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
+			},
+			"aws_web_identity_token_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the OIDC web identity token file; used for web identity token exchange (e.g. explicit IRSA configuration). This can also be set using the `AWS_WEB_IDENTITY_TOKEN_FILE` environment variable. Takes precedence over the environment variable when both are set.",
+			},
+			"aws_role_arn": schema.StringAttribute{
+				Optional:    true,
+				Description: "The ARN of the IAM role to assume via web identity token exchange. This can also be set using the `AWS_ROLE_ARN` environment variable. Takes precedence over the environment variable when both are set.",
+			},
+			"aws_role_session_name": schema.StringAttribute{
+				Optional:    true,
+				Description: "The session name to use when assuming the IAM role via web identity token exchange. Appears in CloudTrail and is useful for multi-workspace attribution. This can also be set using the `AWS_ROLE_SESSION_NAME` environment variable. Defaults to `datadog-api-client`.",
 			},
 			"http_client_retry_enabled": schema.StringAttribute{
 				Optional:    true,
@@ -440,6 +455,24 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 			config.AWSSessionToken = types.StringValue(awsSessionToken)
 		}
 	}
+	if config.AWSWebIdentityTokenFile.IsNull() {
+		tokenFile, err := utils.GetMultiEnvVar(utils.AWSWebIdentityTokenFile)
+		if err == nil {
+			config.AWSWebIdentityTokenFile = types.StringValue(tokenFile)
+		}
+	}
+	if config.AWSRoleARN.IsNull() {
+		roleARN, err := utils.GetMultiEnvVar(utils.AWSRoleARN)
+		if err == nil {
+			config.AWSRoleARN = types.StringValue(roleARN)
+		}
+	}
+	if config.AWSRoleSessionName.IsNull() {
+		sessionName, err := utils.GetMultiEnvVar(utils.AWSRoleSessionName)
+		if err == nil {
+			config.AWSRoleSessionName = types.StringValue(sessionName)
+		}
+	}
 
 	if config.HttpClientRetryEnabled.IsNull() {
 		retryEnabled, err := utils.GetMultiEnvVar(utils.DDHTTPRetryEnabled)
@@ -548,6 +581,9 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsAccessKeyId := config.AWSAccessKeyId.ValueString()
 	awsSecretAccessKey := config.AWSSecretAccessKey.ValueString()
 	awsSessionToken := config.AWSSessionToken.ValueString()
+	awsWebIdentityTokenFile := config.AWSWebIdentityTokenFile.ValueString()
+	awsRoleARN := config.AWSRoleARN.ValueString()
+	awsRoleSessionName := config.AWSRoleSessionName.ValueString()
 	bearerToken := config.BearerToken.ValueString()
 
 	if validate {
@@ -590,7 +626,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 			// Only inject static credentials when they are actually present.
 			// When absent (e.g. TFE dynamic provider credentials / IRSA), omitting
 			// ContextAWSVariables lets AWSAuth.GetCredentials fall through to the
-			// AWS_WEB_IDENTITY_TOKEN_FILE + AWS_ROLE_ARN exchange path.
+			// web identity or environment-variable paths.
 			if awsAccessKeyId != "" {
 				auth = context.WithValue(
 					auth,
@@ -599,6 +635,20 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 						datadog.AWSAccessKeyIdName:     awsAccessKeyId,
 						datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
 						datadog.AWSSessionTokenName:    awsSessionToken,
+					},
+				)
+			} else if awsWebIdentityTokenFile != "" || awsRoleARN != "" {
+				if awsWebIdentityTokenFile == "" || awsRoleARN == "" {
+					diags.AddError("aws_web_identity_token_file and aws_role_arn must both be set when using web identity token exchange", "")
+					return diags
+				}
+				auth = context.WithValue(
+					auth,
+					datadog.ContextAWSWebIdentityVariables,
+					datadog.AWSWebIdentityVariables{
+						TokenFile:       awsWebIdentityTokenFile,
+						RoleARN:         awsRoleARN,
+						RoleSessionName: awsRoleSessionName,
 					},
 				)
 			}

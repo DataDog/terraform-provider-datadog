@@ -135,6 +135,21 @@ func Provider() *schema.Provider {
 				Sensitive:   true,
 				Description: "The AWS session token; used for cloud-provider-based authentication. This can also be set using the `AWS_SESSION_TOKEN` environment variable. Required when using `cloud_provider_type` set to `aws` and using temporary credentials.",
 			},
+			"aws_web_identity_token_file": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "Path to the OIDC web identity token file; used for web identity token exchange (e.g. explicit IRSA configuration). This can also be set using the `AWS_WEB_IDENTITY_TOKEN_FILE` environment variable. Takes precedence over the environment variable when both are set.",
+			},
+			"aws_role_arn": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The ARN of the IAM role to assume via web identity token exchange. This can also be set using the `AWS_ROLE_ARN` environment variable. Takes precedence over the environment variable when both are set.",
+			},
+			"aws_role_session_name": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The session name to use when assuming the IAM role via web identity token exchange. Appears in CloudTrail and is useful for multi-workspace attribution. This can also be set using the `AWS_ROLE_SESSION_NAME` environment variable. Defaults to `datadog-api-client`.",
+			},
 			"http_client_retry_enabled": {
 				Type:         schema.TypeString,
 				Optional:     true,
@@ -377,6 +392,18 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if awsSessionToken == "" {
 		awsSessionToken, _ = utils.GetMultiEnvVar(utils.AWSSessionToken)
 	}
+	awsWebIdentityTokenFile := d.Get("aws_web_identity_token_file").(string)
+	if awsWebIdentityTokenFile == "" {
+		awsWebIdentityTokenFile, _ = utils.GetMultiEnvVar(utils.AWSWebIdentityTokenFile)
+	}
+	awsRoleARN := d.Get("aws_role_arn").(string)
+	if awsRoleARN == "" {
+		awsRoleARN, _ = utils.GetMultiEnvVar(utils.AWSRoleARN)
+	}
+	awsRoleSessionName := d.Get("aws_role_session_name").(string)
+	if awsRoleSessionName == "" {
+		awsRoleSessionName, _ = utils.GetMultiEnvVar(utils.AWSRoleSessionName)
+	}
 
 	httpRetryEnabled := true
 	httpRetryEnabledStr := d.Get("http_client_retry_enabled").(string)
@@ -434,7 +461,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			// Only inject static credentials when they are actually present.
 			// When absent (e.g. TFE dynamic provider credentials / IRSA), omitting
 			// ContextAWSVariables lets AWSAuth.GetCredentials fall through to the
-			// AWS_WEB_IDENTITY_TOKEN_FILE + AWS_ROLE_ARN exchange path.
+			// web identity or environment-variable paths.
 			if awsAccessKeyId != "" {
 				auth = context.WithValue(
 					auth,
@@ -443,6 +470,19 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 						datadog.AWSAccessKeyIdName:     awsAccessKeyId,
 						datadog.AWSSecretAccessKeyName: awsSecretAccessKey,
 						datadog.AWSSessionTokenName:    awsSessionToken,
+					},
+				)
+			} else if awsWebIdentityTokenFile != "" || awsRoleARN != "" {
+				if awsWebIdentityTokenFile == "" || awsRoleARN == "" {
+					return nil, diag.FromErr(errors.New("aws_web_identity_token_file and aws_role_arn must both be set when using web identity token exchange"))
+				}
+				auth = context.WithValue(
+					auth,
+					datadog.ContextAWSWebIdentityVariables,
+					datadog.AWSWebIdentityVariables{
+						TokenFile:       awsWebIdentityTokenFile,
+						RoleARN:         awsRoleARN,
+						RoleSessionName: awsRoleSessionName,
 					},
 				)
 			}

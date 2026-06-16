@@ -82,6 +82,15 @@ const AWSSecretAccessKey = "AWS_SECRET_ACCESS_KEY"
 // AWSSessionToken name of env var for AWS Session Token
 const AWSSessionToken = "AWS_SESSION_TOKEN"
 
+// AWSWebIdentityTokenFile name of env var for the OIDC web identity token file path
+const AWSWebIdentityTokenFile = "AWS_WEB_IDENTITY_TOKEN_FILE"
+
+// AWSRoleARN name of env var for the IAM role ARN to assume via web identity
+const AWSRoleARN = "AWS_ROLE_ARN"
+
+// AWSRoleSessionName name of env var for the IAM role session name used during web identity token exchange
+const AWSRoleSessionName = "AWS_ROLE_SESSION_NAME"
+
 // BaseIPRangesSubdomain ip ranges subdomain
 const BaseIPRangesSubdomain = "ip-ranges"
 
