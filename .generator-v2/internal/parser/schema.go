@@ -253,11 +253,12 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		return nil, nil
 	}
 	out := &model.Schema{
-		Kind:      classifyKind(s),
-		Type:      firstType(s),
-		Format:    s.Format,
-		Enum:      enumValues(s),
-		Sensitive: n.isSensitive(s),
+		Kind:        classifyKind(s),
+		Type:        firstType(s),
+		Format:      s.Format,
+		Enum:        enumValues(s),
+		Sensitive:   n.isSensitive(s),
+		Description: s.Description,
 	}
 
 	// The kind (set above by classifyKind) decides which children to recurse into

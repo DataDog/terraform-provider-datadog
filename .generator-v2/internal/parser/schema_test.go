@@ -167,6 +167,11 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Enum).To(ConsistOf("active", "inactive", "pending"))
 	})
 
+	It("carries the Description from the schema", func() {
+		op := opByID(spec, "CreatePrimitive")
+		Expect(op.RequestSchema.Description).To(Equal("The creation timestamp of the resource."))
+	})
+
 	It("carries Sensitive=true when the schema node carries x-datadog-tf-generator.sensitive:true", func() {
 		op := opByID(spec, "CreateSensitive")
 		Expect(op.RequestSchema.Sensitive).To(BeTrue())
