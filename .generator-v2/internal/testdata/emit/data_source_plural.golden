@@ -135,7 +135,7 @@ func (d *teamsDataSource) Read(ctx context.Context, request datasource.ReadReque
 		items = append(items, paginationResult.Item)
 	}
 
-	d.updateState(ctx, &state, &items)
+	d.updateState(&state, &items)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -143,13 +143,13 @@ func (d *teamsDataSource) updateState(state *teamsDataSourceModel, data *[]datad
 	results := make([]*TeamModel, 0, len(*data))
 	for _, item := range *data {
 		r := TeamModel{
-			Description: types.StringValue(item.GetAttributes().GetDescription()),
-			Handle:      types.StringValue(item.GetAttributes().GetHandle()),
+			Description: types.StringValue(item.Attributes.GetDescription()),
+			Handle:      types.StringValue(item.Attributes.GetHandle()),
 			ID:          types.StringValue(item.GetId()),
-			LinkCount:   types.Int64Value(int64(item.GetAttributes().GetLinkCount())),
-			Name:        types.StringValue(item.GetAttributes().GetName()),
-			Summary:     types.StringValue(item.GetAttributes().GetSummary()),
-			UserCount:   types.Int64Value(int64(item.GetAttributes().GetUserCount())),
+			LinkCount:   types.Int64Value(int64(item.Attributes.GetLinkCount())),
+			Name:        types.StringValue(item.Attributes.GetName()),
+			Summary:     types.StringValue(item.Attributes.GetSummary()),
+			UserCount:   types.Int64Value(int64(item.Attributes.GetUserCount())),
 		}
 		results = append(results, &r)
 	}
