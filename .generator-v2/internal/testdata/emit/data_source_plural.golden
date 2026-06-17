@@ -139,7 +139,7 @@ func (d *teamsDataSource) Read(ctx context.Context, request datasource.ReadReque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *teamsDataSource) updateState(ctx context.Context, state *teamsDataSourceModel, data *[]datadogV2.Team) {
+func (d *teamsDataSource) updateState(state *teamsDataSourceModel, data *[]datadogV2.Team) {
 	results := make([]*TeamModel, 0, len(*data))
 	for _, item := range *data {
 		r := TeamModel{

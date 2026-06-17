@@ -81,7 +81,7 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .GoName }}DataSourceModel, data *[]{{ .SDKPackage }}.{{ .Read.ItemType }}) {
+func (d *{{ .GoName }}DataSource) updateState( state *{{ .GoName }}DataSourceModel, data *[]{{ .SDKPackage }}.{{ .Read.ItemType }}) {
 	results := make([]*{{ .State.ItemStruct }}, 0, len(*data))
 	for _, item := range *data {
 		r := {{ .State.ItemStruct }}{
