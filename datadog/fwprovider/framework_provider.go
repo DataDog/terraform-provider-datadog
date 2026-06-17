@@ -65,6 +65,12 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewSecurityFindingsMuteRuleResource,
+	NewSecurityFindingsMuteRulesOrderResource,
+	NewSecurityFindingsDueDateRuleResource,
+	NewSecurityFindingsDueDateRulesOrderResource,
+	NewSecurityFindingsTicketCreationRuleResource,
+	NewSecurityFindingsTicketCreationRulesOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
@@ -728,6 +734,26 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDeploymentRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
+
+	// Security findings automation rules (Preview).
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationMuteRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationMuteRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDueDateRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationDueDateRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationTicketCreationRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
