@@ -18,6 +18,7 @@ paths:
             schema:
               type: string
               format: date-time
+              description: The creation timestamp of the resource.
       responses:
         '200':
           content:

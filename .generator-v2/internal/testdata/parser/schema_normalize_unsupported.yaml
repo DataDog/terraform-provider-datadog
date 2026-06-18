@@ -94,6 +94,92 @@ paths:
       responses:
         '204':
           description: no content
+  /array-of-array:
+    post:
+      operationId: CreateArrayOfArray
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: array_of_array_r
+        group:
+          create: CreateArrayOfArray
+          read: CreateArrayOfArray
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A list element must be a primitive or object; a list-of-list has
+              # no representable element type.
+              type: array
+              items:
+                type: array
+                items:
+                  type: string
+      responses:
+        '204':
+          description: no content
+  /array-of-map:
+    post:
+      operationId: CreateArrayOfMap
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: array_of_map_r
+        group:
+          create: CreateArrayOfMap
+          read: CreateArrayOfMap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A list whose element is a map: no representable element type.
+              type: array
+              items:
+                additionalProperties:
+                  type: string
+      responses:
+        '204':
+          description: no content
+  /map-of-array:
+    post:
+      operationId: CreateMapOfArray
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: map_of_array_r
+        group:
+          create: CreateMapOfArray
+          read: CreateMapOfArray
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A map value must be a primitive or object; a map-of-list has no
+              # representable value type.
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+      responses:
+        '204':
+          description: no content
+  /map-of-map:
+    post:
+      operationId: CreateMapOfMap
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: map_of_map_r
+        group:
+          create: CreateMapOfMap
+          read: CreateMapOfMap
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # A map whose value is a map: no representable value type.
+              additionalProperties:
+                additionalProperties:
+                  type: string
+      responses:
+        '204':
+          description: no content
   /typed-primitive:
     post:
       operationId: CreateTypedPrimitive
