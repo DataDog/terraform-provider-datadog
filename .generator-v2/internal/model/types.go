@@ -91,6 +91,10 @@ type Operation struct {
 	RequestSchema *Schema
 	// ResponseSchema is the resolved 2xx response schema, if any.
 	ResponseSchema *Schema
+	// ResponseRefName is the last path segment of the 2xx response body $ref,
+	// e.g. "IncidentTypeResponse" — the SDK Go response type; empty when the
+	// body is inline or absent.
+	ResponseRefName string
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
