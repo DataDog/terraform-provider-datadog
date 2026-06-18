@@ -113,6 +113,8 @@ type Schema struct {
 	Enum []string
 	// Sensitive is true when the schema is annotated sensitive: true.
 	Sensitive bool
+	// Description is the OpenAPI description, populated during NormalizeSchemas.
+	Description string
 }
 
 // ----------------------------------------------------------------------------
@@ -149,6 +151,10 @@ type Attribute struct {
 	TfType string
 	// GoType is the corresponding model-struct type, e.g. types.String.
 	GoType string
+	// ElementType is the framework attr.Type for a list/map element value,
+	// e.g. "types.StringType". Set ONLY for ListAttribute/MapAttribute
+	// (collection-of-primitive); empty for everything else.
+	ElementType string
 
 	Required  bool
 	Optional  bool

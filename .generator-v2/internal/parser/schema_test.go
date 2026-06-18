@@ -109,6 +109,19 @@ var _ = Describe("NormalizeSchemas unsupported classification", func() {
 		Expect(op.RequestSchema.Kind).To(Equal(model.SchemaKindPrimitive))
 		Expect(op.RequestSchema.Type).To(Equal("string"))
 	})
+
+	DescribeTable("downgrades a collection-of-collection element to unsupported, since a list/map element must be a primitive or object",
+		func(operationId string, wantParentKind model.SchemaKind) {
+			op := opByID(spec, operationId)
+			Expect(op.RequestSchema.Kind).To(Equal(wantParentKind), "the outer collection keeps its structural kind")
+			Expect(op.RequestSchema.Items).NotTo(BeNil())
+			Expect(op.RequestSchema.Items.Kind).To(Equal(model.SchemaKindUnsupported), "the nested-collection element is rewritten to the unsupported sentinel")
+		},
+		Entry("array-of-array → array with an unsupported element", "CreateArrayOfArray", model.SchemaKindArray),
+		Entry("array-of-map → array with an unsupported element", "CreateArrayOfMap", model.SchemaKindArray),
+		Entry("map-of-array → map with an unsupported value", "CreateMapOfArray", model.SchemaKindMap),
+		Entry("map-of-map → map with an unsupported value", "CreateMapOfMap", model.SchemaKindMap),
+	)
 })
 
 // -------------------------------------------------------------------
@@ -165,6 +178,11 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 	It("carries Enum values from the schema", func() {
 		op := opByID(spec, "CreateEnum")
 		Expect(op.RequestSchema.Enum).To(ConsistOf("active", "inactive", "pending"))
+	})
+
+	It("carries the Description from the schema", func() {
+		op := opByID(spec, "CreatePrimitive")
+		Expect(op.RequestSchema.Description).To(Equal("The creation timestamp of the resource."))
 	})
 
 	It("carries Sensitive=true when the schema node carries x-datadog-tf-generator.sensitive:true", func() {
