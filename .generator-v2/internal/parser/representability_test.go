@@ -317,6 +317,7 @@ var _ = Describe("CheckSchemaRepresentability over loaded fixtures", func() {
 		Expect(ids).To(ConsistOf(
 			"CreateEmptyObject", "CreateUntyped", "CreateArrayNoItems",
 			"CreateFreeFormMap", "CreateBoolMap",
+			"CreateArrayOfArray", "CreateArrayOfMap", "CreateMapOfArray", "CreateMapOfMap",
 		))
 	})
 })
