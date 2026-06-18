@@ -180,6 +180,14 @@ func TestDecodeTrackingOptionalFields(t *testing.T) {
 		}
 	})
 
+	t.Run("tf_description present", func(t *testing.T) {
+		const want = "Use this data source to retrieve information about an existing team."
+		got := decode(t, required+"tf_description: "+want+"\n")
+		if got.TfDescription != want {
+			t.Errorf("TfDescription = %q, want %q", got.TfDescription, want)
+		}
+	})
+
 	// skip:true is the one optional field whose presence changes control flow —
 	// it short-circuits to (nil, nil) before validation (covered in
 	// TestDecodeTrackingOutOfScopeReturnsNil). An explicit skip:false decodes
@@ -199,6 +207,7 @@ func TestDecodeTrackingMalformedReturnsTrackingError(t *testing.T) {
 		"unknown artifact_kind": "artifact_kind: widget\nartifact_name: thing\n",
 		"unknown property":      "artifact_kind: resource\nartifact_name: thing\nbogus: 1\n",
 		"bad name pattern":      "artifact_kind: resource\nartifact_name: NotSnake\n",
+		"empty tf_description":  "artifact_kind: data_source\nartifact_name: team\ntf_description: \"\"\n",
 	}
 	for name, body := range cases {
 		t.Run(name, func(t *testing.T) {

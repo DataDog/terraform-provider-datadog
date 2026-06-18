@@ -19,6 +19,11 @@
         "maxLength": 64,
         "description": "Terraform-facing artifact name without the 'datadog_' prefix. Must be lowercase snake_case. Must be unique per artifact_kind — resources and data sources are separate Terraform namespaces, so a resource and a data source may share a name."
       },
+      "tf_description": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Human-readable doc string for the generated artifact's top-level Terraform schema (the data source / resource description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: \"Use this data source to retrieve information about an existing <thing>.\""
+      },
       "group": {
         "type": "object",
         "description": "Declares which OpenAPI operations form the C/R/U/D quadruple. May reference operations by their operationId.",
@@ -52,6 +57,7 @@
       {
         "artifact_kind": "data_source",
         "artifact_name": "team",
+        "tf_description": "Use this data source to retrieve information about an existing Datadog team.",
         "group":{
           "read": "GetTeam"
         }

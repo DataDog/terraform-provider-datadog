@@ -43,7 +43,7 @@ func (d *incidentTypeDataSource) Metadata(_ context.Context, request datasource.
 
 func (d *incidentTypeDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "",
+		Description: "Use this data source to retrieve information about an existing incident type.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The ID of this incident_type data source.",
