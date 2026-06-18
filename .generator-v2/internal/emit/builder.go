@@ -79,6 +79,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		Cardinality: Singular,
 		TypeName:    a.Name,
 		GoName:      lowerFirst(model.SdkName(a.Name)),
+		Description: a.Description,
 		SDKPackage:  call.GoPackage,
 		APIStruct:   call.GoApiStruct,
 		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),

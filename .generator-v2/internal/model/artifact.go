@@ -21,10 +21,11 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	}
 	name := op.Tracking.ArtifactName
 	return &Artifact{
-		Name:       name,
-		Kind:       op.Tracking.ArtifactKind,
-		Schema:     schema,
-		SourceFile: "datadog/fwprovider/data_source_datadog_" + name + ".go",
+		Name:        name,
+		Kind:        op.Tracking.ArtifactKind,
+		Description: op.Tracking.TfDescription,
+		Schema:      schema,
+		SourceFile:  "datadog/fwprovider/data_source_datadog_" + name + ".go",
 		Lifecycle: &LifecycleBindings{
 			Read: &SDKCall{
 				GoPackage:      "datadog" + strings.ToUpper(versionSegment(op.Path)),

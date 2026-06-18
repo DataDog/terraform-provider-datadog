@@ -29,6 +29,7 @@ var _ = Describe("BuildArtifact", func() {
 
 		Expect(art.Name).To(Equal("incident_type"))
 		Expect(art.Kind).To(Equal(ArtifactKindDataSource))
+		Expect(art.Description).To(Equal("Use this data source to retrieve information about an existing incident type."))
 		Expect(art.SourceFile).To(Equal("datadog/fwprovider/data_source_datadog_incident_type.go"))
 		Expect(art.Lifecycle).NotTo(BeNil())
 		Expect(art.Lifecycle.Read).To(Equal(&SDKCall{
@@ -63,10 +64,11 @@ func incidentTypeOp() *Operation {
 		Tag:             "Incidents",
 		ResponseRefName: "IncidentTypeResponse",
 		Tracking: &TrackingFieldMetadata{
-			ArtifactKind: ArtifactKindDataSource,
-			ArtifactName: "incident_type",
-			IdStrategy:   IdStrategyDataID,
-			Group:        &OperationGroup{Read: "GetIncidentType"},
+			ArtifactKind:  ArtifactKindDataSource,
+			ArtifactName:  "incident_type",
+			TfDescription: "Use this data source to retrieve information about an existing incident type.",
+			IdStrategy:    IdStrategyDataID,
+			Group:         &OperationGroup{Read: "GetIncidentType"},
 		},
 		ResponseSchema: objSchema(map[string]*Schema{
 			"data": objSchema(map[string]*Schema{
