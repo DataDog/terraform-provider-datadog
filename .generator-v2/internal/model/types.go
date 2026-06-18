@@ -131,6 +131,9 @@ type Artifact struct {
 	// Name is the Terraform-facing artifact name (without the datadog_ prefix).
 	Name string
 	Kind ArtifactKind
+	// Description is the artifact's top-level schema doc string, from the
+	// tracking extension's tf_description field; empty when the author omits it.
+	Description string
 	// Schema is the Terraform schema derived from the response (and request,
 	// for resources).
 	Schema *AttributeTree

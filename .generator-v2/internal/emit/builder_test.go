@@ -15,6 +15,7 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.TypeName).To(Equal("incident_type"))
 		Expect(view.GoName).To(Equal("incidentType"))
+		Expect(view.Description).To(Equal("Use this data source to retrieve information about an existing incident type."))
 		Expect(view.SDKPackage).To(Equal("datadogV2"))
 		Expect(view.APIStruct).To(Equal("IncidentsApi"))
 		Expect(view.APIAccessor).To(Equal("GetIncidentsApiV2"))
@@ -121,10 +122,11 @@ func incidentTypeOperation() *model.Operation {
 		Tag:             "Incidents",
 		ResponseRefName: "IncidentTypeResponse",
 		Tracking: &model.TrackingFieldMetadata{
-			ArtifactKind: model.ArtifactKindDataSource,
-			ArtifactName: "incident_type",
-			IdStrategy:   model.IdStrategyDataID,
-			Group:        &model.OperationGroup{Read: "GetIncidentType"},
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "incident_type",
+			TfDescription: "Use this data source to retrieve information about an existing incident type.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Read: "GetIncidentType"},
 		},
 		ResponseSchema: obj(map[string]*model.Schema{
 			"data": obj(map[string]*model.Schema{
