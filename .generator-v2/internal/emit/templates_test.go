@@ -24,12 +24,12 @@ var _ = Describe("data-source templates", func() {
 			Expect(err).NotTo(HaveOccurred())
 			matchGolden(golden, got)
 		},
-		Entry("singular (incident_type)", "data_source_singular.golden", singularFixture),
+		Entry("singular (incident_type)", "data_source_singular.golden", incidentTypeView),
 		Entry("plural (teams)", "data_source_plural.golden", pluralFixture),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{singularFixture(), pluralFixture()} {
+		for _, v := range []DataSourceView{incidentTypeView(), pluralFixture()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -55,48 +55,14 @@ func matchGolden(name string, got []byte) {
 	Expect(string(got)).To(Equal(string(want)), "rendered output does not match %s", path)
 }
 
-// singularFixture is the incident_type data source as a view.
-func singularFixture() DataSourceView {
-	return DataSourceView{
-		Cardinality: Singular,
-		TypeName:    "incident_type",
-		GoName:      "incidentType",
-		Description: "Use this data source to retrieve information about an existing incident type.",
-		SDKPackage:  "datadogV2",
-		APIStruct:   "IncidentsApi",
-		APIAccessor: "GetIncidentsApiV2",
-		Read: SDKReadView{
-			Method:       "GetIncidentType",
-			ResponseType: "IncidentTypeResponse",
-		},
-		Models: []ModelStructView{
-			{
-				Name: "incidentTypeDataSourceModel",
-				Fields: []ModelFieldView{
-					{GoField: "ID", GoType: "types.String", TFName: "id"},
-					{GoField: "Name", GoType: "types.String", TFName: "name"},
-					{GoField: "Description", GoType: "types.String", TFName: "description"},
-					{GoField: "IsDefault", GoType: "types.Bool", TFName: "is_default"},
-				},
-			},
-		},
-		Schema: SchemaView{
-			Attributes: []AttrView{
-				{TFName: "name", TFType: "schema.StringAttribute", Description: "Name of the incident type.", Computed: true},
-				{TFName: "description", TFType: "schema.StringAttribute", Description: "Description of the incident type.", Computed: true},
-				{TFName: "is_default", TFType: "schema.BoolAttribute", Description: "Whether this incident type is the default type.", Computed: true},
-			},
-		},
-		State: StateView{
-			Preamble: []string{"attributes := resp.Data.GetAttributes()"},
-			Assignments: []StateAssignment{
-				{LHS: "state.ID", RHS: "types.StringValue(resp.Data.GetId())"},
-				{LHS: "state.Name", RHS: "types.StringValue(attributes.GetName())"},
-				{LHS: "state.Description", RHS: "types.StringValue(attributes.GetDescription())"},
-				{LHS: "state.IsDefault", RHS: "types.BoolValue(attributes.GetIsDefault())"},
-			},
-		},
-	}
+// incidentTypeView is the incident_type data source built end-to-end through the
+// emit builder, so the golden proves BuildArtifact + BuildDataSourceView rather
+// than a hand-written view. The shared incident_type fixture lives in builder_test.go.
+func incidentTypeView() DataSourceView {
+	GinkgoHelper()
+	view, err := BuildDataSourceView(incidentTypeArtifact())
+	Expect(err).NotTo(HaveOccurred())
+	return view
 }
 
 // pluralFixture is the teams data source as a view.
