@@ -4235,6 +4235,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Pr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.blocked_request_patterns.0", "https://example.com/*"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.capture_network_payloads", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -4375,6 +4377,7 @@ resource "datadog_synthetics_test" "bar" {
 		disable_cors = true
 		initial_navigation_timeout = 150
 		blocked_request_patterns   = ["https://example.com/*"]
+		capture_network_payloads   = true
 	}
 
 	name = "%[1]s"
