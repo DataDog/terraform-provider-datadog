@@ -970,6 +970,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 						Type: schema.TypeString,
 					},
 				},
+				"capture_network_payloads": {
+					Description: "Capture HTTP request/response headers and bodies for Fetch/XHR calls made during browser tests.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"http_version": syntheticsHttpVersionOption(),
 			},
 		},
@@ -5049,6 +5054,10 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			options.SetBlockedRequestPatterns(blockedRequests)
 		}
 
+		if captureNetworkPayloads, ok := d.GetOk("options_list.0.capture_network_payloads"); ok {
+			options.SetCaptureNetworkPayloads(captureNetworkPayloads.(bool))
+		}
+
 		if attr, ok := d.GetOk("device_ids"); ok {
 			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
@@ -5194,6 +5203,9 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	}
 	if actualOptions.HasBlockedRequestPatterns() {
 		localOptionsList["blocked_request_patterns"] = actualOptions.GetBlockedRequestPatterns()
+	}
+	if actualOptions.HasCaptureNetworkPayloads() {
+		localOptionsList["capture_network_payloads"] = actualOptions.GetCaptureNetworkPayloads()
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
