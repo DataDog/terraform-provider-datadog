@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -177,6 +178,12 @@ func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Conte
 		declared,
 		serverOrder,
 		string(datadogV2.DUEDATERULETYPE_DUE_DATE_RULES),
+		func(id uuid.UUID) datadogV2.DueDateRuleReorderItem {
+			return *datadogV2.NewDueDateRuleReorderItem(id, datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
+		},
+		func(items []datadogV2.DueDateRuleReorderItem) datadogV2.DueDateRuleReorderRequest {
+			return *datadogV2.NewDueDateRuleReorderRequest(items)
+		},
 		r.Api.ReorderSecurityFindingsAutomationDueDateRules,
 	)...)
 	return diags

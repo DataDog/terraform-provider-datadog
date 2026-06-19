@@ -139,11 +139,14 @@ func (r *securityFindingsMuteRuleResource) Create(ctx context.Context, request r
 		return
 	}
 
-	body, diags := r.buildCreateRequestBody(ctx, &state)
+	data, diags := r.buildRuleData(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	body := datadogV2.NewMuteRuleCreateRequestWithDefaults()
+	body.SetData(*data)
 
 	resp, _, err := r.Api.CreateSecurityFindingsAutomationMuteRule(r.Auth, *body)
 	if err != nil {
@@ -172,11 +175,14 @@ func (r *securityFindingsMuteRuleResource) Update(ctx context.Context, request r
 		return
 	}
 
-	body, diags := r.buildUpdateRequestBody(ctx, &state)
+	data, diags := r.buildRuleData(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	body := datadogV2.NewMuteRuleUpdateRequestWithDefaults()
+	body.SetData(*data)
 
 	resp, _, err := r.Api.UpdateSecurityFindingsAutomationMuteRule(r.Auth, id, *body)
 	if err != nil {
@@ -248,7 +254,8 @@ func (r *securityFindingsMuteRuleResource) updateState(ctx context.Context, stat
 	return diags
 }
 
-func (r *securityFindingsMuteRuleResource) buildAttributes(ctx context.Context, state *securityFindingsMuteRuleModel) (*datadogV2.MuteRuleAttributesCreate, diag.Diagnostics) {
+// buildRuleData builds the JSON:API data object shared by the create and update requests.
+func (r *securityFindingsMuteRuleResource) buildRuleData(ctx context.Context, state *securityFindingsMuteRuleModel) (*datadogV2.MuteRuleDataCreate, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	scope, d := buildAutomationRuleScope(ctx, state.Rule)
@@ -272,35 +279,8 @@ func (r *securityFindingsMuteRuleResource) buildAttributes(ctx context.Context, 
 	attributes.SetRule(*scope)
 	attributes.SetAction(*action)
 
-	return attributes, diags
-}
-
-func (r *securityFindingsMuteRuleResource) buildCreateRequestBody(ctx context.Context, state *securityFindingsMuteRuleModel) (*datadogV2.MuteRuleCreateRequest, diag.Diagnostics) {
-	attributes, diags := r.buildAttributes(ctx, state)
-	if diags.HasError() {
-		return nil, diags
-	}
-
 	data := datadogV2.NewMuteRuleDataCreateWithDefaults()
 	data.SetType(datadogV2.MUTERULETYPE_MUTE_RULES)
 	data.SetAttributes(*attributes)
-
-	req := datadogV2.NewMuteRuleCreateRequestWithDefaults()
-	req.SetData(*data)
-	return req, diags
-}
-
-func (r *securityFindingsMuteRuleResource) buildUpdateRequestBody(ctx context.Context, state *securityFindingsMuteRuleModel) (*datadogV2.MuteRuleUpdateRequest, diag.Diagnostics) {
-	attributes, diags := r.buildAttributes(ctx, state)
-	if diags.HasError() {
-		return nil, diags
-	}
-
-	data := datadogV2.NewMuteRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.MUTERULETYPE_MUTE_RULES)
-	data.SetAttributes(*attributes)
-
-	req := datadogV2.NewMuteRuleUpdateRequestWithDefaults()
-	req.SetData(*data)
-	return req, diags
+	return data, diags
 }

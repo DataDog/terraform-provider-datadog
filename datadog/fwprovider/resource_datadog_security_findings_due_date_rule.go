@@ -160,11 +160,14 @@ func (r *securityFindingsDueDateRuleResource) Create(ctx context.Context, reques
 		return
 	}
 
-	body, diags := r.buildCreateRequestBody(ctx, &state)
+	data, diags := r.buildRuleData(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	body := datadogV2.NewDueDateRuleCreateRequestWithDefaults()
+	body.SetData(*data)
 
 	resp, _, err := r.Api.CreateSecurityFindingsAutomationDueDateRule(r.Auth, *body)
 	if err != nil {
@@ -193,11 +196,14 @@ func (r *securityFindingsDueDateRuleResource) Update(ctx context.Context, reques
 		return
 	}
 
-	body, diags := r.buildUpdateRequestBody(ctx, &state)
+	data, diags := r.buildRuleData(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	body := datadogV2.NewDueDateRuleUpdateRequestWithDefaults()
+	body.SetData(*data)
 
 	resp, _, err := r.Api.UpdateSecurityFindingsAutomationDueDateRule(r.Auth, id, *body)
 	if err != nil {
@@ -272,7 +278,8 @@ func (r *securityFindingsDueDateRuleResource) updateState(ctx context.Context, s
 	return diags
 }
 
-func (r *securityFindingsDueDateRuleResource) buildAttributes(ctx context.Context, state *securityFindingsDueDateRuleModel) (*datadogV2.DueDateRuleAttributesCreate, diag.Diagnostics) {
+// buildRuleData builds the JSON:API data object shared by the create and update requests.
+func (r *securityFindingsDueDateRuleResource) buildRuleData(ctx context.Context, state *securityFindingsDueDateRuleModel) (*datadogV2.DueDateRuleDataCreate, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	scope, d := buildAutomationRuleScope(ctx, state.Rule)
@@ -302,35 +309,8 @@ func (r *securityFindingsDueDateRuleResource) buildAttributes(ctx context.Contex
 	attributes.SetRule(*scope)
 	attributes.SetAction(*action)
 
-	return attributes, diags
-}
-
-func (r *securityFindingsDueDateRuleResource) buildCreateRequestBody(ctx context.Context, state *securityFindingsDueDateRuleModel) (*datadogV2.DueDateRuleCreateRequest, diag.Diagnostics) {
-	attributes, diags := r.buildAttributes(ctx, state)
-	if diags.HasError() {
-		return nil, diags
-	}
-
 	data := datadogV2.NewDueDateRuleDataCreateWithDefaults()
 	data.SetType(datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
 	data.SetAttributes(*attributes)
-
-	req := datadogV2.NewDueDateRuleCreateRequestWithDefaults()
-	req.SetData(*data)
-	return req, diags
-}
-
-func (r *securityFindingsDueDateRuleResource) buildUpdateRequestBody(ctx context.Context, state *securityFindingsDueDateRuleModel) (*datadogV2.DueDateRuleUpdateRequest, diag.Diagnostics) {
-	attributes, diags := r.buildAttributes(ctx, state)
-	if diags.HasError() {
-		return nil, diags
-	}
-
-	data := datadogV2.NewDueDateRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
-	data.SetAttributes(*attributes)
-
-	req := datadogV2.NewDueDateRuleUpdateRequestWithDefaults()
-	req.SetData(*data)
-	return req, diags
+	return data, diags
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -177,6 +178,12 @@ func (r *securityFindingsTicketCreationRulesOrderResource) applyOrder(ctx contex
 		declared,
 		serverOrder,
 		string(datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES),
+		func(id uuid.UUID) datadogV2.TicketCreationRuleReorderItem {
+			return *datadogV2.NewTicketCreationRuleReorderItem(id, datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES)
+		},
+		func(items []datadogV2.TicketCreationRuleReorderItem) datadogV2.TicketCreationRuleReorderRequest {
+			return *datadogV2.NewTicketCreationRuleReorderRequest(items)
+		},
 		r.Api.ReorderSecurityFindingsAutomationTicketCreationRules,
 	)...)
 	return diags

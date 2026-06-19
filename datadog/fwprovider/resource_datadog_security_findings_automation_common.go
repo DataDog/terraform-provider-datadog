@@ -153,15 +153,18 @@ func trackedOrder(declared []string, serverOrder []string, adoptAll bool) []stri
 }
 
 // applySecurityFindingsAutomationRulesOrder reconciles the declared order against the live rule
-// set and submits a complete reorder request. ruleType is the JSON:API type (for example
-// "mute_rules"), used both for the reorder items and in user-facing messages. reorderFn is the
-// type-specific client method (passed as a method value).
-func applySecurityFindingsAutomationRulesOrder(
+// set and submits a complete reorder request. The reorder request and item types differ per rule
+// type in the generated client, so the type-specific construction is supplied via makeItem and
+// makeRequest, and reorderFn is the matching client method (passed as a method value). ruleType is
+// the JSON:API type (for example "mute_rules"), used in user-facing messages.
+func applySecurityFindingsAutomationRulesOrder[I any, Req any](
 	auth context.Context,
 	declared []string,
 	serverOrder []string,
 	ruleType string,
-	reorderFn func(context.Context, datadogV2.SecurityAutomationRuleReorderRequest) (datadogV2.SecurityAutomationRuleReorderRequest, *http.Response, error),
+	makeItem func(uuid.UUID) I,
+	makeRequest func([]I) Req,
+	reorderFn func(context.Context, Req) (Req, *http.Response, error),
 ) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -175,21 +178,17 @@ func applySecurityFindingsAutomationRulesOrder(
 		)
 	}
 
-	items := make([]datadogV2.SecurityAutomationRuleReorderItem, len(submit))
+	items := make([]I, len(submit))
 	for i, id := range submit {
 		ruleUUID, err := uuid.Parse(id)
 		if err != nil {
 			diags.AddError(fmt.Sprintf("invalid %s ID", ruleType), err.Error())
 			return diags
 		}
-		items[i] = datadogV2.SecurityAutomationRuleReorderItem{
-			Id:   ruleUUID,
-			Type: ruleType,
-		}
+		items[i] = makeItem(ruleUUID)
 	}
 
-	body := datadogV2.NewSecurityAutomationRuleReorderRequest(items)
-	resp, httpResp, err := reorderFn(auth, *body)
+	resp, httpResp, err := reorderFn(auth, makeRequest(items))
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			diags.AddError(fmt.Sprintf("one or more %s IDs not found", ruleType),

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -177,6 +178,12 @@ func (r *securityFindingsMuteRulesOrderResource) applyOrder(ctx context.Context,
 		declared,
 		serverOrder,
 		string(datadogV2.MUTERULETYPE_MUTE_RULES),
+		func(id uuid.UUID) datadogV2.MuteRuleReorderItem {
+			return *datadogV2.NewMuteRuleReorderItem(id, datadogV2.MUTERULETYPE_MUTE_RULES)
+		},
+		func(items []datadogV2.MuteRuleReorderItem) datadogV2.MuteRuleReorderRequest {
+			return *datadogV2.NewMuteRuleReorderRequest(items)
+		},
 		r.Api.ReorderSecurityFindingsAutomationMuteRules,
 	)...)
 	return diags

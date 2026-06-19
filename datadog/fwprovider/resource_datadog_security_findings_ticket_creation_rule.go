@@ -157,11 +157,14 @@ func (r *securityFindingsTicketCreationRuleResource) Create(ctx context.Context,
 		return
 	}
 
-	body, diags := r.buildCreateRequestBody(ctx, &state)
+	data, diags := r.buildRuleData(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	body := datadogV2.NewTicketCreationRuleCreateRequestWithDefaults()
+	body.SetData(*data)
 
 	resp, _, err := r.Api.CreateSecurityFindingsAutomationTicketCreationRule(r.Auth, *body)
 	if err != nil {
@@ -190,11 +193,14 @@ func (r *securityFindingsTicketCreationRuleResource) Update(ctx context.Context,
 		return
 	}
 
-	body, diags := r.buildUpdateRequestBody(ctx, &state)
+	data, diags := r.buildRuleData(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	body := datadogV2.NewTicketCreationRuleUpdateRequestWithDefaults()
+	body.SetData(*data)
 
 	resp, _, err := r.Api.UpdateSecurityFindingsAutomationTicketCreationRule(r.Auth, id, *body)
 	if err != nil {
@@ -278,7 +284,8 @@ func (r *securityFindingsTicketCreationRuleResource) updateState(ctx context.Con
 	return diags
 }
 
-func (r *securityFindingsTicketCreationRuleResource) buildAttributes(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleAttributesCreate, diag.Diagnostics) {
+// buildRuleData builds the JSON:API data object shared by the create and update requests.
+func (r *securityFindingsTicketCreationRuleResource) buildRuleData(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleDataCreate, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	scope, d := buildAutomationRuleScope(ctx, state.Rule)
@@ -322,35 +329,8 @@ func (r *securityFindingsTicketCreationRuleResource) buildAttributes(ctx context
 	attributes.SetRule(*scope)
 	attributes.SetAction(*action)
 
-	return attributes, diags
-}
-
-func (r *securityFindingsTicketCreationRuleResource) buildCreateRequestBody(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleCreateRequest, diag.Diagnostics) {
-	attributes, diags := r.buildAttributes(ctx, state)
-	if diags.HasError() {
-		return nil, diags
-	}
-
 	data := datadogV2.NewTicketCreationRuleDataCreateWithDefaults()
 	data.SetType(datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES)
 	data.SetAttributes(*attributes)
-
-	req := datadogV2.NewTicketCreationRuleCreateRequestWithDefaults()
-	req.SetData(*data)
-	return req, diags
-}
-
-func (r *securityFindingsTicketCreationRuleResource) buildUpdateRequestBody(ctx context.Context, state *securityFindingsTicketCreationRuleModel) (*datadogV2.TicketCreationRuleUpdateRequest, diag.Diagnostics) {
-	attributes, diags := r.buildAttributes(ctx, state)
-	if diags.HasError() {
-		return nil, diags
-	}
-
-	data := datadogV2.NewTicketCreationRuleDataCreateWithDefaults()
-	data.SetType(datadogV2.TICKETCREATIONRULETYPE_TICKET_CREATION_RULES)
-	data.SetAttributes(*attributes)
-
-	req := datadogV2.NewTicketCreationRuleUpdateRequestWithDefaults()
-	req.SetData(*data)
-	return req, diags
+	return data, diags
 }
