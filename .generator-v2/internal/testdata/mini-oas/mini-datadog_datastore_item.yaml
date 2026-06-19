@@ -1,0 +1,357 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Actions Datastores
+  description: 'Leverage the Actions Datastore API to create, modify, and delete
+
+    items in datastores owned by your organization.'
+  externalDocs:
+    url: https://docs.datadoghq.com/actions/datastore
+paths:
+  /api/v2/actions-datastores/{datastore_id}/items:
+    get:
+      operationId: ListDatastoreItems
+      tags:
+      - Actions Datastores
+      summary: List datastore items
+      description: Lists items from a datastore. You can filter the results by specifying either an item
+        key or a filter query parameter, but not both at the same time. Supports server-side pagination
+        for large datasets.
+      parameters:
+      - name: datastore_id
+        in: path
+        required: true
+        description: The unique identifier of the datastore to retrieve.
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Optional query filter to search items using the [logs search syntax](https://docs.datadoghq.com/logs/explorer/search_syntax/).
+        schema:
+          type: string
+      - name: item_key
+        in: query
+        description: Optional primary key value to retrieve a specific item. Cannot be used together with
+          the filter parameter.
+        schema:
+          type: string
+          maxLength: 256
+      - name: page[limit]
+        in: query
+        description: Optional field to limit the number of items to return per page for pagination. Up
+          to 100 items can be returned per page.
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          maximum: 100
+      - name: page[offset]
+        in: query
+        description: Optional field to offset the number of items to skip from the beginning of the result
+          set for pagination.
+        schema:
+          type: integer
+          format: int64
+      - name: sort
+        in: query
+        description: Optional field to sort results by. Prefix with '-' for descending order (e.g., '-created_at').
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemApiPayloadArray'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: 00000000-0000-0000-0000-000000000005
+                      type: items
+                      attributes:
+                        value:
+                          key: example-value
+                        primary_column_name: id
+                        created_at: '2024-01-01T00:00:00+00:00'
+                        modified_at: '2024-01-01T00:00:00+00:00'
+                        org_id: 123
+                        store_id: 00000000-0000-0000-0000-000000000006
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-menu-order: 6
+      x-permission:
+        operator: OR
+        permissions:
+        - apps_datastore_read
+      x-undo:
+        type: safe
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    DatastoreAttributesPrimaryColumnName:
+      type: string
+      description: "The name of the primary key column for this datastore. Primary column names:\n  -
+        Must abide by both [PostgreSQL naming conventions](https://www.postgresql.org/docs/7.0/syntax525.htm)\n
+        \ - Cannot exceed 63 characters"
+      maxLength: 63
+      example: ''
+    DatastoreItemsDataType:
+      type: string
+      description: The resource type for datastore items.
+      default: items
+      example: items
+      enum:
+      - items
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - ITEMS
+    ItemApiPayloadArray:
+      type: object
+      description: A collection of datastore items with pagination and schema metadata.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: An array of datastore items with their content and metadata.
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/ItemApiPayloadData'
+        meta:
+          $ref: '#/components/schemas/ItemApiPayloadMeta'
+          description: Metadata about the included items, including pagination info and datastore schema.
+    ItemApiPayloadData:
+      type: object
+      description: Core data and metadata for a single datastore item.
+      required:
+      - type
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the datastore.
+        attributes:
+          $ref: '#/components/schemas/ItemApiPayloadDataAttributes'
+        type:
+          $ref: '#/components/schemas/DatastoreItemsDataType'
+    ItemApiPayloadDataAttributes:
+      type: object
+      description: Metadata and content of a datastore item.
+      properties:
+        created_at:
+          type: string
+          description: Timestamp when the item was first created.
+          format: date-time
+        modified_at:
+          type: string
+          description: Timestamp when the item was last modified.
+          format: date-time
+        org_id:
+          type: integer
+          description: The ID of the organization that owns this item.
+          format: int64
+        primary_column_name:
+          $ref: '#/components/schemas/DatastoreAttributesPrimaryColumnName'
+        signature:
+          type: string
+          description: A unique signature identifying this item version.
+        store_id:
+          type: string
+          description: The unique identifier of the datastore containing this item.
+        value:
+          $ref: '#/components/schemas/ItemApiPayloadDataAttributesValue'
+    ItemApiPayloadDataAttributesValue:
+      type: object
+      description: The data content (as key-value pairs) of a datastore item.
+      additionalProperties: {}
+    ItemApiPayloadMeta:
+      type: object
+      description: Additional metadata about a collection of datastore items, including pagination and
+        schema information.
+      properties:
+        page:
+          $ref: '#/components/schemas/ItemApiPayloadMetaPage'
+        schema:
+          $ref: '#/components/schemas/ItemApiPayloadMetaSchema'
+    ItemApiPayloadMetaPage:
+      type: object
+      description: Pagination information for a collection of datastore items.
+      properties:
+        totalCount:
+          type: integer
+          description: The total number of items in the datastore, ignoring any filters.
+          format: int64
+        totalFilteredCount:
+          type: integer
+          description: The total number of items that match the current filter criteria.
+          format: int64
+        hasMore:
+          type: boolean
+          description: Whether there are additional pages of items beyond the current page.
+    ItemApiPayloadMetaSchema:
+      type: object
+      description: Schema information about the datastore, including its primary key and field definitions.
+      properties:
+        primary_key:
+          type: string
+          description: The name of the primary key column for this datastore.
+        fields:
+          type: array
+          description: An array describing the columns available in this datastore.
+          items:
+            $ref: '#/components/schemas/ItemApiPayloadMetaSchemaField'
+    ItemApiPayloadMetaSchemaField:
+      type: object
+      description: Information about a specific column in the datastore schema.
+      required:
+      - name
+      - type
+      properties:
+        name:
+          type: string
+          description: The name of this column in the datastore.
+          example: ''
+        type:
+          type: string
+          description: The data type of this column. For example, 'string', 'number', or 'boolean'.
+          example: ''
+    JSONAPIErrorItem:
+      type: object
+      description: API error response body
+      properties:
+        status:
+          type: string
+          description: Status code of the response.
+          example: '400'
+        title:
+          type: string
+          description: Short human-readable summary of the error.
+          example: Bad Request
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the error.
+          example: Missing required attribute in body
+        meta:
+          type: object
+          description: Non-standard meta-information about the error
+          additionalProperties: {}
+        source:
+          $ref: '#/components/schemas/JSONAPIErrorItemSource'
+    JSONAPIErrorItemSource:
+      type: object
+      description: References to the source of the error.
+      properties:
+        pointer:
+          type: string
+          description: A JSON pointer to the value in the request document that caused the error.
+          example: /data/attributes/title
+        parameter:
+          type: string
+          description: A string indicating which URI query parameter caused the error.
+          example: limit
+        header:
+          type: string
+          description: A string indicating the name of a single request header which caused the error.
+          example: Authorization
+    JSONAPIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          items:
+            $ref: '#/components/schemas/JSONAPIErrorItem'
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY
