@@ -33,9 +33,10 @@ jobs:
         id: changed
         run: |
           # pull_request_target checks out the base branch (trusted). Fetch the
-          # PR head and diff by filename only, so untrusted PR code is never
-          # executed in this credential-less job; the test selection scripts
-          # below run from the trusted base checkout.
+          # PR head so the diff and test-selection can see it. Untrusted PR code
+          # is never executed in this credential-less job: we diff by filename
+          # and the selection script only reads PR-head file *contents* (via
+          # git show) to find test function names — it never runs them.
           git fetch --no-tags origin "refs/pull/${{ github.event.pull_request.number }}/head"
           git diff --name-only "origin/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}" > /tmp/changed_files.txt
           echo "Changed files:"
@@ -43,7 +44,7 @@ jobs:
       - name: Select tests and build args
         id: build-args
         run: |
-          RUN_REGEX=$(python3 scripts/select_pr_tests.py --escape-for-make < /tmp/changed_files.txt)
+          RUN_REGEX=$(python3 scripts/select_pr_tests.py --escape-for-make --git-ref "${{ github.event.pull_request.head.sha }}" < /tmp/changed_files.txt)
 
           if [ -z "$RUN_REGEX" ]; then
             echo "should_run=false" >> "$GITHUB_OUTPUT"
