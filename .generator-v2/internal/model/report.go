@@ -39,12 +39,12 @@ func (r *RunReport) Write(path string, cmd *cobra.Command) error {
 
 	if path != "-" {
 		f, err := os.Create(path)
-		writer = f
-		closeFunc = f.Close
-
 		if err != nil {
 			return fmt.Errorf("report: opening %s: %w", path, err)
 		}
+
+		writer = f
+		closeFunc = f.Close
 	}
 	defer closeFunc()
 
