@@ -65,8 +65,6 @@ func RenderDataSource(v DataSourceView) ([]byte, error) {
 
 	formatted, err := format.Source(buf.Bytes())
 	if err != nil {
-		// Surface the unformatted source so a template bug is debuggable from
-		// the test output rather than just a byte offset.
 		return nil, fmt.Errorf("emit: gofmt of generated data source %q: %w\n--- raw output ---\n%s", v.TypeName, err, buf.String())
 	}
 	return dropBlankLineAfterBrace(formatted), nil
@@ -92,7 +90,7 @@ func dropBlankLineAfterBrace(src []byte) []byte {
 	return bytes.Join(out, []byte("\n"))
 }
 
-// upperFirst upper-cases the first rune of s, leaving the rest untouched.
+// upperFirst upper-cases the first rune of s.
 func upperFirst(s string) string {
 	if s == "" {
 		return s
