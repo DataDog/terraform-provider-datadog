@@ -3,20 +3,18 @@
 page_title: "datadog_security_findings_due_date_rules_order Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog security findings automation due date rules order resource. This is used to manage the evaluation order of due date rules for an organization. This resource claims full ownership of the due date rules ordering: rules created outside Terraform are appended to the end of the order (and reported as a warning). To control their position, list every due date rule ID in rule_ids (including rules created in the UI).
+  Provides a Datadog security findings automation due date rules order resource. This is used to manage the evaluation order of due date rules for an organization. The rule_ids list must contain every due date rule ID; due date rules created outside Terraform appear as drift.
 ---
 
 # datadog_security_findings_due_date_rules_order (Resource)
 
-Provides a Datadog security findings automation due date rules order resource. This is used to manage the evaluation order of due date rules for an organization. This resource claims full ownership of the due date rules ordering: rules created outside Terraform are appended to the end of the order (and reported as a warning). To control their position, list every due date rule ID in `rule_ids` (including rules created in the UI).
+Provides a Datadog security findings automation due date rules order resource. This is used to manage the evaluation order of due date rules for an organization. The `rule_ids` list must contain every due date rule ID; due date rules created outside Terraform appear as drift.
 
 ## Example Usage
 
 ```terraform
 # Manage the evaluation order of all due date rules for the organization.
-# This resource owns the full ordering: any due date rule you omit here (for example
-# one created from the UI) is appended to the end of the order and reported as a
-# warning on apply. List every rule ID to control their exact position.
+# rule_ids must list every due date rule ID; rules created outside Terraform appear as drift.
 
 resource "datadog_security_findings_due_date_rules_order" "order" {
   name = "security_findings_due_date_rules_order"
@@ -33,7 +31,7 @@ resource "datadog_security_findings_due_date_rules_order" "order" {
 ### Required
 
 - `name` (String) A unique identifier for the order resource. This field has no server-side equivalent; it is recommended to match the resource name.
-- `rule_ids` (List of String) The ordered list of due date rule IDs. The order of IDs in this attribute defines the evaluation order of the due date rules.
+- `rule_ids` (List of String) The ordered list of all due date rule IDs. The order of IDs in this attribute defines the evaluation order of the due date rules.
 
 ### Read-Only
 

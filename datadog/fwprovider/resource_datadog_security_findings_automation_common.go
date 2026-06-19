@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
@@ -13,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -96,17 +96,7 @@ func flattenAutomationRuleScope(ctx context.Context, scope datadogV2.AutomationR
 	return m, diags
 }
 
-// ----------------------------------------------------------------------------
-// Shared helpers for the `*_order` resources.
-//
-// The reorder API requires the complete, exact set of rule IDs that currently exist server-side;
-// a partial list is rejected. To make the resource lifecycle work (and to coexist with rules
-// created outside Terraform), the order resources reconcile the user-declared list against the
-// live set before every reorder call.
-// ----------------------------------------------------------------------------
-
-// securityFindingsRulesOrderModel is the shared state model for the three `*_rules_order`
-// resources. Their schema is identical (only the descriptions differ), so the model is shared too.
+// securityFindingsRulesOrderModel is the shared state model for the order resources.
 type securityFindingsRulesOrderModel struct {
 	ID      types.String `tfsdk:"id"`
 	Name    types.String `tfsdk:"name"`
@@ -114,15 +104,12 @@ type securityFindingsRulesOrderModel struct {
 }
 
 // securityFindingsRulesOrderSchema builds the schema shared by the `*_rules_order` resources.
-// ruleNoun is the singular human-readable rule name (for example "mute rule"); its plural is
-// formed by appending "s".
-func securityFindingsRulesOrderSchema(ruleNoun string) schema.Schema {
-	rulePlural := ruleNoun + "s"
+// ruleType is the automation rule type, for example "mute" or "due date".
+func securityFindingsRulesOrderSchema(ruleType string) schema.Schema {
 	return schema.Schema{
 		Description: fmt.Sprintf(
-			"Provides a Datadog security findings automation %[1]s order resource. This is used to manage the evaluation order of %[1]s for an organization. "+
-				"This resource claims full ownership of the %[1]s ordering: rules created outside Terraform are appended to the end of the order (and reported as a warning). "+
-				"To control their position, list every %[2]s ID in `rule_ids` (including rules created in the UI).", rulePlural, ruleNoun),
+			"Provides a Datadog security findings automation %[1]s rules order resource. This is used to manage the evaluation order of %[1]s rules for an organization. "+
+				"The `rule_ids` list must contain every %[1]s rule ID; %[1]s rules created outside Terraform appear as drift.", ruleType),
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
@@ -130,7 +117,7 @@ func securityFindingsRulesOrderSchema(ruleNoun string) schema.Schema {
 				Required:    true,
 			},
 			"rule_ids": schema.ListAttribute{
-				Description: fmt.Sprintf("The ordered list of %s IDs. The order of IDs in this attribute defines the evaluation order of the %s.", ruleNoun, rulePlural),
+				Description: fmt.Sprintf("The ordered list of all %[1]s rule IDs. The order of IDs in this attribute defines the evaluation order of the %[1]s rules.", ruleType),
 				ElementType: types.StringType,
 				Required:    true,
 			},
@@ -138,103 +125,61 @@ func securityFindingsRulesOrderSchema(ruleNoun string) schema.Schema {
 	}
 }
 
-// reconcileOrder merges the user-declared ordered IDs with the live set of rule IDs from the
-// server. Declared IDs keep their relative order; any rule that exists server-side but is not
-// declared is appended at the end, so the reorder request always contains the complete set the
-// API requires. It returns the full ordered list to submit and the list of undeclared IDs.
-func reconcileOrder(declared []string, serverOrder []string) (submit []string, unmanaged []string) {
-	declaredSet := make(map[string]struct{}, len(declared))
-	for _, id := range declared {
-		declaredSet[id] = struct{}{}
+// upsertRulesOrder is the shared Create/Update body for the order resources.
+func upsertRulesOrder(
+	ctx context.Context,
+	plan tfsdk.Plan,
+	state *tfsdk.State,
+	diags *diag.Diagnostics,
+	apply func(context.Context, *securityFindingsRulesOrderModel, *diag.Diagnostics),
+) {
+	var model securityFindingsRulesOrderModel
+	diags.Append(plan.Get(ctx, &model)...)
+	if diags.HasError() {
+		return
 	}
-
-	submit = make([]string, 0, len(serverOrder)+len(declared))
-	submit = append(submit, declared...)
-	for _, id := range serverOrder {
-		if _, ok := declaredSet[id]; !ok {
-			submit = append(submit, id)
-			unmanaged = append(unmanaged, id)
-		}
+	apply(ctx, &model, diags)
+	if diags.HasError() {
+		return
 	}
-	return submit, unmanaged
+	diags.Append(state.Set(ctx, &model)...)
 }
 
-// trackedOrder computes the value to persist in state for an order resource's `rule_ids`. On a
-// fresh import (adoptAll), it adopts the full server order. Otherwise it returns the managed
-// (declared) rule IDs in their current server-side order: it walks the live server order and keeps
-// only the declared IDs. This means rules created outside Terraform stay invisible (no perpetual
-// drift), while reordering or deleting a managed rule out-of-band surfaces as drift, so the next
-// apply re-asserts the configured order.
-func trackedOrder(declared []string, serverOrder []string, adoptAll bool) []string {
-	if adoptAll {
-		out := make([]string, len(serverOrder))
-		copy(out, serverOrder)
-		return out
-	}
-
-	declaredSet := make(map[string]struct{}, len(declared))
-	for _, id := range declared {
-		declaredSet[id] = struct{}{}
-	}
-	out := make([]string, 0, len(declared))
-	for _, id := range serverOrder {
-		if _, ok := declaredSet[id]; ok {
-			out = append(out, id)
-		}
-	}
-	return out
+// setOrderState writes the rule IDs and computed id into an order resource's state.
+func setOrderState(ctx context.Context, state *securityFindingsRulesOrderModel, ruleIDs []string, diags *diag.Diagnostics) {
+	list, d := types.ListValueFrom(ctx, types.StringType, ruleIDs)
+	diags.Append(d...)
+	state.RuleIDs = list
+	state.ID = state.Name
 }
 
-// applySecurityFindingsAutomationRulesOrder reconciles the declared order against the live rule
-// set and submits a complete reorder request. The reorder request and item types differ per rule
-// type in the generated client, so the type-specific construction is supplied via makeItem and
-// makeRequest, and reorderFn is the matching client method (passed as a method value). ruleType is
-// the JSON:API type (for example "mute_rules"), used in user-facing messages.
-func applySecurityFindingsAutomationRulesOrder[I any, Req any](
+// reorderSecurityFindingsAutomationRules submits a reorder request for the given rule IDs.
+func reorderSecurityFindingsAutomationRules[I any, Req any](
 	auth context.Context,
-	declared []string,
-	serverOrder []string,
-	ruleType string,
+	ruleIDs []string,
 	makeItem func(uuid.UUID) I,
 	makeRequest func([]I) Req,
 	reorderFn func(context.Context, Req) (Req, *http.Response, error),
 ) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	submit, unmanaged := reconcileOrder(declared, serverOrder)
-	if len(unmanaged) > 0 {
-		diags.AddWarning(
-			"Unmanaged rules appended to ordering",
-			fmt.Sprintf("The following %s exist but are not listed in rule_ids, so they were appended to the end of the evaluation order: %s. "+
-				"This order resource claims full ownership of the evaluation order; list every rule ID (including rules created in the UI) "+
-				"to control their position and silence this warning.", ruleType, strings.Join(unmanaged, ", ")),
-		)
-	}
-
-	items := make([]I, len(submit))
-	for i, id := range submit {
+	items := make([]I, len(ruleIDs))
+	for i, id := range ruleIDs {
 		ruleUUID, err := uuid.Parse(id)
 		if err != nil {
-			diags.AddError(fmt.Sprintf("invalid %s ID", ruleType), err.Error())
+			diags.AddError("invalid rule ID", fmt.Sprintf("%q is not a valid rule ID: %s", id, err))
 			return diags
 		}
 		items[i] = makeItem(ruleUUID)
 	}
 
-	resp, httpResp, err := reorderFn(auth, makeRequest(items))
+	resp, _, err := reorderFn(auth, makeRequest(items))
 	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
-			diags.AddError(fmt.Sprintf("one or more %s IDs not found", ruleType),
-				"the reorder request referenced a rule that does not exist; ensure all rule_ids exist before setting order")
-			return diags
-		}
-		diags.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reordering %s", ruleType)))
+		diags.Append(utils.FrameworkErrorDiag(err, "error reordering rules"))
 		return diags
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		diags.AddError("response contains unparsedObject", err.Error())
-		return diags
 	}
-
 	return diags
 }

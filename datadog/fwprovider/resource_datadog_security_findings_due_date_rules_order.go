@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -38,7 +37,7 @@ func (r *securityFindingsDueDateRulesOrderResource) Metadata(_ context.Context, 
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
-	response.Schema = securityFindingsRulesOrderSchema("due date rule")
+	response.Schema = securityFindingsRulesOrderSchema("due date")
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
@@ -51,110 +50,47 @@ func (r *securityFindingsDueDateRulesOrderResource) Read(ctx context.Context, re
 	if response.Diagnostics.HasError() {
 		return
 	}
-
-	serverOrder, diags := r.listServerOrder()
-	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
+	resp, _, err := r.Api.ListSecurityFindingsAutomationDueDateRules(r.Auth)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing due date rules"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
 
-	adoptAll := state.RuleIDs.IsNull()
-	var declared []string
-	if !adoptAll {
-		response.Diagnostics.Append(state.RuleIDs.ElementsAs(ctx, &declared, false)...)
-		if response.Diagnostics.HasError() {
-			return
-		}
+	ruleIDs := make([]string, 0, len(resp.GetData()))
+	for _, rule := range resp.GetData() {
+		ruleIDs = append(ruleIDs, rule.GetId().String())
 	}
-
-	list, d := types.ListValueFrom(ctx, types.StringType, trackedOrder(declared, serverOrder, adoptAll))
-	response.Diagnostics.Append(d...)
-	state.RuleIDs = list
-	if state.ID.IsNull() {
-		state.ID = state.Name
-	}
+	setOrderState(ctx, &state, ruleIDs, &response.Diagnostics)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state securityFindingsRulesOrderModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	response.Diagnostics.Append(r.applyOrder(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-	state.ID = state.Name
-
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	upsertRulesOrder(ctx, request.Plan, &response.State, &response.Diagnostics, r.applyOrder)
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state securityFindingsRulesOrderModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	response.Diagnostics.Append(r.applyOrder(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-	state.ID = state.Name
-
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	upsertRulesOrder(ctx, request.Plan, &response.State, &response.Diagnostics, r.applyOrder)
 }
 
-// Delete is a no-op: an ordering cannot be deleted from the API. Removing this resource from
-// configuration simply stops Terraform from managing the due date rules evaluation order.
+// Delete is a no-op: an ordering cannot be deleted. Removing this resource from configuration
+// simply stops Terraform from managing the evaluation order.
 func (r *securityFindingsDueDateRulesOrderResource) Delete(_ context.Context, _ resource.DeleteRequest, _ *resource.DeleteResponse) {
 }
 
-// listServerOrder returns the IDs of all due date rules in their current server-side order.
-func (r *securityFindingsDueDateRulesOrderResource) listServerOrder() ([]string, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	resp, _, err := r.Api.ListSecurityFindingsAutomationDueDateRules(r.Auth)
-	if err != nil {
-		diags.Append(utils.FrameworkErrorDiag(err, "error listing due date rules"))
-		return nil, diags
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		diags.AddError("response contains unparsedObject", err.Error())
-		return nil, diags
-	}
-
-	ids := make([]string, 0, len(resp.GetData()))
-	for _, rule := range resp.GetData() {
-		ids = append(ids, rule.GetId().String())
-	}
-	return ids, diags
-}
-
-func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Context, state *securityFindingsRulesOrderModel) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var declared []string
-	diags.Append(state.RuleIDs.ElementsAs(ctx, &declared, false)...)
+func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Context, state *securityFindingsRulesOrderModel, diags *diag.Diagnostics) {
+	var ruleIDs []string
+	diags.Append(state.RuleIDs.ElementsAs(ctx, &ruleIDs, false)...)
 	if diags.HasError() {
-		return diags
+		return
 	}
-
-	serverOrder, d := r.listServerOrder()
-	diags.Append(d...)
-	if diags.HasError() {
-		return diags
-	}
-
-	diags.Append(applySecurityFindingsAutomationRulesOrder(
+	diags.Append(reorderSecurityFindingsAutomationRules(
 		r.Auth,
-		declared,
-		serverOrder,
-		string(datadogV2.DUEDATERULETYPE_DUE_DATE_RULES),
+		ruleIDs,
 		func(id uuid.UUID) datadogV2.DueDateRuleReorderItem {
 			return *datadogV2.NewDueDateRuleReorderItem(id, datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
 		},
@@ -163,5 +99,8 @@ func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Conte
 		},
 		r.Api.ReorderSecurityFindingsAutomationDueDateRules,
 	)...)
-	return diags
+	if diags.HasError() {
+		return
+	}
+	setOrderState(ctx, state, ruleIDs, diags)
 }

@@ -1,7 +1,5 @@
 # Manage the evaluation order of all due date rules for the organization.
-# This resource owns the full ordering: any due date rule you omit here (for example
-# one created from the UI) is appended to the end of the order and reported as a
-# warning on apply. List every rule ID to control their exact position.
+# rule_ids must list every due date rule ID; rules created outside Terraform appear as drift.
 
 resource "datadog_security_findings_due_date_rules_order" "order" {
   name = "security_findings_due_date_rules_order"
