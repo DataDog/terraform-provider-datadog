@@ -29,10 +29,10 @@ type automationRuleScopeModel struct {
 // securityFindingsAutomationRuleScopeBlock returns the schema for the shared `rule` block.
 func securityFindingsAutomationRuleScopeBlock() schema.Block {
 	return schema.SingleNestedBlock{
-		Description: "The scope of findings to which the rule applies.",
+		Description: "Defines the scope of findings to which the automation rule applies.",
 		Attributes: map[string]schema.Attribute{
 			"finding_types": schema.ListAttribute{
-				Description: "The list of security finding types the rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.",
+				Description: "The list of security finding types that the automation rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.",
 				ElementType: types.StringType,
 				Required:    true,
 				Validators: []validator.List{
@@ -41,7 +41,7 @@ func securityFindingsAutomationRuleScopeBlock() schema.Block {
 				},
 			},
 			"query": schema.StringAttribute{
-				Description: "A search query to further filter the findings matched by this rule. The `@workflow.*` namespace, and the `@is_in_security_inbox` and `@status` fields, are not permitted.",
+				Description: "A search query to further filter the findings matched by this rule. The `@workflow.*` namespace and `@status` fields are not permitted. For a reference of available fields, see the [Security Findings schema documentation](https://docs.datadoghq.com/security/guide/findings-schema/).",
 				Optional:    true,
 			},
 		},

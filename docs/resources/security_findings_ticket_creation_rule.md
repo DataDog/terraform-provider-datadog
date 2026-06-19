@@ -46,9 +46,9 @@ resource "datadog_security_findings_ticket_creation_rule" "critical_misconfigs" 
 
 ### Optional
 
-- `action` (Block, Optional) The action taken when the rule matches a finding. (see [below for nested schema](#nestedblock--action))
+- `action` (Block, Optional) The action to take when the ticket creation rule matches a finding. (see [below for nested schema](#nestedblock--action))
 - `enabled` (Boolean) Whether the ticket creation rule is enabled. Defaults to `true`.
-- `rule` (Block, Optional) The scope of findings to which the rule applies. (see [below for nested schema](#nestedblock--rule))
+- `rule` (Block, Optional) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only
 
@@ -59,14 +59,14 @@ resource "datadog_security_findings_ticket_creation_rule" "critical_misconfigs" 
 
 Required:
 
-- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, a final ticket is created explaining the limit was hit. Must be between 1 and 500.
-- `project_id` (String) The UUID of the case management project in which tickets are created.
-- `target` (String) The ticketing system in which to create tickets. Valid values are `jira`, `case_management`.
+- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and links back to the responsible rule. Must be between 1 and 500.
+- `project_id` (String) The UUID of the case management project.
+- `target` (String) The ticketing system to create tickets in. Valid values are `jira`, `case_management`.
 
 Optional:
 
 - `assignee_id` (String) The UUID of the default assignee for created tickets.
-- `fields` (String) A JSON-encoded object of custom fields for the created Jira issue. See the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get) for the list of available fields.
+- `fields` (String) A JSON-encoded object of custom fields of the Jira issue to create. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get).
 
 Read-Only:
 
@@ -78,11 +78,11 @@ Read-Only:
 
 Required:
 
-- `finding_types` (List of String) The list of security finding types the rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.
+- `finding_types` (List of String) The list of security finding types that the automation rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.
 
 Optional:
 
-- `query` (String) A search query to further filter the findings matched by this rule. The `@workflow.*` namespace, and the `@is_in_security_inbox` and `@status` fields, are not permitted.
+- `query` (String) A search query to further filter the findings matched by this rule. The `@workflow.*` namespace and `@status` fields are not permitted. For a reference of available fields, see the [Security Findings schema documentation](https://docs.datadoghq.com/security/guide/findings-schema/).
 
 ## Import
 

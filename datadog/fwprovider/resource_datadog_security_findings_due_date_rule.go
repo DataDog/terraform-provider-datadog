@@ -81,7 +81,7 @@ func (r *securityFindingsDueDateRuleResource) Schema(_ context.Context, _ resour
 		Blocks: map[string]schema.Block{
 			"rule": securityFindingsAutomationRuleScopeBlock(),
 			"action": schema.SingleNestedBlock{
-				Description: "The action taken when the rule matches a finding.",
+				Description: "The action to take when the due date rule matches a finding.",
 				Attributes: map[string]schema.Attribute{
 					"due_from": schema.StringAttribute{
 						Description: "The reference point from which the due date is calculated. When `fix_available` is selected but not applicable to the finding type, `first_seen` is used instead.",
@@ -95,11 +95,11 @@ func (r *securityFindingsDueDateRuleResource) Schema(_ context.Context, _ resour
 				},
 				Blocks: map[string]schema.Block{
 					"due_days_per_severity": schema.ListNestedBlock{
-						Description: "The number of days until a finding is due, configured per severity. Each severity may appear at most once.",
+						Description: "A list of severity-to-due-date mappings. Each severity may appear at most once.",
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"severity": schema.StringAttribute{
-									Description: "The severity level.",
+									Description: "A severity level used to configure due date thresholds.",
 									Required:    true,
 									Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewDueDateSeverityFromValue)},
 								},

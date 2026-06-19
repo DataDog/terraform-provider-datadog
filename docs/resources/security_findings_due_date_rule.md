@@ -52,9 +52,9 @@ resource "datadog_security_findings_due_date_rule" "prod_sla" {
 
 ### Optional
 
-- `action` (Block, Optional) The action taken when the rule matches a finding. (see [below for nested schema](#nestedblock--action))
+- `action` (Block, Optional) The action to take when the due date rule matches a finding. (see [below for nested schema](#nestedblock--action))
 - `enabled` (Boolean) Whether the due date rule is enabled. Defaults to `true`.
-- `rule` (Block, Optional) The scope of findings to which the rule applies. (see [below for nested schema](#nestedblock--rule))
+- `rule` (Block, Optional) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only
 
@@ -69,7 +69,7 @@ Required:
 
 Optional:
 
-- `due_days_per_severity` (Block List) The number of days until a finding is due, configured per severity. Each severity may appear at most once. (see [below for nested schema](#nestedblock--action--due_days_per_severity))
+- `due_days_per_severity` (Block List) A list of severity-to-due-date mappings. Each severity may appear at most once. (see [below for nested schema](#nestedblock--action--due_days_per_severity))
 - `reason_description` (String) An optional description providing more context for the due date assignment.
 
 <a id="nestedblock--action--due_days_per_severity"></a>
@@ -78,7 +78,7 @@ Optional:
 Required:
 
 - `due_in_days` (Number) The number of days from the reference point until the finding is due.
-- `severity` (String) The severity level. Valid values are `critical`, `high`, `medium`, `low`, `info`, `none`, `unknown`.
+- `severity` (String) A severity level used to configure due date thresholds. Valid values are `critical`, `high`, `medium`, `low`, `info`, `none`, `unknown`.
 
 
 
@@ -87,11 +87,11 @@ Required:
 
 Required:
 
-- `finding_types` (List of String) The list of security finding types the rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.
+- `finding_types` (List of String) The list of security finding types that the automation rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.
 
 Optional:
 
-- `query` (String) A search query to further filter the findings matched by this rule. The `@workflow.*` namespace, and the `@is_in_security_inbox` and `@status` fields, are not permitted.
+- `query` (String) A search query to further filter the findings matched by this rule. The `@workflow.*` namespace and `@status` fields are not permitted. For a reference of available fields, see the [Security Findings schema documentation](https://docs.datadoghq.com/security/guide/findings-schema/).
 
 ## Import
 

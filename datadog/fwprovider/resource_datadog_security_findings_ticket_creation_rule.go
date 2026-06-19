@@ -80,14 +80,14 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 		Blocks: map[string]schema.Block{
 			"rule": securityFindingsAutomationRuleScopeBlock(),
 			"action": schema.SingleNestedBlock{
-				Description: "The action taken when the rule matches a finding.",
+				Description: "The action to take when the ticket creation rule matches a finding.",
 				Attributes: map[string]schema.Attribute{
 					"project_id": schema.StringAttribute{
-						Description: "The UUID of the case management project in which tickets are created.",
+						Description: "The UUID of the case management project.",
 						Required:    true,
 					},
 					"target": schema.StringAttribute{
-						Description: "The ticketing system in which to create tickets.",
+						Description: "The ticketing system to create tickets in.",
 						Required:    true,
 						Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewTicketCreationTargetFromValue)},
 					},
@@ -96,12 +96,12 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 						Optional:    true,
 					},
 					"fields": schema.StringAttribute{
-						Description: "A JSON-encoded object of custom fields for the created Jira issue. See the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get) for the list of available fields.",
+						Description: "A JSON-encoded object of custom fields of the Jira issue to create. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get).",
 						Optional:    true,
 						CustomType:  jsontypes.NormalizedType{},
 					},
 					"max_tickets_per_day": schema.Int64Attribute{
-						Description: "The maximum number of tickets the rule may create per day. If exceeded, a final ticket is created explaining the limit was hit. Must be between 1 and 500.",
+						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and links back to the responsible rule. Must be between 1 and 500.",
 						Required:    true,
 					},
 					"auto_disabled_reason": schema.StringAttribute{

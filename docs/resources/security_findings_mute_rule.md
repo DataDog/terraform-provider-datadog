@@ -42,9 +42,9 @@ resource "datadog_security_findings_mute_rule" "accepted_risks_dev" {
 
 ### Optional
 
-- `action` (Block, Optional) The action taken when the rule matches a finding. (see [below for nested schema](#nestedblock--action))
+- `action` (Block, Optional) The action to take when the mute rule matches a finding. (see [below for nested schema](#nestedblock--action))
 - `enabled` (Boolean) Whether the mute rule is enabled. Defaults to `true`.
-- `rule` (Block, Optional) The scope of findings to which the rule applies. (see [below for nested schema](#nestedblock--rule))
+- `rule` (Block, Optional) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only
 
@@ -55,7 +55,7 @@ resource "datadog_security_findings_mute_rule" "accepted_risks_dev" {
 
 Required:
 
-- `reason` (String) The reason for muting the matched findings. Valid values are `duplicate`, `false_positive`, `no_fix`, `other`, `pending_fix`, `risk_accepted`.
+- `reason` (String) The reason for muting a security finding. Valid values are `duplicate`, `false_positive`, `no_fix`, `other`, `pending_fix`, `risk_accepted`.
 
 Optional:
 
@@ -68,11 +68,11 @@ Optional:
 
 Required:
 
-- `finding_types` (List of String) The list of security finding types the rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.
+- `finding_types` (List of String) The list of security finding types that the automation rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.
 
 Optional:
 
-- `query` (String) A search query to further filter the findings matched by this rule. The `@workflow.*` namespace, and the `@is_in_security_inbox` and `@status` fields, are not permitted.
+- `query` (String) A search query to further filter the findings matched by this rule. The `@workflow.*` namespace and `@status` fields are not permitted. For a reference of available fields, see the [Security Findings schema documentation](https://docs.datadoghq.com/security/guide/findings-schema/).
 
 ## Import
 

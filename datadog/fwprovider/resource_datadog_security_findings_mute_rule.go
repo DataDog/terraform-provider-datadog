@@ -75,10 +75,10 @@ func (r *securityFindingsMuteRuleResource) Schema(_ context.Context, _ resource.
 		Blocks: map[string]schema.Block{
 			"rule": securityFindingsAutomationRuleScopeBlock(),
 			"action": schema.SingleNestedBlock{
-				Description: "The action taken when the rule matches a finding.",
+				Description: "The action to take when the mute rule matches a finding.",
 				Attributes: map[string]schema.Attribute{
 					"reason": schema.StringAttribute{
-						Description: "The reason for muting the matched findings.",
+						Description: "The reason for muting a security finding.",
 						Required:    true,
 						Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewMuteReasonFromValue)},
 					},
