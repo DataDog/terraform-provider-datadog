@@ -105,6 +105,39 @@ func flattenAutomationRuleScope(ctx context.Context, scope datadogV2.AutomationR
 // live set before every reorder call.
 // ----------------------------------------------------------------------------
 
+// securityFindingsRulesOrderModel is the shared state model for the three `*_rules_order`
+// resources. Their schema is identical (only the descriptions differ), so the model is shared too.
+type securityFindingsRulesOrderModel struct {
+	ID      types.String `tfsdk:"id"`
+	Name    types.String `tfsdk:"name"`
+	RuleIDs types.List   `tfsdk:"rule_ids"`
+}
+
+// securityFindingsRulesOrderSchema builds the schema shared by the `*_rules_order` resources.
+// ruleNoun is the singular human-readable rule name (for example "mute rule"); its plural is
+// formed by appending "s".
+func securityFindingsRulesOrderSchema(ruleNoun string) schema.Schema {
+	rulePlural := ruleNoun + "s"
+	return schema.Schema{
+		Description: fmt.Sprintf(
+			"Provides a Datadog security findings automation %[1]s order resource. This is used to manage the evaluation order of %[1]s for an organization. "+
+				"This resource claims full ownership of the %[1]s ordering: rules created outside Terraform are appended to the end of the order (and reported as a warning). "+
+				"To control their position, list every %[2]s ID in `rule_ids` (including rules created in the UI).", rulePlural, ruleNoun),
+		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
+			"name": schema.StringAttribute{
+				Description: "A unique identifier for the order resource. This field has no server-side equivalent; it is recommended to match the resource name.",
+				Required:    true,
+			},
+			"rule_ids": schema.ListAttribute{
+				Description: fmt.Sprintf("The ordered list of %s IDs. The order of IDs in this attribute defines the evaluation order of the %s.", ruleNoun, rulePlural),
+				ElementType: types.StringType,
+				Required:    true,
+			},
+		},
+	}
+}
+
 // reconcileOrder merges the user-declared ordered IDs with the live set of rule IDs from the
 // server. Declared IDs keep their relative order; any rule that exists server-side but is not
 // declared is appended at the end, so the reorder request always contains the complete set the

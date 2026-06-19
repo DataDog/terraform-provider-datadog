@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -22,12 +21,6 @@ var (
 type securityFindingsDueDateRulesOrderResource struct {
 	Api  *datadogV2.SecurityMonitoringApi
 	Auth context.Context
-}
-
-type securityFindingsDueDateRulesOrderModel struct {
-	ID      types.String `tfsdk:"id"`
-	Name    types.String `tfsdk:"name"`
-	RuleIDs types.List   `tfsdk:"rule_ids"`
 }
 
 func NewSecurityFindingsDueDateRulesOrderResource() resource.Resource {
@@ -45,23 +38,7 @@ func (r *securityFindingsDueDateRulesOrderResource) Metadata(_ context.Context, 
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
-	response.Schema = schema.Schema{
-		Description: "Provides a Datadog security findings automation due date rules order resource. This is used to manage the evaluation order of due date rules for an organization. " +
-			"This resource claims full ownership of the due date rules ordering: rules created outside Terraform are appended to the end of the order (and reported as a warning). " +
-			"To control their position, list every due date rule ID in `rule_ids` (including rules created in the UI).",
-		Attributes: map[string]schema.Attribute{
-			"id": utils.ResourceIDAttribute(),
-			"name": schema.StringAttribute{
-				Description: "A unique identifier for the order resource. This field has no server-side equivalent; it is recommended to match the resource name.",
-				Required:    true,
-			},
-			"rule_ids": schema.ListAttribute{
-				Description: "The ordered list of due date rule IDs. The order of IDs in this attribute defines the evaluation order of the due date rules.",
-				ElementType: types.StringType,
-				Required:    true,
-			},
-		},
-	}
+	response.Schema = securityFindingsRulesOrderSchema("due date rule")
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
@@ -69,7 +46,7 @@ func (r *securityFindingsDueDateRulesOrderResource) ImportState(ctx context.Cont
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state securityFindingsDueDateRulesOrderModel
+	var state securityFindingsRulesOrderModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -101,7 +78,7 @@ func (r *securityFindingsDueDateRulesOrderResource) Read(ctx context.Context, re
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state securityFindingsDueDateRulesOrderModel
+	var state securityFindingsRulesOrderModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -117,7 +94,7 @@ func (r *securityFindingsDueDateRulesOrderResource) Create(ctx context.Context, 
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state securityFindingsDueDateRulesOrderModel
+	var state securityFindingsRulesOrderModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -158,7 +135,7 @@ func (r *securityFindingsDueDateRulesOrderResource) listServerOrder() ([]string,
 	return ids, diags
 }
 
-func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Context, state *securityFindingsDueDateRulesOrderModel) diag.Diagnostics {
+func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Context, state *securityFindingsRulesOrderModel) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var declared []string
