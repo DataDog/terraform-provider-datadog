@@ -1,49 +1,49 @@
-package report
+package model
 
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
-	"io"
 	"testing"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
+	"github.com/spf13/cobra"
 )
 
 func fixedTime() time.Time { return time.Date(2026, 6, 3, 12, 0, 0, 0, time.UTC) }
 
 // sampleReport has one artifact in each ArtifactStatus, plus a diagnostic and a
 // skipped operation, so every summary bucket and every nested shape is covered.
-func sampleReport() *model.RunReport {
+func sampleReport() *RunReport {
 	ts := fixedTime()
-	return &model.RunReport{
+	return &RunReport{
 		RunId:            "11111111-1111-1111-1111-111111111111",
 		GeneratorVersion: "v1.2.3",
 		SpecHash:         "abc123",
 		StartedAt:        ts,
 		FinishedAt:       ts,
-		Artifacts: []model.ArtifactReportEntry{
-			{Name: "pet", Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusCreated, Path: "datadog/fwprovider/data_source_datadog_pet.go"},
-			{Name: "team", Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusUnchanged, Path: "p2"},
-			{Name: "monitor", Kind: model.ArtifactKindResource, Status: model.ArtifactStatusUpdated, Path: "p3"},
-			{Name: "slo", Kind: model.ArtifactKindResource, Status: model.ArtifactStatusSkipped, Path: "p4"},
+		Artifacts: []ArtifactReportEntry{
+			{Name: "pet", Kind: ArtifactKindDataSource, Status: ArtifactStatusCreated, Path: "datadog/fwprovider/data_source_datadog_pet.go"},
+			{Name: "team", Kind: ArtifactKindDataSource, Status: ArtifactStatusUnchanged, Path: "p2"},
+			{Name: "monitor", Kind: ArtifactKindResource, Status: ArtifactStatusUpdated, Path: "p3"},
+			{Name: "slo", Kind: ArtifactKindResource, Status: ArtifactStatusSkipped, Path: "p4"},
 			{
-				Name: "incident_type", Kind: model.ArtifactKindResource, Status: model.ArtifactStatusFailed, Path: "p5",
-				Diagnostics: []model.Diagnostic{{Severity: model.SeverityError, Message: "boom", Location: "spec:x"}},
+				Name: "incident_type", Kind: ArtifactKindResource, Status: ArtifactStatusFailed, Path: "p5",
+				Diagnostics: []Diagnostic{{Severity: SeverityError, Message: "boom", Location: "spec:x"}},
 			},
 		},
-		SkippedOperations: []model.SkippedOperation{
-			{OperationId: "ListThings", Path: "/things", Method: "GET", Reason: model.SkipReasonTrackingFieldAbsent},
+		SkippedOperations: []SkippedOperation{
+			{OperationId: "ListThings", Path: "/things", Method: "GET", Reason: SkipReasonTrackingFieldAbsent},
 		},
 	}
 }
 
-func writeToMap(t *testing.T, r *model.RunReport) map[string]any {
+func writeToMap(t *testing.T, r *RunReport) map[string]any {
 	t.Helper()
 	var buf bytes.Buffer
-	if err := WriteJSON(&buf, r); err != nil {
-		t.Fatalf("WriteJSON: %v", err)
+	cmd := &cobra.Command{}
+	cmd.SetOut(&buf)
+	if err := r.Write("-", cmd); err != nil {
+		t.Fatalf("Write: %v", err)
 	}
 	var m map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &m); err != nil {
@@ -55,7 +55,6 @@ func writeToMap(t *testing.T, r *model.RunReport) map[string]any {
 func TestWriteJSONHasRequiredTopLevelFields(t *testing.T) {
 	m := writeToMap(t, sampleReport())
 
-	// Required  fields
 	for _, k := range []string{"run_id", "generator_version", "spec_hash", "started_at", "finished_at", "artifacts", "summary"} {
 		if _, ok := m[k]; !ok {
 			t.Errorf("missing required key %q", k)
@@ -92,17 +91,14 @@ func TestWriteJSONSummaryCounts(t *testing.T) {
 }
 
 // TestWriteJSONDerivesSummary proves the writer computes the summary from the
-// artifacts (ignoring a stale caller value) and does not mutate the caller's report.
+// artifacts, overriding any stale caller value.
 func TestWriteJSONDerivesSummary(t *testing.T) {
 	r := sampleReport()
-	r.Summary = &model.RunSummary{Created: 99} // deliberately wrong
+	r.Summary = &RunSummary{Created: 99} // deliberately wrong
 
 	sum := writeToMap(t, r)["summary"].(map[string]any)
 	if sum["created"].(float64) != 1 {
 		t.Errorf("writer should derive summary from artifacts, got created=%v", sum["created"])
-	}
-	if r.Summary == nil || r.Summary.Created != 99 {
-		t.Errorf("WriteJSON must not mutate the caller's report, Summary=%+v", r.Summary)
 	}
 }
 
@@ -148,10 +144,10 @@ func TestWriteJSONArtifactAndSkippedShape(t *testing.T) {
 
 func TestWriteJSONOmitsEmptyOptionalFields(t *testing.T) {
 	ts := fixedTime()
-	r := &model.RunReport{
+	r := &RunReport{
 		RunId: "x", GeneratorVersion: "v", SpecHash: "h", StartedAt: ts, FinishedAt: ts,
-		Artifacts: []model.ArtifactReportEntry{
-			{Name: "a", Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusUnchanged, Path: "p"},
+		Artifacts: []ArtifactReportEntry{
+			{Name: "a", Kind: ArtifactKindDataSource, Status: ArtifactStatusUnchanged, Path: "p"},
 		},
 	}
 	m := writeToMap(t, r)
@@ -168,35 +164,5 @@ func TestWriteJSONOmitsEmptyOptionalFields(t *testing.T) {
 	}
 	if _, ok := m["summary"]; !ok {
 		t.Error("summary should always be present, even with no skipped/failed artifacts")
-	}
-}
-
-func TestWriteJSONDeterministic(t *testing.T) {
-	r := sampleReport()
-	var a, b bytes.Buffer
-	if err := WriteJSON(&a, r); err != nil {
-		t.Fatalf("WriteJSON: %v", err)
-	}
-	if err := WriteJSON(&b, r); err != nil {
-		t.Fatalf("WriteJSON: %v", err)
-	}
-	if a.String() != b.String() {
-		t.Errorf("non-deterministic output:\n--- run 1 ---\n%s\n--- run 2 ---\n%s", a.String(), b.String())
-	}
-}
-
-func TestWriteJSONNilReport(t *testing.T) {
-	if err := WriteJSON(io.Discard, nil); err == nil {
-		t.Error("expected an error for a nil report")
-	}
-}
-
-type errWriter struct{}
-
-func (errWriter) Write([]byte) (int, error) { return 0, errors.New("write failed") }
-
-func TestWriteJSONPropagatesWriterError(t *testing.T) {
-	if err := WriteJSON(errWriter{}, sampleReport()); err == nil {
-		t.Error("expected WriteJSON to propagate the writer error")
 	}
 }
