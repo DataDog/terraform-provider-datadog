@@ -89,16 +89,13 @@ jobs:
         with:
           go-version: "1.23"
           cache: true
-      - uses: actions/cache@f4b3439a656ba812b8cb417d2d49f9c810103092
-        with:
-          path: ~/.cache/terraform
-          key: terraform-${{ env.TERRAFORM_VERSION }}
+      # No GHA cache: the Terraform binary is small (~30MB, a few seconds to
+      # download) and a shared cache would let untrusted fork PR code poison a
+      # binary that a later trusted, credentialed run could restore and execute.
       - name: Install terraform
         run: |
           mkdir -p ~/.cache/terraform
-          if [ ! -f ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }} ]; then
-            wget https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
-          fi
+          wget https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
           unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
       - name: Sweep stale test resources
         run: make sweep
