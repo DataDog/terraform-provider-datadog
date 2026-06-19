@@ -86,6 +86,10 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				return err
 			}
 
+			if runReport.Summary != nil && runReport.Summary.Failed > 0 {
+				return fmt.Errorf("generate: %d artifact(s) failed; see report for details", runReport.Summary.Failed)
+			}
+
 			if check {
 				for _, e := range runReport.Artifacts {
 					if e.Status == model.ArtifactStatusCreated || e.Status == model.ArtifactStatusUpdated {
