@@ -3,6 +3,7 @@ package model
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"testing"
 	"time"
 
@@ -139,6 +140,36 @@ func TestWriteJSONArtifactAndSkippedShape(t *testing.T) {
 	}
 	if so["reason"] != "tracking_field_absent" || so["method"] != "GET" {
 		t.Errorf("skipped operation = %v", so)
+	}
+}
+
+func TestWriteDeterministic(t *testing.T) {
+	r := sampleReport()
+	var a, b bytes.Buffer
+	cmdA := &cobra.Command{}
+	cmdA.SetOut(&a)
+	if err := r.Write("-", cmdA); err != nil {
+		t.Fatalf("Write (run 1): %v", err)
+	}
+	cmdB := &cobra.Command{}
+	cmdB.SetOut(&b)
+	if err := r.Write("-", cmdB); err != nil {
+		t.Fatalf("Write (run 2): %v", err)
+	}
+	if a.String() != b.String() {
+		t.Errorf("non-deterministic output:\n--- run 1 ---\n%s\n--- run 2 ---\n%s", a.String(), b.String())
+	}
+}
+
+type errWriter struct{}
+
+func (errWriter) Write([]byte) (int, error) { return 0, fmt.Errorf("write failed") }
+
+func TestWritePropagatesWriterError(t *testing.T) {
+	cmd := &cobra.Command{}
+	cmd.SetOut(errWriter{})
+	if err := sampleReport().Write("-", cmd); err == nil {
+		t.Error("expected Write to propagate the writer error")
 	}
 }
 
