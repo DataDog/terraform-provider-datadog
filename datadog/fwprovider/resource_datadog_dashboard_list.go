@@ -277,7 +277,7 @@ func buildDatadogDashboardListUpdateItemsV2(state *dashboardListResourceModel) (
 	return dashboardListV2Items, nil
 }
 
-func buildDatadogDashboardListDeleteItemsV2(dashboardListItems *datadogV2.DashboardListItems) (*datadogV2.DashboardListDeleteItemsRequest, error) {
+func buildDatadogDashboardListDeleteItemsV2(dashboardListItems *datadogV2.DashboardListItems) (*datadogV2.DashboardListRemoveItemsRequest, error) {
 	dashboardListV2ItemsArr := make([]datadogV2.DashboardListItemRequest, 0)
 	for _, dashItem := range dashboardListItems.GetDashboards() {
 		dashType := dashItem.GetType()
@@ -285,7 +285,7 @@ func buildDatadogDashboardListDeleteItemsV2(dashboardListItems *datadogV2.Dashbo
 		dashItem := datadogV2.NewDashboardListItemRequest(dashID, dashType)
 		dashboardListV2ItemsArr = append(dashboardListV2ItemsArr, *dashItem)
 	}
-	dashboardListV2Items := datadogV2.NewDashboardListDeleteItemsRequest()
+	dashboardListV2Items := datadogV2.NewDashboardListRemoveItemsRequest()
 	dashboardListV2Items.SetDashboards(dashboardListV2ItemsArr)
 	return dashboardListV2Items, nil
 }
