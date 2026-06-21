@@ -93,18 +93,17 @@ func (d *datadogMetricActiveTagsAndAggregationsDataSource) Read(ctx context.Cont
 	if !state.Window.IsNull() {
 		params = *params.WithWindowSeconds(state.Window.ValueInt64())
 	}
-	ddResp, _, err := d.Api.ListActiveMetricConfigurations(d.Auth, state.Metric.String(), params)
+	ddResp, _, err := d.Api.ListActiveMetricConfigurations(d.Auth, state.Metric.ValueString(), params)
 	if err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing active metric tags and aggregations"))
 		return
 	}
 
 	data := ddResp.GetData()
-	id := data.Id
 	tags := data.Attributes.GetActiveTags()
 	aggregations := data.Attributes.GetActiveAggregations()
 
-	d.updateState(ctx, &state, *id, tags, aggregations)
+	d.updateState(ctx, &state, state.Metric.ValueString(), tags, aggregations)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
