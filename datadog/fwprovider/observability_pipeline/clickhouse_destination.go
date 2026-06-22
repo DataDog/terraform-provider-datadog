@@ -14,18 +14,18 @@ import (
 
 // ClickhouseDestinationModel represents the Terraform model for the ClickHouse destination.
 type ClickhouseDestinationModel struct {
-	EndpointUrlKey    types.String                       `tfsdk:"endpoint_url_key"`
-	Database          types.String                       `tfsdk:"database"`
-	Table             types.String                       `tfsdk:"table"`
-	Format            types.String                       `tfsdk:"format"`
-	SkipUnknownFields types.Bool                         `tfsdk:"skip_unknown_fields"`
-	DateTimeBestEffort types.Bool                        `tfsdk:"date_time_best_effort"`
-	Compression       []ClickhouseCompressionModel       `tfsdk:"compression"`
-	Auth              []ClickhouseAuthModel              `tfsdk:"auth"`
-	Batch             []ClickhouseBatchModel             `tfsdk:"batch"`
-	BatchEncoding     []ClickhouseBatchEncodingModel     `tfsdk:"batch_encoding"`
-	Tls               []TlsModel                        `tfsdk:"tls"`
-	Buffer            []BufferOptionsModel               `tfsdk:"buffer"`
+	EndpointUrlKey     types.String                   `tfsdk:"endpoint_url_key"`
+	Database           types.String                   `tfsdk:"database"`
+	Table              types.String                   `tfsdk:"table"`
+	Format             types.String                   `tfsdk:"format"`
+	SkipUnknownFields  types.Bool                     `tfsdk:"skip_unknown_fields"`
+	DateTimeBestEffort types.Bool                     `tfsdk:"date_time_best_effort"`
+	Compression        []ClickhouseCompressionModel   `tfsdk:"compression"`
+	Auth               []ClickhouseAuthModel          `tfsdk:"auth"`
+	Batch              []ClickhouseBatchModel         `tfsdk:"batch"`
+	BatchEncoding      []ClickhouseBatchEncodingModel `tfsdk:"batch_encoding"`
+	Tls                []TlsModel                     `tfsdk:"tls"`
+	Buffer             []BufferOptionsModel           `tfsdk:"buffer"`
 }
 
 // ClickhouseCompressionModel represents the compression configuration for the ClickHouse destination.
@@ -385,7 +385,7 @@ func ClickhouseDestinationSchema() schema.ListNestedBlock {
 						listvalidator.SizeAtMost(1),
 					},
 				},
-				"tls": TlsSchema(),
+				"tls":    TlsSchema(),
 				"buffer": BufferOptionsSchema(),
 			},
 		},
