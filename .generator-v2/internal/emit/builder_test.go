@@ -56,6 +56,25 @@ var _ = Describe("BuildDataSourceView", func() {
 		}))
 	})
 
+	It("renders a date-time string via .String() and a named enum via a string() cast", func() {
+		op := incidentTypeOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
+		attrs["created_at"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time"}
+		attrs["state"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Enum: []string{"active", "archived"}}
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+
+		rhs := map[string]string{}
+		for _, a := range view.State.Assignments {
+			rhs[a.LHS] = a.RHS
+		}
+		Expect(rhs["state.CreatedAt"]).To(Equal("types.StringValue(attributes.GetCreatedAt().String())"))
+		Expect(rhs["state.State"]).To(Equal("types.StringValue(string(attributes.GetState()))"))
+	})
+
 	It("produces a deeply-equal view across two runs", func() {
 		first, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())

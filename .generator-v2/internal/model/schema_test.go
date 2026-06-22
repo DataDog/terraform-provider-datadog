@@ -460,7 +460,7 @@ var _ = Describe("BuildResponseTree golden tree", func() {
 				Children: []*Attribute{
 					{Path: "response.options.notify", TfType: "schema.BoolAttribute", GoType: "types.Bool", Computed: true},
 				}},
-			{Path: "response.status", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true,
+			{Path: "response.status", TfType: "schema.StringAttribute", GoType: "types.String", Computed: true, IsEnum: true,
 				Validators: []ValidatorSpec{{Name: "stringvalidator.OneOf", Args: []string{`"ok"`, `"warn"`, `"alert"`}}}},
 			{Path: "response.tags", TfType: "schema.ListAttribute", GoType: "types.List", ElementType: "types.StringType", Computed: true},
 		}}
