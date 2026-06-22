@@ -227,7 +227,7 @@ func (b *dataSourceBuilder) walk(structName string, attrs []*model.Attribute) (a
 			})
 			b.assignments = append(b.assignments, StateAssignment{
 				LHS: stateLHS(a.Path),
-				RHS: wrapValue(a.GoType, getterChain(b.receiver, a.Path)),
+				RHS: wrapValue(a, getterChain(b.receiver, a.Path)),
 			})
 
 		case "schema.SingleNestedBlock":
@@ -331,9 +331,18 @@ func getterChain(receiver, path string) string {
 
 // wrapValue wraps an SDK getter chain in the types.*Value constructor matching
 // the model field's GoType, casting integers to int64 as the framework expects.
-func wrapValue(goType, chain string) string {
-	switch goType {
+// For strings it also reconciles getters whose Go return type is not a bare
+// string: a date-time getter returns time.Time (rendered via .String()) and an
+// enum getter returns a named string type (cast back with string(...)).
+func wrapValue(a *model.Attribute, chain string) string {
+	switch a.GoType {
 	case "types.String":
+		switch {
+		case a.Format == "date-time":
+			chain += ".String()"
+		case a.IsEnum:
+			chain = "string(" + chain + ")"
+		}
 		return "types.StringValue(" + chain + ")"
 	case "types.Bool":
 		return "types.BoolValue(" + chain + ")"
