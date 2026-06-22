@@ -40,3 +40,6 @@ CLAUDE.local.md
 
 # envrc
 .envrc
+
+# Local Terraform sandbox (not tracked)
+/sandbox/
