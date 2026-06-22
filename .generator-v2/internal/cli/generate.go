@@ -21,12 +21,12 @@ var errCheckFailed = fmt.Errorf("check: one or more files would change")
 func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var check bool
 	var include string
-	var specPath     string
-	var outputRoot   string
-	var hooksRoot    string
+	var specPath string
+	var outputRoot string
+	var hooksRoot string
 	var trackingField string
-	var maxDepth     int
-	var reportPath   string
+	var maxDepth int
+	var reportPath string
 
 	cmd := &cobra.Command{
 		Use:   "generate",
