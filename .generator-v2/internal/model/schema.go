@@ -96,6 +96,7 @@ func buildAttribute(s *Schema, path string, mode nestingMode) (*Attribute, error
 		Path:        path,
 		TfType:      tfType,
 		GoType:      goType,
+		Format:      s.Format,
 		Computed:    true,
 		Sensitive:   s.Sensitive,
 		Description: s.Description,
@@ -103,6 +104,7 @@ func buildAttribute(s *Schema, path string, mode nestingMode) (*Attribute, error
 
 	// A string enum becomes a OneOf validator; non-string enums produce none for now.
 	if s.Kind == SchemaKindPrimitive && s.Type == "string" && len(s.Enum) > 0 {
+		attr.IsEnum = true
 		args := make([]string, len(s.Enum))
 		for i, v := range s.Enum {
 			args[i] = strconv.Quote(v)

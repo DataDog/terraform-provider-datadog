@@ -162,6 +162,13 @@ type Attribute struct {
 	// e.g. "types.StringType". Set ONLY for ListAttribute/MapAttribute
 	// (collection-of-primitive); empty for everything else.
 	ElementType string
+	// Format is the OpenAPI format (e.g. "date-time"). It distinguishes SDK
+	// getters whose Go return type differs from the bare scalar: a date-time
+	// string getter returns time.Time, not string.
+	Format string
+	// IsEnum marks a string whose SDK getter returns a named enum type rather
+	// than a bare string, so the state mapper must cast it back with string(...).
+	IsEnum bool
 
 	Required  bool
 	Optional  bool
