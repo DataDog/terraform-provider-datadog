@@ -143,6 +143,6 @@ func pluralFixture() DataSourceView {
 				{LHS: "Summary", RHS: "types.StringValue(item.Attributes.GetSummary())"},
 				{LHS: "UserCount", RHS: "types.Int64Value(int64(item.Attributes.GetUserCount()))"},
 			},
-},
+		},
 	}
 }
