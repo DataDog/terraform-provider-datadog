@@ -735,7 +735,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
 
-	// Security findings automation rules (Preview).
+	// Security findings automation rules
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationMuteRules", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationMuteRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationMuteRule", true)
