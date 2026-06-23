@@ -55,6 +55,108 @@ var _ = Describe("BuildArtifact", func() {
 	})
 })
 
+var _ = Describe("BuildArtifact plural", func() {
+	It("marks the artifact plural and resolves the list-call bindings", func() {
+		art, err := BuildArtifact(listThingsOp())
+		Expect(err).NotTo(HaveOccurred())
+		Expect(art.Cardinality).To(Equal(CardinalityPlural))
+		Expect(art.Lifecycle.Read.GoMethod).To(Equal("ListThings"))
+		Expect(art.Lifecycle.Read.ItemType).To(Equal("Thing"))
+		Expect(art.Lifecycle.Read.OptionalParamsType).To(Equal("ListThingsOptionalParameters"))
+		Expect(art.Lifecycle.Read.Paginated).To(BeTrue())
+	})
+
+	It("builds the schema as scalar filter leaves followed by the results block, order-preserving", func() {
+		art, err := BuildArtifact(listThingsOp())
+		Expect(err).NotTo(HaveOccurred())
+
+		var names, types []string
+		for _, a := range art.Schema.Attributes {
+			names = append(names, a.Path)
+			types = append(types, a.TfType)
+		}
+		Expect(names).To(Equal([]string{"filter_keyword", "filter_me", "response.data"}))
+		Expect(types).To(Equal([]string{"schema.StringAttribute", "schema.BoolAttribute", "schema.ListNestedBlock"}))
+
+		// Filter leaves are Optional inputs, not Computed.
+		Expect(art.Schema.Attributes[0].Optional).To(BeTrue())
+		Expect(art.Schema.Attributes[0].Computed).To(BeFalse())
+	})
+
+	It("excludes pagination params and drops array/enum params with an info diagnostic", func() {
+		art, err := BuildArtifact(listThingsOp())
+		Expect(err).NotTo(HaveOccurred())
+
+		// page[number]/page[size] excluded silently; include (array) + sort (enum) dropped + logged.
+		var msgs []string
+		for _, d := range art.Diagnostics {
+			Expect(d.Severity).To(Equal(SeverityInfo))
+			msgs = append(msgs, d.Message)
+		}
+		Expect(msgs).To(HaveLen(2))
+		Expect(msgs).To(ContainElement(ContainSubstring(`"include"`)))
+		Expect(msgs).To(ContainElement(ContainSubstring(`"sort"`)))
+	})
+
+	It("produces a deeply-equal plural artifact across two runs", func() {
+		first, err := BuildArtifact(listThingsOp())
+		Expect(err).NotTo(HaveOccurred())
+		second, err := BuildArtifact(listThingsOp())
+		Expect(err).NotTo(HaveOccurred())
+		Expect(reflect.DeepEqual(first, second)).To(BeTrue())
+	})
+
+	It("leaves OptionalParamsType empty and Paginated false for a no-param, non-paginated list", func() {
+		op := listThingsOp()
+		op.QueryParams = nil
+		op.Pagination = nil
+		art, err := BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(art.Lifecycle.Read.OptionalParamsType).To(BeEmpty())
+		Expect(art.Lifecycle.Read.Paginated).To(BeFalse())
+	})
+})
+
+// listThingsOp is a plural list GET as a parser-shaped Operation: a JSON:API
+// collection ({data:[{id,type,attributes:{name,count}}]}) with paginated query
+// parameters, plus an array and an enum param the filter set must drop.
+func listThingsOp() *Operation {
+	return &Operation{
+		Path:            "/api/v2/things",
+		Method:          "GET",
+		OperationId:     "ListThings",
+		Tag:             "Things",
+		ResponseRefName: "ThingsResponse",
+		ItemRefName:     "Thing",
+		Pagination:      &Pagination{LimitParam: "page[size]", PageParam: "page[number]", ResultsPath: "data"},
+		Tracking: &TrackingFieldMetadata{
+			ArtifactKind: ArtifactKindDataSource,
+			ArtifactName: "things",
+			Cardinality:  CardinalityPlural,
+			IdStrategy:   IdStrategyDataID,
+			Group:        &OperationGroup{Read: "ListThings"},
+		},
+		QueryParams: []QueryParam{
+			{Name: "filter[keyword]", Schema: primSchema("string"), Description: "Search query."},
+			{Name: "filter[me]", Required: true, Schema: primSchema("boolean"), Description: "Only mine."},
+			{Name: "include", Schema: arrSchema(primSchema("string")), Description: "Related resources."},
+			{Name: "page[number]", Schema: &Schema{Kind: SchemaKindPrimitive, Type: "integer", Format: "int64"}},
+			{Name: "page[size]", Schema: &Schema{Kind: SchemaKindPrimitive, Type: "integer", Format: "int64"}},
+			{Name: "sort", Schema: &Schema{Kind: SchemaKindPrimitive, Type: "string", Enum: []string{"name"}}},
+		},
+		ResponseSchema: objSchema(map[string]*Schema{
+			"data": arrSchema(objSchema(map[string]*Schema{
+				"id":   primSchema("string"),
+				"type": primSchema("string"),
+				"attributes": objSchema(map[string]*Schema{
+					"name":  primSchema("string"),
+					"count": {Kind: SchemaKindPrimitive, Type: "integer", Format: "int64"},
+				}),
+			})),
+		}),
+	}
+}
+
 // incidentTypeOp is the incident_type GET as a parser-shaped Operation.
 func incidentTypeOp() *Operation {
 	return &Operation{
