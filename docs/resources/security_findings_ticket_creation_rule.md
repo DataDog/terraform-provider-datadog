@@ -60,12 +60,12 @@ resource "datadog_security_findings_ticket_creation_rule" "critical_misconfigs" 
 Required:
 
 - `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule. Value must be between 1 and 500.
-- `project_id` (String) The UUID of the Case Management project.
+- `project_id` (String) The UUID of the Case Management project. Must be a valid UUID.
 - `target` (String) The ticketing system to create tickets in. Valid values are `jira`, `case_management`.
 
 Optional:
 
-- `assignee_id` (String) The UUID of the default assignee for created tickets.
+- `assignee_id` (String) The UUID of the default assignee for created tickets. Must be a valid UUID.
 - `fields` (String) A JSON-encoded object of custom fields of the Jira issue to create. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get).
 
 Read-Only:

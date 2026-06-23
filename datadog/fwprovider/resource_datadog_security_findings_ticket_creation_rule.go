@@ -86,6 +86,7 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 					"project_id": schema.StringAttribute{
 						Description: "The UUID of the Case Management project.",
 						Required:    true,
+						Validators:  []validator.String{uuidValidator},
 					},
 					"target": schema.StringAttribute{
 						Description: "The ticketing system to create tickets in.",
@@ -95,6 +96,7 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 					"assignee_id": schema.StringAttribute{
 						Description: "The UUID of the default assignee for created tickets.",
 						Optional:    true,
+						Validators:  []validator.String{uuidValidator},
 					},
 					"fields": schema.StringAttribute{
 						Description: "A JSON-encoded object of custom fields of the Jira issue to create. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get).",
