@@ -196,6 +196,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogReferenceTableRowsDataSource,
 	NewOrganizationSettingsDataSource,
 	NewDatadogDatastoreDataSource,
+	NewDatastoresDataSource,
 	NewDatastoreItemDataSource,
 }
 

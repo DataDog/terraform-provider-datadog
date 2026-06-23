@@ -112,12 +112,6 @@ paths:
         type: safe
       x-merge-override:
         parameters: false
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: api_key
-        tf_description: Use this data source to retrieve information about an existing Datadog api key.
-        group:
-          read: GetAPIKey
   /api/v2/api_keys:
     get:
       operationId: ListAPIKeys
@@ -176,6 +170,13 @@ paths:
       x-menu-order: 5
       x-undo:
         type: safe
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: api_keys
+        tf_description: Use this data source to retrieve information about existing Datadog api keys.
+        group:
+          read: ListAPIKeys
+        cardinality: plural
 components:
   parameters:
     APIKeyCategoryParameter:

@@ -4,6 +4,12 @@
 #   ./tfgen-gen.sh <slice>             generate <slice> into $OUT, verify clean
 #   ./tfgen-gen.sh <slice> --replace   also overwrite the live provider data source
 #
+# <slice> is the artifact name to generate. _annotate.py writes a singular and a
+# plural variant per sample (when the endpoints support each): the singular keeps
+# the slice name (e.g. `team`), the plural is the pluralized name and carries
+# cardinality: plural (e.g. `teams`, `users`, `datastores`). Pass either name —
+# the emitted file is always data_source_datadog_<slice>.go.
+#
 # Builds tfgen, annotates the mini slices, generates <slice>, then verifies the
 # run succeeded and the emitted Go is gofmt-clean. With --replace it overwrites
 # datadog/fwprovider/data_source_datadog_<slice>.go in place, renaming the
@@ -30,7 +36,8 @@ echo "==> annotating mini slices"
 SPEC="$GEN_TEST/$SLICE.yaml"
 if [[ ! -f "$SPEC" ]]; then
   echo "ERROR: no annotated slice '$SLICE' at $SPEC" >&2
-  echo "       add '$SLICE' to SAMPLE in _annotate.py (or hand-annotate the slice)." >&2
+  echo "       add the base slice to SAMPLE in _annotate.py (or hand-annotate it). The plural" >&2
+  echo "       variant is auto-derived as '<base>s', so target a plural by its pluralized name." >&2
   echo "       available:" >&2
   ( cd "$GEN_TEST" && ls *.yaml 2>/dev/null | sed 's/\.yaml$//; s/^/         - /' ) >&2
   exit 1
