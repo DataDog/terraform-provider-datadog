@@ -108,12 +108,12 @@ type securityFindingsRulesOrderModel struct {
 func securityFindingsRulesOrderSchema(ruleType string) schema.Schema {
 	return schema.Schema{
 		Description: fmt.Sprintf(
-			"Provides a Datadog security findings automation %[1]s rules order resource. This is used to manage the evaluation order of %[1]s rules for an organization. "+
+			"Provides a resource that manages the evaluation order of %[1]s rules for the security findings in an organization. "+
 				"The `rule_ids` list must contain every %[1]s rule ID; %[1]s rules created outside Terraform appear as drift.", ruleType),
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
-				Description: "A unique identifier for the order resource. This field has no server-side equivalent; it is recommended to match the resource name.",
+				Description: "A unique identifier for the order resource. This field has no server-side equivalent; Datadog recommends matching the resource name.",
 				Required:    true,
 			},
 			"rule_ids": schema.ListAttribute{

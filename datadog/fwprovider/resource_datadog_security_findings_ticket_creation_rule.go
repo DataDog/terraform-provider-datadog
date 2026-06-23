@@ -83,7 +83,7 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 				Description: "The action to take when the ticket creation rule matches a finding.",
 				Attributes: map[string]schema.Attribute{
 					"project_id": schema.StringAttribute{
-						Description: "The UUID of the case management project.",
+						Description: "The UUID of the Case Management project.",
 						Required:    true,
 					},
 					"target": schema.StringAttribute{
@@ -101,7 +101,7 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 						CustomType:  jsontypes.NormalizedType{},
 					},
 					"max_tickets_per_day": schema.Int64Attribute{
-						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and links back to the responsible rule. Must be between 1 and 500.",
+						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule. Must be between 1 and 500.",
 						Required:    true,
 					},
 					"auto_disabled_reason": schema.StringAttribute{
