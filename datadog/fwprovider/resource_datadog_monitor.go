@@ -62,6 +62,7 @@ type monitorResourceModel struct {
 	Query                   customtypes.TrimSpaceStringValue `tfsdk:"query"`
 	Priority                types.String                     `tfsdk:"priority"`
 	Tags                    types.Set                        `tfsdk:"tags"`
+	IgnoreTagKeys           types.Set                        `tfsdk:"ignore_tag_keys"`
 	EffectiveTags           types.Set                        `tfsdk:"effective_tags"`
 	NotifyNoData            types.Bool                       `tfsdk:"notify_no_data"`
 	OnMissingData           types.String                     `tfsdk:"on_missing_data"`
@@ -278,9 +279,10 @@ type DataJobsQuery struct {
 }
 
 type monitorResource struct {
-	Api         *datadogV1.MonitorsApi
-	Auth        context.Context
-	DefaultTags map[string]string
+	Api           *datadogV1.MonitorsApi
+	Auth          context.Context
+	DefaultTags   map[string]string
+	IgnoreTagKeys []string
 }
 
 func NewMonitorResource() resource.Resource {
@@ -334,6 +336,7 @@ func (r *monitorResource) Configure(_ context.Context, request resource.Configur
 	r.Api = providerData.DatadogApiInstances.GetMonitorsApiV1()
 	r.Auth = providerData.Auth
 	r.DefaultTags = providerData.DefaultTags
+	r.IgnoreTagKeys = providerData.IgnoreTagKeys
 }
 
 func (r *monitorResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -850,6 +853,11 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+			"ignore_tag_keys": schema.SetAttribute{
+				Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (e.g. by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Merged with the provider's `ignore_tag_keys` for this resource.",
 				Optional:    true,
 				ElementType: types.StringType,
 			},
@@ -1564,15 +1572,48 @@ func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPla
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	// effective_tags = tags + default_tags. It is Computed and is refreshed from the API on every
+	// Read, so it is the field that mirrors what's actually on the monitor (and the value we send).
+	combinedTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
+	if diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+	// ignore_tag_keys: re-inject the prior values of ignored tag keys into effective_tags so
+	// Terraform neither reports drift on those keys nor strips them on apply. We operate on
+	// effective_tags (NOT the user-owned `tags`) because effective_tags is already Computed and
+	// already mirrors the API, so its prior state legally holds the live value — planning it here
+	// satisfies the framework's "computed value must equal config or own prior state" rule.
+	// `tags` is left exactly as the user wrote it. On create there is no prior state, so this is
+	// a no-op.
+	//
+	// Precedence: the resource-level ignore_tag_keys is unioned with the provider-level list;
+	// the effective set is the union of both lists.
+	ignoreKeys := append([]string{}, r.IgnoreTagKeys...)
+	if !plan.IgnoreTagKeys.IsNull() && !plan.IgnoreTagKeys.IsUnknown() {
+		var resourceKeys []string
+		resp.Diagnostics.Append(plan.IgnoreTagKeys.ElementsAs(ctx, &resourceKeys, false)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		ignoreKeys = append(ignoreKeys, resourceKeys...)
+	}
+	effectiveTags, diags := fwutils.ApplyIgnoreTagKeys(ctx, combinedTags, state.EffectiveTags, ignoreKeys)
+	if diags.HasError() {
+		resp.Diagnostics.Append(diags...)
+		return
+	}
+	// Only set effective_tags on the response plan — Create/Update read it from there. Do NOT
+	// assign plan.EffectiveTags locally: the local `plan` is fed to buildMonitorStruct for the
+	// validate call below, and the original code left EffectiveTags unknown there so validate is
+	// sent without tags. Setting it would change every monitor's validate request body and break
+	// all pre-recorded monitor cassettes.
+	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), effectiveTags)...)
+
 	if !plan.Validate.IsNull() && !plan.Validate.ValueBool() {
 		// Explicitly skip validation
 		return
 	}
-	combinedTags, diags := fwutils.CombineTags(ctx, plan.Tags, r.DefaultTags)
-	if diags.HasError() {
-		return
-	}
-	resp.Diagnostics.Append(resp.Plan.SetAttribute(ctx, frameworkPath.Root("effective_tags"), combinedTags)...)
 	m, _, diags := r.buildMonitorStruct(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
