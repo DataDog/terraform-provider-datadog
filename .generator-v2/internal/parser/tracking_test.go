@@ -152,6 +152,16 @@ func TestDecodeTrackingOptionalFields(t *testing.T) {
 		if got.Skip {
 			t.Error("Skip = true, want false when omitted")
 		}
+		if got.Cardinality != model.CardinalitySingular {
+			t.Errorf("Cardinality = %q, want default %q", got.Cardinality, model.CardinalitySingular)
+		}
+	})
+
+	t.Run("cardinality present", func(t *testing.T) {
+		got := decode(t, required+"cardinality: plural\n")
+		if got.Cardinality != model.CardinalityPlural {
+			t.Errorf("Cardinality = %q, want %q", got.Cardinality, model.CardinalityPlural)
+		}
 	})
 
 	t.Run("group present", func(t *testing.T) {
@@ -208,6 +218,7 @@ func TestDecodeTrackingMalformedReturnsTrackingError(t *testing.T) {
 		"unknown property":      "artifact_kind: resource\nartifact_name: thing\nbogus: 1\n",
 		"bad name pattern":      "artifact_kind: resource\nartifact_name: NotSnake\n",
 		"empty tf_description":  "artifact_kind: data_source\nartifact_name: team\ntf_description: \"\"\n",
+		"unknown cardinality":   "artifact_kind: data_source\nartifact_name: team\ncardinality: many\n",
 	}
 	for name, body := range cases {
 		t.Run(name, func(t *testing.T) {

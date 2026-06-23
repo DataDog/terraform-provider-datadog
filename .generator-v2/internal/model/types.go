@@ -47,6 +47,16 @@ const (
 	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure; always rejected
 )
 
+// Cardinality distinguishes a singular data source (resolves one item by id)
+// from a plural one (returns a filtered list). It is the decoded form of the
+// tracking extension's "cardinality" field; absent/empty means singular.
+type Cardinality string
+
+const (
+	CardinalitySingular Cardinality = "singular"
+	CardinalityPlural   Cardinality = "plural"
+)
+
 // IdStrategy describes how the Terraform resource ID is derived from the API response.
 type IdStrategy string
 
@@ -95,6 +105,39 @@ type Operation struct {
 	// e.g. "IncidentTypeResponse" — the SDK Go response type; empty when the
 	// body is inline or absent.
 	ResponseRefName string
+	// QueryParams are the operation's in:query parameters, normalized and sorted
+	// by name. Populated for every operation; the plural data-source path turns
+	// the scalar ones into filters.
+	QueryParams []QueryParam
+	// Pagination is the decoded x-pagination extension, or nil when the
+	// operation declares none.
+	Pagination *Pagination
+	// ItemRefName is the last $ref segment of the results-array element schema
+	// for a list response, e.g. "Team" — the SDK Go element type. Empty when the
+	// resultsPath property is absent or is not an array.
+	ItemRefName string
+}
+
+// QueryParam is one in:query OpenAPI parameter, with its inner schema
+// normalized like a request/response body. Name preserves the raw OpenAPI
+// spelling, including brackets (e.g. "filter[keyword]").
+type QueryParam struct {
+	Name        string
+	Required    bool
+	Schema      *Schema
+	Description string
+}
+
+// Pagination is the decoded x-pagination extension on a list operation. It
+// names the limit/page query parameters and the response property holding the
+// result array.
+type Pagination struct {
+	// LimitParam is the page-size query parameter name, e.g. "page[size]".
+	LimitParam string
+	// PageParam is the page-cursor/number query parameter name, e.g. "page[number]".
+	PageParam string
+	// ResultsPath is the response property holding the result array, e.g. "data".
+	ResultsPath string
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
@@ -131,6 +174,9 @@ type Artifact struct {
 	// Name is the Terraform-facing artifact name (without the datadog_ prefix).
 	Name string
 	Kind ArtifactKind
+	// Cardinality selects the singular vs plural data-source shape; the emit
+	// builder routes on it. Empty for resources.
+	Cardinality Cardinality
 	// Description is the artifact's top-level schema doc string, from the
 	// tracking extension's tf_description field; empty when the author omits it.
 	Description string
@@ -141,6 +187,10 @@ type Artifact struct {
 	Lifecycle *LifecycleBindings
 	// SourceFile is the output path, e.g. datadog/fwprovider/<file>.go.
 	SourceFile string
+	// Diagnostics carries non-fatal notes raised while building the artifact,
+	// e.g. query parameters dropped from a plural data source's filter set. The
+	// artifact still emits; the run report surfaces these as info.
+	Diagnostics []Diagnostic
 }
 
 // AttributeTree is the root of the Terraform schema tree for one artifact.
@@ -239,6 +289,21 @@ type SDKCall struct {
 	// NOTE: Schema has no Name field; the model-builder must read this from the
 	// raw libopenapi node, not from Operation.ResponseSchema.
 	GoResponseType string
+
+	// The fields below back a plural data-source list call.
+
+	// ItemType is the SDK element type yielded by the list call, e.g. "Team"
+	// (from Operation.ItemRefName). The non-paginated read collects resp.Data
+	// into []<ItemType>; the paginated read yields PaginationResult[<ItemType>].
+	ItemType string
+	// OptionalParamsType is the SDK optional-parameters struct, e.g.
+	// "ListTeamsOptionalParameters" (<GoMethod>OptionalParameters). Empty when
+	// the endpoint declares no query parameters, in which case the list call
+	// takes no optional-parameters argument.
+	OptionalParamsType string
+	// Paginated selects the "<GoMethod>WithPagination" iterator form, set when
+	// the operation declares an x-pagination extension.
+	Paginated bool
 }
 
 // ----------------------------------------------------------------------------
