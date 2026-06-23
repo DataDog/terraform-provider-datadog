@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -152,6 +153,41 @@ func setOrderState(ctx context.Context, state *securityFindingsRulesOrderModel, 
 	diags.Append(d...)
 	state.RuleIDs = list
 	state.ID = state.Name
+}
+
+// readRulesOrder is the shared Read body for the order resources.
+func readRulesOrder[Resp any, Rule any](
+	ctx context.Context,
+	request resource.ReadRequest,
+	response *resource.ReadResponse,
+	list func() (Resp, *http.Response, error),
+	getData func(Resp) []Rule,
+	getID func(Rule) string,
+	errSummary string,
+) {
+	var state securityFindingsRulesOrderModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+	resp, _, err := list()
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, errSummary))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	data := getData(resp)
+	ruleIDs := make([]string, 0, len(data))
+	for _, rule := range data {
+		ruleIDs = append(ruleIDs, getID(rule))
+	}
+	setOrderState(ctx, &state, ruleIDs, &response.Diagnostics)
+
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 // reorderSecurityFindingsAutomationRules submits a reorder request for the given rule IDs.

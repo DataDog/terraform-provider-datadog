@@ -2,14 +2,13 @@ package fwprovider
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -45,28 +44,14 @@ func (r *securityFindingsDueDateRulesOrderResource) ImportState(ctx context.Cont
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state securityFindingsRulesOrderModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-	resp, _, err := r.Api.ListSecurityFindingsAutomationDueDateRules(r.Auth)
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing due date rules"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
-
-	ruleIDs := make([]string, 0, len(resp.GetData()))
-	for _, rule := range resp.GetData() {
-		ruleIDs = append(ruleIDs, rule.GetId().String())
-	}
-	setOrderState(ctx, &state, ruleIDs, &response.Diagnostics)
-
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	readRulesOrder(ctx, request, response,
+		func() (datadogV2.DueDateRulesResponse, *http.Response, error) {
+			return r.Api.ListSecurityFindingsAutomationDueDateRules(r.Auth)
+		},
+		func(resp datadogV2.DueDateRulesResponse) []datadogV2.DueDateRuleDataResponse { return resp.GetData() },
+		func(rule datadogV2.DueDateRuleDataResponse) string { return rule.GetId().String() },
+		"error listing due date rules",
+	)
 }
 
 func (r *securityFindingsDueDateRulesOrderResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
