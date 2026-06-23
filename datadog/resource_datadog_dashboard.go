@@ -2440,7 +2440,7 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 func getDistributionDefinitionSchema() map[string]*schema.Schema {
 	schema := map[string]*schema.Schema{
 		"request": {
-			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
+			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `process_query`, or `query` is required within the request block).",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -2579,6 +2579,11 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 }
 
 func getDistributionRequestSchema() map[string]*schema.Schema {
+	querySchema := getFormulaQuerySchema()
+	querySchema.Description = "A list of queries to use in the widget."
+	formulaSchema := getFormulaSchema()
+	formulaSchema.Description = "A list of formulas that operate on queries."
+
 	return map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
 		"q":               getMetricQuerySchema(),
@@ -2588,6 +2593,9 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 		"security_query":  getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":   getProcessQuerySchema(),
 		"apm_stats_query": getApmStatsQuerySchema(),
+		// "query" and "formula" go together
+		"query":   querySchema,
+		"formula": formulaSchema,
 		// Settings specific to Distribution requests
 		"style": {
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
@@ -2629,6 +2637,38 @@ func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datad
 		} else if v, ok := terraformRequest["apm_stats_query"].([]interface{}); ok && len(v) > 0 {
 			apmStatsQuery := v[0].(map[string]interface{})
 			datadogDistributionRequest.ApmStatsQuery = buildDatadogApmStatsQuery(apmStatsQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["apm_resource_stats_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["apm_dependency_stats_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogDistributionRequest.SetQueries(queries)
+			datadogDistributionRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
+				formulas[i] = *buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogDistributionRequest.SetFormulas(formulas)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -2664,6 +2704,11 @@ func buildTerraformDistributionRequests(datadogDistributionRequests *[]datadogV1
 		} else if v, ok := datadogRequest.GetApmStatsQueryOk(); ok {
 			terraformQuery := buildTerraformApmStatsQuery(*v)
 			terraformRequest["apm_stats_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(v)
+		}
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 		if datadogRequest.Style != nil {
 			style := buildTerraformWidgetStyle(*datadogRequest.Style)

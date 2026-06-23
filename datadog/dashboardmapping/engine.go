@@ -644,6 +644,7 @@ var dataSourceToQueryType = map[string]string{
 	"audit":                "event_query",
 	"rum":                  "event_query",
 	"errors":               "event_query",
+	"llm_observability":    "event_query",
 	"process":              "process_query",
 	"slo":                  "slo_query",
 	"cloud_cost":           "cloud_cost_query",
@@ -655,7 +656,7 @@ var dataSourceToQueryType = map[string]string{
 // formula/query-style requests (response_format: "scalar" or "timeseries").
 func isFormulaCapableWidget(jsonType string) bool {
 	switch jsonType {
-	case "timeseries", "heatmap", "change", "query_value", "toplist", "sunburst", "geomap", "treemap", "bar_chart":
+	case "timeseries", "heatmap", "change", "distribution", "query_value", "toplist", "sunburst", "geomap", "treemap", "bar_chart":
 		return true
 	}
 	return false
