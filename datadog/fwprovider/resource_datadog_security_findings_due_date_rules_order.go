@@ -73,7 +73,7 @@ func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Conte
 	if diags.HasError() {
 		return
 	}
-	diags.Append(reorderSecurityFindingsAutomationRules(
+	orderedIDs, d := reorderSecurityFindingsAutomationRules(
 		r.Auth,
 		ruleIDs,
 		func(id uuid.UUID) datadogV2.DueDateRuleReorderItem {
@@ -83,9 +83,14 @@ func (r *securityFindingsDueDateRulesOrderResource) applyOrder(ctx context.Conte
 			return *datadogV2.NewDueDateRuleReorderRequest(items)
 		},
 		r.Api.ReorderSecurityFindingsAutomationDueDateRules,
-	)...)
+		func(resp datadogV2.DueDateRuleReorderRequest) []datadogV2.DueDateRuleReorderItem {
+			return resp.GetData()
+		},
+		func(item datadogV2.DueDateRuleReorderItem) string { return item.GetId().String() },
+	)
+	diags.Append(d...)
 	if diags.HasError() {
 		return
 	}
-	setOrderState(ctx, state, ruleIDs, diags)
+	setOrderState(ctx, state, orderedIDs, diags)
 }

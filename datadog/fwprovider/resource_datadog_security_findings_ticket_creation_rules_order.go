@@ -75,7 +75,7 @@ func (r *securityFindingsTicketCreationRulesOrderResource) applyOrder(ctx contex
 	if diags.HasError() {
 		return
 	}
-	diags.Append(reorderSecurityFindingsAutomationRules(
+	orderedIDs, d := reorderSecurityFindingsAutomationRules(
 		r.Auth,
 		ruleIDs,
 		func(id uuid.UUID) datadogV2.TicketCreationRuleReorderItem {
@@ -85,9 +85,14 @@ func (r *securityFindingsTicketCreationRulesOrderResource) applyOrder(ctx contex
 			return *datadogV2.NewTicketCreationRuleReorderRequest(items)
 		},
 		r.Api.ReorderSecurityFindingsAutomationTicketCreationRules,
-	)...)
+		func(resp datadogV2.TicketCreationRuleReorderRequest) []datadogV2.TicketCreationRuleReorderItem {
+			return resp.GetData()
+		},
+		func(item datadogV2.TicketCreationRuleReorderItem) string { return item.GetId().String() },
+	)
+	diags.Append(d...)
 	if diags.HasError() {
 		return
 	}
-	setOrderState(ctx, state, ruleIDs, diags)
+	setOrderState(ctx, state, orderedIDs, diags)
 }

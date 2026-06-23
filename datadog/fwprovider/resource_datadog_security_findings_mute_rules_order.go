@@ -73,7 +73,7 @@ func (r *securityFindingsMuteRulesOrderResource) applyOrder(ctx context.Context,
 	if diags.HasError() {
 		return
 	}
-	diags.Append(reorderSecurityFindingsAutomationRules(
+	orderedIDs, d := reorderSecurityFindingsAutomationRules(
 		r.Auth,
 		ruleIDs,
 		func(id uuid.UUID) datadogV2.MuteRuleReorderItem {
@@ -83,9 +83,12 @@ func (r *securityFindingsMuteRulesOrderResource) applyOrder(ctx context.Context,
 			return *datadogV2.NewMuteRuleReorderRequest(items)
 		},
 		r.Api.ReorderSecurityFindingsAutomationMuteRules,
-	)...)
+		func(resp datadogV2.MuteRuleReorderRequest) []datadogV2.MuteRuleReorderItem { return resp.GetData() },
+		func(item datadogV2.MuteRuleReorderItem) string { return item.GetId().String() },
+	)
+	diags.Append(d...)
 	if diags.HasError() {
 		return
 	}
-	setOrderState(ctx, state, ruleIDs, diags)
+	setOrderState(ctx, state, orderedIDs, diags)
 }

@@ -155,6 +155,15 @@ func setOrderState(ctx context.Context, state *securityFindingsRulesOrderModel, 
 	state.ID = state.Name
 }
 
+// collectRuleIDs maps a slice of rule items to their string IDs.
+func collectRuleIDs[T any](items []T, getID func(T) string) []string {
+	ids := make([]string, len(items))
+	for i, item := range items {
+		ids[i] = getID(item)
+	}
+	return ids
+}
+
 // readRulesOrder is the shared Read body for the order resources.
 func readRulesOrder[Resp any, Rule any](
 	ctx context.Context,
@@ -180,12 +189,7 @@ func readRulesOrder[Resp any, Rule any](
 		return
 	}
 
-	data := getData(resp)
-	ruleIDs := make([]string, 0, len(data))
-	for _, rule := range data {
-		ruleIDs = append(ruleIDs, getID(rule))
-	}
-	setOrderState(ctx, &state, ruleIDs, &response.Diagnostics)
+	setOrderState(ctx, &state, collectRuleIDs(getData(resp), getID), &response.Diagnostics)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -197,7 +201,9 @@ func reorderSecurityFindingsAutomationRules[I any, Req any](
 	makeItem func(uuid.UUID) I,
 	makeRequest func([]I) Req,
 	reorderFn func(context.Context, Req) (Req, *http.Response, error),
-) diag.Diagnostics {
+	getRespItems func(Req) []I,
+	getID func(I) string,
+) ([]string, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	items := make([]I, len(ruleIDs))
@@ -205,7 +211,7 @@ func reorderSecurityFindingsAutomationRules[I any, Req any](
 		ruleUUID, err := uuid.Parse(id)
 		if err != nil {
 			diags.AddError("invalid rule ID", fmt.Sprintf("%q is not a valid rule ID: %s", id, err))
-			return diags
+			return nil, diags
 		}
 		items[i] = makeItem(ruleUUID)
 	}
@@ -213,10 +219,11 @@ func reorderSecurityFindingsAutomationRules[I any, Req any](
 	resp, _, err := reorderFn(auth, makeRequest(items))
 	if err != nil {
 		diags.Append(utils.FrameworkErrorDiag(err, "error reordering rules"))
-		return diags
+		return nil, diags
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		diags.AddError("response contains unparsedObject", err.Error())
+		return nil, diags
 	}
-	return diags
+	return collectRuleIDs(getRespItems(resp), getID), diags
 }
