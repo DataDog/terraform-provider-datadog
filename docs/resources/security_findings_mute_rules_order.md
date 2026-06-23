@@ -3,12 +3,12 @@
 page_title: "datadog_security_findings_mute_rules_order Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog security findings automation mute rules order resource. This is used to manage the evaluation order of mute rules for an organization. The rule_ids list must contain every mute rule ID; mute rules created outside Terraform appear as drift. Note: the mute rule order is a single, organization-wide setting, so only one resource of this type should be declared per organization.
+  Provides a resource that manages the evaluation order of mute rules for the security findings in an organization. The rule_ids list must contain every mute rule ID; mute rules created outside Terraform appear as drift. Note: the mute rule order is a single, organization-wide setting, so only one resource of this type should be declared per organization.
 ---
 
 # datadog_security_findings_mute_rules_order (Resource)
 
-Provides a Datadog security findings automation mute rules order resource. This is used to manage the evaluation order of mute rules for an organization. The `rule_ids` list must contain every mute rule ID; mute rules created outside Terraform appear as drift. **Note:** the mute rule order is a single, organization-wide setting, so only one resource of this type should be declared per organization.
+Provides a resource that manages the evaluation order of mute rules for the security findings in an organization. The `rule_ids` list must contain every mute rule ID; mute rules created outside Terraform appear as drift. **Note:** the mute rule order is a single, organization-wide setting, so only one resource of this type should be declared per organization.
 
 ## Example Usage
 
@@ -30,7 +30,7 @@ resource "datadog_security_findings_mute_rules_order" "order" {
 
 ### Required
 
-- `name` (String) A unique identifier for the order resource. This field has no server-side equivalent; it is recommended to match the resource name.
+- `name` (String) A unique identifier for the order resource. This field has no server-side equivalent; Datadog recommends matching the resource name.
 - `rule_ids` (List of String) The ordered list of all mute rule IDs. The order of IDs in this attribute defines the evaluation order of the mute rules.
 
 ### Read-Only

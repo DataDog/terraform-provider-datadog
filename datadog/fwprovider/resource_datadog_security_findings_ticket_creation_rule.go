@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -101,8 +102,11 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 						CustomType:  jsontypes.NormalizedType{},
 					},
 					"max_tickets_per_day": schema.Int64Attribute{
-						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule. Must be between 1 and 500.",
+						Description: "The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule.",
 						Required:    true,
+						Validators: []validator.Int64{
+							int64validator.Between(1, 500),
+						},
 					},
 					"auto_disabled_reason": schema.StringAttribute{
 						Description: "The reason the rule was automatically disabled by the system due to a ticketing integration error. This field is read-only.",

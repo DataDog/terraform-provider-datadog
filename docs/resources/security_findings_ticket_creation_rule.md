@@ -59,8 +59,8 @@ resource "datadog_security_findings_ticket_creation_rule" "critical_misconfigs" 
 
 Required:
 
-- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and links back to the responsible rule. Must be between 1 and 500.
-- `project_id` (String) The UUID of the case management project.
+- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule. Value must be between 1 and 500.
+- `project_id` (String) The UUID of the Case Management project.
 - `target` (String) The ticketing system to create tickets in. Valid values are `jira`, `case_management`.
 
 Optional:
