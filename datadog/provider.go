@@ -105,7 +105,7 @@ func Provider() *schema.Provider {
 			"cloud_provider_type": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
+				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This can also be set using the `DD_CLOUD_PROVIDER_TYPE` environment variable. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
 			},
 			"cloud_provider_region": {
 				Type:        schema.TypeString,
@@ -115,7 +115,7 @@ func Provider() *schema.Provider {
 			"org_uuid": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The organization UUID; used for cloud-provider-based authentication. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; used for cloud-provider-based authentication. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": {
 				Type:        schema.TypeString,
@@ -367,6 +367,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	// Cloud provider auth specific variables
 	cloudProviderType := d.Get("cloud_provider_type").(string)
+	if cloudProviderType == "" {
+		cloudProviderType, _ = utils.GetMultiEnvVar(utils.CloudProviderTypeEnvVars...)
+	}
 	cloudProviderRegion := d.Get("cloud_provider_region").(string)
 	orgUUID := d.Get("org_uuid").(string)
 	if orgUUID == "" {

@@ -7628,3 +7628,361 @@ resource "datadog_observability_pipeline" "splunk_hec_metrics_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_generateMetricsV2Processor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.generate_metrics_v2"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "generate_metrics_v2" {
+  name = "generate-metrics-v2-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "gen-metrics-v2-group"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "gen-metrics-v2-proc"
+        enabled = true
+        include = "*"
+
+        generate_metrics {
+          metric {
+            name        = "logs.processed"
+            include     = "service:billing"
+            metric_type = "count"
+            group_by    = ["service", "env"]
+
+            value {
+              strategy = "increment_by_field"
+              field    = "events.count"
+            }
+          }
+
+          metric {
+            name        = "logs.errors"
+            include     = "status:error"
+            metric_type = "count"
+
+            value {
+              strategy = "increment_by_one"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "splunk-metrics-dest"
+      inputs = ["gen-metrics-v2-proc.metrics"]
+
+      splunk_hec_metrics {
+        endpoint_url_key = "SPLUNK_HEC_ENDPOINT"
+        token_key        = "SPLUNK_HEC_TOKEN"
+        compression      = "none"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.id", "gen-metrics-v2-group"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "gen-metrics-v2-proc"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.name", "logs.processed"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.include", "service:billing"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.metric_type", "count"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.group_by.0", "service"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.group_by.1", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.value.0.strategy", "increment_by_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.0.value.0.field", "events.count"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.1.name", "logs.errors"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.generate_metrics.0.metric.1.value.0.strategy", "increment_by_one"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec_metrics.0.endpoint_url_key", "SPLUNK_HEC_ENDPOINT"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.splunk_hec_metrics.0.token_key", "SPLUNK_HEC_TOKEN"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_addMetricTagsProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.add_metric_tags"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "add_metric_tags" {
+  name = "add metric tags processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "add-metric-tags-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "add-metric-tags-processor"
+        enabled = true
+        include = "*"
+
+        add_metric_tags {
+          tag {
+            name  = "env"
+            value = "prod"
+          }
+          tag {
+            name  = "team"
+            value = "obs-pipelines"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["add-metric-tags-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "add metric tags processor test"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.add_metric_tags.0.tag.0.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.add_metric_tags.0.tag.0.value", "prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.add_metric_tags.0.tag.1.name", "team"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.add_metric_tags.0.tag.1.value", "obs-pipelines"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_aggregateProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.aggregate"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "aggregate" {
+  name = "aggregate processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "aggregate-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "aggregate-processor"
+        enabled = true
+        include = "*"
+
+        aggregate {
+          interval_secs = 10
+          mode          = "sum"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["aggregate-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.aggregate.0.interval_secs", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.aggregate.0.mode", "sum"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_renameMetricTagsProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.rename_metric_tags"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "rename_metric_tags" {
+  name = "rename metric tags processor test"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "rename-metric-tags-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "rename-metric-tags-processor"
+        enabled = true
+        include = "*"
+
+        rename_metric_tags {
+          tag {
+            tag       = "host"
+            rename_to = "hostname"
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["rename-metric-tags-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.rename_metric_tags.0.tag.0.tag", "host"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.rename_metric_tags.0.tag.0.rename_to", "hostname"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_tagCardinalityLimitProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.tag_cardinality_limit"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "tag_cardinality_limit" {
+  name = "tag cardinality limit processor test (rich)"
+
+  config {
+    pipeline_type = "metrics"
+
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    processor_group {
+      id      = "tag-cardinality-limit-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "tag-cardinality-limit-processor"
+        enabled = true
+        include = "*"
+
+        tag_cardinality_limit {
+          limit_exceeded_action = "drop_tag"
+          value_limit           = 5000
+
+          per_metric_limit {
+            metric_name           = "request.count"
+            mode                  = "tracked"
+            limit_exceeded_action = "drop_tag"
+            value_limit           = 1000
+
+            per_tag_limit {
+              tag_key     = "env"
+              mode        = "limit_override"
+              value_limit = 50
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["tag-cardinality-limit-group-1"]
+      datadog_metrics {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.limit_exceeded_action", "drop_tag"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.value_limit", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.metric_name", "request.count"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.mode", "tracked"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.tag_key", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.mode", "limit_override"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.value_limit", "50"),
+				),
+			},
+		},
+	})
+}

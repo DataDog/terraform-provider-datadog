@@ -116,6 +116,18 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					Default:          string(datadogV2.LOGSARCHIVEATTRIBUTESCOMPRESSIONMETHOD_GZIP),
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsArchiveAttributesCompressionMethodFromValue),
 				},
+				"partitioning_attributes": {
+					Description: "An array of attributes to use as partition keys for the archive. The attribute used most frequently for querying should be first.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"lookup_attributes": {
+					Description: "An array of attributes to use as lookup keys for the archive.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
 			}
 		},
 	}
@@ -178,6 +190,14 @@ func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArc
 		if err = d.Set("compression_method", *v); err != nil {
 			return diag.FromErr(err)
 		}
+	}
+
+	if err = d.Set("partitioning_attributes", ddArchive.Data.Attributes.GetPartitioningAttributes()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err = d.Set("lookup_attributes", ddArchive.Data.Attributes.GetLookupAttributes()); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return nil
@@ -320,6 +340,14 @@ func buildDatadogArchiveCreateReq(d *schema.ResourceData) (*datadogV2.LogsArchiv
 
 	compressionMethod := d.Get("compression_method").(string)
 	attributes.SetCompressionMethod(datadogV2.LogsArchiveAttributesCompressionMethod(compressionMethod))
+
+	if v, ok := d.GetOk("partitioning_attributes"); ok {
+		attributes.SetPartitioningAttributes(expandStringList(v.([]interface{})))
+	}
+
+	if v, ok := d.GetOk("lookup_attributes"); ok {
+		attributes.SetLookupAttributes(expandStringList(v.([]interface{})))
+	}
 
 	definition := datadogV2.NewLogsArchiveCreateRequestDefinitionWithDefaults()
 	definition.SetAttributes(*attributes)
