@@ -136,6 +136,9 @@ func generateArtifact(op *model.Operation, outputRoot string, check bool) model.
 	}
 	artifact.SourceFile = filepath.Join(outputRoot, "data_source_datadog_"+artifact.Name+".go")
 	entry.Path = artifact.SourceFile
+	// Non-fatal notes (e.g. query params dropped from a plural filter set) ride
+	// along on a successful entry; failEntry below overrides them on failure.
+	entry.Diagnostics = append(entry.Diagnostics, artifact.Diagnostics...)
 
 	view, err := emit.BuildDataSourceView(artifact)
 	if err != nil {
