@@ -14,6 +14,9 @@ type TrackingFieldMetadata struct {
 	// lowercase snake_case, unique per artifact_kind (resources and data
 	// sources are separate Terraform namespaces). Required.
 	ArtifactName string `json:"artifact_name"`
+	// Cardinality selects singular (one item by id) vs plural (filtered list)
+	// for a data source. Optional; absent/empty decodes to singular.
+	Cardinality Cardinality `json:"cardinality,omitempty"`
 	// TfDescription is the author-supplied doc string for the generated
 	// artifact's top-level Terraform schema. Optional; empty when omitted.
 	TfDescription string `json:"tf_description,omitempty"`

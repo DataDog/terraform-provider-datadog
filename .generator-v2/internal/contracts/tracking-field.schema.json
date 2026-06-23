@@ -24,6 +24,12 @@
         "minLength": 1,
         "description": "Human-readable doc string for the generated artifact's top-level Terraform schema (the data source / resource description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: \"Use this data source to retrieve information about an existing <thing>.\""
       },
+      "cardinality": {
+        "type": "string",
+        "enum": ["singular", "plural"],
+        "default": "singular",
+        "description": "For a data source, whether the read resolves a single item by id (singular) or returns a filtered list (plural). Ignored for resources."
+      },
       "group": {
         "type": "object",
         "description": "Declares which OpenAPI operations form the C/R/U/D quadruple. May reference operations by their operationId.",

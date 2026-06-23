@@ -2,6 +2,7 @@ package emit
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"unicode"
 
@@ -42,6 +43,10 @@ const envelopeReceiver = "attributes"
 // it finds is collected and returned together as a *UnsupportedEmitError, in
 // which case the view is discarded.
 func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
+	if a.Cardinality == model.CardinalityPlural {
+		return buildPluralView(a)
+	}
+
 	b := &dataSourceBuilder{receiver: envelopeReceiver}
 
 	// SDK-call bindings. An inline/absent response body leaves no SDK receiver
@@ -371,6 +376,219 @@ func unsupportedReason(tfType string) string {
 		return "nested-attribute form not yet supported"
 	default:
 		return fmt.Sprintf("attribute type %q not yet supported", tfType)
+	}
+}
+
+// buildPluralView derives the plural DataSourceView from a plural Artifact: the
+// scalar query params become Optional filters, and the results-array element
+// (a JSON:API envelope) is flattened — "id" read off the loop variable,
+// "attributes.*" off item.Attributes, "type" dropped — into one item struct
+// projected per element. The walk is fail-slow: unsupported filter or
+// item-element nodes are collected and returned together as an
+// *UnsupportedEmitError, in which case the view is discarded.
+func buildPluralView(a *model.Artifact) (DataSourceView, error) {
+	var unsupported []UnsupportedNode
+
+	var call *model.SDKCall
+	if a.Lifecycle != nil {
+		call = a.Lifecycle.Read
+	}
+	if call == nil || call.ItemType == "" {
+		unsupported = append(unsupported, UnsupportedNode{Path: "response", Reason: "missing list item type"})
+	}
+
+	// Partition the top-level schema: Optional leaves are filters, the lone
+	// ListNestedBlock is the items block (the model already dropped response
+	// metadata siblings, keeping only the results array).
+	var filterLeaves []*model.Attribute
+	var itemsBlock *model.Attribute
+	if a.Schema != nil {
+		for _, attr := range a.Schema.Attributes {
+			switch {
+			case attr.TfType == "schema.ListNestedBlock":
+				itemsBlock = attr
+			case attr.Optional && isLeafType(attr.TfType):
+				filterLeaves = append(filterLeaves, attr)
+			default:
+				unsupported = append(unsupported, UnsupportedNode{Path: attr.Path, Reason: unsupportedReason(attr.TfType)})
+			}
+		}
+	}
+	if itemsBlock == nil {
+		unsupported = append(unsupported, UnsupportedNode{Path: "response", Reason: "missing results array block"})
+	}
+
+	// Filters: one Optional attribute + model field + param binding each.
+	var filterAttrs []AttrView
+	var filterFields []ModelFieldView
+	var filterParams []FilterParamView
+	for i, leaf := range filterLeaves {
+		tfName := tfNameOf(leaf.Path)
+		filterAttrs = append(filterAttrs, AttrView{
+			TFName: tfName, TFType: leaf.TfType, Description: leaf.Description, Optional: true,
+		})
+		field := ModelFieldView{GoField: model.SdkName(tfName), GoType: leaf.GoType, TFName: tfName}
+		if i == 0 {
+			field.Comment = "Query Parameters"
+		}
+		filterFields = append(filterFields, field)
+		filterParams = append(filterParams, FilterParamView{
+			StateField: model.SdkName(tfName),
+			ParamField: model.SdkName(tfName),
+			ValueExpr:  pointerValueExpr(leaf.GoType),
+		})
+	}
+
+	itemLeaves := flattenItemElement(itemsBlock, &unsupported)
+	if len(unsupported) > 0 {
+		return DataSourceView{}, &UnsupportedEmitError{Nodes: unsupported}
+	}
+
+	var itemAttrs []AttrView
+	var itemFields []ModelFieldView
+	var itemAssigns []StateAssignment
+	for _, lf := range itemLeaves {
+		tfName := tfNameOf(lf.attr.Path)
+		itemAttrs = append(itemAttrs, AttrView{
+			TFName: tfName, TFType: lf.attr.TfType, Description: lf.attr.Description, Computed: true,
+		})
+		itemFields = append(itemFields, ModelFieldView{
+			GoField: goFieldName(tfName), GoType: lf.attr.GoType, TFName: tfName,
+		})
+		itemAssigns = append(itemAssigns, StateAssignment{
+			LHS: goFieldName(tfName),
+			RHS: wrapValue(lf.attr, lf.chain),
+		})
+	}
+
+	itemStruct := model.SdkName(call.ItemType) + "Model"
+	itemField := model.SdkName(a.Name)
+	goName := lowerFirst(model.SdkName(a.Name))
+
+	parentFields := append([]ModelFieldView{}, filterFields...)
+	parentFields = append(parentFields,
+		ModelFieldView{Comment: "Results", GoField: "ID", GoType: "types.String", TFName: "id"},
+		ModelFieldView{GoField: itemField, GoType: "[]*" + itemStruct, TFName: a.Name},
+	)
+
+	return DataSourceView{
+		Cardinality: Plural,
+		TypeName:    a.Name,
+		GoName:      goName,
+		Description: a.Description,
+		SDKPackage:  call.GoPackage,
+		APIStruct:   call.GoApiStruct,
+		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
+		Read: SDKReadView{
+			Method:             call.GoMethod,
+			Paginated:          call.Paginated,
+			ItemType:           call.ItemType,
+			OptionalParamsType: call.OptionalParamsType,
+			Filters:            filterParams,
+		},
+		Models: []ModelStructView{
+			{Name: goName + "DataSourceModel", Fields: parentFields},
+			{Name: itemStruct, Fields: itemFields},
+		},
+		Schema: SchemaView{
+			Attributes: filterAttrs,
+			Blocks: []AttrView{{
+				TFName:      a.Name,
+				Description: itemsBlock.Description,
+				IsBlock:     true,
+				ListBlock:   true,
+				Attributes:  itemAttrs,
+			}},
+		},
+		State: StateView{
+			ItemStruct: itemStruct,
+			ItemField:  itemField,
+			ItemFields: itemAssigns,
+		},
+	}, nil
+}
+
+// itemElementLeaf is one flattened leaf of a list element: the source attribute
+// plus the SDK getter chain that reads it off the loop variable "item".
+type itemElementLeaf struct {
+	attr  *model.Attribute
+	chain string
+}
+
+// flattenItemElement recognizes the JSON:API element envelope on a list item
+// block and flattens it: "id" is read off the loop variable, each leaf under
+// "attributes" off item.Attributes, and "type" is dropped. Non-leaf or
+// unexpected members append to unsupported. Leaves are returned sorted by TF name.
+func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode) []itemElementLeaf {
+	if block == nil {
+		return nil
+	}
+	var leaves []itemElementLeaf
+	for _, child := range block.Children {
+		switch tfNameOf(child.Path) {
+		case "type":
+			// discriminator; dropped
+		case "id":
+			if !isLeafType(child.TfType) {
+				*unsupported = append(*unsupported, UnsupportedNode{Path: child.Path, Reason: "item id must be a scalar"})
+				continue
+			}
+			leaves = append(leaves, itemElementLeaf{attr: child, chain: itemGetter("item", tfNameOf(child.Path))})
+		case "attributes":
+			if child.TfType != "schema.SingleNestedBlock" {
+				*unsupported = append(*unsupported, UnsupportedNode{Path: child.Path, Reason: "envelope attributes must be an object"})
+				continue
+			}
+			for _, leaf := range child.Children {
+				if !isLeafType(leaf.TfType) {
+					*unsupported = append(*unsupported, UnsupportedNode{Path: leaf.Path, Reason: "nesting under item attributes is not supported"})
+					continue
+				}
+				leaves = append(leaves, itemElementLeaf{attr: leaf, chain: itemGetter("item.Attributes", tfNameOf(leaf.Path))})
+			}
+		default:
+			*unsupported = append(*unsupported, UnsupportedNode{
+				Path:   child.Path,
+				Reason: tfNameOf(child.Path) + " is not part of the recognized {id, type, attributes} envelope",
+			})
+		}
+	}
+	sort.Slice(leaves, func(i, j int) bool {
+		return tfNameOf(leaves[i].attr.Path) < tfNameOf(leaves[j].attr.Path)
+	})
+	return leaves
+}
+
+// itemGetter builds the SDK getter reading name off receiver for one list
+// element, e.g. itemGetter("item.Attributes", "link_count") →
+// "item.Attributes.GetLinkCount()".
+func itemGetter(receiver, name string) string {
+	return receiver + ".Get" + model.SdkName(name) + "()"
+}
+
+// goFieldName is the exported Go struct field name for a TF attribute. It is
+// model.SdkName except for "id", which becomes "ID" to match Go's initialism
+// convention (and the hand-written models) — the SDK getter still reads GetId().
+func goFieldName(tfName string) string {
+	if tfName == "id" {
+		return "ID"
+	}
+	return model.SdkName(tfName)
+}
+
+// pointerValueExpr is the model accessor producing the SDK optional-param value
+// for a filter of the given model field type, e.g. "types.String" →
+// "ValueStringPointer()".
+func pointerValueExpr(goType string) string {
+	switch goType {
+	case "types.Bool":
+		return "ValueBoolPointer()"
+	case "types.Int64":
+		return "ValueInt64Pointer()"
+	case "types.Float64":
+		return "ValueFloat64Pointer()"
+	default:
+		return "ValueStringPointer()"
 	}
 }
 
