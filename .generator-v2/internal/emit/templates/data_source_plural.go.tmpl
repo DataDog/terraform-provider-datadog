@@ -9,7 +9,9 @@ package fwprovider
 
 import (
 	"context"
+{{- if .Read.Filters }}
 	"fmt"
+{{- end }}
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -49,17 +51,17 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 	if response.Diagnostics.HasError() {
 		return
 	}
-
+{{ if .Read.OptionalParamsType }}
 	var optionalParams {{ .SDKPackage }}.{{ .Read.OptionalParamsType }}
 {{- range .Read.Filters }}
 	if !state.{{ .StateField }}.IsNull() {
 		optionalParams.{{ .ParamField }} = state.{{ .StateField }}.{{ .ValueExpr }}
 	}
 {{- end }}
-
+{{ end }}
 	var items []{{ .SDKPackage }}.{{ .Read.ItemType }}
 {{- if .Read.Paginated }}
-	result, cancel := d.Api.{{ .Read.Method }}WithPagination(d.Auth, optionalParams)
+	result, cancel := d.Api.{{ .Read.Method }}WithPagination(d.Auth{{ if .Read.OptionalParamsType }}, optionalParams{{ end }})
 	defer cancel()
 	for paginationResult := range result {
 		if paginationResult.Error != nil {
@@ -69,7 +71,7 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 		items = append(items, paginationResult.Item)
 	}
 {{- else }}
-	resp, _, err := d.Api.{{ .Read.Method }}(d.Auth, optionalParams)
+	resp, _, err := d.Api.{{ .Read.Method }}(d.Auth{{ if .Read.OptionalParamsType }}, optionalParams{{ end }})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error when calling `{{ .Read.Method }}`"))
 		return
@@ -91,8 +93,11 @@ func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceMode
 		}
 		results = append(results, &r)
 	}
-
+{{ if .Read.Filters }}
 	hashingData := fmt.Sprintf("{{ range $i, $f := .Read.Filters }}{{ if $i }}:{{ end }}{{ fmtVerb $f.ValueExpr }}{{ end }}", {{- range .Read.Filters }} state.{{ .StateField }}.{{ hashExpr .ValueExpr }},{{ end }})
+{{- else }}
+	hashingData := {{ printf "%q" .TypeName }}
+{{- end }}
 	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.{{ .State.ItemField }} = results
 }

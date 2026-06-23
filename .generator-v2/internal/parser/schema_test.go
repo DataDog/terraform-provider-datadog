@@ -443,3 +443,73 @@ var _ = Describe("NormalizeSchemas determinism", func() {
 		}
 	})
 })
+
+// -------------------------------------------------------------------
+//  List operation: query params, pagination, item element type
+// -------------------------------------------------------------------
+
+var _ = Describe("NormalizeSchemas list operation", func() {
+
+	var list *model.Operation
+
+	BeforeEach(func() {
+		list = opByID(loadSpecMust("schema_normalize_list.yaml"), "ListThings")
+	})
+
+	It("captures only in:query parameters, sorted by name, preserving bracketed names", func() {
+		var names []string
+		for _, p := range list.QueryParams {
+			names = append(names, p.Name)
+		}
+		Expect(names).To(Equal([]string{
+			"filter[keyword]", "filter[me]", "include", "page[number]", "page[size]", "sort",
+		}))
+	})
+
+	It("resolves a $ref parameter (#/components/parameters) and normalizes its schema", func() {
+		page := paramByName(list, "page[number]")
+		Expect(page.Schema).NotTo(BeNil())
+		Expect(page.Schema.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(page.Schema.Type).To(Equal("integer"))
+		Expect(page.Schema.Format).To(Equal("int64"))
+	})
+
+	It("normalizes scalar, array, and enum parameter schemas through to type/enum/array", func() {
+		Expect(paramByName(list, "filter[keyword]").Schema.Type).To(Equal("string"))
+		Expect(paramByName(list, "filter[me]").Schema.Type).To(Equal("boolean"))
+		Expect(paramByName(list, "filter[me]").Required).To(BeTrue())
+		Expect(paramByName(list, "include").Schema.Kind).To(Equal(model.SchemaKindArray))
+		sort := paramByName(list, "sort").Schema
+		Expect(sort.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(sort.Enum).To(Equal([]string{"name", "-name"}))
+	})
+
+	It("decodes the x-pagination extension", func() {
+		Expect(list.Pagination).To(Equal(&model.Pagination{
+			LimitParam: "page[size]", PageParam: "page[number]", ResultsPath: "data",
+		}))
+	})
+
+	It("retains the results-array element $ref as ItemRefName", func() {
+		Expect(list.ItemRefName).To(Equal("Thing"))
+	})
+
+	It("leaves ItemRefName empty for a get-by-id whose data property is an object, not an array", func() {
+		get := opByID(loadSpecMust("schema_normalize_list.yaml"), "GetThing")
+		Expect(get.QueryParams).To(BeEmpty())
+		Expect(get.Pagination).To(BeNil())
+		Expect(get.ItemRefName).To(BeEmpty())
+	})
+})
+
+// paramByName returns the named query parameter or fails the test.
+func paramByName(op *model.Operation, name string) model.QueryParam {
+	GinkgoHelper()
+	for _, p := range op.QueryParams {
+		if p.Name == name {
+			return p
+		}
+	}
+	Fail("query parameter " + name + " not found on " + op.OperationId)
+	return model.QueryParam{}
+}

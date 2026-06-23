@@ -20,6 +20,14 @@ import (
 // normalizes; selecting one keeps the projected schema deterministic.
 const jsonMediaType = "application/json"
 
+// paginationExtension is the OpenAPI vendor extension describing a list
+// endpoint's page/limit query parameters and result-array property.
+const paginationExtension = "x-pagination"
+
+// defaultResultsPath is the JSON:API convention for the response property
+// holding a list's elements, used when no x-pagination resultsPath is declared.
+const defaultResultsPath = "data"
+
 // UnresolvableRefError reports a $ref whose target component is missing from
 // #/components/schemas (or whose form is unsupported).
 type UnresolvableRefError struct {
@@ -139,7 +147,9 @@ type schemaNormalizer struct {
 }
 
 // fillOperation normalizes raw's request and 2xx response bodies into op,
-// leaving a field nil when its body is absent.
+// leaving a field nil when its body is absent. It also captures query
+// parameters, pagination, and the list element type, which feed the plural
+// data-source path and are harmless to the singular and resource paths.
 func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation) error {
 	if op == nil || raw == nil {
 		return nil
@@ -151,20 +161,121 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		}
 		op.RequestSchema = req
 	}
-	if respProxy := responseBodySchemaProxy(raw); respProxy != nil {
-		// Capture the response type name from the top-level body proxy before
-		// normalizeProxy follows the $ref and discards it. An inline/absent body
-		// leaves ResponseRefName empty.
-		if respProxy.IsReference() {
-			op.ResponseRefName = lastRefSegment(respProxy.GetReference())
+
+	if err := n.fillQueryParams(op, raw); err != nil {
+		return err
+	}
+	op.Pagination = decodePagination(raw)
+
+	respProxy := responseBodySchemaProxy(raw)
+	if respProxy == nil {
+		return nil
+	}
+	// Capture the response type name from the top-level body proxy before
+	// normalizeProxy follows the $ref and discards it. An inline/absent body
+	// leaves ResponseRefName empty.
+	if respProxy.IsReference() {
+		op.ResponseRefName = lastRefSegment(respProxy.GetReference())
+	}
+	resp, err := n.normalizeProxy(respProxy, 0)
+	if err != nil {
+		return err
+	}
+	op.ResponseSchema = resp
+
+	return n.retainItemRef(op, respProxy)
+}
+
+// fillQueryParams normalizes raw's in:query parameters onto op.QueryParams,
+// sorted by name. libopenapi resolves $ref parameters (e.g.
+// #/components/parameters/PageNumber) during its build, so each parameter
+// arrives with Name and Schema populated; the inner schema is normalized like a
+// body so type/format/enum/array come through. Raw bracketed names
+// (filter[keyword]) are preserved.
+func (n *schemaNormalizer) fillQueryParams(op *model.Operation, raw *v3.Operation) error {
+	for _, p := range raw.Parameters {
+		if p == nil || p.In != "query" || p.Name == "" {
+			continue
 		}
-		resp, err := n.normalizeProxy(respProxy, 0)
+		schema, err := n.normalizeProxy(p.Schema, 0)
 		if err != nil {
 			return err
 		}
-		op.ResponseSchema = resp
+		op.QueryParams = append(op.QueryParams, model.QueryParam{
+			Name:        p.Name,
+			Required:    p.Required != nil && *p.Required,
+			Schema:      schema,
+			Description: p.Description,
+		})
+	}
+	sort.Slice(op.QueryParams, func(i, j int) bool {
+		return op.QueryParams[i].Name < op.QueryParams[j].Name
+	})
+	return nil
+}
+
+// decodePagination decodes raw's x-pagination extension, or returns nil when the
+// operation declares none (or the extension is malformed).
+func decodePagination(raw *v3.Operation) *model.Pagination {
+	if raw.Extensions == nil {
+		return nil
+	}
+	node := raw.Extensions.GetOrZero(paginationExtension)
+	if node == nil {
+		return nil
+	}
+	var pg struct {
+		LimitParam  string `yaml:"limitParam"`
+		PageParam   string `yaml:"pageParam"`
+		ResultsPath string `yaml:"resultsPath"`
+	}
+	if err := node.Decode(&pg); err != nil {
+		return nil
+	}
+	return &model.Pagination{LimitParam: pg.LimitParam, PageParam: pg.PageParam, ResultsPath: pg.ResultsPath}
+}
+
+// retainItemRef records op.ItemRefName: the last $ref segment of the
+// results-array element schema. The results property is op.Pagination.ResultsPath
+// when present, else the JSON:API default "data". A property that is not an array
+// (e.g. a get-by-id "data" object) leaves ItemRefName empty.
+func (n *schemaNormalizer) retainItemRef(op *model.Operation, respProxy *base.SchemaProxy) error {
+	resultsPath := defaultResultsPath
+	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
+		resultsPath = op.Pagination.ResultsPath
+	}
+	body, err := n.resolveToSchema(respProxy)
+	if err != nil || body == nil || body.Properties == nil {
+		return err
+	}
+	prop, err := n.resolveToSchema(body.Properties.GetOrZero(resultsPath))
+	if err != nil || prop == nil {
+		return err
+	}
+	if !hasType(prop, "array") || prop.Items == nil || !prop.Items.IsA() {
+		return nil
+	}
+	if elem := prop.Items.A; elem != nil && elem.IsReference() {
+		op.ItemRefName = lastRefSegment(elem.GetReference())
 	}
 	return nil
+}
+
+// resolveToSchema follows a schema proxy through one or more $ref hops to its
+// underlying *base.Schema, mirroring normalizeProxy's resolution but returning
+// the raw libopenapi node so callers can read $ref names the model discards.
+func (n *schemaNormalizer) resolveToSchema(proxy *base.SchemaProxy) (*base.Schema, error) {
+	if proxy == nil {
+		return nil, nil
+	}
+	if proxy.IsReference() {
+		target, err := n.resolveRef(proxy.GetReference())
+		if err != nil {
+			return nil, err
+		}
+		return n.resolveToSchema(target)
+	}
+	return proxy.Schema(), nil
 }
 
 // lastRefSegment returns the component name after the final "/" of a $ref,

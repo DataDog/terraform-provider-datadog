@@ -7,6 +7,8 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
 // updateGolden rewrites the testdata/*.golden files from the current template
@@ -26,10 +28,11 @@ var _ = Describe("data-source templates", func() {
 		},
 		Entry("singular (incident_type)", "data_source_singular.golden", incidentTypeView),
 		Entry("plural (teams)", "data_source_plural.golden", pluralFixture),
+		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{incidentTypeView(), pluralFixture()} {
+		for _, v := range []DataSourceView{incidentTypeView(), pluralFixture(), datastoresView()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -61,6 +64,18 @@ func matchGolden(name string, got []byte) {
 func incidentTypeView() DataSourceView {
 	GinkgoHelper()
 	view, err := BuildDataSourceView(incidentTypeArtifact())
+	Expect(err).NotTo(HaveOccurred())
+	return view
+}
+
+// datastoresView is the datastores data source built end-to-end through the
+// emit builder; its golden proves the no-optional-params, non-paginated,
+// zero-filter render path. The shared datastores fixture lives in builder_test.go.
+func datastoresView() DataSourceView {
+	GinkgoHelper()
+	art, err := model.BuildArtifact(datastoresOperation())
+	Expect(err).NotTo(HaveOccurred())
+	view, err := BuildDataSourceView(art)
 	Expect(err).NotTo(HaveOccurred())
 	return view
 }
