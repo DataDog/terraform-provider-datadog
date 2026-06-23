@@ -348,10 +348,54 @@ var arrayMapProcessor = &schema.Schema{
 				Description: "Sub-processors applied to each element. Allowed types: attribute_remapper, string_builder_processor, arithmetic_processor, category_processor.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						tfAttributeRemapperProcessor: attributeRemapper,
-						tfStringBuilderProcessor:     stringBuilderProcessor,
-						tfArithmeticProcessor:        arithmeticProcessor,
-						tfCategoryProcessor:          categoryProcessor,
+						tfAttributeRemapperProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map attribute remapper sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":                 {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"sources":              {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "List of source attributes."},
+								"target":               {Type: schema.TypeString, Required: true, Description: "Target attribute path."},
+								"preserve_source":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Remove or preserve the remapped source element."},
+								"override_on_conflict": {Type: schema.TypeBool, Optional: true, Description: "Override the target element if already set."},
+								"target_format":        {Type: schema.TypeString, Optional: true, Description: "If the target type is attribute, cast the value to a new type (auto, string, integer, double)."},
+							}},
+						},
+						tfArithmeticProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map arithmetic sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":               {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"expression":         {Type: schema.TypeString, Required: true, Description: "Arithmetic formula."},
+								"target":             {Type: schema.TypeString, Required: true, Description: "Target attribute path for the result."},
+								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with 0."},
+							}},
+						},
+						tfStringBuilderProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map string builder sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":               {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"template":           {Type: schema.TypeString, Required: true, Description: "Formula with one or more attributes and raw text."},
+								"target":             {Type: schema.TypeString, Required: true, Description: "Target attribute path for the result."},
+								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with empty string."},
+							}},
+						},
+						tfCategoryProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map category sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":   {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"target": {Type: schema.TypeString, Required: true, Description: "Target attribute path for the category value."},
+								"category": {
+									Type: schema.TypeList, Required: true,
+									Description: "List of filters to match or exclude a log.",
+									Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+										"name":   {Type: schema.TypeString, Required: true, Description: "Name of the category."},
+										"filter": {Type: schema.TypeList, Required: true, MaxItems: 1, Elem: &schema.Resource{Schema: map[string]*schema.Schema{"query": {Type: schema.TypeString, Required: true}}}},
+									}},
+								},
+							}},
+						},
 					},
 				},
 			},
@@ -1320,26 +1364,46 @@ func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) (m
 	}
 	tfSubs := make([]interface{}, 0, len(ddProc.GetProcessors()))
 	for _, sub := range ddProc.GetProcessors() {
-		// Lift the sub-processor into a LogsProcessor so we can reuse buildTerraformProcessor.
-		var lp datadogV1.LogsProcessor
-		if sub.LogsAttributeRemapper != nil {
-			lp = datadogV1.LogsAttributeRemapperAsLogsProcessor(sub.LogsAttributeRemapper)
-		} else if sub.LogsStringBuilderProcessor != nil {
-			lp = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(sub.LogsStringBuilderProcessor)
-		} else if sub.LogsArithmeticProcessor != nil {
-			lp = datadogV1.LogsArithmeticProcessorAsLogsProcessor(sub.LogsArithmeticProcessor)
-		} else if sub.LogsCategoryProcessor != nil {
-			lp = datadogV1.LogsCategoryProcessorAsLogsProcessor(sub.LogsCategoryProcessor)
-		}
-		tfSub, err := buildTerraformProcessor(lp)
-		if err != nil {
-			return nil, err
-		}
-		// The backend forces sub-processor is_enabled to true; hardcode to avoid a plan diff on every apply.
-		for _, v := range tfSub {
-			if subList, ok := v.([]map[string]interface{}); ok && len(subList) > 0 {
-				subList[0]["is_enabled"] = true
+		tfSub := map[string]interface{}{}
+		if r := sub.LogsArrayMapAttributeRemapper; r != nil {
+			m := map[string]interface{}{
+				"name":                 r.GetName(),
+				"sources":              r.GetSources(),
+				"target":               r.GetTarget(),
+				"preserve_source":      r.GetPreserveSource(),
+				"override_on_conflict": r.GetOverrideOnConflict(),
 			}
+			if tf, ok := r.GetTargetFormatOk(); ok {
+				m["target_format"] = string(*tf)
+			}
+			tfSub[tfAttributeRemapperProcessor] = []map[string]interface{}{m}
+		} else if r := sub.LogsArrayMapArithmeticSubProcessor; r != nil {
+			tfSub[tfArithmeticProcessor] = []map[string]interface{}{{
+				"name":               r.GetName(),
+				"expression":         r.GetExpression(),
+				"target":             r.GetTarget(),
+				"is_replace_missing": r.GetIsReplaceMissing(),
+			}}
+		} else if r := sub.LogsArrayMapStringBuilderSubProcessor; r != nil {
+			tfSub[tfStringBuilderProcessor] = []map[string]interface{}{{
+				"name":               r.GetName(),
+				"template":           r.GetTemplate(),
+				"target":             r.GetTarget(),
+				"is_replace_missing": r.GetIsReplaceMissing(),
+			}}
+		} else if r := sub.LogsArrayMapCategorySubProcessor; r != nil {
+			cats := make([]map[string]interface{}, 0, len(r.GetCategories()))
+			for _, c := range r.GetCategories() {
+				cats = append(cats, map[string]interface{}{
+					"name":   c.GetName(),
+					"filter": []map[string]interface{}{{"query": c.Filter.GetQuery()}},
+				})
+			}
+			tfSub[tfCategoryProcessor] = []map[string]interface{}{{
+				"name":     r.GetName(),
+				"target":   r.GetTarget(),
+				"category": cats,
+			}}
 		}
 		tfSubs = append(tfSubs, tfSub)
 	}
@@ -1368,26 +1432,87 @@ func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.Lo
 		ddSubs := make([]datadogV1.LogsArrayMapSubProcessor, 0, len(tfSubs))
 		for _, rawSub := range tfSubs {
 			subMap := rawSub.(map[string]interface{})
-			for tfType, ddType := range tfProcessorTypes {
-				if subDetails, exists := subMap[tfType].([]interface{}); exists && len(subDetails) > 0 {
-					ddSub, err := buildDatadogProcessor(ddType, subDetails[0].(map[string]interface{}))
-					if err != nil {
-						return nil, err
-					}
-					// Narrow the LogsProcessor down to a LogsArrayMapSubProcessor.
-					var subProc datadogV1.LogsArrayMapSubProcessor
-					if ddSub.LogsAttributeRemapper != nil {
-						subProc = datadogV1.LogsAttributeRemapperAsLogsArrayMapSubProcessor(ddSub.LogsAttributeRemapper)
-					} else if ddSub.LogsStringBuilderProcessor != nil {
-						subProc = datadogV1.LogsStringBuilderProcessorAsLogsArrayMapSubProcessor(ddSub.LogsStringBuilderProcessor)
-					} else if ddSub.LogsArithmeticProcessor != nil {
-						subProc = datadogV1.LogsArithmeticProcessorAsLogsArrayMapSubProcessor(ddSub.LogsArithmeticProcessor)
-					} else if ddSub.LogsCategoryProcessor != nil {
-						subProc = datadogV1.LogsCategoryProcessorAsLogsArrayMapSubProcessor(ddSub.LogsCategoryProcessor)
-					}
-					ddSubs = append(ddSubs, subProc)
-					break
+			if details, ok := subMap[tfAttributeRemapperProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapAttributeRemapperWithDefaults()
+				r.SetSources(buildDatadogSources(d))
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
 				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if v, ok := d["preserve_source"].(bool); ok {
+					r.SetPreserveSource(v)
+				}
+				if v, ok := d["override_on_conflict"].(bool); ok {
+					r.SetOverrideOnConflict(v)
+				}
+				if v, ok := d["target_format"].(string); ok && v != "" {
+					tf, err := datadogV1.NewTargetFormatTypeFromValue(v)
+					if err == nil {
+						r.SetTargetFormat(*tf)
+					}
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapAttributeRemapperAsLogsArrayMapSubProcessor(r))
+			} else if details, ok := subMap[tfArithmeticProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapArithmeticSubProcessorWithDefaults()
+				if v, ok := d["expression"].(string); ok {
+					r.SetExpression(v)
+				}
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
+				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if v, ok := d["is_replace_missing"].(bool); ok {
+					r.SetIsReplaceMissing(v)
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapArithmeticSubProcessorAsLogsArrayMapSubProcessor(r))
+			} else if details, ok := subMap[tfStringBuilderProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapStringBuilderSubProcessorWithDefaults()
+				if v, ok := d["template"].(string); ok {
+					r.SetTemplate(v)
+				}
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
+				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if v, ok := d["is_replace_missing"].(bool); ok {
+					r.SetIsReplaceMissing(v)
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapStringBuilderSubProcessorAsLogsArrayMapSubProcessor(r))
+			} else if details, ok := subMap[tfCategoryProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapCategorySubProcessorWithDefaults()
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
+				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if cats, ok := d["category"].([]interface{}); ok {
+					ddCats := make([]datadogV1.LogsCategoryProcessorCategory, 0, len(cats))
+					for _, rawCat := range cats {
+						cat := rawCat.(map[string]interface{})
+						ddCat := datadogV1.LogsCategoryProcessorCategory{}
+						if n, ok := cat["name"].(string); ok {
+							ddCat.SetName(n)
+						}
+						if filters, ok := cat["filter"].([]interface{}); ok && len(filters) > 0 {
+							f := filters[0].(map[string]interface{})
+							ddCat.SetFilter(*buildDatadogFilter(f))
+						}
+						ddCats = append(ddCats, ddCat)
+					}
+					r.SetCategories(ddCats)
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapCategorySubProcessorAsLogsArrayMapSubProcessor(r))
 			}
 		}
 		ddProc.SetProcessors(ddSubs)
