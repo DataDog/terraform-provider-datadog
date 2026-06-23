@@ -109,7 +109,8 @@ func securityFindingsRulesOrderSchema(ruleType string) schema.Schema {
 	return schema.Schema{
 		Description: fmt.Sprintf(
 			"Provides a resource that manages the evaluation order of %[1]s rules for the security findings in an organization. "+
-				"The `rule_ids` list must contain every %[1]s rule ID; %[1]s rules created outside Terraform appear as drift.", ruleType),
+				"The `rule_ids` list must contain every %[1]s rule ID; %[1]s rules created outside Terraform appear as drift. "+
+				"**Note:** the %[1]s rule order is a single, organization-wide setting, so only one resource of this type should be declared per organization.", ruleType),
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{

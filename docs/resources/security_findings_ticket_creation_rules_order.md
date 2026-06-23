@@ -3,12 +3,12 @@
 page_title: "datadog_security_findings_ticket_creation_rules_order Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog security findings automation ticket creation rules order resource. This is used to manage the evaluation order of ticket creation rules for an organization. The rule_ids list must contain every ticket creation rule ID; ticket creation rules created outside Terraform appear as drift.
+  Provides a Datadog security findings automation ticket creation rules order resource. This is used to manage the evaluation order of ticket creation rules for an organization. The rule_ids list must contain every ticket creation rule ID; ticket creation rules created outside Terraform appear as drift. Note: the ticket creation rule order is a single, organization-wide setting, so only one resource of this type should be declared per organization.
 ---
 
 # datadog_security_findings_ticket_creation_rules_order (Resource)
 
-Provides a Datadog security findings automation ticket creation rules order resource. This is used to manage the evaluation order of ticket creation rules for an organization. The `rule_ids` list must contain every ticket creation rule ID; ticket creation rules created outside Terraform appear as drift.
+Provides a Datadog security findings automation ticket creation rules order resource. This is used to manage the evaluation order of ticket creation rules for an organization. The `rule_ids` list must contain every ticket creation rule ID; ticket creation rules created outside Terraform appear as drift. **Note:** the ticket creation rule order is a single, organization-wide setting, so only one resource of this type should be declared per organization.
 
 ## Example Usage
 
