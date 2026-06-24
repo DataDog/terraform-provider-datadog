@@ -100,7 +100,7 @@ paths:
       x-datadog-tf-generator:
         artifact_kind: data_source
         artifact_name: cost_budget
-        tf_description: Use this data source to retrieve information about an existing Datadog cost_budget.
+        tf_description: Use this data source to retrieve information about an existing Datadog cost budget.
         group:
           read: GetBudget
 components:

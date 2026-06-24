@@ -108,13 +108,6 @@ paths:
         - apps_datastore_read
       x-undo:
         type: safe
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: datastore
-        tf_description: Use this data source to retrieve information about an existing Datadog datastore.
-        group:
-          read: GetDatastore
-          search: ListDatastores
   /api/v2/actions-datastores:
     get:
       operationId: ListDatastores
@@ -152,6 +145,13 @@ paths:
         - apps_datastore_read
       x-undo:
         type: safe
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: datastores
+        tf_description: Use this data source to retrieve information about existing Datadog datastores.
+        group:
+          read: ListDatastores
+        cardinality: plural
 components:
   responses:
     TooManyRequestsResponse:

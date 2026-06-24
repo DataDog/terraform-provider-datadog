@@ -58,7 +58,7 @@ func CheckSchemaRepresentability(spec *model.Spec) error {
 			continue
 		}
 		ref := artifactRef{kind: op.Tracking.ArtifactKind, name: op.Tracking.ArtifactName}
-		for _, id := range crudOperationIds(op.Tracking) {
+		for _, id := range groupOperationIds(op.Tracking) {
 			if _, seen := artifactOf[id]; !seen {
 				artifactOf[id] = ref
 			}

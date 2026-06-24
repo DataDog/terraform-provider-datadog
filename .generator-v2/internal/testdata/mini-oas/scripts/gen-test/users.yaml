@@ -152,10 +152,11 @@ paths:
         resultsPath: data
       x-datadog-tf-generator:
         artifact_kind: data_source
-        artifact_name: user
-        tf_description: Use this data source to retrieve information about an existing Datadog user.
+        artifact_name: users
+        tf_description: Use this data source to retrieve information about existing Datadog users.
         group:
-          search: ListUsers
+          read: ListUsers
+        cardinality: plural
 components:
   parameters:
     PageNumber:

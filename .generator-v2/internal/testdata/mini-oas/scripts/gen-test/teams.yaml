@@ -101,13 +101,6 @@ paths:
       x-menu-order: 24
       x-undo:
         type: safe
-      x-datadog-tf-generator:
-        artifact_kind: data_source
-        artifact_name: team
-        tf_description: Use this data source to retrieve information about an existing Datadog team.
-        group:
-          read: GetTeam
-          search: ListTeams
   /api/v2/team:
     get:
       operationId: ListTeams
@@ -196,6 +189,13 @@ paths:
         limitParam: page[size]
         pageParam: page[number]
         resultsPath: data
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: teams
+        tf_description: Use this data source to retrieve information about existing Datadog teams.
+        group:
+          read: ListTeams
+        cardinality: plural
 components:
   parameters:
     PageNumber:

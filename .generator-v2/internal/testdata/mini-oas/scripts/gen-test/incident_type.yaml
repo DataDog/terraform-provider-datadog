@@ -105,7 +105,8 @@ paths:
       x-datadog-tf-generator:
         artifact_kind: data_source
         artifact_name: incident_type
-        tf_description: Use this data source to retrieve information about an existing Datadog incident_type.
+        tf_description: Use this data source to retrieve information about an existing Datadog incident
+          type.
         group:
           read: GetIncidentType
 components:
