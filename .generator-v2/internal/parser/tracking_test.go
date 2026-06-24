@@ -255,13 +255,13 @@ func TestDecodeTrackingOptionalFields(t *testing.T) {
 
 func TestDecodeTrackingMalformedReturnsTrackingError(t *testing.T) {
 	cases := map[string]string{
-		"missing artifact_name": "artifact_kind: resource\n",
-		"missing artifact_kind": "artifact_name: thing\n",
-		"unknown artifact_kind": "artifact_kind: widget\nartifact_name: thing\n",
-		"unknown property":      "artifact_kind: resource\nartifact_name: thing\nbogus: 1\n",
-		"bad name pattern":      "artifact_kind: resource\nartifact_name: NotSnake\n",
-		"empty tf_description":  "artifact_kind: data_source\nartifact_name: team\ntf_description: \"\"\n",
-		"unknown cardinality":   "artifact_kind: data_source\nartifact_name: team\ncardinality: many\n",
+		"missing artifact_name":        "artifact_kind: resource\n",
+		"missing artifact_kind":        "artifact_name: thing\n",
+		"unknown artifact_kind":        "artifact_kind: widget\nartifact_name: thing\n",
+		"unknown property":             "artifact_kind: resource\nartifact_name: thing\nbogus: 1\n",
+		"bad name pattern":             "artifact_kind: resource\nartifact_name: NotSnake\n",
+		"empty tf_description":         "artifact_kind: data_source\nartifact_name: team\ntf_description: \"\"\n",
+		"unknown cardinality":          "artifact_kind: data_source\nartifact_name: team\ncardinality: many\n",
 		"group without read or search": "artifact_kind: data_source\nartifact_name: team\ngroup:\n  create: C\n",
 	}
 	for name, body := range cases {
