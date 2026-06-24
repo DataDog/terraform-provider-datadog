@@ -31,10 +31,12 @@ const (
 )
 
 // SchemaKind classifies a normalized Schema node by structure. Primitive,
-// Object, Array and Map are emittable as Terraform attributes. Variant
-// (oneOf/anyOf), RefCycle ($ref cycle or beyond --max-depth) and Unsupported
-// (no representable type or structure) are not — the representability check
-// rejects them rather than emitting a types.Dynamic escape hatch.
+// Object, Array and Map are emittable as Terraform attributes. Variant (oneOf)
+// has no Terraform equivalent, so the attribute-tree builder drops it (skipping
+// the property, or the whole collection when it is an array/map element). RefCycle
+// ($ref cycle or beyond --max-depth) and Unsupported (no representable type or
+// structure, and anyOf) are fatal — the builder fails the artifact rather than
+// emitting a types.Dynamic escape hatch.
 type SchemaKind string
 
 const (
@@ -42,9 +44,9 @@ const (
 	SchemaKindObject      SchemaKind = "object"
 	SchemaKindArray       SchemaKind = "array"
 	SchemaKindMap         SchemaKind = "map"
-	SchemaKindVariant     SchemaKind = "variant"     // oneOf / anyOf
+	SchemaKindVariant     SchemaKind = "variant"     // oneOf; dropped from the attribute tree
 	SchemaKindRefCycle    SchemaKind = "ref_cycle"   // $ref cycle or beyond --max-depth
-	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure; always rejected
+	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure, or anyOf; always rejected
 )
 
 // Cardinality distinguishes a singular data source (resolves one item by id)

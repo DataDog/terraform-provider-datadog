@@ -17,64 +17,89 @@ const (
 )
 
 // UnsupportedKindError reports a schema kind that cannot become a Terraform
-// attribute. It should be unreachable — CheckSchemaRepresentability rejects such
-// kinds first — and exists to fail loudly if that invariant is violated.
+// attribute — anyOf (classified unsupported), a ref_cycle, or any other
+// unsupported node. The attribute-tree builder fails the artifact when it reaches
+// one rather than emitting a types.Dynamic escape hatch. (oneOf variants are
+// dropped, not errored.)
 type UnsupportedKindError struct {
 	Path string
 	Kind SchemaKind
 }
 
 func (e *UnsupportedKindError) Error() string {
-	return fmt.Sprintf("model: cannot build attribute at %q: schema kind %q is "+
-		"not representable (should have been rejected by CheckSchemaRepresentability)", e.Path, e.Kind)
+	return fmt.Sprintf("model: cannot build attribute at %q: schema kind %q is not representable", e.Path, e.Kind)
 }
 
 // BuildResponseTree converts a response-body schema into an AttributeTree,
-// rooting every attribute path at "response.".
-func BuildResponseTree(s *Schema) (*AttributeTree, error) {
+// rooting every attribute path at "response.". It also returns the info
+// diagnostics raised while dropping oneOf-variant nodes from the tree.
+func BuildResponseTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
 	return build(s, "response")
 }
 
 // BuildRequestTree converts a request-body schema into an AttributeTree, rooting
-// every attribute path at "request.".
-func BuildRequestTree(s *Schema) (*AttributeTree, error) {
+// every attribute path at "request.". Like BuildResponseTree it returns the
+// drop diagnostics raised during the walk.
+func BuildRequestTree(s *Schema) (*AttributeTree, []Diagnostic, error) {
 	return build(s, "request")
 }
 
 // build is the shared recursion behind both entry points, differing only in root.
 // A root object explodes its properties into top-level attributes; any other kind
 // becomes one attribute at Path == root, and a nil schema yields an empty tree.
-func build(s *Schema, root string) (*AttributeTree, error) {
+// A root that is itself a dropped oneOf variant has nothing to render and fails.
+func build(s *Schema, root string) (*AttributeTree, []Diagnostic, error) {
 	tree := &AttributeTree{}
+	var diags []Diagnostic
 	if s == nil {
-		return tree, nil
+		return tree, diags, nil
 	}
 	if s.Kind == SchemaKindObject {
-		attrs, err := buildChildren(s.Properties, root+".", nestBlock)
+		attrs, err := buildChildren(s.Properties, root+".", nestBlock, &diags)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		tree.Attributes = attrs
-		return tree, nil
+		return tree, diags, nil
 	}
-	attr, err := buildAttribute(s, root, nestBlock)
+	attr, err := buildAttribute(s, root, nestBlock, &diags)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+	if attr == nil {
+		return nil, nil, fmt.Errorf("model: schema at %q is a dropped oneOf variant with no representable attributes", root)
 	}
 	tree.Attributes = []*Attribute{attr}
-	return tree, nil
+	return tree, diags, nil
 }
 
 // buildAttribute converts one schema node at path into an Attribute, recursing
-// into its properties, element, or value schema. mode threads the nesting world down.
-func buildAttribute(s *Schema, path string, mode nestingMode) (*Attribute, error) {
-	// Defensive guard: these kinds are rejected upstream, so reaching one here is a
-	// broken invariant — fail loudly rather than emit garbage.
+// into its properties, element, or value schema. mode threads the nesting world
+// down. A oneOf variant — at this node, or as a collection's element — has no
+// Terraform representation, so buildAttribute drops it: it returns a nil
+// Attribute (for the caller to skip) and records an info diagnostic on diags.
+func buildAttribute(s *Schema, path string, mode nestingMode, diags *[]Diagnostic) (*Attribute, error) {
+	// A oneOf variant node: drop it from the tree.
+	if s.Kind == SchemaKindVariant {
+		*diags = append(*diags, droppedDiag(path, "oneOf variant has no Terraform representation"))
+		return nil, nil
+	}
+
+	// The remaining non-representable kinds (anyOf and other unsupported nodes,
+	// ref_cycle) have no Terraform representation: fail the artifact here rather
+	// than emit garbage.
 	switch s.Kind {
 	case SchemaKindPrimitive, SchemaKindObject, SchemaKindArray, SchemaKindMap:
 		// representable — continue
 	default:
 		return nil, &UnsupportedKindError{Path: path, Kind: s.Kind}
+	}
+
+	// A collection whose element is a oneOf variant has no representable element
+	// type, so drop the whole collection attribute.
+	if (s.Kind == SchemaKindArray || s.Kind == SchemaKindMap) && s.Items != nil && s.Items.Kind == SchemaKindVariant {
+		*diags = append(*diags, droppedDiag(path, "collection element is a oneOf variant, which has no Terraform representation"))
+		return nil, nil
 	}
 
 	tfType, goType, err := FrameworkType(s)
@@ -116,7 +141,7 @@ func buildAttribute(s *Schema, path string, mode nestingMode) (*Attribute, error
 	// FrameworkType already validated array/map elements, so the else branch is primitive.
 	switch s.Kind {
 	case SchemaKindObject:
-		children, err := buildChildren(s.Properties, path+".", mode)
+		children, err := buildChildren(s.Properties, path+".", mode, diags)
 		if err != nil {
 			return nil, err
 		}
@@ -124,7 +149,7 @@ func buildAttribute(s *Schema, path string, mode nestingMode) (*Attribute, error
 
 	case SchemaKindArray:
 		if s.Items.Kind == SchemaKindObject {
-			children, err := buildChildren(s.Items.Properties, path+"[].", mode)
+			children, err := buildChildren(s.Items.Properties, path+"[].", mode, diags)
 			if err != nil {
 				return nil, err
 			}
@@ -141,7 +166,7 @@ func buildAttribute(s *Schema, path string, mode nestingMode) (*Attribute, error
 		if s.Items.Kind == SchemaKindObject {
 			// A map<object> is a NestedAttributeObject; force everything beneath it
 			// into attribute form regardless of the incoming mode.
-			children, err := buildChildren(s.Items.Properties, path+"{}.", nestAttribute)
+			children, err := buildChildren(s.Items.Properties, path+"{}.", nestAttribute, diags)
 			if err != nil {
 				return nil, err
 			}
@@ -159,8 +184,10 @@ func buildAttribute(s *Schema, path string, mode nestingMode) (*Attribute, error
 }
 
 // buildChildren builds one child attribute per property, each pathed prefix+key.
-// Keys are visited sorted, making recursion deterministic and the result Path-sorted.
-func buildChildren(props map[string]*Schema, prefix string, mode nestingMode) ([]*Attribute, error) {
+// Keys are visited sorted, making recursion deterministic and the result
+// Path-sorted. A property that builds to a nil Attribute (a dropped oneOf
+// variant) is skipped rather than appended.
+func buildChildren(props map[string]*Schema, prefix string, mode nestingMode, diags *[]Diagnostic) ([]*Attribute, error) {
 	keys := make([]string, 0, len(props))
 	for k := range props {
 		keys = append(keys, k)
@@ -169,11 +196,23 @@ func buildChildren(props map[string]*Schema, prefix string, mode nestingMode) ([
 
 	children := make([]*Attribute, 0, len(props))
 	for _, key := range keys {
-		child, err := buildAttribute(props[key], prefix+key, mode)
+		child, err := buildAttribute(props[key], prefix+key, mode, diags)
 		if err != nil {
 			return nil, err
+		}
+		if child == nil {
+			continue // dropped (e.g. a oneOf variant)
 		}
 		children = append(children, child)
 	}
 	return children, nil
+}
+
+// droppedDiag is an info diagnostic recording one node skipped from the attribute
+// tree, keeping the run report explicit about what was not rendered.
+func droppedDiag(path, reason string) Diagnostic {
+	return Diagnostic{
+		Severity: SeverityInfo,
+		Message:  fmt.Sprintf("dropped %q: %s", path, reason),
+	}
 }

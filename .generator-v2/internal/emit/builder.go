@@ -162,6 +162,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 			Preamble:    env.preamble,
 			Assignments: assignments,
 		},
+		Dropped: b.dropped,
 	}, nil
 }
 
@@ -222,11 +223,9 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		case "attributes":
 			attributes = child
 		default:
-			b.unsupported = append(b.unsupported, UnsupportedNode{
-				Path:   child.Path,
-				Reason: tfNameOf(child.Path) + " is not part of the recognized {id, type, attributes} envelope",
-			})
-			ok = false
+			// Members outside {id, type, attributes} (e.g. relationships) have no
+			// place in the attributes-only view; drop them rather than failing.
+			b.dropped = append(b.dropped, droppedEnvelopeMember(child.Path))
 		}
 	}
 
@@ -296,6 +295,15 @@ type dataSourceBuilder struct {
 	models      []ModelStructView
 	assignments []StateAssignment
 	unsupported []UnsupportedNode
+	// dropped notes envelope members skipped from the attributes-only view
+	// (e.g. relationships), surfaced as info diagnostics rather than failures.
+	dropped []string
+}
+
+// droppedEnvelopeMember is the info-diagnostic note for a JSON:API response
+// member skipped from the attributes-only view, e.g. relationships.
+func droppedEnvelopeMember(path string) string {
+	return fmt.Sprintf("dropped %q: not part of the surfaced {id, type, attributes} envelope", path)
 }
 
 // walk processes one struct's worth of attributes in tree order, reserving the
@@ -530,6 +538,7 @@ func unsupportedReason(tfType string) string {
 // *UnsupportedEmitError, in which case the view is discarded.
 func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	var unsupported []UnsupportedNode
+	var dropped []string
 
 	var call *model.SDKCall
 	if a.Lifecycle != nil {
@@ -581,7 +590,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		})
 	}
 
-	itemLeaves := flattenItemElement(itemsBlock, &unsupported)
+	itemLeaves := flattenItemElement(itemsBlock, &unsupported, &dropped)
 	if len(unsupported) > 0 {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: unsupported}
 	}
@@ -647,6 +656,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			ItemField:  itemField,
 			ItemFields: itemAssigns,
 		},
+		Dropped: dropped,
 	}, nil
 }
 
@@ -659,9 +669,10 @@ type itemElementLeaf struct {
 
 // flattenItemElement recognizes the JSON:API element envelope on a list item
 // block and flattens it: "id" is read off the loop variable, each leaf under
-// "attributes" off item.Attributes, and "type" is dropped. Non-leaf or
-// unexpected members append to unsupported. Leaves are returned sorted by TF name.
-func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode) []itemElementLeaf {
+// "attributes" off item.Attributes, and "type" is dropped. Members outside
+// {id, type, attributes} (e.g. relationships) are dropped with a note on dropped;
+// non-leaf id/attributes still append to unsupported. Leaves are sorted by TF name.
+func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, dropped *[]string) []itemElementLeaf {
 	if block == nil {
 		return nil
 	}
@@ -689,10 +700,9 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode) 
 				leaves = append(leaves, itemElementLeaf{attr: leaf, chain: itemGetter("item.Attributes", tfNameOf(leaf.Path))})
 			}
 		default:
-			*unsupported = append(*unsupported, UnsupportedNode{
-				Path:   child.Path,
-				Reason: tfNameOf(child.Path) + " is not part of the recognized {id, type, attributes} envelope",
-			})
+			// Members outside {id, type, attributes} (e.g. relationships) have no
+			// place in the attributes-only view; drop them rather than failing.
+			*dropped = append(*dropped, droppedEnvelopeMember(child.Path))
 		}
 	}
 	sort.Slice(leaves, func(i, j int) bool {
