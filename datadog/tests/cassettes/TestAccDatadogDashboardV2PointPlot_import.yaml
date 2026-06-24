@@ -1,0 +1,413 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 527
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2PointPlot-local-1782328602","widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"wdd-87s-yym","title":"tf-TestAccDatadogDashboardV2PointPlot-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/wdd-87s-yym/tf-testaccdatadogdashboardv2pointplot-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":2108635857350652}],"notify_list":[],"created_at":"2026-06-24T19:16:46.371587+00:00","modified_at":"2026-06-24T19:16:46.371587+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 268.845417ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 534
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2PointPlot_import-local-1782328602","widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"4w6-jnu-uf4","title":"tf-TestAccDatadogDashboardV2PointPlot_import-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/4w6-jnu-uf4/tf-testaccdatadogdashboardv2pointplotimport-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":8877688294001866}],"notify_list":[],"created_at":"2026-06-24T19:16:46.361029+00:00","modified_at":"2026-06-24T19:16:46.361029+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 274.224792ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/4w6-jnu-uf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"4w6-jnu-uf4","title":"tf-TestAccDatadogDashboardV2PointPlot_import-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/4w6-jnu-uf4/tf-testaccdatadogdashboardv2pointplotimport-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":8877688294001866}],"notify_list":[],"created_at":"2026-06-24T19:16:46.361029+00:00","modified_at":"2026-06-24T19:16:46.361029+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 119.529958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/wdd-87s-yym
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"wdd-87s-yym","title":"tf-TestAccDatadogDashboardV2PointPlot-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/wdd-87s-yym/tf-testaccdatadogdashboardv2pointplot-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":2108635857350652}],"notify_list":[],"created_at":"2026-06-24T19:16:46.371587+00:00","modified_at":"2026-06-24T19:16:46.371587+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 127.826584ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/wdd-87s-yym
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"wdd-87s-yym","title":"tf-TestAccDatadogDashboardV2PointPlot-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/wdd-87s-yym/tf-testaccdatadogdashboardv2pointplot-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":2108635857350652}],"notify_list":[],"created_at":"2026-06-24T19:16:46.371587+00:00","modified_at":"2026-06-24T19:16:46.371587+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 115.311125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/4w6-jnu-uf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"4w6-jnu-uf4","title":"tf-TestAccDatadogDashboardV2PointPlot_import-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/4w6-jnu-uf4/tf-testaccdatadogdashboardv2pointplotimport-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":8877688294001866}],"notify_list":[],"created_at":"2026-06-24T19:16:46.361029+00:00","modified_at":"2026-06-24T19:16:46.361029+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 161.142458ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/wdd-87s-yym
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"wdd-87s-yym","title":"tf-TestAccDatadogDashboardV2PointPlot-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/wdd-87s-yym/tf-testaccdatadogdashboardv2pointplot-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":2108635857350652}],"notify_list":[],"created_at":"2026-06-24T19:16:46.371587+00:00","modified_at":"2026-06-24T19:16:46.371587+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 139.053667ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/4w6-jnu-uf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"4w6-jnu-uf4","title":"tf-TestAccDatadogDashboardV2PointPlot_import-local-1782328602","description":null,"author_handle":"corey.ferland@datadoghq.com","author_name":"Corey Ferland","layout_type":"ordered","url":"/dashboard/4w6-jnu-uf4/tf-testaccdatadogdashboardv2pointplotimport-local-1782328602","template_variables":[],"widgets":[{"definition":{"legend":{"type":"automatic"},"requests":[{"projection":{"dimensions":[{"column":"time","dimension":"time"},{"column":"duration","dimension":"y"}],"type":"point_plot"},"query":{"data_source":"logs","query_string":"service:web-store"},"request_type":"data_projection"}],"title":"Point Plot Widget","type":"point_plot"},"id":8877688294001866}],"notify_list":[],"created_at":"2026-06-24T19:16:46.361029+00:00","modified_at":"2026-06-24T19:16:46.361029+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 105.181916ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/wdd-87s-yym
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"wdd-87s-yym"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 541.40775ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/wdd-87s-yym
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID wdd-87s-yym not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 124.636208ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/4w6-jnu-uf4
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"4w6-jnu-uf4"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 427.113917ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/4w6-jnu-uf4
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID 4w6-jnu-uf4 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 109.734584ms
