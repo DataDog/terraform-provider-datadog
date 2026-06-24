@@ -155,7 +155,7 @@ paths:
         artifact_name: user
         tf_description: Use this data source to retrieve information about an existing Datadog user.
         group:
-          read: ListUsers
+          search: ListUsers
 components:
   parameters:
     PageNumber:

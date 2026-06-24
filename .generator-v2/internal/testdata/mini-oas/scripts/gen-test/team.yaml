@@ -107,6 +107,7 @@ paths:
         tf_description: Use this data source to retrieve information about an existing Datadog team.
         group:
           read: GetTeam
+          search: ListTeams
   /api/v2/team:
     get:
       operationId: ListTeams

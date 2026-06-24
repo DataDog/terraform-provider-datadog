@@ -116,6 +116,12 @@ type Operation struct {
 	// for a list response, e.g. "Team" — the SDK Go element type. Empty when the
 	// resultsPath property is absent or is not an array.
 	ItemRefName string
+	// SearchOp is the operation named by Tracking.Group.Search, resolved during
+	// NormalizeSchemas: the list endpoint a singular data source searches to
+	// resolve one record. It points at the operation itself when this op is the
+	// search op (search-only), and is nil when no search is declared or the
+	// declared operationId is unknown.
+	SearchOp *Operation
 }
 
 // QueryParam is one in:query OpenAPI parameter, with its inner schema
@@ -250,11 +256,17 @@ type ValidatorSpec struct {
 	Args []string
 }
 
-// LifecycleBindings maps Terraform lifecycle methods to their SDK calls.
-// For data sources only Read is populated; IdStrategy and Create/Update/Delete are zero.
+// LifecycleBindings maps Terraform lifecycle methods to their SDK calls. For a
+// singular data source: Read is the by-id call and Search the list call —
+// read-only sets Read, search-only sets Search, the id-optional shape sets both.
+// IdStrategy and Create/Update/Delete are zero for data sources.
 type LifecycleBindings struct {
-	Create     *SDKCall
-	Read       *SDKCall
+	Create *SDKCall
+	Read   *SDKCall
+	// Search is the list call a singular data source uses to resolve one record
+	// by filter. It carries the list-call fields (ItemType/OptionalParamsType/
+	// Paginated), same as a plural Read.
+	Search     *SDKCall
 	Update     *SDKCall
 	Delete     *SDKCall
 	IdStrategy IdStrategy

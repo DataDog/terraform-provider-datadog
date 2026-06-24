@@ -118,6 +118,7 @@ paths:
         tf_description: Use this data source to retrieve information about an existing Datadog api key.
         group:
           read: GetAPIKey
+          search: ListAPIKeys
   /api/v2/api_keys:
     get:
       operationId: ListAPIKeys

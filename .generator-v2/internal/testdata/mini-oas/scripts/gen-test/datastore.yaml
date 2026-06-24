@@ -114,6 +114,7 @@ paths:
         tf_description: Use this data source to retrieve information about an existing Datadog datastore.
         group:
           read: GetDatastore
+          search: ListDatastores
   /api/v2/actions-datastores:
     get:
       operationId: ListDatastores
