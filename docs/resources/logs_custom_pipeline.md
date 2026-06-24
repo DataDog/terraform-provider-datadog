@@ -196,6 +196,7 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--arithmetic_processor))
+- `array_map_processor` (Block List, Max: 1) Array-Map Processor. Transforms each element of a source array by running sub-processors and writing results to a target array. (see [below for nested schema](#nestedblock--processor--array_map_processor))
 - `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--category_processor))
@@ -229,6 +230,107 @@ Optional:
 - `is_enabled` (Boolean) Boolean value to enable your pipeline.
 - `is_replace_missing` (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
 - `name` (String) Your pipeline name.
+
+
+<a id="nestedblock--processor--array_map_processor"></a>
+### Nested Schema for `processor.array_map_processor`
+
+Required:
+
+- `processors` (Block List, Min: 1) Sub-processors applied to each element. Allowed types: attribute_remapper, string_builder_processor, arithmetic_processor, category_processor. (see [below for nested schema](#nestedblock--processor--array_map_processor--processors))
+- `source` (String) Attribute path of the source array.
+- `target` (String) Attribute path of the output array.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+- `preserve_source` (Boolean) Remove or preserve the source array after processing. Defaults to `true`.
+
+<a id="nestedblock--processor--array_map_processor--processors"></a>
+### Nested Schema for `processor.array_map_processor.processors`
+
+Optional:
+
+- `arithmetic_processor` (Block List, Max: 1) Array-map arithmetic sub-processor. (see [below for nested schema](#nestedblock--processor--array_map_processor--processors--arithmetic_processor))
+- `attribute_remapper` (Block List, Max: 1) Array-map attribute remapper sub-processor. (see [below for nested schema](#nestedblock--processor--array_map_processor--processors--attribute_remapper))
+- `category_processor` (Block List, Max: 1) Array-map category sub-processor. (see [below for nested schema](#nestedblock--processor--array_map_processor--processors--category_processor))
+- `string_builder_processor` (Block List, Max: 1) Array-map string builder sub-processor. (see [below for nested schema](#nestedblock--processor--array_map_processor--processors--string_builder_processor))
+
+<a id="nestedblock--processor--array_map_processor--processors--arithmetic_processor"></a>
+### Nested Schema for `processor.array_map_processor.processors.arithmetic_processor`
+
+Required:
+
+- `expression` (String) Arithmetic formula.
+- `target` (String) Target attribute path for the result.
+
+Optional:
+
+- `is_replace_missing` (Boolean) Replace missing attributes with 0.
+- `name` (String) Name of the sub-processor.
+
+
+<a id="nestedblock--processor--array_map_processor--processors--attribute_remapper"></a>
+### Nested Schema for `processor.array_map_processor.processors.attribute_remapper`
+
+Required:
+
+- `sources` (List of String) List of source attributes.
+- `target` (String) Target attribute path.
+
+Optional:
+
+- `name` (String) Name of the sub-processor.
+- `override_on_conflict` (Boolean) Override the target element if already set.
+- `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `false`.
+- `target_format` (String) If the target type is attribute, cast the value to a new type (auto, string, integer, double).
+
+
+<a id="nestedblock--processor--array_map_processor--processors--category_processor"></a>
+### Nested Schema for `processor.array_map_processor.processors.category_processor`
+
+Required:
+
+- `category` (Block List, Min: 1) List of filters to match or exclude a log. (see [below for nested schema](#nestedblock--processor--array_map_processor--processors--category_processor--category))
+- `target` (String) Target attribute path for the category value.
+
+Optional:
+
+- `name` (String) Name of the sub-processor.
+
+<a id="nestedblock--processor--array_map_processor--processors--category_processor--category"></a>
+### Nested Schema for `processor.array_map_processor.processors.category_processor.category`
+
+Required:
+
+- `filter` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--array_map_processor--processors--category_processor--category--filter))
+- `name` (String) Name of the category.
+
+<a id="nestedblock--processor--array_map_processor--processors--category_processor--category--filter"></a>
+### Nested Schema for `processor.array_map_processor.processors.category_processor.category.filter`
+
+Required:
+
+- `query` (String)
+
+
+
+
+<a id="nestedblock--processor--array_map_processor--processors--string_builder_processor"></a>
+### Nested Schema for `processor.array_map_processor.processors.string_builder_processor`
+
+Required:
+
+- `target` (String) Target attribute path for the result.
+- `template` (String) Formula with one or more attributes and raw text.
+
+Optional:
+
+- `is_replace_missing` (Boolean) Replace missing attributes with empty string.
+- `name` (String) Name of the sub-processor.
+
+
 
 
 <a id="nestedblock--processor--array_processor"></a>
@@ -462,6 +564,7 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--arithmetic_processor))
+- `array_map_processor` (Block List, Max: 1) Array-Map Processor. Transforms each element of a source array by running sub-processors and writing results to a target array. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor))
 - `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor))
@@ -494,6 +597,107 @@ Optional:
 - `is_enabled` (Boolean) Boolean value to enable your pipeline.
 - `is_replace_missing` (Boolean) If true, it replaces all missing attributes of expression by 0, false skips the operation if an attribute is missing.
 - `name` (String) Your pipeline name.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor`
+
+Required:
+
+- `processors` (Block List, Min: 1) Sub-processors applied to each element. Allowed types: attribute_remapper, string_builder_processor, arithmetic_processor, category_processor. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor--processors))
+- `source` (String) Attribute path of the source array.
+- `target` (String) Attribute path of the output array.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+- `preserve_source` (Boolean) Remove or preserve the source array after processing. Defaults to `true`.
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor--processors"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor.processors`
+
+Optional:
+
+- `arithmetic_processor` (Block List, Max: 1) Array-map arithmetic sub-processor. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor--processors--arithmetic_processor))
+- `attribute_remapper` (Block List, Max: 1) Array-map attribute remapper sub-processor. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor--processors--attribute_remapper))
+- `category_processor` (Block List, Max: 1) Array-map category sub-processor. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor--processors--category_processor))
+- `string_builder_processor` (Block List, Max: 1) Array-map string builder sub-processor. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor--processors--string_builder_processor))
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor--processors--arithmetic_processor"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor.processors.arithmetic_processor`
+
+Required:
+
+- `expression` (String) Arithmetic formula.
+- `target` (String) Target attribute path for the result.
+
+Optional:
+
+- `is_replace_missing` (Boolean) Replace missing attributes with 0.
+- `name` (String) Name of the sub-processor.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor--processors--attribute_remapper"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor.processors.attribute_remapper`
+
+Required:
+
+- `sources` (List of String) List of source attributes.
+- `target` (String) Target attribute path.
+
+Optional:
+
+- `name` (String) Name of the sub-processor.
+- `override_on_conflict` (Boolean) Override the target element if already set.
+- `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `false`.
+- `target_format` (String) If the target type is attribute, cast the value to a new type (auto, string, integer, double).
+
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor--processors--category_processor"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor.processors.category_processor`
+
+Required:
+
+- `category` (Block List, Min: 1) List of filters to match or exclude a log. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor--processors--category_processor--category))
+- `target` (String) Target attribute path for the category value.
+
+Optional:
+
+- `name` (String) Name of the sub-processor.
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor--processors--category_processor--category"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor.processors.category_processor.category`
+
+Required:
+
+- `filter` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor--processors--category_processor--category--filter))
+- `name` (String) Name of the category.
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor--processors--category_processor--category--filter"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor.processors.category_processor.category.filter`
+
+Required:
+
+- `query` (String)
+
+
+
+
+<a id="nestedblock--processor--pipeline--processor--array_map_processor--processors--string_builder_processor"></a>
+### Nested Schema for `processor.pipeline.processor.array_map_processor.processors.string_builder_processor`
+
+Required:
+
+- `target` (String) Target attribute path for the result.
+- `template` (String) Formula with one or more attributes and raw text.
+
+Optional:
+
+- `is_replace_missing` (Boolean) Replace missing attributes with empty string.
+- `name` (String) Name of the sub-processor.
+
+
 
 
 <a id="nestedblock--processor--pipeline--processor--array_processor"></a>
