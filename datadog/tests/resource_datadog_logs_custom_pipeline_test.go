@@ -278,18 +278,12 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
                 attribute_remapper {
                     sources = ["$sourceElem.Arn"]
                     target = "$targetElem.uid"
-                    source_type = "attribute"
-                    target_type = "attribute"
-                    is_enabled = true
                 }
             }
             processors {
                 attribute_remapper {
                     sources = ["detail.awsRegion"]
                     target = "$targetElem.region"
-                    source_type = "attribute"
-                    target_type = "attribute"
-                    is_enabled = true
                 }
             }
         }
@@ -563,18 +557,12 @@ processor {
                 attribute_remapper {
                     sources = ["$sourceElem.Arn"]
                     target = "$targetElem.uid"
-                    source_type = "attribute"
-                    target_type = "attribute"
-                    is_enabled = true
                 }
             }
             processors {
                 attribute_remapper {
                     sources = ["detail.awsRegion"]
                     target = "$targetElem.region"
-                    source_type = "attribute"
-                    target_type = "attribute"
-                    is_enabled = true
                 }
             }
         }
