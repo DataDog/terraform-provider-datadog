@@ -442,16 +442,14 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		}
 
 	case model.SchemaKindVariant:
-		// Variant: one of several alternative shapes (oneOf/anyOf). Every
-		// alternative is normalized and collected into out.Variants.
-		for _, group := range [][]*base.SchemaProxy{s.OneOf, s.AnyOf} {
-			for _, variant := range group {
-				v, err := n.normalizeProxy(variant, depth)
-				if err != nil {
-					return nil, err
-				}
-				out.Variants = append(out.Variants, v)
+		// Variant: one of several alternative oneOf shapes (anyOf is classified
+		// unsupported). Every alternative is normalized into out.Variants.
+		for _, variant := range s.OneOf {
+			v, err := n.normalizeProxy(variant, depth)
+			if err != nil {
+				return nil, err
 			}
+			out.Variants = append(out.Variants, v)
 		}
 	}
 
@@ -460,13 +458,20 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 
 // classifyKind derives the SchemaKind from structure, not type alone. Precedence
 // (first match wins, since a node can satisfy several at once):
-// oneOf/anyOf → variant; properties → object; type:array+items → array;
-// additionalProperties → map; a concrete scalar type → primitive; anything else
-// (free-form/empty object, typeless leaf, itemless array) → unsupported.
+// anyOf → unsupported; oneOf → variant; properties → object; type:array+items →
+// array; additionalProperties → map; a concrete scalar type → primitive; anything
+// else (free-form/empty object, typeless leaf, itemless array) → unsupported.
+//
+// oneOf and anyOf are handled differently downstream: a oneOf variant is dropped
+// from the attribute tree, while an anyOf — which we never expect and have not
+// validated — is classified unsupported so its artifact fails rather than guessing.
 func classifyKind(s *base.Schema) model.SchemaKind {
 	switch {
-	case len(s.OneOf) > 0 || len(s.AnyOf) > 0:
-		// "one of several shapes" outranks everything else.
+	case len(s.AnyOf) > 0:
+		// anyOf has no Terraform equivalent; reject rather than drop or guess.
+		return model.SchemaKindUnsupported
+	case len(s.OneOf) > 0:
+		// "one of several shapes"; the attribute-tree builder drops it.
 		return model.SchemaKindVariant
 	case s.Properties != nil && orderedmap.Len(s.Properties) > 0:
 		// Declared named fields → object, regardless of the type keyword.
@@ -502,8 +507,8 @@ func isMap(s *base.Schema) bool {
 // elementOrUnsupported returns elem unless it is itself a collection (array or
 // map). A Terraform list/map element type must be a primitive or object, so a
 // collection-of-collection has no representable element; returning the Unsupported
-// sentinel lets CheckSchemaRepresentability reject it like any other unrepresentable
-// node and keeps the model builder's matching error unreachable in the pipeline.
+// sentinel makes the attribute-tree builder reject it like any other
+// unrepresentable node.
 func elementOrUnsupported(elem *model.Schema) *model.Schema {
 	if elem == nil {
 		return &model.Schema{Kind: model.SchemaKindUnsupported}

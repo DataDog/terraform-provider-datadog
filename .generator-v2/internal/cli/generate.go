@@ -144,6 +144,10 @@ func generateArtifact(op *model.Operation, outputRoot string, check bool) model.
 	if err != nil {
 		return failEntry(entry, err)
 	}
+	// Members the emit flattener dropped (e.g. relationships) ride along as info.
+	for _, msg := range view.Dropped {
+		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityInfo, Message: msg})
+	}
 
 	src, err := emit.RenderDataSource(view)
 	if err != nil {

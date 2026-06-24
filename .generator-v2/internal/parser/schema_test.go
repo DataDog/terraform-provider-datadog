@@ -53,7 +53,7 @@ var _ = Describe("NormalizeSchemas kind classification", func() {
 		Entry("type:array with items → array", "CreateArray", model.SchemaKindArray),
 		Entry("additionalProperties without properties → map", "CreateMap", model.SchemaKindMap),
 		Entry("oneOf → variant", "CreateVariantOneOf", model.SchemaKindVariant),
-		Entry("anyOf → variant", "CreateVariantAnyOf", model.SchemaKindVariant),
+		Entry("anyOf → unsupported", "CreateVariantAnyOf", model.SchemaKindUnsupported),
 	)
 
 	DescribeTable("classifies the response body schema kind from structure — not type alone",
@@ -200,9 +200,10 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Variants).To(HaveLen(2))
 	})
 
-	It("populates Variants for anyOf schemas and does not drop them", func() {
+	It("classifies anyOf as unsupported and carries no Variants", func() {
 		op := opByID(spec, "CreateVariantAnyOf")
-		Expect(op.RequestSchema.Variants).To(HaveLen(2))
+		Expect(op.RequestSchema.Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(op.RequestSchema.Variants).To(BeEmpty())
 	})
 })
 

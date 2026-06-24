@@ -74,6 +74,11 @@ type DataSourceView struct {
 
 	// State holds what updateState assigns back into the model.
 	State StateView
+
+	// Dropped lists response members skipped from the rendered view (e.g.
+	// relationships), surfaced as info diagnostics in the run report. It does
+	// not affect rendering.
+	Dropped []string
 }
 
 // SDKReadView describes the datadog-api-client-go call that backs Read.

@@ -102,11 +102,6 @@ var _ = Describe("BuildDataSourceView", func() {
 			Expect(uerr.Error()).To(ContainSubstring(wantReason))
 			Expect(view).To(Equal(DataSourceView{}), "no view should be produced on failure")
 		},
-		Entry("a data member outside {id, type, attributes}",
-			func(op *model.Operation) {
-				op.ResponseSchema.Properties["data"].Properties["relationships"] = prim("string", "")
-			},
-			"relationships is not part of the recognized"),
 		Entry("a non-envelope response root",
 			func(op *model.Operation) {
 				op.ResponseSchema = obj(map[string]*model.Schema{"name": prim("string", "")})
@@ -125,6 +120,18 @@ var _ = Describe("BuildDataSourceView", func() {
 			func(op *model.Operation) { op.ResponseRefName = "" },
 			"missing response type name"),
 	)
+
+	It("drops a data member outside {id, type, attributes} and records it", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["relationships"] =
+			obj(map[string]*model.Schema{"created_by": prim("string", "")})
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.Dropped).To(ContainElement(ContainSubstring("relationships")))
+	})
 })
 
 var _ = Describe("BuildDataSourceView singular search", func() {
