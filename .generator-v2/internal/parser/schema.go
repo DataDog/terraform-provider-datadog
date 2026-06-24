@@ -101,14 +101,14 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		byID[op.OperationId] = op
 	}
 
-	// Roots are tracked operations; each fills its group's CRUD operations, which
-	// may themselves be untracked. filled dedups operations shared across groups.
+	// Roots are tracked operations; each fills its group's operations, which may
+	// themselves be untracked. filled dedups operations shared across groups.
 	filled := make(map[*model.Operation]bool)
 	for _, op := range spec.Operations {
 		if op == nil || op.Tracking == nil {
 			continue
 		}
-		for _, id := range crudOperationIds(op.Tracking) {
+		for _, id := range groupOperationIds(op.Tracking) {
 			target := byID[id]
 			if target == nil || filled[target] {
 				continue
@@ -119,18 +119,30 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 			}
 		}
 	}
+
+	// Resolve each tracked op's search reference to the list operation it points
+	// at, so BuildArtifact can reach the search op's filters and list call. An
+	// unknown operationId leaves SearchOp nil for BuildArtifact to fail-slow on.
+	for _, op := range spec.Operations {
+		if op == nil || op.Tracking == nil || op.Tracking.Group == nil {
+			continue
+		}
+		if id := op.Tracking.Group.Search; id != "" {
+			op.SearchOp = byID[id]
+		}
+	}
 	return nil
 }
 
-// crudOperationIds returns the non-empty create/read/update/delete operationIds
-// of a tracking group, in CRUD order.
-func crudOperationIds(t *model.TrackingFieldMetadata) []string {
+// groupOperationIds returns the non-empty operationIds backing a tracking group
+// (create/read/search/update/delete), so their schemas get normalized.
+func groupOperationIds(t *model.TrackingFieldMetadata) []string {
 	if t == nil || t.Group == nil {
 		return nil
 	}
 	g := t.Group
-	ids := make([]string, 0, 4)
-	for _, id := range []string{g.Create, g.Read, g.Update, g.Delete} {
+	ids := make([]string, 0, 5)
+	for _, id := range []string{g.Create, g.Read, g.Search, g.Update, g.Delete} {
 		if id != "" {
 			ids = append(ids, id)
 		}
