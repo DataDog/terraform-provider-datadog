@@ -1000,7 +1000,7 @@ func getNonGroupWidgetSchema(isPowerpackSchema bool) map[string]*schema.Schema {
 			MaxItems:    1,
 			Description: "The definition for a Distribution widget.",
 			Elem: &schema.Resource{
-				Schema: getDistributionDefinitionSchema(),
+				Schema: getDistributionDefinitionSchema(!isPowerpackSchema),
 			},
 		},
 		"event_stream_definition": {
@@ -2437,14 +2437,14 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 // Distribution Widget Definition helpers
 //
 
-func getDistributionDefinitionSchema() map[string]*schema.Schema {
+func getDistributionDefinitionSchema(includeLLMObservabilityQuery bool) map[string]*schema.Schema {
 	schema := map[string]*schema.Schema{
 		"request": {
-			Description: "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `llm_observability_query` or `process_query` is required within the request block).",
+			Description: distributionRequestDescription(includeLLMObservabilityQuery),
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
-				Schema: getDistributionRequestSchema(),
+				Schema: getDistributionRequestSchema(includeLLMObservabilityQuery),
 			},
 		},
 		"title": {
@@ -2501,6 +2501,14 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 	schema = mergeSchemas(schema, getCommonTimeSpanSchema())
 	return schema
 }
+
+func distributionRequestDescription(includeLLMObservabilityQuery bool) string {
+	if includeLLMObservabilityQuery {
+		return "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `llm_observability_query` or `process_query` is required within the request block)."
+	}
+	return "A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block)."
+}
+
 func buildDatadogDistributionDefinition(terraformDefinition map[string]interface{}) *datadogV1.DistributionWidgetDefinition {
 	datadogDefinition := datadogV1.NewDistributionWidgetDefinitionWithDefaults()
 	// Required params
@@ -2578,17 +2586,16 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 	return terraformDefinition
 }
 
-func getDistributionRequestSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+func getDistributionRequestSchema(includeLLMObservabilityQuery bool) map[string]*schema.Schema {
+	requestSchema := map[string]*schema.Schema{
 		// A request should implement exactly one of the following type of query
-		"q":                       getMetricQuerySchema(),
-		"apm_query":               getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"log_query":               getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"llm_observability_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"rum_query":               getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"security_query":          getApmLogNetworkRumSecurityAuditQuerySchema(),
-		"process_query":           getProcessQuerySchema(),
-		"apm_stats_query":         getApmStatsQuerySchema(),
+		"q":               getMetricQuerySchema(),
+		"apm_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"log_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"rum_query":       getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"security_query":  getApmLogNetworkRumSecurityAuditQuerySchema(),
+		"process_query":   getProcessQuerySchema(),
+		"apm_stats_query": getApmStatsQuerySchema(),
 		// Settings specific to Distribution requests
 		"style": {
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
@@ -2600,6 +2607,10 @@ func getDistributionRequestSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+	if includeLLMObservabilityQuery {
+		requestSchema["llm_observability_query"] = getApmLogNetworkRumSecurityAuditQuerySchema()
+	}
+	return requestSchema
 }
 func buildDatadogDistributionRequests(terraformRequests *[]interface{}) *[]datadogV1.DistributionWidgetRequest {
 	datadogRequests := make([]datadogV1.DistributionWidgetRequest, len(*terraformRequests))
