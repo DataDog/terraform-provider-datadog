@@ -270,8 +270,14 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 }
 
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
+	// Hand-written and generator-v2 data sources are kept in separate slices
+	// (see generatedDatasources) so regenerating does not churn this file.
+	all := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
+	all = append(all, Datasources...)
+	all = append(all, generatedDatasources...)
+
 	var wrappedDatasources []func() datasource.DataSource
-	for _, f := range Datasources {
+	for _, f := range all {
 		r := f()
 		wrappedDatasources = append(wrappedDatasources, func() datasource.DataSource { return NewFrameworkDatasourceWrapper(&r) })
 	}
