@@ -6193,6 +6193,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Prov
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.exit_if_succeed", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.always_execute", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
@@ -6498,6 +6500,7 @@ resource "datadog_synthetics_test" "multi" {
   api_step {
     name = "First api step"
 	exit_if_succeed = true
+	always_execute = true
     request_definition {
       method           = "POST"
       url              = "https://www.datadoghq.com"
@@ -7060,6 +7063,8 @@ func createSyntheticsMultistepAPITestAllStepSubtypes(ctx context.Context, accPro
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.subtype", "playSubTest"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.subtest_public_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test_all_api_subtypes", "api_step.8.always_execute", "true"),
 		),
 	}
 }
@@ -7281,6 +7286,7 @@ func createSyntheticsMultistepAPITestConfigAllStepSubtypes(testName string) stri
 				name              = "Subtest step"
 				subtype           = "playSubTest"
 				subtest_public_id = datadog_synthetics_test.single_api.id
+				always_execute    = true
 			}
 		}
 	`, testName)
