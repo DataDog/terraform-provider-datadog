@@ -27,12 +27,14 @@ var _ = Describe("data-source templates", func() {
 			matchGolden(golden, got)
 		},
 		Entry("singular (incident_type)", "data_source_singular.golden", incidentTypeView),
+		Entry("singular search (powerpack)", "data_source_singular_search.golden", powerpackSearchView),
+		Entry("singular both (datastore)", "data_source_singular_both.golden", datastoreBothView),
 		Entry("plural (teams)", "data_source_plural.golden", pluralFixture),
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{incidentTypeView(), pluralFixture(), datastoresView()} {
+		for _, v := range []DataSourceView{incidentTypeView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), datastoresView()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -78,6 +80,21 @@ func datastoresView() DataSourceView {
 	view, err := BuildDataSourceView(art)
 	Expect(err).NotTo(HaveOccurred())
 	return view
+}
+
+// powerpackSearchView is the search-only powerpack data source built end-to-end;
+// its golden proves the list→guard→pick render with a paginated, filtered search.
+func powerpackSearchView() DataSourceView {
+	GinkgoHelper()
+	return mustView(powerpackSearchOperation())
+}
+
+// datastoreBothView is the id-optional datastore data source built end-to-end; its
+// golden proves the by-id-else-search render and is reviewable against the
+// hand-written data_source_datadog_datastore.go.
+func datastoreBothView() DataSourceView {
+	GinkgoHelper()
+	return mustView(datastoreBothOperation())
 }
 
 // pluralFixture is the teams data source as a view.

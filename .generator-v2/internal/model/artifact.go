@@ -7,10 +7,15 @@ import (
 )
 
 // BuildArtifact wraps a tracked Operation's response tree into an *Artifact and
-// resolves its SDK call bindings. It sets Name/Kind/SourceFile/Schema and, for
-// the data-source read, Lifecycle.Read (the datadog-api-client-go call) and
-// Lifecycle.IdStrategy. The request side (Create/Update/Delete, GoRequestType)
-// stays empty.
+// resolves its SDK call bindings. It sets Name/Kind/SourceFile/Schema and the
+// data-source SDK calls (Lifecycle.Read for by-id, Lifecycle.Search for the list
+// call) plus Lifecycle.IdStrategy. The request side (Create/Update/Delete,
+// GoRequestType) stays empty.
+//
+// A singular data source resolves its one record three ways, selected by which
+// group operations are declared: read only (by-id, the original behavior),
+// search only (find one in a list), or both (by-id when an id is given, else
+// search). Plural is unchanged.
 func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
@@ -19,23 +24,133 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 		return buildPluralArtifact(op)
 	}
 
+	g := op.Tracking.Group
+	hasRead := g != nil && g.Read != ""
+	hasSearch := g != nil && g.Search != ""
+	switch {
+	case hasSearch && !hasRead:
+		return buildSingularSearchArtifact(op)
+	case hasSearch && hasRead:
+		return buildSingularBothArtifact(op)
+	default:
+		// Read-only (group.read) or groupless: resolve the single record by id.
+		return buildSingularByIdArtifact(op)
+	}
+}
+
+// buildSingularByIdArtifact resolves the one record by direct id lookup: its
+// Schema is the by-id response tree and Lifecycle.Read the get-by-id call.
+func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 	schema, err := BuildResponseTree(op.ResponseSchema)
 	if err != nil {
 		return nil, err
 	}
-	name := op.Tracking.ArtifactName
 	return &Artifact{
-		Name:        name,
+		Name:        op.Tracking.ArtifactName,
 		Kind:        op.Tracking.ArtifactKind,
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
 		Schema:      schema,
-		SourceFile:  "datadog/fwprovider/data_source_datadog_" + name + ".go",
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
 			Read:       readCall(op),
 			IdStrategy: op.Tracking.IdStrategy,
 		},
 	}, nil
+}
+
+// buildSingularSearchArtifact resolves the one record by searching a list: op is
+// the list operation itself (group.search names it). The flat record is the list
+// element reshaped into a singular {data:{…}} envelope so the by-id envelope
+// flattener serves it unchanged; the search side adds Optional filters from the
+// query parameters and the list call. No list/items block is emitted.
+func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
+	element := listElementSchema(op)
+	if element == nil {
+		return nil, fmt.Errorf("model: search data source %q has no result-array element to flatten", op.Tracking.ArtifactName)
+	}
+	record, err := BuildResponseTree(singularEnvelope(element))
+	if err != nil {
+		return nil, err
+	}
+	filters, diags := buildFilterLeaves(op)
+	return &Artifact{
+		Name:        op.Tracking.ArtifactName,
+		Kind:        op.Tracking.ArtifactKind,
+		Cardinality: CardinalitySingular,
+		Description: op.Tracking.TfDescription,
+		Schema:      &AttributeTree{Attributes: append(filters, record.Attributes...)},
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		Lifecycle: &LifecycleBindings{
+			Search:     listCall(op),
+			IdStrategy: op.Tracking.IdStrategy,
+		},
+		Diagnostics: diags,
+	}, nil
+}
+
+// buildSingularBothArtifact resolves the one record by id when given one and by
+// search otherwise. The flat record is the canonical by-id response tree (the
+// same element shape the search returns); the search side adds Optional filters
+// from the list op's query parameters and the list call, alongside the by-id Read.
+func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
+	searchOp := op.SearchOp
+	if searchOp == nil {
+		return nil, fmt.Errorf("model: data source %q declares group.search %q but no such operation exists",
+			op.Tracking.ArtifactName, op.Tracking.Group.Search)
+	}
+	record, err := BuildResponseTree(op.ResponseSchema)
+	if err != nil {
+		return nil, err
+	}
+	filters, diags := buildFilterLeaves(searchOp)
+	return &Artifact{
+		Name:        op.Tracking.ArtifactName,
+		Kind:        op.Tracking.ArtifactKind,
+		Cardinality: CardinalitySingular,
+		Description: op.Tracking.TfDescription,
+		Schema:      &AttributeTree{Attributes: append(filters, record.Attributes...)},
+		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
+		Lifecycle: &LifecycleBindings{
+			Read:       readCall(op),
+			Search:     listCall(searchOp),
+			IdStrategy: op.Tracking.IdStrategy,
+		},
+		Diagnostics: diags,
+	}, nil
+}
+
+// sourceFileFor is the output path for a data-source artifact name.
+func sourceFileFor(name string) string {
+	return "datadog/fwprovider/data_source_datadog_" + name + ".go"
+}
+
+// singularEnvelope wraps a list element schema in a one-property {data: element}
+// object, mimicking a by-id response so the singular envelope flattener can hoist
+// the element's leaves regardless of where the record was fetched.
+func singularEnvelope(element *Schema) *Schema {
+	return &Schema{
+		Kind:       SchemaKindObject,
+		Properties: map[string]*Schema{defaultResultsPath: element},
+	}
+}
+
+// listElementSchema returns the element schema of op's results array
+// (op.Pagination.ResultsPath, else "data"), or nil when that property is absent
+// or not an array.
+func listElementSchema(op *Operation) *Schema {
+	resultsPath := defaultResultsPath
+	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
+		resultsPath = op.Pagination.ResultsPath
+	}
+	if op.ResponseSchema == nil || op.ResponseSchema.Kind != SchemaKindObject {
+		return nil
+	}
+	arr := op.ResponseSchema.Properties[resultsPath]
+	if arr == nil || arr.Kind != SchemaKindArray {
+		return nil
+	}
+	return arr.Items
 }
 
 // buildPluralArtifact derives a plural data-source artifact: its Schema is the
@@ -54,16 +169,7 @@ func buildPluralArtifact(op *Operation) (*Artifact, error) {
 		attrs = append(attrs, itemsBlock)
 	}
 
-	read := readCall(op)
-	read.ItemType = op.ItemRefName
-	read.Paginated = op.Pagination != nil
-	// The SDK generates an optional-parameters struct iff the endpoint declares
-	// query parameters (pagination params are query parameters); without one the
-	// list call takes no optional argument.
-	if len(op.QueryParams) > 0 {
-		read.OptionalParamsType = op.OperationId + "OptionalParameters"
-	}
-
+	read := listCall(op)
 	name := op.Tracking.ArtifactName
 	return &Artifact{
 		Name:        name,
@@ -111,6 +217,21 @@ func readCall(op *Operation) *SDKCall {
 		GoMethod:       op.OperationId,
 		GoResponseType: op.ResponseRefName,
 	}
+}
+
+// listCall resolves the datadog-api-client-go binding for op's list call: the
+// base read binding plus the element type, the optional-parameters struct (the
+// SDK generates one iff the endpoint declares query parameters — pagination
+// params are query parameters), and the pagination flag. Shared by the plural
+// path and the singular search path.
+func listCall(op *Operation) *SDKCall {
+	c := readCall(op)
+	c.ItemType = op.ItemRefName
+	c.Paginated = op.Pagination != nil
+	if len(op.QueryParams) > 0 {
+		c.OptionalParamsType = op.OperationId + "OptionalParameters"
+	}
+	return c
 }
 
 // buildFilterLeaves converts op's scalar query parameters into Optional

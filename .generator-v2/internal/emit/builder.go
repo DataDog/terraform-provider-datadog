@@ -49,50 +49,141 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 
 	b := &dataSourceBuilder{receiver: envelopeReceiver}
 
-	// SDK-call bindings. An inline/absent response body leaves no SDK receiver
-	// type to mirror state against, so record it as unsupported.
-	var call *model.SDKCall
+	// Resolve the SDK calls. read backs the by-id lookup, search the list; the
+	// presence of each selects the resolution shape (read-only / search / both).
+	var read, search *model.SDKCall
 	var idStrategy model.IdStrategy
 	if a.Lifecycle != nil {
-		call = a.Lifecycle.Read
+		read, search = a.Lifecycle.Read, a.Lifecycle.Search
 		idStrategy = a.Lifecycle.IdStrategy
 	}
-	if call == nil || call.GoResponseType == "" {
-		b.unsupported = append(b.unsupported, UnsupportedNode{Path: "response", Reason: "missing response type name"})
+	byID, searchable := read != nil, search != nil
+
+	// The primary call provides the SDK package/struct the data source binds to:
+	// the by-id call when present, otherwise the list call.
+	primary := read
+	if primary == nil {
+		primary = search
+	}
+	if primary == nil {
+		b.unsupported = append(b.unsupported, UnsupportedNode{Path: "response", Reason: "no read or search SDK call resolved"})
 	}
 
-	var topLevel []*model.Attribute
+	// The record is read off a by-id response (read-only) or a list element
+	// (search/both); rootExpr is what the state mapper reads id and attributes off.
+	rootExpr, paramName, paramType := "resp.Data", "resp", ""
+	if searchable {
+		// The record is a list element, passed by value (resp.GetData() / items[i]).
+		rootExpr, paramName = "data", "data"
+		if search.ItemType == "" {
+			b.unsupported = append(b.unsupported, UnsupportedNode{Path: "response", Reason: "missing search item type"})
+		} else {
+			paramType = search.GoPackage + "." + search.ItemType
+		}
+	} else if read == nil || read.GoResponseType == "" {
+		b.unsupported = append(b.unsupported, UnsupportedNode{Path: "response", Reason: "missing response type name"})
+	} else {
+		paramType = "*" + read.GoPackage + "." + read.GoResponseType
+	}
+
+	// Partition the schema: Optional leaves are the search filters, the lone
+	// envelope block is the record to flatten.
+	var topLevel, filterLeaves []*model.Attribute
 	if a.Schema != nil {
-		topLevel = a.Schema.Attributes
+		for _, attr := range a.Schema.Attributes {
+			if attr.Optional && isLeafType(attr.TfType) {
+				filterLeaves = append(filterLeaves, attr)
+			} else {
+				topLevel = append(topLevel, attr)
+			}
+		}
 	}
 
 	rootStruct := lowerFirst(model.SdkName(a.Name)) + "DataSourceModel"
-	env := b.flattenEnvelope(topLevel, idStrategy)
+	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
 
 	if len(b.unsupported) > 0 {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
 
 	// env is non-nil here: flattenEnvelope records an unsupported node (caught
-	// above) on every failure path. Walk the hoisted leaves into the root struct,
-	// then prepend the lookup id (field + assignment, sourced from id_strategy).
-	attrs, _ := b.walk(rootStruct, env.leaves)
-	b.models[0].Fields = append([]ModelFieldView{env.idField}, b.models[0].Fields...)
+	// above) on every failure path. Walk the hoisted leaves into the root struct.
+	recordAttrs, _ := b.walk(rootStruct, env.leaves)
+	leafFields := b.models[0].Fields
+
+	// Search filters: one Optional attribute + model field + param binding each.
+	filterAttrs, filterFields, filterParams := buildSingularFilters(filterLeaves)
+
+	// Parent model fields: the lookup id, then the search filters, then the record
+	// leaves. The group comments are only emitted for the search shapes.
+	idField := env.idField
+	if searchable {
+		idField.Comment = "Datasource ID"
+		if len(leafFields) > 0 {
+			leafFields[0].Comment = "Computed values"
+		}
+	}
+	fields := append([]ModelFieldView{idField}, filterFields...)
+	b.models[0].Fields = append(fields, leafFields...)
+
 	assignments := append([]StateAssignment{env.idAssign}, b.assignments...)
+
+	var readView, searchView SDKReadView
+	if byID {
+		readView = SDKReadView{Method: read.GoMethod, ResponseType: read.GoResponseType}
+	}
+	if searchable {
+		searchView = SDKReadView{
+			Method:             search.GoMethod,
+			Paginated:          search.Paginated,
+			ItemType:           search.ItemType,
+			OptionalParamsType: search.OptionalParamsType,
+			Filters:            filterParams,
+		}
+	}
 
 	return DataSourceView{
 		Cardinality: Singular,
 		TypeName:    a.Name,
 		GoName:      lowerFirst(model.SdkName(a.Name)),
 		Description: a.Description,
-		SDKPackage:  call.GoPackage,
-		APIStruct:   call.GoApiStruct,
-		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
-		Read:        SDKReadView{Method: call.GoMethod, ResponseType: call.GoResponseType},
+		SDKPackage:  primary.GoPackage,
+		APIStruct:   primary.GoApiStruct,
+		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
+		ByID:        byID,
+		Searchable:  searchable,
+		Read:        readView,
+		Search:      searchView,
 		Models:      b.models,
-		Schema:      SchemaView{Attributes: attrs},
-		State:       StateView{Preamble: env.preamble, Assignments: assignments},
+		Schema:      SchemaView{Attributes: append(filterAttrs, recordAttrs...)},
+		State: StateView{
+			ParamName:   paramName,
+			ParamType:   paramType,
+			Preamble:    env.preamble,
+			Assignments: assignments,
+		},
 	}, nil
+}
+
+// buildSingularFilters turns the Optional filter leaves of a search/both data
+// source into Terraform attributes, model fields, and the request-param bindings
+// that set the list call's optional parameters — mirroring the plural filter set.
+func buildSingularFilters(leaves []*model.Attribute) (attrs []AttrView, fields []ModelFieldView, params []FilterParamView) {
+	for i, leaf := range leaves {
+		tfName := tfNameOf(leaf.Path)
+		attrs = append(attrs, AttrView{TFName: tfName, TFType: leaf.TfType, Description: leaf.Description, Optional: true})
+		field := ModelFieldView{GoField: model.SdkName(tfName), GoType: leaf.GoType, TFName: tfName}
+		if i == 0 {
+			field.Comment = "Query Parameters"
+		}
+		fields = append(fields, field)
+		params = append(params, FilterParamView{
+			StateField: model.SdkName(tfName),
+			ParamField: model.SdkName(tfName),
+			ValueExpr:  pointerValueExpr(leaf.GoType),
+		})
+	}
+	return attrs, fields, params
 }
 
 // flattenedEnvelope is the result of recognizing a singular JSON:API envelope:
@@ -111,7 +202,7 @@ type flattenedEnvelope struct {
 // leaves only. It hoists each attribute leaf to a top-level path ("response.<leaf>"),
 // surfaces "id" from id_strategy (data.id only), and drops "type". Anything outside
 // the recognized envelope is appended to b.unsupported and the result is nil.
-func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrategy model.IdStrategy) *flattenedEnvelope {
+func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrategy model.IdStrategy, rootExpr string) *flattenedEnvelope {
 	if len(topLevel) != 1 || tfNameOf(topLevel[0].Path) != "data" || topLevel[0].TfType != "schema.SingleNestedBlock" {
 		b.unsupported = append(b.unsupported, UnsupportedNode{
 			Path:   "response",
@@ -184,10 +275,15 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 	}
 
 	return &flattenedEnvelope{
-		leaves:   leaves,
-		idField:  ModelFieldView{GoField: "ID", GoType: "types.String", TFName: "id"},
-		idAssign: StateAssignment{LHS: "state.ID", RHS: "types.StringValue(resp.Data.GetId())"},
-		preamble: []string{"attributes := resp.Data.GetAttributes()"},
+		leaves:  leaves,
+		idField: ModelFieldView{GoField: "ID", GoType: "types.String", TFName: "id"},
+		idAssign: StateAssignment{
+			Var:      "id",
+			GetterOk: rootExpr + ".GetIdOk()",
+			LHS:      "state.ID",
+			RHS:      "types.StringValue(*id)",
+		},
+		preamble: []string{"attributes := " + rootExpr + ".GetAttributes()"},
 	}
 }
 
@@ -230,9 +326,12 @@ func (b *dataSourceBuilder) walk(structName string, attrs []*model.Attribute) (a
 				GoType:  a.GoType,
 				TFName:  tfName,
 			})
+			varName := leafVar(tfName)
 			b.assignments = append(b.assignments, StateAssignment{
-				LHS: stateLHS(a.Path),
-				RHS: wrapValue(a, getterChain(b.receiver, a.Path)),
+				Var:      varName,
+				GetterOk: getterOkChain(b.receiver, a.Path),
+				LHS:      stateLHS(a.Path),
+				RHS:      guardedValue(a, varName),
 			})
 
 		case "schema.SingleNestedBlock":
@@ -321,17 +420,60 @@ func stateLHS(path string) string {
 	return "state." + strings.Join(parts, ".")
 }
 
-// getterChain builds the SDK getter chain reading an attribute off receiver,
-// e.g. getterChain("attributes", "response.name") → "attributes.GetName()".
-func getterChain(receiver, path string) string {
+// getterOkChain builds the SDK optional-getter chain for an attribute, the final
+// getter taking the "Ok" form that returns (value, bool), e.g.
+// getterOkChain("attributes", "response.name") → "attributes.GetNameOk()".
+func getterOkChain(receiver, path string) string {
+	segs := responseSegments(path)
 	var b strings.Builder
 	b.WriteString(receiver)
-	for _, s := range responseSegments(path) {
+	for i, s := range segs {
 		b.WriteString(".Get")
 		b.WriteString(model.SdkName(s))
+		if i == len(segs)-1 {
+			b.WriteString("Ok")
+		}
 		b.WriteString("()")
 	}
 	return b.String()
+}
+
+// leafVar is the local variable a guarded assignment binds the optional getter's
+// value to: the attribute's lowerCamel name, suffixed with "Value" when it would
+// shadow an identifier in updateState's scope (state, attributes, the receiver).
+func leafVar(tfName string) string {
+	v := lowerFirst(model.SdkName(tfName))
+	switch v {
+	case "state", "attributes", "ok", "d", "data", "resp", "items", "ctx":
+		return v + "Value"
+	}
+	return v
+}
+
+// guardedValue wraps a guarded assignment's local (bound from an Ok-getter, so a
+// pointer) in the types.*Value constructor matching the model field's GoType. A
+// date-time pointer renders via .String(); a named enum pointer is dereferenced
+// and cast back to string; integers are cast to int64 as the framework expects.
+func guardedValue(a *model.Attribute, varName string) string {
+	switch a.GoType {
+	case "types.String":
+		switch {
+		case a.Format == "date-time":
+			return "types.StringValue(" + varName + ".String())"
+		case a.IsEnum:
+			return "types.StringValue(string(*" + varName + "))"
+		default:
+			return "types.StringValue(*" + varName + ")"
+		}
+	case "types.Bool":
+		return "types.BoolValue(*" + varName + ")"
+	case "types.Int64":
+		return "types.Int64Value(int64(*" + varName + "))"
+	case "types.Float64":
+		return "types.Float64Value(*" + varName + ")"
+	default:
+		return "*" + varName
+	}
 }
 
 // wrapValue wraps an SDK getter chain in the types.*Value constructor matching

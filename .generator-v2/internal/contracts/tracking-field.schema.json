@@ -32,15 +32,16 @@
       },
       "group": {
         "type": "object",
-        "description": "Declares which OpenAPI operations form the C/R/U/D quadruple. May reference operations by their operationId.",
+        "description": "The OpenAPI operations backing this artifact. For a resource: the create/read/update/delete lifecycle. For a data source: read (a by-id endpoint) and/or search (a list endpoint used to resolve a single match). May reference operations by their operationId.",
         "additionalProperties": false,
         "properties": {
-          "create": { "type": "string", "description": "operationId of the Create endpoint." },
-          "read":   { "type": "string", "description": "operationId of the Read endpoint." },
-          "update": { "type": "string", "description": "operationId of the Update endpoint. May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec." },
-          "delete": { "type": "string", "description": "operationId of the Delete endpoint." }
+          "create": { "type": "string", "description": "operationId of the Create endpoint (resources)." },
+          "read":   { "type": "string", "description": "operationId of the Read (by-id) endpoint." },
+          "search": { "type": "string", "description": "operationId of the list endpoint used to resolve a single match. Singular data sources only; never inferred." },
+          "update": { "type": "string", "description": "operationId of the Update endpoint (resources). May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec." },
+          "delete": { "type": "string", "description": "operationId of the Delete endpoint (resources)." }
         },
-        "required": ["read"]
+        "anyOf": [ { "required": ["read"] }, { "required": ["search"] } ]
       },
       "id_strategy": {
         "type": "string",
@@ -65,7 +66,16 @@
         "artifact_name": "team",
         "tf_description": "Use this data source to retrieve information about an existing Datadog team.",
         "group":{
-          "read": "GetTeam"
+          "read": "GetTeam",
+          "search": "ListTeams"
+        }
+      },
+      {
+        "artifact_kind": "data_source",
+        "artifact_name": "powerpack",
+        "tf_description": "Use this data source to retrieve information about an existing Datadog Powerpack.",
+        "group":{
+          "search": "ListPowerpacks"
         }
       },
       {
