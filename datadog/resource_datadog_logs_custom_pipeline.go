@@ -100,7 +100,7 @@ var tfProcessors = map[string]*schema.Schema{
 
 var ddProcessorTypes = map[string]string{
 	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):        tfArithmeticProcessor,
-	string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR):                     tfArrayMapProcessor,
+	string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR):           tfArrayMapProcessor,
 	string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):                  tfArrayProcessor,
 	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
 	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
