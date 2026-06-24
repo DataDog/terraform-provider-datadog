@@ -117,6 +117,49 @@ group:
 	}
 }
 
+// TestDecodeTrackingSearchGroup covers the search-resolution forms a singular
+// data source may declare: search-only (no read) and both (read + search).
+func TestDecodeTrackingSearchGroup(t *testing.T) {
+	t.Run("search only is valid without read", func(t *testing.T) {
+		op := opWithExt(t, "ListPowerpacks", DefaultTrackingFieldName, `
+artifact_kind: data_source
+artifact_name: powerpack
+group:
+  search: ListPowerpacks
+`)
+		got, err := DecodeTracking(op, trackPath, trackMethod, DefaultTrackingFieldName)
+		if err != nil {
+			t.Fatalf("DecodeTracking: %v", err)
+		}
+		if got == nil || got.Group == nil {
+			t.Fatalf("got %+v, want a group", got)
+		}
+		if got.Group.Read != "" || got.Group.Search != "ListPowerpacks" {
+			t.Errorf("Group = %+v, want Search=ListPowerpacks and no Read", got.Group)
+		}
+	})
+
+	t.Run("both read and search are valid together", func(t *testing.T) {
+		op := opWithExt(t, "GetDatastore", DefaultTrackingFieldName, `
+artifact_kind: data_source
+artifact_name: datastore
+group:
+  read: GetDatastore
+  search: ListDatastores
+`)
+		got, err := DecodeTracking(op, trackPath, trackMethod, DefaultTrackingFieldName)
+		if err != nil {
+			t.Fatalf("DecodeTracking: %v", err)
+		}
+		if got == nil || got.Group == nil {
+			t.Fatalf("got %+v, want a group", got)
+		}
+		if got.Group.Read != "GetDatastore" || got.Group.Search != "ListDatastores" {
+			t.Errorf("Group = %+v, want Read=GetDatastore and Search=ListDatastores", got.Group)
+		}
+	})
+}
+
 // TestDecodeTrackingOptionalFields covers each non-required field both present
 // and omitted. The required pair (artifact_kind + artifact_name) alone is a
 // schema-valid extension, so it is the base every case builds on.
@@ -219,6 +262,7 @@ func TestDecodeTrackingMalformedReturnsTrackingError(t *testing.T) {
 		"bad name pattern":      "artifact_kind: resource\nartifact_name: NotSnake\n",
 		"empty tf_description":  "artifact_kind: data_source\nartifact_name: team\ntf_description: \"\"\n",
 		"unknown cardinality":   "artifact_kind: data_source\nartifact_name: team\ncardinality: many\n",
+		"group without read or search": "artifact_kind: data_source\nartifact_name: team\ngroup:\n  create: C\n",
 	}
 	for name, body := range cases {
 		t.Run(name, func(t *testing.T) {

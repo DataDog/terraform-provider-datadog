@@ -89,13 +89,22 @@ func (d *incidentTypeDataSource) Read(ctx context.Context, request datasource.Re
 	}
 
 	d.updateState(&state, &resp)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (d *incidentTypeDataSource) updateState(state *incidentTypeDataSourceModel, resp *datadogV2.IncidentTypeResponse) {
 	attributes := resp.Data.GetAttributes()
-	state.ID = types.StringValue(resp.Data.GetId())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.IsDefault = types.BoolValue(attributes.GetIsDefault())
-	state.Name = types.StringValue(attributes.GetName())
+	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
+		state.ID = types.StringValue(*id)
+	}
+	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
+		state.Description = types.StringValue(*description)
+	}
+	if isDefault, ok := attributes.GetIsDefaultOk(); ok && isDefault != nil {
+		state.IsDefault = types.BoolValue(*isDefault)
+	}
+	if name, ok := attributes.GetNameOk(); ok && name != nil {
+		state.Name = types.StringValue(*name)
+	}
 }

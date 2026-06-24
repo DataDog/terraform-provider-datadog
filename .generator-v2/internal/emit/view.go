@@ -51,8 +51,19 @@ type DataSourceView struct {
 	// "GetIncidentsApiV2".
 	APIAccessor string
 
-	// Read describes the SDK call backing datasource.Read.
+	// ByID and Searchable select how a singular data source resolves its one
+	// record, driving the Read body and the "id" attribute: ByID only → by-id
+	// lookup (id Required); Searchable only → search (id Computed); both → id
+	// optional (id Optional+Computed, lookup when set else search).
+	ByID       bool
+	Searchable bool
+
+	// Read describes the by-id SDK call. Set when ByID.
 	Read SDKReadView
+	// Search describes the list SDK call a singular data source searches. Set
+	// when Searchable; carries the list-call fields (Paginated/ItemType/
+	// OptionalParamsType) and the Filters derived from query parameters.
+	Search SDKReadView
 
 	// Models are the Go model structs to declare: the parent data-source model
 	// first, then any nested item structs, in deterministic order.
@@ -175,10 +186,17 @@ type ModelFieldView struct {
 // can lay them out. Singular data sources use Preamble + Assignments; plural
 // data sources use the Item* / IDHashExpr fields.
 type StateView struct {
+	// ParamName / ParamType are the updateState record parameter for a singular
+	// data source: ("resp", "*pkg.XResponse") when the record is a by-id response,
+	// ("data", "*pkg.XItem") when it is a list element (search/both).
+	ParamName string
+	ParamType string
 	// Preamble holds raw statements emitted before the assignments, e.g.
 	// "attributes := resp.Data.GetAttributes()". Singular only.
 	Preamble []string
-	// Assignments are full "<LHS> = <RHS>" statements. Singular only.
+	// Assignments are the singular record assignments, each rendered as a guarded
+	// block: "if <Var>, ok := <GetterOk>; ok && <Var> != nil { <LHS> = <RHS> }",
+	// so an absent field stays null rather than a zero value.
 	Assignments []StateAssignment
 
 	// The fields below are plural-only.
@@ -196,7 +214,14 @@ type StateView struct {
 // StateAssignment is a single assignment rendered in updateState. For a
 // singular assignment LHS is the full target ("state.Name") and RHS the value
 // expression; for a plural item field LHS is the struct field name ("Handle").
+//
+// Var and GetterOk back the guarded singular form: Var is the local bound from
+// the SDK's optional getter GetterOk (e.g. "name" from "attributes.GetNameOk()"),
+// and RHS reads through it (e.g. "types.StringValue(*name)"). They are empty for
+// plural item fields, which render unguarded.
 type StateAssignment struct {
-	LHS string
-	RHS string
+	LHS      string
+	RHS      string
+	Var      string
+	GetterOk string
 }
