@@ -36,7 +36,7 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(names).To(Equal([]string{"description", "is_default", "name"}))
 	})
 
-	It("prepends the lookup id and maps state off resp.Data and the attributes local", func() {
+	It("prepends the lookup id and maps state off resp.Data through guarded optional getters", func() {
 		view, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())
 
@@ -47,16 +47,19 @@ var _ = Describe("BuildDataSourceView", func() {
 		}
 		Expect(fields).To(Equal([]string{"ID", "Description", "IsDefault", "Name"}))
 
+		Expect(view.State.ParamName).To(Equal("resp"))
+		Expect(view.State.ParamType).To(Equal("*datadogV2.IncidentTypeResponse"))
 		Expect(view.State.Preamble).To(Equal([]string{"attributes := resp.Data.GetAttributes()"}))
+		// Guarded assignments: an absent field stays null rather than a zero value.
 		Expect(view.State.Assignments).To(Equal([]StateAssignment{
-			{LHS: "state.ID", RHS: "types.StringValue(resp.Data.GetId())"},
-			{LHS: "state.Description", RHS: "types.StringValue(attributes.GetDescription())"},
-			{LHS: "state.IsDefault", RHS: "types.BoolValue(attributes.GetIsDefault())"},
-			{LHS: "state.Name", RHS: "types.StringValue(attributes.GetName())"},
+			{Var: "id", GetterOk: "resp.Data.GetIdOk()", LHS: "state.ID", RHS: "types.StringValue(*id)"},
+			{Var: "description", GetterOk: "attributes.GetDescriptionOk()", LHS: "state.Description", RHS: "types.StringValue(*description)"},
+			{Var: "isDefault", GetterOk: "attributes.GetIsDefaultOk()", LHS: "state.IsDefault", RHS: "types.BoolValue(*isDefault)"},
+			{Var: "name", GetterOk: "attributes.GetNameOk()", LHS: "state.Name", RHS: "types.StringValue(*name)"},
 		}))
 	})
 
-	It("renders a date-time string via .String() and a named enum via a string() cast", func() {
+	It("renders a date-time string via .String(), a named enum via a string() cast, and avoids shadowing state", func() {
 		op := incidentTypeOperation()
 		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
 		attrs["created_at"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time"}
@@ -67,12 +70,15 @@ var _ = Describe("BuildDataSourceView", func() {
 		view, err := BuildDataSourceView(art)
 		Expect(err).NotTo(HaveOccurred())
 
-		rhs := map[string]string{}
+		assign := map[string]StateAssignment{}
 		for _, a := range view.State.Assignments {
-			rhs[a.LHS] = a.RHS
+			assign[a.LHS] = a
 		}
-		Expect(rhs["state.CreatedAt"]).To(Equal("types.StringValue(attributes.GetCreatedAt().String())"))
-		Expect(rhs["state.State"]).To(Equal("types.StringValue(string(attributes.GetState()))"))
+		Expect(assign["state.CreatedAt"].RHS).To(Equal("types.StringValue(createdAt.String())"))
+		Expect(assign["state.CreatedAt"].GetterOk).To(Equal("attributes.GetCreatedAtOk()"))
+		// "state" would shadow the updateState receiver, so its local is suffixed.
+		Expect(assign["state.State"].Var).To(Equal("stateValue"))
+		Expect(assign["state.State"].RHS).To(Equal("types.StringValue(string(*stateValue))"))
 	})
 
 	It("produces a deeply-equal view across two runs", func() {
@@ -120,6 +126,165 @@ var _ = Describe("BuildDataSourceView", func() {
 			"missing response type name"),
 	)
 })
+
+var _ = Describe("BuildDataSourceView singular search", func() {
+	Context("search only", func() {
+		It("binds the list call as Search, derives filters, and computes the id", func() {
+			view, err := BuildDataSourceView(mustArtifact(powerpackSearchOperation()))
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(view.ByID).To(BeFalse())
+			Expect(view.Searchable).To(BeTrue())
+			Expect(view.Search.Method).To(Equal("ListPowerpacks"))
+			Expect(view.Search.ItemType).To(Equal("PowerpackData"))
+			Expect(view.Search.Paginated).To(BeTrue())
+
+			// The lone filter becomes both an Optional schema attr and a list param.
+			Expect(view.Search.Filters).To(Equal([]FilterParamView{
+				{StateField: "FilterName", ParamField: "FilterName", ValueExpr: "ValueStringPointer()"},
+			}))
+			Expect(view.Schema.Blocks).To(BeEmpty(), "singular output has no list/items block")
+
+			// The record reads off the list element by value, through guarded getters.
+			Expect(view.State.ParamName).To(Equal("data"))
+			Expect(view.State.ParamType).To(Equal("datadogV2.PowerpackData"))
+			Expect(view.State.Preamble).To(Equal([]string{"attributes := data.GetAttributes()"}))
+		})
+	})
+
+	Context("both", func() {
+		It("binds the by-id Read and the list Search and makes the id optional+computed", func() {
+			view, err := BuildDataSourceView(mustArtifact(datastoreBothOperation()))
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(view.ByID).To(BeTrue())
+			Expect(view.Searchable).To(BeTrue())
+			Expect(view.Read.Method).To(Equal("GetDatastore"))
+			Expect(view.Search.Method).To(Equal("ListDatastores"))
+			Expect(view.State.ParamType).To(Equal("datadogV2.DatastoreData"))
+		})
+	})
+
+	DescribeTable("the emitted Read guards the result count and indexes only the single match",
+		func(fixture func() *model.Operation) {
+			got, err := RenderDataSource(mustView(fixture()))
+			Expect(err).NotTo(HaveOccurred())
+			src := string(got)
+			Expect(src).To(ContainSubstring(`if len(items) == 0 {`))
+			Expect(src).To(ContainSubstring(`response.Diagnostics.AddError("filters returned no results", "")`))
+			Expect(src).To(ContainSubstring(`if len(items) > 1 {`))
+			Expect(src).To(ContainSubstring(`use more specific search criteria`))
+			Expect(src).To(ContainSubstring(`d.updateState(&state, items[0])`))
+		},
+		Entry("search only", powerpackSearchOperation),
+		Entry("both", datastoreBothOperation),
+	)
+
+	It("absent fields stay null: every record assignment is a guarded optional getter", func() {
+		got, err := RenderDataSource(mustView(datastoreBothOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		src := string(got)
+		Expect(src).To(ContainSubstring(`if name, ok := attributes.GetNameOk(); ok && name != nil {`))
+		Expect(src).NotTo(ContainSubstring(`types.StringValue(attributes.GetName())`), "must not write the unguarded zero value")
+	})
+})
+
+// mustView builds an Artifact and its view from op or fails the test.
+func mustView(op *model.Operation) DataSourceView {
+	GinkgoHelper()
+	view, err := BuildDataSourceView(mustArtifact(op))
+	Expect(err).NotTo(HaveOccurred())
+	return view
+}
+
+// powerpackSearchOperation is a search-only singular data source: the list GET is
+// the tracked op, paginated, with one scalar filter. (A representative server-side
+// search shape; the real powerpack matches client-side, which is out of scope.)
+func powerpackSearchOperation() *model.Operation {
+	return &model.Operation{
+		Path:            "/api/v2/powerpacks",
+		Method:          "GET",
+		OperationId:     "ListPowerpacks",
+		Tag:             "Powerpacks",
+		ResponseRefName: "PowerpacksResponse",
+		ItemRefName:     "PowerpackData",
+		Pagination:      &model.Pagination{LimitParam: "page[limit]", PageParam: "page[offset]", ResultsPath: "data"},
+		Tracking: &model.TrackingFieldMetadata{
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "powerpack",
+			TfDescription: "Use this data source to retrieve information about an existing Datadog Powerpack.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Search: "ListPowerpacks"},
+		},
+		QueryParams: []model.QueryParam{
+			{Name: "filter[name]", Schema: prim("string", ""), Description: "The name of the Powerpack to search for."},
+		},
+		ResponseSchema: obj(map[string]*model.Schema{
+			"data": {
+				Kind: model.SchemaKindArray,
+				Items: obj(map[string]*model.Schema{
+					"id":   prim("string", "The ID of the Powerpack."),
+					"type": prim("string", "Type of widget, must be `powerpack`."),
+					"attributes": obj(map[string]*model.Schema{
+						"description": prim("string", "Description of the powerpack."),
+						"name":        prim("string", "The name of the powerpack."),
+					}),
+				}),
+			},
+		}),
+	}
+}
+
+// datastoreBothOperation is an id-optional singular data source: the tracked op is
+// the by-id GET, and SearchOp points at the list GET (no query params, matching the
+// real ListDatastores). Its element mirrors data_source_datadog_datastore.go.
+func datastoreBothOperation() *model.Operation {
+	listOp := &model.Operation{
+		Path:            "/api/v2/actions-datastores",
+		Method:          "GET",
+		OperationId:     "ListDatastores",
+		Tag:             "Actions Datastores",
+		ResponseRefName: "DatastoreArray",
+		ItemRefName:     "DatastoreData",
+		ResponseSchema:  obj(map[string]*model.Schema{"data": {Kind: model.SchemaKindArray, Items: datastoreElement()}}),
+	}
+	return &model.Operation{
+		Path:            "/api/v2/actions-datastores/{datastore_id}",
+		Method:          "GET",
+		OperationId:     "GetDatastore",
+		Tag:             "Actions Datastores",
+		ResponseRefName: "Datastore",
+		SearchOp:        listOp,
+		Tracking: &model.TrackingFieldMetadata{
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "datastore",
+			TfDescription: "Use this data source to retrieve information about an existing Datadog datastore.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Read: "GetDatastore", Search: "ListDatastores"},
+		},
+		ResponseSchema: obj(map[string]*model.Schema{"data": datastoreElement()}),
+	}
+}
+
+// datastoreElement is the JSON:API datastore element ({id,type,attributes}) shared
+// by the by-id and list responses, mirroring data_source_datadog_datastore.go.
+func datastoreElement() *model.Schema {
+	return obj(map[string]*model.Schema{
+		"id":   prim("string", "The unique identifier of the datastore."),
+		"type": prim("string", "The resource type for datastores."),
+		"attributes": obj(map[string]*model.Schema{
+			"created_at":                      {Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time", Description: "Timestamp when the datastore was created."},
+			"creator_user_id":                 prim("integer", "The numeric ID of the user who created the datastore."),
+			"creator_user_uuid":               prim("string", "The UUID of the user who created the datastore."),
+			"description":                     prim("string", "A human-readable description about the datastore."),
+			"modified_at":                     {Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time", Description: "Timestamp when the datastore was last modified."},
+			"name":                            prim("string", "The display name of the datastore."),
+			"org_id":                          prim("integer", "The ID of the organization that owns this datastore."),
+			"primary_column_name":             prim("string", "The name of the primary key column for this datastore."),
+			"primary_key_generation_strategy": {Kind: model.SchemaKindPrimitive, Type: "string", Enum: []string{"none", "uuid"}, Description: "Strategy for generating primary keys."},
+		}),
+	})
+}
 
 // prim and obj build model.Schema nodes for the emit fixtures (the model package
 // keeps its own equivalents; these avoid a cross-package test dependency).
