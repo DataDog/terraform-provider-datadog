@@ -317,6 +317,29 @@ resource "datadog_security_findings_due_date_rule" "test" {
 				ExpectError: regexp.MustCompile("invalid value"),
 			},
 			{
+				// A severity may not appear more than once in due_days_per_severity.
+				Config: fmt.Sprintf(`
+resource "datadog_security_findings_due_date_rule" "test" {
+  name = "%s"
+  rule {
+    finding_types = ["misconfiguration"]
+  }
+  action {
+    due_from = "first_seen"
+    due_days_per_severity {
+      severity    = "critical"
+      due_in_days = 7
+    }
+    due_days_per_severity {
+      severity    = "critical"
+      due_in_days = 30
+    }
+  }
+}
+`, uniq),
+				ExpectError: regexp.MustCompile("used more than once"),
+			},
+			{
 				// The rule block is required.
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {

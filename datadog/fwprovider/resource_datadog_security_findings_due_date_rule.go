@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
@@ -109,7 +110,10 @@ func (r *securityFindingsDueDateRuleResource) Schema(_ context.Context, _ resour
 								},
 							},
 						},
-						Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+						Validators: []validator.List{
+							listvalidator.SizeAtLeast(1),
+							uniqueDueDateSeverityValidator{},
+						},
 					},
 				},
 				Validators: []validator.Object{objectvalidator.IsRequired()},
@@ -313,4 +317,42 @@ func (r *securityFindingsDueDateRuleResource) buildRuleData(ctx context.Context,
 	data.SetType(datadogV2.DUEDATERULETYPE_DUE_DATE_RULES)
 	data.SetAttributes(*attributes)
 	return data, diags
+}
+
+// uniqueDueDateSeverityValidator ensures each severity appears at most once in a
+// due_days_per_severity list.
+type uniqueDueDateSeverityValidator struct{}
+
+func (v uniqueDueDateSeverityValidator) Description(_ context.Context) string {
+	return "each severity may appear at most once"
+}
+
+func (v uniqueDueDateSeverityValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v uniqueDueDateSeverityValidator) ValidateList(_ context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+	seen := make(map[string]bool)
+	for _, elem := range req.ConfigValue.Elements() {
+		obj, ok := elem.(types.Object)
+		if !ok {
+			continue
+		}
+		severityAttr, ok := obj.Attributes()["severity"].(types.String)
+		if !ok || severityAttr.IsNull() || severityAttr.IsUnknown() {
+			continue
+		}
+		severity := severityAttr.ValueString()
+		if seen[severity] {
+			resp.Diagnostics.AddError(
+				"Duplicate severity",
+				fmt.Sprintf("severity %q is used more than once; each severity may appear at most once.", severity),
+			)
+			return
+		}
+		seen[severity] = true
+	}
 }
