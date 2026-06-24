@@ -328,7 +328,7 @@ var dateRemapper = &schema.Schema{
 var arrayMapProcessor = &schema.Schema{
 	Type:        schema.TypeList,
 	MaxItems:    1,
-	Description: "Array-Map Processor. Transforms each element of a source array by running sub-processors and writing results to a target array.",
+	Description: "Array-Map Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#array-map-processor)",
 	Optional:    true,
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
