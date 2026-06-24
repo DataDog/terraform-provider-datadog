@@ -196,7 +196,7 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--arithmetic_processor))
-- `array_map_processor` (Block List, Max: 1) Array-Map Processor. Transforms each element of a source array by running sub-processors and writing results to a target array. (see [below for nested schema](#nestedblock--processor--array_map_processor))
+- `array_map_processor` (Block List, Max: 1) Array-Map Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#array-map-processor) (see [below for nested schema](#nestedblock--processor--array_map_processor))
 - `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--category_processor))
@@ -564,7 +564,7 @@ Required:
 Optional:
 
 - `arithmetic_processor` (Block List, Max: 1) Arithmetic Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#arithmetic-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--arithmetic_processor))
-- `array_map_processor` (Block List, Max: 1) Array-Map Processor. Transforms each element of a source array by running sub-processors and writing results to a target array. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor))
+- `array_map_processor` (Block List, Max: 1) Array-Map Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#array-map-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_map_processor))
 - `array_processor` (Block List, Max: 1) Array Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#array-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor))
 - `attribute_remapper` (Block List, Max: 1) Attribute Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--attribute_remapper))
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor))
