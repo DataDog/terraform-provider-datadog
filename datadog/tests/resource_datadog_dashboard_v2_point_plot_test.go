@@ -58,5 +58,5 @@ func TestAccDatadogDashboardV2PointPlot(t *testing.T) {
 
 func TestAccDatadogDashboardV2PointPlot_import(t *testing.T) {
 	config, name := datadogDashboardPointPlotConfig, "datadog_dashboard_v2.point_plot_dashboard"
-	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardV2PointPlot_import", config, name)
+	testAccDatadogDashboardV2WidgetUtilImport(t, "TestAccDatadogDashboardV2PointPlot", config, name)
 }
