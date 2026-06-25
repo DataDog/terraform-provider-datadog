@@ -34,10 +34,12 @@ var _ = Describe("data-source templates", func() {
 		Entry("plural (teams)", "data_source_plural.golden", pluralFixture),
 		Entry("plural nested object arrays (widgets)", "data_source_plural_nested.golden", pluralNestedView),
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
+		Entry("singular nested object (apm_retention_filter)", "data_source_singular_object.golden", retentionFilterView),
+		Entry("plural nested object (gizmos)", "data_source_plural_object.golden", pluralObjectView),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView()} {
+		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView(), retentionFilterView(), pluralObjectView()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -98,6 +100,22 @@ func costBudgetView() DataSourceView {
 func pluralNestedView() DataSourceView {
 	GinkgoHelper()
 	return mustView(pluralNestedOperation())
+}
+
+// retentionFilterView is the apm retention filter singular data source built
+// end-to-end; its golden proves a bare object under attributes renders as a
+// schema.SingleNestedBlock with a guarded, recursive object_single state mapping.
+func retentionFilterView() DataSourceView {
+	GinkgoHelper()
+	return mustView(retentionFilterOperation())
+}
+
+// pluralObjectView is the synthetic gizmos plural data source built end-to-end; its
+// golden proves a bare object inside a list item renders as a SingleNestedBlock and
+// maps via an object_single ItemList after the item literal.
+func pluralObjectView() DataSourceView {
+	GinkgoHelper()
+	return mustView(pluralObjectOperation())
 }
 
 // datastoresView is the datastores data source built end-to-end through the

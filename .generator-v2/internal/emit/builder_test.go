@@ -107,12 +107,6 @@ var _ = Describe("BuildDataSourceView", func() {
 				op.ResponseSchema = obj(map[string]*model.Schema{"name": prim("string", "")})
 			},
 			"expected a single-member JSON:API envelope"),
-		Entry("a nested object under attributes",
-			func(op *model.Operation) {
-				op.ResponseSchema.Properties["data"].Properties["attributes"].Properties["nested"] =
-					obj(map[string]*model.Schema{"x": prim("string", "")})
-			},
-			"nesting under attributes is not supported"),
 		Entry("an id_strategy other than data.id",
 			func(op *model.Operation) { op.Tracking.IdStrategy = model.IdStrategyDataAttributesUID },
 			"id_strategy"),
@@ -577,11 +571,6 @@ var _ = Describe("BuildDataSourceView plural", func() {
 			Expect(uerr.Error()).To(ContainSubstring(wantReason))
 			Expect(view).To(Equal(DataSourceView{}), "no view should be produced on failure")
 		},
-		Entry("a nested object under item attributes",
-			func(op *model.Operation) {
-				teamAttrs(op)["nested"] = obj(map[string]*model.Schema{"x": prim("string", "")})
-			},
-			"nesting under item attributes is not supported"),
 		Entry("a missing item element type",
 			func(op *model.Operation) { op.ItemRefName = "" },
 			"missing list item type"),
@@ -594,12 +583,6 @@ func mustArtifact(op *model.Operation) *model.Artifact {
 	art, err := model.BuildArtifact(op)
 	Expect(err).NotTo(HaveOccurred())
 	return art
-}
-
-// teamAttrs returns the item-element attributes map of a teams operation, for
-// mutation in fail-slow cases.
-func teamAttrs(op *model.Operation) map[string]*model.Schema {
-	return op.ResponseSchema.Properties["data"].Items.Properties["attributes"].Properties
 }
 
 // teamsOperation is the teams list GET as a parser-shaped Operation: a paginated
@@ -780,6 +763,206 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		first, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
 		Expect(err).NotTo(HaveOccurred())
 		second, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(first).To(Equal(second))
+	})
+})
+
+// retentionFilterOperation is the apm retention filter GET-by-id as a parser-shaped
+// Operation: a JSON:API envelope whose attributes carry scalars plus a nested filter
+// object — itself holding a scalar, a string array, and a nested metadata object —
+// exercising bare-object hoisting, recursion, and composition with arrays.
+func retentionFilterOperation() *model.Operation {
+	return &model.Operation{
+		Path:            "/api/v2/apm/config/retention-filters/{filter_id}",
+		Method:          "GET",
+		OperationId:     "GetApmRetentionFilter",
+		Tag:             "APM Retention Filters",
+		ResponseRefName: "RetentionFilterResponse",
+		Tracking: &model.TrackingFieldMetadata{
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "apm_retention_filter",
+			TfDescription: "Use this data source to retrieve information about an existing APM retention filter.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Read: "GetApmRetentionFilter"},
+		},
+		ResponseSchema: obj(map[string]*model.Schema{
+			"data": obj(map[string]*model.Schema{
+				"id":   prim("string", "The retention filter's ID."),
+				"type": prim("string", "Retention filter resource type."),
+				"attributes": obj(map[string]*model.Schema{
+					"enabled": prim("boolean", "Whether the retention filter is active."),
+					"name":    prim("string", "The name of the retention filter."),
+					"filter": obj(map[string]*model.Schema{
+						"query": prim("string", "The search query defining the filter."),
+						"tags":  {Kind: model.SchemaKindArray, Description: "Tags scoping the filter.", Items: prim("string", "A tag identifier.")},
+						"metadata": obj(map[string]*model.Schema{
+							"created_by": prim("string", "Handle of the user who created the filter."),
+						}),
+					}),
+				}),
+			}),
+		}),
+	}
+}
+
+var _ = Describe("BuildDataSourceView singular nested objects", func() {
+	It("hoists a bare object under attributes into a SingleNestedBlock", func() {
+		view, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		blocks := map[string]AttrView{}
+		for _, b := range view.Schema.Blocks {
+			blocks[b.TFName] = b
+		}
+		Expect(blocks).To(HaveKey("filter"))
+		Expect(blocks["filter"].ListBlock).To(BeFalse(), "a bare object is a SingleNestedBlock, not a list block")
+	})
+
+	It("generates one model struct per object level, parent first", func() {
+		view, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		var names []string
+		for _, m := range view.Models {
+			names = append(names, m.Name)
+		}
+		Expect(names).To(Equal([]string{"apmRetentionFilterDataSourceModel", "FilterModel", "MetadataModel"}))
+	})
+
+	It("maps the object through a guarded assignment, recursing into the nested object", func() {
+		view, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		var filter ListAssignment
+		for _, l := range view.State.Lists {
+			if l.LHS == "state.Filter" {
+				filter = l
+			}
+		}
+		Expect(filter.Kind).To(Equal("object_single"))
+		Expect(filter.GetterOk).To(Equal("attributes.GetFilterOk()"))
+		Expect(filter.Var).To(Equal("filter"))
+		Expect(filter.ElemVar).To(Equal("filterModel"))
+		Expect(filter.ElemStruct).To(Equal("FilterModel"))
+		Expect(filter.Scalars).To(ContainElement(StateAssignment{
+			Var: "query", GetterOk: "filter.GetQueryOk()",
+			LHS: "filterModel.Query", RHS: "types.StringValue(*query)",
+		}))
+
+		var metadata ListAssignment
+		for _, l := range filter.Lists {
+			if l.Kind == "object_single" {
+				metadata = l
+			}
+		}
+		Expect(metadata.LHS).To(Equal("filterModel.Metadata"))
+		Expect(metadata.GetterOk).To(Equal("filter.GetMetadataOk()"))
+		Expect(metadata.ElemStruct).To(Equal("MetadataModel"))
+	})
+
+	It("renders the guarded object block and the recursive assignment in updateState", func() {
+		got, err := RenderDataSource(mustView(retentionFilterOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		src := string(got)
+		Expect(src).To(ContainSubstring("if filter, ok := attributes.GetFilterOk(); ok && filter != nil {"))
+		Expect(src).To(ContainSubstring("state.Filter = filterModel"))
+		Expect(src).To(ContainSubstring("if metadata, ok := filter.GetMetadataOk(); ok && metadata != nil {"))
+		Expect(src).To(ContainSubstring("filterModel.Metadata = metadataModel"))
+	})
+
+	It("produces a deeply-equal view across two runs", func() {
+		first, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		second, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(first).To(Equal(second))
+	})
+})
+
+// pluralObjectOperation is a synthetic plural list whose item attributes carry a
+// bare object (spec) of scalars — exercising the single-object item path that walks
+// an element struct inside buildPluralView.
+func pluralObjectOperation() *model.Operation {
+	return &model.Operation{
+		Path:            "/api/v2/gizmos",
+		Method:          "GET",
+		OperationId:     "ListGizmos",
+		Tag:             "Gizmos",
+		ResponseRefName: "GizmosResponse",
+		ItemRefName:     "Gizmo",
+		Tracking: &model.TrackingFieldMetadata{
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "gizmos",
+			Cardinality:   model.CardinalityPlural,
+			TfDescription: "Use this data source to retrieve information about existing gizmos.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Read: "ListGizmos"},
+		},
+		ResponseSchema: obj(map[string]*model.Schema{
+			"data": {
+				Kind:        model.SchemaKindArray,
+				Description: "List of gizmos",
+				Items: obj(map[string]*model.Schema{
+					"id":   prim("string", "The gizmo's identifier."),
+					"type": prim("string", "Gizmo resource type."),
+					"attributes": obj(map[string]*model.Schema{
+						"name": prim("string", "The name of the gizmo."),
+						"spec": obj(map[string]*model.Schema{
+							"shape": prim("string", "The shape of the gizmo."),
+							"size":  prim("integer", "The number of segments."),
+						}),
+					}),
+				}),
+			},
+		}),
+	}
+}
+
+var _ = Describe("BuildDataSourceView plural nested objects", func() {
+	It("renders a bare object in an item as a SingleNestedBlock with a generated struct", func() {
+		view, err := BuildDataSourceView(mustArtifact(pluralObjectOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		items := view.Schema.Blocks[0]
+		Expect(items.TFName).To(Equal("gizmos"))
+		var spec AttrView
+		for _, b := range items.Blocks {
+			if b.TFName == "spec" {
+				spec = b
+			}
+		}
+		Expect(spec.TFName).To(Equal("spec"))
+		Expect(spec.ListBlock).To(BeFalse())
+
+		var names []string
+		for _, m := range view.Models {
+			names = append(names, m.Name)
+		}
+		Expect(names).To(Equal([]string{"gizmosDataSourceModel", "GizmoModel", "SpecModel"}))
+	})
+
+	It("maps the object off item.Attributes into the item accumulator", func() {
+		view, err := BuildDataSourceView(mustArtifact(pluralObjectOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(view.State.ItemLists).To(HaveLen(1))
+		spec := view.State.ItemLists[0]
+		Expect(spec.Kind).To(Equal("object_single"))
+		Expect(spec.LHS).To(Equal("r.Spec"))
+		Expect(spec.GetterOk).To(Equal("item.Attributes.GetSpecOk()"))
+		Expect(spec.Var).To(Equal("spec"))
+		Expect(spec.ElemStruct).To(Equal("SpecModel"))
+		Expect(spec.Scalars).To(ContainElement(StateAssignment{
+			Var: "shape", GetterOk: "spec.GetShapeOk()",
+			LHS: "specModel.Shape", RHS: "types.StringValue(*shape)",
+		}))
+	})
+
+	It("produces a deeply-equal view across two runs", func() {
+		first, err := BuildDataSourceView(mustArtifact(pluralObjectOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		second, err := BuildDataSourceView(mustArtifact(pluralObjectOperation()))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(first).To(Equal(second))
 	})

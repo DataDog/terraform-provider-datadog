@@ -102,6 +102,19 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 		{{ .LHS }} = append({{ .LHS }}, {{ .ElemVar }})
 	}
 }
+{{- else if eq .Kind "object_single" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{ .ElemVar }} := &{{ .ElemStruct }}{}
+{{- range .Scalars }}
+	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+		{{ .LHS }} = {{ .RHS }}
+	}
+{{- end }}
+{{- range .Lists }}
+	{{ template "renderList" . }}
+{{- end }}
+	{{ .LHS }} = {{ .ElemVar }}
+}
 {{- end }}
 {{- end -}}
 
