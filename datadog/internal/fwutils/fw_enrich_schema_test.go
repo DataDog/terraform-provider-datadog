@@ -1015,3 +1015,169 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 		})
 	}
 }
+
+func TestEnrichSchemaSingleNestedAttribute(t *testing.T) {
+	t.Parallel()
+
+	type testStruct struct {
+		schema              schema.Schema
+		expectedDescription string
+	}
+	testCases := map[string]testStruct{
+		"description with string enum validator": {
+			schema: schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"nested_attribute": schema.SingleNestedAttribute{
+						Required: true,
+						Attributes: map[string]schema.Attribute{
+							"test_attribute": schema.StringAttribute{
+								Required:    true,
+								Description: "Example description.",
+								Validators: []validator.String{
+									validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`.",
+		},
+		"description without validator": {
+			schema: schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"nested_attribute": schema.SingleNestedAttribute{
+						Required: true,
+						Attributes: map[string]schema.Attribute{
+							"test_attribute": schema.StringAttribute{
+								Required:    true,
+								Description: "Example description.",
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description.",
+		},
+	}
+
+	for name, testCase := range testCases {
+		name, testCase := name, testCase
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			EnrichFrameworkResourceSchema(&testCase.schema)
+			description := testCase.schema.Attributes["nested_attribute"].(schema.SingleNestedAttribute).Attributes["test_attribute"].GetDescription()
+			if description != testCase.expectedDescription {
+				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
+			}
+		})
+	}
+}
+
+func TestEnrichSchemaListNestedAttribute(t *testing.T) {
+	t.Parallel()
+
+	type testStruct struct {
+		schema              schema.Schema
+		expectedDescription string
+	}
+	testCases := map[string]testStruct{
+		"description with string enum validator": {
+			schema: schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"nested_attribute": schema.ListNestedAttribute{
+						Required: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.String{
+										validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`.",
+		},
+		"description with int64 between validator": {
+			schema: schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"nested_attribute": schema.ListNestedAttribute{
+						Required: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.Int64Attribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.Int64{
+										int64validator.Between(1, 500),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. Value must be between 1 and 500.",
+		},
+	}
+
+	for name, testCase := range testCases {
+		name, testCase := name, testCase
+
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			EnrichFrameworkResourceSchema(&testCase.schema)
+			description := testCase.schema.Attributes["nested_attribute"].(schema.ListNestedAttribute).NestedObject.Attributes["test_attribute"].GetDescription()
+			if description != testCase.expectedDescription {
+				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
+			}
+		})
+	}
+}
+
+// TestEnrichSchemaNestedAttributeWithinNestedAttribute covers a list nested attribute nested inside
+// a single nested attribute (e.g. an `action` object containing a list of typed entries), ensuring
+// enrichment recurses all the way to the leaf enum attribute.
+func TestEnrichSchemaNestedAttributeWithinNestedAttribute(t *testing.T) {
+	t.Parallel()
+
+	s := schema.Schema{
+		Attributes: map[string]schema.Attribute{
+			"action": schema.SingleNestedAttribute{
+				Required: true,
+				Attributes: map[string]schema.Attribute{
+					"levels": schema.ListNestedAttribute{
+						Required: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"severity": schema.StringAttribute{
+									Required:    true,
+									Description: "A severity level.",
+									Validators: []validator.String{
+										validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	EnrichFrameworkResourceSchema(&s)
+
+	expected := "A severity level. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`."
+	got := s.Attributes["action"].(schema.SingleNestedAttribute).
+		Attributes["levels"].(schema.ListNestedAttribute).
+		NestedObject.Attributes["severity"].GetDescription()
+	if got != expected {
+		t.Errorf("expected description '%s', got '%s' instead.", expected, got)
+	}
+}
