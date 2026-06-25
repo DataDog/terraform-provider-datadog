@@ -333,7 +333,7 @@ var arrayMapProcessor = &schema.Schema{
 	Elem: &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"name":       {Description: "Name of the processor.", Type: schema.TypeString, Optional: true},
-			"is_enabled": {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled.", Type: schema.TypeBool, Optional: true},
 			"source":     {Description: "Attribute path of the source array.", Type: schema.TypeString, Required: true},
 			"target":     {Description: "Attribute path of the output array.", Type: schema.TypeString, Required: true},
 			"preserve_source": {
@@ -357,7 +357,7 @@ var arrayMapProcessor = &schema.Schema{
 								"target":               {Type: schema.TypeString, Required: true, Description: "Target attribute path."},
 								"preserve_source":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Remove or preserve the remapped source element."},
 								"override_on_conflict": {Type: schema.TypeBool, Optional: true, Description: "Override the target element if already set."},
-								"target_format":        {Type: schema.TypeString, Optional: true, Description: "If the target type is attribute, cast the value to a new type (auto, string, integer, double)."},
+								"target_format":        {Type: schema.TypeString, Optional: true, Description: "If the target type is an attribute, cast the value to a new type (auto, string, integer, double)."},
 							}},
 						},
 						tfArithmeticProcessor: {
@@ -367,7 +367,7 @@ var arrayMapProcessor = &schema.Schema{
 								"name":               {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
 								"expression":         {Type: schema.TypeString, Required: true, Description: "Arithmetic formula."},
 								"target":             {Type: schema.TypeString, Required: true, Description: "Target attribute path for the result."},
-								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with 0."},
+								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with `0`."},
 							}},
 						},
 						tfStringBuilderProcessor: {
@@ -377,7 +377,7 @@ var arrayMapProcessor = &schema.Schema{
 								"name":               {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
 								"template":           {Type: schema.TypeString, Required: true, Description: "Formula with one or more attributes and raw text."},
 								"target":             {Type: schema.TypeString, Required: true, Description: "Target attribute path for the result."},
-								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with empty string."},
+								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with an empty string."},
 							}},
 						},
 						tfCategoryProcessor: {

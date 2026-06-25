@@ -243,7 +243,7 @@ Required:
 
 Optional:
 
-- `is_enabled` (Boolean) If the processor is enabled or not.
+- `is_enabled` (Boolean) If the processor is enabled.
 - `name` (String) Name of the processor.
 - `preserve_source` (Boolean) Remove or preserve the source array after processing. Defaults to `true`.
 
@@ -267,7 +267,7 @@ Required:
 
 Optional:
 
-- `is_replace_missing` (Boolean) Replace missing attributes with 0.
+- `is_replace_missing` (Boolean) Replace missing attributes with `0`.
 - `name` (String) Name of the sub-processor.
 
 
@@ -284,7 +284,7 @@ Optional:
 - `name` (String) Name of the sub-processor.
 - `override_on_conflict` (Boolean) Override the target element if already set.
 - `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `false`.
-- `target_format` (String) If the target type is attribute, cast the value to a new type (auto, string, integer, double).
+- `target_format` (String) If the target type is an attribute, cast the value to a new type (auto, string, integer, double).
 
 
 <a id="nestedblock--processor--array_map_processor--processors--category_processor"></a>
@@ -327,7 +327,7 @@ Required:
 
 Optional:
 
-- `is_replace_missing` (Boolean) Replace missing attributes with empty string.
+- `is_replace_missing` (Boolean) Replace missing attributes with an empty string.
 - `name` (String) Name of the sub-processor.
 
 
@@ -610,7 +610,7 @@ Required:
 
 Optional:
 
-- `is_enabled` (Boolean) If the processor is enabled or not.
+- `is_enabled` (Boolean) If the processor is enabled.
 - `name` (String) Name of the processor.
 - `preserve_source` (Boolean) Remove or preserve the source array after processing. Defaults to `true`.
 
@@ -634,7 +634,7 @@ Required:
 
 Optional:
 
-- `is_replace_missing` (Boolean) Replace missing attributes with 0.
+- `is_replace_missing` (Boolean) Replace missing attributes with `0`.
 - `name` (String) Name of the sub-processor.
 
 
@@ -651,7 +651,7 @@ Optional:
 - `name` (String) Name of the sub-processor.
 - `override_on_conflict` (Boolean) Override the target element if already set.
 - `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `false`.
-- `target_format` (String) If the target type is attribute, cast the value to a new type (auto, string, integer, double).
+- `target_format` (String) If the target type is an attribute, cast the value to a new type (auto, string, integer, double).
 
 
 <a id="nestedblock--processor--pipeline--processor--array_map_processor--processors--category_processor"></a>
@@ -694,7 +694,7 @@ Required:
 
 Optional:
 
-- `is_replace_missing` (Boolean) Replace missing attributes with empty string.
+- `is_replace_missing` (Boolean) Replace missing attributes with an empty string.
 - `name` (String) Name of the sub-processor.
 
 
