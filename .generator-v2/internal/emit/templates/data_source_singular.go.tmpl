@@ -122,6 +122,9 @@ func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceMode
 		{{ .LHS }} = {{ .RHS }}
 	}
 {{- end }}
+{{- range .State.Lists }}
+	{{ template "renderList" . }}
+{{- end }}
 }
 {{- end -}}
 

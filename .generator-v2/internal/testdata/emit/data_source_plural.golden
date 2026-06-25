@@ -28,13 +28,15 @@ type teamsDataSourceModel struct {
 }
 
 type TeamModel struct {
-	Description types.String `tfsdk:"description"`
-	Handle      types.String `tfsdk:"handle"`
-	ID          types.String `tfsdk:"id"`
-	LinkCount   types.Int64  `tfsdk:"link_count"`
-	Name        types.String `tfsdk:"name"`
-	Summary     types.String `tfsdk:"summary"`
-	UserCount   types.Int64  `tfsdk:"user_count"`
+	Description    types.String `tfsdk:"description"`
+	Handle         types.String `tfsdk:"handle"`
+	ID             types.String `tfsdk:"id"`
+	LinkCount      types.Int64  `tfsdk:"link_count"`
+	Name           types.String `tfsdk:"name"`
+	Summary        types.String `tfsdk:"summary"`
+	UserCount      types.Int64  `tfsdk:"user_count"`
+	HiddenModules  types.List   `tfsdk:"hidden_modules"`
+	VisibleModules types.List   `tfsdk:"visible_modules"`
 }
 
 type teamsDataSource struct {
@@ -103,6 +105,16 @@ func (d *teamsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 							Description: "The number of users belonging to the team.",
 							Computed:    true,
 						},
+						"hidden_modules": schema.ListAttribute{
+							Description: "Collection of hidden modules for the team.",
+							ElementType: types.StringType,
+							Computed:    true,
+						},
+						"visible_modules": schema.ListAttribute{
+							Description: "Collection of visible modules for the team.",
+							ElementType: types.StringType,
+							Computed:    true,
+						},
 					},
 				},
 			},
@@ -151,6 +163,12 @@ func (d *teamsDataSource) updateState(state *teamsDataSourceModel, data *[]datad
 			Name:        types.StringValue(item.Attributes.GetName()),
 			Summary:     types.StringValue(item.Attributes.GetSummary()),
 			UserCount:   types.Int64Value(int64(item.Attributes.GetUserCount())),
+		}
+		if hiddenModules, ok := item.Attributes.GetHiddenModulesOk(); ok && hiddenModules != nil {
+			r.HiddenModules, _ = types.ListValueFrom(context.Background(), types.StringType, *hiddenModules)
+		}
+		if visibleModules, ok := item.Attributes.GetVisibleModulesOk(); ok && visibleModules != nil {
+			r.VisibleModules, _ = types.ListValueFrom(context.Background(), types.StringType, *visibleModules)
 		}
 		results = append(results, &r)
 	}

@@ -27,14 +27,17 @@ var _ = Describe("data-source templates", func() {
 			matchGolden(golden, got)
 		},
 		Entry("singular (incident_type)", "data_source_singular.golden", incidentTypeView),
+		Entry("singular list-of-string (team)", "data_source_singular_list.golden", teamSingularView),
+		Entry("singular nested object arrays (cost_budget)", "data_source_singular_nested.golden", costBudgetView),
 		Entry("singular search (powerpack)", "data_source_singular_search.golden", powerpackSearchView),
 		Entry("singular both (datastore)", "data_source_singular_both.golden", datastoreBothView),
 		Entry("plural (teams)", "data_source_plural.golden", pluralFixture),
+		Entry("plural nested object arrays (widgets)", "data_source_plural_nested.golden", pluralNestedView),
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{incidentTypeView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), datastoresView()} {
+		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -68,6 +71,33 @@ func incidentTypeView() DataSourceView {
 	view, err := BuildDataSourceView(incidentTypeArtifact())
 	Expect(err).NotTo(HaveOccurred())
 	return view
+}
+
+// teamSingularView is the team singular data source built end-to-end through the
+// emit builder; its golden proves collection-of-primitive hoisting — two string
+// arrays rendered as schema.ListAttribute and mapped via types.ListValueFrom. The
+// shared team fixture lives in builder_test.go.
+func teamSingularView() DataSourceView {
+	GinkgoHelper()
+	return mustView(teamSingularOperation())
+}
+
+// costBudgetView is the cost_budget singular data source built end-to-end through
+// the emit builder; its golden proves recursive array-of-object hoisting — entries
+// rendered as a schema.ListNestedBlock holding a nested tag_filters ListNestedBlock,
+// mapped through nested guarded loops. The shared fixture lives in builder_test.go.
+func costBudgetView() DataSourceView {
+	GinkgoHelper()
+	return mustView(costBudgetOperation())
+}
+
+// pluralNestedView is the synthetic widgets plural data source built end-to-end;
+// its golden proves an object array inside a list item renders as a nested
+// ListNestedBlock and maps through a per-element loop after the item literal. The
+// shared fixture lives in builder_test.go.
+func pluralNestedView() DataSourceView {
+	GinkgoHelper()
+	return mustView(pluralNestedOperation())
 }
 
 // datastoresView is the datastores data source built end-to-end through the
@@ -137,6 +167,8 @@ func pluralFixture() DataSourceView {
 					{GoField: "Name", GoType: "types.String", TFName: "name"},
 					{GoField: "Summary", GoType: "types.String", TFName: "summary"},
 					{GoField: "UserCount", GoType: "types.Int64", TFName: "user_count"},
+					{GoField: "HiddenModules", GoType: "types.List", TFName: "hidden_modules"},
+					{GoField: "VisibleModules", GoType: "types.List", TFName: "visible_modules"},
 				},
 			},
 		},
@@ -159,6 +191,8 @@ func pluralFixture() DataSourceView {
 						{TFName: "name", TFType: "schema.StringAttribute", Description: "The name of the team.", Computed: true},
 						{TFName: "summary", TFType: "schema.StringAttribute", Description: "A brief summary of the team, derived from the `description`.", Computed: true},
 						{TFName: "user_count", TFType: "schema.Int64Attribute", Description: "The number of users belonging to the team.", Computed: true},
+						{TFName: "hidden_modules", TFType: "schema.ListAttribute", ElementType: "types.StringType", Description: "Collection of hidden modules for the team.", Computed: true},
+						{TFName: "visible_modules", TFType: "schema.ListAttribute", ElementType: "types.StringType", Description: "Collection of visible modules for the team.", Computed: true},
 					},
 				},
 			},
@@ -174,6 +208,10 @@ func pluralFixture() DataSourceView {
 				{LHS: "Name", RHS: "types.StringValue(item.Attributes.GetName())"},
 				{LHS: "Summary", RHS: "types.StringValue(item.Attributes.GetSummary())"},
 				{LHS: "UserCount", RHS: "types.Int64Value(int64(item.Attributes.GetUserCount()))"},
+			},
+			ItemLists: []ListAssignment{
+				{Kind: "primitive", LHS: "r.HiddenModules", GetterOk: "item.Attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
+				{Kind: "primitive", LHS: "r.VisibleModules", GetterOk: "item.Attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
 			},
 		},
 	}
