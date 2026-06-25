@@ -241,14 +241,16 @@ type StateAssignment struct {
 	GetterOk string
 }
 
-// ListAssignment is a list-valued state assignment rendered by the updateState
+// ListAssignment is a nested-state assignment rendered by the updateState
 // "renderList" partial. A primitive list maps the SDK slice into a types.List via
 // types.ListValueFrom; an object list loops the SDK elements into a generated
 // nested model slice, recursing through Scalars (the element's leaf fields) and
-// Lists (its nested list fields). Both forms are guarded by an Ok-getter so an
-// absent field stays null.
+// Lists (its nested list fields); an object_single maps one nested object into a
+// generated model pointer, assigned once instead of looped. All forms are guarded
+// by an Ok-getter so an absent field stays null.
 type ListAssignment struct {
-	// Kind is "primitive" or "object".
+	// Kind is "primitive", "object", or "object_single" (a single nested object,
+	// assigned once rather than appended in a loop).
 	Kind string
 	// LHS is the assignment target, e.g. "state.VisibleModules" (top level) or
 	// "entriesModel.TagFilters" (nested element field).

@@ -245,12 +245,12 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		return nil
 	}
 
-	// Hoist the attribute children to top-level paths: scalar leaves and array
-	// nodes (list-of-primitive / list-of-object) are in scope; a bare nested
-	// object or map is not.
+	// Hoist the attribute children to top-level paths: scalar leaves, array nodes
+	// (list-of-primitive / list-of-object), and bare nested objects are in scope;
+	// a map is not.
 	leaves := make([]*model.Attribute, 0, len(attributes.Children))
 	for _, child := range attributes.Children {
-		if !isLeafType(child.TfType) && !isArrayType(child.TfType) {
+		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isObjectType(child.TfType) {
 			b.unsupported = append(b.unsupported, UnsupportedNode{
 				Path:   child.Path,
 				Reason: "nesting under attributes is not supported",
@@ -397,8 +397,10 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 
 		case "schema.SingleNestedBlock":
 			childStruct := field + "Model"
+			objVar := leafVar(tfName)
+			elemVar := lowerFirst(field) + "Model"
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "*" + childStruct, TFName: tfName})
-			childAttrs, childBlocks, _, _ := b.walk(childStruct, receiver, lhsPrefix, a.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, objVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
 				TFName:      tfName,
 				Description: a.Description,
@@ -410,6 +412,16 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 				ListBlock:   false,
 				Attributes:  childAttrs,
 				Blocks:      childBlocks,
+			})
+			lists = append(lists, ListAssignment{
+				Kind:       "object_single",
+				LHS:        lhsPrefix + "." + field,
+				GetterOk:   getterOk(receiver, tfName),
+				Var:        objVar,
+				ElemVar:    elemVar,
+				ElemStruct: childStruct,
+				Scalars:    childScalars,
+				Lists:      childLists,
 			})
 
 		default:
@@ -450,6 +462,10 @@ func isArrayType(tfType string) bool {
 		return false
 	}
 }
+
+// isObjectType reports whether tfType is a bare nested object the envelope
+// hoists into single-object machinery (schema.SingleNestedBlock).
+func isObjectType(tfType string) bool { return tfType == "schema.SingleNestedBlock" }
 
 // tfNameOf returns the Terraform attribute key for an attribute path: its last
 // dot-segment with array/map markers stripped.
@@ -610,7 +626,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	// b hosts walk so list-of-object item fields generate their element structs.
 	b := &dataSourceBuilder{}
-	scalarLeaves, arrayAttrs := flattenItemElement(itemsBlock, &unsupported, &dropped)
+	scalarLeaves, nonScalars := flattenItemElement(itemsBlock, &unsupported, &dropped)
 
 	// Scalar leaves project into the item struct literal, unguarded, off the loop
 	// variable "item".
@@ -631,37 +647,53 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		})
 	}
 
-	// Array attributes append after the scalars and map after the literal via
+	// Non-scalar attributes append after the scalars and map after the literal via
 	// ItemLists, read off item.Attributes: a list-of-primitive as a ListAttribute,
-	// a list-of-object as a ListNestedBlock whose element struct is walked.
+	// a list-of-object as a ListNestedBlock, and a bare object as a
+	// SingleNestedBlock — each with its element struct walked.
 	var itemBlocks []AttrView
 	var itemLists []ListAssignment
-	for _, arr := range arrayAttrs {
-		tfName := tfNameOf(arr.Path)
+	for _, n := range nonScalars {
+		tfName := tfNameOf(n.Path)
 		field := goFieldName(tfName)
 		getter := getterOk("item.Attributes", tfName)
-		switch arr.TfType {
+		switch n.TfType {
 		case "schema.ListAttribute":
 			itemAttrs = append(itemAttrs, AttrView{
-				TFName: tfName, TFType: arr.TfType, ElementType: arr.ElementType, Description: arr.Description, Computed: true,
+				TFName: tfName, TFType: n.TfType, ElementType: n.ElementType, Description: n.Description, Computed: true,
 			})
-			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: arr.GoType, TFName: tfName})
+			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: n.GoType, TFName: tfName})
 			itemLists = append(itemLists, ListAssignment{
-				Kind: "primitive", LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName), ElementType: arr.ElementType,
+				Kind: "primitive", LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName), ElementType: n.ElementType,
 			})
 		case "schema.ListNestedBlock":
 			elemStruct := model.SdkName(tfName) + "Model"
 			base := lowerFirst(model.SdkName(tfName))
 			loopVar, elemVar := base+"Item", base+"Model"
-			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, loopVar, elemVar, arr.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, loopVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
-				TFName: tfName, Description: arr.Description,
+				TFName: tfName, Description: n.Description,
 				IsBlock: true, ListBlock: true, Attributes: childAttrs, Blocks: childBlocks,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
 			itemLists = append(itemLists, ListAssignment{
 				Kind: "object", LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName),
 				LoopVar: loopVar, ElemVar: elemVar, ElemStruct: elemStruct,
+				Scalars: childScalars, Lists: childLists,
+			})
+		case "schema.SingleNestedBlock":
+			elemStruct := model.SdkName(tfName) + "Model"
+			objVar := leafVar(tfName)
+			elemVar := lowerFirst(model.SdkName(tfName)) + "Model"
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, objVar, elemVar, n.Children)
+			itemBlocks = append(itemBlocks, AttrView{
+				TFName: tfName, Description: n.Description,
+				IsBlock: true, ListBlock: false, Attributes: childAttrs, Blocks: childBlocks,
+			})
+			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: "*" + elemStruct, TFName: tfName})
+			itemLists = append(itemLists, ListAssignment{
+				Kind: "object_single", LHS: "r." + field, GetterOk: getter, Var: objVar,
+				ElemVar: elemVar, ElemStruct: elemStruct,
 				Scalars: childScalars, Lists: childLists,
 			})
 		}
@@ -739,7 +771,7 @@ type itemElementLeaf struct {
 // "attributes" off item.Attributes, and "type" is dropped. Members outside
 // {id, type, attributes} (e.g. relationships) are dropped with a note on dropped;
 // non-leaf id/attributes still append to unsupported. Leaves are sorted by TF name.
-func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, dropped *[]string) (scalars []itemElementLeaf, arrays []*model.Attribute) {
+func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, dropped *[]string) (scalars []itemElementLeaf, nonScalars []*model.Attribute) {
 	if block == nil {
 		return nil, nil
 	}
@@ -762,8 +794,8 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 				switch {
 				case isLeafType(leaf.TfType):
 					scalars = append(scalars, itemElementLeaf{attr: leaf, chain: itemGetter("item.Attributes", tfNameOf(leaf.Path))})
-				case isArrayType(leaf.TfType):
-					arrays = append(arrays, leaf)
+				case isArrayType(leaf.TfType), isObjectType(leaf.TfType):
+					nonScalars = append(nonScalars, leaf)
 				default:
 					*unsupported = append(*unsupported, UnsupportedNode{Path: leaf.Path, Reason: "nesting under item attributes is not supported"})
 				}
@@ -777,8 +809,8 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 	sort.Slice(scalars, func(i, j int) bool {
 		return tfNameOf(scalars[i].attr.Path) < tfNameOf(scalars[j].attr.Path)
 	})
-	// arrays keep the sorted order of attributes.Children (buildChildren sorts keys).
-	return scalars, arrays
+	// nonScalars keep the sorted order of attributes.Children (buildChildren sorts keys).
+	return scalars, nonScalars
 }
 
 // itemGetter builds the SDK getter reading name off receiver for one list
