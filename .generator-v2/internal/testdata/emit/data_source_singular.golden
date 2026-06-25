@@ -17,9 +17,9 @@ var (
 
 type incidentTypeDataSourceModel struct {
 	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	IsDefault   types.Bool   `tfsdk:"is_default"`
+	Name        types.String `tfsdk:"name"`
 }
 
 type incidentTypeDataSource struct {
@@ -49,16 +49,16 @@ func (d *incidentTypeDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "The ID of this incident_type data source.",
 				Required:    true,
 			},
-			"name": schema.StringAttribute{
-				Description: "Name of the incident type.",
-				Computed:    true,
-			},
 			"description": schema.StringAttribute{
 				Description: "Description of the incident type.",
 				Computed:    true,
 			},
 			"is_default": schema.BoolAttribute{
 				Description: "Whether this incident type is the default type.",
+				Computed:    true,
+			},
+			"name": schema.StringAttribute{
+				Description: "Name of the incident type.",
 				Computed:    true,
 			},
 		},
@@ -95,7 +95,7 @@ func (d *incidentTypeDataSource) Read(ctx context.Context, request datasource.Re
 func (d *incidentTypeDataSource) updateState(state *incidentTypeDataSourceModel, resp *datadogV2.IncidentTypeResponse) {
 	attributes := resp.Data.GetAttributes()
 	state.ID = types.StringValue(resp.Data.GetId())
-	state.Name = types.StringValue(attributes.GetName())
 	state.Description = types.StringValue(attributes.GetDescription())
 	state.IsDefault = types.BoolValue(attributes.GetIsDefault())
+	state.Name = types.StringValue(attributes.GetName())
 }
