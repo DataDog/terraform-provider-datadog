@@ -29,6 +29,9 @@ type {{ .Name }} struct {
 {{- define "schemaAttribute" -}}
 "{{ .TFName }}": {{ .TFType }}{
 	Description: {{ printf "%q" .Description }},
+{{- if .ElementType }}
+	ElementType: {{ .ElementType }},
+{{- end }}
 {{- if .Required }}
 	Required: true,
 {{- end }}
@@ -76,6 +79,29 @@ Blocks: map[string]schema.Block{
 	Description: {{ printf "%q" .Description }},
 {{ template "nestedBody" . }}
 },
+{{- end }}
+{{- end -}}
+
+{{- define "renderList" -}}
+{{- if eq .Kind "primitive" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{ .LHS }}, _ = types.ListValueFrom(context.Background(), {{ .ElementType }}, *{{ .Var }})
+}
+{{- else if eq .Kind "object" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	for _, {{ .LoopVar }} := range *{{ .Var }} {
+		{{ .ElemVar }} := &{{ .ElemStruct }}{}
+{{- range .Scalars }}
+		if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+			{{ .LHS }} = {{ .RHS }}
+		}
+{{- end }}
+{{- range .Lists }}
+		{{ template "renderList" . }}
+{{- end }}
+		{{ .LHS }} = append({{ .LHS }}, {{ .ElemVar }})
+	}
+}
 {{- end }}
 {{- end -}}
 

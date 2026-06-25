@@ -341,6 +341,189 @@ func incidentTypeArtifact() *model.Artifact {
 	return art
 }
 
+// teamSingularOperation is the team GET-by-id as a parser-shaped Operation: a
+// JSON:API envelope whose attributes carry scalar leaves plus two string arrays
+// (visible_modules/hidden_modules), exercising collection-of-primitive hoisting.
+func teamSingularOperation() *model.Operation {
+	return &model.Operation{
+		Path:            "/api/v2/team/{team_id}",
+		Method:          "GET",
+		OperationId:     "GetTeam",
+		Tag:             "Teams",
+		ResponseRefName: "TeamResponse",
+		Tracking: &model.TrackingFieldMetadata{
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "team",
+			TfDescription: "Use this data source to retrieve information about an existing Datadog team.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Read: "GetTeam"},
+		},
+		ResponseSchema: obj(map[string]*model.Schema{
+			"data": obj(map[string]*model.Schema{
+				"id":   prim("string", "The team's identifier."),
+				"type": prim("string", "Team resource type."),
+				"attributes": obj(map[string]*model.Schema{
+					"handle":          prim("string", "The team's handle."),
+					"name":            prim("string", "The name of the team."),
+					"visible_modules": {Kind: model.SchemaKindArray, Description: "Collection of visible modules for the team.", Items: prim("string", "String identifier of the module.")},
+					"hidden_modules":  {Kind: model.SchemaKindArray, Description: "Collection of hidden modules for the team.", Items: prim("string", "String identifier of the module.")},
+				}),
+			}),
+		}),
+	}
+}
+
+// costBudgetOperation is the cost budget GET-by-id as a parser-shaped Operation: a
+// JSON:API envelope whose attributes carry a name plus an entries array of objects,
+// each holding scalars and a nested tag_filters array of objects — exercising
+// recursive array-of-object hoisting.
+func costBudgetOperation() *model.Operation {
+	return &model.Operation{
+		Path:            "/api/v2/cost/budget/{budget_id}",
+		Method:          "GET",
+		OperationId:     "GetBudget",
+		Tag:             "Cloud Cost Management",
+		ResponseRefName: "BudgetWithEntries",
+		Tracking: &model.TrackingFieldMetadata{
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "cost_budget",
+			TfDescription: "Use this data source to retrieve information about an existing Datadog cost budget.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Read: "GetBudget"},
+		},
+		ResponseSchema: obj(map[string]*model.Schema{
+			"data": obj(map[string]*model.Schema{
+				"id":   prim("string", "The budget's identifier."),
+				"type": prim("string", "Budget resource type."),
+				"attributes": obj(map[string]*model.Schema{
+					"name": prim("string", "The name of the budget."),
+					"entries": {Kind: model.SchemaKindArray, Description: "The list of monthly budget entries.", Items: obj(map[string]*model.Schema{
+						"amount": prim("number", "The budgeted amount for this entry."),
+						"month":  prim("integer", "The month this budget entry applies to."),
+						"tag_filters": {Kind: model.SchemaKindArray, Description: "The list of tag filters scoping this entry.", Items: obj(map[string]*model.Schema{
+							"tag_key":   prim("string", "The tag key to filter on."),
+							"tag_value": prim("string", "The tag value to filter on."),
+						})},
+					})},
+				}),
+			}),
+		}),
+	}
+}
+
+var _ = Describe("BuildDataSourceView singular nested arrays", func() {
+	It("hoists an object array into a ListNestedBlock and recurses into nested object arrays", func() {
+		view, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(view.Schema.Blocks).To(HaveLen(1))
+		entries := view.Schema.Blocks[0]
+		Expect(entries.TFName).To(Equal("entries"))
+		Expect(entries.ListBlock).To(BeTrue())
+
+		var entryAttrs []string
+		for _, a := range entries.Attributes {
+			entryAttrs = append(entryAttrs, a.TFName)
+		}
+		Expect(entryAttrs).To(Equal([]string{"amount", "month"}))
+		Expect(entries.Blocks).To(HaveLen(1))
+		Expect(entries.Blocks[0].TFName).To(Equal("tag_filters"))
+		Expect(entries.Blocks[0].ListBlock).To(BeTrue())
+	})
+
+	It("generates a nested model struct per object level, parent first", func() {
+		view, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		var names []string
+		for _, m := range view.Models {
+			names = append(names, m.Name)
+		}
+		Expect(names).To(Equal([]string{"costBudgetDataSourceModel", "EntriesModel", "TagFiltersModel"}))
+	})
+
+	It("maps each element through a guarded loop, recursing for nested arrays", func() {
+		view, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(view.State.Lists).To(HaveLen(1))
+		entries := view.State.Lists[0]
+		Expect(entries.Kind).To(Equal("object"))
+		Expect(entries.LHS).To(Equal("state.Entries"))
+		Expect(entries.GetterOk).To(Equal("attributes.GetEntriesOk()"))
+		Expect(entries.LoopVar).To(Equal("entriesItem"))
+		Expect(entries.ElemVar).To(Equal("entriesModel"))
+		Expect(entries.ElemStruct).To(Equal("EntriesModel"))
+		Expect(entries.Scalars).To(ContainElement(StateAssignment{
+			Var: "amount", GetterOk: "entriesItem.GetAmountOk()",
+			LHS: "entriesModel.Amount", RHS: "types.Float64Value(*amount)",
+		}))
+
+		Expect(entries.Lists).To(HaveLen(1))
+		tagFilters := entries.Lists[0]
+		Expect(tagFilters.Kind).To(Equal("object"))
+		Expect(tagFilters.LHS).To(Equal("entriesModel.TagFilters"))
+		Expect(tagFilters.GetterOk).To(Equal("entriesItem.GetTagFiltersOk()"))
+		Expect(tagFilters.LoopVar).To(Equal("tagFiltersItem"))
+		Expect(tagFilters.ElemStruct).To(Equal("TagFiltersModel"))
+	})
+
+	It("produces a deeply-equal view across two runs", func() {
+		first, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		second, err := BuildDataSourceView(mustArtifact(costBudgetOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(first).To(Equal(second))
+	})
+})
+
+var _ = Describe("BuildDataSourceView singular arrays", func() {
+	It("hoists a string array under attributes into a ListAttribute carrying its element type", func() {
+		view, err := BuildDataSourceView(mustArtifact(teamSingularOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		attrs := map[string]AttrView{}
+		for _, a := range view.Schema.Attributes {
+			attrs[a.TFName] = a
+		}
+		Expect(attrs["visible_modules"].TFType).To(Equal("schema.ListAttribute"))
+		Expect(attrs["visible_modules"].ElementType).To(Equal("types.StringType"))
+		Expect(attrs["visible_modules"].Computed).To(BeTrue())
+		Expect(view.Schema.Blocks).To(BeEmpty(), "a collection-of-primitive is a leaf attribute, not a block")
+	})
+
+	It("declares the list field as a types.List in the model", func() {
+		view, err := BuildDataSourceView(mustArtifact(teamSingularOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		goTypes := map[string]string{}
+		for _, f := range view.Models[0].Fields {
+			goTypes[f.TFName] = f.GoType
+		}
+		Expect(goTypes["visible_modules"]).To(Equal("types.List"))
+		Expect(goTypes["hidden_modules"]).To(Equal("types.List"))
+	})
+
+	It("maps each list through a guarded ListValueFrom assignment", func() {
+		view, err := BuildDataSourceView(mustArtifact(teamSingularOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		// Sorted by attribute name, both string arrays become guarded primitive lists.
+		Expect(view.State.Lists).To(Equal([]ListAssignment{
+			{Kind: "primitive", LHS: "state.HiddenModules", GetterOk: "attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
+			{Kind: "primitive", LHS: "state.VisibleModules", GetterOk: "attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
+		}))
+	})
+
+	It("produces a deeply-equal view across two runs", func() {
+		first, err := BuildDataSourceView(mustArtifact(teamSingularOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		second, err := BuildDataSourceView(mustArtifact(teamSingularOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(first).To(Equal(second))
+	})
+})
+
 var _ = Describe("BuildDataSourceView plural", func() {
 	It("builds the teams plural view end-to-end, matching the golden-backing fixture", func() {
 		art, err := model.BuildArtifact(teamsOperation())
@@ -456,12 +639,14 @@ func teamsOperation() *model.Operation {
 					"id":   prim("string", "The team's identifier."),
 					"type": prim("string", "Team resource type."),
 					"attributes": obj(map[string]*model.Schema{
-						"description": prim("string", "Free-form markdown description/content for the team's homepage."),
-						"handle":      prim("string", "The team's handle."),
-						"link_count":  prim("integer", "The number of links belonging to the team."),
-						"name":        prim("string", "The name of the team."),
-						"summary":     prim("string", "A brief summary of the team, derived from the `description`."),
-						"user_count":  prim("integer", "The number of users belonging to the team."),
+						"description":     prim("string", "Free-form markdown description/content for the team's homepage."),
+						"handle":          prim("string", "The team's handle."),
+						"hidden_modules":  {Kind: model.SchemaKindArray, Description: "Collection of hidden modules for the team.", Items: prim("string", "String identifier of the module.")},
+						"link_count":      prim("integer", "The number of links belonging to the team."),
+						"name":            prim("string", "The name of the team."),
+						"summary":         prim("string", "A brief summary of the team, derived from the `description`."),
+						"user_count":      prim("integer", "The number of users belonging to the team."),
+						"visible_modules": {Kind: model.SchemaKindArray, Description: "Collection of visible modules for the team.", Items: prim("string", "String identifier of the module.")},
 					}),
 				}),
 			},
@@ -516,3 +701,86 @@ func datastoresOperation() *model.Operation {
 		}),
 	}
 }
+
+// pluralNestedOperation is a synthetic plural list whose item attributes carry an
+// object array (parts), each part an object with scalars — exercising the
+// array-of-object item path that walks an element struct inside buildPluralView.
+func pluralNestedOperation() *model.Operation {
+	return &model.Operation{
+		Path:            "/api/v2/widgets",
+		Method:          "GET",
+		OperationId:     "ListWidgets",
+		Tag:             "Widgets",
+		ResponseRefName: "WidgetsResponse",
+		ItemRefName:     "Widget",
+		Tracking: &model.TrackingFieldMetadata{
+			ArtifactKind:  model.ArtifactKindDataSource,
+			ArtifactName:  "widgets",
+			Cardinality:   model.CardinalityPlural,
+			TfDescription: "Use this data source to retrieve information about existing widgets.",
+			IdStrategy:    model.IdStrategyDataID,
+			Group:         &model.OperationGroup{Read: "ListWidgets"},
+		},
+		ResponseSchema: obj(map[string]*model.Schema{
+			"data": {
+				Kind:        model.SchemaKindArray,
+				Description: "List of widgets",
+				Items: obj(map[string]*model.Schema{
+					"id":   prim("string", "The widget's identifier."),
+					"type": prim("string", "Widget resource type."),
+					"attributes": obj(map[string]*model.Schema{
+						"name": prim("string", "The name of the widget."),
+						"parts": {Kind: model.SchemaKindArray, Description: "The parts that make up the widget.", Items: obj(map[string]*model.Schema{
+							"label":    prim("string", "The label of the part."),
+							"quantity": prim("integer", "How many of this part the widget uses."),
+						})},
+					}),
+				}),
+			},
+		}),
+	}
+}
+
+var _ = Describe("BuildDataSourceView plural nested arrays", func() {
+	It("renders an object array in an item as a ListNestedBlock with a generated element struct", func() {
+		view, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		items := view.Schema.Blocks[0]
+		Expect(items.TFName).To(Equal("widgets"))
+		Expect(items.Blocks).To(HaveLen(1))
+		Expect(items.Blocks[0].TFName).To(Equal("parts"))
+		Expect(items.Blocks[0].ListBlock).To(BeTrue())
+
+		var names []string
+		for _, m := range view.Models {
+			names = append(names, m.Name)
+		}
+		Expect(names).To(Equal([]string{"widgetsDataSourceModel", "WidgetModel", "PartsModel"}))
+	})
+
+	It("maps the object array off item.Attributes into the item accumulator", func() {
+		view, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(view.State.ItemLists).To(HaveLen(1))
+		parts := view.State.ItemLists[0]
+		Expect(parts.Kind).To(Equal("object"))
+		Expect(parts.LHS).To(Equal("r.Parts"))
+		Expect(parts.GetterOk).To(Equal("item.Attributes.GetPartsOk()"))
+		Expect(parts.LoopVar).To(Equal("partsItem"))
+		Expect(parts.ElemStruct).To(Equal("PartsModel"))
+		Expect(parts.Scalars).To(ContainElement(StateAssignment{
+			Var: "label", GetterOk: "partsItem.GetLabelOk()",
+			LHS: "partsModel.Label", RHS: "types.StringValue(*label)",
+		}))
+	})
+
+	It("produces a deeply-equal view across two runs", func() {
+		first, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		second, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(first).To(Equal(second))
+	})
+})

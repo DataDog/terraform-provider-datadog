@@ -141,6 +141,9 @@ type AttrView struct {
 	// TFType is the framework attribute type token for a leaf, e.g.
 	// "schema.StringAttribute". Ignored for blocks (ListBlock picks the type).
 	TFType string
+	// ElementType is the framework attr.Type rendered on a schema.ListAttribute,
+	// e.g. "types.StringType". Non-empty only for a collection-of-primitive leaf.
+	ElementType string
 	// Description is the attribute description (repo convention: always set).
 	Description string
 
@@ -203,6 +206,9 @@ type StateView struct {
 	// block: "if <Var>, ok := <GetterOk>; ok && <Var> != nil { <LHS> = <RHS> }",
 	// so an absent field stays null rather than a zero value.
 	Assignments []StateAssignment
+	// Lists are the singular record's list-valued assignments (collection-of-primitive
+	// and list-of-object), rendered by the "renderList" partial after Assignments.
+	Lists []ListAssignment
 
 	// The fields below are plural-only.
 
@@ -214,6 +220,10 @@ type StateView struct {
 	// ItemFields are the item struct's literal fields ("<GoField>: <RHS>"),
 	// evaluated against the loop variable "item".
 	ItemFields []StateAssignment
+	// ItemLists are the item's list-valued assignments, rendered by "renderList"
+	// after the struct literal (they cannot sit in the literal: a primitive list
+	// is a two-value ListValueFrom, an object list is a loop).
+	ItemLists []ListAssignment
 }
 
 // StateAssignment is a single assignment rendered in updateState. For a
@@ -229,4 +239,39 @@ type StateAssignment struct {
 	RHS      string
 	Var      string
 	GetterOk string
+}
+
+// ListAssignment is a list-valued state assignment rendered by the updateState
+// "renderList" partial. A primitive list maps the SDK slice into a types.List via
+// types.ListValueFrom; an object list loops the SDK elements into a generated
+// nested model slice, recursing through Scalars (the element's leaf fields) and
+// Lists (its nested list fields). Both forms are guarded by an Ok-getter so an
+// absent field stays null.
+type ListAssignment struct {
+	// Kind is "primitive" or "object".
+	Kind string
+	// LHS is the assignment target, e.g. "state.VisibleModules" (top level) or
+	// "entriesModel.TagFilters" (nested element field).
+	LHS string
+	// GetterOk is the guarded optional getter returning (slice pointer, bool),
+	// e.g. "attributes.GetVisibleModulesOk()".
+	GetterOk string
+	// Var is the local bound from GetterOk (a pointer to the slice).
+	Var string
+	// ElementType is the framework element type for a primitive list, e.g.
+	// "types.StringType". Empty for an object list.
+	ElementType string
+
+	// The fields below back an object list (Kind == "object").
+
+	// LoopVar is the per-element loop variable, e.g. "entriesItem".
+	LoopVar string
+	// ElemVar is the per-element model accumulator, e.g. "entriesModel".
+	ElemVar string
+	// ElemStruct is the generated nested model struct, e.g. "EntriesModel".
+	ElemStruct string
+	// Scalars are the element's leaf fields, assigned off LoopVar into ElemVar.
+	Scalars []StateAssignment
+	// Lists are the element's nested list fields (recursion).
+	Lists []ListAssignment
 }
