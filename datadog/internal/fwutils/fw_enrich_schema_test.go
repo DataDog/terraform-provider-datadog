@@ -1141,9 +1141,7 @@ func TestEnrichSchemaListNestedAttribute(t *testing.T) {
 	}
 }
 
-// TestEnrichSchemaNestedAttributeWithinNestedAttribute covers a list nested attribute nested inside
-// a single nested attribute (e.g. an `action` object containing a list of typed entries), ensuring
-// enrichment recurses all the way to the leaf enum attribute.
+// TestEnrichSchemaNestedAttributeWithinNestedAttribute ensures enrichment recurses all the way to the leaf enum attribute.
 func TestEnrichSchemaNestedAttributeWithinNestedAttribute(t *testing.T) {
 	t.Parallel()
 
@@ -1156,9 +1154,9 @@ func TestEnrichSchemaNestedAttributeWithinNestedAttribute(t *testing.T) {
 						Required: true,
 						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
-								"severity": schema.StringAttribute{
+								"team": schema.StringAttribute{
 									Required:    true,
-									Description: "A severity level.",
+									Description: "A team level.",
 									Validators: []validator.String{
 										validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
 									},
@@ -1173,10 +1171,10 @@ func TestEnrichSchemaNestedAttributeWithinNestedAttribute(t *testing.T) {
 
 	EnrichFrameworkResourceSchema(&s)
 
-	expected := "A severity level. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`."
+	expected := "A team level. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`."
 	got := s.Attributes["action"].(schema.SingleNestedAttribute).
 		Attributes["levels"].(schema.ListNestedAttribute).
-		NestedObject.Attributes["severity"].GetDescription()
+		NestedObject.Attributes["team"].GetDescription()
 	if got != expected {
 		t.Errorf("expected description '%s', got '%s' instead.", expected, got)
 	}

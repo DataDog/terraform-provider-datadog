@@ -61,8 +61,6 @@ func enrichResourceDescription(r any) resourceSchema.Attribute {
 	case resourceSchema.BoolAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
-	// Nested attributes are not enriched themselves, but their child attributes are
-	// (the enum/range validators live on the leaves). This mirrors how blocks recurse.
 	case resourceSchema.SingleNestedAttribute:
 		for i, attr := range v.Attributes {
 			v.Attributes[i] = enrichResourceDescription(attr)
@@ -135,8 +133,6 @@ func enrichDatasourceDescription(r any) datasourceSchema.Attribute {
 	case datasourceSchema.BoolAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
-	// Nested attributes are not enriched themselves, but their child attributes are
-	// (the enum/range validators live on the leaves). This mirrors how blocks recurse.
 	case datasourceSchema.SingleNestedAttribute:
 		for i, attr := range v.Attributes {
 			v.Attributes[i] = enrichDatasourceDescription(attr)
@@ -209,8 +205,6 @@ func enrichEphemeralDescription(r any) ephemeralSchema.Attribute {
 	case ephemeralSchema.BoolAttribute:
 		buildEnrichedSchemaDescription(reflect.ValueOf(&v))
 		return v
-	// Nested attributes are not enriched themselves, but their child attributes are
-	// (the enum/range validators live on the leaves). This mirrors how blocks recurse.
 	case ephemeralSchema.SingleNestedAttribute:
 		for i, attr := range v.Attributes {
 			v.Attributes[i] = enrichEphemeralDescription(attr)
