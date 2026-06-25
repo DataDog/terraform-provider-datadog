@@ -58,6 +58,11 @@
         "type": "boolean",
         "default": false,
         "description": "Explicitly disable generation for this operation while keeping the annotation in place. Equivalent to removing the extension, but documented in-spec so reviewers see the choice."
+      },
+      "overwrites": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The constructor function of the hand-written data source this generated artifact replaces, e.g. \"NewDatadogTeamDataSource\". When set, the generated file overwrites the hand-written one in place (they share the datadog_<artifact_name>.go path), the generator removes that constructor from the FrameworkProvider Datasources slice, and registers the generated constructor in generatedDatasources. Omit for purely additive generation. Data sources only."
       }
     },
     "examples": [
@@ -65,6 +70,7 @@
         "artifact_kind": "data_source",
         "artifact_name": "team",
         "tf_description": "Use this data source to retrieve information about an existing Datadog team.",
+        "overwrites": "NewDatadogTeamDataSource",
         "group":{
           "read": "GetTeam",
           "search": "ListTeams"

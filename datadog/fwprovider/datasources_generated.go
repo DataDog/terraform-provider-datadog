@@ -3,11 +3,10 @@ package fwprovider
 import "github.com/hashicorp/terraform-plugin-framework/datasource"
 
 // generatedDatasources holds the data sources produced by the generator-v2 emit
-// pipeline. Keeping them in their own slice (and file) means regenerating does
-// not churn framework_provider.go, and the generated set stays reviewable in one
-// place. FrameworkProvider.DataSources registers this slice alongside the
-// hand-written Datasources.
+// pipeline. tfgen owns this file: every generate run rewrites it from the set of
+// data sources it produced, keeping the generated registrations in one
+// reviewable place without churning framework_provider.go. Do not edit by hand.
 //
-// It is intentionally empty until a generated data source is promoted to the
-// live provider; add its constructor here when it is.
+// FrameworkProvider.DataSources registers this slice alongside the hand-written
+// Datasources.
 var generatedDatasources = []func() datasource.DataSource{}

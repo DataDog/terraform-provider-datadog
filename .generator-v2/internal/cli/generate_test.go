@@ -2,7 +2,9 @@ package cli
 
 import (
 	"errors"
+	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
@@ -44,4 +46,66 @@ func TestGenerateSurfacesCycleError(t *testing.T) {
 	if !errors.As(err, &cycleErr) {
 		t.Fatalf("error %v (%T) is not a *parser.RefCycleError", err, err)
 	}
+}
+
+// TestGenerateWiresOverwrite drives the full generate path with a spec that sets
+// overwrites and proves the three wiring effects: the generated data source is
+// written, its constructor is registered in datasources_generated.go, and the
+// overwritten hand-written constructor is removed from the Datasources slice
+// without disturbing its neighbors.
+func TestGenerateWiresOverwrite(t *testing.T) {
+	spec, err := os.ReadFile(filepath.Join("..", "testdata", "mini-oas", "scripts", "gen-test", "datastore.yaml"))
+	if err != nil {
+		t.Fatalf("reading datastore spec: %v", err)
+	}
+	// Opt the datastore data source into overwriting the hand-written one.
+	withOverwrites := strings.Replace(string(spec),
+		"        artifact_name: datastore\n",
+		"        artifact_name: datastore\n        overwrites: NewDatadogDatastoreDataSource\n", 1)
+	if !strings.Contains(withOverwrites, "overwrites: NewDatadogDatastoreDataSource") {
+		t.Fatal("failed to inject overwrites into the datastore spec fixture")
+	}
+
+	dir := t.TempDir()
+	specPath := filepath.Join(dir, "datastore.yaml")
+	if err := os.WriteFile(specPath, []byte(withOverwrites), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	provider := "package fwprovider\n\n" +
+		"var Datasources = []func() datasource.DataSource{\n" +
+		"\tNewAPIKeyDataSource,\n\tNewDatadogDatastoreDataSource,\n\tNewHostsDataSource,\n}\n"
+	if err := os.WriteFile(filepath.Join(dir, "framework_provider.go"), []byte(provider), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := runTfgen("generate", "--spec", specPath, "--output-root", dir, "--report", filepath.Join(dir, "report.json")); err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+
+	generated := mustRead(t, filepath.Join(dir, "data_source_datadog_datastore.go"))
+	if !strings.Contains(generated, "func NewDatastoreDataSource()") {
+		t.Errorf("generated data source missing NewDatastoreDataSource constructor:\n%s", generated)
+	}
+
+	registered := mustRead(t, filepath.Join(dir, "datasources_generated.go"))
+	if !strings.Contains(registered, "NewDatastoreDataSource") {
+		t.Errorf("generated constructor not registered in datasources_generated.go:\n%s", registered)
+	}
+
+	prov := mustRead(t, filepath.Join(dir, "framework_provider.go"))
+	if strings.Contains(prov, "NewDatadogDatastoreDataSource") {
+		t.Errorf("overwritten hand-written constructor not removed from Datasources:\n%s", prov)
+	}
+	if !strings.Contains(prov, "NewAPIKeyDataSource") || !strings.Contains(prov, "NewHostsDataSource") {
+		t.Errorf("removal disturbed neighboring Datasources entries:\n%s", prov)
+	}
+}
+
+func mustRead(t *testing.T, path string) string {
+	t.Helper()
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading %s: %v", path, err)
+	}
+	return string(content)
 }
