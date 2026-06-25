@@ -8,7 +8,6 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -20,17 +19,19 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
-// automationRuleScopeModel maps the shared `rule` block used by every security findings
+// automationRuleScopeModel maps the shared `rule` attribute used by every security findings
 // automation rule (mute, due date, ticket creation). It defines which findings a rule applies to.
 type automationRuleScopeModel struct {
 	FindingTypes types.List   `tfsdk:"finding_types"`
 	Query        types.String `tfsdk:"query"`
 }
 
-// securityFindingsAutomationRuleScopeBlock returns the schema for the shared `rule` block.
-func securityFindingsAutomationRuleScopeBlock() schema.Block {
-	return schema.SingleNestedBlock{
+// securityFindingsAutomationRuleScopeAttribute returns the schema for the shared, required `rule`
+// nested attribute.
+func securityFindingsAutomationRuleScopeAttribute() schema.Attribute {
+	return schema.SingleNestedAttribute{
 		Description: "Defines the scope of findings to which the automation rule applies.",
+		Required:    true,
 		Attributes: map[string]schema.Attribute{
 			"finding_types": schema.ListAttribute{
 				Description: "The list of security finding types that the automation rule applies to. Valid values are `api_security`, `attack_path`, `host_and_container_vulnerability`, `iac_misconfiguration`, `identity_risk`, `library_vulnerability`, `misconfiguration`, `runtime_code_vulnerability`, `secret`, `static_code_vulnerability`, `workload_activity`.",
@@ -46,7 +47,6 @@ func securityFindingsAutomationRuleScopeBlock() schema.Block {
 				Optional:    true,
 			},
 		},
-		Validators: []validator.Object{objectvalidator.IsRequired()},
 	}
 }
 

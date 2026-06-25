@@ -33,11 +33,11 @@ func TestAccDatadogSecurityFindingsMuteRule(t *testing.T) {
 resource "datadog_security_findings_mute_rule" "test" {
   name    = "%s"
   enabled = true
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:dev @severity:low"
   }
-  action {
+  action = {
     reason             = "risk_accepted"
     reason_description = "Accepted for dev environments only"
   }
@@ -59,11 +59,11 @@ resource "datadog_security_findings_mute_rule" "test" {
 resource "datadog_security_findings_mute_rule" "test" {
   name    = "%s-updated"
   enabled = false
-  rule {
+  rule = {
     finding_types = ["misconfiguration", "secret"]
     query         = "env:prod"
   }
-  action {
+  action = {
     reason    = "false_positive"
     expire_at = 4070908800000
   }
@@ -144,11 +144,11 @@ func TestAccDatadogSecurityFindingsMuteRule_OptionalChurn(t *testing.T) {
 resource "datadog_security_findings_mute_rule" "test" {
   name    = "%s"
   enabled = false
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:prod"
   }
-  action {
+  action = {
     reason             = "no_fix"
     reason_description = "context"
     expire_at          = 4070908800000
@@ -194,10 +194,10 @@ func TestAccDatadogSecurityFindingsMuteRule_Validation(t *testing.T) {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_mute_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = []
   }
-  action {
+  action = {
     reason = "no_fix"
   }
 }
@@ -209,10 +209,10 @@ resource "datadog_security_findings_mute_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_mute_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["not_a_finding_type"]
   }
-  action {
+  action = {
     reason = "no_fix"
   }
 }
@@ -224,10 +224,10 @@ resource "datadog_security_findings_mute_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_mute_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     reason = "not_a_reason"
   }
 }
@@ -235,28 +235,28 @@ resource "datadog_security_findings_mute_rule" "test" {
 				ExpectError: regexp.MustCompile("invalid value"),
 			},
 			{
-				// The rule block is required.
+				// The rule attribute is required.
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_mute_rule" "test" {
   name = "%s"
-  action {
+  action = {
     reason = "no_fix"
   }
 }
 `, uniq),
-				ExpectError: regexp.MustCompile("must have a configuration value"),
+				ExpectError: regexp.MustCompile("is required, but no definition was found"),
 			},
 			{
-				// The action block is required.
+				// The action attribute is required.
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_mute_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
 }
 `, uniq),
-				ExpectError: regexp.MustCompile("must have a configuration value"),
+				ExpectError: regexp.MustCompile("is required, but no definition was found"),
 			},
 		},
 	})
@@ -333,10 +333,10 @@ func testAccCheckDatadogSecurityFindingsMuteRuleConfigMinimal(uniq string) strin
 	return fmt.Sprintf(`
 resource "datadog_security_findings_mute_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     reason = "no_fix"
   }
 }

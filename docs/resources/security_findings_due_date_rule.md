@@ -19,26 +19,28 @@ resource "datadog_security_findings_due_date_rule" "prod_sla" {
   name    = "SLA for production misconfigurations"
   enabled = true
 
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:prod"
   }
 
-  action {
+  action = {
     due_from = "first_seen"
 
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
-    due_days_per_severity {
-      severity    = "high"
-      due_in_days = 30
-    }
-    due_days_per_severity {
-      severity    = "medium"
-      due_in_days = 90
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+      {
+        severity    = "high"
+        due_in_days = 30
+      },
+      {
+        severity    = "medium"
+        due_in_days = 90
+      },
+    ]
   }
 }
 ```
@@ -48,41 +50,41 @@ resource "datadog_security_findings_due_date_rule" "prod_sla" {
 
 ### Required
 
+- `action` (Attributes) The action to take when the due date rule matches a finding. (see [below for nested schema](#nestedatt--action))
 - `name` (String) The name of the due date rule.
+- `rule` (Attributes) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedatt--rule))
 
 ### Optional
 
-- `action` (Block, Optional) The action to take when the due date rule matches a finding. (see [below for nested schema](#nestedblock--action))
 - `enabled` (Boolean) Whether the due date rule is enabled. Defaults to `true`.
-- `rule` (Block, Optional) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--action"></a>
+<a id="nestedatt--action"></a>
 ### Nested Schema for `action`
 
 Required:
 
-- `due_from` (String) The reference point from which the due date is calculated. When `fix_available` is selected but not applicable to the finding type, `first_seen` is used instead. Valid values are `first_seen`, `fix_available`.
+- `due_days_per_severity` (Attributes List) A list of severity-to-due-date mappings. Each severity may appear at most once. (see [below for nested schema](#nestedatt--action--due_days_per_severity))
+- `due_from` (String) The reference point from which the due date is calculated. When `fix_available` is selected but not applicable to the finding type, `first_seen` is used instead.
 
 Optional:
 
-- `due_days_per_severity` (Block List) A list of severity-to-due-date mappings. Each severity may appear at most once. (see [below for nested schema](#nestedblock--action--due_days_per_severity))
 - `reason_description` (String) An optional description providing more context for the due date assignment.
 
-<a id="nestedblock--action--due_days_per_severity"></a>
+<a id="nestedatt--action--due_days_per_severity"></a>
 ### Nested Schema for `action.due_days_per_severity`
 
 Required:
 
 - `due_in_days` (Number) The number of days from the reference point until the finding is due.
-- `severity` (String) A severity level used to configure due date thresholds. Valid values are `critical`, `high`, `medium`, `low`, `info`, `none`, `unknown`.
+- `severity` (String) A severity level used to configure due date thresholds.
 
 
 
-<a id="nestedblock--rule"></a>
+<a id="nestedatt--rule"></a>
 ### Nested Schema for `rule`
 
 Required:

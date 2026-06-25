@@ -19,12 +19,12 @@ resource "datadog_security_findings_ticket_creation_rule" "critical_misconfigs" 
   name    = "Auto-create Jira tickets for critical misconfigurations"
   enabled = true
 
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:prod @severity:critical"
   }
 
-  action {
+  action = {
     project_id          = "11111111-1111-1111-1111-111111111111"
     target              = "jira"
     assignee_id         = "22222222-2222-2222-2222-222222222222"
@@ -42,30 +42,30 @@ resource "datadog_security_findings_ticket_creation_rule" "critical_misconfigs" 
 
 ### Required
 
+- `action` (Attributes) The action to take when the ticket creation rule matches a finding. (see [below for nested schema](#nestedatt--action))
 - `name` (String) The name of the ticket creation rule.
+- `rule` (Attributes) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedatt--rule))
 
 ### Optional
 
-- `action` (Block, Optional) The action to take when the ticket creation rule matches a finding. (see [below for nested schema](#nestedblock--action))
 - `enabled` (Boolean) Whether the ticket creation rule is enabled. Defaults to `true`.
-- `rule` (Block, Optional) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--action"></a>
+<a id="nestedatt--action"></a>
 ### Nested Schema for `action`
 
 Required:
 
-- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule. Value must be between 1 and 500.
-- `project_id` (String) The UUID of the Case Management project. Must be a valid UUID.
-- `target` (String) The ticketing system to create tickets in. Valid values are `jira`, `case_management`.
+- `max_tickets_per_day` (Number) The maximum number of tickets the rule may create per day. If exceeded, one final ticket will be created, explaining the limit was hit and linking back to the responsible rule.
+- `project_id` (String) The UUID of the Case Management project.
+- `target` (String) The ticketing system to create tickets in.
 
 Optional:
 
-- `assignee_id` (String) The UUID of the default assignee for created tickets. Must be a valid UUID.
+- `assignee_id` (String) The UUID of the default assignee for created tickets.
 - `fields` (String) A JSON-encoded object of custom fields of the Jira issue to create. For the list of available fields, see the [Jira documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-createmeta-projectidorkey-issuetypes-issuetypeid-get).
 
 Read-Only:
@@ -73,7 +73,7 @@ Read-Only:
 - `auto_disabled_reason` (String) The reason the rule was automatically disabled by the system due to a ticketing integration error. This field is read-only.
 
 
-<a id="nestedblock--rule"></a>
+<a id="nestedatt--rule"></a>
 ### Nested Schema for `rule`
 
 Required:

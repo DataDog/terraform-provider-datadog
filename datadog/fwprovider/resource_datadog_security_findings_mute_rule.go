@@ -5,7 +5,6 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -71,11 +70,10 @@ func (r *securityFindingsMuteRuleResource) Schema(_ context.Context, _ resource.
 				Computed:    true,
 				Default:     booldefault.StaticBool(true),
 			},
-		},
-		Blocks: map[string]schema.Block{
-			"rule": securityFindingsAutomationRuleScopeBlock(),
-			"action": schema.SingleNestedBlock{
+			"rule": securityFindingsAutomationRuleScopeAttribute(),
+			"action": schema.SingleNestedAttribute{
 				Description: "The action to take when the mute rule matches a finding.",
+				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"reason": schema.StringAttribute{
 						Description: "The reason for muting a security finding.",
@@ -91,7 +89,6 @@ func (r *securityFindingsMuteRuleResource) Schema(_ context.Context, _ resource.
 						Optional:    true,
 					},
 				},
-				Validators: []validator.Object{objectvalidator.IsRequired()},
 			},
 		},
 	}

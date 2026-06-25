@@ -40,11 +40,11 @@ func TestAccDatadogSecurityFindingsTicketCreationRule(t *testing.T) {
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name    = "%s"
   enabled = true
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:prod @severity:critical"
   }
-  action {
+  action = {
     project_id          = "%s"
     target              = "jira"
     max_tickets_per_day = 100
@@ -73,11 +73,11 @@ resource "datadog_security_findings_ticket_creation_rule" "test" {
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name    = "%s-updated"
   enabled = false
-  rule {
+  rule = {
     finding_types = ["misconfiguration", "secret"]
     query         = "env:prod @severity:critical"
   }
-  action {
+  action = {
     project_id          = "%s"
     target              = "jira"
     assignee_id         = "%s"
@@ -166,11 +166,11 @@ func TestAccDatadogSecurityFindingsTicketCreationRule_OptionalChurn(t *testing.T
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name    = "%s"
   enabled = false
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:prod"
   }
-  action {
+  action = {
     project_id          = "%s"
     target              = "jira"
     assignee_id         = "%s"
@@ -221,10 +221,10 @@ func TestAccDatadogSecurityFindingsTicketCreationRule_AutoDisabledReasonReadOnly
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     project_id           = "%s"
     target               = "jira"
     max_tickets_per_day  = 100
@@ -254,10 +254,10 @@ func TestAccDatadogSecurityFindingsTicketCreationRule_Validation(t *testing.T) {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = []
   }
-  action {
+  action = {
     project_id          = "%s"
     target              = "jira"
     max_tickets_per_day = 100
@@ -271,10 +271,10 @@ resource "datadog_security_findings_ticket_creation_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["not_a_finding_type"]
   }
-  action {
+  action = {
     project_id          = "%s"
     target              = "jira"
     max_tickets_per_day = 100
@@ -288,10 +288,10 @@ resource "datadog_security_findings_ticket_creation_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     project_id          = "%s"
     target              = "not_a_target"
     max_tickets_per_day = 100
@@ -301,47 +301,47 @@ resource "datadog_security_findings_ticket_creation_rule" "test" {
 				ExpectError: regexp.MustCompile("invalid value"),
 			},
 			{
-				// project_id must be a valid UUID (parsed when the request is built).
+				// project_id must be a valid UUID (enforced by the schema validator at plan time).
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     project_id          = "not-a-uuid"
     target              = "jira"
     max_tickets_per_day = 100
   }
 }
 `, uniq),
-				ExpectError: regexp.MustCompile("invalid project_id"),
+				ExpectError: regexp.MustCompile("must be a valid UUID"),
 			},
 			{
-				// The rule block is required.
+				// The rule attribute is required.
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  action {
+  action = {
     project_id          = "%s"
     target              = "jira"
     max_tickets_per_day = 100
   }
 }
 `, uniq, ticketCreationTestProjectID),
-				ExpectError: regexp.MustCompile("must have a configuration value"),
+				ExpectError: regexp.MustCompile("is required, but no definition was found"),
 			},
 			{
-				// The action block is required.
+				// The action attribute is required.
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
 }
 `, uniq),
-				ExpectError: regexp.MustCompile("must have a configuration value"),
+				ExpectError: regexp.MustCompile("is required, but no definition was found"),
 			},
 		},
 	})
@@ -418,10 +418,10 @@ func testAccCheckDatadogSecurityFindingsTicketCreationRuleConfigMinimal(uniq str
 	return fmt.Sprintf(`
 resource "datadog_security_findings_ticket_creation_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     project_id          = "%s"
     target              = "jira"
     max_tickets_per_day = 100

@@ -204,16 +204,18 @@ func testAccDueDateRulesOrderConfig(uniq string, rules, order []string) string {
 		fmt.Fprintf(&b, `
 resource "datadog_security_findings_due_date_rule" %[2]q {
   name = "%[1]s-%[2]s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:dev"
   }
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+    ]
   }
 }
 `, uniq, name)

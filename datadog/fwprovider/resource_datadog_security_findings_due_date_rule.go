@@ -7,7 +7,6 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -78,11 +77,10 @@ func (r *securityFindingsDueDateRuleResource) Schema(_ context.Context, _ resour
 				Computed:    true,
 				Default:     booldefault.StaticBool(true),
 			},
-		},
-		Blocks: map[string]schema.Block{
-			"rule": securityFindingsAutomationRuleScopeBlock(),
-			"action": schema.SingleNestedBlock{
+			"rule": securityFindingsAutomationRuleScopeAttribute(),
+			"action": schema.SingleNestedAttribute{
 				Description: "The action to take when the due date rule matches a finding.",
+				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"due_from": schema.StringAttribute{
 						Description: "The reference point from which the due date is calculated. When `fix_available` is selected but not applicable to the finding type, `first_seen` is used instead.",
@@ -93,11 +91,10 @@ func (r *securityFindingsDueDateRuleResource) Schema(_ context.Context, _ resour
 						Description: "An optional description providing more context for the due date assignment.",
 						Optional:    true,
 					},
-				},
-				Blocks: map[string]schema.Block{
-					"due_days_per_severity": schema.ListNestedBlock{
+					"due_days_per_severity": schema.ListNestedAttribute{
 						Description: "A list of severity-to-due-date mappings. Each severity may appear at most once.",
-						NestedObject: schema.NestedBlockObject{
+						Required:    true,
+						NestedObject: schema.NestedAttributeObject{
 							Attributes: map[string]schema.Attribute{
 								"severity": schema.StringAttribute{
 									Description: "A severity level used to configure due date thresholds.",
@@ -116,7 +113,6 @@ func (r *securityFindingsDueDateRuleResource) Schema(_ context.Context, _ resour
 						},
 					},
 				},
-				Validators: []validator.Object{objectvalidator.IsRequired()},
 			},
 		},
 	}

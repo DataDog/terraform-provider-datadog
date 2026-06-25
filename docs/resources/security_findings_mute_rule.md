@@ -19,12 +19,12 @@ resource "datadog_security_findings_mute_rule" "accepted_risks_dev" {
   name    = "Mute accepted risks in dev"
   enabled = true
 
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:dev team:platform @severity:low"
   }
 
-  action {
+  action = {
     reason             = "risk_accepted"
     reason_description = "Accepted for dev environments only"
     # Optional Unix timestamp in milliseconds at which the mute expires.
@@ -38,24 +38,24 @@ resource "datadog_security_findings_mute_rule" "accepted_risks_dev" {
 
 ### Required
 
+- `action` (Attributes) The action to take when the mute rule matches a finding. (see [below for nested schema](#nestedatt--action))
 - `name` (String) The name of the mute rule.
+- `rule` (Attributes) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedatt--rule))
 
 ### Optional
 
-- `action` (Block, Optional) The action to take when the mute rule matches a finding. (see [below for nested schema](#nestedblock--action))
 - `enabled` (Boolean) Whether the mute rule is enabled. Defaults to `true`.
-- `rule` (Block, Optional) Defines the scope of findings to which the automation rule applies. (see [below for nested schema](#nestedblock--rule))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
 
-<a id="nestedblock--action"></a>
+<a id="nestedatt--action"></a>
 ### Nested Schema for `action`
 
 Required:
 
-- `reason` (String) The reason for muting a security finding. Valid values are `duplicate`, `false_positive`, `no_fix`, `other`, `pending_fix`, `risk_accepted`.
+- `reason` (String) The reason for muting a security finding.
 
 Optional:
 
@@ -63,7 +63,7 @@ Optional:
 - `reason_description` (String) An optional description providing more context for the mute reason.
 
 
-<a id="nestedblock--rule"></a>
+<a id="nestedatt--rule"></a>
 ### Nested Schema for `rule`
 
 Required:

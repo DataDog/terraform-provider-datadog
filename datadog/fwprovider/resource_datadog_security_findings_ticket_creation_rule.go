@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -77,11 +76,10 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 				Computed:    true,
 				Default:     booldefault.StaticBool(true),
 			},
-		},
-		Blocks: map[string]schema.Block{
-			"rule": securityFindingsAutomationRuleScopeBlock(),
-			"action": schema.SingleNestedBlock{
+			"rule": securityFindingsAutomationRuleScopeAttribute(),
+			"action": schema.SingleNestedAttribute{
 				Description: "The action to take when the ticket creation rule matches a finding.",
+				Required:    true,
 				Attributes: map[string]schema.Attribute{
 					"project_id": schema.StringAttribute{
 						Description: "The UUID of the Case Management project.",
@@ -115,7 +113,6 @@ func (r *securityFindingsTicketCreationRuleResource) Schema(_ context.Context, _
 						Computed:    true,
 					},
 				},
-				Validators: []validator.Object{objectvalidator.IsRequired()},
 			},
 		},
 	}

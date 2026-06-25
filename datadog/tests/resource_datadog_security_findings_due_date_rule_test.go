@@ -34,21 +34,23 @@ func TestAccDatadogSecurityFindingsDueDateRule(t *testing.T) {
 resource "datadog_security_findings_due_date_rule" "test" {
   name    = "%s"
   enabled = true
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:prod"
   }
-  action {
+  action = {
     due_from           = "first_seen"
     reason_description = "Standard remediation SLA"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
-    due_days_per_severity {
-      severity    = "high"
-      due_in_days = 30
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+      {
+        severity    = "high"
+        due_in_days = 30
+      },
+    ]
   }
 }
 `, uniq),
@@ -73,24 +75,26 @@ resource "datadog_security_findings_due_date_rule" "test" {
 resource "datadog_security_findings_due_date_rule" "test" {
   name    = "%s-updated"
   enabled = false
-  rule {
+  rule = {
     finding_types = ["misconfiguration", "secret"]
     query         = "env:staging"
   }
-  action {
+  action = {
     due_from = "fix_available"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
-    due_days_per_severity {
-      severity    = "high"
-      due_in_days = 30
-    }
-    due_days_per_severity {
-      severity    = "medium"
-      due_in_days = 90
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+      {
+        severity    = "high"
+        due_in_days = 30
+      },
+      {
+        severity    = "medium"
+        due_in_days = 90
+      },
+    ]
   }
 }
 `, uniq),
@@ -173,24 +177,26 @@ func TestAccDatadogSecurityFindingsDueDateRule_DueDaysPerSeverityChurn(t *testin
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     due_from           = "first_seen"
     reason_description = "context"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
-    due_days_per_severity {
-      severity    = "high"
-      due_in_days = 30
-    }
-    due_days_per_severity {
-      severity    = "low"
-      due_in_days = 180
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+      {
+        severity    = "high"
+        due_in_days = 30
+      },
+      {
+        severity    = "low"
+        due_in_days = 180
+      },
+    ]
   }
 }
 `, uniq),
@@ -205,15 +211,17 @@ resource "datadog_security_findings_due_date_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 14
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 14
+      },
+    ]
   }
 }
 `, uniq),
@@ -245,15 +253,17 @@ func TestAccDatadogSecurityFindingsDueDateRule_Validation(t *testing.T) {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = []
   }
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+    ]
   }
 }
 `, uniq),
@@ -264,15 +274,17 @@ resource "datadog_security_findings_due_date_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["not_a_finding_type"]
   }
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+    ]
   }
 }
 `, uniq),
@@ -283,15 +295,17 @@ resource "datadog_security_findings_due_date_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     due_from = "not_a_due_from"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+    ]
   }
 }
 `, uniq),
@@ -302,15 +316,17 @@ resource "datadog_security_findings_due_date_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "not_a_severity"
-      due_in_days = 7
-    }
+    due_days_per_severity = [
+      {
+        severity    = "not_a_severity"
+        due_in_days = 7
+      },
+    ]
   }
 }
 `, uniq),
@@ -321,51 +337,55 @@ resource "datadog_security_findings_due_date_rule" "test" {
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 30
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+      {
+        severity    = "critical"
+        due_in_days = 30
+      },
+    ]
   }
 }
 `, uniq),
 				ExpectError: regexp.MustCompile("used more than once"),
 			},
 			{
-				// The rule block is required.
+				// The rule attribute is required.
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+    ]
   }
 }
 `, uniq),
-				ExpectError: regexp.MustCompile("must have a configuration value"),
+				ExpectError: regexp.MustCompile("is required, but no definition was found"),
 			},
 			{
-				// The action block is required.
+				// The action attribute is required.
 				Config: fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
 }
 `, uniq),
-				ExpectError: regexp.MustCompile("must have a configuration value"),
+				ExpectError: regexp.MustCompile("is required, but no definition was found"),
 			},
 		},
 	})
@@ -442,15 +462,17 @@ func testAccCheckDatadogSecurityFindingsDueDateRuleConfigMinimal(uniq string) st
 	return fmt.Sprintf(`
 resource "datadog_security_findings_due_date_rule" "test" {
   name = "%s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
   }
-  action {
+  action = {
     due_from = "first_seen"
-    due_days_per_severity {
-      severity    = "critical"
-      due_in_days = 7
-    }
+    due_days_per_severity = [
+      {
+        severity    = "critical"
+        due_in_days = 7
+      },
+    ]
   }
 }
 `, uniq)

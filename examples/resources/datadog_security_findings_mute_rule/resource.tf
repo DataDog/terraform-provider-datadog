@@ -4,12 +4,12 @@ resource "datadog_security_findings_mute_rule" "accepted_risks_dev" {
   name    = "Mute accepted risks in dev"
   enabled = true
 
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:dev team:platform @severity:low"
   }
 
-  action {
+  action = {
     reason             = "risk_accepted"
     reason_description = "Accepted for dev environments only"
     # Optional Unix timestamp in milliseconds at which the mute expires.

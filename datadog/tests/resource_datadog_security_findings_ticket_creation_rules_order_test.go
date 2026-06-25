@@ -205,11 +205,11 @@ func testAccTicketCreationRulesOrderConfig(uniq string, rules, order []string) s
 		fmt.Fprintf(&b, `
 resource "datadog_security_findings_ticket_creation_rule" %[2]q {
   name = "%[1]s-%[2]s"
-  rule {
+  rule = {
     finding_types = ["misconfiguration"]
     query         = "env:dev"
   }
-  action {
+  action = {
     project_id          = %[3]q
     target              = "jira"
     max_tickets_per_day = 100
