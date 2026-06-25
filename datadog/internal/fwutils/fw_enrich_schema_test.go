@@ -1796,6 +1796,6 @@ func TestEnrichSchemaNestedAttributeWithinNestedAttribute(t *testing.T) {
 		Attributes["levels"].(schema.ListNestedAttribute).
 		NestedObject.Attributes["team"].GetDescription()
 	if description != expected {
-		t.Errorf("expected description '%s', got '%s' instead.", expected, got)
+		t.Errorf("expected description '%s', got '%s' instead.", expected, description)
 	}
 }
