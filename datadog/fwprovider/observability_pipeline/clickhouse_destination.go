@@ -82,19 +82,24 @@ func ExpandClickhouseDestination(ctx context.Context, id string, inputs types.Li
 
 	if len(src.Compression) > 0 {
 		c := src.Compression[0]
-		compression := datadogV2.NewObservabilityPipelineClickhouseDestinationCompressionWithDefaults()
+		obj := datadogV2.NewObservabilityPipelineClickhouseDestinationCompressionObjectWithDefaults()
 		if !c.Algorithm.IsNull() && !c.Algorithm.IsUnknown() {
-			compression.SetAlgorithm(datadogV2.ObservabilityPipelineClickhouseDestinationCompressionAlgorithm(c.Algorithm.ValueString()))
+			obj.SetAlgorithm(datadogV2.ObservabilityPipelineClickhouseDestinationCompressionAlgorithm(c.Algorithm.ValueString()))
 		}
 		if !c.Level.IsNull() && !c.Level.IsUnknown() {
-			compression.SetLevel(c.Level.ValueInt64())
+			obj.SetLevel(c.Level.ValueInt64())
 		}
-		dest.SetCompression(*compression)
+		dest.SetCompression(datadogV2.ObservabilityPipelineClickhouseDestinationCompressionObjectAsObservabilityPipelineClickhouseDestinationCompression(obj))
 	}
 
 	if len(src.Auth) > 0 {
 		a := src.Auth[0]
 		auth := datadogV2.NewObservabilityPipelineClickhouseDestinationAuthWithDefaults()
+		strategy := "basic"
+		if !a.Strategy.IsNull() && !a.Strategy.IsUnknown() {
+			strategy = a.Strategy.ValueString()
+		}
+		auth.SetStrategy(datadogV2.ObservabilityPipelineClickhouseDestinationAuthStrategy(strategy))
 		if !a.UsernameKey.IsNull() && !a.UsernameKey.IsUnknown() {
 			auth.SetUsernameKey(a.UsernameKey.ValueString())
 		}
@@ -185,14 +190,16 @@ func FlattenClickhouseDestination(ctx context.Context, src *datadogV2.Observabil
 	}
 
 	if comp, ok := src.GetCompressionOk(); ok {
-		cm := ClickhouseCompressionModel{}
-		if v, ok2 := comp.GetAlgorithmOk(); ok2 {
-			cm.Algorithm = types.StringValue(string(*v))
-		}
-		if v, ok2 := comp.GetLevelOk(); ok2 {
-			cm.Level = types.Int64Value(*v)
-		} else {
-			cm.Level = types.Int64Null()
+		cm := ClickhouseCompressionModel{Level: types.Int64Null()}
+		if obj := comp.ObservabilityPipelineClickhouseDestinationCompressionObject; obj != nil {
+			if v, ok2 := obj.GetAlgorithmOk(); ok2 {
+				cm.Algorithm = types.StringValue(string(*v))
+			}
+			if v, ok2 := obj.GetLevelOk(); ok2 {
+				cm.Level = types.Int64Value(*v)
+			}
+		} else if alg := comp.ObservabilityPipelineClickhouseDestinationCompressionAlgorithm; alg != nil {
+			cm.Algorithm = types.StringValue(string(*alg))
 		}
 		model.Compression = []ClickhouseCompressionModel{cm}
 	}
