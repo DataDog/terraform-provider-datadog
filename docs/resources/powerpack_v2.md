@@ -9143,7 +9143,7 @@ Optional:
 
 Required:
 
-- `data_source` (String) Data source for the query (e.g. `logs`).
+- `data_source` (String) Data source for the query (for example, `logs`).
 - `query_string` (String) The query string to filter events.
 
 Optional:
@@ -20064,7 +20064,7 @@ Optional:
 
 Required:
 
-- `data_source` (String) Data source for the query (e.g. `logs`).
+- `data_source` (String) Data source for the query (for example, `logs`).
 - `query_string` (String) The query string to filter events.
 
 Optional:
