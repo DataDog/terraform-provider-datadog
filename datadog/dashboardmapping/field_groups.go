@@ -1628,7 +1628,7 @@ var dataProjectionQueryFields = []FieldSpec{
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The query string to filter events."},
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "Data source for the query (e.g. `logs`)."},
+		Description: "Data source for the query (for example, `logs`)."},
 	{HCLKey: "indexes", Type: TypeStringList, OmitEmpty: true,
 		Description: "List of indexes to query."},
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
