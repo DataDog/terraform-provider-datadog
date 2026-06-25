@@ -91,6 +91,9 @@ func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceMode
 			{{ .LHS }}: {{ .RHS }},
 {{- end }}
 		}
+{{- range .State.ItemLists }}
+		{{ template "renderList" . }}
+{{- end }}
 		results = append(results, &r)
 	}
 {{ if .Read.Filters }}
