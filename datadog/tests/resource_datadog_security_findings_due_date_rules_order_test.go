@@ -239,7 +239,7 @@ func testAccDueDateRulesReverseOrderOutOfBand(accProvider *fwprovider.FrameworkP
 
 		resp, httpResp, err := api.ListSecurityFindingsAutomationDueDateRules(auth)
 		if err != nil {
-			return fmt.Errorf("error listing due date rules for out-of-band reorder (%v): %s", httpResp, err)
+			return fmt.Errorf("error listing due date rules for out-of-band reorder (%v): %w", httpResp, err)
 		}
 		data := resp.GetData()
 		items := make([]datadogV2.DueDateRuleReorderItem, 0, len(data))
@@ -248,7 +248,7 @@ func testAccDueDateRulesReverseOrderOutOfBand(accProvider *fwprovider.FrameworkP
 		}
 		req := datadogV2.NewDueDateRuleReorderRequest(items)
 		if _, httpResp, err := api.ReorderSecurityFindingsAutomationDueDateRules(auth, *req); err != nil {
-			return fmt.Errorf("error reordering due date rules out-of-band (%v): %s", httpResp, err)
+			return fmt.Errorf("error reordering due date rules out-of-band (%v): %w", httpResp, err)
 		}
 		return nil
 	}
@@ -286,7 +286,7 @@ func testAccDueDateRuleCreateOutOfBand(accProvider *fwprovider.FrameworkProvider
 
 		resp, httpResp, err := api.CreateSecurityFindingsAutomationDueDateRule(auth, *body)
 		if err != nil {
-			return fmt.Errorf("error creating due date rule out-of-band (%v): %s", httpResp, err)
+			return fmt.Errorf("error creating due date rule out-of-band (%v): %w", httpResp, err)
 		}
 		respData := resp.GetData()
 		*idOut = respData.GetId()

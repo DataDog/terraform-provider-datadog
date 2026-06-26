@@ -236,7 +236,7 @@ func testAccTicketCreationRulesReverseOrderOutOfBand(accProvider *fwprovider.Fra
 
 		resp, httpResp, err := api.ListSecurityFindingsAutomationTicketCreationRules(auth)
 		if err != nil {
-			return fmt.Errorf("error listing ticket creation rules for out-of-band reorder (%v): %s", httpResp, err)
+			return fmt.Errorf("error listing ticket creation rules for out-of-band reorder (%v): %w", httpResp, err)
 		}
 		data := resp.GetData()
 		items := make([]datadogV2.TicketCreationRuleReorderItem, 0, len(data))
@@ -245,7 +245,7 @@ func testAccTicketCreationRulesReverseOrderOutOfBand(accProvider *fwprovider.Fra
 		}
 		req := datadogV2.NewTicketCreationRuleReorderRequest(items)
 		if _, httpResp, err := api.ReorderSecurityFindingsAutomationTicketCreationRules(auth, *req); err != nil {
-			return fmt.Errorf("error reordering ticket creation rules out-of-band (%v): %s", httpResp, err)
+			return fmt.Errorf("error reordering ticket creation rules out-of-band (%v): %w", httpResp, err)
 		}
 		return nil
 	}
@@ -261,7 +261,7 @@ func testAccTicketCreationRuleCreateOutOfBand(accProvider *fwprovider.FrameworkP
 
 		projectID, err := uuid.Parse(ticketCreationTestProjectID)
 		if err != nil {
-			return fmt.Errorf("invalid project ID %q: %s", ticketCreationTestProjectID, err)
+			return fmt.Errorf("invalid project ID %q: %w", ticketCreationTestProjectID, err)
 		}
 
 		scope := datadogV2.NewAutomationRuleScopeWithDefaults()
@@ -287,7 +287,7 @@ func testAccTicketCreationRuleCreateOutOfBand(accProvider *fwprovider.FrameworkP
 
 		resp, httpResp, err := api.CreateSecurityFindingsAutomationTicketCreationRule(auth, *body)
 		if err != nil {
-			return fmt.Errorf("error creating ticket creation rule out-of-band (%v): %s", httpResp, err)
+			return fmt.Errorf("error creating ticket creation rule out-of-band (%v): %w", httpResp, err)
 		}
 		respData := resp.GetData()
 		*idOut = respData.GetId()

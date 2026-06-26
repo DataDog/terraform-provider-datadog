@@ -233,7 +233,7 @@ func testAccMuteRulesReverseOrderOutOfBand(accProvider *fwprovider.FrameworkProv
 
 		resp, httpResp, err := api.ListSecurityFindingsAutomationMuteRules(auth)
 		if err != nil {
-			return fmt.Errorf("error listing mute rules for out-of-band reorder (%v): %s", httpResp, err)
+			return fmt.Errorf("error listing mute rules for out-of-band reorder (%v): %w", httpResp, err)
 		}
 		data := resp.GetData()
 		items := make([]datadogV2.MuteRuleReorderItem, 0, len(data))
@@ -242,7 +242,7 @@ func testAccMuteRulesReverseOrderOutOfBand(accProvider *fwprovider.FrameworkProv
 		}
 		req := datadogV2.NewMuteRuleReorderRequest(items)
 		if _, httpResp, err := api.ReorderSecurityFindingsAutomationMuteRules(auth, *req); err != nil {
-			return fmt.Errorf("error reordering mute rules out-of-band (%v): %s", httpResp, err)
+			return fmt.Errorf("error reordering mute rules out-of-band (%v): %w", httpResp, err)
 		}
 		return nil
 	}
@@ -277,7 +277,7 @@ func testAccMuteRuleCreateOutOfBand(accProvider *fwprovider.FrameworkProvider, n
 
 		resp, httpResp, err := api.CreateSecurityFindingsAutomationMuteRule(auth, *body)
 		if err != nil {
-			return fmt.Errorf("error creating mute rule out-of-band (%v): %s", httpResp, err)
+			return fmt.Errorf("error creating mute rule out-of-band (%v): %w", httpResp, err)
 		}
 		respData := resp.GetData()
 		*idOut = respData.GetId()
