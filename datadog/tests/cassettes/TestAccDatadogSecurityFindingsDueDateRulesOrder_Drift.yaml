@@ -9,34 +9,34 @@ interactions:
         content_length: 315
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}},"type":"due_date_rules"}}
+            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}},"type":"due_date_rules"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 391.841541ms
+        duration: 318.0595ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -45,34 +45,34 @@ interactions:
         content_length: 315
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}},"type":"due_date_rules"}}
+            {"data":{"attributes":{"action":{"due_days_per_severity":[{"due_in_days":7,"severity":"critical"}],"due_from":"first_seen"},"enabled":true,"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}},"type":"due_date_rules"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 516.35725ms
+        duration: 318.384417ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,34 +81,34 @@ interactions:
         content_length: 151
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules"},{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules"}]}
+            {"data":[{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules"},{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules"}]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/reorder
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/reorder
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 150
         uncompressed: false
-        body: '{"data":[{"type":"due_date_rules","id":"a22df375-1243-41fb-bc66-9caa7ebacaf9"},{"type":"due_date_rules","id":"a692b940-4d35-493e-8b31-3bb7698b7c1a"}]}'
+        body: '{"data":[{"type":"due_date_rules","id":"e9b6fe33-39e5-4476-8ced-04007aad1dad"},{"type":"due_date_rules","id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 365.29925ms
+        duration: 244.416583ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -117,7 +117,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -125,23 +125,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a692b940-4d35-493e-8b31-3bb7698b7c1a
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/8f40f1b9-4878-4caa-ac4b-06c48b2bd14c
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 143.555542ms
+        duration: 172.735292ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -158,23 +158,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a22df375-1243-41fb-bc66-9caa7ebacaf9
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/e9b6fe33-39e5-4476-8ced-04007aad1dad
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 143.536125ms
+        duration: 172.861042ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -183,7 +183,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -191,23 +191,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
+        body: '{"data":[{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 145.500458ms
+        duration: 141.054833ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -216,7 +216,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -224,23 +224,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a22df375-1243-41fb-bc66-9caa7ebacaf9
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/8f40f1b9-4878-4caa-ac4b-06c48b2bd14c
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 181.2585ms
+        duration: 162.321834ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -249,7 +249,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -257,23 +257,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a692b940-4d35-493e-8b31-3bb7698b7c1a
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/e9b6fe33-39e5-4476-8ced-04007aad1dad
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 181.305334ms
+        duration: 182.070917ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -282,7 +282,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -290,23 +290,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
+        body: '{"data":[{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 131.354041ms
+        duration: 146.749083ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -315,7 +315,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -323,23 +323,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
+        body: '{"data":[{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 136.136292ms
+        duration: 151.879333ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -348,34 +348,34 @@ interactions:
         content_length: 151
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules"},{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules"}]}
+            {"data":[{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules"},{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules"}]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/reorder
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/reorder
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 150
         uncompressed: false
-        body: '{"data":[{"type":"due_date_rules","id":"a692b940-4d35-493e-8b31-3bb7698b7c1a"},{"type":"due_date_rules","id":"a22df375-1243-41fb-bc66-9caa7ebacaf9"}]}'
+        body: '{"data":[{"type":"due_date_rules","id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c"},{"type":"due_date_rules","id":"e9b6fe33-39e5-4476-8ced-04007aad1dad"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 367.998292ms
+        duration: 272.841ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -384,7 +384,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -392,23 +392,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a22df375-1243-41fb-bc66-9caa7ebacaf9
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/e9b6fe33-39e5-4476-8ced-04007aad1dad
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 135.27625ms
+        duration: 131.299167ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -417,7 +417,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -425,23 +425,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a692b940-4d35-493e-8b31-3bb7698b7c1a
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/8f40f1b9-4878-4caa-ac4b-06c48b2bd14c
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 135.266417ms
+        duration: 158.774417ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -450,7 +450,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -458,23 +458,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
+        body: '{"data":[{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 130.60925ms
+        duration: 151.373084ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -483,7 +483,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -491,23 +491,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a22df375-1243-41fb-bc66-9caa7ebacaf9
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/e9b6fe33-39e5-4476-8ced-04007aad1dad
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 138.323417ms
+        duration: 119.80675ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -516,7 +516,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -524,23 +524,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a692b940-4d35-493e-8b31-3bb7698b7c1a
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/8f40f1b9-4878-4caa-ac4b-06c48b2bd14c
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 138.3785ms
+        duration: 128.4665ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -549,7 +549,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -557,23 +557,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
+        body: '{"data":[{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 137.534ms
+        duration: 177.939667ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -582,34 +582,34 @@ interactions:
         content_length: 151
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":[{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules"},{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules"}]}
+            {"data":[{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules"},{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules"}]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/reorder
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/reorder
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 150
         uncompressed: false
-        body: '{"data":[{"type":"due_date_rules","id":"a22df375-1243-41fb-bc66-9caa7ebacaf9"},{"type":"due_date_rules","id":"a692b940-4d35-493e-8b31-3bb7698b7c1a"}]}'
+        body: '{"data":[{"type":"due_date_rules","id":"e9b6fe33-39e5-4476-8ced-04007aad1dad"},{"type":"due_date_rules","id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 415.040542ms
+        duration: 248.302166ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -618,7 +618,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -626,23 +626,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a692b940-4d35-493e-8b31-3bb7698b7c1a
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/8f40f1b9-4878-4caa-ac4b-06c48b2bd14c
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 191.966875ms
+        duration: 122.02425ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -651,7 +651,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -659,23 +659,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a22df375-1243-41fb-bc66-9caa7ebacaf9
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/e9b6fe33-39e5-4476-8ced-04007aad1dad
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 606
         uncompressed: false
-        body: '{"data":{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
+        body: '{"data":{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 191.952708ms
+        duration: 122.1455ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -684,7 +684,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -692,23 +692,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"a22df375-1243-41fb-bc66-9caa7ebacaf9","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757827,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757827,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"a692b940-4d35-493e-8b31-3bb7698b7c1a","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782289757825,"created_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782289757825,"modified_by":{"type":"user","id":"8846fa8e-5bf9-11f0-b7e0-fa0437aa46c4","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782289756-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
+        body: '{"data":[{"id":"e9b6fe33-39e5-4476-8ced-04007aad1dad","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417215,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417215,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-a","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}},{"id":"8f40f1b9-4878-4caa-ac4b-06c48b2bd14c","type":"due_date_rules","attributes":{"action":{"due_days_per_severity":[{"severity":"critical","due_in_days":7}],"due_from":"first_seen"},"created_at":1782479417213,"created_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"enabled":true,"modified_at":1782479417213,"modified_by":{"type":"user","id":"8c9166b9-a454-47dc-8089-5f614ca3d265","name":"Hugo Queinnec"},"name":"tf-TestAccDatadogSecurityFindingsDueDateRulesOrder_Drift-local-1782479416-b","rule":{"finding_types":["misconfiguration"],"query":"env:dev"}}}],"meta":{"page":{"total_filtered_count":2}},"links":{"first":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0","last":"/api/v2/security/findings/automation/due_date_rules?page[size]=1000\u0026page[number]=0"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 154.782208ms
+        duration: 130.26025ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -717,7 +717,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -725,12 +725,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a692b940-4d35-493e-8b31-3bb7698b7c1a
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/8f40f1b9-4878-4caa-ac4b-06c48b2bd14c
         method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -739,7 +739,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 359.45225ms
+        duration: 226.651083ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -748,7 +748,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -756,12 +756,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a22df375-1243-41fb-bc66-9caa7ebacaf9
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/e9b6fe33-39e5-4476-8ced-04007aad1dad
         method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -770,7 +770,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 360.374167ms
+        duration: 237.816417ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -779,7 +779,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -787,12 +787,12 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a22df375-1243-41fb-bc66-9caa7ebacaf9
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/e9b6fe33-39e5-4476-8ced-04007aad1dad
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 80
@@ -803,7 +803,7 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 114.229125ms
+        duration: 105.607292ms
     - id: 24
       request:
         proto: HTTP/1.1
@@ -812,7 +812,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -820,12 +820,12 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security/findings/automation/due_date_rules/a692b940-4d35-493e-8b31-3bb7698b7c1a
+        url: https://api.datadoghq.com/api/v2/security/findings/automation/due_date_rules/8f40f1b9-4878-4caa-ac4b-06c48b2bd14c
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 80
@@ -836,4 +836,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 114.926959ms
+        duration: 108.985916ms
