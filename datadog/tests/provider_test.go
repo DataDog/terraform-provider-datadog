@@ -1064,6 +1064,25 @@ func withDefaultTags(providerFactory func() (*schema.Provider, error), defaultTa
 	}
 }
 
+// withIgnoreTagKeys wraps an SDKv2 provider factory so the provider-level ignore_tag_keys is set,
+// mirroring withDefaultTags. It lets a test exercise the provider-block ignore_tag_keys path the
+// same way a user setting it in their provider config would.
+func withIgnoreTagKeys(providerFactory func() (*schema.Provider, error), ignoreTagKeys []string) func() (*schema.Provider, error) {
+	provider, err := providerFactory()
+	newProvider := *provider
+	return func() (*schema.Provider, error) {
+		configureFunc := func(lctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+			config, diags := provider.ConfigureContextFunc(lctx, d)
+			if config != nil {
+				config.(*datadog.ProviderConfiguration).IgnoreTagKeys = ignoreTagKeys
+			}
+			return config, diags
+		}
+		newProvider.ConfigureContextFunc = configureFunc
+		return &newProvider, err
+	}
+}
+
 func TestProvider(t *testing.T) {
 	rec := initRecorder(t)
 	defer rec.Stop()

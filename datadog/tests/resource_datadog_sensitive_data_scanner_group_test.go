@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -14,6 +15,37 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
+
+func TestAccDatadogSensitiveDataScannerGroup_SamplingOrder(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
+	resourceName := "datadog_sensitive_data_scanner_group.sample_group"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerGroupDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSensitiveDataScannerGroupAllProductsSampling(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSensitiveDataScannerGroupExists(accProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", uniq),
+					resource.TestCheckResourceAttr(resourceName, "product_list.#", "4"),
+					resource.TestCheckResourceAttr(resourceName, "samplings.#", "4"),
+					testAccCheckDatadogSensitiveDataScannerGroupSampling(resourceName, "logs", 25),
+					testAccCheckDatadogSensitiveDataScannerGroupSampling(resourceName, "rum", 25),
+					testAccCheckDatadogSensitiveDataScannerGroupSampling(resourceName, "events", 25),
+					testAccCheckDatadogSensitiveDataScannerGroupSampling(resourceName, "apm", 25),
+				),
+			},
+		},
+	})
+}
 
 func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 	//if isRecording() || isReplaying() {
@@ -63,6 +95,62 @@ func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 			},
 		},
 	})
+}
+
+func testAccCheckDatadogSensitiveDataScannerGroupAllProductsSampling(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_sensitive_data_scanner_group" "sample_group" {
+	name         = "%s"
+	product_list = ["logs", "rum", "events", "apm"]
+	is_enabled   = true
+	filter {
+		query = "service:sds-scenario-runner"
+	}
+	samplings {
+		product = "logs"
+		rate    = 25
+	}
+	samplings {
+		product = "rum"
+		rate    = 25
+	}
+	samplings {
+		product = "events"
+		rate    = 25
+	}
+	samplings {
+		product = "apm"
+		rate    = 25
+	}
+}
+`, name)
+}
+
+func testAccCheckDatadogSensitiveDataScannerGroupSampling(resourceName, product string, rate float64) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		resourceState, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("resource %s not found in state", resourceName)
+		}
+
+		count, err := strconv.Atoi(resourceState.Primary.Attributes["samplings.#"])
+		if err != nil {
+			return fmt.Errorf("failed to parse samplings count: %w", err)
+		}
+
+		for i := 0; i < count; i++ {
+			prefix := fmt.Sprintf("samplings.%d.", i)
+			if resourceState.Primary.Attributes[prefix+"product"] == product {
+				rateStr := resourceState.Primary.Attributes[prefix+"rate"]
+				if rateStr == strconv.FormatFloat(rate, 'f', -1, 64) {
+					return nil
+				}
+				return fmt.Errorf("sampling for product %q has rate %q, want %v", product, rateStr, rate)
+			}
+		}
+
+		return fmt.Errorf("sampling for product %q not found in state", product)
+	}
 }
 
 func testAccCheckDatadogSensitiveDataScannerGroup(name string) string {

@@ -280,6 +280,29 @@ func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, 
 	}
 }
 
+// withIgnoreTagKeysFw wraps the muxed framework provider so the provider-level ignore_tag_keys is
+// set, mirroring withDefaultTagsFw. Framework resources read it via providerData.IgnoreTagKeys in
+// Configure, so setting it on the struct before the mux server is built is what a user's provider
+// block does.
+func withIgnoreTagKeysFw(ctx context.Context, providers *compositeProviderStruct, ignoreTagKeys []string) func() (tfprotov6.ProviderServer, error) {
+	return func() (tfprotov6.ProviderServer, error) {
+		providers.frameworkProvider.IgnoreTagKeys = ignoreTagKeys
+
+		upgradedSdkProvider, err := tf5to6server.UpgradeServer(
+			ctx,
+			providers.sdkV2Provider.GRPCProvider,
+		)
+		if err != nil {
+			return nil, err
+		}
+		muxServer, err := tf6muxserver.NewMuxServer(ctx,
+			providerserver.NewProtocol6(providers.frameworkProvider),
+			func() tfprotov6.ProviderServer { return upgradedSdkProvider },
+		)
+		return muxServer, err
+	}
+}
+
 // TestFrameworkProviderConfigure_CloudAuthOnly tests that cloud auth works when only cloud_provider_type is set
 func TestFrameworkProviderConfigure_CloudAuthOnly(t *testing.T) {
 	// Clear environment variables

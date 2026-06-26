@@ -105,7 +105,7 @@ func Provider() *schema.Provider {
 			"cloud_provider_type": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
+				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This can also be set using the `DD_CLOUD_PROVIDER_TYPE` environment variable. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
 			},
 			"cloud_provider_region": {
 				Type:        schema.TypeString,
@@ -115,7 +115,7 @@ func Provider() *schema.Provider {
 			"org_uuid": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The organization UUID; used for cloud-provider-based authentication. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; used for cloud-provider-based authentication. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": {
 				Type:        schema.TypeString,
@@ -210,6 +210,12 @@ func Provider() *schema.Provider {
 					},
 				},
 			},
+			"ignore_tag_keys": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.",
+			},
 		},
 
 		// NEW RESOURCES ARE NOT ALLOWED TO BE ADDED HERE
@@ -300,6 +306,7 @@ type ProviderConfiguration struct {
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
 	DefaultTags         map[string]interface{}
+	IgnoreTagKeys       []string
 
 	Now func() time.Time
 }
@@ -360,6 +367,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	// Cloud provider auth specific variables
 	cloudProviderType := d.Get("cloud_provider_type").(string)
+	if cloudProviderType == "" {
+		cloudProviderType, _ = utils.GetMultiEnvVar(utils.CloudProviderTypeEnvVars...)
+	}
 	cloudProviderRegion := d.Get("cloud_provider_region").(string)
 	orgUUID := d.Get("org_uuid").(string)
 	if orgUUID == "" {
@@ -621,8 +631,60 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			providerConfig.DefaultTags = tags.(map[string]interface{})
 		}
 	}
+	if v, ok := d.GetOk("ignore_tag_keys"); ok {
+		for _, k := range v.(*schema.Set).List() {
+			providerConfig.IgnoreTagKeys = append(providerConfig.IgnoreTagKeys, k.(string))
+		}
+	}
 
 	return &providerConfig, nil
+}
+
+// ignoreTagKeysDiff pins any tag key listed in ignore_tag_keys to its prior state value, so
+// Terraform reports no drift on those keys and apply doesn't strip them when they're managed
+// out-of-band. Precedence: the resource-level ignore_tag_keys is unioned with the provider-level
+// ignore_tag_keys; the effective set is the union of both lists. Only wired on resources that
+// declare the attribute, and must run before tagDiff so default_tags merges over the
+// ignore-filtered set.
+func ignoreTagKeysDiff(_ context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+
+	ignoreKeys := append([]string{}, providerConf.IgnoreTagKeys...)
+	if raw, ok := d.GetOk("ignore_tag_keys"); ok {
+		for _, v := range raw.(*schema.Set).List() {
+			ignoreKeys = append(ignoreKeys, v.(string))
+		}
+	}
+	if len(ignoreKeys) == 0 {
+		return nil
+	}
+
+	oldRaw, newRaw := d.GetChange("tags")
+	planSet, ok := newRaw.(*schema.Set)
+	if !ok || planSet == nil {
+		return nil
+	}
+	planTags := make([]string, 0, planSet.Len())
+	for _, v := range planSet.List() {
+		planTags = append(planTags, v.(string))
+	}
+	var stateTags []string
+	if stateSet, ok := oldRaw.(*schema.Set); ok && stateSet != nil {
+		stateTags = make([]string, 0, stateSet.Len())
+		for _, v := range stateSet.List() {
+			stateTags = append(stateTags, v.(string))
+		}
+	}
+
+	filtered := utils.StripIgnoredTags(planTags, stateTags, ignoreKeys)
+	filteredIface := make([]interface{}, len(filtered))
+	for i, s := range filtered {
+		filteredIface[i] = s
+	}
+	if err := d.SetNew("tags", schema.NewSet(planSet.F, filteredIface)); err != nil {
+		return fmt.Errorf("error applying ignore_tag_keys: %w", err)
+	}
+	return nil
 }
 
 // custom diff function that changes plan to take default tags into account
@@ -631,8 +693,8 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 	if len(providerConf.DefaultTags) == 0 {
 		return nil
 	}
-	resourceTags := d.Get("tags")
-	if resourceTags == nil { // if the "tags" attribute does not exist in the resource schema
+	resourceTags := d.Get("tags") // reads the ignore-filtered set when ignoreTagKeysDiff ran first; the resource tags otherwise.
+	if resourceTags == nil {      // if the "tags" attribute does not exist in the resource schema
 		return nil
 	}
 	tags := make(map[string]interface{})
