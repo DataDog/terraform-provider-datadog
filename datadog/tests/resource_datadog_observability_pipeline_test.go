@@ -5017,6 +5017,56 @@ resource "datadog_observability_pipeline" "cloud_prem_dest_buffer" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_cloudPremDestinationTls(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.cloud_prem_dest_tls"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "cloud_prem_dest_tls" {
+  name = "cloud-prem-destination-tls-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "cloud-prem-dest-tls-1"
+      inputs = ["source-1"]
+      cloud_prem {
+        endpoint_url_key = "CLOUDPREM_ENDPOINT_URL"
+        tls {
+          crt_file     = "/path/to/cert.pem"
+          ca_file      = "/path/to/ca.pem"
+          key_file     = "/path/to/key.pem"
+          key_pass_key = "TLS_KEY_PASSPHRASE"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "cloud-prem-destination-tls-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.endpoint_url_key", "CLOUDPREM_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.crt_file", "/path/to/cert.pem"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.ca_file", "/path/to/ca.pem"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_file", "/path/to/key.pem"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_kafkaDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
