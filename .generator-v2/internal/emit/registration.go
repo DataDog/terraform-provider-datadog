@@ -23,10 +23,10 @@ type GeneratedRegistration struct {
 }
 
 // DatasourceConstructor returns the exported constructor a generated data source
-// declares for artifact name. It matches the New<GoName>DataSource the
-// data-source template emits, GoName being the SdkName of the artifact name.
+// declares for artifact name. It matches the New<title GoName>DataSource the
+// data-source template emits, GoName being the Datadog-prefixed dsGoName base.
 func DatasourceConstructor(name string) string {
-	return "New" + model.SdkName(name) + "DataSource"
+	return "New" + upperFirst(dsGoName(name)) + "DataSource"
 }
 
 // datasourceConstructorRe matches a New<...>DataSource constructor identifier.

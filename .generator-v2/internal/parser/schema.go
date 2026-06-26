@@ -195,7 +195,10 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	}
 	op.ResponseSchema = resp
 
-	return n.retainItemRef(op, respProxy)
+	if err := n.retainItemRef(op, respProxy); err != nil {
+		return err
+	}
+	return n.retainResponseDataRef(op, respProxy)
 }
 
 // fillQueryParams normalizes raw's in:query parameters onto op.QueryParams,
@@ -269,6 +272,23 @@ func (n *schemaNormalizer) retainItemRef(op *model.Operation, respProxy *base.Sc
 	}
 	if elem := prop.Items.A; elem != nil && elem.IsReference() {
 		op.ItemRefName = lastRefSegment(elem.GetReference())
+	}
+	return nil
+}
+
+// retainResponseDataRef records op.ResponseDataRefName: the last $ref segment of a
+// by-id response's "data" property when that property is a single object
+// reference (e.g. "FullAPIKey"). A list response's "data" is an inline array, not
+// a reference, so it leaves the field empty (retainItemRef covers that). This lets
+// the model detect a "both" data source whose by-id record shape diverges from its
+// list element shape.
+func (n *schemaNormalizer) retainResponseDataRef(op *model.Operation, respProxy *base.SchemaProxy) error {
+	body, err := n.resolveToSchema(respProxy)
+	if err != nil || body == nil || body.Properties == nil {
+		return err
+	}
+	if data := body.Properties.GetOrZero(defaultResultsPath); data != nil && data.IsReference() {
+		op.ResponseDataRefName = lastRefSegment(data.GetReference())
 	}
 	return nil
 }

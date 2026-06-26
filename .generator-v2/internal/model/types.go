@@ -118,6 +118,12 @@ type Operation struct {
 	// for a list response, e.g. "Team" — the SDK Go element type. Empty when the
 	// resultsPath property is absent or is not an array.
 	ItemRefName string
+	// ResponseDataRefName is the last $ref segment of a by-id response's "data"
+	// property when it is a single object reference, e.g. "FullAPIKey" — the SDK
+	// Go record type. Empty for list responses (whose "data" is an array; see
+	// ItemRefName) or an inline data object. Lets a "both" data source detect when
+	// its by-id record shape diverges from its list element shape.
+	ResponseDataRefName string
 	// SearchOp is the operation named by Tracking.Group.Search, resolved during
 	// NormalizeSchemas: the list endpoint a singular data source searches to
 	// resolve one record. It points at the operation itself when this op is the

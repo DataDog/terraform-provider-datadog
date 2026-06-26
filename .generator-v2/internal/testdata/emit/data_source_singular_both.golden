@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &datastoreDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogDatastoreDataSource{}
 )
 
-type datastoreDataSourceModel struct {
+type datadogDatastoreDataSourceModel struct {
 	// Datasource ID
 	ID types.String `tfsdk:"id"`
 
@@ -32,26 +32,26 @@ type datastoreDataSourceModel struct {
 	PrimaryKeyGenerationStrategy types.String `tfsdk:"primary_key_generation_strategy"`
 }
 
-type datastoreDataSource struct {
+type datadogDatastoreDataSource struct {
 	Api  *datadogV2.ActionsDatastoresApi
 	Auth context.Context
 }
 
-func NewDatastoreDataSource() datasource.DataSource {
-	return &datastoreDataSource{}
+func NewDatadogDatastoreDataSource() datasource.DataSource {
+	return &datadogDatastoreDataSource{}
 }
 
-func (d *datastoreDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogDatastoreDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetActionsDatastoresApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *datastoreDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogDatastoreDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "datastore"
 }
 
-func (d *datastoreDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogDatastoreDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing Datadog datastore.",
 		Attributes: map[string]schema.Attribute{
@@ -100,8 +100,8 @@ func (d *datastoreDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 	}
 }
 
-func (d *datastoreDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datastoreDataSourceModel
+func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogDatastoreDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -138,7 +138,7 @@ func (d *datastoreDataSource) Read(ctx context.Context, request datasource.ReadR
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datastoreDataSource) updateState(state *datastoreDataSourceModel, data datadogV2.DatastoreData) {
+func (d *datadogDatastoreDataSource) updateState(state *datadogDatastoreDataSourceModel, data datadogV2.DatastoreData) {
 	attributes := data.GetAttributes()
 	if id, ok := data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)

@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &powerpackDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogPowerpackDataSource{}
 )
 
-type powerpackDataSourceModel struct {
+type datadogPowerpackDataSourceModel struct {
 	// Datasource ID
 	ID types.String `tfsdk:"id"`
 
@@ -28,26 +28,26 @@ type powerpackDataSourceModel struct {
 	Name        types.String `tfsdk:"name"`
 }
 
-type powerpackDataSource struct {
+type datadogPowerpackDataSource struct {
 	Api  *datadogV2.PowerpacksApi
 	Auth context.Context
 }
 
-func NewPowerpackDataSource() datasource.DataSource {
-	return &powerpackDataSource{}
+func NewDatadogPowerpackDataSource() datasource.DataSource {
+	return &datadogPowerpackDataSource{}
 }
 
-func (d *powerpackDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogPowerpackDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetPowerpacksApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *powerpackDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogPowerpackDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "powerpack"
 }
 
-func (d *powerpackDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogPowerpackDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing Datadog Powerpack.",
 		Attributes: map[string]schema.Attribute{
@@ -68,8 +68,8 @@ func (d *powerpackDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 	}
 }
 
-func (d *powerpackDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state powerpackDataSourceModel
+func (d *datadogPowerpackDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogPowerpackDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -104,7 +104,7 @@ func (d *powerpackDataSource) Read(ctx context.Context, request datasource.ReadR
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *powerpackDataSource) updateState(state *powerpackDataSourceModel, data datadogV2.PowerpackData) {
+func (d *datadogPowerpackDataSource) updateState(state *datadogPowerpackDataSourceModel, data datadogV2.PowerpackData) {
 	attributes := data.GetAttributes()
 	if id, ok := data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)

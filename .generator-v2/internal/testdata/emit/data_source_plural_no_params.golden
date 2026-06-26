@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &datastoresDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogDatastoresDataSource{}
 )
 
-type datastoresDataSourceModel struct {
+type datadogDatastoresDataSourceModel struct {
 	// Results
 	ID         types.String          `tfsdk:"id"`
 	Datastores []*DatastoreDataModel `tfsdk:"datastores"`
@@ -35,26 +35,26 @@ type DatastoreDataModel struct {
 	PrimaryKeyGenerationStrategy types.String `tfsdk:"primary_key_generation_strategy"`
 }
 
-type datastoresDataSource struct {
+type datadogDatastoresDataSource struct {
 	Api  *datadogV2.ActionsDatastoresApi
 	Auth context.Context
 }
 
-func NewDatastoresDataSource() datasource.DataSource {
-	return &datastoresDataSource{}
+func NewDatadogDatastoresDataSource() datasource.DataSource {
+	return &datadogDatastoresDataSource{}
 }
 
-func (d *datastoresDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogDatastoresDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetActionsDatastoresApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *datastoresDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogDatastoresDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "datastores"
 }
 
-func (d *datastoresDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogDatastoresDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about existing Datadog datastores.",
 		Attributes: map[string]schema.Attribute{
@@ -112,8 +112,8 @@ func (d *datastoresDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 	}
 }
 
-func (d *datastoresDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datastoresDataSourceModel
+func (d *datadogDatastoresDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogDatastoresDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -131,7 +131,7 @@ func (d *datastoresDataSource) Read(ctx context.Context, request datasource.Read
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datastoresDataSource) updateState(state *datastoresDataSourceModel, data *[]datadogV2.DatastoreData) {
+func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSourceModel, data *[]datadogV2.DatastoreData) {
 	results := make([]*DatastoreDataModel, 0, len(*data))
 	for _, item := range *data {
 		r := DatastoreDataModel{

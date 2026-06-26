@@ -491,15 +491,17 @@ var _ = Describe("NormalizeSchemas list operation", func() {
 		}))
 	})
 
-	It("retains the results-array element $ref as ItemRefName", func() {
+	It("retains the results-array element $ref as ItemRefName, leaving ResponseDataRefName empty for a list", func() {
 		Expect(list.ItemRefName).To(Equal("Thing"))
+		Expect(list.ResponseDataRefName).To(BeEmpty())
 	})
 
-	It("leaves ItemRefName empty for a get-by-id whose data property is an object, not an array", func() {
+	It("retains a get-by-id data object $ref as ResponseDataRefName, leaving ItemRefName empty", func() {
 		get := opByID(loadSpecMust("schema_normalize_list.yaml"), "GetThing")
 		Expect(get.QueryParams).To(BeEmpty())
 		Expect(get.Pagination).To(BeNil())
 		Expect(get.ItemRefName).To(BeEmpty())
+		Expect(get.ResponseDataRefName).To(Equal("Thing"))
 	})
 })
 

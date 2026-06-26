@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &gizmosDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogGizmosDataSource{}
 )
 
-type gizmosDataSourceModel struct {
+type datadogGizmosDataSourceModel struct {
 	// Results
 	ID     types.String  `tfsdk:"id"`
 	Gizmos []*GizmoModel `tfsdk:"gizmos"`
@@ -33,26 +33,26 @@ type SpecModel struct {
 	Size  types.Int64  `tfsdk:"size"`
 }
 
-type gizmosDataSource struct {
+type datadogGizmosDataSource struct {
 	Api  *datadogV2.GizmosApi
 	Auth context.Context
 }
 
-func NewGizmosDataSource() datasource.DataSource {
-	return &gizmosDataSource{}
+func NewDatadogGizmosDataSource() datasource.DataSource {
+	return &datadogGizmosDataSource{}
 }
 
-func (d *gizmosDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogGizmosDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetGizmosApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *gizmosDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogGizmosDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "gizmos"
 }
 
-func (d *gizmosDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogGizmosDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about existing gizmos.",
 		Attributes: map[string]schema.Attribute{
@@ -94,8 +94,8 @@ func (d *gizmosDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 	}
 }
 
-func (d *gizmosDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state gizmosDataSourceModel
+func (d *datadogGizmosDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogGizmosDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -113,7 +113,7 @@ func (d *gizmosDataSource) Read(ctx context.Context, request datasource.ReadRequ
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *gizmosDataSource) updateState(state *gizmosDataSourceModel, data *[]datadogV2.Gizmo) {
+func (d *datadogGizmosDataSource) updateState(state *datadogGizmosDataSourceModel, data *[]datadogV2.Gizmo) {
 	results := make([]*GizmoModel, 0, len(*data))
 	for _, item := range *data {
 		r := GizmoModel{
