@@ -67,9 +67,9 @@ Required:
 Optional:
 
 - `dynamic_tags` (Attributes) Configuration for including dynamically queried tags. (see [below for nested schema](#nestedatt--options--data--dynamic_tags))
-- `manage_preexisting_metrics` (Boolean) When true, the rule applies to metrics ingested before the rule was created.
+- `manage_preexisting_metrics` (Boolean) When true, the rule applies to metrics ingested before the rule was created. Defaults to `true`.
 - `metric_match` (Attributes) Criteria for matching metrics based on query state. (see [below for nested schema](#nestedatt--options--data--metric_match))
-- `override_previous_rules` (Boolean) When true, this rule's tag list overrides tags configured by earlier rules for the same metric.
+- `override_previous_rules` (Boolean) When true, this rule's tag list overrides tags configured by earlier rules for the same metric. Defaults to `false`.
 
 <a id="nestedatt--options--data--dynamic_tags"></a>
 ### Nested Schema for `options.data.dynamic_tags`
