@@ -150,7 +150,7 @@ func pluralFixture() DataSourceView {
 	return DataSourceView{
 		Cardinality: Plural,
 		TypeName:    "teams",
-		GoName:      "teams",
+		GoName:      "datadogTeams",
 		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
 		SDKPackage:  "datadogV2",
 		APIStruct:   "TeamsApi",
@@ -167,7 +167,7 @@ func pluralFixture() DataSourceView {
 		},
 		Models: []ModelStructView{
 			{
-				Name: "teamsDataSourceModel",
+				Name: "datadogTeamsDataSourceModel",
 				Fields: []ModelFieldView{
 					{Comment: "Query Parameters", GoField: "FilterKeyword", GoType: "types.String", TFName: "filter_keyword"},
 					{GoField: "FilterMe", GoType: "types.Bool", TFName: "filter_me"},

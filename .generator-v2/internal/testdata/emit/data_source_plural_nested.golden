@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &widgetsDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogWidgetsDataSource{}
 )
 
-type widgetsDataSourceModel struct {
+type datadogWidgetsDataSourceModel struct {
 	// Results
 	ID      types.String   `tfsdk:"id"`
 	Widgets []*WidgetModel `tfsdk:"widgets"`
@@ -33,26 +33,26 @@ type PartsModel struct {
 	Quantity types.Int64  `tfsdk:"quantity"`
 }
 
-type widgetsDataSource struct {
+type datadogWidgetsDataSource struct {
 	Api  *datadogV2.WidgetsApi
 	Auth context.Context
 }
 
-func NewWidgetsDataSource() datasource.DataSource {
-	return &widgetsDataSource{}
+func NewDatadogWidgetsDataSource() datasource.DataSource {
+	return &datadogWidgetsDataSource{}
 }
 
-func (d *widgetsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogWidgetsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetWidgetsApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *widgetsDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogWidgetsDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "widgets"
 }
 
-func (d *widgetsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogWidgetsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about existing widgets.",
 		Attributes: map[string]schema.Attribute{
@@ -95,8 +95,8 @@ func (d *widgetsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 	}
 }
 
-func (d *widgetsDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state widgetsDataSourceModel
+func (d *datadogWidgetsDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogWidgetsDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -114,7 +114,7 @@ func (d *widgetsDataSource) Read(ctx context.Context, request datasource.ReadReq
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *widgetsDataSource) updateState(state *widgetsDataSourceModel, data *[]datadogV2.Widget) {
+func (d *datadogWidgetsDataSource) updateState(state *datadogWidgetsDataSourceModel, data *[]datadogV2.Widget) {
 	results := make([]*WidgetModel, 0, len(*data))
 	for _, item := range *data {
 		r := WidgetModel{

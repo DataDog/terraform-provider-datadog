@@ -99,7 +99,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		}
 	}
 
-	rootStruct := lowerFirst(model.SdkName(a.Name)) + "DataSourceModel"
+	rootStruct := dsGoName(a.Name) + "DataSourceModel"
 	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
 
 	if len(b.unsupported) > 0 {
@@ -145,7 +145,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	return DataSourceView{
 		Cardinality: Singular,
 		TypeName:    a.Name,
-		GoName:      lowerFirst(model.SdkName(a.Name)),
+		GoName:      dsGoName(a.Name),
 		Description: a.Description,
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
@@ -706,7 +706,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 
 	itemStruct := model.SdkName(call.ItemType) + "Model"
 	itemField := model.SdkName(a.Name)
-	goName := lowerFirst(model.SdkName(a.Name))
+	goName := dsGoName(a.Name)
 
 	parentFields := append([]ModelFieldView{}, filterFields...)
 	parentFields = append(parentFields,
@@ -855,4 +855,12 @@ func lowerFirst(s string) string {
 	r := []rune(s)
 	r[0] = unicode.ToLower(r[0])
 	return string(r)
+}
+
+// dsGoName is the lowerCamel identifier base for a generated data source, e.g.
+// "datadogTeam". Every generated data source is uniformly Datadog-prefixed so the
+// struct <dsGoName>DataSource, model <dsGoName>DataSourceModel, and constructor
+// New<title dsGoName>DataSource match the provider's convention.
+func dsGoName(name string) string {
+	return lowerFirst("Datadog" + model.SdkName(name))
 }

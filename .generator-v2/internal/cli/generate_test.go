@@ -83,12 +83,12 @@ func TestGenerateWiresOverwrite(t *testing.T) {
 	}
 
 	generated := mustRead(t, filepath.Join(dir, "data_source_datadog_datastore.go"))
-	if !strings.Contains(generated, "func NewDatastoreDataSource()") {
-		t.Errorf("generated data source missing NewDatastoreDataSource constructor:\n%s", generated)
+	if !strings.Contains(generated, "func NewDatadogDatastoreDataSource()") {
+		t.Errorf("generated data source missing NewDatadogDatastoreDataSource constructor:\n%s", generated)
 	}
 
 	registered := mustRead(t, filepath.Join(dir, "datasources_generated.go"))
-	if !strings.Contains(registered, "NewDatastoreDataSource") {
+	if !strings.Contains(registered, "NewDatadogDatastoreDataSource") {
 		t.Errorf("generated constructor not registered in datasources_generated.go:\n%s", registered)
 	}
 
