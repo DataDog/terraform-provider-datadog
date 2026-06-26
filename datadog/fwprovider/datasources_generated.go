@@ -9,4 +9,15 @@ import "github.com/hashicorp/terraform-plugin-framework/datasource"
 //
 // FrameworkProvider.DataSources registers this slice alongside the hand-written
 // Datasources.
-var generatedDatasources = []func() datasource.DataSource{}
+var generatedDatasources = []func() datasource.DataSource{
+	NewDatadogApiKeyDataSource,
+	NewDatadogApiKeysDataSource,
+	NewDatadogCostBudgetDataSource,
+	NewDatadogDatastoreDataSource,
+	NewDatadogDatastoresDataSource,
+	NewDatadogIncidentTypeDataSource,
+	NewDatadogTeamDataSource,
+	NewDatadogTeamsDataSource,
+	NewDatadogUserDataSource,
+	NewDatadogUsersDataSource,
+}

@@ -138,7 +138,6 @@ var Resources = []func() resource.Resource{
 }
 
 var Datasources = []func() datasource.DataSource{
-	NewAPIKeyDataSource,
 	NewAwsAvailableNamespacesDataSource,
 	NewAwsIntegrationExternalIDDataSource,
 	NewAwsIntegrationIAMPermissionsDataSource,
@@ -155,7 +154,6 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogSoftwareCatalogDataSource,
-	NewDatadogTeamDataSource,
 	NewDatadogTeamHierarchyLinksDataSource,
 	NewDatadogTeamMembershipsDataSource,
 	NewDatadogTeamNotificationRuleDataSource,
@@ -169,23 +167,19 @@ var Datasources = []func() datasource.DataSource{
 	NewRumApplicationDataSource,
 	NewRumRetentionFiltersDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
-	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewSecurityMonitoringCriticalAssetDataSource,
 	NewSecurityMonitoringCriticalAssetsDataSource,
 	NewLogsPipelinesOrderDataSource,
-	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
 	NewDatadogSyntheticsGlobalVariableDataSource,
 	NewDatadogSyntheticsLocationsDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
-	NewCostBudgetDataSource,
 	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
-	NewIncidentTypeDataSource,
 	NewIncidentNotificationTemplateDataSource,
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
@@ -195,8 +189,6 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
 	NewOrganizationSettingsDataSource,
-	NewDatadogDatastoreDataSource,
-	NewDatastoresDataSource,
 	NewDatastoreItemDataSource,
 }
 

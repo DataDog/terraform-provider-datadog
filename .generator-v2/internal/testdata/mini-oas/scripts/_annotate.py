@@ -33,6 +33,23 @@ SAMPLE = [
     "user",
 ]
 
+# artifact_name -> the hand-written constructor the generated data source
+# supersedes. Authored into the extension's `overwrites` field so a generate run
+# into datadog/fwprovider/ retires that constructor from the Datasources slice
+# and registers the generated one in datasources_generated.go. Artifacts absent
+# here (e.g. the singular `user`, which has no hand-written counterpart) are
+# purely additive and carry no `overwrites`.
+OVERWRITES = {
+    "cost_budget": "NewCostBudgetDataSource",
+    "team": "NewDatadogTeamDataSource",
+    "teams": "NewDatadogTeamsDataSource",
+    "incident_type": "NewIncidentTypeDataSource",
+    "datastore": "NewDatadogDatastoreDataSource",
+    "datastores": "NewDatastoresDataSource",
+    "api_key": "NewAPIKeyDataSource",
+    "users": "NewDatadogUsersDataSource",
+}
+
 
 def _gets(paths):
     """All (path, 'get', operationId) GET operations in the spec."""
@@ -74,12 +91,15 @@ def write_annotated(name, artifact_name, anchor, group, description, plural=Fals
     }
     if plural:
         ext["cardinality"] = "plural"
+    if artifact_name in OVERWRITES:
+        ext["overwrites"] = OVERWRITES[artifact_name]
     spec["paths"][path][method]["x-datadog-tf-generator"] = ext
     with open(os.path.join(OUT, f"{artifact_name}.yaml"), "w") as f:
         yaml.dump(spec, f, Dumper=Dumper, sort_keys=False, default_flow_style=False,
                   width=100, allow_unicode=True)
     kind = "plural" if plural else "singular"
-    print(f"annotated {artifact_name:<16} {kind:<8} group={group}  ({method.upper()} {path})")
+    overwrites = f"  overwrites={ext['overwrites']}" if "overwrites" in ext else "  (additive)"
+    print(f"annotated {artifact_name:<16} {kind:<8} group={group}  ({method.upper()} {path}){overwrites}")
 
 
 def main():

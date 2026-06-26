@@ -281,7 +281,6 @@ func Provider() *schema.Provider {
 			"datadog_service_level_objective":                 dataSourceDatadogServiceLevelObjective(),
 			"datadog_service_level_objectives":                dataSourceDatadogServiceLevelObjectives(),
 			"datadog_synthetics_test":                         dataSourceDatadogSyntheticsTest(),
-			"datadog_user":                                    dataSourceDatadogUser(),
 		},
 
 		ConfigureContextFunc: providerConfigure,

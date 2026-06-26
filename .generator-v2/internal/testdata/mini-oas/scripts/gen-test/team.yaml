@@ -108,6 +108,7 @@ paths:
         group:
           read: GetTeam
           search: ListTeams
+        overwrites: NewDatadogTeamDataSource
   /api/v2/team:
     get:
       operationId: ListTeams
