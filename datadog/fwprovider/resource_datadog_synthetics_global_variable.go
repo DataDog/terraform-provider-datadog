@@ -593,6 +593,12 @@ func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestB
 			}
 		}
 		syntheticsGlobalVariableRequest.SetValue(value)
+	} else if state.Secure.ValueBool() {
+		// For partial updates of secure variables (write-only mode, unchanged version), the API
+		// still requires {"value":{"secure":true}} even though we're not sending the actual value.
+		var value datadogV1.SyntheticsGlobalVariableValue
+		value.SetSecure(true)
+		syntheticsGlobalVariableRequest.SetValue(value)
 	}
 
 	return syntheticsGlobalVariableRequest, diags
