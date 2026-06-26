@@ -33,6 +33,13 @@ type TrackingFieldMetadata struct {
 	// Skip explicitly disables generation while keeping the annotation in
 	// place, equivalent to removing the extension.
 	Skip bool `json:"skip,omitempty"`
+	// Overwrites names the hand-written data source constructor this generated
+	// artifact supersedes, e.g. "NewDatadogTeamDataSource". When set, the
+	// generated file overwrites the hand-written one in place, the generator
+	// removes that constructor from the FrameworkProvider Datasources slice, and
+	// registers the generated constructor in generatedDatasources. Empty when the
+	// data source is purely additive.
+	Overwrites string `json:"overwrites,omitempty"`
 }
 
 // OperationGroup references, by operationId, the OpenAPI operations backing an

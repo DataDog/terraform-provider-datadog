@@ -41,7 +41,7 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 // buildSingularByIdArtifact resolves the one record by direct id lookup: its
 // Schema is the by-id response tree and Lifecycle.Read the get-by-id call.
 func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
-	schema, err := BuildResponseTree(op.ResponseSchema)
+	schema, diags, err := BuildResponseTree(op.ResponseSchema)
 	if err != nil {
 		return nil, err
 	}
@@ -56,6 +56,7 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 			Read:       readCall(op),
 			IdStrategy: op.Tracking.IdStrategy,
 		},
+		Diagnostics: diags,
 	}, nil
 }
 
@@ -69,11 +70,12 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 	if element == nil {
 		return nil, fmt.Errorf("model: search data source %q has no result-array element to flatten", op.Tracking.ArtifactName)
 	}
-	record, err := BuildResponseTree(singularEnvelope(element))
+	record, recDiags, err := BuildResponseTree(singularEnvelope(element))
 	if err != nil {
 		return nil, err
 	}
 	filters, diags := buildFilterLeaves(op)
+	diags = append(diags, recDiags...)
 	return &Artifact{
 		Name:        op.Tracking.ArtifactName,
 		Kind:        op.Tracking.ArtifactKind,
@@ -99,11 +101,12 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 		return nil, fmt.Errorf("model: data source %q declares group.search %q but no such operation exists",
 			op.Tracking.ArtifactName, op.Tracking.Group.Search)
 	}
-	record, err := BuildResponseTree(op.ResponseSchema)
+	record, recDiags, err := BuildResponseTree(op.ResponseSchema)
 	if err != nil {
 		return nil, err
 	}
 	filters, diags := buildFilterLeaves(searchOp)
+	diags = append(diags, recDiags...)
 	return &Artifact{
 		Name:        op.Tracking.ArtifactName,
 		Kind:        op.Tracking.ArtifactKind,
@@ -159,11 +162,12 @@ func listElementSchema(op *Operation) *Schema {
 // items block. It records the list-call bindings (item type, optional-params
 // type, pagination) and any dropped filters as info Diagnostics.
 func buildPluralArtifact(op *Operation) (*Artifact, error) {
-	itemsBlock, err := buildItemsBlock(op)
+	itemsBlock, itemDiags, err := buildItemsBlock(op)
 	if err != nil {
 		return nil, err
 	}
 	filters, diags := buildFilterLeaves(op)
+	diags = append(diags, itemDiags...)
 	attrs := filters
 	if itemsBlock != nil {
 		attrs = append(attrs, itemsBlock)
@@ -192,21 +196,24 @@ const defaultResultsPath = "data"
 
 // buildItemsBlock builds the plural items block from the results array alone
 // (op.Pagination.ResultsPath, else "data"), so response siblings such as
-// meta/links/included are dropped rather than emitted. Returns nil when the
-// response declares no such array.
-func buildItemsBlock(op *Operation) (*Attribute, error) {
+// meta/links/included are dropped rather than emitted. Returns a nil Attribute
+// when the response declares no such array, and the drop diagnostics raised
+// while building the element.
+func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 	resultsPath := defaultResultsPath
 	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
 		resultsPath = op.Pagination.ResultsPath
 	}
 	if op.ResponseSchema == nil || op.ResponseSchema.Kind != SchemaKindObject {
-		return nil, nil
+		return nil, nil, nil
 	}
 	arr := op.ResponseSchema.Properties[resultsPath]
 	if arr == nil {
-		return nil, nil
+		return nil, nil, nil
 	}
-	return buildAttribute(arr, "response."+resultsPath, nestBlock)
+	var diags []Diagnostic
+	attr, err := buildAttribute(arr, "response."+resultsPath, nestBlock, &diags)
+	return attr, diags, err
 }
 
 // readCall resolves the datadog-api-client-go binding for op's read.
