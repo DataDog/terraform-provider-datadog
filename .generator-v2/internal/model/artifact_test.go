@@ -218,6 +218,24 @@ var _ = Describe("BuildArtifact singular search", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(reflect.DeepEqual(first, second)).To(BeTrue())
 		})
+
+		It("degrades a diverging both to by-id-only and records why", func() {
+			art, err := BuildArtifact(bothApiKeyOp())
+			Expect(err).NotTo(HaveOccurred())
+
+			// The by-id record (FullAPIKey) diverges from the list element
+			// (PartialAPIKey), so search is dropped and id becomes required.
+			Expect(art.Lifecycle.Read.GoMethod).To(Equal("GetAPIKey"))
+			Expect(art.Lifecycle.Search).To(BeNil())
+
+			var msgs []string
+			for _, d := range art.Diagnostics {
+				if d.Severity == SeverityInfo {
+					msgs = append(msgs, d.Message)
+				}
+			}
+			Expect(msgs).To(ContainElement(ContainSubstring("search lookup dropped")))
+		})
 	})
 })
 
@@ -279,12 +297,13 @@ func bothDatastoreOp() *Operation {
 		}),
 	}
 	return &Operation{
-		Path:            "/api/v2/datastores/{datastore_id}",
-		Method:          "GET",
-		OperationId:     "GetDatastore",
-		Tag:             "Datastores",
-		ResponseRefName: "Datastore",
-		SearchOp:        listOp,
+		Path:                "/api/v2/datastores/{datastore_id}",
+		Method:              "GET",
+		OperationId:         "GetDatastore",
+		Tag:                 "Datastores",
+		ResponseRefName:     "Datastore",
+		ResponseDataRefName: "Datastore", // same as the list element → stays "both"
+		SearchOp:            listOp,
 		Tracking: &TrackingFieldMetadata{
 			ArtifactKind: ArtifactKindDataSource,
 			ArtifactName: "datastore",
@@ -296,6 +315,52 @@ func bothDatastoreOp() *Operation {
 				"id":         primSchema("string"),
 				"type":       primSchema("string"),
 				"attributes": objSchema(map[string]*Schema{"name": primSchema("string")}),
+			}),
+		}),
+	}
+}
+
+// bothApiKeyOp is a diverging id-optional singular: the by-id GET returns a
+// FullAPIKey record while the list GET yields PartialAPIKey elements, so the
+// generator degrades it to by-id-only.
+func bothApiKeyOp() *Operation {
+	listOp := &Operation{
+		Path:            "/api/v2/api_keys",
+		Method:          "GET",
+		OperationId:     "ListAPIKeys",
+		Tag:             "KeyManagement",
+		ResponseRefName: "APIKeysResponse",
+		ItemRefName:     "PartialAPIKey",
+		ResponseSchema: objSchema(map[string]*Schema{
+			"data": arrSchema(objSchema(map[string]*Schema{
+				"id":         primSchema("string"),
+				"type":       primSchema("string"),
+				"attributes": objSchema(map[string]*Schema{"name": primSchema("string")}),
+			})),
+		}),
+	}
+	return &Operation{
+		Path:                "/api/v2/api_keys/{api_key_id}",
+		Method:              "GET",
+		OperationId:         "GetAPIKey",
+		Tag:                 "KeyManagement",
+		ResponseRefName:     "APIKeyResponse",
+		ResponseDataRefName: "FullAPIKey",
+		SearchOp:            listOp,
+		Tracking: &TrackingFieldMetadata{
+			ArtifactKind: ArtifactKindDataSource,
+			ArtifactName: "api_key",
+			IdStrategy:   IdStrategyDataID,
+			Group:        &OperationGroup{Read: "GetAPIKey", Search: "ListAPIKeys"},
+		},
+		ResponseSchema: objSchema(map[string]*Schema{
+			"data": objSchema(map[string]*Schema{
+				"id":   primSchema("string"),
+				"type": primSchema("string"),
+				"attributes": objSchema(map[string]*Schema{
+					"name": primSchema("string"),
+					"key":  primSchema("string"),
+				}),
 			}),
 		}),
 	}

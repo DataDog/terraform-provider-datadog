@@ -14,7 +14,7 @@ var _ = Describe("BuildDataSourceView", func() {
 		view, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.TypeName).To(Equal("incident_type"))
-		Expect(view.GoName).To(Equal("incidentType"))
+		Expect(view.GoName).To(Equal("datadogIncidentType"))
 		Expect(view.Description).To(Equal("Use this data source to retrieve information about an existing incident type."))
 		Expect(view.SDKPackage).To(Equal("datadogV2"))
 		Expect(view.APIStruct).To(Equal("IncidentsApi"))
@@ -433,7 +433,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"costBudgetDataSourceModel", "EntriesModel", "TagFiltersModel"}))
+		Expect(names).To(Equal([]string{"datadogCostBudgetDataSourceModel", "EntriesModel", "TagFiltersModel"}))
 	})
 
 	It("maps each element through a guarded loop, recursing for nested arrays", func() {
@@ -739,7 +739,7 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"widgetsDataSourceModel", "WidgetModel", "PartsModel"}))
+		Expect(names).To(Equal([]string{"datadogWidgetsDataSourceModel", "WidgetModel", "PartsModel"}))
 	})
 
 	It("maps the object array off item.Attributes into the item accumulator", func() {
@@ -827,7 +827,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"apmRetentionFilterDataSourceModel", "FilterModel", "MetadataModel"}))
+		Expect(names).To(Equal([]string{"datadogApmRetentionFilterDataSourceModel", "FilterModel", "MetadataModel"}))
 	})
 
 	It("maps the object through a guarded assignment, recursing into the nested object", func() {
@@ -939,7 +939,7 @@ var _ = Describe("BuildDataSourceView plural nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"gizmosDataSourceModel", "GizmoModel", "SpecModel"}))
+		Expect(names).To(Equal([]string{"datadogGizmosDataSourceModel", "GizmoModel", "SpecModel"}))
 	})
 
 	It("maps the object off item.Attributes into the item accumulator", func() {

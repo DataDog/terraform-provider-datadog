@@ -12,10 +12,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &apmRetentionFilterDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogApmRetentionFilterDataSource{}
 )
 
-type apmRetentionFilterDataSourceModel struct {
+type datadogApmRetentionFilterDataSourceModel struct {
 	ID      types.String `tfsdk:"id"`
 	Enabled types.Bool   `tfsdk:"enabled"`
 	Filter  *FilterModel `tfsdk:"filter"`
@@ -32,26 +32,26 @@ type MetadataModel struct {
 	CreatedBy types.String `tfsdk:"created_by"`
 }
 
-type apmRetentionFilterDataSource struct {
+type datadogApmRetentionFilterDataSource struct {
 	Api  *datadogV2.APMRetentionFiltersApi
 	Auth context.Context
 }
 
-func NewApmRetentionFilterDataSource() datasource.DataSource {
-	return &apmRetentionFilterDataSource{}
+func NewDatadogApmRetentionFilterDataSource() datasource.DataSource {
+	return &datadogApmRetentionFilterDataSource{}
 }
 
-func (d *apmRetentionFilterDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogApmRetentionFilterDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetAPMRetentionFiltersApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *apmRetentionFilterDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogApmRetentionFilterDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "apm_retention_filter"
 }
 
-func (d *apmRetentionFilterDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogApmRetentionFilterDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing APM retention filter.",
 		Attributes: map[string]schema.Attribute{
@@ -100,8 +100,8 @@ func (d *apmRetentionFilterDataSource) Schema(_ context.Context, _ datasource.Sc
 	}
 }
 
-func (d *apmRetentionFilterDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state apmRetentionFilterDataSourceModel
+func (d *datadogApmRetentionFilterDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogApmRetentionFilterDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -128,7 +128,7 @@ func (d *apmRetentionFilterDataSource) Read(ctx context.Context, request datasou
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *apmRetentionFilterDataSource) updateState(state *apmRetentionFilterDataSourceModel, resp *datadogV2.RetentionFilterResponse) {
+func (d *datadogApmRetentionFilterDataSource) updateState(state *datadogApmRetentionFilterDataSourceModel, resp *datadogV2.RetentionFilterResponse) {
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)
