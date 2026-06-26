@@ -113,8 +113,12 @@ func (d *datadogTeamDataSource) updateState(state *datadogTeamDataSourceModel, r
 	}
 	if hiddenModules, ok := attributes.GetHiddenModulesOk(); ok && hiddenModules != nil {
 		state.HiddenModules, _ = types.ListValueFrom(context.Background(), types.StringType, *hiddenModules)
+	} else {
+		state.HiddenModules = types.ListNull(types.StringType)
 	}
 	if visibleModules, ok := attributes.GetVisibleModulesOk(); ok && visibleModules != nil {
 		state.VisibleModules, _ = types.ListValueFrom(context.Background(), types.StringType, *visibleModules)
+	} else {
+		state.VisibleModules = types.ListNull(types.StringType)
 	}
 }
