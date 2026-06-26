@@ -153,6 +153,8 @@ func (d *datadogApmRetentionFilterDataSource) updateState(state *datadogApmReten
 		}
 		if tags, ok := filter.GetTagsOk(); ok && tags != nil {
 			filterModel.Tags, _ = types.ListValueFrom(context.Background(), types.StringType, *tags)
+		} else {
+			filterModel.Tags = types.ListNull(types.StringType)
 		}
 		state.Filter = filterModel
 	}

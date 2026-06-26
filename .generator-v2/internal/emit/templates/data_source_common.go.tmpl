@@ -86,6 +86,8 @@ Blocks: map[string]schema.Block{
 {{- if eq .Kind "primitive" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 	{{ .LHS }}, _ = types.ListValueFrom(context.Background(), {{ .ElementType }}, *{{ .Var }})
+} else {
+	{{ .LHS }} = types.ListNull({{ .ElementType }})
 }
 {{- else if eq .Kind "object" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
