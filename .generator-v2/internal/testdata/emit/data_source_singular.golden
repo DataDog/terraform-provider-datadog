@@ -12,36 +12,36 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &incidentTypeDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogIncidentTypeDataSource{}
 )
 
-type incidentTypeDataSourceModel struct {
+type datadogIncidentTypeDataSourceModel struct {
 	ID          types.String `tfsdk:"id"`
 	Description types.String `tfsdk:"description"`
 	IsDefault   types.Bool   `tfsdk:"is_default"`
 	Name        types.String `tfsdk:"name"`
 }
 
-type incidentTypeDataSource struct {
+type datadogIncidentTypeDataSource struct {
 	Api  *datadogV2.IncidentsApi
 	Auth context.Context
 }
 
-func NewIncidentTypeDataSource() datasource.DataSource {
-	return &incidentTypeDataSource{}
+func NewDatadogIncidentTypeDataSource() datasource.DataSource {
+	return &datadogIncidentTypeDataSource{}
 }
 
-func (d *incidentTypeDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogIncidentTypeDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetIncidentsApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *incidentTypeDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogIncidentTypeDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "incident_type"
 }
 
-func (d *incidentTypeDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogIncidentTypeDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing incident type.",
 		Attributes: map[string]schema.Attribute{
@@ -65,8 +65,8 @@ func (d *incidentTypeDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 	}
 }
 
-func (d *incidentTypeDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state incidentTypeDataSourceModel
+func (d *datadogIncidentTypeDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogIncidentTypeDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -89,13 +89,22 @@ func (d *incidentTypeDataSource) Read(ctx context.Context, request datasource.Re
 	}
 
 	d.updateState(&state, &resp)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *incidentTypeDataSource) updateState(state *incidentTypeDataSourceModel, resp *datadogV2.IncidentTypeResponse) {
+func (d *datadogIncidentTypeDataSource) updateState(state *datadogIncidentTypeDataSourceModel, resp *datadogV2.IncidentTypeResponse) {
 	attributes := resp.Data.GetAttributes()
-	state.ID = types.StringValue(resp.Data.GetId())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.IsDefault = types.BoolValue(attributes.GetIsDefault())
-	state.Name = types.StringValue(attributes.GetName())
+	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
+		state.ID = types.StringValue(*id)
+	}
+	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
+		state.Description = types.StringValue(*description)
+	}
+	if isDefault, ok := attributes.GetIsDefaultOk(); ok && isDefault != nil {
+		state.IsDefault = types.BoolValue(*isDefault)
+	}
+	if name, ok := attributes.GetNameOk(); ok && name != nil {
+		state.Name = types.StringValue(*name)
+	}
 }
