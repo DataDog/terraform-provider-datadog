@@ -55,7 +55,7 @@ resource "datadog_security_findings_mute_rule" "accepted_risks_dev" {
 
 Required:
 
-- `reason` (String) The reason for muting a security finding.
+- `reason` (String) The reason for muting a security finding. Valid values are `duplicate`, `false_positive`, `no_fix`, `other`, `pending_fix`, `risk_accepted`.
 
 Optional:
 

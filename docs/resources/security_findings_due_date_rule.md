@@ -68,7 +68,7 @@ resource "datadog_security_findings_due_date_rule" "prod_sla" {
 Required:
 
 - `due_days_per_severity` (Attributes List) A list of severity-to-due-date mappings. Each severity may appear at most once. (see [below for nested schema](#nestedatt--action--due_days_per_severity))
-- `due_from` (String) The reference point from which the due date is calculated. When `fix_available` is selected but not applicable to the finding type, `first_seen` is used instead.
+- `due_from` (String) The reference point from which the due date is calculated. When `fix_available` is selected but not applicable to the finding type, `first_seen` is used instead. Valid values are `first_seen`, `fix_available`.
 
 Optional:
 
@@ -80,7 +80,7 @@ Optional:
 Required:
 
 - `due_in_days` (Number) The number of days from the reference point until the finding is due.
-- `severity` (String) A severity level used to configure due date thresholds.
+- `severity` (String) A severity level used to configure due date thresholds. Valid values are `critical`, `high`, `medium`, `low`, `info`, `none`, `unknown`.
 
 
 
