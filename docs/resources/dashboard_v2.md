@@ -239,6 +239,7 @@ Optional:
 - `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
+- `point_plot_definition` (Block List, Max: 1) The definition for a Point Plot widget. (see [below for nested schema](#nestedblock--widget--point_plot_definition))
 - `powerpack_definition` (Block List, Max: 1) The definition for a Powerpack widget. (see [below for nested schema](#nestedblock--widget--powerpack_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--query_value_definition))
@@ -3545,6 +3546,7 @@ Optional:
 - `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
+- `point_plot_definition` (Block List, Max: 1) The definition for a Point Plot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition))
@@ -9166,6 +9168,151 @@ Required:
 - `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
 - `value` (Number) Value of the time span.
 
+
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition`
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--custom_link))
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `legend` (Block List, Max: 1) Legend configuration for the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--legend))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `marker` (Block List) A nested block describing a marker to use when displaying the widget. Multiple `marker` blocks are allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--marker))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--request))
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+- `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--yaxis))
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--custom_link"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL. Keep the label short and descriptive. Use metrics and tags as variables.
+- `link` (String) The URL of the custom link. URL must include `http` or `https`. A relative URL must start with `/`.
+- `override_label` (String) The label ID that refers to a context menu link. Can be `logs`, `hosts`, `traces`, `profiles`, `processes`, `containers`, or `rum`.
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--legend"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.legend`
+
+Required:
+
+- `type` (String) Type of legend to show for the point plot widget. Valid values are `automatic`, `none`.
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--marker"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.marker`
+
+Required:
+
+- `value` (String) Value to apply. Can be a single value `y = 15` or a range of values `0 < y < 10`. For Distribution widgets with `display_type` set to `percentile`, this should be a numeric percentile value (for example, `90` for P90).
+
+Optional:
+
+- `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
+- `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.request`
+
+Required:
+
+- `projection` (Block List, Min: 1, Max: 1) Projection configuration for the point plot request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--request--projection))
+- `query` (Block List, Min: 1, Max: 1) Query configuration for the point plot request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--request--query))
+- `request_type` (String) The type of data request. Must be `data_projection`. Valid values are `data_projection`.
+
+Optional:
+
+- `limit` (Number) Maximum number of data points to return.
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) List of dimension mappings for the projection. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--request--projection--dimension))
+- `type` (String) Type of the projection. Must be `point_plot`. Valid values are `point_plot`.
+
+Optional:
+
+- `extra_columns` (List of String) Additional columns to include in the projection.
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Dimension of the point plot. Valid values are `group`, `time`, `y`, `radius`.
+
+Optional:
+
+- `alias` (String) Alias for the column.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.request.query`
+
+Required:
+
+- `data_source` (String) Data source for the query (for example, `logs`).
+- `query_string` (String) The query string to filter events.
+
+Optional:
+
+- `indexes` (List of String) List of indexes to query.
+- `storage` (String) Storage location for the query.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--point_plot_definition--yaxis"></a>
+### Nested Schema for `widget.group_definition.widget.point_plot_definition.yaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Set to `true` to include zero.
+- `label` (String) The label of the axis to display on the graph. Only usable on Scatterplot Widgets.
+- `max` (String) Specifies the maximum numeric value to show on the axis. Defaults to `auto`.
+- `min` (String) Specifies the minimum numeric value to show on the axis. Defaults to `auto`.
+- `scale` (String) Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`).
 
 
 
@@ -19942,6 +20089,151 @@ Required:
 - `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
 - `value` (Number) Value of the time span.
 
+
+
+
+<a id="nestedblock--widget--point_plot_definition"></a>
+### Nested Schema for `widget.point_plot_definition`
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--point_plot_definition--custom_link))
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `legend` (Block List, Max: 1) Legend configuration for the widget. (see [below for nested schema](#nestedblock--widget--point_plot_definition--legend))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `marker` (Block List) A nested block describing a marker to use when displaying the widget. Multiple `marker` blocks are allowed. (see [below for nested schema](#nestedblock--widget--point_plot_definition--marker))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. (see [below for nested schema](#nestedblock--widget--point_plot_definition--request))
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--point_plot_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+- `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--point_plot_definition--yaxis))
+
+<a id="nestedblock--widget--point_plot_definition--custom_link"></a>
+### Nested Schema for `widget.point_plot_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL. Keep the label short and descriptive. Use metrics and tags as variables.
+- `link` (String) The URL of the custom link. URL must include `http` or `https`. A relative URL must start with `/`.
+- `override_label` (String) The label ID that refers to a context menu link. Can be `logs`, `hosts`, `traces`, `profiles`, `processes`, `containers`, or `rum`.
+
+
+<a id="nestedblock--widget--point_plot_definition--legend"></a>
+### Nested Schema for `widget.point_plot_definition.legend`
+
+Required:
+
+- `type` (String) Type of legend to show for the point plot widget. Valid values are `automatic`, `none`.
+
+
+<a id="nestedblock--widget--point_plot_definition--marker"></a>
+### Nested Schema for `widget.point_plot_definition.marker`
+
+Required:
+
+- `value` (String) Value to apply. Can be a single value `y = 15` or a range of values `0 < y < 10`. For Distribution widgets with `display_type` set to `percentile`, this should be a numeric percentile value (for example, `90` for P90).
+
+Optional:
+
+- `display_type` (String) Combination of a severity (`error`, `warning`, `ok`, or `info`) and a line type (`dashed`, `solid`, or `bold`). For Distribution widgets, this can be set to `percentile`. Example: `error dashed`.
+- `label` (String) Label to display over the marker.
+- `time` (String) Timestamp for the marker position.
+
+
+<a id="nestedblock--widget--point_plot_definition--request"></a>
+### Nested Schema for `widget.point_plot_definition.request`
+
+Required:
+
+- `projection` (Block List, Min: 1, Max: 1) Projection configuration for the point plot request. (see [below for nested schema](#nestedblock--widget--point_plot_definition--request--projection))
+- `query` (Block List, Min: 1, Max: 1) Query configuration for the point plot request. (see [below for nested schema](#nestedblock--widget--point_plot_definition--request--query))
+- `request_type` (String) The type of data request. Must be `data_projection`. Valid values are `data_projection`.
+
+Optional:
+
+- `limit` (Number) Maximum number of data points to return.
+
+<a id="nestedblock--widget--point_plot_definition--request--projection"></a>
+### Nested Schema for `widget.point_plot_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) List of dimension mappings for the projection. (see [below for nested schema](#nestedblock--widget--point_plot_definition--request--projection--dimension))
+- `type` (String) Type of the projection. Must be `point_plot`. Valid values are `point_plot`.
+
+Optional:
+
+- `extra_columns` (List of String) Additional columns to include in the projection.
+
+<a id="nestedblock--widget--point_plot_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.point_plot_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Dimension of the point plot. Valid values are `group`, `time`, `y`, `radius`.
+
+Optional:
+
+- `alias` (String) Alias for the column.
+
+
+
+<a id="nestedblock--widget--point_plot_definition--request--query"></a>
+### Nested Schema for `widget.point_plot_definition.request.query`
+
+Required:
+
+- `data_source` (String) Data source for the query (for example, `logs`).
+- `query_string` (String) The query string to filter events.
+
+Optional:
+
+- `indexes` (List of String) List of indexes to query.
+- `storage` (String) Storage location for the query.
+
+
+
+<a id="nestedblock--widget--point_plot_definition--time"></a>
+### Nested Schema for `widget.point_plot_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--point_plot_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--point_plot_definition--time--live))
+
+<a id="nestedblock--widget--point_plot_definition--time--fixed"></a>
+### Nested Schema for `widget.point_plot_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--point_plot_definition--time--live"></a>
+### Nested Schema for `widget.point_plot_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+<a id="nestedblock--widget--point_plot_definition--yaxis"></a>
+### Nested Schema for `widget.point_plot_definition.yaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Set to `true` to include zero.
+- `label` (String) The label of the axis to display on the graph. Only usable on Scatterplot Widgets.
+- `max` (String) Specifies the maximum numeric value to show on the axis. Defaults to `auto`.
+- `min` (String) Specifies the minimum numeric value to show on the axis. Defaults to `auto`.
+- `scale` (String) Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`).
 
 
 
