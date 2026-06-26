@@ -12,10 +12,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &costBudgetDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogCostBudgetDataSource{}
 )
 
-type costBudgetDataSourceModel struct {
+type datadogCostBudgetDataSourceModel struct {
 	ID      types.String    `tfsdk:"id"`
 	Entries []*EntriesModel `tfsdk:"entries"`
 	Name    types.String    `tfsdk:"name"`
@@ -32,26 +32,26 @@ type TagFiltersModel struct {
 	TagValue types.String `tfsdk:"tag_value"`
 }
 
-type costBudgetDataSource struct {
+type datadogCostBudgetDataSource struct {
 	Api  *datadogV2.CloudCostManagementApi
 	Auth context.Context
 }
 
-func NewCostBudgetDataSource() datasource.DataSource {
-	return &costBudgetDataSource{}
+func NewDatadogCostBudgetDataSource() datasource.DataSource {
+	return &datadogCostBudgetDataSource{}
 }
 
-func (d *costBudgetDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogCostBudgetDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetCloudCostManagementApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *costBudgetDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogCostBudgetDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "cost_budget"
 }
 
-func (d *costBudgetDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogCostBudgetDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing Datadog cost budget.",
 		Attributes: map[string]schema.Attribute{
@@ -101,8 +101,8 @@ func (d *costBudgetDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 	}
 }
 
-func (d *costBudgetDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state costBudgetDataSourceModel
+func (d *datadogCostBudgetDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogCostBudgetDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -129,7 +129,7 @@ func (d *costBudgetDataSource) Read(ctx context.Context, request datasource.Read
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *costBudgetDataSource) updateState(state *costBudgetDataSourceModel, resp *datadogV2.BudgetWithEntries) {
+func (d *datadogCostBudgetDataSource) updateState(state *datadogCostBudgetDataSourceModel, resp *datadogV2.BudgetWithEntries) {
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)

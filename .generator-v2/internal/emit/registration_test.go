@@ -11,9 +11,9 @@ import (
 )
 
 var _ = Describe("DatasourceConstructor", func() {
-	It("matches the New<SdkName>DataSource the data-source template emits", func() {
-		Expect(DatasourceConstructor("team")).To(Equal("NewTeamDataSource"))
-		Expect(DatasourceConstructor("datastore_item")).To(Equal("NewDatastoreItemDataSource"))
+	It("matches the NewDatadog<SdkName>DataSource the data-source template emits", func() {
+		Expect(DatasourceConstructor("team")).To(Equal("NewDatadogTeamDataSource"))
+		Expect(DatasourceConstructor("datastore_item")).To(Equal("NewDatadogDatastoreItemDataSource"))
 	})
 })
 
