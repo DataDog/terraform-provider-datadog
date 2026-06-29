@@ -103,6 +103,7 @@ datadog/**/*datadog_role_users*                  @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/rum-backend
 datadog/**/*datadog_security_monitoring*          @DataDog/k9-cloud-siem
 datadog/**/*datadog_security_notification_rule*   @DataDog/k9-shared-capabilities
+datadog/**/*datadog_security_findings*            @DataDog/k9-shared-capabilities
 datadog/**/*datadog_csm_threats*                 @DataDog/k9-cws-backend
 datadog/**/*datadog_cloud_workload_security*     @DataDog/k9-cws-backend
 datadog/**/*datadog_app_builder_app*             @DataDog/app-builder-backend
@@ -131,3 +132,5 @@ docs/resources/tag_indexing_rule*.md                  @DataDog/metrics-experienc
 examples/resources/datadog_tag_indexing_rule*/**      @DataDog/metrics-experience
 docs/resources/on_call_team_routing_rules.md          @DataDog/on-call
 examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call
+docs/resources/security_findings_*.md                 @DataDog/k9-shared-capabilities
+examples/resources/datadog_security_findings_*/**     @DataDog/k9-shared-capabilities
