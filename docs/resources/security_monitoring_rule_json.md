@@ -15,7 +15,7 @@ Provides a Datadog Security Monitoring Rule JSON resource. This can be used to c
 ```terraform
 # Example Security Monitoring Rule JSON
 resource "datadog_security_monitoring_rule_json" "security_rule_json" {
-  rule = <<EOF
+  json = <<EOF
 {
   "name": "High error rate security monitoring",
   "isEnabled": true,
