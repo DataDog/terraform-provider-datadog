@@ -1623,11 +1623,7 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		}
 		ddProcessor = datadogV1.LogsPipelineProcessorAsLogsProcessor(ddNestedPipeline)
 	case string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR):
-		ddStringBuilderProcessor, err := buildDatadogStringBuilderProcessor(tfProcessor)
-		if err != nil {
-			return &ddProcessor, err
-		}
-		ddProcessor = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(ddStringBuilderProcessor)
+		ddProcessor = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(buildDatadogStringBuilderProcessor(tfProcessor))
 	case string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER):
 		ddProcessor = datadogV1.LogsURLParserAsLogsProcessor(buildDatadogURLParser(tfProcessor))
 	case string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER):
@@ -1778,7 +1774,7 @@ func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.
 	return ddNestedPipeline, nil
 }
 
-func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) (*datadogV1.LogsStringBuilderProcessor, error) {
+func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsStringBuilderProcessor {
 	ddStringBuilder := datadogV1.NewLogsStringBuilderProcessorWithDefaults()
 	if tfTemplate, exists := tfProcessor["template"].(string); exists {
 		ddStringBuilder.SetTemplate(tfTemplate)
@@ -1795,7 +1791,7 @@ func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) (*da
 	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
 		ddStringBuilder.SetIsEnabled(tfIsEnabled)
 	}
-	return ddStringBuilder, nil
+	return ddStringBuilder
 }
 
 func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) *datadogV1.LogsGeoIPParser {
