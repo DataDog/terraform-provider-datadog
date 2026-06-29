@@ -1411,7 +1411,7 @@ func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) ma
 	return tfProc
 }
 
-func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.LogsArrayMapProcessor, error) {
+func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) *datadogV1.LogsArrayMapProcessor {
 	ddProc := datadogV1.NewLogsArrayMapProcessorWithDefaults()
 	if v, ok := tfProc["name"].(string); ok {
 		ddProc.SetName(v)
@@ -1514,7 +1514,7 @@ func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.Lo
 		}
 		ddProc.SetProcessors(ddSubs)
 	}
-	return ddProc, nil
+	return ddProc
 }
 
 func buildTerraformSpanRemapper(ddSpanRemapper *datadogV1.LogsSpanRemapper) map[string]interface{} {
@@ -1583,11 +1583,7 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	case string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):
 		ddProcessor = datadogV1.LogsArithmeticProcessorAsLogsProcessor(buildDatadogArithmeticProcessor(tfProcessor))
 	case string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR):
-		ddArrayMapProcessor, err := buildDatadogArrayMapProcessor(tfProcessor)
-		if err != nil {
-			return &ddProcessor, err
-		}
-		ddProcessor = datadogV1.LogsArrayMapProcessorAsLogsProcessor(ddArrayMapProcessor)
+		ddProcessor = datadogV1.LogsArrayMapProcessorAsLogsProcessor(buildDatadogArrayMapProcessor(tfProcessor))
 	case string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):
 		ddArrayProcessor, err := buildDatadogArrayProcessor(tfProcessor)
 		if err != nil {
