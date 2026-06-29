@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 179
+        content_length: 262
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"a fido global variable","is_fido":true,"is_totp":false,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369","tags":["fido:bar","fido"]}
+            {"description":"a secure write-only global variable","is_fido":false,"is_totp":false,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","tags":["foo:bar","baz"],"value":{"secure":true,"value":"variable-wo-secure-value"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"1460dcc8-ba58-4df9-8d01-15f0171cefa3","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369","description":"a fido global variable","type":"variable","tags":["fido:bar","fido"],"last_error":null,"is_fido":true,"value":{"secure":true}}
+            {"id":"3f548111-fab1-4949-82c1-47cb089369a1","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","description":"a secure write-only global variable","type":"variable","tags":["foo:bar","baz"],"last_error":null,"value":{"secure":true}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 419.696542ms
+        duration: 441.052125ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"1460dcc8-ba58-4df9-8d01-15f0171cefa3","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369","description":"a fido global variable","type":"variable","tags":["fido:bar","fido"],"created_at":"2026-06-26T11:29:30.681951+00:00","modified_at":"2026-06-26T11:29:30.681951+00:00","last_error":null,"is_fido":true,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
+            {"id":"3f548111-fab1-4949-82c1-47cb089369a1","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","description":"a secure write-only global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2026-06-26T11:29:06.147688+00:00","modified_at":"2026-06-26T11:29:06.147688+00:00","last_error":null,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 161.829834ms
+        duration: 168.973958ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"1460dcc8-ba58-4df9-8d01-15f0171cefa3","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369","description":"a fido global variable","type":"variable","tags":["fido:bar","fido"],"created_at":"2026-06-26T11:29:30.681951+00:00","modified_at":"2026-06-26T11:29:30.681951+00:00","last_error":null,"is_fido":true,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
+            {"id":"3f548111-fab1-4949-82c1-47cb089369a1","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","description":"a secure write-only global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2026-06-26T11:29:06.147688+00:00","modified_at":"2026-06-26T11:29:06.147688+00:00","last_error":null,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 161.556084ms
+        duration: 167.838167ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,33 +137,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"1460dcc8-ba58-4df9-8d01-15f0171cefa3","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369","description":"a fido global variable","type":"variable","tags":["fido:bar","fido"],"created_at":"2026-06-26T11:29:30.681951+00:00","modified_at":"2026-06-26T11:29:30.681951+00:00","last_error":null,"is_fido":true,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
+            {"id":"3f548111-fab1-4949-82c1-47cb089369a1","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","description":"a secure write-only global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2026-06-26T11:29:06.147688+00:00","modified_at":"2026-06-26T11:29:06.147688+00:00","last_error":null,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.159333ms
+        duration: 163.356667ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 207
+        content_length: 238
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"an updated fido global variable","is_fido":true,"is_totp":false,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369_UPDATED","tags":["fido:bar","fido","env:test"]}
+            {"description":"a secure write-only global variable","is_fido":false,"is_totp":false,"name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","tags":["foo:bar","baz","env:test"],"value":{"secure":true}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: PUT
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"1460dcc8-ba58-4df9-8d01-15f0171cefa3","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369_UPDATED","description":"an updated fido global variable","type":"variable","tags":["fido:bar","fido","env:test"],"last_error":null,"is_fido":true,"value":{"secure":true}}
+            {"id":"3f548111-fab1-4949-82c1-47cb089369a1","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","description":"a secure write-only global variable","type":"variable","tags":["foo:bar","baz","env:test"],"last_error":null,"value":{"secure":true}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 221.548125ms
+        duration: 248.1085ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"1460dcc8-ba58-4df9-8d01-15f0171cefa3","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369_UPDATED","description":"an updated fido global variable","type":"variable","tags":["fido:bar","fido","env:test"],"created_at":"2026-06-26T11:29:30.681951+00:00","modified_at":"2026-06-26T11:29:32.566103+00:00","last_error":null,"is_fido":true,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
+            {"id":"3f548111-fab1-4949-82c1-47cb089369a1","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","description":"a secure write-only global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2026-06-26T11:29:06.147688+00:00","modified_at":"2026-06-26T11:29:08.081781+00:00","last_error":null,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 159.658ms
+        duration: 162.782667ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"1460dcc8-ba58-4df9-8d01-15f0171cefa3","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEFIDO_UPDATED_LOCAL_1782473369_UPDATED","description":"an updated fido global variable","type":"variable","tags":["fido:bar","fido","env:test"],"created_at":"2026-06-26T11:29:30.681951+00:00","modified_at":"2026-06-26T11:29:32.566103+00:00","last_error":null,"is_fido":true,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
+            {"id":"3f548111-fab1-4949-82c1-47cb089369a1","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLEWRITEONLYSECURE_TAGSONLY_LOCAL_1782473343","description":"a secure write-only global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2026-06-26T11:29:06.147688+00:00","modified_at":"2026-06-26T11:29:08.081781+00:00","last_error":null,"value":{"secure":true},"creator":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"},"editor":{"name":"Corentin Girard","handle":"corentin.girard@datadoghq.com","email":"corentin.girard@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 158.193625ms
+        duration: 165.806334ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
                 - text/html; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 319.264375ms
+        duration: 323.57925ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -301,7 +301,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/1460dcc8-ba58-4df9-8d01-15f0171cefa3
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/3f548111-fab1-4949-82c1-47cb089369a1
         method: GET
       response:
         proto: HTTP/1.1
@@ -318,4 +318,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 159.346ms
+        duration: 169.074375ms
