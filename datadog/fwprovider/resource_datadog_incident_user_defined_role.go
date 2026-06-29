@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -86,10 +85,9 @@ func (r *incidentUserDefinedRoleResource) Schema(_ context.Context, _ resource.S
 				},
 				Attributes: map[string]schema.Attribute{
 					"is_single": schema.BoolAttribute{
-						Description: "Whether at most one responder can hold this role at a time on a given incident.",
+						Description: "Whether at most one responder can hold this role at a time on a given incident. Defaults to `false`.",
 						Optional:    true,
 						Computed:    true,
-						Default:     booldefault.StaticBool(false),
 					},
 				},
 			},
@@ -253,8 +251,12 @@ func (r *incidentUserDefinedRoleResource) Update(ctx context.Context, request re
 	// incident type relationship is immutable (RequiresReplace handles that).
 	attributes := datadogV2.IncidentUserDefinedRoleUpdateAttributes{}
 	attributes.SetName(plan.Name.ValueString())
+	// The PATCH surface supports explicit null to clear the description, so
+	// removing it from config clears it server-side rather than drifting.
 	if !plan.Description.IsNull() {
 		attributes.SetDescription(plan.Description.ValueString())
+	} else {
+		attributes.SetDescriptionNil()
 	}
 	if plan.Policy != nil && !plan.Policy.IsSingle.IsNull() && !plan.Policy.IsSingle.IsUnknown() {
 		attributes.Policy = &datadogV2.IncidentUserDefinedRolePolicy{
@@ -333,6 +335,8 @@ func (r *incidentUserDefinedRoleResource) updateStateFromResponse(state *inciden
 
 		if description, descriptionOk := attributes.GetDescriptionOk(); descriptionOk && description != nil {
 			state.Description = types.StringValue(*description)
+		} else {
+			state.Description = types.StringNull()
 		}
 
 		if policy, policyOk := attributes.GetPolicyOk(); policyOk && policy != nil {

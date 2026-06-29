@@ -111,7 +111,7 @@ func testAccCheckDatadogIncidentUserDefinedRoleConfig(name string) string {
 		name             = "%s"
 		description      = "Test user-defined role"
 		incident_type_id = datadog_incident_type.udr_parent.id
-		policy {
+		policy = {
 			is_single = true
 		}
 	}`, name, name)
