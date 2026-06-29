@@ -357,7 +357,7 @@ var arrayMapProcessor = &schema.Schema{
 								"target":               {Type: schema.TypeString, Required: true, Description: "Target attribute path."},
 								"preserve_source":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Remove or preserve the remapped source element."},
 								"override_on_conflict": {Type: schema.TypeBool, Optional: true, Description: "Override the target element if already set."},
-								"target_format":        {Type: schema.TypeString, Optional: true, Description: "If the target type is an attribute, cast the value to a new type (auto, string, integer, double)."},
+								"target_format": {Type: schema.TypeString, Optional: true, Description: "If the target type is an attribute, cast the value to a new type (auto, string, integer, double).", ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false)},
 							}},
 						},
 						tfArithmeticProcessor: {
@@ -1449,10 +1449,7 @@ func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.Lo
 					r.SetOverrideOnConflict(v)
 				}
 				if v, ok := d["target_format"].(string); ok && v != "" {
-					tf, err := datadogV1.NewTargetFormatTypeFromValue(v)
-					if err == nil {
-						r.SetTargetFormat(*tf)
-					}
+					r.SetTargetFormat(datadogV1.TargetFormatType(v))
 				}
 				ddSubs = append(ddSubs, datadogV1.LogsArrayMapAttributeRemapperAsLogsArrayMapSubProcessor(r))
 			} else if details, ok := subMap[tfArithmeticProcessor].([]interface{}); ok && len(details) > 0 {
