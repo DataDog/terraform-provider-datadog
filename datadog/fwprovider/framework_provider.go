@@ -731,6 +731,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentNotificationRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedRoles", true)
 
 	// Enable AWS CUR Config
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateCostAWSCURConfig", true)
