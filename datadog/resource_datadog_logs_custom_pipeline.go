@@ -357,7 +357,7 @@ var arrayMapProcessor = &schema.Schema{
 								"target":               {Type: schema.TypeString, Required: true, Description: "Target attribute path."},
 								"preserve_source":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Remove or preserve the remapped source element."},
 								"override_on_conflict": {Type: schema.TypeBool, Optional: true, Description: "Override the target element if already set."},
-								"target_format": {Type: schema.TypeString, Optional: true, Description: "If the target type is an attribute, cast the value to a new type (auto, string, integer, double).", ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false)},
+								"target_format":        {Type: schema.TypeString, Optional: true, Description: "If the target type is an attribute, cast the value to a new type (auto, string, integer, double).", ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false)},
 							}},
 						},
 						tfArithmeticProcessor: {
@@ -953,7 +953,7 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 		tfProcessor = buildTerraformArithmeticProcessor(ddProcessor.LogsArithmeticProcessor)
 		processorType = string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR)
 	} else if ddProcessor.LogsArrayMapProcessor != nil {
-		tfProcessor, err = buildTerraformArrayMapProcessor(ddProcessor.LogsArrayMapProcessor)
+		tfProcessor = buildTerraformArrayMapProcessor(ddProcessor.LogsArrayMapProcessor)
 		processorType = string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR)
 	} else if ddProcessor.LogsArrayProcessor != nil {
 		tfProcessor = buildTerraformArrayProcessor(ddProcessor.LogsArrayProcessor)
@@ -1354,7 +1354,7 @@ func buildTerraformDecoderProcessor(ddDecoder *datadogV1.LogsDecoderProcessor) m
 	}
 }
 
-func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) (map[string]interface{}, error) {
+func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) map[string]interface{} {
 	tfProc := map[string]interface{}{
 		"name":            ddProc.GetName(),
 		"is_enabled":      ddProc.GetIsEnabled(),
@@ -1408,7 +1408,7 @@ func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) (m
 		tfSubs = append(tfSubs, tfSub)
 	}
 	tfProc["processors"] = tfSubs
-	return tfProc, nil
+	return tfProc
 }
 
 func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) (*datadogV1.LogsArrayMapProcessor, error) {
