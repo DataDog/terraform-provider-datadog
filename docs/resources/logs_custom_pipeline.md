@@ -312,7 +312,7 @@ Required:
 
 Required:
 
-- `query` (String)
+- `query` (String) Filter criteria of the category.
 
 
 
@@ -679,7 +679,7 @@ Required:
 
 Required:
 
-- `query` (String)
+- `query` (String) Filter criteria of the category.
 
 
 

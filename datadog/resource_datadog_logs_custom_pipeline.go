@@ -391,7 +391,7 @@ var arrayMapProcessor = &schema.Schema{
 									Description: "List of filters to match or exclude a log.",
 									Elem: &schema.Resource{Schema: map[string]*schema.Schema{
 										"name":   {Type: schema.TypeString, Required: true, Description: "Name of the category."},
-										"filter": {Type: schema.TypeList, Required: true, MaxItems: 1, Elem: &schema.Resource{Schema: map[string]*schema.Schema{"query": {Type: schema.TypeString, Required: true}}}},
+										"filter": {Type: schema.TypeList, Required: true, MaxItems: 1, Elem: getFilterSchema()},
 									}},
 								},
 							}},
