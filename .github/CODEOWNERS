@@ -27,7 +27,7 @@ datadog/*datadog_metric_metadata*          @DataDog/metrics-experience
 datadog/*datadog_metric_tag_configuration* @DataDog/metrics-experience
 datadog/*datadog_monitor*                  @DataDog/monitor-app
 datadog/*datadog_screenboard*              @DataDog/dashboards-backend
-datadog/*datadog_security_monitoring*       @DataDog/k9-cloud-siem
+datadog/*datadog_security_monitoring*       @DataDog/cloud-siem
 datadog/*datadog_security_notification_rule* @DataDog/k9-shared-capabilities
 datadog/*datadog_service_definition*       @DataDog/service-catalog
 datadog/*datadog_service_level_objective*  @DataDog/slo-app
@@ -101,7 +101,7 @@ datadog/**/*datadog_workflow_automation*         @DataDog/workflow-automation-ba
 datadog/**/*datadog_powerpack*                   @DataDog/dashboards-backend
 datadog/**/*datadog_role_users*                  @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/rum-backend
-datadog/**/*datadog_security_monitoring*          @DataDog/k9-cloud-siem
+datadog/**/*datadog_security_monitoring*          @DataDog/cloud-siem
 datadog/**/*datadog_security_notification_rule*   @DataDog/k9-shared-capabilities
 datadog/**/*datadog_security_findings*            @DataDog/k9-shared-capabilities
 datadog/**/*datadog_csm_threats*                 @DataDog/k9-cws-backend
