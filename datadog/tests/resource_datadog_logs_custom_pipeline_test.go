@@ -268,6 +268,26 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
             }
         }
     }
+    processor {
+        array_map_processor {
+            name = "Map S3 bucket details to OCSF resources"
+            is_enabled = true
+            source = "detail.resource.s3BucketDetails"
+            target = "ocsf.resources"
+            processors {
+                attribute_remapper {
+                    sources = ["$sourceElem.Arn"]
+                    target = "$targetElem.uid"
+                }
+            }
+            processors {
+                attribute_remapper {
+                    sources = ["detail.awsRegion"]
+                    target = "$targetElem.region"
+                }
+            }
+        }
+    }
 
 }`, uniq)
 }
@@ -523,6 +543,26 @@ processor {
                             "ocsf.activity_name" = "[\"eventName\"]"
                         }
                     }
+                }
+            }
+        }
+    }
+    processor {
+        array_map_processor {
+            name = "Map S3 bucket details to OCSF resources (updated)"
+            is_enabled = true
+            source = "detail.resource.s3BucketDetails"
+            target = "ocsf.resources"
+            processors {
+                attribute_remapper {
+                    sources = ["$sourceElem.Arn"]
+                    target = "$targetElem.uid"
+                }
+            }
+            processors {
+                attribute_remapper {
+                    sources = ["detail.awsRegion"]
+                    target = "$targetElem.region"
                 }
             }
         }
