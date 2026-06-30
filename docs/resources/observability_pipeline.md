@@ -442,6 +442,7 @@ Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--tls))
 
 <a id="nestedblock--config--destination--cloud_prem--buffer"></a>
 ### Nested Schema for `config.destination.cloud_prem.buffer`
@@ -469,6 +470,20 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--cloud_prem--tls"></a>
+### Nested Schema for `config.destination.cloud_prem.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
