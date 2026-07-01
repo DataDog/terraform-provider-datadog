@@ -2562,6 +2562,7 @@ Optional:
 - `splunk_tcp` (Block List) The `splunk_tcp` source receives logs from a Splunk Universal Forwarder over TCP. TLS is supported for secure transmission. (see [below for nested schema](#nestedblock--config--source--splunk_tcp))
 - `sumo_logic` (Block List) The `sumo_logic` source receives logs from Sumo Logic collectors. (see [below for nested schema](#nestedblock--config--source--sumo_logic))
 - `syslog_ng` (Block List) The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--source--syslog_ng))
+- `websocket` (Block List) The `websocket` source establishes a persistent WebSocket connection to a remote endpoint and ingests log events as they are pushed by the server. (see [below for nested schema](#nestedblock--config--source--websocket))
 
 <a id="nestedblock--config--source--amazon_data_firehose"></a>
 ### Nested Schema for `config.source.amazon_data_firehose`
@@ -3119,6 +3120,39 @@ Optional:
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--source--websocket"></a>
+### Nested Schema for `config.source.websocket`
+
+Required:
+
+- `auth_strategy` (String) The authentication strategy used when connecting to the WebSocket server. Valid values are `none`, `basic`, `bearer`, `custom`.
+- `decoding` (String) The decoding format used to interpret incoming log events. Valid values are `bytes`, `gelf`, `json`, `syslog`.
+
+Optional:
+
+- `custom_key` (String) Name of the environment variable or secret that holds a custom header value. Used when `auth_strategy` is `custom`.
+- `password_key` (String) Name of the environment variable or secret that holds the password. Used when `auth_strategy` is `basic`.
+- `tls` (Block List) TLS configuration for the WebSocket connection. Set `mode` to `enabled` for server-certificate validation only, or `with_client_cert` to additionally present a client certificate. (see [below for nested schema](#nestedblock--config--source--websocket--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the bearer token. Used when `auth_strategy` is `bearer`.
+- `uri_key` (String) Name of the environment variable or secret that holds the WebSocket URI to connect to.
+- `username_key` (String) Name of the environment variable or secret that holds the username. Used when `auth_strategy` is `basic`.
+
+<a id="nestedblock--config--source--websocket--tls"></a>
+### Nested Schema for `config.source.websocket.tls`
+
+Required:
+
+- `mode` (String) The TLS mode. Use `enabled` for server-only TLS, or `with_client_cert` for mutual TLS with a client certificate. Valid values are `enabled`, `with_client_cert`.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the client certificate file. Required when `mode` is `with_client_cert`.
+- `key_file` (String) Path to the private key file associated with the client certificate.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 ## Import
 
