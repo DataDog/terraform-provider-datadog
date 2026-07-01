@@ -74,6 +74,70 @@ func TestAccSecurityMonitoringCriticalAsset_Update(t *testing.T) {
 	})
 }
 
+// TestAccSecurityMonitoringCriticalAsset_Description exercises the optional description
+// field transitions: create without a description (null), add one (null => non-empty),
+// then remove it again (non-empty => null).
+func TestAccSecurityMonitoringCriticalAsset_Description(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	assetName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_security_monitoring_critical_asset.test"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringCriticalAssetDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccSecurityMonitoringCriticalAssetConfigNoDescription(assetName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringCriticalAssetExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "description"),
+				),
+			},
+			{
+				Config: testAccSecurityMonitoringCriticalAssetConfigCustomDescription(assetName, "A critical asset description"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringCriticalAssetExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "description", "A critical asset description"),
+				),
+			},
+			{
+				Config: testAccSecurityMonitoringCriticalAssetConfigNoDescription(assetName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringCriticalAssetExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckNoResourceAttr(resourceName, "description"),
+				),
+			},
+		},
+	})
+}
+
+func testAccSecurityMonitoringCriticalAssetConfigNoDescription(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_critical_asset" "test" {
+  enabled    = true
+  query      = "source:runtime-security-agent"
+  rule_query = "type:log_detection source:cloudtrail"
+  severity   = "increase"
+  tags       = ["test:tf-%s"]
+}
+`, uniq)
+}
+
+func testAccSecurityMonitoringCriticalAssetConfigCustomDescription(uniq string, description string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_critical_asset" "test" {
+  enabled     = true
+  query       = "source:runtime-security-agent"
+  rule_query  = "type:log_detection source:cloudtrail"
+  severity    = "increase"
+  description = %q
+  tags        = ["test:tf-%s"]
+}
+`, description, uniq)
+}
+
 func testAccSecurityMonitoringCriticalAssetConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_critical_asset" "test" {
