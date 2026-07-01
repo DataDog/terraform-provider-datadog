@@ -464,7 +464,6 @@ type datadogLogsDestinationRouteModel struct {
 	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
-
 type sampleProcessorModel struct {
 	Percentage types.Float64  `tfsdk:"percentage"`
 	GroupBy    []types.String `tfsdk:"group_by"`
@@ -4860,7 +4859,6 @@ func expandOcsfMappingCustomLookupTableEntry(src *ocsfMappingCustomLookupTableEn
 	}
 	return out
 }
-
 
 func expandSampleProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()

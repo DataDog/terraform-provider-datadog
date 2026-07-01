@@ -13,7 +13,7 @@ type ParseGrokProcessorModel struct {
 	DisableLibraryRules types.Bool                           `tfsdk:"disable_library_rules"`
 	Field               types.String                         `tfsdk:"field"`
 	Rules               []ParseGrokProcessorRuleModel        `tfsdk:"rule"`
-	IncludeRules         []ParseGrokProcessorIncludeRuleModel `tfsdk:"include_rule"`
+	IncludeRules        []ParseGrokProcessorIncludeRuleModel `tfsdk:"include_rule"`
 }
 
 type ParseGrokProcessorRuleModel struct {
