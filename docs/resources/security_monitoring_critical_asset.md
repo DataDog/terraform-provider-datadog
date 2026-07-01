@@ -33,6 +33,7 @@ resource "datadog_security_monitoring_critical_asset" "my_critical_asset" {
 
 ### Optional
 
+- `description` (String) A description of the critical asset.
 - `enabled` (Boolean) Whether the critical asset is enabled. Defaults to `true`.
 - `tags` (List of String) A list of tags associated with the critical asset.
 

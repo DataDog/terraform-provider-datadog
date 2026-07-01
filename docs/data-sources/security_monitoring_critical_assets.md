@@ -38,6 +38,7 @@ output "critical_assets" {
 
 Read-Only:
 
+- `description` (String)
 - `enabled` (Boolean)
 - `id` (String)
 - `query` (String)
