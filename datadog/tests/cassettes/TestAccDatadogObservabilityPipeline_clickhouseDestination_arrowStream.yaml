@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 432
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"batch_encoding":{"allow_nullable_fields":false,"codec":"arrow_stream"},"format":"arrow_stream","id":"clickhouse-dest-arrow-1","inputs":["source-1"],"table":"my_table","type":"clickhouse"}],"pipeline_type":"logs","sources":[{"auth_strategy":"none","decoding":"json","id":"source-1","type":"http_server"}]},"name":"clickhouse-destination-pipeline-arrow-stream"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 514
+        uncompressed: false
+        body: |
+            {"data":{"id":"26db508c-70b3-11f1-8dbe-da7ad0900002","type":"pipelines","attributes":{"name":"clickhouse-destination-pipeline-arrow-stream","config":{"destinations":[{"batch_encoding":{"allow_nullable_fields":false,"codec":"arrow_stream"},"format":"arrow_stream","id":"clickhouse-dest-arrow-1","inputs":["source-1"],"table":"my_table","type":"clickhouse"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","decoding":"json","id":"source-1","type":"http_server"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 370.548833ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/26db508c-70b3-11f1-8dbe-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 514
+        uncompressed: false
+        body: |
+            {"data":{"id":"26db508c-70b3-11f1-8dbe-da7ad0900002","type":"pipelines","attributes":{"name":"clickhouse-destination-pipeline-arrow-stream","config":{"destinations":[{"batch_encoding":{"allow_nullable_fields":false,"codec":"arrow_stream"},"format":"arrow_stream","id":"clickhouse-dest-arrow-1","inputs":["source-1"],"table":"my_table","type":"clickhouse"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","decoding":"json","id":"source-1","type":"http_server"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 166.517083ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/26db508c-70b3-11f1-8dbe-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 517.477667ms

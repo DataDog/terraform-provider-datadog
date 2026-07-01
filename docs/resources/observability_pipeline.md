@@ -110,6 +110,7 @@ Optional:
 - `amazon_s3_generic` (Block List) The `amazon_s3_generic` destination sends your logs to an Amazon S3 bucket. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic))
 - `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
+- `clickhouse` (Block List) The `clickhouse` destination forwards logs to a ClickHouse server via HTTP. (see [below for nested schema](#nestedblock--config--destination--clickhouse))
 - `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
 - `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem))
 - `databricks_zerobus` (Block List) The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus))
@@ -432,6 +433,116 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+
+<a id="nestedblock--config--destination--clickhouse"></a>
+### Nested Schema for `config.destination.clickhouse`
+
+Required:
+
+- `table` (String) Target ClickHouse table name.
+
+Optional:
+
+- `auth` (Block List) Authentication strategy for ClickHouse HTTP requests. Only `basic` strategy is supported. (see [below for nested schema](#nestedblock--config--destination--clickhouse--auth))
+- `batch` (Block List) Batching configuration for ClickHouse inserts. (see [below for nested schema](#nestedblock--config--destination--clickhouse--batch))
+- `batch_encoding` (Block List) Batch encoding configuration. Required when `format` is `arrow_stream`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--batch_encoding))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer))
+- `compression` (Block List) Compression for outbound HTTP requests. Use `algorithm = "gzip"` or `algorithm = "none"`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--compression))
+- `database` (String) Optional name of the ClickHouse database to write to. When omitted, the user's default database is used.
+- `date_time_best_effort` (Boolean) If `true`, enables flexible DateTime parsing on the server side.
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the ClickHouse HTTP endpoint URL. Defaults to `DESTINATION_CLICKHOUSE_ENDPOINT_URL`.
+- `format` (String) Insert format for events. `json_each_row` maps event fields to columns by name. `json_as_object` and `json_as_string` insert each event into a single JSON or String column. `arrow_stream` batches events with Apache Arrow IPC streaming and requires `batch_encoding`. Valid values are `json_each_row`, `json_as_object`, `json_as_string`, `arrow_stream`.
+- `skip_unknown_fields` (Boolean) If `true`, fields not present in the target table schema are dropped instead of causing insert errors. When unset, the ClickHouse server's own `input_format_skip_unknown_fields` setting applies.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--clickhouse--tls))
+
+<a id="nestedblock--config--destination--clickhouse--auth"></a>
+### Nested Schema for `config.destination.clickhouse.auth`
+
+Required:
+
+- `strategy` (String) Authentication strategy. Must be `basic`. Valid values are `basic`.
+
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the ClickHouse password. Defaults to `DESTINATION_CLICKHOUSE_PASSWORD`.
+- `username_key` (String) Name of the environment variable or secret that holds the ClickHouse username. Defaults to `DESTINATION_CLICKHOUSE_USERNAME`.
+
+
+<a id="nestedblock--config--destination--clickhouse--batch"></a>
+### Nested Schema for `config.destination.clickhouse.batch`
+
+Optional:
+
+- `max_events` (Number) Maximum number of events per batch. Value must be at least 1.
+- `timeout_secs` (Number) Maximum time in seconds before a partial batch is flushed. Value must be between 1 and 65535.
+
+
+<a id="nestedblock--config--destination--clickhouse--batch_encoding"></a>
+### Nested Schema for `config.destination.clickhouse.batch_encoding`
+
+Required:
+
+- `codec` (String) Batch encoding codec. Must be `arrow_stream`. Valid values are `arrow_stream`.
+
+Optional:
+
+- `allow_nullable_fields` (Boolean) If `true`, allows null values for non-nullable fields in the ClickHouse schema. Defaults to `false`.
+
+
+<a id="nestedblock--config--destination--clickhouse--buffer"></a>
+### Nested Schema for `config.destination.clickhouse.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer--memory))
+
+<a id="nestedblock--config--destination--clickhouse--buffer--disk"></a>
+### Nested Schema for `config.destination.clickhouse.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--clickhouse--buffer--memory"></a>
+### Nested Schema for `config.destination.clickhouse.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--clickhouse--compression"></a>
+### Nested Schema for `config.destination.clickhouse.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. Valid values are `gzip` and `none`. Valid values are `gzip`, `none`.
+
+Optional:
+
+- `level` (Number) Compression level (1–9). Only valid when `algorithm` is `gzip`. Value must be between 1 and 9.
+
+
+<a id="nestedblock--config--destination--clickhouse--tls"></a>
+### Nested Schema for `config.destination.clickhouse.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
