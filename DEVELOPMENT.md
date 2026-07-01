@@ -4,7 +4,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 
 ## Prerequisites
 
-- [Terraform][2] 1.1.5 and higher (required for Protocol Version 6 with SDKv2 resources).
+- [Terraform][2] 1.11 and higher (required for write-only argument support; Protocol Version 6 requires 1.0+, SDKv2 resources via tf5to6server reqiures).
   - The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
 - [Go][3] 1.23 (to build the provider plugin)
 - A clone of this repository and the [\$GOPATH environment variable][7] set
@@ -16,7 +16,7 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 - All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We use [Protocol Version 6][13], which requires Terraform CLI 1.0+ (or 1.1.5+ for SDKv2 resources using tf5to6server).
 - The documentation is generated using the `tfplugindocs` CLI.
   - Ensure each Schema attribute in the code contains a `Description` field.
-  - For nested attributes, please don't use the [Nested Attributes Types][14] but [Blocks][15]. Also don't use [ObjectType][16] as it doesn't allow to add field description
+  - For nested attributes, prefer [Nested Attribute Types][14] (`SingleNestedAttribute`, `ListNestedAttribute`, `SetNestedAttribute`, `MapNestedAttribute`) over [Blocks][15]. They are type-safe, fully support `Description`, and are the recommended approach in Plugin Framework v1.x. Do not use [ObjectType][16] as it does not support per-field descriptions.
 - When developing a datasource, plan to write 2 data-sources :
   - One that will have a singular name (ex: `datadog_user`) which returns exactly one objects (and fails if there is 0 or more than 0)
   - One that will have a plural name (ex: `datadog_users`) which returns a list of objects and succeed in all cases (0, 1 or more than 1 objects)
