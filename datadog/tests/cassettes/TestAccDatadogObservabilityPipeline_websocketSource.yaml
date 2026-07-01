@@ -1,0 +1,317 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 294
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"auth_strategy":"none","decoding":"json","id":"ws-source-1","type":"websocket"}]},"name":"websocket-source-pipeline"},"type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 376
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","decoding":"json","id":"ws-source-1","type":"websocket"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 388.434208ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 376
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","decoding":"json","id":"ws-source-1","type":"websocket"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 165.175ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 376
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"none","decoding":"json","id":"ws-source-1","type":"websocket"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 191.274542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 483
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"auth_strategy":"bearer","decoding":"json","id":"ws-source-1","tls":{"ca_file":"/certs/ca.crt","crt_file":"/certs/client.crt","key_file":"/certs/client.key","mode":"with_client_cert"},"token_key":"BEARER_TOKEN","type":"websocket","uri_key":"WEBSOCKET_URI"}]},"name":"websocket-source-pipeline-tls"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 557
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline-tls","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"bearer","decoding":"json","id":"ws-source-1","tls":{"ca_file":"/certs/ca.crt","crt_file":"/certs/client.crt","key_file":"/certs/client.key","mode":"with_client_cert"},"token_key":"BEARER_TOKEN","type":"websocket","uri_key":"WEBSOCKET_URI"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 433.095875ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 557
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline-tls","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"bearer","decoding":"json","id":"ws-source-1","tls":{"ca_file":"/certs/ca.crt","crt_file":"/certs/client.crt","key_file":"/certs/client.key","mode":"with_client_cert"},"token_key":"BEARER_TOKEN","type":"websocket","uri_key":"WEBSOCKET_URI"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 171.456042ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 557
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline-tls","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"bearer","decoding":"json","id":"ws-source-1","tls":{"ca_file":"/certs/ca.crt","crt_file":"/certs/client.crt","key_file":"/certs/client.key","mode":"with_client_cert"},"token_key":"BEARER_TOKEN","type":"websocket","uri_key":"WEBSOCKET_URI"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 216.829583ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 432
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"auth_strategy":"basic","decoding":"json","id":"ws-source-1","password_key":"WEBSOCKET_PASSWORD","tls":{"mode":"enabled"},"type":"websocket","uri_key":"WEBSOCKET_URI","username_key":"WEBSOCKET_USERNAME"}]},"name":"websocket-source-pipeline-basic"},"id":"","type":"pipelines"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 506
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline-basic","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"basic","decoding":"json","id":"ws-source-1","password_key":"WEBSOCKET_PASSWORD","tls":{"mode":"enabled"},"type":"websocket","uri_key":"WEBSOCKET_URI","username_key":"WEBSOCKET_USERNAME"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 531.546875ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 506
+        uncompressed: false
+        body: |
+            {"data":{"id":"2d73d5ac-70ce-11f1-b377-da7ad0900002","type":"pipelines","attributes":{"name":"websocket-source-pipeline-basic","config":{"destinations":[{"id":"destination-1","inputs":["ws-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"basic","decoding":"json","id":"ws-source-1","password_key":"WEBSOCKET_PASSWORD","tls":{"mode":"enabled"},"type":"websocket","uri_key":"WEBSOCKET_URI","username_key":"WEBSOCKET_USERNAME"}]}}}}
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 201.424584ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/2d73d5ac-70ce-11f1-b377-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/json
+        status: 204 No Content
+        code: 204
+        duration: 296.996291ms

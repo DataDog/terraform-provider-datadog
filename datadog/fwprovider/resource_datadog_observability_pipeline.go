@@ -124,6 +124,7 @@ type sourceModel struct {
 	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
 	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
 	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
+	WebsocketSource          []*observability_pipeline.WebsocketSourceModel     `tfsdk:"websocket"`
 }
 
 type logstashSourceModel struct {
@@ -1236,6 +1237,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									"socket":        observability_pipeline.SocketSourceSchema(),
 									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
+									"websocket":     observability_pipeline.WebsocketSourceSchema(),
 								},
 							},
 						},
@@ -3141,6 +3143,14 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, o := range sourceBlock.OpentelemetrySource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandOpentelemetrySource(o, sourceId))
 		}
+		for _, w := range sourceBlock.WebsocketSource {
+			item, wsDiags := observability_pipeline.ExpandWebsocketSource(w, sourceId)
+			diags.Append(wsDiags...)
+			if wsDiags.HasError() {
+				return nil, diags
+			}
+			config.Sources = append(config.Sources, item)
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3338,6 +3348,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if o := observability_pipeline.FlattenOpentelemetrySource(src.ObservabilityPipelineOpentelemetrySource); o != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineOpentelemetrySource.GetId())
 			sourceBlock.OpentelemetrySource = append(sourceBlock.OpentelemetrySource, o)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if w := observability_pipeline.FlattenWebsocketSource(src.ObservabilityPipelineWebsocketSource); w != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineWebsocketSource.GetId())
+			sourceBlock.WebsocketSource = append(sourceBlock.WebsocketSource, w)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
