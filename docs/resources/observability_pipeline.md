@@ -2155,18 +2155,50 @@ Optional:
 Optional:
 
 - `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog.
-- `rule` (Block List) The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule))
+- `include_rule` (Block List) A Grok parsing rule that targets logs matching a Datadog search query. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule))
+- `rule` (Block List) A Grok parsing rule that targets a specific source field in the log event. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule))
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule`
+
+Required:
+
+- `include` (String) A Datadog search query used to determine which logs this Grok rule targets.
+
+Optional:
+
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule))
+- `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule))
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule.match_rule`
+
+Required:
+
+- `name` (String) The name of the rule.
+- `rule` (String) The definition of the Grok rule.
+
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule.support_rule`
+
+Required:
+
+- `name` (String) The name of the helper Grok rule.
+- `rule` (String) The definition of the helper Grok rule.
+
+
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--rule"></a>
 ### Nested Schema for `config.processor_group.processor.parse_grok.rule`
 
 Required:
 
-- `source` (String) The value of the source field in log events which should be processed by the Grok rules.
+- `source` (String) The source field in log events to be processed by the Grok rules.
 
 Optional:
 
-- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--match_rule))
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--match_rule))
 - `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--support_rule))
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--rule--match_rule"></a>
