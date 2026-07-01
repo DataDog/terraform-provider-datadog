@@ -60,7 +60,6 @@ datadog/**/*datadog_dataset*                     @DataDog/aaa-granular-access
 datadog/**/*datadog_datastore*                   @DataDog/action-platform @DataDog/workflow-automation-backend
 datadog/**/*datadog_incident*                    @DataDog/incident-app
 datadog/**/*datadog_ip_allowlist*                @DataDog/team-aaa
-datadog/**/*datadog_openapi*                     @DataDog/service-catalog
 datadog/**/*datadog_org_connection*              @DataDog/aaa-granular-access
 datadog/**/*datadog_org_group*                   @DataDog/org-management
 datadog/**/*datadog_reference_table*             @DataDog/redapl-experiences
