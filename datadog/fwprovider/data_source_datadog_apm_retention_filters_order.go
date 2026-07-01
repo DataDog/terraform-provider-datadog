@@ -56,7 +56,7 @@ func (d *datadogApmRetentionFiltersOrderDataSource) Read(ctx context.Context, re
 
 	ddResp, _, err := d.Api.ListApmRetentionFilters(d.Auth)
 	if err != nil {
-		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog team"))
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing APM retention filters"))
 		return
 	}
 
