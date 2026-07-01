@@ -1771,6 +1771,9 @@ var DashboardTopLevelFields = []FieldSpec{
 		Description: "List of tabs for organizing widgets.",
 		Children:    dashboardTabFields},
 
+	// NullOnClear: removing the block sends JSON null to the API, clearing the server-side value.
+	DashboardDefaultTimeframeField(),
+
 	// notify_list: always send [], never omit (OmitEmpty: false)
 	{HCLKey: "notify_list", Type: TypeStringList, UseSet: true, OmitEmpty: false,
 		Description: "The list of handles for the users to notify when changes are made to this dashboard."},

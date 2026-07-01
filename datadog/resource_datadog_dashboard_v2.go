@@ -78,7 +78,6 @@ func buildDashboardV2Schema() map[string]*schema.Schema {
 			Schema: widgetSchema,
 		},
 	}
-
 	return topSchema
 }
 
@@ -203,6 +202,13 @@ func collectDashboardData(d *schema.ResourceData) map[string]interface{} {
 		}
 	}
 	data["widget"] = d.Get("widget")
+	// default_timeframe must send JSON null (not omit) when removed from an existing resource.
+	// The NullOnClear engine flag handles the null emission; we just need to set nil in the map.
+	if !d.IsNewResource() && d.HasChange("default_timeframe") {
+		if blocks, _ := data["default_timeframe"].([]interface{}); len(blocks) == 0 {
+			data["default_timeframe"] = nil
+		}
+	}
 	return data
 }
 
@@ -308,6 +314,15 @@ func setDashboardStateSDKv2(d *schema.ResourceData, resp map[string]interface{})
 		if err := d.Set("tab", flatTabs); err != nil {
 			diags = append(diags, diag.FromErr(err)...)
 		}
+	}
+
+	// default_timeframe — always call d.Set so stale state is cleared when removed
+	dtfState := dashboardmapping.FlattenEngineJSON(
+		[]dashboardmapping.FieldSpec{dashboardmapping.DashboardDefaultTimeframeField()},
+		resp,
+	)
+	if err := d.Set("default_timeframe", dtfState["default_timeframe"]); err != nil {
+		diags = append(diags, diag.FromErr(err)...)
 	}
 
 	// dashboard_lists_removed: clear after apply

@@ -139,6 +139,13 @@ type FieldSpec struct {
 	// that are managed as side effects, not serialized to the API.
 	SchemaOnly bool
 
+	// NullOnClear: if true, emit explicit JSON null when the block value in the
+	// HCL data map is nil (cleared). This is distinct from OmitEmpty — OmitEmpty
+	// skips the field entirely; NullOnClear emits {"field": null} so that an API
+	// that distinguishes absent from null receives the explicit clear signal.
+	// Only meaningful on TypeBlock fields.
+	NullOnClear bool
+
 	// Discriminator configures polymorphic oneOf behavior for TypeOneOf fields.
 	// Set on the TypeOneOf parent (JSONKey) and on each child variant (Value/Values/DefaultVariant).
 	Discriminator *OneOfDiscriminator
@@ -284,6 +291,15 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = v
 			case int64:
 				result[f.HCLKey] = int(v)
+			case json.Number:
+				// Some decoders (e.g. the datadog client's UseNumber on
+				// additionalProperties) hand us json.Number; without this the
+				// value silently flattens to its zero value.
+				if n, err := v.Int64(); err == nil {
+					result[f.HCLKey] = int(n)
+				} else if fl, err := v.Float64(); err == nil {
+					result[f.HCLKey] = int(fl)
+				}
 			}
 
 		case TypeFloat:
@@ -292,6 +308,10 @@ func FlattenEngineJSON(fields []FieldSpec, data map[string]interface{}) map[stri
 				result[f.HCLKey] = v
 			case int:
 				result[f.HCLKey] = float64(v)
+			case json.Number:
+				if fl, err := v.Float64(); err == nil {
+					result[f.HCLKey] = fl
+				}
 			}
 
 		case TypeJSON:
@@ -1510,7 +1530,9 @@ func getBoolFromMap(data map[string]interface{}, key string) bool {
 }
 
 // getIntFromMap returns an int value from a SDKv2 data map.
-// SDKv2 stores TypeInt as int.
+// SDKv2 stores TypeInt as int; API JSON decodes numbers as float64, and some
+// decoders (json.Number) or sources may hand us other numeric representations,
+// so accept the full range defensively.
 func getIntFromMap(data map[string]interface{}, key string) int {
 	if data == nil {
 		return 0
@@ -1519,10 +1541,25 @@ func getIntFromMap(data map[string]interface{}, key string) int {
 		switch iv := v.(type) {
 		case int:
 			return iv
-		case float64:
+		case int32:
 			return int(iv)
 		case int64:
 			return int(iv)
+		case float32:
+			return int(iv)
+		case float64:
+			return int(iv)
+		case json.Number:
+			if n, err := iv.Int64(); err == nil {
+				return int(n)
+			}
+			if f, err := iv.Float64(); err == nil {
+				return int(f)
+			}
+		case string:
+			if n, err := strconv.Atoi(iv); err == nil {
+				return n
+			}
 		}
 	}
 	return 0
@@ -1706,6 +1743,11 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			setAtJSONPath(result, f.effectiveJSONPath(), ints)
 
 		case TypeBlock:
+			rawVal := data[f.HCLKey]
+			if rawVal == nil && f.NullOnClear {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			child := getBlockFromMap(data, f.HCLKey)
 			if child == nil {
 				continue
@@ -1764,6 +1806,10 @@ func BuildEngineJSONFromMap(data map[string]interface{}, fields []FieldSpec) map
 			}
 
 		case TypeOneOf:
+			if data[f.HCLKey] == nil && f.NullOnClear {
+				setAtJSONPath(result, f.effectiveJSONPath(), nil)
+				continue
+			}
 			outer := getBlockFromMap(data, f.HCLKey)
 			if outer == nil {
 				if f.OmitEmpty {
