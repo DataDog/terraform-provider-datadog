@@ -235,7 +235,10 @@ func (r *securityMonitoringCriticalAssetResource) buildUpdatePayload(ctx context
 	attributes.SetQuery(query)
 	attributes.SetRuleQuery(ruleQuery)
 	attributes.SetSeverity(severity)
-	attributes.Description = state.Description.ValueStringPointer()
+	// Always send the description on update (empty string when null) so it can be cleared.
+	// The API uses merge semantics, so an omitted field keeps the previous value. This mirrors
+	// how tags are handled below.
+	attributes.SetDescription(state.Description.ValueString())
 
 	if tags != nil {
 		attributes.SetTags(tags)

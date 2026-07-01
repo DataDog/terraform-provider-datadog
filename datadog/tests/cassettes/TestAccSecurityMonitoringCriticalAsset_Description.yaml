@@ -276,14 +276,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 270
+        content_length: 287
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"query":"source:runtime-security-agent","rule_query":"type:log_detection source:cloudtrail","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Description-local-1782921600"]},"type":"critical_assets"}}
+            {"data":{"attributes":{"description":"","enabled":true,"query":"source:runtime-security-agent","rule_query":"type:log_detection source:cloudtrail","severity":"increase","tags":["test:tf-tf-TestAccSecurityMonitoringCriticalAsset_Description-local-1782921600"]},"type":"critical_assets"}}
         form: {}
         headers:
             Accept:
