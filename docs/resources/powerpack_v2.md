@@ -13547,6 +13547,7 @@ Required:
 
 Optional:
 
+- `anomaly_detection` (Block List, Max: 1) Anomaly detection configuration for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--anomaly_detection))
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--custom_link))
 - `description` (String) The description of the widget.
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--event))
@@ -13564,6 +13565,14 @@ Optional:
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--yaxis))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--anomaly_detection"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.anomaly_detection`
+
+Required:
+
+- `detection_sensitivity` (String) Sensitivity level for anomaly detection. Use `never_detect` to disable anomaly detection. Valid values are `never_detect`.
+
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--custom_link"></a>
 ### Nested Schema for `widget.group_definition.widget.timeseries_definition.custom_link`
@@ -24468,6 +24477,7 @@ Required:
 
 Optional:
 
+- `anomaly_detection` (Block List, Max: 1) Anomaly detection configuration for this widget. (see [below for nested schema](#nestedblock--widget--timeseries_definition--anomaly_detection))
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--custom_link))
 - `description` (String) The description of the widget.
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--event))
@@ -24485,6 +24495,14 @@ Optional:
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
 - `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--yaxis))
+
+<a id="nestedblock--widget--timeseries_definition--anomaly_detection"></a>
+### Nested Schema for `widget.timeseries_definition.anomaly_detection`
+
+Required:
+
+- `detection_sensitivity` (String) Sensitivity level for anomaly detection. Use `never_detect` to disable anomaly detection. Valid values are `never_detect`.
+
 
 <a id="nestedblock--widget--timeseries_definition--custom_link"></a>
 ### Nested Schema for `widget.timeseries_definition.custom_link`
