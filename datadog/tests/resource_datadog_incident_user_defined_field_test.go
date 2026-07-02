@@ -29,7 +29,7 @@ func TestAccDatadogIncidentUserDefinedField_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_incident_user_defined_field.foo", "name", fieldName),
 					resource.TestCheckResourceAttr(
-						"datadog_incident_user_defined_field.foo", "type", "1"),
+						"datadog_incident_user_defined_field.foo", "type", "dropdown"),
 					resource.TestCheckResourceAttr(
 						"datadog_incident_user_defined_field.foo", "display_name", "Root Cause"),
 					resource.TestCheckResourceAttr(
@@ -120,7 +120,7 @@ resource "datadog_incident_type" "test" {
 resource "datadog_incident_user_defined_field" "foo" {
   name          = "%s"
   display_name  = "Root Cause"
-  type          = 1
+  type          = "dropdown"
   category      = "what_happened"
   incident_type = datadog_incident_type.test.id
 
@@ -147,7 +147,7 @@ resource "datadog_incident_type" "test" {
 resource "datadog_incident_user_defined_field" "foo" {
   name          = "%s"
   display_name  = "Updated Root Cause"
-  type          = 1
+  type          = "dropdown"
   category      = "why_it_happened"
   incident_type = datadog_incident_type.test.id
 

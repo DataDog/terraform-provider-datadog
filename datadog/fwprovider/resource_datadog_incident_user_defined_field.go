@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -15,8 +16,39 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+// incidentUserDefinedFieldTypeNames maps the API's numeric field type to its
+// human-readable name, exposed as the `type` attribute so configs avoid magic
+// numbers. The mapping is bijective across the eight supported field types.
+var incidentUserDefinedFieldTypeNames = map[int32]string{
+	1: "dropdown",
+	2: "multiselect",
+	3: "textbox",
+	4: "textarray",
+	5: "metrictag",
+	6: "autocomplete",
+	7: "number",
+	8: "datetime",
+}
+
+var incidentUserDefinedFieldTypeValues = func() map[string]datadogV2.IncidentUserDefinedFieldFieldType {
+	m := make(map[string]datadogV2.IncidentUserDefinedFieldFieldType, len(incidentUserDefinedFieldTypeNames))
+	for value, name := range incidentUserDefinedFieldTypeNames {
+		m[name] = datadogV2.IncidentUserDefinedFieldFieldType(value)
+	}
+	return m
+}()
+
+func incidentUserDefinedFieldTypeNameList() []string {
+	names := make([]string, 0, len(incidentUserDefinedFieldTypeNames))
+	for value := int32(1); value <= int32(len(incidentUserDefinedFieldTypeNames)); value++ {
+		names = append(names, incidentUserDefinedFieldTypeNames[value])
+	}
+	return names
+}
 
 var (
 	_ resource.ResourceWithConfigure   = &incidentUserDefinedFieldResource{}
@@ -31,7 +63,7 @@ type incidentUserDefinedFieldResource struct {
 type incidentUserDefinedFieldModel struct {
 	ID           types.String                              `tfsdk:"id"`
 	Name         types.String                              `tfsdk:"name"`
-	Type         types.Int64                               `tfsdk:"type"`
+	Type         types.String                              `tfsdk:"type"`
 	IncidentType types.String                              `tfsdk:"incident_type"`
 	DisplayName  types.String                              `tfsdk:"display_name"`
 	Category     types.String                              `tfsdk:"category"`
@@ -111,11 +143,14 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"type": schema.Int64Attribute{
-				Description: "The data type of the field: 1=dropdown, 2=multiselect, 3=textbox, 4=textarray, 5=metrictag, 6=autocomplete, 7=number, 8=datetime. Changing the type forces a new resource.",
+			"type": schema.StringAttribute{
+				Description: "The data type of the field. Changing the type forces a new resource.",
 				Required:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.RequiresReplace(),
+				Validators: []validator.String{
+					stringvalidator.OneOf(incidentUserDefinedFieldTypeNameList()...),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"incident_type": schema.StringAttribute{
@@ -278,7 +313,7 @@ func (r *incidentUserDefinedFieldResource) Create(ctx context.Context, request r
 
 	attributes := datadogV2.IncidentUserDefinedFieldAttributesCreateRequest{
 		Name: plan.Name.ValueString(),
-		Type: datadogV2.IncidentUserDefinedFieldFieldType(plan.Type.ValueInt64()),
+		Type: incidentUserDefinedFieldTypeValues[plan.Type.ValueString()],
 	}
 
 	if !plan.DisplayName.IsNull() && !plan.DisplayName.IsUnknown() {
@@ -487,7 +522,9 @@ func (r *incidentUserDefinedFieldResource) updateStateFromResponse(ctx context.C
 		state.TableID = types.Int64Value(attributes.GetTableId())
 
 		if v, ok := attributes.GetTypeOk(); ok && v != nil {
-			state.Type = types.Int64Value(int64(*v))
+			if name, found := incidentUserDefinedFieldTypeNames[*v]; found {
+				state.Type = types.StringValue(name)
+			}
 		}
 		if v, ok := attributes.GetCategoryOk(); ok && v != nil {
 			state.Category = types.StringValue(string(*v))

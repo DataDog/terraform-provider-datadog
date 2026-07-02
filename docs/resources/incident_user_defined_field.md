@@ -22,7 +22,7 @@ resource "datadog_incident_type" "example" {
 resource "datadog_incident_user_defined_field" "example" {
   name          = "root_cause"
   display_name  = "Root Cause"
-  type          = 1 # 1=dropdown, 2=multiselect, 3=textbox, 4=textarray, 5=metrictag, 6=autocomplete, 7=number, 8=datetime
+  type          = "dropdown" # dropdown, multiselect, textbox, textarray, metrictag, autocomplete, number, datetime
   category      = "what_happened"
   default_value = "service_bug"
   incident_type = datadog_incident_type.example.id
@@ -47,7 +47,7 @@ resource "datadog_incident_user_defined_field" "example" {
 
 - `incident_type` (String) The ID of the incident type this field is associated with. Changing the incident type forces a new resource.
 - `name` (String) The unique identifier of the field. Must start with a letter or digit and contain only letters, digits, underscores, or periods. Changing the name forces a new resource.
-- `type` (Number) The data type of the field: 1=dropdown, 2=multiselect, 3=textbox, 4=textarray, 5=metrictag, 6=autocomplete, 7=number, 8=datetime. Changing the type forces a new resource.
+- `type` (String) The data type of the field. Changing the type forces a new resource. Valid values are `dropdown`, `multiselect`, `textbox`, `textarray`, `metrictag`, `autocomplete`, `number`, `datetime`.
 
 ### Optional
 

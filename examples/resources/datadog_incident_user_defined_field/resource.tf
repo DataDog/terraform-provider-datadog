@@ -7,7 +7,7 @@ resource "datadog_incident_type" "example" {
 resource "datadog_incident_user_defined_field" "example" {
   name          = "root_cause"
   display_name  = "Root Cause"
-  type          = 1 # 1=dropdown, 2=multiselect, 3=textbox, 4=textarray, 5=metrictag, 6=autocomplete, 7=number, 8=datetime
+  type          = "dropdown" # dropdown, multiselect, textbox, textarray, metrictag, autocomplete, number, datetime
   category      = "what_happened"
   default_value = "service_bug"
   incident_type = datadog_incident_type.example.id
