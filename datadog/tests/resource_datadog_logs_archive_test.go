@@ -452,13 +452,13 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }`
 }
 
-func TestAccDatadogLogsArchiveS3AccessKeyAndRoleConflict(t *testing.T) {
+func TestUnitDatadogLogsArchiveS3AccessKeyAndRoleConflict(t *testing.T) {
 	t.Parallel()
-	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: accProviders,
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      archiveS3ConfigAccessKeyAndRoleConflict(),
@@ -481,13 +481,13 @@ resource "datadog_logs_archive" "my_s3_archive" {
 }`
 }
 
-func TestAccDatadogLogsArchiveS3NoAuth(t *testing.T) {
+func TestUnitDatadogLogsArchiveS3NoAuth(t *testing.T) {
 	t.Parallel()
-	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: accProviders,
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      archiveS3ConfigNoAuth(),
