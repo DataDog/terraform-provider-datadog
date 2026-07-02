@@ -21,12 +21,13 @@ type securityMonitoringCriticalAssetDataSource struct {
 }
 
 type securityMonitoringCriticalAssetDataSourceModel struct {
-	Id        types.String `tfsdk:"id"`
-	Enabled   types.Bool   `tfsdk:"enabled"`
-	Query     types.String `tfsdk:"query"`
-	RuleQuery types.String `tfsdk:"rule_query"`
-	Severity  types.String `tfsdk:"severity"`
-	Tags      types.List   `tfsdk:"tags"`
+	Id          types.String `tfsdk:"id"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	Query       types.String `tfsdk:"query"`
+	RuleQuery   types.String `tfsdk:"rule_query"`
+	Severity    types.String `tfsdk:"severity"`
+	Description types.String `tfsdk:"description"`
+	Tags        types.List   `tfsdk:"tags"`
 }
 
 func NewSecurityMonitoringCriticalAssetDataSource() datasource.DataSource {
@@ -66,6 +67,10 @@ func (d *securityMonitoringCriticalAssetDataSource) Schema(_ context.Context, _ 
 			"severity": schema.StringAttribute{
 				Computed:    true,
 				Description: "The severity change applied to signals matching this critical asset.",
+			},
+			"description": schema.StringAttribute{
+				Computed:    true,
+				Description: "A description of the critical asset.",
 			},
 			"tags": schema.ListAttribute{
 				Computed:    true,
@@ -112,6 +117,12 @@ func (d *securityMonitoringCriticalAssetDataSource) updateStateFromResponse(ctx 
 	state.Query = types.StringValue(attributes.GetQuery())
 	state.RuleQuery = types.StringValue(attributes.GetRuleQuery())
 	state.Severity = types.StringValue(string(attributes.GetSeverity()))
+
+	if description := attributes.GetDescription(); description != "" {
+		state.Description = types.StringValue(description)
+	} else {
+		state.Description = types.StringNull()
+	}
 
 	if len(attributes.GetTags()) == 0 {
 		state.Tags = types.ListNull(types.StringType)

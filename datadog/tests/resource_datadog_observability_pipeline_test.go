@@ -8036,3 +8036,355 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_clickhouseDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.clickhouse_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "clickhouse_dest" {
+  name = "clickhouse-destination-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      http_server {
+        auth_strategy = "none"
+        decoding      = "json"
+      }
+    }
+
+    destination {
+      id     = "clickhouse-dest-1"
+      inputs = ["source-1"]
+
+      clickhouse {
+        endpoint_url_key     = "DESTINATION_CLICKHOUSE_ENDPOINT_URL"
+        database             = "my_database"
+        table                = "my_table"
+        format               = "json_each_row"
+        skip_unknown_fields  = true
+        date_time_best_effort = true
+
+        compression {
+          algorithm = "gzip"
+          level     = 6
+        }
+
+        auth {
+          strategy     = "basic"
+          username_key = "DESTINATION_CLICKHOUSE_USERNAME"
+          password_key = "DESTINATION_CLICKHOUSE_PASSWORD"
+        }
+
+        batch {
+          max_events   = 1000
+          timeout_secs = 5
+        }
+
+        tls {
+          crt_file = "/path/to/cert.crt"
+          ca_file  = "/path/to/ca.crt"
+          key_file = "/path/to/key.key"
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "clickhouse-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.endpoint_url_key", "DESTINATION_CLICKHOUSE_ENDPOINT_URL"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.database", "my_database"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.table", "my_table"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.format", "json_each_row"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.skip_unknown_fields", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.date_time_best_effort", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.compression.0.algorithm", "gzip"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.compression.0.level", "6"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.auth.0.strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.auth.0.username_key", "DESTINATION_CLICKHOUSE_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.auth.0.password_key", "DESTINATION_CLICKHOUSE_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.batch.0.max_events", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.batch.0.timeout_secs", "5"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.tls.0.crt_file", "/path/to/cert.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.tls.0.ca_file", "/path/to/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.tls.0.key_file", "/path/to/key.key"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_clickhouseDestination_minimal(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.clickhouse_dest_minimal"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "clickhouse_dest_minimal" {
+  name = "clickhouse-destination-pipeline-minimal"
+
+  config {
+    source {
+      id = "source-1"
+      http_server {
+        auth_strategy = "none"
+        decoding      = "json"
+      }
+    }
+
+    destination {
+      id     = "clickhouse-dest-minimal-1"
+      inputs = ["source-1"]
+
+      clickhouse {
+        table = "my_table"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "clickhouse-dest-minimal-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.table", "my_table"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_clickhouseDestinationBuffer(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.clickhouse_dest_buffer"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "clickhouse_dest_buffer" {
+  name = "clickhouse-destination-buffer-pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      http_server {
+        auth_strategy = "none"
+        decoding      = "json"
+      }
+    }
+
+    destination {
+      id     = "clickhouse-dest-buffer-1"
+      inputs = ["source-1"]
+
+      clickhouse {
+        table = "my_table"
+        buffer {
+          disk {
+            max_size  = 1073741824
+            when_full = "block"
+          }
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.buffer.0.disk.0.max_size", "1073741824"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.buffer.0.disk.0.when_full", "block"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_clickhouseDestination_arrowStream(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.clickhouse_dest_arrow"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "clickhouse_dest_arrow" {
+  name = "clickhouse-destination-pipeline-arrow-stream"
+
+  config {
+    source {
+      id = "source-1"
+      http_server {
+        auth_strategy = "none"
+        decoding      = "json"
+      }
+    }
+
+    destination {
+      id     = "clickhouse-dest-arrow-1"
+      inputs = ["source-1"]
+
+      clickhouse {
+        table  = "my_table"
+        format = "arrow_stream"
+
+        batch_encoding {
+          codec                = "arrow_stream"
+          allow_nullable_fields = false
+        }
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "clickhouse-dest-arrow-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.table", "my_table"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.format", "arrow_stream"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.batch_encoding.0.codec", "arrow_stream"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.clickhouse.0.batch_encoding.0.allow_nullable_fields", "false"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_websocketSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.websocket"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "websocket" {
+  name = "websocket-source-pipeline"
+
+  config {
+    source {
+      id = "ws-source-1"
+      websocket {
+        decoding      = "json"
+        auth_strategy = "none"
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ws-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "ws-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.auth_strategy", "none"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "websocket" {
+  name = "websocket-source-pipeline-tls"
+
+  config {
+    source {
+      id = "ws-source-1"
+      websocket {
+        uri_key       = "WEBSOCKET_URI"
+        decoding      = "json"
+        auth_strategy = "bearer"
+        token_key     = "BEARER_TOKEN"
+        tls {
+          mode     = "with_client_cert"
+          crt_file = "/certs/client.crt"
+          ca_file  = "/certs/ca.crt"
+          key_file = "/certs/client.key"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ws-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.id", "ws-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.uri_key", "WEBSOCKET_URI"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.auth_strategy", "bearer"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.token_key", "BEARER_TOKEN"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.mode", "with_client_cert"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.crt_file", "/certs/client.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.ca_file", "/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.key_file", "/certs/client.key"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "websocket" {
+  name = "websocket-source-pipeline-basic"
+
+  config {
+    source {
+      id = "ws-source-1"
+      websocket {
+        uri_key       = "WEBSOCKET_URI"
+        decoding      = "json"
+        auth_strategy = "basic"
+        username_key  = "WEBSOCKET_USERNAME"
+        password_key  = "WEBSOCKET_PASSWORD"
+        tls {
+          mode = "enabled"
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["ws-source-1"]
+      datadog_logs {
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.auth_strategy", "basic"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.username_key", "WEBSOCKET_USERNAME"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.password_key", "WEBSOCKET_PASSWORD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.websocket.0.tls.0.mode", "enabled"),
+				),
+			},
+		},
+	})
+}

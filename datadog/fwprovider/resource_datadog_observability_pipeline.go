@@ -78,6 +78,7 @@ type destinationModel struct {
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	DatabricksZerobusDestination      []*observability_pipeline.DatabricksZerobusDestinationModel      `tfsdk:"databricks_zerobus"`
 	SplunkHecMetricsDestination       []*observability_pipeline.SplunkHECMetricsDestinationModel       `tfsdk:"splunk_hec_metrics"`
+	ClickhouseDestination             []*observability_pipeline.ClickhouseDestinationModel             `tfsdk:"clickhouse"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
 	CloudPremDestination              []*observability_pipeline.CloudPremDestinationModel              `tfsdk:"cloud_prem"`
@@ -123,6 +124,7 @@ type sourceModel struct {
 	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
 	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
 	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
+	WebsocketSource          []*observability_pipeline.WebsocketSourceModel     `tfsdk:"websocket"`
 }
 
 type logstashSourceModel struct {
@@ -1235,6 +1237,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									"socket":        observability_pipeline.SocketSourceSchema(),
 									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
+									"websocket":     observability_pipeline.WebsocketSourceSchema(),
 								},
 							},
 						},
@@ -2881,6 +2884,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
+									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
 								},
@@ -3139,6 +3143,14 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, o := range sourceBlock.OpentelemetrySource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandOpentelemetrySource(o, sourceId))
 		}
+		for _, w := range sourceBlock.WebsocketSource {
+			item, wsDiags := observability_pipeline.ExpandWebsocketSource(w, sourceId)
+			diags.Append(wsDiags...)
+			if wsDiags.HasError() {
+				return nil, diags
+			}
+			config.Sources = append(config.Sources, item)
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3225,6 +3237,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		}
 		for _, d := range dest.SplunkHecMetricsDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSplunkHECMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.ClickhouseDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandClickhouseDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 		for _, d := range dest.CloudPremDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCloudPremDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
@@ -3333,6 +3348,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if o := observability_pipeline.FlattenOpentelemetrySource(src.ObservabilityPipelineOpentelemetrySource); o != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineOpentelemetrySource.GetId())
 			sourceBlock.OpentelemetrySource = append(sourceBlock.OpentelemetrySource, o)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if w := observability_pipeline.FlattenWebsocketSource(src.ObservabilityPipelineWebsocketSource); w != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineWebsocketSource.GetId())
+			sourceBlock.WebsocketSource = append(sourceBlock.WebsocketSource, w)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
@@ -3467,6 +3486,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineSplunkHecMetricsDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecMetricsDestination.GetInputs())
 			destBlock.SplunkHecMetricsDestination = append(destBlock.SplunkHecMetricsDestination, splunkMetrics)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if clickhouse := observability_pipeline.FlattenClickhouseDestination(ctx, d.ObservabilityPipelineClickhouseDestination); clickhouse != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineClickhouseDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineClickhouseDestination.GetInputs())
+			destBlock.ClickhouseDestination = append(destBlock.ClickhouseDestination, clickhouse)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if cloudprem := observability_pipeline.FlattenCloudPremDestination(ctx, d.ObservabilityPipelineCloudPremDestination); cloudprem != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineCloudPremDestination.GetId())
