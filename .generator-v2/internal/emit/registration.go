@@ -7,6 +7,7 @@ import (
 	"go/format"
 	"os"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 
@@ -33,6 +34,22 @@ func DatasourceConstructor(name string) string {
 // datasources_generated.go holds nothing else that fits the pattern, so it
 // safely recovers the already-registered set from the file's current contents.
 var datasourceConstructorRe = regexp.MustCompile(`New[A-Za-z0-9_]+DataSource`)
+
+// GeneratedDatasourceRegistered reports whether constructor already appears in
+// the generatedDatasources file at path (a missing file reports false).
+// wireGeneratedDatasources uses it to tell an idempotent re-run, where a prior
+// run already retired the overwrites target, from an overwrites target that
+// never existed in the framework Datasources slice.
+func GeneratedDatasourceRegistered(path, constructor string) (bool, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return false, nil
+		}
+		return false, err
+	}
+	return slices.Contains(datasourceConstructorRe.FindAllString(string(data), -1), constructor), nil
+}
 
 // generatedDatasourcesHeader is everything in datasources_generated.go up to and
 // including the slice literal's opening brace. SyncGeneratedDatasources appends

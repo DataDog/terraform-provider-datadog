@@ -198,6 +198,7 @@ func wireGeneratedDatasources(outputRoot string, regs []emit.GeneratedRegistrati
 	}
 
 	providerPath := filepath.Join(outputRoot, "framework_provider.go")
+	genPath := filepath.Join(outputRoot, "datasources_generated.go")
 	constructors := make([]string, 0, len(regs))
 	for _, reg := range regs {
 		constructors = append(constructors, reg.Constructor)
@@ -208,10 +209,27 @@ func wireGeneratedDatasources(outputRoot string, regs []emit.GeneratedRegistrati
 		if removeErr != nil {
 			return changed, removeErr
 		}
+		// RemoveHandwrittenDatasource reports Unchanged only when the target was
+		// not in the framework Datasources slice. That is expected on a re-run
+		// where a prior run already retired it (its replacement is registered),
+		// but otherwise means the target never existed — a typo, or an SDKv2
+		// DataSourcesMap entry the generator cannot retire. Fail loudly so a
+		// mis-targeted overwrite is caught here rather than as a mux conflict.
+		if status == model.ArtifactStatusUnchanged {
+			already, regErr := emit.GeneratedDatasourceRegistered(genPath, reg.Constructor)
+			if regErr != nil {
+				return changed, regErr
+			}
+			if !already {
+				return changed, fmt.Errorf(
+					"generate: overwrites target %q not found in the framework Datasources slice (%s); the generator can only retire hand-written framework data sources, not SDKv2 entries in provider.go's DataSourcesMap",
+					reg.Overwrites, providerPath)
+			}
+		}
 		changed = changed || wouldChange(status)
 	}
 
-	status, err := emit.SyncGeneratedDatasources(filepath.Join(outputRoot, "datasources_generated.go"), constructors, check)
+	status, err := emit.SyncGeneratedDatasources(genPath, constructors, check)
 	if err != nil {
 		return changed, err
 	}
