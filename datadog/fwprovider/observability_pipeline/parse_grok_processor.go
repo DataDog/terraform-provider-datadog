@@ -4,6 +4,7 @@ import (
 	datadogV2 "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -84,6 +85,7 @@ func ParseGrokProcessorSchema() schema.ListNestedBlock {
 				"disable_library_rules": schema.BoolAttribute{
 					Optional:    true,
 					Computed:    true,
+					Default:     booldefault.StaticBool(false),
 					Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
 				},
 				"field": schema.StringAttribute{
