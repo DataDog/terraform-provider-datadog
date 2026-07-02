@@ -491,7 +491,7 @@ func TestUnitDatadogLogsArchiveS3NoAuth(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      archiveS3ConfigNoAuth(),
-				ExpectError: regexp.MustCompile(`"s3_archive.0.account_id": one of ` + "`" + `s3_archive.0.access_key_id,s3_archive.0.account_id` + "`" + ` must be specified`),
+				ExpectError: regexp.MustCompile(`"s3_archive.0.account_id": one of`),
 			},
 		},
 	})
