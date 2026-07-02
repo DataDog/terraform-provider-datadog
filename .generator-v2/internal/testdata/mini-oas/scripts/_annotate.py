@@ -31,6 +31,7 @@ SAMPLE = [
     "datastore",
     "api_key",
     "user",
+    "rum_application",
 ]
 
 

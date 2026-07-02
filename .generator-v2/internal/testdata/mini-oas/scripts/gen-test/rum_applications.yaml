@@ -1,0 +1,458 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: RUM
+  description: Manage your Real User Monitoring (RUM) applications, and search or aggregate your RUM events
+    over HTTP. See the [RUM & Session Replay page](https://docs.datadoghq.com/real_user_monitoring/) for
+    more information
+paths:
+  /api/v2/rum/applications/{id}:
+    get:
+      operationId: GetRUMApplication
+      tags:
+      - RUM
+      summary: Get a RUM application
+      description: Get the RUM application with given ID in your organization.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: RUM application ID.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RUMApplicationResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: abc-123
+                      type: rum_application
+                      attributes:
+                        application_id: abc-123
+                        client_token: abc-123-token
+                        name: my_rum_application
+                        type: browser
+                        created_at: 1659479836169
+                        created_by_handle: example-handle
+                        updated_at: 1659479836169
+                        updated_by_handle: example-handle
+                        org_id: 123
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - rum_apps_read
+      x-menu-order: 5
+      x-undo:
+        type: safe
+  /api/v2/rum/applications:
+    get:
+      operationId: GetRUMApplications
+      tags:
+      - RUM
+      summary: List all the RUM applications
+      description: List all the RUM applications in your organization.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RUMApplicationsResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: abc-123
+                      type: rum_application
+                      attributes:
+                        application_id: abc-123
+                        name: my_rum_application
+                        type: browser
+                        created_at: 1659479836169
+                        created_by_handle: example-handle
+                        updated_at: 1659479836169
+                        updated_by_handle: example-handle
+                        org_id: 123
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - rum_apps_read
+      x-menu-order: 8
+      x-undo:
+        type: safe
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: rum_applications
+        tf_description: Use this data source to retrieve information about existing Datadog rum applications.
+        group:
+          read: GetRUMApplications
+        cardinality: plural
+components:
+  responses:
+    NotFoundResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    RUMApplication:
+      type: object
+      description: RUM application.
+      required:
+      - attributes
+      - id
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/RUMApplicationAttributes'
+        id:
+          type: string
+          description: RUM application ID.
+          example: abcd1234-0000-0000-abcd-1234abcd5678
+          x-merge-override:
+            format: false
+        type:
+          $ref: '#/components/schemas/RUMApplicationType'
+    RUMApplicationAttributes:
+      type: object
+      description: RUM application attributes.
+      required:
+      - application_id
+      - client_token
+      - created_at
+      - created_by_handle
+      - name
+      - org_id
+      - type
+      - updated_at
+      - updated_by_handle
+      properties:
+        application_id:
+          type: string
+          description: ID of the RUM application.
+          example: abcd1234-0000-0000-abcd-1234abcd5678
+          x-merge-override:
+            format: false
+        api_key_id:
+          type: integer
+          description: ID of the API key associated with the application.
+          format: int32
+          maximum: 2147483647
+          example: 123456789
+        client_token:
+          type: string
+          description: Client token of the RUM application.
+          example: abcd1234efgh5678ijkl90abcd1234efgh0
+        created_at:
+          type: integer
+          description: Timestamp in ms of the creation date.
+          format: int64
+          example: 1659479836169
+        created_by_handle:
+          type: string
+          description: Handle of the creator user.
+          example: john.doe
+        hash:
+          type: string
+          description: Hash of the RUM application. Optional.
+        is_active:
+          type: boolean
+          description: Indicates if the RUM application is active.
+          example: true
+        name:
+          type: string
+          description: Name of the RUM application.
+          example: my_rum_application
+        org_id:
+          type: integer
+          description: Org ID of the RUM application.
+          format: int32
+          maximum: 2147483647
+          example: 999
+        remote_config_id:
+          type: string
+          description: ID of the RUM SDK remote configuration for the application, if one exists.
+          example: abc12345-1234-5678-abcd-ef1234567890
+        type:
+          type: string
+          description: Type of the RUM application. Supported values are `browser`, `ios`, `android`,
+            `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.
+          example: browser
+        updated_at:
+          type: integer
+          description: Timestamp in ms of the last update date.
+          format: int64
+          example: 1659479836169
+        updated_by_handle:
+          type: string
+          description: Handle of the updater user.
+          example: jane.doe
+        product_scales:
+          $ref: '#/components/schemas/RUMProductScales'
+    RUMApplicationList:
+      type: object
+      description: RUM application list.
+      required:
+      - attributes
+      - type
+      properties:
+        attributes:
+          $ref: '#/components/schemas/RUMApplicationListAttributes'
+        type:
+          $ref: '#/components/schemas/RUMApplicationListType'
+        id:
+          type: string
+          description: RUM application ID.
+          example: abcd1234-0000-0000-abcd-1234abcd5678
+          x-merge-override:
+            format: false
+      x-merge-override:
+        required: false
+    RUMApplicationListAttributes:
+      type: object
+      description: RUM application list attributes.
+      required:
+      - application_id
+      - created_at
+      - created_by_handle
+      - name
+      - org_id
+      - type
+      - updated_at
+      - updated_by_handle
+      properties:
+        application_id:
+          type: string
+          description: ID of the RUM application.
+          example: abcd1234-0000-0000-abcd-1234abcd5678
+          x-merge-override:
+            format: false
+        created_at:
+          type: integer
+          description: Timestamp in ms of the creation date.
+          format: int64
+          example: 1659479836169
+        created_by_handle:
+          type: string
+          description: Handle of the creator user.
+          example: john.doe
+        hash:
+          type: string
+          description: Hash of the RUM application. Optional.
+        is_active:
+          type: boolean
+          description: Indicates if the RUM application is active.
+          example: true
+        name:
+          type: string
+          description: Name of the RUM application.
+          example: my_rum_application
+        org_id:
+          type: integer
+          description: Org ID of the RUM application.
+          format: int32
+          maximum: 2147483647
+          example: 999
+        type:
+          type: string
+          description: Type of the RUM application. Supported values are `browser`, `ios`, `android`,
+            `react-native`, `flutter`, `roku`, `electron`, `unity`, `kotlin-multiplatform`.
+          example: browser
+        updated_at:
+          type: integer
+          description: Timestamp in ms of the last update date.
+          format: int64
+          example: 1659479836169
+        updated_by_handle:
+          type: string
+          description: Handle of the updater user.
+          example: jane.doe
+        product_scales:
+          $ref: '#/components/schemas/RUMProductScales'
+    RUMApplicationListType:
+      type: string
+      description: RUM application list type.
+      default: rum_application
+      example: rum_application
+      enum:
+      - rum_application
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - RUM_APPLICATION
+    RUMApplicationResponse:
+      type: object
+      description: RUM application response.
+      properties:
+        data:
+          $ref: '#/components/schemas/RUMApplication'
+    RUMApplicationType:
+      type: string
+      description: RUM application response type.
+      default: rum_application
+      example: rum_application
+      enum:
+      - rum_application
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - RUM_APPLICATION
+    RUMApplicationsResponse:
+      type: object
+      description: RUM applications response.
+      properties:
+        data:
+          type: array
+          description: RUM applications array response.
+          items:
+            $ref: '#/components/schemas/RUMApplicationList'
+    RUMEventProcessingScale:
+      type: object
+      description: RUM event processing scale configuration.
+      properties:
+        state:
+          $ref: '#/components/schemas/RUMEventProcessingState'
+        last_modified_at:
+          type: integer
+          description: Timestamp in milliseconds when this scale was last modified.
+          format: int64
+          example: 1721897494108
+    RUMEventProcessingState:
+      type: string
+      description: Configures which RUM events are processed and stored for the application.
+      example: ALL
+      enum:
+      - ALL
+      - ERROR_FOCUSED_MODE
+      - NONE
+      x-enum-varnames:
+      - ALL
+      - ERROR_FOCUSED_MODE
+      - NONE
+      x-enum-descriptions:
+      - Process and store all RUM events (sessions, views, actions, resources, errors)
+      - Process and store only error events and related critical events
+      - Disable RUM event processing—no events are stored
+    RUMProductAnalyticsRetentionScale:
+      type: object
+      description: Product Analytics retention scale configuration.
+      properties:
+        state:
+          $ref: '#/components/schemas/RUMProductAnalyticsRetentionState'
+        last_modified_at:
+          type: integer
+          description: Timestamp in milliseconds when this scale was last modified.
+          format: int64
+          example: 1747922145974
+    RUMProductAnalyticsRetentionState:
+      type: string
+      description: Controls the retention policy for Product Analytics data derived from RUM events.
+      example: MAX
+      enum:
+      - MAX
+      - NONE
+      x-enum-varnames:
+      - MAX
+      - NONE
+      x-enum-descriptions:
+      - Store Product Analytics data for the maximum available retention period
+      - Do not store Product Analytics data
+    RUMProductScales:
+      type: object
+      description: Product Scales configuration for the RUM application.
+      properties:
+        rum_event_processing_scale:
+          $ref: '#/components/schemas/RUMEventProcessingScale'
+        product_analytics_retention_scale:
+          $ref: '#/components/schemas/RUMProductAnalyticsRetentionScale'
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY
