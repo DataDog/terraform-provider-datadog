@@ -27,6 +27,8 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var trackingField string
 	var maxDepth int
 	var reportPath string
+	var emitTests bool
+	var testsOutputRoot string
 
 	cmd := &cobra.Command{
 		Use:   "generate",
@@ -77,8 +79,11 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					continue
 				}
 
-				entry, reg := generateArtifact(op, outputRoot, check)
+				entry, testEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, emitTests, check)
 				runReport.Artifacts = append(runReport.Artifacts, entry)
+				if testEntry != nil {
+					runReport.Artifacts = append(runReport.Artifacts, *testEntry)
+				}
 				if reg != nil {
 					registrations = append(registrations, *reg)
 				}
@@ -126,6 +131,8 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	cmd.PersistentFlags().StringVar(&hooksRoot, "hooks-root", "datadog/fwprovider/hooks", "Root directory for hook subpackages")
 	cmd.PersistentFlags().StringVar(&trackingField, "tracking-field", "x-datadog-tf-generator", "OpenAPI extension name for the tracking field")
 	cmd.PersistentFlags().StringVar(&reportPath, "report", "-", "Where to write the run report (\"-\" = stdout)")
+	cmd.PersistentFlags().BoolVar(&emitTests, "emit-tests", false, "Also emit a generated acceptance-test scaffold for each data source")
+	cmd.PersistentFlags().StringVar(&testsOutputRoot, "tests-output-root", "datadog/tests", "Root directory for generated acceptance-test files")
 
 	return cmd
 }
@@ -134,7 +141,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 // operation. On success it also returns the GeneratedRegistration the caller
 // uses to wire the data source into the provider; it is nil for a skipped or
 // failed artifact.
-func generateArtifact(op *model.Operation, outputRoot string, check bool) (model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, emitTests, check bool) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -146,12 +153,12 @@ func generateArtifact(op *model.Operation, outputRoot string, check bool) (model
 			Severity: model.SeverityWarning,
 			Message:  fmt.Sprintf("resource generation not yet supported (kind=%s)", op.Tracking.ArtifactKind),
 		}}
-		return entry, nil
+		return entry, nil, nil
 	}
 
 	artifact, err := model.BuildArtifact(op)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	artifact.SourceFile = filepath.Join(outputRoot, "data_source_datadog_"+artifact.Name+".go")
 	entry.Path = artifact.SourceFile
@@ -161,7 +168,7 @@ func generateArtifact(op *model.Operation, outputRoot string, check bool) (model
 
 	view, err := emit.BuildDataSourceView(artifact)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	// Members the emit flattener dropped (e.g. relationships) ride along as info.
 	for _, msg := range view.Dropped {
@@ -170,18 +177,50 @@ func generateArtifact(op *model.Operation, outputRoot string, check bool) (model
 
 	src, err := emit.RenderDataSource(view)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 
 	status, err := emit.WriteFile(artifact.SourceFile, src, check)
 	if err != nil {
-		return failEntry(entry, err), nil
+		return failEntry(entry, err), nil, nil
 	}
 	entry.Status = status
-	return entry, &emit.GeneratedRegistration{
+
+	var testEntry *model.ArtifactReportEntry
+	if emitTests {
+		testEntry = emitDatasourceTest(&entry, view, artifact.Name, testsOutputRoot, check)
+	}
+
+	return entry, testEntry, &emit.GeneratedRegistration{
 		Constructor: emit.DatasourceConstructor(artifact.Name),
 		Overwrites:  op.Tracking.Overwrites,
 	}
+}
+
+// emitDatasourceTest renders and writes the acceptance-test scaffold for a data
+// source. It is best-effort: a render or write problem is recorded as a warning
+// on the data source's own entry rather than failing the run, since the test is
+// a scaffold and the data source is the real artifact. On a successful write it
+// returns a report entry for the test file so --check sees it and the summary
+// counts it; an existing file at the path is left untouched and reported as
+// skipped, because the scaffold is completed by hand and must not be clobbered.
+func emitDatasourceTest(entry *model.ArtifactReportEntry, view emit.DataSourceView, name, testsOutputRoot string, check bool) *model.ArtifactReportEntry {
+	src, err := emit.RenderDataSourceTest(view)
+	if err != nil {
+		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityWarning, Message: fmt.Sprintf("test scaffold not generated: %v", err)})
+		return nil
+	}
+
+	path := filepath.Join(testsOutputRoot, "data_source_datadog_"+name+"_test.go")
+	status, err := emit.WriteFileIfAbsent(path, src, check)
+	if err != nil {
+		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityWarning, Message: fmt.Sprintf("test scaffold write failed: %v", err)})
+		return nil
+	}
+	if status == model.ArtifactStatusSkipped {
+		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityInfo, Message: fmt.Sprintf("test scaffold skipped: %s already exists (edit it by hand)", path)})
+	}
+	return &model.ArtifactReportEntry{Name: name, Kind: entry.Kind, Status: status, Path: path}
 }
 
 // wireGeneratedDatasources registers the run's generated data sources in the
