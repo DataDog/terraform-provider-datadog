@@ -12,14 +12,12 @@ import (
 
 func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUserConfig(username),
@@ -31,11 +29,11 @@ func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 
 func TestAccDatadogUserDatasourceError(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceUserError(),
@@ -47,14 +45,12 @@ func TestAccDatadogUserDatasourceError(t *testing.T) {
 
 func TestAccDatadogUserDatasourceWithExactMatch(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUserWithExactMatchConfig(email, "true"),
@@ -66,14 +62,12 @@ func TestAccDatadogUserDatasourceWithExactMatch(t *testing.T) {
 
 func TestAccDatadogUserDatasourceWithExactMatchError(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceUserWithExactMatchConfig(email, "false"),
