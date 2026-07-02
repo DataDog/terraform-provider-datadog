@@ -13,6 +13,7 @@ import (
 )
 
 func TestAccDatadogIncidentUserDefinedField_Basic(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	fieldName := fmt.Sprintf("test_udf_basic_%d", clockFromContext(ctx).Now().Unix())
@@ -53,6 +54,7 @@ func TestAccDatadogIncidentUserDefinedField_Basic(t *testing.T) {
 }
 
 func TestAccDatadogIncidentUserDefinedField_Updated(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	fieldName := fmt.Sprintf("test_udf_updated_%d", clockFromContext(ctx).Now().Unix())
@@ -89,6 +91,7 @@ func TestAccDatadogIncidentUserDefinedField_Updated(t *testing.T) {
 }
 
 func TestAccDatadogIncidentUserDefinedField_Import(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	fieldName := fmt.Sprintf("test_udf_import_%d", clockFromContext(ctx).Now().Unix())

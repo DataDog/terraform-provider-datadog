@@ -20,9 +20,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// incidentUserDefinedFieldTypeNames maps the API's numeric field type to its
-// human-readable name, exposed as the `type` attribute so configs avoid magic
-// numbers. The mapping is bijective across the eight supported field types.
+// The `type` attribute is exposed as a human-readable name (avoiding magic
+// numbers) and translated to/from the API's numeric field type. The three
+// collections below are kept in sync across the eight supported field types.
 var incidentUserDefinedFieldTypeNames = map[int32]string{
 	1: "dropdown",
 	2: "multiselect",
@@ -34,20 +34,21 @@ var incidentUserDefinedFieldTypeNames = map[int32]string{
 	8: "datetime",
 }
 
-var incidentUserDefinedFieldTypeValues = func() map[string]datadogV2.IncidentUserDefinedFieldFieldType {
-	m := make(map[string]datadogV2.IncidentUserDefinedFieldFieldType, len(incidentUserDefinedFieldTypeNames))
-	for value, name := range incidentUserDefinedFieldTypeNames {
-		m[name] = datadogV2.IncidentUserDefinedFieldFieldType(value)
-	}
-	return m
-}()
+var incidentUserDefinedFieldTypeValues = map[string]datadogV2.IncidentUserDefinedFieldFieldType{
+	"dropdown":     1,
+	"multiselect":  2,
+	"textbox":      3,
+	"textarray":    4,
+	"metrictag":    5,
+	"autocomplete": 6,
+	"number":       7,
+	"datetime":     8,
+}
 
-func incidentUserDefinedFieldTypeNameList() []string {
-	names := make([]string, 0, len(incidentUserDefinedFieldTypeNames))
-	for value := int32(1); value <= int32(len(incidentUserDefinedFieldTypeNames)); value++ {
-		names = append(names, incidentUserDefinedFieldTypeNames[value])
-	}
-	return names
+// incidentUserDefinedFieldTypeNameList lists the valid `type` values in numeric order.
+var incidentUserDefinedFieldTypeNameList = []string{
+	"dropdown", "multiselect", "textbox", "textarray",
+	"metrictag", "autocomplete", "number", "datetime",
 }
 
 var (
@@ -147,7 +148,7 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 				Description: "The data type of the field. Changing the type forces a new resource.",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf(incidentUserDefinedFieldTypeNameList()...),
+					stringvalidator.OneOf(incidentUserDefinedFieldTypeNameList...),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
