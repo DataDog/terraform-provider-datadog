@@ -3,6 +3,8 @@ RECORD?=false
 GOIMPORTS_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
+DEV_PLUGIN_DIR=$(HOME)/.terraform.d/dev/datadog
+DEV_TFRC=$(HOME)/.terraform.d/dev/datadog.tfrc
 ZORKIAN_VERSION?=master
 API_CLIENT_VERSION?=master
 LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
@@ -18,6 +20,26 @@ install: fmtcheck
 
 uninstall:
 	@rm -vf $(DIR)/terraform-provider-datadog
+
+# Build the provider from the current branch and generate a Terraform CLI config
+# that points the datadog provider at this local build via dev_overrides. This lets
+# you exercise in-development changes with the regular `terraform` CLI.
+# Re-run after any code change. Usage:
+#   make dev-build
+#   TF_CLI_CONFIG_FILE=$(DEV_TFRC) terraform apply   # do NOT run `terraform init`
+dev-build:
+	@mkdir -p $(DEV_PLUGIN_DIR)
+	go build -o $(DEV_PLUGIN_DIR)/terraform-provider-datadog .
+	@printf 'provider_installation {\n  dev_overrides {\n    "DataDog/datadog" = "%s"\n  }\n  direct {}\n}\n' "$(DEV_PLUGIN_DIR)" > $(DEV_TFRC)
+	@echo ""
+	@echo "Local provider built -> $(DEV_PLUGIN_DIR)/terraform-provider-datadog"
+	@echo "CLI config written   -> $(DEV_TFRC)"
+	@echo ""
+	@echo "Run terraform against this build (do NOT run 'terraform init'):"
+	@echo "  TF_CLI_CONFIG_FILE=$(DEV_TFRC) terraform apply"
+
+dev-clean:
+	@rm -vf $(DEV_PLUGIN_DIR)/terraform-provider-datadog $(DEV_TFRC)
 
 # Run unit tests; these tests don't interact with the API and don't support/need RECORD
 test: get-test-deps fmtcheck
@@ -103,4 +125,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile get-test-deps license-check sweep
+.PHONY: build dev-build dev-clean check-docs docs test testall testacc cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile get-test-deps license-check sweep

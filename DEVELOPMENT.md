@@ -71,7 +71,32 @@ The Datadog Provider can be built to use the binary as a terraform plugin. This 
 
 This provider can be built by running `make build`, or just `make`. This will place the binary in `$GOPATH/bin`
 
+### Quick dev override (`make dev-build`)
+
+For iterating on a feature branch, `make dev-build` automates the whole [`dev_overrides`][4] setup in one step. It:
+
+- builds the provider from your current branch into `~/.terraform.d/dev/datadog/`, and
+- generates a self-contained Terraform CLI config at `~/.terraform.d/dev/datadog.tfrc` that points the `DataDog/datadog` provider at that build.
+
+Then run Terraform against your local build by pointing `TF_CLI_CONFIG_FILE` at the generated config:
+
+```sh
+make dev-build
+
+# In your HCL directory (do NOT run `terraform init` — dev overrides bypass it):
+TF_CLI_CONFIG_FILE=~/.terraform.d/dev/datadog.tfrc terraform plan
+TF_CLI_CONFIG_FILE=~/.terraform.d/dev/datadog.tfrc terraform apply
+```
+
+Terraform prints a `Provider development overrides are in effect` warning on each run — that confirms it is using your local build. Scoping the override to `TF_CLI_CONFIG_FILE` (instead of a global `~/.terraformrc`) means only commands where you set the variable use the branch build; everything else uses registry providers as normal.
+
+Re-run `make dev-build` after each code change to pick it up. Run `make dev-clean` to remove the local build and generated config.
+
+> **Note:** don't set a `version` constraint for the `datadog` provider in your config — version constraints are ignored under a dev override.
+
 ### Local Development Setup
+
+The steps below set the override up manually (equivalent to what `make dev-build` automates above).
 
 1. Setup a `~/.terraformrc` file with the following content:
 
