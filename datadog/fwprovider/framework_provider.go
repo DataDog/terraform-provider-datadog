@@ -132,6 +132,7 @@ var Resources = []func() resource.Resource{
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewIncidentUserDefinedFieldResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
 	NewDatadogCustomAllocationRuleResource,
