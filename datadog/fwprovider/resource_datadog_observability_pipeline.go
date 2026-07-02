@@ -4166,7 +4166,11 @@ func flattenParseGrokProcessor(ctx context.Context, src *datadogV2.Observability
 	grok := &parseGrokProcessorModel{
 		DisableLibraryRules: types.BoolValue(src.GetDisableLibraryRules()),
 	}
-	for _, rule := range src.GetRules() {
+	for _, ruleItem := range src.GetRules() {
+		rule := ruleItem.ObservabilityPipelineParseGrokProcessorRule
+		if rule == nil {
+			continue
+		}
 		r := parseGrokProcessorRuleModel{
 			Source: types.StringValue(rule.GetSource()),
 		}
@@ -4945,7 +4949,7 @@ func expandParseGrokProcessorItem(ctx context.Context, common observability_pipe
 		proc.SetDisableLibraryRules(src.DisableLibraryRules.ValueBool())
 	}
 
-	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
+	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleItem
 	for _, r := range src.Rules {
 		rule := datadogV2.ObservabilityPipelineParseGrokProcessorRule{
 			Source: r.Source.ValueString(),
@@ -4969,7 +4973,7 @@ func expandParseGrokProcessorItem(ctx context.Context, common observability_pipe
 		}
 		rule.SetSupportRules(supportRules)
 
-		rules = append(rules, rule)
+		rules = append(rules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleAsObservabilityPipelineParseGrokProcessorRuleItem(&rule))
 	}
 	proc.SetRules(rules)
 

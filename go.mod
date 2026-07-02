@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.61.1-0.20260625212749-6aa2781f8c13
+	github.com/DataDog/datadog-api-client-go/v2 v2.62.1-0.20260702124829-e8b6e773676c
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/google/go-cmp v0.7.0
@@ -115,8 +115,3 @@ go 1.25.8
 toolchain go1.26.1
 
 tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
-
-// NOTE: local hand-patch adding server_side_encryption and ssekms_key_id to
-// ObservabilityPipelineAmazonS3GenericDestination. Remove this replace directive
-// once the datadog-api-spec change (OPA-5637) is merged and the client is regenerated.
-replace github.com/DataDog/datadog-api-client-go/v2 => ./local-patches/datadog-api-client-go/v2

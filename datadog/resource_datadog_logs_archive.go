@@ -300,8 +300,8 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]inter
 	result := make(map[string]interface{})
 	integration := destination.GetIntegration()
 	encryption := destination.GetEncryption()
-	result["account_id"] = integration.GetAccountId()
-	result["role_name"] = integration.GetRoleName()
+	result["account_id"] = integration.LogsArchiveIntegrationS3Role.GetAccountId()
+	result["role_name"] = integration.LogsArchiveIntegrationS3Role.GetRoleName()
 	if encryptionType, ok := encryption.GetTypeOk(); ok {
 		result["encryption_type"] = encryptionType
 	}
@@ -476,9 +476,11 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("role_name is not defined")
 	}
-	integration := datadogV2.NewLogsArchiveIntegrationS3(
-		accountID.(string),
-		roleName.(string),
+	integration := datadogV2.LogsArchiveIntegrationS3RoleAsLogsArchiveIntegrationS3(
+		datadogV2.NewLogsArchiveIntegrationS3Role(
+			accountID.(string),
+			roleName.(string),
+		),
 	)
 	bucket, ok := d["bucket"]
 	if !ok {
@@ -490,7 +492,7 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	}
 	destination := datadogV2.NewLogsArchiveDestinationS3(
 		bucket.(string),
-		*integration,
+		integration,
 		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	)
 	encryptionType, ok := d["encryption_type"]
