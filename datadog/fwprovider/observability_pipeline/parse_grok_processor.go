@@ -36,6 +36,10 @@ type GrokRuleModel struct {
 func grokMatchRuleBlock() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
 		Description: "A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern.",
+		Validators: []validator.List{
+			listvalidator.IsRequired(),
+			listvalidator.SizeAtLeast(1),
+		},
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"name": schema.StringAttribute{
