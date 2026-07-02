@@ -101,6 +101,45 @@ func TestGenerateWiresOverwrite(t *testing.T) {
 	}
 }
 
+// TestGenerateFailsOnMissingOverwriteTarget proves the safety guard: an
+// overwrites target absent from the framework Datasources slice — a typo, or an
+// SDKv2 DataSourcesMap entry the generator cannot retire — fails the run rather
+// than silently leaving both registrations in place to collide at mux time. The
+// temp dir has no datasources_generated.go, so the target is genuinely absent
+// rather than already retired by a prior run.
+func TestGenerateFailsOnMissingOverwriteTarget(t *testing.T) {
+	spec, err := os.ReadFile(filepath.Join("..", "testdata", "mini-oas", "scripts", "gen-test", "datastore.yaml"))
+	if err != nil {
+		t.Fatalf("reading datastore spec: %v", err)
+	}
+	withOverwrites := strings.Replace(string(spec),
+		"        artifact_name: datastore\n",
+		"        artifact_name: datastore\n        overwrites: NewNonexistentDataSource\n", 1)
+	if !strings.Contains(withOverwrites, "overwrites: NewNonexistentDataSource") {
+		t.Fatal("failed to inject overwrites into the datastore spec fixture")
+	}
+
+	dir := t.TempDir()
+	specPath := filepath.Join(dir, "datastore.yaml")
+	if err := os.WriteFile(specPath, []byte(withOverwrites), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	provider := "package fwprovider\n\n" +
+		"var Datasources = []func() datasource.DataSource{\n" +
+		"\tNewAPIKeyDataSource,\n\tNewHostsDataSource,\n}\n"
+	if err := os.WriteFile(filepath.Join(dir, "framework_provider.go"), []byte(provider), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	err = runTfgen("generate", "--spec", specPath, "--output-root", dir, "--report", filepath.Join(dir, "report.json"))
+	if err == nil {
+		t.Fatal("expected an error when overwrites names a constructor absent from the Datasources slice, got nil")
+	}
+	if !strings.Contains(err.Error(), "NewNonexistentDataSource") {
+		t.Errorf("error should name the missing overwrites target, got: %v", err)
+	}
+}
+
 func mustRead(t *testing.T, path string) string {
 	t.Helper()
 	content, err := os.ReadFile(path)
