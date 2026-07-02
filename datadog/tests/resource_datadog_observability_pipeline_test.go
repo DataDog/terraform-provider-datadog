@@ -875,9 +875,7 @@ resource "datadog_observability_pipeline" "parse_grok" {
   config {
     source {
       id = "source-1"
-      
-      datadog_agent {
-      }
+      datadog_agent {}
     }
 
     processor_group {
@@ -885,17 +883,18 @@ resource "datadog_observability_pipeline" "parse_grok" {
       enabled = true
       include = "*"
       inputs  = ["source-1"]
-      
+
       processor {
         id      = "parse-grok-1"
         enabled = true
         include = "*"
-        
+
         parse_grok {
           disable_library_rules = true
+          field                 = "content"
 
-          rule {
-            source = "message"
+          include_rule {
+            include = "service:foo"
 
             match_rule {
               name = "match_user"
@@ -920,13 +919,11 @@ resource "datadog_observability_pipeline" "parse_grok" {
         }
       }
     }
-    
+
     destination {
       id     = "destination-1"
       inputs = ["parse-grok-group-1"]
-      
-      datadog_logs {
-      }
+      datadog_logs {}
     }
   }
 }`,
@@ -937,19 +934,67 @@ resource "datadog_observability_pipeline" "parse_grok" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.id", "parse-grok-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.disable_library_rules", "true"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.source", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.field", "content"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.include", "service:foo"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.match_rule.0.name", "match_user"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.match_rule.0.rule", "%{word:user.name}"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.match_rule.1.name", "match_action"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.match_rule.1.rule", "%{word:action}"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.support_rule.0.name", "word"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.support_rule.0.rule", "\\w+"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.support_rule.1.name", "custom_word"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.include_rule.0.support_rule.1.rule", "[a-zA-Z]+"),
+				),
+			},
+			{
+				Config: `
+resource "datadog_observability_pipeline" "parse_grok" {
+  name = "parse-grok-test"
 
-					// Match Rules
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {}
+    }
+
+    processor_group {
+      id      = "parse-grok-group-1"
+      enabled = true
+      include = "*"
+      inputs  = ["source-1"]
+
+      processor {
+        id      = "parse-grok-1"
+        enabled = true
+        include = "*"
+
+        parse_grok {
+          rule {
+            source = "message"
+
+            match_rule {
+              name = "match_user"
+              rule = "%%{word:user.name}"
+            }
+          }
+        }
+      }
+    }
+
+    destination {
+      id     = "destination-1"
+      inputs = ["parse-grok-group-1"]
+      datadog_logs {}
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.disable_library_rules", "false"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.field", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.source", "message"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.match_rule.0.name", "match_user"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.match_rule.0.rule", "%{word:user.name}"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.match_rule.1.name", "match_action"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.match_rule.1.rule", "%{word:action}"),
-
-					// Support Rules
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.support_rule.0.name", "word"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.support_rule.0.rule", "\\w+"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.support_rule.1.name", "custom_word"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.parse_grok.0.rule.0.support_rule.1.rule", "[a-zA-Z]+"),
 				),
 			},
 		},
