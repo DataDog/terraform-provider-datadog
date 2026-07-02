@@ -49,6 +49,33 @@ var _ = Describe("data-source templates", func() {
 	})
 })
 
+var _ = Describe("data-source acceptance-test scaffolds", func() {
+	// The scaffolds are built from the same views as the data sources above, so
+	// each golden pairs with a data_source_*.golden and proves the by-id,
+	// search, and plural test shapes render the framework-mux harness the
+	// hand-written datadog/tests/data_source_datadog_*_test.go files use.
+	DescribeTable("render to gofmt-canonical golden output",
+		func(golden string, fixture func() DataSourceView) {
+			got, err := RenderDataSourceTest(fixture())
+			Expect(err).NotTo(HaveOccurred())
+			matchGolden(golden, got)
+		},
+		Entry("singular by-id (team)", "data_source_test_singular.golden", teamSingularView),
+		Entry("singular search (powerpack)", "data_source_test_singular_search.golden", powerpackSearchView),
+		Entry("plural (teams)", "data_source_test_plural.golden", pluralFixture),
+	)
+
+	It("renders deterministically across runs", func() {
+		for _, v := range []DataSourceView{teamSingularView(), powerpackSearchView(), pluralFixture()} {
+			first, err := RenderDataSourceTest(v)
+			Expect(err).NotTo(HaveOccurred())
+			second, err := RenderDataSourceTest(v)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(first).To(Equal(second), "test render of %q is non-deterministic", v.TypeName)
+		}
+	})
+})
+
 // matchGolden compares got against testdata/<name>, or rewrites it under -update.
 func matchGolden(name string, got []byte) {
 	GinkgoHelper()
