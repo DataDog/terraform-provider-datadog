@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
@@ -431,6 +432,66 @@ func TestAccDatadogLogsArchiveS3AccessKey_basic(t *testing.T) {
 					resource.TestCheckNoResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name"),
 				),
+			},
+		},
+	})
+}
+
+// invalid: access_key_id and role_name are mutually exclusive
+func archiveS3ConfigAccessKeyAndRoleConflict() string {
+	return `
+resource "datadog_logs_archive" "my_s3_archive" {
+  name  = "my first s3 archive"
+  query = "service:tutu"
+  s3_archive {
+    bucket        = "my-bucket"
+    path          = "/path/foo"
+    access_key_id = "AKIAIOSFODNN7EXAMPLE"
+    role_name     = "testacc-datadog-integration-role"
+  }
+}`
+}
+
+func TestAccDatadogLogsArchiveS3AccessKeyAndRoleConflict(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      archiveS3ConfigAccessKeyAndRoleConflict(),
+				ExpectError: regexp.MustCompile(`"s3_archive.0.access_key_id": conflicts with s3_archive.0.role_name`),
+			},
+		},
+	})
+}
+
+// invalid: neither account_id nor access_key_id specified
+func archiveS3ConfigNoAuth() string {
+	return `
+resource "datadog_logs_archive" "my_s3_archive" {
+  name  = "my first s3 archive"
+  query = "service:tutu"
+  s3_archive {
+    bucket = "my-bucket"
+    path   = "/path/foo"
+  }
+}`
+}
+
+func TestAccDatadogLogsArchiveS3NoAuth(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      archiveS3ConfigNoAuth(),
+				ExpectError: regexp.MustCompile(`at least one of s3_archive.0.access_key_id,s3_archive.0.account_id must be specified`),
 			},
 		},
 	})
