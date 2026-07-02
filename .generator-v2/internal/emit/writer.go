@@ -9,6 +9,20 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
+// WriteFileIfAbsent writes content only when path does not exist, reporting
+// ArtifactStatusSkipped when a file is already there. Generated acceptance tests
+// use this: the scaffold is completed by hand (seed resources, assertions, a
+// recorded cassette), so regeneration must never overwrite an existing one —
+// whether hand-written or a previously generated scaffold since filled in.
+func WriteFileIfAbsent(path string, content []byte, check bool) (model.ArtifactStatus, error) {
+	if _, err := os.Stat(path); err == nil {
+		return model.ArtifactStatusSkipped, nil
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return model.ArtifactStatusFailed, err
+	}
+	return WriteFile(path, content, check)
+}
+
 // WriteFile writes content to path, skipping the write when on-disk content
 // matches. In check mode it reports what would happen without touching disk.
 // Parent directories are created as needed.
