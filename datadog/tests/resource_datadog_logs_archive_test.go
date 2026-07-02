@@ -378,6 +378,64 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	})
 }
 
+// create then update: Ok s3 with access_key_id (mutually exclusive with account_id/role_name)
+func archiveS3ConfigWithAccessKey() string {
+	return `
+resource "datadog_logs_archive" "my_s3_archive" {
+  name  = "my first s3 archive"
+  query = "service:tutu"
+  s3_archive {
+    bucket        = "my-bucket"
+    path          = "/path/foo"
+    access_key_id = "AKIAIOSFODNN7EXAMPLE"
+    storage_class = "STANDARD_IA"
+  }
+  rehydration_tags = ["team:intake", "team:app"]
+  include_tags      = true
+}`
+}
+
+func TestAccDatadogLogsArchiveS3AccessKey_basic(t *testing.T) {
+	t.Skip("This test doesn't support recording or replaying")
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// role-based (existing behavior), proving no forced diff on upgrade
+				Config: archiveS3ConfigForCreation(accountID, ""),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckArchiveExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.access_key_id"),
+				),
+			},
+			{
+				// switch to access_key_id, dropping account_id/role_name
+				Config: archiveS3ConfigWithAccessKey(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckArchiveExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.access_key_id", "AKIAIOSFODNN7EXAMPLE"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckArchiveExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
