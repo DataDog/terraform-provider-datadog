@@ -115,3 +115,8 @@ go 1.25.8
 toolchain go1.26.1
 
 tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+
+// NOTE: local hand-patch adding server_side_encryption and ssekms_key_id to
+// ObservabilityPipelineAmazonS3GenericDestination. Remove this replace directive
+// once the datadog-api-spec change (OPA-5637) is merged and the client is regenerated.
+replace github.com/DataDog/datadog-api-client-go/v2 => ./local-patches/datadog-api-client-go/v2

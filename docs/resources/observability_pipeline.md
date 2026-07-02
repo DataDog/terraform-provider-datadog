@@ -257,6 +257,8 @@ Optional:
 - `compression` (Block List) Compression configuration. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--compression))
 - `encoding` (Block List) Encoding format for the destination. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic--encoding))
 - `key_prefix` (String) Optional prefix for object keys.
+- `server_side_encryption` (String) The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`. Valid values are `aws:kms`, `AES256`.
+- `ssekms_key_id` (String) ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.
 
 <a id="nestedblock--config--destination--amazon_s3_generic--auth"></a>
 ### Nested Schema for `config.destination.amazon_s3_generic.auth`
