@@ -27,13 +27,13 @@ resource "datadog_incident_user_defined_field" "example" {
   default_value = "service_bug"
   incident_type = datadog_incident_type.example.id
 
-  valid_values {
+  valid_value {
     display_name = "Service Bug"
     value        = "service_bug"
     description  = "A bug in the service code."
   }
 
-  valid_values {
+  valid_value {
     display_name = "Human Error"
     value        = "human_error"
   }
@@ -52,13 +52,12 @@ resource "datadog_incident_user_defined_field" "example" {
 ### Optional
 
 - `category` (String) The section in which the field appears: `what_happened` or `why_it_happened`. When unset, the field appears in the Attributes section.
-- `collected` (String) The lifecycle stage at which the app prompts users to fill out this field. One of `active`, `stable`, `resolved`, or `completed`. Cannot be set on required fields.
 - `default_value` (String) The default value for the field. Must be one of the valid values when `valid_values` is set.
 - `display_name` (String) The human-readable name shown in the UI. Defaults to a formatted version of the name if not provided.
 - `ordinal` (String) A decimal string representing the field's display order in the UI. Assigned by the server when not provided.
 - `required` (Boolean) When true, users must fill out this field on incidents. Defaults to `false`.
 - `tag_key` (String) For metric tag-type fields only, the metric tag key that powers the autocomplete options. Changing the tag key forces a new resource.
-- `valid_values` (Block Set) The set of allowed values for dropdown, multiselect, and autocomplete fields. Limited to 1000 values. The API does not preserve ordering, so this is modeled as an unordered set. (see [below for nested schema](#nestedblock--valid_values))
+- `valid_value` (Block Set) A set of allowed values for dropdown, multiselect, and autocomplete fields; specify one block per value. Limited to 1000 values. The API does not preserve ordering, so this is modeled as an unordered set. (see [below for nested schema](#nestedblock--valid_value))
 
 ### Read-Only
 
@@ -72,8 +71,8 @@ resource "datadog_incident_user_defined_field" "example" {
 - `reserved` (Boolean) When true, this field is reserved for system use and cannot be deleted.
 - `table_id` (Number) Reserved for internal use. Always 0.
 
-<a id="nestedblock--valid_values"></a>
-### Nested Schema for `valid_values`
+<a id="nestedblock--valid_value"></a>
+### Nested Schema for `valid_value`
 
 Required:
 

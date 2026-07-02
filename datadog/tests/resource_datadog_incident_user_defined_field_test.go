@@ -36,9 +36,9 @@ func TestAccDatadogIncidentUserDefinedField_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_incident_user_defined_field.foo", "category", "what_happened"),
 					resource.TestCheckResourceAttr(
-						"datadog_incident_user_defined_field.foo", "valid_values.#", "2"),
+						"datadog_incident_user_defined_field.foo", "valid_value.#", "2"),
 					resource.TestCheckTypeSetElemNestedAttrs(
-						"datadog_incident_user_defined_field.foo", "valid_values.*", map[string]string{
+						"datadog_incident_user_defined_field.foo", "valid_value.*", map[string]string{
 							"display_name": "Service Bug",
 							"value":        "service_bug",
 							"description":  "A bug in the service code.",
@@ -87,7 +87,7 @@ func TestAccDatadogIncidentUserDefinedField_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_incident_user_defined_field.foo", "category", "why_it_happened"),
 					resource.TestCheckResourceAttr(
-						"datadog_incident_user_defined_field.foo", "valid_values.#", "1"),
+						"datadog_incident_user_defined_field.foo", "valid_value.#", "1"),
 				),
 			},
 		},
@@ -131,13 +131,13 @@ resource "datadog_incident_user_defined_field" "foo" {
   category      = "what_happened"
   incident_type = datadog_incident_type.test.id
 
-  valid_values {
+  valid_value {
     display_name = "Service Bug"
     value        = "service_bug"
     description  = "A bug in the service code."
   }
 
-  valid_values {
+  valid_value {
     display_name = "Human Error"
     value        = "human_error"
   }
@@ -158,7 +158,7 @@ resource "datadog_incident_user_defined_field" "foo" {
   category      = "why_it_happened"
   incident_type = datadog_incident_type.test.id
 
-  valid_values {
+  valid_value {
     display_name = "Service Bug"
     value        = "service_bug"
     description  = "A bug in the service code."

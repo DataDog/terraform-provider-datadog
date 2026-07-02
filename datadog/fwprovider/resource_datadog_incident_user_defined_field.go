@@ -69,7 +69,6 @@ type incidentUserDefinedFieldModel struct {
 	IncidentType types.String                              `tfsdk:"incident_type"`
 	DisplayName  types.String                              `tfsdk:"display_name"`
 	Category     types.String                              `tfsdk:"category"`
-	Collected    types.String                              `tfsdk:"collected"`
 	DefaultValue types.String                              `tfsdk:"default_value"`
 	Ordinal      types.String                              `tfsdk:"ordinal"`
 	Required     types.Bool                                `tfsdk:"required"`
@@ -82,7 +81,7 @@ type incidentUserDefinedFieldModel struct {
 	Modified     types.String                              `tfsdk:"modified"`
 	Deleted      types.String                              `tfsdk:"deleted"`
 	Metadata     types.Object                              `tfsdk:"metadata"`
-	ValidValues  []incidentUserDefinedFieldValidValueModel `tfsdk:"valid_values"`
+	ValidValues  []incidentUserDefinedFieldValidValueModel `tfsdk:"valid_value"`
 }
 
 var incidentUserDefinedFieldMetadataAttrTypes = map[string]attr.Type{
@@ -181,10 +180,6 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 			},
 			"category": schema.StringAttribute{
 				Description: "The section in which the field appears: `what_happened` or `why_it_happened`. When unset, the field appears in the Attributes section.",
-				Optional:    true,
-			},
-			"collected": schema.StringAttribute{
-				Description: "The lifecycle stage at which the app prompts users to fill out this field. One of `active`, `stable`, `resolved`, or `completed`. Cannot be set on required fields.",
 				Optional:    true,
 			},
 			"default_value": schema.StringAttribute{
@@ -288,8 +283,8 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"valid_values": schema.SetNestedBlock{
-				Description: "The set of allowed values for dropdown, multiselect, and autocomplete fields. Limited to 1000 values. The API does not preserve ordering, so this is modeled as an unordered set.",
+			"valid_value": schema.SetNestedBlock{
+				Description: "A set of allowed values for dropdown, multiselect, and autocomplete fields; specify one block per value. Limited to 1000 values. The API does not preserve ordering, so this is modeled as an unordered set.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"display_name": schema.StringAttribute{
@@ -332,9 +327,6 @@ func (r *incidentUserDefinedFieldResource) Create(ctx context.Context, request r
 	}
 	if !plan.Category.IsNull() {
 		attributes.SetCategory(datadogV2.IncidentUserDefinedFieldCategory(plan.Category.ValueString()))
-	}
-	if !plan.Collected.IsNull() {
-		attributes.SetCollected(datadogV2.IncidentUserDefinedFieldCollected(plan.Collected.ValueString()))
 	}
 	if !plan.DefaultValue.IsNull() {
 		attributes.SetDefaultValue(plan.DefaultValue.ValueString())
@@ -430,11 +422,6 @@ func (r *incidentUserDefinedFieldResource) Update(ctx context.Context, request r
 		attributes.SetCategory(datadogV2.IncidentUserDefinedFieldCategory(plan.Category.ValueString()))
 	} else {
 		attributes.SetCategoryNil()
-	}
-	if !plan.Collected.IsNull() {
-		attributes.SetCollected(datadogV2.IncidentUserDefinedFieldCollected(plan.Collected.ValueString()))
-	} else {
-		attributes.SetCollectedNil()
 	}
 	if !plan.DefaultValue.IsNull() {
 		attributes.SetDefaultValue(plan.DefaultValue.ValueString())
@@ -541,11 +528,6 @@ func (r *incidentUserDefinedFieldResource) updateStateFromResponse(ctx context.C
 			state.Category = types.StringValue(string(*v))
 		} else {
 			state.Category = types.StringNull()
-		}
-		if v, ok := attributes.GetCollectedOk(); ok && v != nil {
-			state.Collected = types.StringValue(string(*v))
-		} else {
-			state.Collected = types.StringNull()
 		}
 		if v, ok := attributes.GetDefaultValueOk(); ok && v != nil {
 			state.DefaultValue = types.StringValue(*v)
