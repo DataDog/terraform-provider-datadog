@@ -288,8 +288,8 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"valid_values": schema.ListNestedBlock{
-				Description: "The list of allowed values for dropdown, multiselect, and autocomplete fields. Limited to 1000 values.",
+			"valid_values": schema.SetNestedBlock{
+				Description: "The set of allowed values for dropdown, multiselect, and autocomplete fields. Limited to 1000 values. The API does not preserve ordering, so this is modeled as an unordered set.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"display_name": schema.StringAttribute{

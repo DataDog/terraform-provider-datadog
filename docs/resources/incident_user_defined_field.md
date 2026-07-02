@@ -58,7 +58,7 @@ resource "datadog_incident_user_defined_field" "example" {
 - `ordinal` (String) A decimal string representing the field's display order in the UI. Assigned by the server when not provided.
 - `required` (Boolean) When true, users must fill out this field on incidents. Defaults to `false`.
 - `tag_key` (String) For metric tag-type fields only, the metric tag key that powers the autocomplete options. Changing the tag key forces a new resource.
-- `valid_values` (Block List) The list of allowed values for dropdown, multiselect, and autocomplete fields. Limited to 1000 values. (see [below for nested schema](#nestedblock--valid_values))
+- `valid_values` (Block Set) The set of allowed values for dropdown, multiselect, and autocomplete fields. Limited to 1000 values. The API does not preserve ordering, so this is modeled as an unordered set. (see [below for nested schema](#nestedblock--valid_values))
 
 ### Read-Only
 

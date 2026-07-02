@@ -37,8 +37,12 @@ func TestAccDatadogIncidentUserDefinedField_Basic(t *testing.T) {
 						"datadog_incident_user_defined_field.foo", "category", "what_happened"),
 					resource.TestCheckResourceAttr(
 						"datadog_incident_user_defined_field.foo", "valid_values.#", "2"),
-					resource.TestCheckResourceAttr(
-						"datadog_incident_user_defined_field.foo", "valid_values.0.value", "service_bug"),
+					resource.TestCheckTypeSetElemNestedAttrs(
+						"datadog_incident_user_defined_field.foo", "valid_values.*", map[string]string{
+							"display_name": "Service Bug",
+							"value":        "service_bug",
+							"description":  "A bug in the service code.",
+						}),
 					resource.TestCheckResourceAttr(
 						"datadog_incident_user_defined_field.foo", "attached_to", "incidents"),
 					resource.TestCheckResourceAttrSet(
