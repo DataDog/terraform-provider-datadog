@@ -117,12 +117,12 @@ func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasourc
 		d.updateState(&state, resp.GetData())
 	} else {
 		var items []datadogV2.DatastoreData
-		resp, _, err := d.Api.ListDatastores(d.Auth)
+		listResp, _, err := d.Api.ListDatastores(d.Auth)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error when calling `ListDatastores`"))
 			return
 		}
-		items = append(items, resp.Data...)
+		items = append(items, listResp.Data...)
 
 		if len(items) == 0 {
 			response.Diagnostics.AddError("filters returned no results", "")
