@@ -588,12 +588,15 @@ func (r *incidentUserDefinedFieldResource) updateStateFromResponse(ctx context.C
 					DisplayName: types.StringValue(v.GetDisplayName()),
 					Value:       types.StringValue(v.GetValue()),
 				}
-				if d, ok := v.GetDescriptionOk(); ok && d != nil {
+				// The API normalizes an omitted description/short_description to an
+				// empty string; map it back to null so configured (unset) set
+				// elements correlate with the applied result.
+				if d, ok := v.GetDescriptionOk(); ok && d != nil && *d != "" {
 					m.Description = types.StringValue(*d)
 				} else {
 					m.Description = types.StringNull()
 				}
-				if sd, ok := v.GetShortDescriptionOk(); ok && sd != nil {
+				if sd, ok := v.GetShortDescriptionOk(); ok && sd != nil && *sd != "" {
 					m.ShortDescription = types.StringValue(*sd)
 				} else {
 					m.ShortDescription = types.StringNull()
