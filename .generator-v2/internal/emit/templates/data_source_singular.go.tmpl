@@ -154,12 +154,12 @@ func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceMode
 		items = append(items, paginationResult.Item)
 	}
 {{- else }}
-	resp, _, err := d.Api.{{ .Search.Method }}(d.Auth{{ if .Search.OptionalParamsType }}, optionalParams{{ end }})
+	listResp, _, err := d.Api.{{ .Search.Method }}(d.Auth{{ if .Search.OptionalParamsType }}, optionalParams{{ end }})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error when calling `{{ .Search.Method }}`"))
 		return
 	}
-	items = append(items, resp.Data...)
+	items = append(items, listResp.Data...)
 {{- end }}
 
 	if len(items) == 0 {

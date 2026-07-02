@@ -164,6 +164,26 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(view.Search.Method).To(Equal("ListDatastores"))
 			Expect(view.State.ParamType).To(Equal("datadogV2.DatastoreData"))
 		})
+
+		It("partitions the list op's scalar filter into an Optional attribute and a search param alongside the by-id id", func() {
+			view, err := BuildDataSourceView(mustArtifact(datastoreBothWithFilterOperation()))
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(view.ByID).To(BeTrue())
+			Expect(view.Searchable).To(BeTrue())
+
+			// The filter binds the list call's optional parameter...
+			Expect(view.Search.Filters).To(Equal([]FilterParamView{
+				{StateField: "FilterKeyword", ParamField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
+			}))
+			// ...and surfaces as an Optional schema attribute next to the record.
+			Expect(view.Schema.Attributes).To(ContainElement(AttrView{
+				TFName:      "filter_keyword",
+				TFType:      "schema.StringAttribute",
+				Description: "Filter datastores by keyword.",
+				Optional:    true,
+			}))
+		})
 	})
 
 	DescribeTable("the emitted Read guards the result count and indexes only the single match",
@@ -250,12 +270,13 @@ func datastoreBothOperation() *model.Operation {
 		ResponseSchema:  obj(map[string]*model.Schema{"data": {Kind: model.SchemaKindArray, Items: datastoreElement()}}),
 	}
 	return &model.Operation{
-		Path:            "/api/v2/actions-datastores/{datastore_id}",
-		Method:          "GET",
-		OperationId:     "GetDatastore",
-		Tag:             "Actions Datastores",
-		ResponseRefName: "Datastore",
-		SearchOp:        listOp,
+		Path:                "/api/v2/actions-datastores/{datastore_id}",
+		Method:              "GET",
+		OperationId:         "GetDatastore",
+		Tag:                 "Actions Datastores",
+		ResponseRefName:     "Datastore",
+		ResponseDataRefName: "DatastoreData", // matches the list element → stays "both"
+		SearchOp:            listOp,
 		Tracking: &model.TrackingFieldMetadata{
 			ArtifactKind:  model.ArtifactKindDataSource,
 			ArtifactName:  "datastore",
@@ -265,6 +286,17 @@ func datastoreBothOperation() *model.Operation {
 		},
 		ResponseSchema: obj(map[string]*model.Schema{"data": datastoreElement()}),
 	}
+}
+
+// datastoreBothWithFilterOperation is datastoreBothOperation whose list op carries
+// one scalar filter, exercising filter partitioning in the "both" shape: the by-id
+// id field and the search filter coexist.
+func datastoreBothWithFilterOperation() *model.Operation {
+	op := datastoreBothOperation()
+	op.SearchOp.QueryParams = []model.QueryParam{
+		{Name: "filter[keyword]", Schema: prim("string", ""), Description: "Filter datastores by keyword."},
+	}
+	return op
 }
 
 // datastoreElement is the JSON:API datastore element ({id,type,attributes}) shared
