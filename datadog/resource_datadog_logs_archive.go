@@ -44,6 +44,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateAWSAccountID,
 								RequiredWith:     []string{"s3_archive.0.role_name"},
 								ConflictsWith:    []string{"s3_archive.0.access_key_id"},
+								AtLeastOneOf:     []string{"s3_archive.0.account_id", "s3_archive.0.access_key_id"},
 							},
 							"role_name": {
 								Description:   "Your AWS role name. Required with `account_id`; mutually exclusive with `access_key_id`.",
@@ -57,6 +58,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								Type:          schema.TypeString,
 								Optional:      true,
 								ConflictsWith: []string{"s3_archive.0.account_id", "s3_archive.0.role_name"},
+								AtLeastOneOf:  []string{"s3_archive.0.account_id", "s3_archive.0.access_key_id"},
 							},
 							"encryption_type": {Description: "The type of encryption on your archive.",
 								Type:             schema.TypeString,
