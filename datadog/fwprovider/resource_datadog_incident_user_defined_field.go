@@ -6,6 +6,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -80,8 +81,17 @@ type incidentUserDefinedFieldModel struct {
 	Created      types.String                              `tfsdk:"created"`
 	Modified     types.String                              `tfsdk:"modified"`
 	Deleted      types.String                              `tfsdk:"deleted"`
-	Metadata     *incidentUserDefinedFieldMetadataModel    `tfsdk:"metadata"`
+	Metadata     types.Object                              `tfsdk:"metadata"`
 	ValidValues  []incidentUserDefinedFieldValidValueModel `tfsdk:"valid_values"`
+}
+
+var incidentUserDefinedFieldMetadataAttrTypes = map[string]attr.Type{
+	"category":           types.StringType,
+	"search_url":         types.StringType,
+	"search_query_param": types.StringType,
+	"search_limit_param": types.StringType,
+	"search_result_path": types.StringType,
+	"search_params":      types.MapType{ElemType: types.StringType},
 }
 
 type incidentUserDefinedFieldValidValueModel struct {
@@ -595,14 +605,7 @@ func (r *incidentUserDefinedFieldResource) updateStateFromResponse(ctx context.C
 		}
 
 		if md, ok := attributes.GetMetadataOk(); ok && md != nil {
-			metadata := &incidentUserDefinedFieldMetadataModel{
-				Category:         types.StringValue(md.GetCategory()),
-				SearchURL:        types.StringValue(md.GetSearchUrl()),
-				SearchQueryParam: types.StringValue(md.GetSearchQueryParam()),
-				SearchLimitParam: types.StringValue(md.GetSearchLimitParam()),
-				SearchResultPath: types.StringValue(md.GetSearchResultPath()),
-				SearchParams:     types.MapNull(types.StringType),
-			}
+			searchParams := types.MapNull(types.StringType)
 			if sp, ok := md.GetSearchParamsOk(); ok && sp != nil {
 				strMap := make(map[string]string, len(*sp))
 				for k, val := range *sp {
@@ -610,11 +613,20 @@ func (r *incidentUserDefinedFieldResource) updateStateFromResponse(ctx context.C
 				}
 				mapVal, d := types.MapValueFrom(ctx, types.StringType, strMap)
 				diags.Append(d...)
-				metadata.SearchParams = mapVal
+				searchParams = mapVal
 			}
-			state.Metadata = metadata
+			obj, d := types.ObjectValueFrom(ctx, incidentUserDefinedFieldMetadataAttrTypes, incidentUserDefinedFieldMetadataModel{
+				Category:         types.StringValue(md.GetCategory()),
+				SearchURL:        types.StringValue(md.GetSearchUrl()),
+				SearchQueryParam: types.StringValue(md.GetSearchQueryParam()),
+				SearchLimitParam: types.StringValue(md.GetSearchLimitParam()),
+				SearchResultPath: types.StringValue(md.GetSearchResultPath()),
+				SearchParams:     searchParams,
+			})
+			diags.Append(d...)
+			state.Metadata = obj
 		} else {
-			state.Metadata = nil
+			state.Metadata = types.ObjectNull(incidentUserDefinedFieldMetadataAttrTypes)
 		}
 	}
 
