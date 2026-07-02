@@ -13,6 +13,7 @@ import (
 // CloudPremDestinationModel represents the Terraform model for cloud_prem destination configuration
 type CloudPremDestinationModel struct {
 	EndpointUrlKey types.String         `tfsdk:"endpoint_url_key"`
+	Tls            []TlsModel           `tfsdk:"tls"`
 	Buffer         []BufferOptionsModel `tfsdk:"buffer"`
 }
 
@@ -26,6 +27,10 @@ func ExpandCloudPremDestination(ctx context.Context, id string, inputs types.Lis
 	d.SetInputs(inputsList)
 	if !src.EndpointUrlKey.IsNull() {
 		d.SetEndpointUrlKey(src.EndpointUrlKey.ValueString())
+	}
+
+	if len(src.Tls) > 0 {
+		d.Tls = ExpandTls(src.Tls)
 	}
 
 	if len(src.Buffer) > 0 {
@@ -50,6 +55,9 @@ func FlattenCloudPremDestination(ctx context.Context, src *datadogV2.Observabili
 	if v, ok := src.GetEndpointUrlKeyOk(); ok {
 		out.EndpointUrlKey = types.StringValue(*v)
 	}
+	if src.Tls != nil {
+		out.Tls = FlattenTls(src.Tls)
+	}
 	if buffer, ok := src.GetBufferOk(); ok {
 		outBuffer := FlattenBufferOptions(buffer)
 		if outBuffer != nil {
@@ -71,6 +79,7 @@ func CloudPremDestinationSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
+				"tls":    TlsSchema(),
 				"buffer": BufferOptionsSchema(),
 			},
 		},

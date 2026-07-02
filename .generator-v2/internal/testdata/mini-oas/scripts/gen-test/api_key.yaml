@@ -119,7 +119,6 @@ paths:
         group:
           read: GetAPIKey
           search: ListAPIKeys
-        overwrites: NewAPIKeyDataSource
   /api/v2/api_keys:
     get:
       operationId: ListAPIKeys

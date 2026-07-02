@@ -152,7 +152,6 @@ paths:
         group:
           read: ListDatastores
         cardinality: plural
-        overwrites: NewDatastoresDataSource
 components:
   responses:
     TooManyRequestsResponse:

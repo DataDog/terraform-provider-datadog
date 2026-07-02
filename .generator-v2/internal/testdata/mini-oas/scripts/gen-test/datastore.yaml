@@ -115,7 +115,6 @@ paths:
         group:
           read: GetDatastore
           search: ListDatastores
-        overwrites: NewDatadogDatastoreDataSource
   /api/v2/actions-datastores:
     get:
       operationId: ListDatastores

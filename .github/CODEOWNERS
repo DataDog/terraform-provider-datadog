@@ -27,7 +27,7 @@ datadog/*datadog_metric_metadata*          @DataDog/metrics-experience
 datadog/*datadog_metric_tag_configuration* @DataDog/metrics-experience
 datadog/*datadog_monitor*                  @DataDog/monitor-app
 datadog/*datadog_screenboard*              @DataDog/dashboards-backend
-datadog/*datadog_security_monitoring*       @DataDog/k9-cloud-siem
+datadog/*datadog_security_monitoring*       @DataDog/cloud-siem
 datadog/*datadog_security_notification_rule* @DataDog/k9-shared-capabilities
 datadog/*datadog_service_definition*       @DataDog/service-catalog
 datadog/*datadog_service_level_objective*  @DataDog/slo-app
@@ -101,8 +101,9 @@ datadog/**/*datadog_workflow_automation*         @DataDog/workflow-automation-ba
 datadog/**/*datadog_powerpack*                   @DataDog/dashboards-backend
 datadog/**/*datadog_role_users*                  @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/rum-backend
-datadog/**/*datadog_security_monitoring*          @DataDog/k9-cloud-siem
+datadog/**/*datadog_security_monitoring*          @DataDog/cloud-siem
 datadog/**/*datadog_security_notification_rule*   @DataDog/k9-shared-capabilities
+datadog/**/*datadog_security_findings*            @DataDog/k9-shared-capabilities
 datadog/**/*datadog_csm_threats*                 @DataDog/k9-cws-backend
 datadog/**/*datadog_cloud_workload_security*     @DataDog/k9-cws-backend
 datadog/**/*datadog_app_builder_app*             @DataDog/app-builder-backend
@@ -131,3 +132,5 @@ docs/resources/tag_indexing_rule*.md                  @DataDog/metrics-experienc
 examples/resources/datadog_tag_indexing_rule*/**      @DataDog/metrics-experience
 docs/resources/on_call_team_routing_rules.md          @DataDog/on-call
 examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call
+docs/resources/security_findings_*.md                 @DataDog/k9-shared-capabilities
+examples/resources/datadog_security_findings_*/**     @DataDog/k9-shared-capabilities

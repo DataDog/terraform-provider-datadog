@@ -109,7 +109,6 @@ paths:
           type.
         group:
           read: GetIncidentType
-        overwrites: NewIncidentTypeDataSource
 components:
   parameters:
     IncidentTypeIDPathParameter:

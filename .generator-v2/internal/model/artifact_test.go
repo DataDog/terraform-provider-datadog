@@ -236,6 +236,27 @@ var _ = Describe("BuildArtifact singular search", func() {
 			}
 			Expect(msgs).To(ContainElement(ContainSubstring("search lookup dropped")))
 		})
+
+		It("degrades to by-id-only when the by-id record shape cannot be confirmed (inline data schema)", func() {
+			op := bothDatastoreOp()
+			op.ResponseDataRefName = "" // inline by-id data property, no $ref to compare
+
+			art, err := BuildArtifact(op)
+			Expect(err).NotTo(HaveOccurred())
+
+			// Shapes cannot be positively confirmed equal, so search is dropped
+			// rather than risk a state mapper that reads the wrong fields.
+			Expect(art.Lifecycle.Read.GoMethod).To(Equal("GetDatastore"))
+			Expect(art.Lifecycle.Search).To(BeNil())
+
+			var msgs []string
+			for _, d := range art.Diagnostics {
+				if d.Severity == SeverityInfo {
+					msgs = append(msgs, d.Message)
+				}
+			}
+			Expect(msgs).To(ContainElement(ContainSubstring("search lookup dropped")))
+		})
 	})
 })
 

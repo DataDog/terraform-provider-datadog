@@ -103,7 +103,6 @@ paths:
         tf_description: Use this data source to retrieve information about an existing Datadog cost budget.
         group:
           read: GetBudget
-        overwrites: NewCostBudgetDataSource
 components:
   parameters:
     BudgetID:

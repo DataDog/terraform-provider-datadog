@@ -157,7 +157,6 @@ paths:
         group:
           read: ListUsers
         cardinality: plural
-        overwrites: NewDatadogUsersDataSource
 components:
   parameters:
     PageNumber:

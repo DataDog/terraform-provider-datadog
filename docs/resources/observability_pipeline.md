@@ -110,6 +110,7 @@ Optional:
 - `amazon_s3_generic` (Block List) The `amazon_s3_generic` destination sends your logs to an Amazon S3 bucket. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic))
 - `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
+- `clickhouse` (Block List) The `clickhouse` destination forwards logs to a ClickHouse server via HTTP. (see [below for nested schema](#nestedblock--config--destination--clickhouse))
 - `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
 - `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem))
 - `databricks_zerobus` (Block List) The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus))
@@ -435,6 +436,116 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--clickhouse"></a>
+### Nested Schema for `config.destination.clickhouse`
+
+Required:
+
+- `table` (String) Target ClickHouse table name.
+
+Optional:
+
+- `auth` (Block List) Authentication strategy for ClickHouse HTTP requests. Only `basic` strategy is supported. (see [below for nested schema](#nestedblock--config--destination--clickhouse--auth))
+- `batch` (Block List) Batching configuration for ClickHouse inserts. (see [below for nested schema](#nestedblock--config--destination--clickhouse--batch))
+- `batch_encoding` (Block List) Batch encoding configuration. Required when `format` is `arrow_stream`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--batch_encoding))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer))
+- `compression` (Block List) Compression for outbound HTTP requests. Use `algorithm = "gzip"` or `algorithm = "none"`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--compression))
+- `database` (String) Optional name of the ClickHouse database to write to. When omitted, the user's default database is used.
+- `date_time_best_effort` (Boolean) If `true`, enables flexible DateTime parsing on the server side.
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the ClickHouse HTTP endpoint URL. Defaults to `DESTINATION_CLICKHOUSE_ENDPOINT_URL`.
+- `format` (String) Insert format for events. `json_each_row` maps event fields to columns by name. `json_as_object` and `json_as_string` insert each event into a single JSON or String column. `arrow_stream` batches events with Apache Arrow IPC streaming and requires `batch_encoding`. Valid values are `json_each_row`, `json_as_object`, `json_as_string`, `arrow_stream`.
+- `skip_unknown_fields` (Boolean) If `true`, fields not present in the target table schema are dropped instead of causing insert errors. When unset, the ClickHouse server's own `input_format_skip_unknown_fields` setting applies.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--clickhouse--tls))
+
+<a id="nestedblock--config--destination--clickhouse--auth"></a>
+### Nested Schema for `config.destination.clickhouse.auth`
+
+Required:
+
+- `strategy` (String) Authentication strategy. Must be `basic`. Valid values are `basic`.
+
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the ClickHouse password. Defaults to `DESTINATION_CLICKHOUSE_PASSWORD`.
+- `username_key` (String) Name of the environment variable or secret that holds the ClickHouse username. Defaults to `DESTINATION_CLICKHOUSE_USERNAME`.
+
+
+<a id="nestedblock--config--destination--clickhouse--batch"></a>
+### Nested Schema for `config.destination.clickhouse.batch`
+
+Optional:
+
+- `max_events` (Number) Maximum number of events per batch. Value must be at least 1.
+- `timeout_secs` (Number) Maximum time in seconds before a partial batch is flushed. Value must be between 1 and 65535.
+
+
+<a id="nestedblock--config--destination--clickhouse--batch_encoding"></a>
+### Nested Schema for `config.destination.clickhouse.batch_encoding`
+
+Required:
+
+- `codec` (String) Batch encoding codec. Must be `arrow_stream`. Valid values are `arrow_stream`.
+
+Optional:
+
+- `allow_nullable_fields` (Boolean) If `true`, allows null values for non-nullable fields in the ClickHouse schema. Defaults to `false`.
+
+
+<a id="nestedblock--config--destination--clickhouse--buffer"></a>
+### Nested Schema for `config.destination.clickhouse.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer--memory))
+
+<a id="nestedblock--config--destination--clickhouse--buffer--disk"></a>
+### Nested Schema for `config.destination.clickhouse.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--clickhouse--buffer--memory"></a>
+### Nested Schema for `config.destination.clickhouse.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--clickhouse--compression"></a>
+### Nested Schema for `config.destination.clickhouse.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. Valid values are `gzip` and `none`. Valid values are `gzip`, `none`.
+
+Optional:
+
+- `level` (Number) Compression level (1–9). Only valid when `algorithm` is `gzip`. Value must be between 1 and 9.
+
+
+<a id="nestedblock--config--destination--clickhouse--tls"></a>
+### Nested Schema for `config.destination.clickhouse.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
 <a id="nestedblock--config--destination--cloud_prem"></a>
 ### Nested Schema for `config.destination.cloud_prem`
 
@@ -442,6 +553,7 @@ Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--tls))
 
 <a id="nestedblock--config--destination--cloud_prem--buffer"></a>
 ### Nested Schema for `config.destination.cloud_prem.buffer`
@@ -469,6 +581,20 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--cloud_prem--tls"></a>
+### Nested Schema for `config.destination.cloud_prem.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -2028,8 +2154,41 @@ Optional:
 
 Optional:
 
-- `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog.
+- `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog. Defaults to `false`.
+- `field` (String) The log field to parse with the Grok rules. Defaults to `"message"`.
+- `include_rule` (Block List) A Grok parsing rule that targets logs matching a Datadog search query. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule))
 - `rule` (Block List) The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule))
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule`
+
+Required:
+
+- `include` (String) A Datadog search query used to determine which logs this Grok rule targets.
+
+Optional:
+
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule))
+- `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule))
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule.match_rule`
+
+Required:
+
+- `name` (String) The name of the rule.
+- `rule` (String) The definition of the Grok rule.
+
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule.support_rule`
+
+Required:
+
+- `name` (String) The name of the helper Grok rule.
+- `rule` (String) The definition of the helper Grok rule.
+
+
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--rule"></a>
 ### Nested Schema for `config.processor_group.processor.parse_grok.rule`
@@ -2040,7 +2199,7 @@ Required:
 
 Optional:
 
-- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--match_rule))
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--match_rule))
 - `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--support_rule))
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--rule--match_rule"></a>
@@ -2436,6 +2595,7 @@ Optional:
 - `splunk_tcp` (Block List) The `splunk_tcp` source receives logs from a Splunk Universal Forwarder over TCP. TLS is supported for secure transmission. (see [below for nested schema](#nestedblock--config--source--splunk_tcp))
 - `sumo_logic` (Block List) The `sumo_logic` source receives logs from Sumo Logic collectors. (see [below for nested schema](#nestedblock--config--source--sumo_logic))
 - `syslog_ng` (Block List) The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--source--syslog_ng))
+- `websocket` (Block List) The `websocket` source establishes a persistent WebSocket connection to a remote endpoint and ingests log events as they are pushed by the server. (see [below for nested schema](#nestedblock--config--source--websocket))
 
 <a id="nestedblock--config--source--amazon_data_firehose"></a>
 ### Nested Schema for `config.source.amazon_data_firehose`
@@ -2993,6 +3153,39 @@ Optional:
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--source--websocket"></a>
+### Nested Schema for `config.source.websocket`
+
+Required:
+
+- `auth_strategy` (String) The authentication strategy used when connecting to the WebSocket server. Valid values are `none`, `basic`, `bearer`, `custom`.
+- `decoding` (String) The decoding format used to interpret incoming log events. Valid values are `bytes`, `gelf`, `json`, `syslog`.
+
+Optional:
+
+- `custom_key` (String) Name of the environment variable or secret that holds a custom header value. Used when `auth_strategy` is `custom`.
+- `password_key` (String) Name of the environment variable or secret that holds the password. Used when `auth_strategy` is `basic`.
+- `tls` (Block List) TLS configuration for the WebSocket connection. Set `mode` to `enabled` for server-certificate validation only, or `with_client_cert` to additionally present a client certificate. (see [below for nested schema](#nestedblock--config--source--websocket--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the bearer token. Used when `auth_strategy` is `bearer`.
+- `uri_key` (String) Name of the environment variable or secret that holds the WebSocket URI to connect to.
+- `username_key` (String) Name of the environment variable or secret that holds the username. Used when `auth_strategy` is `basic`.
+
+<a id="nestedblock--config--source--websocket--tls"></a>
+### Nested Schema for `config.source.websocket.tls`
+
+Required:
+
+- `mode` (String) The TLS mode. Use `enabled` for server-only TLS, or `with_client_cert` for mutual TLS with a client certificate. Valid values are `enabled`, `with_client_cert`.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the client certificate file. Required when `mode` is `with_client_cert`.
+- `key_file` (String) Path to the private key file associated with the client certificate.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 ## Import
 

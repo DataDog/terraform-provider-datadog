@@ -196,7 +196,6 @@ paths:
         group:
           read: ListTeams
         cardinality: plural
-        overwrites: NewDatadogTeamsDataSource
 components:
   parameters:
     PageNumber:

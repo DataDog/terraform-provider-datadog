@@ -1619,6 +1619,69 @@ var wildcardWidgetRequestFields = []FieldSpec{
 }
 
 // ============================================================
+// Point Plot Widget Field Groups
+// ============================================================
+
+// dataProjectionQueryFields corresponds to OpenAPI DataProjectionQuery.
+// Used by: point_plot (potentially also scatterplot data projection requests in the future).
+var dataProjectionQueryFields = []FieldSpec{
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The query string to filter events."},
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for the query (for example, `logs`)."},
+	{HCLKey: "indexes", Type: TypeStringList, OmitEmpty: true,
+		Description: "List of indexes to query."},
+	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
+		Description: "Storage location for the query."},
+}
+
+// pointPlotProjectionDimensionFields corresponds to OpenAPI PointPlotProjectionDimension.
+var pointPlotProjectionDimensionFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Source column name from the dataset."},
+	{HCLKey: "dimension", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Dimension of the point plot.",
+		ValidValues: []string{"group", "time", "y", "radius"}},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "Alias for the column."},
+}
+
+// pointPlotProjectionFields corresponds to OpenAPI PointPlotProjection.
+var pointPlotProjectionFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of the projection. Must be `point_plot`.",
+		ValidValues: []string{"point_plot"}},
+	// HCL: "dimension" (singular) → JSON: "dimensions" (plural)
+	{HCLKey: "dimension", JSONKey: "dimensions", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "List of dimension mappings for the projection.",
+		Children:    pointPlotProjectionDimensionFields},
+	{HCLKey: "extra_columns", Type: TypeStringList, OmitEmpty: true,
+		Description: "Additional columns to include in the projection."},
+}
+
+// pointPlotWidgetLegendFields corresponds to OpenAPI PointPlotWidgetLegend.
+var pointPlotWidgetLegendFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of legend to show for the point plot widget.",
+		ValidValues: []string{"automatic", "none"}},
+}
+
+// pointPlotWidgetRequestFields corresponds to OpenAPI PointPlotWidgetRequest.
+var pointPlotWidgetRequestFields = []FieldSpec{
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The type of data request. Must be `data_projection`.",
+		ValidValues: []string{"data_projection"}},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Query configuration for the point plot request.",
+		Children:    dataProjectionQueryFields},
+	{HCLKey: "projection", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Projection configuration for the point plot request.",
+		Children:    pointPlotProjectionFields},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of data points to return."},
+}
+
+// ============================================================
 // Common Widget Fields
 // ============================================================
 
