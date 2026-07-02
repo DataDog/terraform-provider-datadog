@@ -2154,7 +2154,7 @@ Optional:
 
 Optional:
 
-- `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog.
+- `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog. Defaults to `false`.
 - `field` (String) The log field to parse with the Grok rules. Defaults to `"message"`.
 - `include_rule` (Block List) A Grok parsing rule that targets logs matching a Datadog search query. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule))
 - `rule` (Block List) The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule))
