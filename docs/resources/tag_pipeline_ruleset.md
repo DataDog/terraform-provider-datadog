@@ -124,7 +124,7 @@ Optional:
 - `case_insensitivity` (Boolean) Whether the query matching is case insensitive.
 - `if_not_exists` (Boolean, Deprecated) Whether to apply the query only if the key doesn't exist.
 - `if_tag_exists` (String) Behavior when the tag already exists. Valid values: `append` (append to the existing tag value), `replace` (replace existing tag value), `do_not_apply` (never apply if tag already exists). Valid values are `append`, `replace`, `do_not_apply`.
-- `query` (String) The query string.
+- `query` (String) The query string. Must be in canonical form. Datadog normalizes queries (operator casing, spacing, redundant parentheses, quoting, and similar), and the provider validates the configured value against this canonical form during planning. If they differ, the plan fails with an error showing the canonical query to use in the configuration.
 
 <a id="nestedblock--rules--query--addition"></a>
 ### Nested Schema for `rules.query.addition`

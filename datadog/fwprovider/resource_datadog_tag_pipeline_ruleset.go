@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
@@ -195,7 +196,7 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 								},
 								"query": schema.StringAttribute{
 									Optional:    true,
-									Description: "The query string.",
+									Description: "The query string. Must be in canonical form. Datadog normalizes queries (operator casing, spacing, redundant parentheses, quoting, and similar), and the provider validates the configured value against this canonical form during planning. If they differ, the plan fails with an error showing the canonical query to use in the configuration.",
 								},
 							},
 							Blocks: map[string]schema.Block{
@@ -282,17 +283,27 @@ func (r *tagPipelineRulesetResource) Configure(_ context.Context, req resource.C
 }
 
 func (r *tagPipelineRulesetResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
-	if request.State.Raw.IsNull() {
-		return
-	}
 	if request.Plan.Raw.IsNull() {
 		return
 	}
 
-	var config, plan tagPipelineRulesetModel
+	var config tagPipelineRulesetModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
-	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
+	r.validateCanonicalQueries(config.Rules, &response.Diagnostics)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if request.State.Raw.IsNull() {
+		return
+	}
+
+	var plan tagPipelineRulesetModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -309,6 +320,59 @@ func (r *tagPipelineRulesetResource) ModifyPlan(ctx context.Context, request res
 		}
 	}
 	response.Diagnostics.Append(response.Plan.Set(ctx, &plan)...)
+}
+
+func (r *tagPipelineRulesetResource) validateCanonicalQueries(rules []ruleItem, diags *diag.Diagnostics) {
+	for i, rule := range rules {
+		if rule.Query == nil {
+			continue
+		}
+		configured := rule.Query.Query
+		if configured.IsNull() || configured.IsUnknown() || configured.ValueString() == "" {
+			continue
+		}
+
+		raw := configured.ValueString()
+		canonical, httpResp, err := r.canonicalizeQuery(raw)
+		queryPath := path.Root("rules").AtListIndex(i).AtName("query").AtName("query")
+		if err != nil {
+			diags.AddAttributeError(
+				queryPath,
+				"Unable to validate tag pipeline query",
+				fmt.Sprintf("Query %q could not be validated: %s", raw, utils.TranslateClientError(err, httpResp, "").Error()),
+			)
+			continue
+		}
+
+		if raw != canonical {
+			diags.AddAttributeError(
+				queryPath,
+				"Tag pipeline query is not in canonical form",
+				fmt.Sprintf(
+					"Datadog normalizes tag pipeline queries to a canonical form. Update the configuration to the canonical value to avoid a persistent plan diff.\n\n  configured: %s\n  canonical:  %s",
+					raw, canonical,
+				),
+			)
+		}
+	}
+}
+
+func (r *tagPipelineRulesetResource) canonicalizeQuery(raw string) (string, *http.Response, error) {
+	body := datadogV2.RulesValidateQueryRequest{
+		Data: &datadogV2.RulesValidateQueryRequestData{
+			Type: datadogV2.RULESVALIDATEQUERYREQUESTDATATYPE_VALIDATE_QUERY,
+			Attributes: &datadogV2.RulesValidateQueryRequestDataAttributes{
+				Query: raw,
+			},
+		},
+	}
+	resp, httpResp, err := r.Api.ValidateQuery(r.Auth, body)
+	if err != nil {
+		return "", httpResp, err
+	}
+	data := resp.GetData()
+	attributes := data.GetAttributes()
+	return attributes.GetCanonical(), httpResp, nil
 }
 
 // --- CRUD ---
