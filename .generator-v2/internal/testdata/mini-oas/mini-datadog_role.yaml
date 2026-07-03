@@ -1,0 +1,357 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Roles
+  description: 'The Roles API is used to create and manage Datadog roles, what
+
+    [global permissions](https://docs.datadoghq.com/account_management/rbac/)
+
+    they grant, and which users belong to them.
+
+
+    Permissions related to specific account assets can be granted to roles
+
+    in the Datadog application without using this API. For example, granting
+
+    read access on a specific log index to a role can be done in Datadog from the
+
+    [Pipelines page](https://app.datadoghq.com/logs/pipelines).
+
+
+    Roles can also be managed in bulk through the Datadog UI, which provides
+
+    the capability to assign a single permission to multiple roles simultaneously.'
+paths:
+  /api/v2/roles:
+    get:
+      operationId: ListRoles
+      tags:
+      - Roles
+      summary: List roles
+      description: Returns all roles, including their names and their unique identifiers.
+      parameters:
+      - $ref: '#/components/parameters/PageSize'
+      - $ref: '#/components/parameters/PageNumber'
+      - name: sort
+        in: query
+        required: false
+        description: 'Sort roles depending on the given field. Sort order is **ascending** by default.
+
+          Sort order is **descending** if the field is prefixed by a negative sign, for example:
+
+          `sort=-name`.'
+        schema:
+          $ref: '#/components/schemas/RolesSort'
+      - name: filter
+        in: query
+        required: false
+        description: Filter all roles by the given string.
+        schema:
+          type: string
+      - name: filter[id]
+        in: query
+        required: false
+        description: Filter all roles by the given list of role IDs.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolesResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                    - id: 00000000-0000-0000-0000-000000000001
+                      type: roles
+                      attributes:
+                        name: developers
+                    meta:
+                      page:
+                        total_count: 1
+                        total_filtered_count: 1
+        '403':
+          description: Authentication error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - user_access_read
+      x-permission:
+        operator: OR
+        permissions:
+        - user_access_read
+      x-menu-order: 2
+      x-undo:
+        type: safe
+components:
+  parameters:
+    PageNumber:
+      name: page[number]
+      in: query
+      required: false
+      description: Specific page number to return.
+      schema:
+        type: integer
+        format: int64
+        default: 0
+        example: 0
+    PageSize:
+      name: page[size]
+      in: query
+      required: false
+      description: Size for a given page. The maximum allowed value is 100.
+      schema:
+        type: integer
+        format: int64
+        default: 10
+        example: 10
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    Pagination:
+      type: object
+      description: Pagination object.
+      properties:
+        total_filtered_count:
+          type: integer
+          description: Total count of elements matched by the filter.
+          format: int64
+        total_count:
+          type: integer
+          description: Total count.
+          format: int64
+    PermissionsType:
+      type: string
+      description: Permissions resource type.
+      default: permissions
+      example: permissions
+      enum:
+      - permissions
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - PERMISSIONS
+    RelationshipToPermissionData:
+      type: object
+      description: Relationship to permission object.
+      properties:
+        type:
+          $ref: '#/components/schemas/PermissionsType'
+        id:
+          type: string
+          description: ID of the permission.
+      x-merge-override:
+        required: false
+    RelationshipToPermissions:
+      type: object
+      description: Relationship to multiple permissions objects.
+      properties:
+        data:
+          type: array
+          description: Relationships to permission objects.
+          items:
+            $ref: '#/components/schemas/RelationshipToPermissionData'
+      x-merge-override:
+        required: false
+    ResponseMetaAttributes:
+      type: object
+      description: Object describing meta attributes of response.
+      properties:
+        page:
+          $ref: '#/components/schemas/Pagination'
+      x-merge-override:
+        properties: false
+    Role:
+      type: object
+      description: Role object returned by the API.
+      required:
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/RolesType'
+        id:
+          type: string
+          description: The unique identifier of the role.
+        attributes:
+          $ref: '#/components/schemas/RoleAttributes'
+        relationships:
+          $ref: '#/components/schemas/RoleResponseRelationships'
+      x-merge-override:
+        required: false
+    RoleAttributes:
+      type: object
+      description: Attributes of the role.
+      properties:
+        name:
+          type: string
+          description: The name of the role. The name is neither unique nor a stable identifier of the
+            role.
+        created_at:
+          type: string
+          description: Creation time of the role.
+          format: date-time
+          readOnly: true
+        modified_at:
+          type: string
+          description: Time of last role modification.
+          format: date-time
+          readOnly: true
+        user_count:
+          type: integer
+          description: Number of users with that role.
+          format: int64
+          readOnly: true
+        receives_permissions_from:
+          type: array
+          description: 'The managed role from which this role automatically inherits new permissions.
+
+            Specify one of the following: "Datadog Admin Role", "Datadog Standard Role", or "Datadog Read
+            Only Role".
+
+            If empty or not specified, the role does not automatically inherit permissions from any managed
+            role.'
+          items:
+            type: string
+            description: Name of a managed role to inherit permissions from.
+      additionalProperties: {}
+    RoleResponseRelationships:
+      type: object
+      description: Relationships of the role object returned by the API.
+      properties:
+        permissions:
+          $ref: '#/components/schemas/RelationshipToPermissions'
+      x-ignore-duplicate-object: true
+    RolesResponse:
+      type: object
+      description: Response containing information about multiple roles.
+      properties:
+        data:
+          type: array
+          description: Array of returned roles.
+          items:
+            $ref: '#/components/schemas/Role'
+        meta:
+          $ref: '#/components/schemas/ResponseMetaAttributes'
+    RolesSort:
+      type: string
+      description: Sorting options for roles.
+      default: name
+      enum:
+      - name
+      - -name
+      - modified_at
+      - -modified_at
+      - user_count
+      - -user_count
+      x-enum-varnames:
+      - NAME_ASCENDING
+      - NAME_DESCENDING
+      - MODIFIED_AT_ASCENDING
+      - MODIFIED_AT_DESCENDING
+      - USER_COUNT_ASCENDING
+      - USER_COUNT_DESCENDING
+    RolesType:
+      type: string
+      description: Roles type.
+      default: roles
+      example: roles
+      enum:
+      - roles
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - ROLES
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes:
+            user_access_read: View users and their roles and settings.
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY
