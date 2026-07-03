@@ -2,8 +2,10 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/url"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -237,6 +239,7 @@ type ProviderSchema struct {
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
 	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
 	IgnoreTagKeys                    types.Set    `tfsdk:"ignore_tag_keys"`
+	DefaultHeaders                   types.Map    `tfsdk:"default_headers"`
 }
 
 type DefaultTag struct {
@@ -363,6 +366,11 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Optional:    true,
 				ElementType: types.StringType,
 				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.",
+			},
+			"default_headers": schema.MapAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "Additional HTTP headers to send on every request the provider makes to the Datadog API. This can also be set via the `DD_HTTP_CLIENT_DEFAULT_HEADERS` environment variable as a JSON object (for example, `{\"X-My-Header\":\"value\"}`). Values set here are merged with, and take precedence over, the environment variable.",
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -578,6 +586,30 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	awsSessionToken := config.AWSSessionToken.ValueString()
 	bearerToken := config.BearerToken.ValueString()
 
+	// Resolve default request headers. The env var (a JSON object) provides the
+	// base set; the `default_headers` config attribute is merged on top and wins
+	// on conflicts.
+	defaultHeaders := map[string]string{}
+	if raw := os.Getenv(utils.DDHTTPClientDefaultHeaders); raw != "" {
+		if err := json.Unmarshal([]byte(raw), &defaultHeaders); err != nil {
+			diags.AddError(
+				fmt.Sprintf("invalid %s", utils.DDHTTPClientDefaultHeaders),
+				fmt.Sprintf("value must be a JSON object of string headers: %s", err),
+			)
+			return diags
+		}
+	}
+	if !config.DefaultHeaders.IsNull() && !config.DefaultHeaders.IsUnknown() {
+		configHeaders := map[string]string{}
+		diags.Append(config.DefaultHeaders.ElementsAs(context.Background(), &configHeaders, false)...)
+		if diags.HasError() {
+			return diags
+		}
+		for name, value := range configHeaders {
+			defaultHeaders[name] = value
+		}
+	}
+
 	if validate {
 		if cloudProviderType == "" && bearerToken == "" && (config.ApiKey.ValueString() == "" || config.AppKey.ValueString() == "") {
 			diags.AddError("api_key and app_key, bearer_token, or orgUUID must be set unless validate = false", "")
@@ -649,6 +681,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
+
+	// Apply any user-supplied default headers to every request made by the client.
+	for name, value := range defaultHeaders {
+		ddClientConfig.AddDefaultHeader(name, value)
+	}
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)

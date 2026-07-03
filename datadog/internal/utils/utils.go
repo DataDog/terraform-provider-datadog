@@ -73,6 +73,9 @@ const DDHTTPRetryBackoffBase = "DD_HTTP_CLIENT_RETRY_BACKOFF_BASE"
 // DDHTTPRetryMaxRetries name of env var for max retries
 const DDHTTPRetryMaxRetries = "DD_HTTP_CLIENT_RETRY_MAX_RETRIES"
 
+// DDHTTPClientDefaultHeaders name of env var for default request headers (JSON object)
+const DDHTTPClientDefaultHeaders = "DD_HTTP_CLIENT_DEFAULT_HEADERS"
+
 // DDCloudProviderTypeEnvName name of env var for cloud provider type
 const DDCloudProviderTypeEnvName = "DD_CLOUD_PROVIDER_TYPE"
 

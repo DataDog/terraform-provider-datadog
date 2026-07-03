@@ -17,4 +17,36 @@ Use the navigation to the left to read about the available resources.
 
 {{tffile "examples/provider/provider.tf"}}
 
+## Using with a Datadog test-drive
+
+A test-drive is an ephemeral, isolated environment that lives behind the Datadog
+staging API. It is selected per request by sending a `test-drive-<name>: 1`
+header while the provider is pointed at the staging API URL. Use the generic
+`default_headers` attribute (or the `DD_HTTP_CLIENT_DEFAULT_HEADERS` environment
+variable) to attach that header to every request.
+
+Using the provider configuration:
+
+```hcl
+provider "datadog" {
+  api_url = "https://api.datad0g.com"
+
+  default_headers = {
+    "test-drive-<name>" = "1"
+  }
+}
+```
+
+Or entirely through environment variables (no provider block changes needed):
+
+```shell
+export DD_HOST="https://api.datad0g.com"
+export DD_HTTP_CLIENT_DEFAULT_HEADERS='{"test-drive-<name>":"1"}'
+export DD_API_KEY="<staging-api-key>"
+export DD_APP_KEY="<staging-app-key>"
+```
+
+Replace `<name>` with the test-drive name. If the staging credentials cannot be
+validated at startup, set `validate = false` on the provider (or `DD_VALIDATE=false`).
+
 {{ .SchemaMarkdown | trimspace }}

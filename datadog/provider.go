@@ -2,10 +2,12 @@ package datadog
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"net/url"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -215,6 +217,12 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.",
+			},
+			"default_headers": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Description: "Additional HTTP headers to send on every request the provider makes to the Datadog API. This can also be set via the `DD_HTTP_CLIENT_DEFAULT_HEADERS` environment variable as a JSON object (for example, `{\"X-My-Header\":\"value\"}`). Values set here are merged with, and take precedence over, the environment variable.",
 			},
 		},
 
@@ -474,6 +482,24 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	config := datadog.NewConfiguration()
 	config.RetryConfiguration.EnableRetry = httpRetryEnabled
+
+	// Resolve default request headers. The env var (a JSON object) provides the
+	// base set; the `default_headers` config attribute is merged on top and wins
+	// on conflicts.
+	defaultHeaders := map[string]string{}
+	if raw := os.Getenv(utils.DDHTTPClientDefaultHeaders); raw != "" {
+		if err := json.Unmarshal([]byte(raw), &defaultHeaders); err != nil {
+			return nil, diag.Errorf("invalid %s: value must be a JSON object of string headers: %v", utils.DDHTTPClientDefaultHeaders, err)
+		}
+	}
+	if v, ok := d.GetOk("default_headers"); ok {
+		for name, value := range v.(map[string]interface{}) {
+			defaultHeaders[name] = value.(string)
+		}
+	}
+	for name, value := range defaultHeaders {
+		config.AddDefaultHeader(name, value)
+	}
 
 	if timeoutInterface, ok := d.GetOk("http_client_retry_timeout"); ok {
 		timeout := time.Duration(int64(timeoutInterface.(int))) * time.Second
