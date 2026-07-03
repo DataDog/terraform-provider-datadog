@@ -58,7 +58,7 @@ resource "datadog_cloud_configuration_rule" "myrule" {
 ### Required
 
 - `enabled` (Boolean) Whether the cloud configuration rule is enabled.
-- `message` (String) The message associated to the rule that will be shown in findings and signals.
+- `message` (String) The message associated to the rule that will be shown in findings and signals. For cloud configuration rules, the message is rendered in the finding side panel. When the message is written as Markdown using the following top-level section headers, each section is shown in a dedicated area of the finding: `Description` and `Rationale` appear under **What Happened**, `Remediation` appears in its own **Remediation** section, and `References` are shown separately. Use level-2 (`##`) headers for each section. If none of these headers are present, the entire message is shown as the description.
 - `name` (String) The name of the cloud configuration rule.
 - `policy` (String) Policy written in Rego format.
 - `resource_type` (String) Main resource type to be checked by the rule.
