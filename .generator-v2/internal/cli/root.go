@@ -31,6 +31,9 @@ func Execute(version string) int {
 	root.AddCommand(newVerifyCmd(flags))
 
 	if err := root.Execute(); err != nil {
+		if err == errCheckFailed {
+			return 3
+		}
 		return 1
 	}
 	return 0
