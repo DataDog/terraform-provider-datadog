@@ -152,6 +152,12 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		op.RequestSchema = req
 	}
 	if respProxy := responseBodySchemaProxy(raw); respProxy != nil {
+		// Capture the response type name from the top-level body proxy before
+		// normalizeProxy follows the $ref and discards it. An inline/absent body
+		// leaves ResponseRefName empty.
+		if respProxy.IsReference() {
+			op.ResponseRefName = lastRefSegment(respProxy.GetReference())
+		}
 		resp, err := n.normalizeProxy(respProxy, 0)
 		if err != nil {
 			return err
@@ -159,6 +165,15 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		op.ResponseSchema = resp
 	}
 	return nil
+}
+
+// lastRefSegment returns the component name after the final "/" of a $ref,
+// e.g. "#/components/schemas/IncidentTypeResponse" → "IncidentTypeResponse".
+func lastRefSegment(ref string) string {
+	if i := strings.LastIndex(ref, "/"); i >= 0 {
+		return ref[i+1:]
+	}
+	return ref
 }
 
 // requestBodySchemaProxy returns op's application/json request body schema, or nil.
