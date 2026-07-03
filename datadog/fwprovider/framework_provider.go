@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -649,6 +650,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
+
+	// Route requests to a Datadog test-drive: when DD_TEST_DRIVE is set, send the
+	// `test-drive-<name>: 1` header on every request (used against the staging API).
+	if testDrive := os.Getenv("DD_TEST_DRIVE"); testDrive != "" {
+		ddClientConfig.AddDefaultHeader(fmt.Sprintf("test-drive-%s", testDrive), "1")
+	}
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
