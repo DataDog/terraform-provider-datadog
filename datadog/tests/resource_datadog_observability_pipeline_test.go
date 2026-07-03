@@ -5727,7 +5727,6 @@ resource "datadog_observability_pipeline" "amazon_s3_generic_sse_kms" {
 	})
 }
 
-
 func TestAccDatadogObservabilityPipeline_AmazonSecurityLakeDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	resourceName := "datadog_observability_pipeline.amazon_security_lake_dest"
