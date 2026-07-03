@@ -14,10 +14,10 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &teamsDataSource{}
+	_ datasource.DataSourceWithConfigure = &datadogTeamsDataSource{}
 )
 
-type teamsDataSourceModel struct {
+type datadogTeamsDataSourceModel struct {
 	// Query Parameters
 	FilterKeyword types.String `tfsdk:"filter_keyword"`
 	FilterMe      types.Bool   `tfsdk:"filter_me"`
@@ -28,35 +28,37 @@ type teamsDataSourceModel struct {
 }
 
 type TeamModel struct {
-	Description types.String `tfsdk:"description"`
-	Handle      types.String `tfsdk:"handle"`
-	ID          types.String `tfsdk:"id"`
-	LinkCount   types.Int64  `tfsdk:"link_count"`
-	Name        types.String `tfsdk:"name"`
-	Summary     types.String `tfsdk:"summary"`
-	UserCount   types.Int64  `tfsdk:"user_count"`
+	Description    types.String `tfsdk:"description"`
+	Handle         types.String `tfsdk:"handle"`
+	ID             types.String `tfsdk:"id"`
+	LinkCount      types.Int64  `tfsdk:"link_count"`
+	Name           types.String `tfsdk:"name"`
+	Summary        types.String `tfsdk:"summary"`
+	UserCount      types.Int64  `tfsdk:"user_count"`
+	HiddenModules  types.List   `tfsdk:"hidden_modules"`
+	VisibleModules types.List   `tfsdk:"visible_modules"`
 }
 
-type teamsDataSource struct {
+type datadogTeamsDataSource struct {
 	Api  *datadogV2.TeamsApi
 	Auth context.Context
 }
 
-func NewTeamsDataSource() datasource.DataSource {
-	return &teamsDataSource{}
+func NewDatadogTeamsDataSource() datasource.DataSource {
+	return &datadogTeamsDataSource{}
 }
 
-func (d *teamsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogTeamsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *teamsDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadogTeamsDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "teams"
 }
 
-func (d *teamsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadogTeamsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
 		Attributes: map[string]schema.Attribute{
@@ -103,6 +105,16 @@ func (d *teamsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 							Description: "The number of users belonging to the team.",
 							Computed:    true,
 						},
+						"hidden_modules": schema.ListAttribute{
+							Description: "Collection of hidden modules for the team.",
+							ElementType: types.StringType,
+							Computed:    true,
+						},
+						"visible_modules": schema.ListAttribute{
+							Description: "Collection of visible modules for the team.",
+							ElementType: types.StringType,
+							Computed:    true,
+						},
 					},
 				},
 			},
@@ -110,8 +122,8 @@ func (d *teamsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 	}
 }
 
-func (d *teamsDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state teamsDataSourceModel
+func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadogTeamsDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -140,7 +152,7 @@ func (d *teamsDataSource) Read(ctx context.Context, request datasource.ReadReque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *teamsDataSource) updateState(state *teamsDataSourceModel, data *[]datadogV2.Team) {
+func (d *datadogTeamsDataSource) updateState(state *datadogTeamsDataSourceModel, data *[]datadogV2.Team) {
 	results := make([]*TeamModel, 0, len(*data))
 	for _, item := range *data {
 		r := TeamModel{
@@ -151,6 +163,16 @@ func (d *teamsDataSource) updateState(state *teamsDataSourceModel, data *[]datad
 			Name:        types.StringValue(item.Attributes.GetName()),
 			Summary:     types.StringValue(item.Attributes.GetSummary()),
 			UserCount:   types.Int64Value(int64(item.Attributes.GetUserCount())),
+		}
+		if hiddenModules, ok := item.Attributes.GetHiddenModulesOk(); ok && hiddenModules != nil {
+			r.HiddenModules, _ = types.ListValueFrom(context.Background(), types.StringType, *hiddenModules)
+		} else {
+			r.HiddenModules = types.ListNull(types.StringType)
+		}
+		if visibleModules, ok := item.Attributes.GetVisibleModulesOk(); ok && visibleModules != nil {
+			r.VisibleModules, _ = types.ListValueFrom(context.Background(), types.StringType, *visibleModules)
+		} else {
+			r.VisibleModules = types.ListNull(types.StringType)
 		}
 		results = append(results, &r)
 	}

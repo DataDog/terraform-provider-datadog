@@ -5,8 +5,7 @@ import (
 )
 
 type globalFlags struct {
-
-	quiet         bool
+	quiet bool
 }
 
 func newRootCmd(version string, flags *globalFlags) *cobra.Command {
@@ -16,7 +15,6 @@ func newRootCmd(version string, flags *globalFlags) *cobra.Command {
 		Version:      version,
 		SilenceUsage: true,
 	}
-
 
 	cmd.PersistentFlags().BoolVar(&flags.quiet, "quiet", false, "Suppress informational logging")
 
