@@ -542,13 +542,14 @@ type splunkTcpSourceModel struct {
 }
 
 type gcsDestinationModel struct {
-	Bucket       types.String                                `tfsdk:"bucket"`
-	KeyPrefix    types.String                                `tfsdk:"key_prefix"`
-	StorageClass types.String                                `tfsdk:"storage_class"`
-	Acl          types.String                                `tfsdk:"acl"`
-	Auth         []gcpAuthModel                              `tfsdk:"auth"`
-	Metadata     []metadataEntry                             `tfsdk:"metadata"`
-	Buffer       []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
+	Bucket       types.String                                     `tfsdk:"bucket"`
+	KeyPrefix    types.String                                     `tfsdk:"key_prefix"`
+	StorageClass types.String                                     `tfsdk:"storage_class"`
+	Acl          types.String                                     `tfsdk:"acl"`
+	Auth         []gcpAuthModel                                   `tfsdk:"auth"`
+	Metadata     []metadataEntry                                  `tfsdk:"metadata"`
+	Buffer       []observability_pipeline.BufferOptionsModel      `tfsdk:"buffer"`
+	Compression  []observability_pipeline.ArchiveCompressionModel `tfsdk:"compression"`
 }
 
 type metadataEntry struct {
@@ -2357,7 +2358,8 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"buffer": observability_pipeline.BufferOptionsSchema(),
+												"buffer":      observability_pipeline.BufferOptionsSchema(),
+												"compression": observability_pipeline.ArchiveCompressionSchema(),
 											},
 										},
 									},
@@ -5825,8 +5827,34 @@ func expandGoogleCloudStorageDestination(ctx context.Context, destModel *destina
 		}
 	}
 
+	if len(d.Compression) > 0 {
+		dest.SetCompression(expandGoogleCloudStorageCompression(d.Compression[0]))
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineGoogleCloudStorageDestination: dest,
+	}
+}
+
+// expandGoogleCloudStorageCompression converts the archive compression model to the API oneOf.
+func expandGoogleCloudStorageCompression(m observability_pipeline.ArchiveCompressionModel) datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompression {
+	switch m.Algorithm.ValueString() {
+	case "gzip":
+		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzipAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
+	case "zstd":
+		c := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstdAsObservabilityPipelineGoogleCloudStorageDestinationCompression(c)
+	default: // "none"
+		return datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompressionNoneAsObservabilityPipelineGoogleCloudStorageDestinationCompression(
+			datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationCompressionNoneWithDefaults(),
+		)
 	}
 }
 
@@ -5865,7 +5893,37 @@ func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.Ob
 		}
 	}
 
+	if compression, ok := src.GetCompressionOk(); ok {
+		out.Compression = flattenGoogleCloudStorageCompression(compression)
+	}
+
 	return out
+}
+
+// flattenGoogleCloudStorageCompression converts the API archive compression oneOf to the Terraform model.
+func flattenGoogleCloudStorageCompression(src *datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationCompression) []observability_pipeline.ArchiveCompressionModel {
+	if src == nil {
+		return nil
+	}
+	switch {
+	case src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzip != nil:
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("gzip"),
+			Level:     types.Int64Value(src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionGzip.GetLevel()),
+		}}
+	case src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstd != nil:
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("zstd"),
+			Level:     types.Int64Value(src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionZstd.GetLevel()),
+		}}
+	case src.ObservabilityPipelineGoogleCloudStorageDestinationCompressionNone != nil:
+		return []observability_pipeline.ArchiveCompressionModel{{
+			Algorithm: types.StringValue("none"),
+			Level:     types.Int64Null(),
+		}}
+	default:
+		return nil
+	}
 }
 
 func expandGooglePubSubDestination(ctx context.Context, dest *destinationModel, d *googlePubSubDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
