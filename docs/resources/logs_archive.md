@@ -83,15 +83,16 @@ Optional:
 
 Required:
 
-- `account_id` (String) Your AWS account id.
 - `bucket` (String) Name of your s3 bucket.
-- `role_name` (String) Your AWS role name
 
 Optional:
 
+- `access_key_id` (String) Your AWS access key id, used as an alternative to `account_id`/`role_name`.
+- `account_id` (String) Your AWS account id. Required with `role_name`; mutually exclusive with `access_key_id`.
 - `encryption_key` (String) The AWS KMS encryption key.
 - `encryption_type` (String) The type of encryption on your archive. Valid values are `NO_OVERRIDE`, `SSE_S3`, `SSE_KMS`. Defaults to `"NO_OVERRIDE"`.
 - `path` (String) Path where the archive is stored.
+- `role_name` (String) Your AWS role name. Required with `account_id`; mutually exclusive with `access_key_id`.
 - `storage_class` (String) The AWS S3 storage class used to upload the logs. Valid values are `STANDARD`, `STANDARD_IA`, `ONEZONE_IA`, `INTELLIGENT_TIERING`, `GLACIER_IR`. Defaults to `"STANDARD"`.
 
 ## Import
