@@ -1,0 +1,397 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Incidents
+  description: Manage incident response, as well as associated attachments, metadata, and todos. See the
+    [Incident Management page](https://docs.datadoghq.com/service_management/incident_management/) for
+    more information.
+paths:
+  /api/v2/incidents/config/types/{incident_type_id}:
+    get:
+      operationId: GetIncidentType
+      tags:
+      - Incidents
+      summary: Get incident type details
+      description: Get incident type details.
+      parameters:
+      - $ref: '#/components/parameters/IncidentTypeIDPathParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncidentTypeResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: 00000000-0000-0000-0000-000000000003
+                      type: incident_types
+                      attributes:
+                        name: Security Incident
+                        description: Any incidents that harm the confidentiality, integrity, or availability
+                          of our data.
+                        is_default: false
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedResponse'
+        '403':
+          $ref: '#/components/responses/ForbiddenResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      security:
+      - apiKeyAuth: []
+        appKeyAuth: []
+      - AuthZ:
+        - incident_read
+      x-permission:
+        operator: OR
+        permissions:
+        - incident_read
+      x-menu-order: 21
+      x-undo:
+        type: safe
+      x-unstable: '**Note**: This endpoint is in public beta.
+
+        If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: incident_type
+        tf_description: Use this data source to retrieve information about an existing Datadog incident
+          type.
+        group:
+          read: GetIncidentType
+components:
+  parameters:
+    IncidentTypeIDPathParameter:
+      name: incident_type_id
+      in: path
+      required: true
+      description: The UUID of the incident type.
+      schema:
+        type: string
+  responses:
+    BadRequestResponse:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    ForbiddenResponse:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    NotFoundResponse:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    UnauthorizedResponse:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    GoogleMeetConfigurationReference:
+      type: object
+      description: A reference to a Google Meet Configuration resource.
+      nullable: true
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/GoogleMeetConfigurationReferenceData'
+    GoogleMeetConfigurationReferenceData:
+      type: object
+      description: The Google Meet configuration relationship data object.
+      nullable: true
+      required:
+      - id
+      - type
+      properties:
+        type:
+          type: string
+          description: The type of the Google Meet configuration.
+          example: google_meet_configurations
+        id:
+          type: string
+          description: The unique identifier of the Google Meet configuration.
+          example: 00000000-0000-0000-0000-000000000000
+      x-merge-override:
+        required: false
+    IncidentTypeAttributes:
+      type: object
+      description: Incident type's attributes.
+      required:
+      - name
+      properties:
+        createdAt:
+          type: string
+          description: Timestamp when the incident type was created.
+          format: date-time
+          readOnly: true
+        createdBy:
+          type: string
+          description: A unique identifier that represents the user that created the incident type.
+          readOnly: true
+          example: 00000000-0000-0000-0000-000000000000
+        description:
+          type: string
+          description: Text that describes the incident type.
+          example: Any incidents that harm (or have the potential to) the confidentiality, integrity,
+            or availability of our data.
+        is_default:
+          type: boolean
+          description: If true, this incident type will be used as the default incident type if a type
+            is not specified during the creation of incident resources.
+          default: false
+          example: false
+        lastModifiedBy:
+          type: string
+          description: A unique identifier that represents the user that last modified the incident type.
+          readOnly: true
+          example: 00000000-0000-0000-0000-000000000000
+        modifiedAt:
+          type: string
+          description: Timestamp when the incident type was last modified.
+          format: date-time
+          readOnly: true
+        name:
+          type: string
+          description: The name of the incident type.
+          example: Security Incident
+        prefix:
+          type: string
+          description: The string that will be prepended to the incident title across the Datadog app.
+          readOnly: true
+          example: IR
+    IncidentTypeObject:
+      type: object
+      description: Incident type response data.
+      required:
+      - id
+      - type
+      properties:
+        id:
+          type: string
+          description: The incident type's ID.
+          example: 00000000-0000-0000-0000-000000000000
+        type:
+          $ref: '#/components/schemas/IncidentTypeType'
+        attributes:
+          $ref: '#/components/schemas/IncidentTypeAttributes'
+        relationships:
+          $ref: '#/components/schemas/IncidentTypeRelationships'
+    IncidentTypeRelationships:
+      type: object
+      description: The incident type's resource relationships.
+      properties:
+        created_by_user:
+          $ref: '#/components/schemas/RelationshipToUser'
+        last_modified_by_user:
+          $ref: '#/components/schemas/RelationshipToUser'
+        microsoft_teams_configuration:
+          $ref: '#/components/schemas/MicrosoftTeamsConfigurationReference'
+        zoom_configuration:
+          $ref: '#/components/schemas/ZoomConfigurationReference'
+        google_meet_configuration:
+          $ref: '#/components/schemas/GoogleMeetConfigurationReference'
+      additionalProperties: {}
+    IncidentTypeResponse:
+      type: object
+      description: Incident type response data.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/IncidentTypeObject'
+    IncidentTypeType:
+      type: string
+      description: Incident type resource type.
+      default: incident_types
+      example: incident_types
+      enum:
+      - incident_types
+      x-enum-varnames:
+      - INCIDENT_TYPES
+    MicrosoftTeamsConfigurationReference:
+      type: object
+      description: A reference to a Microsoft Teams Configuration resource.
+      nullable: true
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/MicrosoftTeamsConfigurationReferenceData'
+    MicrosoftTeamsConfigurationReferenceData:
+      type: object
+      description: The Microsoft Teams configuration relationship data object.
+      nullable: true
+      required:
+      - id
+      - type
+      properties:
+        type:
+          type: string
+          description: The type of the Microsoft Teams configuration.
+          example: microsoft_teams_configurations
+        id:
+          type: string
+          description: The unique identifier of the Microsoft Teams configuration.
+          example: 00000000-0000-0000-0000-000000000000
+      x-merge-override:
+        required: false
+    RelationshipToUser:
+      type: object
+      description: Relationship to user.
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/RelationshipToUserData'
+    RelationshipToUserData:
+      type: object
+      description: Relationship to user object.
+      required:
+      - id
+      - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsersType'
+        id:
+          type: string
+          description: A unique identifier that represents the user.
+          example: 00000000-0000-0000-2345-000000000000
+      x-merge-override:
+        required: false
+    UsersType:
+      type: string
+      description: Users resource type.
+      default: users
+      example: users
+      enum:
+      - users
+      x-ignore-duplicate-object: true
+      x-enum-varnames:
+      - USERS
+    ZoomConfigurationReference:
+      type: object
+      description: A reference to a Zoom configuration resource.
+      nullable: true
+      required:
+      - data
+      properties:
+        data:
+          $ref: '#/components/schemas/ZoomConfigurationReferenceData'
+    ZoomConfigurationReferenceData:
+      type: object
+      description: The Zoom configuration relationship data object.
+      nullable: true
+      required:
+      - id
+      - type
+      properties:
+        type:
+          type: string
+          description: The type of the Zoom configuration.
+          example: zoom_configurations
+        id:
+          type: string
+          description: The unique identifier of the Zoom configuration.
+          example: 00000000-0000-0000-0000-000000000000
+      x-merge-override:
+        required: false
+  securitySchemes:
+    AuthZ:
+      type: oauth2
+      description: This API uses OAuth 2 with the implicit grant flow.
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth2/v1/authorize
+          tokenUrl: /oauth2/v1/token
+          scopes: {}
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY

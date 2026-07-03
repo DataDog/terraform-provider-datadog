@@ -24,17 +24,24 @@
         "minLength": 1,
         "description": "Human-readable doc string for the generated artifact's top-level Terraform schema (the data source / resource description shown in `terraform docs`). Optional; when omitted the generated Description is left empty. Convention: \"Use this data source to retrieve information about an existing <thing>.\""
       },
+      "cardinality": {
+        "type": "string",
+        "enum": ["singular", "plural"],
+        "default": "singular",
+        "description": "For a data source, whether the read resolves a single item by id (singular) or returns a filtered list (plural). Ignored for resources."
+      },
       "group": {
         "type": "object",
-        "description": "Declares which OpenAPI operations form the C/R/U/D quadruple. May reference operations by their operationId.",
+        "description": "The OpenAPI operations backing this artifact. For a resource: the create/read/update/delete lifecycle. For a data source: read (a by-id endpoint) and/or search (a list endpoint used to resolve a single match). May reference operations by their operationId.",
         "additionalProperties": false,
         "properties": {
-          "create": { "type": "string", "description": "operationId of the Create endpoint." },
-          "read":   { "type": "string", "description": "operationId of the Read endpoint." },
-          "update": { "type": "string", "description": "operationId of the Update endpoint. May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec." },
-          "delete": { "type": "string", "description": "operationId of the Delete endpoint." }
+          "create": { "type": "string", "description": "operationId of the Create endpoint (resources)." },
+          "read":   { "type": "string", "description": "operationId of the Read (by-id) endpoint." },
+          "search": { "type": "string", "description": "operationId of the list endpoint used to resolve a single match. Singular data sources only; never inferred." },
+          "update": { "type": "string", "description": "operationId of the Update endpoint (resources). May be omitted; the generator will then mark all attributes ForceNew per the missing-CRUD edge case in the spec." },
+          "delete": { "type": "string", "description": "operationId of the Delete endpoint (resources)." }
         },
-        "required": ["read"]
+        "anyOf": [ { "required": ["read"] }, { "required": ["search"] } ]
       },
       "id_strategy": {
         "type": "string",
@@ -51,6 +58,11 @@
         "type": "boolean",
         "default": false,
         "description": "Explicitly disable generation for this operation while keeping the annotation in place. Equivalent to removing the extension, but documented in-spec so reviewers see the choice."
+      },
+      "overwrites": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The constructor function of the hand-written data source this generated artifact replaces, e.g. \"NewDatadogTeamDataSource\". When set, the generated file overwrites the hand-written one in place (they share the datadog_<artifact_name>.go path), the generator removes that constructor from the FrameworkProvider Datasources slice, and registers the generated constructor in generatedDatasources. Omit for purely additive generation. Data sources only."
       }
     },
     "examples": [
@@ -58,8 +70,18 @@
         "artifact_kind": "data_source",
         "artifact_name": "team",
         "tf_description": "Use this data source to retrieve information about an existing Datadog team.",
+        "overwrites": "NewDatadogTeamDataSource",
         "group":{
-          "read": "GetTeam"
+          "read": "GetTeam",
+          "search": "ListTeams"
+        }
+      },
+      {
+        "artifact_kind": "data_source",
+        "artifact_name": "powerpack",
+        "tf_description": "Use this data source to retrieve information about an existing Datadog Powerpack.",
+        "group":{
+          "search": "ListPowerpacks"
         }
       },
       {
