@@ -91,6 +91,10 @@ type Operation struct {
 	RequestSchema *Schema
 	// ResponseSchema is the resolved 2xx response schema, if any.
 	ResponseSchema *Schema
+	// ResponseRefName is the last path segment of the 2xx response body $ref,
+	// e.g. "IncidentTypeResponse" — the SDK Go response type; empty when the
+	// body is inline or absent.
+	ResponseRefName string
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
@@ -127,6 +131,9 @@ type Artifact struct {
 	// Name is the Terraform-facing artifact name (without the datadog_ prefix).
 	Name string
 	Kind ArtifactKind
+	// Description is the artifact's top-level schema doc string, from the
+	// tracking extension's tf_description field; empty when the author omits it.
+	Description string
 	// Schema is the Terraform schema derived from the response (and request,
 	// for resources).
 	Schema *AttributeTree
