@@ -22,7 +22,8 @@ generator skips them as-is; add the extension to opt an operation in.
 
 ## Using a slice with the generator
 
-Annotate the read operation, then point `tfgen generate` at the file:
+Annotate the read operation, then point `tfgen generate` at the file. The by-id
+GET is the **singular** read:
 
 ```yaml
 # under paths./api/v2/team/{team_id}.get:
@@ -31,6 +32,18 @@ x-datadog-tf-generator:
   artifact_name: team
   group:
     read: GetTeam
+```
+
+The collection GET (no `{param}`) is the **plural** read — add `cardinality: plural`:
+
+```yaml
+# under paths./api/v2/team.get:
+x-datadog-tf-generator:
+  artifact_kind: data_source
+  artifact_name: teams
+  cardinality: plural
+  group:
+    read: ListTeams
 ```
 
 ```sh
@@ -48,7 +61,10 @@ The scripts that produced this corpus live in `scripts/`:
 - `_validate.py` — checks every `mini-datadog_*.yaml` is a valid OpenAPI 3.0.0
   document with all `$ref`s resolving internally.
 - `_annotate.py` — writes annotated copies of a representative sample (under
-  `scripts/gen-test/`) for an end-to-end `tfgen generate` run.
+  `scripts/gen-test/`) for an end-to-end `tfgen generate` run. Each slice yields
+  the variants its endpoints support: a `<name>.yaml` singular (by-id GET) and/or
+  a `<plural>.yaml` plural (collection GET, `cardinality: plural`). Needs only the
+  committed slices — not the full v2 spec.
 
 The build scripts read the full v2 spec, which is **not** vendored here. Point at
 it with the `DATADOG_OPENAPI_V2_SPEC` env var (defaults to

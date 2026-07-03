@@ -31,10 +31,12 @@ const (
 )
 
 // SchemaKind classifies a normalized Schema node by structure. Primitive,
-// Object, Array and Map are emittable as Terraform attributes. Variant
-// (oneOf/anyOf), RefCycle ($ref cycle or beyond --max-depth) and Unsupported
-// (no representable type or structure) are not — the representability check
-// rejects them rather than emitting a types.Dynamic escape hatch.
+// Object, Array and Map are emittable as Terraform attributes. Variant (oneOf)
+// has no Terraform equivalent, so the attribute-tree builder drops it (skipping
+// the property, or the whole collection when it is an array/map element). RefCycle
+// ($ref cycle or beyond --max-depth) and Unsupported (no representable type or
+// structure, and anyOf) are fatal — the builder fails the artifact rather than
+// emitting a types.Dynamic escape hatch.
 type SchemaKind string
 
 const (
@@ -42,9 +44,19 @@ const (
 	SchemaKindObject      SchemaKind = "object"
 	SchemaKindArray       SchemaKind = "array"
 	SchemaKindMap         SchemaKind = "map"
-	SchemaKindVariant     SchemaKind = "variant"     // oneOf / anyOf
+	SchemaKindVariant     SchemaKind = "variant"     // oneOf; dropped from the attribute tree
 	SchemaKindRefCycle    SchemaKind = "ref_cycle"   // $ref cycle or beyond --max-depth
-	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure; always rejected
+	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure, or anyOf; always rejected
+)
+
+// Cardinality distinguishes a singular data source (resolves one item by id)
+// from a plural one (returns a filtered list). It is the decoded form of the
+// tracking extension's "cardinality" field; absent/empty means singular.
+type Cardinality string
+
+const (
+	CardinalitySingular Cardinality = "singular"
+	CardinalityPlural   Cardinality = "plural"
 )
 
 // IdStrategy describes how the Terraform resource ID is derived from the API response.
@@ -95,6 +107,51 @@ type Operation struct {
 	// e.g. "IncidentTypeResponse" — the SDK Go response type; empty when the
 	// body is inline or absent.
 	ResponseRefName string
+	// QueryParams are the operation's in:query parameters, normalized and sorted
+	// by name. Populated for every operation; the plural data-source path turns
+	// the scalar ones into filters.
+	QueryParams []QueryParam
+	// Pagination is the decoded x-pagination extension, or nil when the
+	// operation declares none.
+	Pagination *Pagination
+	// ItemRefName is the last $ref segment of the results-array element schema
+	// for a list response, e.g. "Team" — the SDK Go element type. Empty when the
+	// resultsPath property is absent or is not an array.
+	ItemRefName string
+	// ResponseDataRefName is the last $ref segment of a by-id response's "data"
+	// property when it is a single object reference, e.g. "FullAPIKey" — the SDK
+	// Go record type. Empty for list responses (whose "data" is an array; see
+	// ItemRefName) or an inline data object. Lets a "both" data source detect when
+	// its by-id record shape diverges from its list element shape.
+	ResponseDataRefName string
+	// SearchOp is the operation named by Tracking.Group.Search, resolved during
+	// NormalizeSchemas: the list endpoint a singular data source searches to
+	// resolve one record. It points at the operation itself when this op is the
+	// search op (search-only), and is nil when no search is declared or the
+	// declared operationId is unknown.
+	SearchOp *Operation
+}
+
+// QueryParam is one in:query OpenAPI parameter, with its inner schema
+// normalized like a request/response body. Name preserves the raw OpenAPI
+// spelling, including brackets (e.g. "filter[keyword]").
+type QueryParam struct {
+	Name        string
+	Required    bool
+	Schema      *Schema
+	Description string
+}
+
+// Pagination is the decoded x-pagination extension on a list operation. It
+// names the limit/page query parameters and the response property holding the
+// result array.
+type Pagination struct {
+	// LimitParam is the page-size query parameter name, e.g. "page[size]".
+	LimitParam string
+	// PageParam is the page-cursor/number query parameter name, e.g. "page[number]".
+	PageParam string
+	// ResultsPath is the response property holding the result array, e.g. "data".
+	ResultsPath string
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
@@ -131,6 +188,9 @@ type Artifact struct {
 	// Name is the Terraform-facing artifact name (without the datadog_ prefix).
 	Name string
 	Kind ArtifactKind
+	// Cardinality selects the singular vs plural data-source shape; the emit
+	// builder routes on it. Empty for resources.
+	Cardinality Cardinality
 	// Description is the artifact's top-level schema doc string, from the
 	// tracking extension's tf_description field; empty when the author omits it.
 	Description string
@@ -141,6 +201,10 @@ type Artifact struct {
 	Lifecycle *LifecycleBindings
 	// SourceFile is the output path, e.g. datadog/fwprovider/<file>.go.
 	SourceFile string
+	// Diagnostics carries non-fatal notes raised while building the artifact,
+	// e.g. query parameters dropped from a plural data source's filter set. The
+	// artifact still emits; the run report surfaces these as info.
+	Diagnostics []Diagnostic
 }
 
 // AttributeTree is the root of the Terraform schema tree for one artifact.
@@ -162,6 +226,13 @@ type Attribute struct {
 	// e.g. "types.StringType". Set ONLY for ListAttribute/MapAttribute
 	// (collection-of-primitive); empty for everything else.
 	ElementType string
+	// Format is the OpenAPI format (e.g. "date-time"). It distinguishes SDK
+	// getters whose Go return type differs from the bare scalar: a date-time
+	// string getter returns time.Time, not string.
+	Format string
+	// IsEnum marks a string whose SDK getter returns a named enum type rather
+	// than a bare string, so the state mapper must cast it back with string(...).
+	IsEnum bool
 
 	Required  bool
 	Optional  bool
@@ -193,11 +264,17 @@ type ValidatorSpec struct {
 	Args []string
 }
 
-// LifecycleBindings maps Terraform lifecycle methods to their SDK calls.
-// For data sources only Read is populated; IdStrategy and Create/Update/Delete are zero.
+// LifecycleBindings maps Terraform lifecycle methods to their SDK calls. For a
+// singular data source: Read is the by-id call and Search the list call —
+// read-only sets Read, search-only sets Search, the id-optional shape sets both.
+// IdStrategy and Create/Update/Delete are zero for data sources.
 type LifecycleBindings struct {
-	Create     *SDKCall
-	Read       *SDKCall
+	Create *SDKCall
+	Read   *SDKCall
+	// Search is the list call a singular data source uses to resolve one record
+	// by filter. It carries the list-call fields (ItemType/OptionalParamsType/
+	// Paginated), same as a plural Read.
+	Search     *SDKCall
 	Update     *SDKCall
 	Delete     *SDKCall
 	IdStrategy IdStrategy
@@ -232,6 +309,21 @@ type SDKCall struct {
 	// NOTE: Schema has no Name field; the model-builder must read this from the
 	// raw libopenapi node, not from Operation.ResponseSchema.
 	GoResponseType string
+
+	// The fields below back a plural data-source list call.
+
+	// ItemType is the SDK element type yielded by the list call, e.g. "Team"
+	// (from Operation.ItemRefName). The non-paginated read collects resp.Data
+	// into []<ItemType>; the paginated read yields PaginationResult[<ItemType>].
+	ItemType string
+	// OptionalParamsType is the SDK optional-parameters struct, e.g.
+	// "ListTeamsOptionalParameters" (<GoMethod>OptionalParameters). Empty when
+	// the endpoint declares no query parameters, in which case the list call
+	// takes no optional-parameters argument.
+	OptionalParamsType string
+	// Paginated selects the "<GoMethod>WithPagination" iterator form, set when
+	// the operation declares an x-pagination extension.
+	Paginated bool
 }
 
 // ----------------------------------------------------------------------------
