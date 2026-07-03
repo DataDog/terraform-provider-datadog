@@ -53,7 +53,7 @@ var _ = Describe("NormalizeSchemas kind classification", func() {
 		Entry("type:array with items → array", "CreateArray", model.SchemaKindArray),
 		Entry("additionalProperties without properties → map", "CreateMap", model.SchemaKindMap),
 		Entry("oneOf → variant", "CreateVariantOneOf", model.SchemaKindVariant),
-		Entry("anyOf → variant", "CreateVariantAnyOf", model.SchemaKindVariant),
+		Entry("anyOf → unsupported", "CreateVariantAnyOf", model.SchemaKindUnsupported),
 	)
 
 	DescribeTable("classifies the response body schema kind from structure — not type alone",
@@ -200,9 +200,10 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Variants).To(HaveLen(2))
 	})
 
-	It("populates Variants for anyOf schemas and does not drop them", func() {
+	It("classifies anyOf as unsupported and carries no Variants", func() {
 		op := opByID(spec, "CreateVariantAnyOf")
-		Expect(op.RequestSchema.Variants).To(HaveLen(2))
+		Expect(op.RequestSchema.Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(op.RequestSchema.Variants).To(BeEmpty())
 	})
 })
 
@@ -443,3 +444,75 @@ var _ = Describe("NormalizeSchemas determinism", func() {
 		}
 	})
 })
+
+// -------------------------------------------------------------------
+//  List operation: query params, pagination, item element type
+// -------------------------------------------------------------------
+
+var _ = Describe("NormalizeSchemas list operation", func() {
+
+	var list *model.Operation
+
+	BeforeEach(func() {
+		list = opByID(loadSpecMust("schema_normalize_list.yaml"), "ListThings")
+	})
+
+	It("captures only in:query parameters, sorted by name, preserving bracketed names", func() {
+		var names []string
+		for _, p := range list.QueryParams {
+			names = append(names, p.Name)
+		}
+		Expect(names).To(Equal([]string{
+			"filter[keyword]", "filter[me]", "include", "page[number]", "page[size]", "sort",
+		}))
+	})
+
+	It("resolves a $ref parameter (#/components/parameters) and normalizes its schema", func() {
+		page := paramByName(list, "page[number]")
+		Expect(page.Schema).NotTo(BeNil())
+		Expect(page.Schema.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(page.Schema.Type).To(Equal("integer"))
+		Expect(page.Schema.Format).To(Equal("int64"))
+	})
+
+	It("normalizes scalar, array, and enum parameter schemas through to type/enum/array", func() {
+		Expect(paramByName(list, "filter[keyword]").Schema.Type).To(Equal("string"))
+		Expect(paramByName(list, "filter[me]").Schema.Type).To(Equal("boolean"))
+		Expect(paramByName(list, "filter[me]").Required).To(BeTrue())
+		Expect(paramByName(list, "include").Schema.Kind).To(Equal(model.SchemaKindArray))
+		sort := paramByName(list, "sort").Schema
+		Expect(sort.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(sort.Enum).To(Equal([]string{"name", "-name"}))
+	})
+
+	It("decodes the x-pagination extension", func() {
+		Expect(list.Pagination).To(Equal(&model.Pagination{
+			LimitParam: "page[size]", PageParam: "page[number]", ResultsPath: "data",
+		}))
+	})
+
+	It("retains the results-array element $ref as ItemRefName, leaving ResponseDataRefName empty for a list", func() {
+		Expect(list.ItemRefName).To(Equal("Thing"))
+		Expect(list.ResponseDataRefName).To(BeEmpty())
+	})
+
+	It("retains a get-by-id data object $ref as ResponseDataRefName, leaving ItemRefName empty", func() {
+		get := opByID(loadSpecMust("schema_normalize_list.yaml"), "GetThing")
+		Expect(get.QueryParams).To(BeEmpty())
+		Expect(get.Pagination).To(BeNil())
+		Expect(get.ItemRefName).To(BeEmpty())
+		Expect(get.ResponseDataRefName).To(Equal("Thing"))
+	})
+})
+
+// paramByName returns the named query parameter or fails the test.
+func paramByName(op *model.Operation, name string) model.QueryParam {
+	GinkgoHelper()
+	for _, p := range op.QueryParams {
+		if p.Name == name {
+			return p
+		}
+	}
+	Fail("query parameter " + name + " not found on " + op.OperationId)
+	return model.QueryParam{}
+}

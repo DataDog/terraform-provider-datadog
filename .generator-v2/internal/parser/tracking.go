@@ -135,5 +135,8 @@ func DecodeTracking(op *v3.Operation, path, method, extensionName string) (*mode
 	if meta.IdStrategy == "" {
 		meta.IdStrategy = model.IdStrategyDataID // schema default "data.id"
 	}
+	if meta.Cardinality == "" {
+		meta.Cardinality = model.CardinalitySingular // schema default "singular"
+	}
 	return &meta, nil
 }

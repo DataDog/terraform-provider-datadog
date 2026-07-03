@@ -20,6 +20,14 @@ import (
 // normalizes; selecting one keeps the projected schema deterministic.
 const jsonMediaType = "application/json"
 
+// paginationExtension is the OpenAPI vendor extension describing a list
+// endpoint's page/limit query parameters and result-array property.
+const paginationExtension = "x-pagination"
+
+// defaultResultsPath is the JSON:API convention for the response property
+// holding a list's elements, used when no x-pagination resultsPath is declared.
+const defaultResultsPath = "data"
+
 // UnresolvableRefError reports a $ref whose target component is missing from
 // #/components/schemas (or whose form is unsupported).
 type UnresolvableRefError struct {
@@ -93,14 +101,14 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		byID[op.OperationId] = op
 	}
 
-	// Roots are tracked operations; each fills its group's CRUD operations, which
-	// may themselves be untracked. filled dedups operations shared across groups.
+	// Roots are tracked operations; each fills its group's operations, which may
+	// themselves be untracked. filled dedups operations shared across groups.
 	filled := make(map[*model.Operation]bool)
 	for _, op := range spec.Operations {
 		if op == nil || op.Tracking == nil {
 			continue
 		}
-		for _, id := range crudOperationIds(op.Tracking) {
+		for _, id := range groupOperationIds(op.Tracking) {
 			target := byID[id]
 			if target == nil || filled[target] {
 				continue
@@ -111,18 +119,30 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 			}
 		}
 	}
+
+	// Resolve each tracked op's search reference to the list operation it points
+	// at, so BuildArtifact can reach the search op's filters and list call. An
+	// unknown operationId leaves SearchOp nil for BuildArtifact to fail-slow on.
+	for _, op := range spec.Operations {
+		if op == nil || op.Tracking == nil || op.Tracking.Group == nil {
+			continue
+		}
+		if id := op.Tracking.Group.Search; id != "" {
+			op.SearchOp = byID[id]
+		}
+	}
 	return nil
 }
 
-// crudOperationIds returns the non-empty create/read/update/delete operationIds
-// of a tracking group, in CRUD order.
-func crudOperationIds(t *model.TrackingFieldMetadata) []string {
+// groupOperationIds returns the non-empty operationIds backing a tracking group
+// (create/read/search/update/delete), so their schemas get normalized.
+func groupOperationIds(t *model.TrackingFieldMetadata) []string {
 	if t == nil || t.Group == nil {
 		return nil
 	}
 	g := t.Group
-	ids := make([]string, 0, 4)
-	for _, id := range []string{g.Create, g.Read, g.Update, g.Delete} {
+	ids := make([]string, 0, 5)
+	for _, id := range []string{g.Create, g.Read, g.Search, g.Update, g.Delete} {
 		if id != "" {
 			ids = append(ids, id)
 		}
@@ -139,7 +159,9 @@ type schemaNormalizer struct {
 }
 
 // fillOperation normalizes raw's request and 2xx response bodies into op,
-// leaving a field nil when its body is absent.
+// leaving a field nil when its body is absent. It also captures query
+// parameters, pagination, and the list element type, which feed the plural
+// data-source path and are harmless to the singular and resource paths.
 func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation) error {
 	if op == nil || raw == nil {
 		return nil
@@ -151,20 +173,141 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		}
 		op.RequestSchema = req
 	}
-	if respProxy := responseBodySchemaProxy(raw); respProxy != nil {
-		// Capture the response type name from the top-level body proxy before
-		// normalizeProxy follows the $ref and discards it. An inline/absent body
-		// leaves ResponseRefName empty.
-		if respProxy.IsReference() {
-			op.ResponseRefName = lastRefSegment(respProxy.GetReference())
+
+	if err := n.fillQueryParams(op, raw); err != nil {
+		return err
+	}
+	op.Pagination = decodePagination(raw)
+
+	respProxy := responseBodySchemaProxy(raw)
+	if respProxy == nil {
+		return nil
+	}
+	// Capture the response type name from the top-level body proxy before
+	// normalizeProxy follows the $ref and discards it. An inline/absent body
+	// leaves ResponseRefName empty.
+	if respProxy.IsReference() {
+		op.ResponseRefName = lastRefSegment(respProxy.GetReference())
+	}
+	resp, err := n.normalizeProxy(respProxy, 0)
+	if err != nil {
+		return err
+	}
+	op.ResponseSchema = resp
+
+	if err := n.retainItemRef(op, respProxy); err != nil {
+		return err
+	}
+	return n.retainResponseDataRef(op, respProxy)
+}
+
+// fillQueryParams normalizes raw's in:query parameters onto op.QueryParams,
+// sorted by name. libopenapi resolves $ref parameters (e.g.
+// #/components/parameters/PageNumber) during its build, so each parameter
+// arrives with Name and Schema populated; the inner schema is normalized like a
+// body so type/format/enum/array come through. Raw bracketed names
+// (filter[keyword]) are preserved.
+func (n *schemaNormalizer) fillQueryParams(op *model.Operation, raw *v3.Operation) error {
+	for _, p := range raw.Parameters {
+		if p == nil || p.In != "query" || p.Name == "" {
+			continue
 		}
-		resp, err := n.normalizeProxy(respProxy, 0)
+		schema, err := n.normalizeProxy(p.Schema, 0)
 		if err != nil {
 			return err
 		}
-		op.ResponseSchema = resp
+		op.QueryParams = append(op.QueryParams, model.QueryParam{
+			Name:        p.Name,
+			Required:    p.Required != nil && *p.Required,
+			Schema:      schema,
+			Description: p.Description,
+		})
+	}
+	sort.Slice(op.QueryParams, func(i, j int) bool {
+		return op.QueryParams[i].Name < op.QueryParams[j].Name
+	})
+	return nil
+}
+
+// decodePagination decodes raw's x-pagination extension, or returns nil when the
+// operation declares none (or the extension is malformed).
+func decodePagination(raw *v3.Operation) *model.Pagination {
+	if raw.Extensions == nil {
+		return nil
+	}
+	node := raw.Extensions.GetOrZero(paginationExtension)
+	if node == nil {
+		return nil
+	}
+	var pg struct {
+		LimitParam  string `yaml:"limitParam"`
+		PageParam   string `yaml:"pageParam"`
+		ResultsPath string `yaml:"resultsPath"`
+	}
+	if err := node.Decode(&pg); err != nil {
+		return nil
+	}
+	return &model.Pagination{LimitParam: pg.LimitParam, PageParam: pg.PageParam, ResultsPath: pg.ResultsPath}
+}
+
+// retainItemRef records op.ItemRefName: the last $ref segment of the
+// results-array element schema. The results property is op.Pagination.ResultsPath
+// when present, else the JSON:API default "data". A property that is not an array
+// (e.g. a get-by-id "data" object) leaves ItemRefName empty.
+func (n *schemaNormalizer) retainItemRef(op *model.Operation, respProxy *base.SchemaProxy) error {
+	resultsPath := defaultResultsPath
+	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
+		resultsPath = op.Pagination.ResultsPath
+	}
+	body, err := n.resolveToSchema(respProxy)
+	if err != nil || body == nil || body.Properties == nil {
+		return err
+	}
+	prop, err := n.resolveToSchema(body.Properties.GetOrZero(resultsPath))
+	if err != nil || prop == nil {
+		return err
+	}
+	if !hasType(prop, "array") || prop.Items == nil || !prop.Items.IsA() {
+		return nil
+	}
+	if elem := prop.Items.A; elem != nil && elem.IsReference() {
+		op.ItemRefName = lastRefSegment(elem.GetReference())
 	}
 	return nil
+}
+
+// retainResponseDataRef records op.ResponseDataRefName: the last $ref segment of a
+// by-id response's "data" property when that property is a single object
+// reference (e.g. "FullAPIKey"). A list response's "data" is an inline array, not
+// a reference, so it leaves the field empty (retainItemRef covers that). This lets
+// the model detect a "both" data source whose by-id record shape diverges from its
+// list element shape.
+func (n *schemaNormalizer) retainResponseDataRef(op *model.Operation, respProxy *base.SchemaProxy) error {
+	body, err := n.resolveToSchema(respProxy)
+	if err != nil || body == nil || body.Properties == nil {
+		return err
+	}
+	if data := body.Properties.GetOrZero(defaultResultsPath); data != nil && data.IsReference() {
+		op.ResponseDataRefName = lastRefSegment(data.GetReference())
+	}
+	return nil
+}
+
+// resolveToSchema follows a schema proxy through one or more $ref hops to its
+// underlying *base.Schema, mirroring normalizeProxy's resolution but returning
+// the raw libopenapi node so callers can read $ref names the model discards.
+func (n *schemaNormalizer) resolveToSchema(proxy *base.SchemaProxy) (*base.Schema, error) {
+	if proxy == nil {
+		return nil, nil
+	}
+	if proxy.IsReference() {
+		target, err := n.resolveRef(proxy.GetReference())
+		if err != nil {
+			return nil, err
+		}
+		return n.resolveToSchema(target)
+	}
+	return proxy.Schema(), nil
 }
 
 // lastRefSegment returns the component name after the final "/" of a $ref,
@@ -319,16 +462,14 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		}
 
 	case model.SchemaKindVariant:
-		// Variant: one of several alternative shapes (oneOf/anyOf). Every
-		// alternative is normalized and collected into out.Variants.
-		for _, group := range [][]*base.SchemaProxy{s.OneOf, s.AnyOf} {
-			for _, variant := range group {
-				v, err := n.normalizeProxy(variant, depth)
-				if err != nil {
-					return nil, err
-				}
-				out.Variants = append(out.Variants, v)
+		// Variant: one of several alternative oneOf shapes (anyOf is classified
+		// unsupported). Every alternative is normalized into out.Variants.
+		for _, variant := range s.OneOf {
+			v, err := n.normalizeProxy(variant, depth)
+			if err != nil {
+				return nil, err
 			}
+			out.Variants = append(out.Variants, v)
 		}
 	}
 
@@ -337,13 +478,20 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 
 // classifyKind derives the SchemaKind from structure, not type alone. Precedence
 // (first match wins, since a node can satisfy several at once):
-// oneOf/anyOf → variant; properties → object; type:array+items → array;
-// additionalProperties → map; a concrete scalar type → primitive; anything else
-// (free-form/empty object, typeless leaf, itemless array) → unsupported.
+// anyOf → unsupported; oneOf → variant; properties → object; type:array+items →
+// array; additionalProperties → map; a concrete scalar type → primitive; anything
+// else (free-form/empty object, typeless leaf, itemless array) → unsupported.
+//
+// oneOf and anyOf are handled differently downstream: a oneOf variant is dropped
+// from the attribute tree, while an anyOf — which we never expect and have not
+// validated — is classified unsupported so its artifact fails rather than guessing.
 func classifyKind(s *base.Schema) model.SchemaKind {
 	switch {
-	case len(s.OneOf) > 0 || len(s.AnyOf) > 0:
-		// "one of several shapes" outranks everything else.
+	case len(s.AnyOf) > 0:
+		// anyOf has no Terraform equivalent; reject rather than drop or guess.
+		return model.SchemaKindUnsupported
+	case len(s.OneOf) > 0:
+		// "one of several shapes"; the attribute-tree builder drops it.
 		return model.SchemaKindVariant
 	case s.Properties != nil && orderedmap.Len(s.Properties) > 0:
 		// Declared named fields → object, regardless of the type keyword.
@@ -379,8 +527,8 @@ func isMap(s *base.Schema) bool {
 // elementOrUnsupported returns elem unless it is itself a collection (array or
 // map). A Terraform list/map element type must be a primitive or object, so a
 // collection-of-collection has no representable element; returning the Unsupported
-// sentinel lets CheckSchemaRepresentability reject it like any other unrepresentable
-// node and keeps the model builder's matching error unreachable in the pipeline.
+// sentinel makes the attribute-tree builder reject it like any other
+// unrepresentable node.
 func elementOrUnsupported(elem *model.Schema) *model.Schema {
 	if elem == nil {
 		return &model.Schema{Kind: model.SchemaKindUnsupported}
