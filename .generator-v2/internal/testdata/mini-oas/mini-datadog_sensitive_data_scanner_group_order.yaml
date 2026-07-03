@@ -1,0 +1,662 @@
+openapi: 3.0.0
+info:
+  title: Datadog API V2 Collection
+  version: '1.0'
+  description: Collection of all Datadog Public endpoints.
+  contact:
+    name: Datadog Support
+    url: https://www.datadoghq.com/support/
+    email: support@datadoghq.com
+servers:
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: The regional site for Datadog customers.
+      enum:
+      - datadoghq.com
+      - us3.datadoghq.com
+      - us5.datadoghq.com
+      - ap1.datadoghq.com
+      - ap2.datadoghq.com
+      - datadoghq.eu
+      - ddog-gov.com
+      - us2.ddog-gov.com
+- url: '{protocol}://{name}'
+  variables:
+    protocol:
+      default: https
+      description: The protocol for accessing the API.
+    name:
+      default: api.datadoghq.com
+      description: Full site DNS name.
+- url: https://{subdomain}.{site}
+  variables:
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+security:
+- apiKeyAuth: []
+  appKeyAuth: []
+tags:
+- name: Sensitive Data Scanner
+  description: Create, update, delete, and retrieve sensitive data scanner groups and rules. See the [Sensitive
+    Data Scanner page](https://docs.datadoghq.com/sensitive_data_scanner/) for more information.
+paths:
+  /api/v2/sensitive-data-scanner/config:
+    get:
+      operationId: ListScanningGroups
+      tags:
+      - Sensitive Data Scanner
+      summary: List Scanning Groups
+      description: List all the Scanning groups in your organization.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensitiveDataScannerGetConfigResponse'
+              examples:
+                default:
+                  value:
+                    data:
+                      id: abc-123
+                      type: sensitive_data_scanner_configuration
+                      attributes: {}
+                      relationships:
+                        groups:
+                          data:
+                          - id: group-abc-123
+                            type: sensitive_data_scanner_group
+                    included:
+                    - id: group-abc-123
+                      type: sensitive_data_scanner_group
+                      attributes:
+                        name: My scanning group
+                        description: ''
+                        is_enabled: true
+                        product_list:
+                        - logs
+                        filter:
+                          query: '*'
+                        samplings:
+                        - product: logs
+                          rate: 100.0
+                      relationships:
+                        configuration:
+                          data:
+                            id: abc-123
+                            type: sensitive_data_scanner_configuration
+                        rules:
+                          data:
+                          - id: rule-abc-123
+                            type: sensitive_data_scanner_rule
+                    - id: rule-abc-123
+                      type: sensitive_data_scanner_rule
+                      attributes:
+                        name: Credit Card Rule
+                        description: Detects credit card numbers in various formats
+                        is_enabled: true
+                        priority: 1
+                        namespaces:
+                        - admin
+                        excluded_namespaces:
+                        - admin.name
+                        tags:
+                        - sensitive_data:true
+                        text_replacement:
+                          type: none
+                        included_keyword_configuration:
+                          keywords:
+                          - credit card
+                          character_count: 35
+                      relationships:
+                        group:
+                          data:
+                            id: group-abc-123
+                            type: sensitive_data_scanner_group
+                    meta:
+                      version: 1
+                      is_pci_compliant: false
+                      count_limit: 500
+                      group_count_limit: 20
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '403':
+          description: Authentication Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      x-permission:
+        operator: OR
+        permissions:
+        - data_scanner_read
+      x-undo:
+        type: safe
+      x-menu-order: 1
+      x-given:
+        configuration:
+          step: a valid "configuration" in the system
+components:
+  responses:
+    TooManyRequestsResponse:
+      description: Too many requests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+  schemas:
+    APIErrorResponse:
+      type: object
+      description: API error response.
+      required:
+      - errors
+      properties:
+        errors:
+          type: array
+          description: A list of errors.
+          example:
+          - Bad Request
+          items:
+            type: string
+            description: A list of items.
+            example: Bad Request
+    SensitiveDataScannerConfiguration:
+      type: object
+      description: A Sensitive Data Scanner configuration.
+      properties:
+        id:
+          type: string
+          description: ID of the configuration.
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerConfigurationType'
+    SensitiveDataScannerConfigurationData:
+      type: object
+      description: A Sensitive Data Scanner configuration data.
+      properties:
+        data:
+          $ref: '#/components/schemas/SensitiveDataScannerConfiguration'
+    SensitiveDataScannerConfigurationRelationships:
+      type: object
+      description: Relationships of the configuration.
+      properties:
+        groups:
+          $ref: '#/components/schemas/SensitiveDataScannerGroupList'
+    SensitiveDataScannerConfigurationType:
+      type: string
+      description: Sensitive Data Scanner configuration type.
+      default: sensitive_data_scanner_configuration
+      example: sensitive_data_scanner_configuration
+      enum:
+      - sensitive_data_scanner_configuration
+      x-enum-varnames:
+      - SENSITIVE_DATA_SCANNER_CONFIGURATIONS
+    SensitiveDataScannerFilter:
+      type: object
+      description: Filter for the Scanning Group.
+      properties:
+        query:
+          type: string
+          description: Query to filter the events.
+    SensitiveDataScannerGetConfigIncludedArray:
+      type: array
+      description: Included objects from relationships.
+      items:
+        $ref: '#/components/schemas/SensitiveDataScannerGetConfigIncludedItem'
+    SensitiveDataScannerGetConfigIncludedItem:
+      description: An object related to the configuration.
+      oneOf:
+      - $ref: '#/components/schemas/SensitiveDataScannerRuleIncludedItem'
+      - $ref: '#/components/schemas/SensitiveDataScannerGroupIncludedItem'
+    SensitiveDataScannerGetConfigResponse:
+      type: object
+      description: Get all groups response.
+      properties:
+        data:
+          $ref: '#/components/schemas/SensitiveDataScannerGetConfigResponseData'
+        included:
+          $ref: '#/components/schemas/SensitiveDataScannerGetConfigIncludedArray'
+        meta:
+          $ref: '#/components/schemas/SensitiveDataScannerMeta'
+    SensitiveDataScannerGetConfigResponseData:
+      type: object
+      description: Response data related to the scanning groups.
+      properties:
+        id:
+          type: string
+          description: ID of the configuration.
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerConfigurationType'
+        attributes:
+          type: object
+          description: Attributes of the Sensitive Data configuration.
+          additionalProperties: {}
+        relationships:
+          $ref: '#/components/schemas/SensitiveDataScannerConfigurationRelationships'
+    SensitiveDataScannerGroup:
+      type: object
+      description: A scanning group.
+      properties:
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerGroupType'
+        id:
+          type: string
+          description: ID of the group.
+      x-ignore-duplicate-object: true
+    SensitiveDataScannerGroupAttributes:
+      type: object
+      description: Attributes of the Sensitive Data Scanner group.
+      properties:
+        name:
+          type: string
+          description: Name of the group.
+        description:
+          type: string
+          description: Description of the group.
+        product_list:
+          type: array
+          description: List of products the scanning group applies.
+          items:
+            $ref: '#/components/schemas/SensitiveDataScannerProduct'
+        is_enabled:
+          type: boolean
+          description: Whether or not the group is enabled.
+        filter:
+          $ref: '#/components/schemas/SensitiveDataScannerFilter'
+        samplings:
+          type: array
+          description: List of sampling rates per product type.
+          items:
+            $ref: '#/components/schemas/SensitiveDataScannerSamplings'
+    SensitiveDataScannerGroupData:
+      type: object
+      description: A scanning group data.
+      properties:
+        data:
+          $ref: '#/components/schemas/SensitiveDataScannerGroup'
+    SensitiveDataScannerGroupIncludedItem:
+      type: object
+      description: A Scanning Group included item.
+      properties:
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerGroupType'
+        id:
+          type: string
+          description: ID of the group.
+        attributes:
+          $ref: '#/components/schemas/SensitiveDataScannerGroupAttributes'
+        relationships:
+          $ref: '#/components/schemas/SensitiveDataScannerGroupRelationships'
+      x-ignore-duplicate-object: true
+    SensitiveDataScannerGroupItem:
+      type: object
+      description: Data related to a Sensitive Data Scanner Group.
+      properties:
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerGroupType'
+        id:
+          type: string
+          description: ID of the group.
+      x-ignore-duplicate-object: true
+    SensitiveDataScannerGroupList:
+      type: object
+      description: List of groups, ordered.
+      properties:
+        data:
+          type: array
+          description: List of groups. The order is important.
+          items:
+            $ref: '#/components/schemas/SensitiveDataScannerGroupItem'
+    SensitiveDataScannerGroupRelationships:
+      type: object
+      description: Relationships of the group.
+      properties:
+        configuration:
+          $ref: '#/components/schemas/SensitiveDataScannerConfigurationData'
+        rules:
+          $ref: '#/components/schemas/SensitiveDataScannerRuleData'
+    SensitiveDataScannerGroupType:
+      type: string
+      description: Sensitive Data Scanner group type.
+      default: sensitive_data_scanner_group
+      example: sensitive_data_scanner_group
+      enum:
+      - sensitive_data_scanner_group
+      x-enum-varnames:
+      - SENSITIVE_DATA_SCANNER_GROUP
+    SensitiveDataScannerIncludedKeywordConfiguration:
+      type: object
+      description: 'Object defining a set of keywords and a number of characters that help reduce noise.
+
+        You can provide a list of keywords you would like to check within a defined proximity of the matching
+        pattern.
+
+        If any of the keywords are found within the proximity check, the match is kept.
+
+        If none are found, the match is discarded.'
+      required:
+      - keywords
+      - character_count
+      properties:
+        keywords:
+          type: array
+          description: 'Keyword list that will be checked during scanning in order to validate a match.
+
+            The number of keywords in the list must be less than or equal to 30.'
+          example:
+          - email
+          - address
+          - login
+          items:
+            type: string
+            description: A keyword to match within the defined proximity of the detected pattern.
+        character_count:
+          type: integer
+          description: 'The number of characters behind a match detected by Sensitive Data Scanner to
+            look for the keywords defined.
+
+            `character_count` should be greater than the maximum length of a keyword defined for a rule.'
+          format: int64
+          minimum: 1
+          maximum: 50
+          example: 30
+        use_recommended_keywords:
+          type: boolean
+          description: 'Should the rule use the underlying standard pattern keyword configuration. If
+            set to `true`, the rule must be tied
+
+            to a standard pattern. If set to `false`, the specified keywords and `character_count` are
+            applied.'
+    SensitiveDataScannerMeta:
+      type: object
+      description: Meta response containing information about the API.
+      properties:
+        version:
+          type: integer
+          description: Version of the API.
+          format: int64
+          minimum: 0
+          example: 0
+        is_pci_compliant:
+          type: boolean
+          description: Whether or not the org is compliant to the payment card industry standard.
+        count_limit:
+          type: integer
+          description: Maximum number of scanning rules allowed for the org.
+          format: int64
+        group_count_limit:
+          type: integer
+          description: Maximum number of scanning groups allowed for the org.
+          format: int64
+        has_highlight_enabled:
+          type: boolean
+          description: (Deprecated) Whether or not scanned events are highlighted in Logs or RUM for the
+            org.
+          deprecated: true
+          default: true
+        has_multi_pass_enabled:
+          type: boolean
+          description: (Deprecated) Whether or not scanned events have multi-pass enabled.
+          deprecated: true
+    SensitiveDataScannerProduct:
+      type: string
+      description: Datadog product onto which Sensitive Data Scanner can be activated.
+      default: logs
+      enum:
+      - logs
+      - rum
+      - events
+      - apm
+      x-enum-varnames:
+      - LOGS
+      - RUM
+      - EVENTS
+      - APM
+    SensitiveDataScannerRule:
+      type: object
+      description: Rule item included in the group.
+      properties:
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerRuleType'
+        id:
+          type: string
+          description: ID of the rule.
+    SensitiveDataScannerRuleAttributes:
+      type: object
+      description: Attributes of the Sensitive Data Scanner rule.
+      properties:
+        name:
+          type: string
+          description: Name of the rule.
+        description:
+          type: string
+          description: Description of the rule.
+        namespaces:
+          type: array
+          description: 'Attributes included in the scan. If namespaces is empty or missing, all attributes
+            except excluded_namespaces are scanned.
+
+            If both are missing the whole event is scanned.'
+          example:
+          - admin
+          items:
+            type: string
+            description: An attribute path to include in the scan.
+        excluded_namespaces:
+          type: array
+          description: Attributes excluded from the scan. If namespaces is provided, it has to be a sub-path
+            of the namespaces array.
+          example:
+          - admin.name
+          items:
+            type: string
+            description: An attribute path to exclude from the scan.
+        pattern:
+          type: string
+          description: Not included if there is a relationship to a standard pattern.
+        text_replacement:
+          $ref: '#/components/schemas/SensitiveDataScannerTextReplacement'
+        tags:
+          type: array
+          description: List of tags.
+          items:
+            type: string
+            description: A tag associated with the rule.
+        is_enabled:
+          type: boolean
+          description: Whether or not the rule is enabled.
+        priority:
+          type: integer
+          description: Integer from 1 (high) to 5 (low) indicating rule issue severity.
+          format: int64
+          minimum: 1
+          maximum: 5
+        included_keyword_configuration:
+          $ref: '#/components/schemas/SensitiveDataScannerIncludedKeywordConfiguration'
+        suppressions:
+          $ref: '#/components/schemas/SensitiveDataScannerSuppressions'
+    SensitiveDataScannerRuleData:
+      type: object
+      description: Rules included in the group.
+      properties:
+        data:
+          type: array
+          description: Rules included in the group. The order is important.
+          items:
+            $ref: '#/components/schemas/SensitiveDataScannerRule'
+    SensitiveDataScannerRuleIncludedItem:
+      type: object
+      description: A Scanning Rule included item.
+      properties:
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerRuleType'
+        id:
+          type: string
+          description: ID of the rule.
+        attributes:
+          $ref: '#/components/schemas/SensitiveDataScannerRuleAttributes'
+        relationships:
+          $ref: '#/components/schemas/SensitiveDataScannerRuleRelationships'
+      x-ignore-duplicate-object: true
+    SensitiveDataScannerRuleRelationships:
+      type: object
+      description: Relationships of a scanning rule.
+      properties:
+        group:
+          $ref: '#/components/schemas/SensitiveDataScannerGroupData'
+        standard_pattern:
+          $ref: '#/components/schemas/SensitiveDataScannerStandardPatternData'
+    SensitiveDataScannerRuleType:
+      type: string
+      description: Sensitive Data Scanner rule type.
+      default: sensitive_data_scanner_rule
+      example: sensitive_data_scanner_rule
+      enum:
+      - sensitive_data_scanner_rule
+      x-enum-varnames:
+      - SENSITIVE_DATA_SCANNER_RULE
+    SensitiveDataScannerSamplings:
+      type: object
+      description: Sampling configurations for the Scanning Group.
+      properties:
+        product:
+          $ref: '#/components/schemas/SensitiveDataScannerProduct'
+        rate:
+          type: number
+          description: Rate at which data in product type will be scanned, as a percentage.
+          format: double
+          minimum: 0.0
+          maximum: 100.0
+          example: 100.0
+    SensitiveDataScannerStandardPattern:
+      type: object
+      description: Data containing the standard pattern id.
+      properties:
+        id:
+          type: string
+          description: ID of the standard pattern.
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerStandardPatternType'
+    SensitiveDataScannerStandardPatternData:
+      type: object
+      description: A standard pattern.
+      properties:
+        data:
+          $ref: '#/components/schemas/SensitiveDataScannerStandardPattern'
+    SensitiveDataScannerStandardPatternType:
+      type: string
+      description: Sensitive Data Scanner standard pattern type.
+      default: sensitive_data_scanner_standard_pattern
+      example: sensitive_data_scanner_standard_pattern
+      enum:
+      - sensitive_data_scanner_standard_pattern
+      x-enum-varnames:
+      - SENSITIVE_DATA_SCANNER_STANDARD_PATTERN
+    SensitiveDataScannerSuppressions:
+      type: object
+      description: 'Object describing the suppressions for a rule. There are three types of suppressions,
+        `starts_with`, `ends_with`, and `exact_match`.
+
+        Suppressed matches are not obfuscated, counted in metrics, or displayed in the Findings page.'
+      properties:
+        starts_with:
+          type: array
+          description: List of strings to use for suppression of matches starting with these strings.
+          example:
+          - admin
+          - user
+          items:
+            type: string
+            description: A string prefix; matches starting with this value are suppressed.
+        ends_with:
+          type: array
+          description: List of strings to use for suppression of matches ending with these strings.
+          example:
+          - '@example.com'
+          - another.example.com
+          items:
+            type: string
+            description: A string suffix; matches ending with this value are suppressed.
+        exact_match:
+          type: array
+          description: List of strings to use for suppression of matches exactly matching these strings.
+          example:
+          - admin@example.com
+          - user@example.com
+          items:
+            type: string
+            description: A string value; matches exactly equal to this value are suppressed.
+    SensitiveDataScannerTextReplacement:
+      type: object
+      description: Object describing how the scanned event will be replaced.
+      properties:
+        type:
+          $ref: '#/components/schemas/SensitiveDataScannerTextReplacementType'
+        replacement_string:
+          type: string
+          description: Required if type == 'replacement_string'.
+        should_save_match:
+          type: boolean
+          description: Only valid when type == `replacement_string`. When enabled, matches can be unmasked
+            in logs by users with ‘Data Scanner Unmask’ permission. As a security best practice, avoid
+            masking for highly-sensitive, long-lived data.
+        number_of_chars:
+          type: integer
+          description: 'Required if type == ''partial_replacement_from_beginning''
+
+            or ''partial_replacement_from_end''. It must be > 0.'
+          format: int64
+          minimum: 0
+    SensitiveDataScannerTextReplacementType:
+      type: string
+      description: 'Type of the replacement text. None means no replacement.
+
+        hash means the data will be stubbed. replacement_string means that
+
+        one can chose a text to replace the data. partial_replacement_from_beginning
+
+        allows a user to partially replace the data from the beginning, and
+
+        partial_replacement_from_end on the other hand, allows to replace data from
+
+        the end.'
+      default: none
+      enum:
+      - none
+      - hash
+      - replacement_string
+      - partial_replacement_from_beginning
+      - partial_replacement_from_end
+      x-enum-varnames:
+      - NONE
+      - HASH
+      - REPLACEMENT_STRING
+      - PARTIAL_REPLACEMENT_FROM_BEGINNING
+      - PARTIAL_REPLACEMENT_FROM_END
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      description: Your Datadog API Key.
+      name: DD-API-KEY
+      in: header
+      x-env-name: DD_API_KEY
+    appKeyAuth:
+      type: apiKey
+      description: Your Datadog APP Key.
+      name: DD-APPLICATION-KEY
+      in: header
+      x-env-name: DD_APP_KEY
