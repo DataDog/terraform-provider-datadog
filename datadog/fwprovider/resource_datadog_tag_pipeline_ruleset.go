@@ -196,7 +196,7 @@ func (r *tagPipelineRulesetResource) Schema(_ context.Context, _ resource.Schema
 								},
 								"query": schema.StringAttribute{
 									Optional:    true,
-									Description: "The query string. Must be in canonical form. Datadog normalizes queries (operator casing, spacing, redundant parentheses, quoting, and similar), and the provider validates the configured value against this canonical form during planning. If they differ, the plan fails with an error showing the canonical query to use in the configuration.",
+									Description: "The query string. Datadog normalizes queries to a canonical form (operator casing, spacing, redundant parentheses, quoting, and similar formatting differences). The provider validates the configured value against this canonical form during planning. If the value doesn't match, the plan fails with an error showing the canonical query to use in the configuration.",
 								},
 							},
 							Blocks: map[string]schema.Block{
