@@ -61,7 +61,6 @@ resource "datadog_incident_user_defined_field" "example" {
 
 ### Read-Only
 
-- `attached_to` (String) The resource type this field is attached to. Always `incidents`.
 - `created` (String) Timestamp when the field was created.
 - `deleted` (String) Timestamp when the field was soft-deleted, or null if not deleted.
 - `id` (String) The unique identifier of the user-defined field.
@@ -69,7 +68,6 @@ resource "datadog_incident_user_defined_field" "example" {
 - `modified` (String) Timestamp when the field was last modified.
 - `prerequisite` (String) Reserved for future use. Always null.
 - `reserved` (Boolean) When true, this field is reserved for system use and cannot be deleted.
-- `table_id` (Number) Reserved for internal use. Always 0.
 
 <a id="nestedblock--valid_value"></a>
 ### Nested Schema for `valid_value`

@@ -13,7 +13,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -73,10 +72,8 @@ type incidentUserDefinedFieldModel struct {
 	Ordinal      types.String                              `tfsdk:"ordinal"`
 	Required     types.Bool                                `tfsdk:"required"`
 	TagKey       types.String                              `tfsdk:"tag_key"`
-	AttachedTo   types.String                              `tfsdk:"attached_to"`
 	Reserved     types.Bool                                `tfsdk:"reserved"`
 	Prerequisite types.String                              `tfsdk:"prerequisite"`
-	TableID      types.Int64                               `tfsdk:"table_id"`
 	Created      types.String                              `tfsdk:"created"`
 	Modified     types.String                              `tfsdk:"modified"`
 	Deleted      types.String                              `tfsdk:"deleted"`
@@ -207,13 +204,6 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"attached_to": schema.StringAttribute{
-				Description: "The resource type this field is attached to. Always `incidents`.",
-				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"reserved": schema.BoolAttribute{
 				Description: "When true, this field is reserved for system use and cannot be deleted.",
 				Computed:    true,
@@ -224,13 +214,6 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 			"prerequisite": schema.StringAttribute{
 				Description: "Reserved for future use. Always null.",
 				Computed:    true,
-			},
-			"table_id": schema.Int64Attribute{
-				Description: "Reserved for internal use. Always 0.",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 			"created": schema.StringAttribute{
 				Description: "Timestamp when the field was created.",
@@ -514,10 +497,8 @@ func (r *incidentUserDefinedFieldResource) updateStateFromResponse(ctx context.C
 	if ok && attributes != nil {
 		state.Name = types.StringValue(attributes.GetName())
 		state.DisplayName = types.StringValue(attributes.GetDisplayName())
-		state.AttachedTo = types.StringValue(attributes.GetAttachedTo())
 		state.Required = types.BoolValue(attributes.GetRequired())
 		state.Reserved = types.BoolValue(attributes.GetReserved())
-		state.TableID = types.Int64Value(attributes.GetTableId())
 
 		if v, ok := attributes.GetTypeOk(); ok && v != nil {
 			if name, found := incidentUserDefinedFieldTypeNames[*v]; found {

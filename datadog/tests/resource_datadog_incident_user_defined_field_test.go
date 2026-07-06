@@ -43,8 +43,6 @@ func TestAccDatadogIncidentUserDefinedField_Basic(t *testing.T) {
 							"value":        "service_bug",
 							"description":  "A bug in the service code.",
 						}),
-					resource.TestCheckResourceAttr(
-						"datadog_incident_user_defined_field.foo", "attached_to", "incidents"),
 					resource.TestCheckResourceAttrSet(
 						"datadog_incident_user_defined_field.foo", "id"),
 					resource.TestCheckResourceAttrSet(
