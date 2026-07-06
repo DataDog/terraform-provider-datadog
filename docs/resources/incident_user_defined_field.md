@@ -66,7 +66,6 @@ resource "datadog_incident_user_defined_field" "example" {
 - `id` (String) The unique identifier of the user-defined field.
 - `metadata` (Attributes) Metadata for autocomplete-type fields, describing how to populate autocomplete options. Populated by the server for supported fields. (see [below for nested schema](#nestedatt--metadata))
 - `modified` (String) Timestamp when the field was last modified.
-- `prerequisite` (String) Reserved for future use. Always null.
 - `reserved` (Boolean) When true, this field is reserved for system use and cannot be deleted.
 
 <a id="nestedblock--valid_value"></a>

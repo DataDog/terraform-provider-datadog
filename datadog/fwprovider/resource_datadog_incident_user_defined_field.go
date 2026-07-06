@@ -73,7 +73,6 @@ type incidentUserDefinedFieldModel struct {
 	Required     types.Bool                                `tfsdk:"required"`
 	TagKey       types.String                              `tfsdk:"tag_key"`
 	Reserved     types.Bool                                `tfsdk:"reserved"`
-	Prerequisite types.String                              `tfsdk:"prerequisite"`
 	Created      types.String                              `tfsdk:"created"`
 	Modified     types.String                              `tfsdk:"modified"`
 	Deleted      types.String                              `tfsdk:"deleted"`
@@ -210,10 +209,6 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"prerequisite": schema.StringAttribute{
-				Description: "Reserved for future use. Always null.",
-				Computed:    true,
 			},
 			"created": schema.StringAttribute{
 				Description: "Timestamp when the field was created.",
@@ -524,11 +519,6 @@ func (r *incidentUserDefinedFieldResource) updateStateFromResponse(ctx context.C
 			state.TagKey = types.StringValue(*v)
 		} else {
 			state.TagKey = types.StringNull()
-		}
-		if v, ok := attributes.GetPrerequisiteOk(); ok && v != nil {
-			state.Prerequisite = types.StringValue(*v)
-		} else {
-			state.Prerequisite = types.StringNull()
 		}
 		if v, ok := attributes.GetCreatedOk(); ok && v != nil {
 			state.Created = types.StringValue(v.Format("2006-01-02T15:04:05Z"))
