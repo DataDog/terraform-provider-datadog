@@ -78,6 +78,7 @@ type destinationModel struct {
 	CrowdStrikeNextGenSiemDestination []*observability_pipeline.CrowdStrikeNextGenSiemDestinationModel `tfsdk:"crowdstrike_next_gen_siem"`
 	DatabricksZerobusDestination      []*observability_pipeline.DatabricksZerobusDestinationModel      `tfsdk:"databricks_zerobus"`
 	SplunkHecMetricsDestination       []*observability_pipeline.SplunkHECMetricsDestinationModel       `tfsdk:"splunk_hec_metrics"`
+	ClickhouseDestination             []*observability_pipeline.ClickhouseDestinationModel             `tfsdk:"clickhouse"`
 	DatadogMetricsDestination         []*datadogMetricsDestinationModel                                `tfsdk:"datadog_metrics"`
 	HttpClientDestination             []*httpClientDestinationModel                                    `tfsdk:"http_client"`
 	CloudPremDestination              []*observability_pipeline.CloudPremDestinationModel              `tfsdk:"cloud_prem"`
@@ -123,6 +124,7 @@ type sourceModel struct {
 	LogstashSource           []*logstashSourceModel                             `tfsdk:"logstash"`
 	SocketSource             []*observability_pipeline.SocketSourceModel        `tfsdk:"socket"`
 	OpentelemetrySource      []*observability_pipeline.OpentelemetrySourceModel `tfsdk:"opentelemetry"`
+	WebsocketSource          []*observability_pipeline.WebsocketSourceModel     `tfsdk:"websocket"`
 }
 
 type logstashSourceModel struct {
@@ -179,28 +181,33 @@ type processorModel struct {
 	Include     types.String `tfsdk:"include"`
 	DisplayName types.String `tfsdk:"display_name"`
 
-	FilterProcessor               []*filterProcessorModel                             `tfsdk:"filter"`
-	ParseJsonProcessor            []*parseJsonProcessorModel                          `tfsdk:"parse_json"`
-	AddFieldsProcessor            []*addFieldsProcessor                               `tfsdk:"add_fields"`
-	RenameFieldsProcessor         []*renameFieldsProcessorModel                       `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor         []*removeFieldsProcessorModel                       `tfsdk:"remove_fields"`
-	QuotaProcessor                []*quotaProcessorModel                              `tfsdk:"quota"`
-	GenerateMetricsProcessor      []*generateMetricsProcessorModel                    `tfsdk:"generate_datadog_metrics"`
-	ParseGrokProcessor            []*parseGrokProcessorModel                          `tfsdk:"parse_grok"`
-	SampleProcessor               []*sampleProcessorModel                             `tfsdk:"sample"`
-	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel               `tfsdk:"sensitive_data_scanner"`
-	DedupeProcessor               []*dedupeProcessorModel                             `tfsdk:"dedupe"`
-	ReduceProcessor               []*reduceProcessorModel                             `tfsdk:"reduce"`
-	ThrottleProcessor             []*throttleProcessorModel                           `tfsdk:"throttle"`
-	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                         `tfsdk:"add_env_vars"`
-	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                    `tfsdk:"enrichment_table"`
-	OcsfMapperProcessor           []*ocsfMapperProcessorModel                         `tfsdk:"ocsf_mapper"`
-	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel `tfsdk:"datadog_tags"`
-	CustomProcessor               []*observability_pipeline.CustomProcessorModel      `tfsdk:"custom_processor"`
-	AddHostnameProcessor          []*addHostnameProcessorModel                        `tfsdk:"add_hostname"`
-	ParseXMLProcessor             []*parseXMLProcessorModel                           `tfsdk:"parse_xml"`
-	SplitArrayProcessor           []*splitArrayProcessorModel                         `tfsdk:"split_array"`
-	MetricTagsProcessor           []*metricTagsProcessorModel                         `tfsdk:"metric_tags"`
+	FilterProcessor               []*filterProcessorModel                                     `tfsdk:"filter"`
+	ParseJsonProcessor            []*parseJsonProcessorModel                                  `tfsdk:"parse_json"`
+	AddFieldsProcessor            []*addFieldsProcessor                                       `tfsdk:"add_fields"`
+	RenameFieldsProcessor         []*renameFieldsProcessorModel                               `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor         []*removeFieldsProcessorModel                               `tfsdk:"remove_fields"`
+	QuotaProcessor                []*quotaProcessorModel                                      `tfsdk:"quota"`
+	GenerateMetricsProcessor      []*generateMetricsProcessorModel                            `tfsdk:"generate_datadog_metrics"`
+	ParseGrokProcessor            []*observability_pipeline.ParseGrokProcessorModel           `tfsdk:"parse_grok"`
+	SampleProcessor               []*sampleProcessorModel                                     `tfsdk:"sample"`
+	SensitiveDataScannerProcessor []*sensitiveDataScannerProcessorModel                       `tfsdk:"sensitive_data_scanner"`
+	DedupeProcessor               []*dedupeProcessorModel                                     `tfsdk:"dedupe"`
+	ReduceProcessor               []*reduceProcessorModel                                     `tfsdk:"reduce"`
+	ThrottleProcessor             []*throttleProcessorModel                                   `tfsdk:"throttle"`
+	AddEnvVarsProcessor           []*addEnvVarsProcessorModel                                 `tfsdk:"add_env_vars"`
+	EnrichmentTableProcessor      []*enrichmentTableProcessorModel                            `tfsdk:"enrichment_table"`
+	OcsfMapperProcessor           []*ocsfMapperProcessorModel                                 `tfsdk:"ocsf_mapper"`
+	DatadogTagsProcessor          []*observability_pipeline.DatadogTagsProcessorModel         `tfsdk:"datadog_tags"`
+	CustomProcessor               []*observability_pipeline.CustomProcessorModel              `tfsdk:"custom_processor"`
+	AddHostnameProcessor          []*addHostnameProcessorModel                                `tfsdk:"add_hostname"`
+	ParseXMLProcessor             []*parseXMLProcessorModel                                   `tfsdk:"parse_xml"`
+	SplitArrayProcessor           []*splitArrayProcessorModel                                 `tfsdk:"split_array"`
+	MetricTagsProcessor           []*metricTagsProcessorModel                                 `tfsdk:"metric_tags"`
+	GenerateMetricsV2Processor    []*generateMetricsProcessorModel                            `tfsdk:"generate_metrics"`
+	AddMetricTagsProcessor        []*observability_pipeline.AddMetricTagsProcessorModel       `tfsdk:"add_metric_tags"`
+	AggregateProcessor            []*observability_pipeline.AggregateProcessorModel           `tfsdk:"aggregate"`
+	RenameMetricTagsProcessor     []*observability_pipeline.RenameMetricTagsProcessorModel    `tfsdk:"rename_metric_tags"`
+	TagCardinalityLimitProcessor  []*observability_pipeline.TagCardinalityLimitProcessorModel `tfsdk:"tag_cardinality_limit"`
 }
 
 type metricTagsProcessorModel struct {
@@ -455,22 +462,6 @@ type datadogLogsDestinationRouteModel struct {
 	Site      types.String                                `tfsdk:"site"`
 	ApiKeyKey types.String                                `tfsdk:"api_key_key"`
 	Buffer    []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
-}
-
-type parseGrokProcessorModel struct {
-	DisableLibraryRules types.Bool                    `tfsdk:"disable_library_rules"`
-	Rules               []parseGrokProcessorRuleModel `tfsdk:"rule"`
-}
-
-type parseGrokProcessorRuleModel struct {
-	Source       types.String    `tfsdk:"source"`
-	MatchRules   []grokRuleModel `tfsdk:"match_rule"`
-	SupportRules []grokRuleModel `tfsdk:"support_rule"`
-}
-
-type grokRuleModel struct {
-	Name types.String `tfsdk:"name"`
-	Rule types.String `tfsdk:"rule"`
 }
 
 type sampleProcessorModel struct {
@@ -819,6 +810,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 						},
 						"use_legacy_search_syntax": schema.BoolAttribute{
 							Optional: true,
+							Computed: true,
 							Description: "Set to `true` to continue using the legacy search syntax while migrating filter queries. " +
 								"After migrating all queries to the new syntax, set to `false`. " +
 								"The legacy syntax is deprecated and will eventually be removed. " +
@@ -1229,6 +1221,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									"socket":        observability_pipeline.SocketSourceSchema(),
 									"opentelemetry": observability_pipeline.OpentelemetrySourceSchema(),
+									"websocket":     observability_pipeline.WebsocketSourceSchema(),
 								},
 							},
 						},
@@ -1792,73 +1785,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"parse_grok": schema.ListNestedBlock{
-													Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
-													Validators: []validator.List{
-														listvalidator.SizeAtMost(1),
-													},
-													NestedObject: schema.NestedBlockObject{
-														Attributes: map[string]schema.Attribute{
-															"disable_library_rules": schema.BoolAttribute{
-																Optional:    true,
-																Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
-															},
-														},
-														Blocks: map[string]schema.Block{
-															"rule": schema.ListNestedBlock{
-																Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
-																Validators: []validator.List{
-																	listvalidator.IsRequired(),
-																	listvalidator.SizeAtLeast(1),
-																},
-																NestedObject: schema.NestedBlockObject{
-																	Attributes: map[string]schema.Attribute{
-																		"source": schema.StringAttribute{
-																			Required:    true,
-																			Description: "The value of the source field in log events which should be processed by the Grok rules.",
-																		},
-																	},
-																	Blocks: map[string]schema.Block{
-																		"match_rule": schema.ListNestedBlock{
-																			Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
-																			Validators: []validator.List{
-																				listvalidator.IsRequired(),
-																				listvalidator.SizeAtLeast(1),
-																			},
-																			NestedObject: schema.NestedBlockObject{
-																				Attributes: map[string]schema.Attribute{
-																					"name": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The name of the rule.",
-																					},
-																					"rule": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The definition of the Grok rule.",
-																					},
-																				},
-																			},
-																		},
-																		"support_rule": schema.ListNestedBlock{
-																			Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
-																			NestedObject: schema.NestedBlockObject{
-																				Attributes: map[string]schema.Attribute{
-																					"name": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The name of the helper Grok rule.",
-																					},
-																					"rule": schema.StringAttribute{
-																						Required:    true,
-																						Description: "The definition of the helper Grok rule.",
-																					},
-																				},
-																			},
-																		},
-																	},
-																},
-															},
-														},
-													},
-												},
+												"parse_grok": observability_pipeline.ParseGrokProcessorSchema(),
 												"sample": schema.ListNestedBlock{
 													Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
 													Validators: []validator.List{
@@ -2161,9 +2088,13 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														},
 													},
 												},
-												"ocsf_mapper":      observability_pipeline.OcsfMapperProcessorSchema(),
-												"datadog_tags":     observability_pipeline.DatadogTagsProcessorSchema(),
-												"custom_processor": observability_pipeline.CustomProcessorSchema(),
+												"ocsf_mapper":           observability_pipeline.OcsfMapperProcessorSchema(),
+												"datadog_tags":          observability_pipeline.DatadogTagsProcessorSchema(),
+												"custom_processor":      observability_pipeline.CustomProcessorSchema(),
+												"add_metric_tags":       observability_pipeline.AddMetricTagsProcessorSchema(),
+												"aggregate":             observability_pipeline.AggregateProcessorSchema(),
+												"rename_metric_tags":    observability_pipeline.RenameMetricTagsProcessorSchema(),
+												"tag_cardinality_limit": observability_pipeline.TagCardinalityLimitProcessorSchema(),
 												"metric_tags": schema.ListNestedBlock{
 													Description: "The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns.",
 													Validators: []validator.List{
@@ -2204,6 +2135,62 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																			Description: "A list of tag keys to include or exclude.",
 																			Validators: []validator.List{
 																				listvalidator.SizeAtLeast(1),
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+												"generate_metrics": schema.ListNestedBlock{
+													Description: "The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`.",
+													Validators: []validator.List{
+														listvalidator.SizeAtMost(1),
+													},
+													NestedObject: schema.NestedBlockObject{
+														Attributes: map[string]schema.Attribute{},
+														Blocks: map[string]schema.Block{
+															"metric": schema.ListNestedBlock{
+																Description: "Configuration for generating individual metrics.",
+																NestedObject: schema.NestedBlockObject{
+																	Attributes: map[string]schema.Attribute{
+																		"name": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Name of the custom metric to be created.",
+																		},
+																		"include": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Datadog filter query to match logs for metric generation.",
+																		},
+																		"metric_type": schema.StringAttribute{
+																			Required:    true,
+																			Description: "Type of metric to create.",
+																		},
+																		"group_by": schema.ListAttribute{
+																			Optional:    true,
+																			ElementType: types.StringType,
+																			Description: "Optional fields used to group the metric series.",
+																		},
+																	},
+																	Blocks: map[string]schema.Block{
+																		"value": schema.ListNestedBlock{
+																			Description: "Specifies how the value of the generated metric is computed.",
+																			NestedObject: schema.NestedBlockObject{
+																				Attributes: map[string]schema.Attribute{
+																					"strategy": schema.StringAttribute{
+																						Required:    true,
+																						Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
+																					},
+																					"field": schema.StringAttribute{
+																						Optional:    true,
+																						Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
+																					},
+																				},
+																			},
+																			Validators: []validator.List{
+																				listvalidator.IsRequired(),
+																				listvalidator.SizeAtMost(1),
 																			},
 																		},
 																	},
@@ -2815,6 +2802,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									"crowdstrike_next_gen_siem": observability_pipeline.CrowdStrikeNextGenSiemDestinationSchema(),
 									"databricks_zerobus":        observability_pipeline.DatabricksZerobusDestinationSchema(),
 									"splunk_hec_metrics":        observability_pipeline.SplunkHECMetricsDestinationSchema(),
+									"clickhouse":                observability_pipeline.ClickhouseDestinationSchema(),
 									"cloud_prem":                observability_pipeline.CloudPremDestinationSchema(),
 									"kafka":                     observability_pipeline.KafkaDestinationSchema(),
 								},
@@ -3073,6 +3061,14 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		for _, o := range sourceBlock.OpentelemetrySource {
 			config.Sources = append(config.Sources, observability_pipeline.ExpandOpentelemetrySource(o, sourceId))
 		}
+		for _, w := range sourceBlock.WebsocketSource {
+			item, wsDiags := observability_pipeline.ExpandWebsocketSource(w, sourceId)
+			diags.Append(wsDiags...)
+			if wsDiags.HasError() {
+				return nil, diags
+			}
+			config.Sources = append(config.Sources, item)
+		}
 	}
 
 	// Processors - iterate through processor groups
@@ -3159,6 +3155,9 @@ func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*da
 		}
 		for _, d := range dest.SplunkHecMetricsDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandSplunkHECMetricsDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
+		}
+		for _, d := range dest.ClickhouseDestination {
+			config.Destinations = append(config.Destinations, observability_pipeline.ExpandClickhouseDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
 		}
 		for _, d := range dest.CloudPremDestination {
 			config.Destinations = append(config.Destinations, observability_pipeline.ExpandCloudPremDestination(ctx, dest.Id.ValueString(), dest.Inputs, d))
@@ -3267,6 +3266,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		} else if o := observability_pipeline.FlattenOpentelemetrySource(src.ObservabilityPipelineOpentelemetrySource); o != nil {
 			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineOpentelemetrySource.GetId())
 			sourceBlock.OpentelemetrySource = append(sourceBlock.OpentelemetrySource, o)
+			outCfg.Sources = append(outCfg.Sources, sourceBlock)
+		} else if w := observability_pipeline.FlattenWebsocketSource(src.ObservabilityPipelineWebsocketSource); w != nil {
+			sourceBlock.Id = types.StringValue(src.ObservabilityPipelineWebsocketSource.GetId())
+			sourceBlock.WebsocketSource = append(sourceBlock.WebsocketSource, w)
 			outCfg.Sources = append(outCfg.Sources, sourceBlock)
 		}
 	}
@@ -3401,6 +3404,11 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineSplunkHecMetricsDestination.GetId())
 			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineSplunkHecMetricsDestination.GetInputs())
 			destBlock.SplunkHecMetricsDestination = append(destBlock.SplunkHecMetricsDestination, splunkMetrics)
+			outCfg.Destinations = append(outCfg.Destinations, destBlock)
+		} else if clickhouse := observability_pipeline.FlattenClickhouseDestination(ctx, d.ObservabilityPipelineClickhouseDestination); clickhouse != nil {
+			destBlock.Id = types.StringValue(d.ObservabilityPipelineClickhouseDestination.GetId())
+			destBlock.Inputs, _ = types.ListValueFrom(ctx, types.StringType, d.ObservabilityPipelineClickhouseDestination.GetInputs())
+			destBlock.ClickhouseDestination = append(destBlock.ClickhouseDestination, clickhouse)
 			outCfg.Destinations = append(outCfg.Destinations, destBlock)
 		} else if cloudprem := observability_pipeline.FlattenCloudPremDestination(ctx, d.ObservabilityPipelineCloudPremDestination); cloudprem != nil {
 			destBlock.Id = types.StringValue(d.ObservabilityPipelineCloudPremDestination.GetId())
@@ -3619,6 +3627,16 @@ func flattenProcessorGroup(ctx context.Context, group *datadogV2.ObservabilityPi
 			procModel = flattenSplitArrayProcessor(ctx, p.ObservabilityPipelineSplitArrayProcessor)
 		} else if p.ObservabilityPipelineMetricTagsProcessor != nil {
 			procModel = flattenMetricTagsProcessor(ctx, p.ObservabilityPipelineMetricTagsProcessor)
+		} else if p.ObservabilityPipelineGenerateMetricsV2Processor != nil {
+			procModel = flattenGenerateMetricsV2Processor(ctx, p.ObservabilityPipelineGenerateMetricsV2Processor)
+		} else if p.ObservabilityPipelineAddMetricTagsProcessor != nil {
+			procModel = flattenAddMetricTagsProcessor(ctx, p.ObservabilityPipelineAddMetricTagsProcessor)
+		} else if p.ObservabilityPipelineAggregateProcessor != nil {
+			procModel = flattenAggregateProcessor(ctx, p.ObservabilityPipelineAggregateProcessor)
+		} else if p.ObservabilityPipelineRenameMetricTagsProcessor != nil {
+			procModel = flattenRenameMetricTagsProcessor(ctx, p.ObservabilityPipelineRenameMetricTagsProcessor)
+		} else if p.ObservabilityPipelineTagCardinalityLimitProcessor != nil {
+			procModel = flattenTagCardinalityLimitProcessor(ctx, p.ObservabilityPipelineTagCardinalityLimitProcessor)
 		}
 
 		if procModel != nil {
@@ -3723,7 +3741,7 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 		items = append(items, expandOcsfMapperProcessorItem(ctx, common, p))
 	}
 	for _, p := range processor.ParseGrokProcessor {
-		items = append(items, expandParseGrokProcessorItem(ctx, common, p))
+		items = append(items, observability_pipeline.ExpandParseGrokProcessor(common, p))
 	}
 	for _, p := range processor.SampleProcessor {
 		items = append(items, expandSampleProcessorItem(ctx, common, p))
@@ -3751,6 +3769,21 @@ func expandProcessorTypes(ctx context.Context, processor *processorModel) []data
 	}
 	for _, p := range processor.MetricTagsProcessor {
 		items = append(items, expandMetricTagsProcessorItem(ctx, common, p))
+	}
+	for _, p := range processor.GenerateMetricsV2Processor {
+		items = append(items, expandGenerateMetricsV2ProcessorItem(ctx, common, p))
+	}
+	for _, p := range processor.AddMetricTagsProcessor {
+		items = append(items, observability_pipeline.ExpandAddMetricTagsProcessor(common, p))
+	}
+	for _, p := range processor.AggregateProcessor {
+		items = append(items, observability_pipeline.ExpandAggregateProcessor(common, p))
+	}
+	for _, p := range processor.RenameMetricTagsProcessor {
+		items = append(items, observability_pipeline.ExpandRenameMetricTagsProcessor(common, p))
+	}
+	for _, p := range processor.TagCardinalityLimitProcessor {
+		items = append(items, observability_pipeline.ExpandTagCardinalityLimitProcessor(common, p))
 	}
 
 	return items
@@ -4072,28 +4105,9 @@ func flattenParseGrokProcessor(ctx context.Context, src *datadogV2.Observability
 		return nil
 	}
 	model := createProcessorModel(src)
-	grok := &parseGrokProcessorModel{
-		DisableLibraryRules: types.BoolValue(src.GetDisableLibraryRules()),
+	if f := observability_pipeline.FlattenParseGrokProcessor(src); f != nil {
+		model.ParseGrokProcessor = append(model.ParseGrokProcessor, f)
 	}
-	for _, rule := range src.GetRules() {
-		r := parseGrokProcessorRuleModel{
-			Source: types.StringValue(rule.GetSource()),
-		}
-		for _, m := range rule.GetMatchRules() {
-			r.MatchRules = append(r.MatchRules, grokRuleModel{
-				Name: types.StringValue(m.GetName()),
-				Rule: types.StringValue(m.GetRule()),
-			})
-		}
-		for _, s := range rule.GetSupportRules() {
-			r.SupportRules = append(r.SupportRules, grokRuleModel{
-				Name: types.StringValue(s.GetName()),
-				Rule: types.StringValue(s.GetRule()),
-			})
-		}
-		grok.Rules = append(grok.Rules, r)
-	}
-	model.ParseGrokProcessor = append(model.ParseGrokProcessor, grok)
 	return model
 }
 
@@ -4401,6 +4415,50 @@ func flattenDatadogTagsProcessor(ctx context.Context, src *datadogV2.Observabili
 	model := createProcessorModel(src)
 	if f := observability_pipeline.FlattenDatadogTagsProcessor(src); f != nil {
 		model.DatadogTagsProcessor = append(model.DatadogTagsProcessor, f)
+	}
+	return model
+}
+
+func flattenAddMetricTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineAddMetricTagsProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	if f := observability_pipeline.FlattenAddMetricTagsProcessor(src); f != nil {
+		model.AddMetricTagsProcessor = append(model.AddMetricTagsProcessor, f)
+	}
+	return model
+}
+
+func flattenAggregateProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineAggregateProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	if f := observability_pipeline.FlattenAggregateProcessor(src); f != nil {
+		model.AggregateProcessor = append(model.AggregateProcessor, f)
+	}
+	return model
+}
+
+func flattenRenameMetricTagsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineRenameMetricTagsProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	if f := observability_pipeline.FlattenRenameMetricTagsProcessor(src); f != nil {
+		model.RenameMetricTagsProcessor = append(model.RenameMetricTagsProcessor, f)
+	}
+	return model
+}
+
+func flattenTagCardinalityLimitProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineTagCardinalityLimitProcessor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	if f := observability_pipeline.FlattenTagCardinalityLimitProcessor(src); f != nil {
+		model.TagCardinalityLimitProcessor = append(model.TagCardinalityLimitProcessor, f)
 	}
 	return model
 }
@@ -4802,45 +4860,6 @@ func expandOcsfMappingCustomLookupTableEntry(src *ocsfMappingCustomLookupTableEn
 	return out
 }
 
-func expandParseGrokProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
-	proc := datadogV2.NewObservabilityPipelineParseGrokProcessorWithDefaults()
-	common.ApplyTo(proc)
-
-	if !src.DisableLibraryRules.IsNull() {
-		proc.SetDisableLibraryRules(src.DisableLibraryRules.ValueBool())
-	}
-
-	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
-	for _, r := range src.Rules {
-		rule := datadogV2.ObservabilityPipelineParseGrokProcessorRule{
-			Source: r.Source.ValueString(),
-		}
-
-		var matchRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule
-		for _, m := range r.MatchRules {
-			matchRules = append(matchRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule{
-				Name: m.Name.ValueString(),
-				Rule: m.Rule.ValueString(),
-			})
-		}
-		rule.SetMatchRules(matchRules)
-
-		var supportRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule
-		for _, s := range r.SupportRules {
-			supportRules = append(supportRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule{
-				Name: s.Name.ValueString(),
-				Rule: s.Rule.ValueString(),
-			})
-		}
-		rule.SetSupportRules(supportRules)
-
-		rules = append(rules, rule)
-	}
-	proc.SetRules(rules)
-
-	return datadogV2.ObservabilityPipelineParseGrokProcessorAsObservabilityPipelineConfigProcessorItem(proc)
-}
-
 func expandSampleProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
 	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
 	common.ApplyTo(proc)
@@ -5203,6 +5222,75 @@ func expandMetricTagsProcessorItem(ctx context.Context, common observability_pip
 	proc.SetRules(rules)
 
 	return datadogV2.ObservabilityPipelineMetricTagsProcessorAsObservabilityPipelineConfigProcessorItem(proc)
+}
+
+func flattenGenerateMetricsV2Processor(ctx context.Context, src *datadogV2.ObservabilityPipelineGenerateMetricsV2Processor) *processorModel {
+	if src == nil {
+		return nil
+	}
+	model := createProcessorModel(src)
+	genMetrics := &generateMetricsProcessorModel{}
+	for _, metric := range src.GetMetrics() {
+		groupByList, _ := types.ListValueFrom(ctx, types.StringType, metric.GetGroupBy())
+		m := generatedMetricModel{
+			Name:       types.StringValue(metric.GetName()),
+			Include:    types.StringValue(metric.GetInclude()),
+			MetricType: types.StringValue(string(metric.GetMetricType())),
+			GroupBy:    groupByList,
+		}
+		if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByOne != nil {
+			m.Value = []generatedMetricValue{
+				{Strategy: types.StringValue("increment_by_one")},
+			}
+		} else if metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField != nil {
+			m.Value = []generatedMetricValue{
+				{
+					Strategy: types.StringValue("increment_by_field"),
+					Field:    types.StringValue(metric.Value.ObservabilityPipelineGeneratedMetricIncrementByField.GetField()),
+				},
+			}
+		}
+		genMetrics.Metrics = append(genMetrics.Metrics, m)
+	}
+	model.GenerateMetricsV2Processor = append(model.GenerateMetricsV2Processor, genMetrics)
+	return model
+}
+
+func expandGenerateMetricsV2ProcessorItem(ctx context.Context, common observability_pipeline.BaseProcessorFields, src *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineGenerateMetricsV2ProcessorWithDefaults()
+	common.ApplyTo(proc)
+
+	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
+	for _, m := range src.Metrics {
+		groupBy := []string{}
+		m.GroupBy.ElementsAs(ctx, &groupBy, false)
+
+		val := datadogV2.ObservabilityPipelineMetricValue{}
+		if len(m.Value) > 0 {
+			switch m.Value[0].Strategy.ValueString() {
+			case "increment_by_one":
+				val.ObservabilityPipelineGeneratedMetricIncrementByOne = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByOne{
+					Strategy: "increment_by_one",
+				}
+			case "increment_by_field":
+				val.ObservabilityPipelineGeneratedMetricIncrementByField = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByField{
+					Strategy: "increment_by_field",
+					Field:    m.Value[0].Field.ValueString(),
+				}
+			}
+		}
+
+		metrics = append(metrics, datadogV2.ObservabilityPipelineGeneratedMetric{
+			Name:       m.Name.ValueString(),
+			Include:    m.Include.ValueString(),
+			MetricType: datadogV2.ObservabilityPipelineGeneratedMetricMetricType(m.MetricType.ValueString()),
+			Value:      val,
+			GroupBy:    groupBy,
+		})
+	}
+	proc.SetMetrics(metrics)
+
+	return datadogV2.ObservabilityPipelineGenerateMetricsV2ProcessorAsObservabilityPipelineConfigProcessorItem(proc)
 }
 
 // ---------- Destinations ----------

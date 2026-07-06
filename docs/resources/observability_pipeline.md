@@ -110,6 +110,7 @@ Optional:
 - `amazon_s3_generic` (Block List) The `amazon_s3_generic` destination sends your logs to an Amazon S3 bucket. (see [below for nested schema](#nestedblock--config--destination--amazon_s3_generic))
 - `amazon_security_lake` (Block List) The `amazon_security_lake` destination sends your logs to Amazon Security Lake. (see [below for nested schema](#nestedblock--config--destination--amazon_security_lake))
 - `azure_storage` (Block List) The `azure_storage` destination forwards logs to an Azure Blob Storage container. (see [below for nested schema](#nestedblock--config--destination--azure_storage))
+- `clickhouse` (Block List) The `clickhouse` destination forwards logs to a ClickHouse server via HTTP. (see [below for nested schema](#nestedblock--config--destination--clickhouse))
 - `cloud_prem` (Block List) The `cloud_prem` destination sends logs to Datadog CloudPrem. (see [below for nested schema](#nestedblock--config--destination--cloud_prem))
 - `crowdstrike_next_gen_siem` (Block List) The `crowdstrike_next_gen_siem` destination forwards logs to CrowdStrike Next Gen SIEM. (see [below for nested schema](#nestedblock--config--destination--crowdstrike_next_gen_siem))
 - `databricks_zerobus` (Block List) The `databricks_zerobus` destination sends logs to Databricks via the Zerobus ingestion API. (see [below for nested schema](#nestedblock--config--destination--databricks_zerobus))
@@ -435,6 +436,116 @@ Optional:
 
 
 
+<a id="nestedblock--config--destination--clickhouse"></a>
+### Nested Schema for `config.destination.clickhouse`
+
+Required:
+
+- `table` (String) Target ClickHouse table name.
+
+Optional:
+
+- `auth` (Block List) Authentication strategy for ClickHouse HTTP requests. Only `basic` strategy is supported. (see [below for nested schema](#nestedblock--config--destination--clickhouse--auth))
+- `batch` (Block List) Batching configuration for ClickHouse inserts. (see [below for nested schema](#nestedblock--config--destination--clickhouse--batch))
+- `batch_encoding` (Block List) Batch encoding configuration. Required when `format` is `arrow_stream`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--batch_encoding))
+- `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer))
+- `compression` (Block List) Compression for outbound HTTP requests. Use `algorithm = "gzip"` or `algorithm = "none"`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--compression))
+- `database` (String) Optional name of the ClickHouse database to write to. When omitted, the user's default database is used.
+- `date_time_best_effort` (Boolean) If `true`, enables flexible DateTime parsing on the server side.
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the ClickHouse HTTP endpoint URL. Defaults to `DESTINATION_CLICKHOUSE_ENDPOINT_URL`.
+- `format` (String) Insert format for events. `json_each_row` maps event fields to columns by name. `json_as_object` and `json_as_string` insert each event into a single JSON or String column. `arrow_stream` batches events with Apache Arrow IPC streaming and requires `batch_encoding`. Valid values are `json_each_row`, `json_as_object`, `json_as_string`, `arrow_stream`.
+- `skip_unknown_fields` (Boolean) If `true`, fields not present in the target table schema are dropped instead of causing insert errors. When unset, the ClickHouse server's own `input_format_skip_unknown_fields` setting applies.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--clickhouse--tls))
+
+<a id="nestedblock--config--destination--clickhouse--auth"></a>
+### Nested Schema for `config.destination.clickhouse.auth`
+
+Required:
+
+- `strategy` (String) Authentication strategy. Must be `basic`. Valid values are `basic`.
+
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the ClickHouse password. Defaults to `DESTINATION_CLICKHOUSE_PASSWORD`.
+- `username_key` (String) Name of the environment variable or secret that holds the ClickHouse username. Defaults to `DESTINATION_CLICKHOUSE_USERNAME`.
+
+
+<a id="nestedblock--config--destination--clickhouse--batch"></a>
+### Nested Schema for `config.destination.clickhouse.batch`
+
+Optional:
+
+- `max_events` (Number) Maximum number of events per batch. Value must be at least 1.
+- `timeout_secs` (Number) Maximum time in seconds before a partial batch is flushed. Value must be between 1 and 65535.
+
+
+<a id="nestedblock--config--destination--clickhouse--batch_encoding"></a>
+### Nested Schema for `config.destination.clickhouse.batch_encoding`
+
+Required:
+
+- `codec` (String) Batch encoding codec. Must be `arrow_stream`. Valid values are `arrow_stream`.
+
+Optional:
+
+- `allow_nullable_fields` (Boolean) If `true`, allows null values for non-nullable fields in the ClickHouse schema. Defaults to `false`.
+
+
+<a id="nestedblock--config--destination--clickhouse--buffer"></a>
+### Nested Schema for `config.destination.clickhouse.buffer`
+
+Optional:
+
+- `disk` (Block List) Options for configuring a disk buffer. Cannot be used with `memory`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer--disk))
+- `memory` (Block List) Options for configuring a memory buffer. Cannot be used with `disk`. (see [below for nested schema](#nestedblock--config--destination--clickhouse--buffer--memory))
+
+<a id="nestedblock--config--destination--clickhouse--buffer--disk"></a>
+### Nested Schema for `config.destination.clickhouse.buffer.disk`
+
+Optional:
+
+- `max_size` (Number) Maximum size of the disk buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+<a id="nestedblock--config--destination--clickhouse--buffer--memory"></a>
+### Nested Schema for `config.destination.clickhouse.buffer.memory`
+
+Optional:
+
+- `max_events` (Number) Maximum events for the memory buffer.
+- `max_size` (Number) Maximum size of the memory buffer (in bytes).
+- `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
+
+
+
+<a id="nestedblock--config--destination--clickhouse--compression"></a>
+### Nested Schema for `config.destination.clickhouse.compression`
+
+Required:
+
+- `algorithm` (String) Compression algorithm. Valid values are `gzip` and `none`. Valid values are `gzip`, `none`.
+
+Optional:
+
+- `level` (Number) Compression level (1–9). Only valid when `algorithm` is `gzip`. Value must be between 1 and 9.
+
+
+<a id="nestedblock--config--destination--clickhouse--tls"></a>
+### Nested Schema for `config.destination.clickhouse.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+
+
+
 <a id="nestedblock--config--destination--cloud_prem"></a>
 ### Nested Schema for `config.destination.cloud_prem`
 
@@ -442,6 +553,7 @@ Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--tls))
 
 <a id="nestedblock--config--destination--cloud_prem--buffer"></a>
 ### Nested Schema for `config.destination.cloud_prem.buffer`
@@ -469,6 +581,20 @@ Optional:
 - `max_size` (Number) Maximum size of the memory buffer (in bytes).
 - `when_full` (String) Behavior when the buffer is full. Valid values are `block` or `drop_newest`. Defaults to `"block"`.
 
+
+
+<a id="nestedblock--config--destination--cloud_prem--tls"></a>
+### Nested Schema for `config.destination.cloud_prem.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 
 
@@ -1633,6 +1759,8 @@ Optional:
 - `add_env_vars` (Block List) The `add_env_vars` processor adds environment variable values to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_env_vars))
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_fields))
 - `add_hostname` (Block List) The `add_hostname` processor adds the hostname to log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_hostname))
+- `add_metric_tags` (Block List) The `add_metric_tags` processor adds static tags to metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_metric_tags))
+- `aggregate` (Block List) The `aggregate` processor combines metrics that share the same name and tags into a single metric over a configurable interval. (see [below for nested schema](#nestedblock--config--processor_group--processor--aggregate))
 - `custom_processor` (Block List) The `custom_processor` processor transforms events using Vector Remap Language (VRL) scripts with advanced filtering capabilities. (see [below for nested schema](#nestedblock--config--processor_group--processor--custom_processor))
 - `datadog_tags` (Block List) (see [below for nested schema](#nestedblock--config--processor_group--processor--datadog_tags))
 - `dedupe` (Block List) The `dedupe` processor removes duplicate fields in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--dedupe))
@@ -1640,6 +1768,7 @@ Optional:
 - `enrichment_table` (Block List) The `enrichment_table` processor enriches logs using a static CSV file or GeoIP database. (see [below for nested schema](#nestedblock--config--processor_group--processor--enrichment_table))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processor_group--processor--filter))
 - `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_datadog_metrics))
+- `generate_metrics` (Block List) The `generate_metrics` processor creates custom metrics from logs. The generated metrics must be routed to a metrics destination using the input `<processor-id>.metrics`. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics))
 - `metric_tags` (Block List) The `metric_tags` processor filters metrics based on their tags using Datadog tag key patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--metric_tags))
 - `ocsf_mapper` (Block List) The `ocsf_mapper` processor transforms logs into the OCSF schema using predefined library mappings or custom mapping configuration. (see [below for nested schema](#nestedblock--config--processor_group--processor--ocsf_mapper))
 - `parse_grok` (Block List) The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok))
@@ -1649,9 +1778,11 @@ Optional:
 - `reduce` (Block List) The `reduce` processor aggregates and merges logs based on matching keys and merge strategies. (see [below for nested schema](#nestedblock--config--processor_group--processor--reduce))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processor_group--processor--remove_fields))
 - `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_fields))
+- `rename_metric_tags` (Block List) The `rename_metric_tags` processor changes the keys of tags on metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_metric_tags))
 - `sample` (Block List) The `sample` processor allows probabilistic sampling of logs at a fixed rate. (see [below for nested schema](#nestedblock--config--processor_group--processor--sample))
 - `sensitive_data_scanner` (Block List) The `sensitive_data_scanner` processor detects and optionally redacts sensitive data in log events. (see [below for nested schema](#nestedblock--config--processor_group--processor--sensitive_data_scanner))
 - `split_array` (Block List) The `split_array` processor splits array fields into separate events based on configured rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--split_array))
+- `tag_cardinality_limit` (Block List) The `tag_cardinality_limit` processor caps the number of distinct tag value combinations on metrics, dropping tags or events once the limit is exceeded. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit))
 - `throttle` (Block List) The `throttle` processor limits the number of events that pass through over a given time window. (see [below for nested schema](#nestedblock--config--processor_group--processor--throttle))
 
 <a id="nestedblock--config--processor_group--processor--add_env_vars"></a>
@@ -1690,6 +1821,32 @@ Required:
 
 <a id="nestedblock--config--processor_group--processor--add_hostname"></a>
 ### Nested Schema for `config.processor_group.processor.add_hostname`
+
+
+<a id="nestedblock--config--processor_group--processor--add_metric_tags"></a>
+### Nested Schema for `config.processor_group.processor.add_metric_tags`
+
+Optional:
+
+- `tag` (Block List) A list of static tags to add to each metric. Up to 15 tags may be defined. (see [below for nested schema](#nestedblock--config--processor_group--processor--add_metric_tags--tag))
+
+<a id="nestedblock--config--processor_group--processor--add_metric_tags--tag"></a>
+### Nested Schema for `config.processor_group.processor.add_metric_tags.tag`
+
+Required:
+
+- `name` (String) The tag name.
+- `value` (String) The tag value.
+
+
+
+<a id="nestedblock--config--processor_group--processor--aggregate"></a>
+### Nested Schema for `config.processor_group.processor.aggregate`
+
+Required:
+
+- `interval_secs` (Number) The interval, in seconds, over which metrics are aggregated. Must be between 1 and 60. Value must be between 1 and 60.
+- `mode` (String) The aggregation mode. One of `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`. Valid values are `auto`, `sum`, `latest`, `count`, `max`, `min`, `mean`.
 
 
 <a id="nestedblock--config--processor_group--processor--custom_processor"></a>
@@ -1852,6 +2009,41 @@ Optional:
 
 
 
+<a id="nestedblock--config--processor_group--processor--generate_metrics"></a>
+### Nested Schema for `config.processor_group.processor.generate_metrics`
+
+Optional:
+
+- `metric` (Block List) Configuration for generating individual metrics. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics--metric))
+
+<a id="nestedblock--config--processor_group--processor--generate_metrics--metric"></a>
+### Nested Schema for `config.processor_group.processor.generate_metrics.metric`
+
+Required:
+
+- `include` (String) Datadog filter query to match logs for metric generation.
+- `metric_type` (String) Type of metric to create.
+- `name` (String) Name of the custom metric to be created.
+
+Optional:
+
+- `group_by` (List of String) Optional fields used to group the metric series.
+- `value` (Block List) Specifies how the value of the generated metric is computed. (see [below for nested schema](#nestedblock--config--processor_group--processor--generate_metrics--metric--value))
+
+<a id="nestedblock--config--processor_group--processor--generate_metrics--metric--value"></a>
+### Nested Schema for `config.processor_group.processor.generate_metrics.metric.value`
+
+Required:
+
+- `strategy` (String) Metric value strategy: `increment_by_one` or `increment_by_field`.
+
+Optional:
+
+- `field` (String) Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).
+
+
+
+
 <a id="nestedblock--config--processor_group--processor--metric_tags"></a>
 ### Nested Schema for `config.processor_group.processor.metric_tags`
 
@@ -1962,8 +2154,41 @@ Optional:
 
 Optional:
 
-- `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog.
+- `disable_library_rules` (Boolean) If set to `true`, disables the default Grok rules provided by Datadog. Defaults to `false`.
+- `field` (String) The log field to parse with the Grok rules. Defaults to `"message"`.
+- `include_rule` (Block List) A Grok parsing rule that targets logs matching a Datadog search query. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule))
 - `rule` (Block List) The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule))
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule`
+
+Required:
+
+- `include` (String) A Datadog search query used to determine which logs this Grok rule targets.
+
+Optional:
+
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule))
+- `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule))
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--match_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule.match_rule`
+
+Required:
+
+- `name` (String) The name of the rule.
+- `rule` (String) The definition of the Grok rule.
+
+
+<a id="nestedblock--config--processor_group--processor--parse_grok--include_rule--support_rule"></a>
+### Nested Schema for `config.processor_group.processor.parse_grok.include_rule.support_rule`
+
+Required:
+
+- `name` (String) The name of the helper Grok rule.
+- `rule` (String) The definition of the helper Grok rule.
+
+
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--rule"></a>
 ### Nested Schema for `config.processor_group.processor.parse_grok.rule`
@@ -1974,7 +2199,7 @@ Required:
 
 Optional:
 
-- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--match_rule))
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--match_rule))
 - `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processor_group--processor--parse_grok--rule--support_rule))
 
 <a id="nestedblock--config--processor_group--processor--parse_grok--rule--match_rule"></a>
@@ -2121,6 +2346,23 @@ Required:
 - `destination` (String) Destination field name.
 - `preserve_source` (Boolean) Whether to keep the original field.
 - `source` (String) Source field to rename.
+
+
+
+<a id="nestedblock--config--processor_group--processor--rename_metric_tags"></a>
+### Nested Schema for `config.processor_group.processor.rename_metric_tags`
+
+Optional:
+
+- `tag` (Block List) A list of rename rules. Up to 15 tags may be defined. (see [below for nested schema](#nestedblock--config--processor_group--processor--rename_metric_tags--tag))
+
+<a id="nestedblock--config--processor_group--processor--rename_metric_tags--tag"></a>
+### Nested Schema for `config.processor_group.processor.rename_metric_tags.tag`
+
+Required:
+
+- `rename_to` (String) The new tag key to assign in place of the original.
+- `tag` (String) The original tag key on the metric event.
 
 
 
@@ -2271,6 +2513,47 @@ Required:
 
 
 
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit`
+
+Required:
+
+- `limit_exceeded_action` (String) The default action to take when the cardinality limit is exceeded. One of `drop_tag`, `drop_event`. Valid values are `drop_tag`, `drop_event`.
+- `value_limit` (Number) The default maximum number of distinct tag value combinations allowed per metric. Between 0 and 1000000. Value must be between 0 and 1000000.
+
+Optional:
+
+- `per_metric_limit` (Block List) Per-metric cardinality overrides that take precedence over the default `value_limit`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit))
+
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit`
+
+Required:
+
+- `metric_name` (String) The metric name this override applies to.
+- `mode` (String) How the per-metric override is applied. One of `tracked`, `excluded`. Valid values are `tracked`, `excluded`.
+
+Optional:
+
+- `limit_exceeded_action` (String) The action to take on this metric when the limit is exceeded. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Valid values are `drop_tag`, `drop_event`.
+- `per_tag_limit` (Block List) Per-tag cardinality overrides that apply within this metric. Must be omitted when `mode` is `excluded`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit))
+- `value_limit` (Number) The cardinality cap for this metric. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit.per_tag_limit`
+
+Required:
+
+- `mode` (String) How the per-tag override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
+- `tag_key` (String) The tag key this override applies to.
+
+Optional:
+
+- `value_limit` (Number) The cardinality cap for this tag. Required when `mode` is `limit_override`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+
+
+
+
 <a id="nestedblock--config--processor_group--processor--throttle"></a>
 ### Nested Schema for `config.processor_group.processor.throttle`
 
@@ -2312,6 +2595,7 @@ Optional:
 - `splunk_tcp` (Block List) The `splunk_tcp` source receives logs from a Splunk Universal Forwarder over TCP. TLS is supported for secure transmission. (see [below for nested schema](#nestedblock--config--source--splunk_tcp))
 - `sumo_logic` (Block List) The `sumo_logic` source receives logs from Sumo Logic collectors. (see [below for nested schema](#nestedblock--config--source--sumo_logic))
 - `syslog_ng` (Block List) The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol. (see [below for nested schema](#nestedblock--config--source--syslog_ng))
+- `websocket` (Block List) The `websocket` source establishes a persistent WebSocket connection to a remote endpoint and ingests log events as they are pushed by the server. (see [below for nested schema](#nestedblock--config--source--websocket))
 
 <a id="nestedblock--config--source--amazon_data_firehose"></a>
 ### Nested Schema for `config.source.amazon_data_firehose`
@@ -2869,6 +3153,39 @@ Optional:
 - `key_file` (String) Path to the private key file associated with the TLS server certificate.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 - `verify_certificate` (Boolean) When `true`, requires client connections to present a valid certificate, enabling mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--source--websocket"></a>
+### Nested Schema for `config.source.websocket`
+
+Required:
+
+- `auth_strategy` (String) The authentication strategy used when connecting to the WebSocket server. Valid values are `none`, `basic`, `bearer`, `custom`.
+- `decoding` (String) The decoding format used to interpret incoming log events. Valid values are `bytes`, `gelf`, `json`, `syslog`.
+
+Optional:
+
+- `custom_key` (String) Name of the environment variable or secret that holds a custom header value. Used when `auth_strategy` is `custom`.
+- `password_key` (String) Name of the environment variable or secret that holds the password. Used when `auth_strategy` is `basic`.
+- `tls` (Block List) TLS configuration for the WebSocket connection. Set `mode` to `enabled` for server-certificate validation only, or `with_client_cert` to additionally present a client certificate. (see [below for nested schema](#nestedblock--config--source--websocket--tls))
+- `token_key` (String) Name of the environment variable or secret that holds the bearer token. Used when `auth_strategy` is `bearer`.
+- `uri_key` (String) Name of the environment variable or secret that holds the WebSocket URI to connect to.
+- `username_key` (String) Name of the environment variable or secret that holds the username. Used when `auth_strategy` is `basic`.
+
+<a id="nestedblock--config--source--websocket--tls"></a>
+### Nested Schema for `config.source.websocket.tls`
+
+Required:
+
+- `mode` (String) The TLS mode. Use `enabled` for server-only TLS, or `with_client_cert` for mutual TLS with a client certificate. Valid values are `enabled`, `with_client_cert`.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
+- `crt_file` (String) Path to the client certificate file. Required when `mode` is `with_client_cert`.
+- `key_file` (String) Path to the private key file associated with the client certificate.
+- `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
 
 ## Import
 

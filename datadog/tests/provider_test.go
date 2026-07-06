@@ -188,6 +188,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_v2_bar_chart_test":                                 "dashboards",
 	"tests/resource_datadog_dashboard_v2_sankey_test":                                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_wildcard_test":                                  "dashboards",
+	"tests/resource_datadog_dashboard_v2_point_plot_test":                                "dashboards",
 	"tests/resource_datadog_dashboard_v2_distribution_histogram_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_wildcard_histogram_test":                        "dashboards",
 	"tests/resource_datadog_dashboard_v2_toplist_sort_test":                              "dashboards",
@@ -269,6 +270,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_logs_restriction_query_test":                                 "logs-restriction-queries",
 	"tests/resource_datadog_metric_metadata_test":                                        "metrics",
 	"tests/resource_datadog_metric_tag_configuration_test":                               "metrics",
+	"tests/resource_datadog_tag_indexing_rule_test":                                      "metrics",
+	"tests/resource_datadog_tag_indexing_rule_exemption_test":                            "metrics",
+	"tests/resource_datadog_tag_indexing_rule_order_test":                                "metrics",
 	"tests/resource_datadog_monitor_config_policy_test":                                  "monitor-config-policies",
 	"tests/resource_datadog_monitor_fwprovider_test":                                     "monitors",
 	"tests/resource_datadog_monitor_json_test":                                           "monitors-json",
@@ -297,6 +301,12 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_rum_retention_filter_test":                                   "rum-retention-filter",
 	"tests/resource_datadog_rum_retention_filters_order_test":                            "rum-retention-filters-order",
 	"tests/resource_datadog_screenboard_test":                                            "dashboards",
+	"tests/resource_datadog_security_findings_due_date_rule_test":                        "security-monitoring",
+	"tests/resource_datadog_security_findings_due_date_rules_order_test":                 "security-monitoring",
+	"tests/resource_datadog_security_findings_mute_rule_test":                            "security-monitoring",
+	"tests/resource_datadog_security_findings_mute_rules_order_test":                     "security-monitoring",
+	"tests/resource_datadog_security_findings_ticket_creation_rule_test":                 "security-monitoring",
+	"tests/resource_datadog_security_findings_ticket_creation_rules_order_test":          "security-monitoring",
 	"tests/resource_datadog_security_monitoring_default_rule_migration_test":             "security-monitoring",
 	"tests/resource_datadog_security_monitoring_default_rule_test":                       "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                             "security-monitoring",
@@ -1047,6 +1057,25 @@ func withDefaultTags(providerFactory func() (*schema.Provider, error), defaultTa
 			config, diags := provider.ConfigureContextFunc(lctx, d)
 			if config != nil {
 				config.(*datadog.ProviderConfiguration).DefaultTags = defaultTags
+			}
+			return config, diags
+		}
+		newProvider.ConfigureContextFunc = configureFunc
+		return &newProvider, err
+	}
+}
+
+// withIgnoreTagKeys wraps an SDKv2 provider factory so the provider-level ignore_tag_keys is set,
+// mirroring withDefaultTags. It lets a test exercise the provider-block ignore_tag_keys path the
+// same way a user setting it in their provider config would.
+func withIgnoreTagKeys(providerFactory func() (*schema.Provider, error), ignoreTagKeys []string) func() (*schema.Provider, error) {
+	provider, err := providerFactory()
+	newProvider := *provider
+	return func() (*schema.Provider, error) {
+		configureFunc := func(lctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+			config, diags := provider.ConfigureContextFunc(lctx, d)
+			if config != nil {
+				config.(*datadog.ProviderConfiguration).IgnoreTagKeys = ignoreTagKeys
 			}
 			return config, diags
 		}

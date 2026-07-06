@@ -1,3 +1,49 @@
+## 4.14.0 (July 1, 2026)
+
+### BUGFIXES
+* [datadog_observability_pipelines] Mark use_legacy_search_syntax as Computed by @20agbekodo in https://github.com/DataDog/terraform-provider-datadog/pull/3877
+* [datadog_sensitive_data_scanner_group] ignore order for samplings by @vhourdel in https://github.com/DataDog/terraform-provider-datadog/pull/3881
+* [datadog_synthetics_global_variable] Fix secure global variable partial update omitting required `value.secure` field by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/3918
+* [datadog_sensitive_data_scanner_rule] compute null description when standard_pattern_id is set by @vhourdel in https://github.com/DataDog/terraform-provider-datadog/pull/3882
+### IMPROVEMENTS
+* [datadog_provider] Add environment variable support for cloud_provider_type by @MrFishFinger in https://github.com/DataDog/terraform-provider-datadog/pull/3876
+* [datadog_dashboard_v2] Add point_plot widget from OpenAPI sync by @cferland in https://github.com/DataDog/terraform-provider-datadog/pull/3915
+* [datadog_logs_custom_pipeline] [SEC-32483] Add array_map_processor support to logs custom pipeline by @pavel-kim-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3872
+### FEATURES
+* [datadog_observability_pipeline] Add new metrics processors: add_metric_tags, aggregate, rename_metric_tags, tag_cardinality_limit by @ArunPiduguDD in https://github.com/DataDog/terraform-provider-datadog/pull/3818
+* [datadog_synthetics_test] Add capture_network_payloads option for Synthetics browser tests by @kalinichenko in https://github.com/DataDog/terraform-provider-datadog/pull/3898
+* [datadog_monitor] Add ignore_tag_keys support by @j10czar in https://github.com/DataDog/terraform-provider-datadog/pull/3889
+* [datadog_security_findings_mute_rule] Add security findings automation rule resources (mute, due date, ticket creation) + ordering by @hugoqnc in https://github.com/DataDog/terraform-provider-datadog/pull/3907
+* [datadog_observability_pipeline] Add TLS support to cloud_prem destination by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3919
+
+## New Contributors
+* @kalinichenko made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3898
+* @MrFishFinger made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3876
+* @vhourdel made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3881
+* @hugoqnc made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3916
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.13.0...v4.14.0
+
+## 4.13.0 (June 17, 2026)
+
+### BUGFIXES
+* [datadog_security_monitoring_rule] Make keep_alive default to one hour by @hachem-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3865
+* [datadog_monitor] Fix panic when dynamic variables block is empty by @phillip-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3846
+* [datadog_custom_allocation_rule] Fix "inconsistent result after apply" on in-place update by @billykern in https://github.com/DataDog/terraform-provider-datadog/pull/3845
+* [datadog_monitor] Fix importing monitor migrated to `on_missing_data` by @shaneyuandd in https://github.com/DataDog/terraform-provider-datadog/pull/3880
+### IMPROVEMENTS
+* [datadog_dashboard_v2] Sync additive enum values from OpenAPI spec by @yacomink in https://github.com/DataDog/terraform-provider-datadog/pull/3888
+* [datadog_logs_archive] Add partitioning_attributes and lookup_attributes to Log Archives resource by @mateo-villa in https://github.com/DataDog/terraform-provider-datadog/pull/3859
+### FEATURES
+* [datadog_tag_indexing_rule] Add tag indexing rule, exemption, and order resources by @chuck in https://github.com/DataDog/terraform-provider-datadog/pull/3863
+* [datadog_observability_pipelines] Add generate_metrics processor by @petere-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/3885
+
+## New Contributors
+* @billykern made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3845
+* @Invincibear made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3884
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.12.1...v4.13.0
+
 ## 4.12.1 (June 4, 2026)
 
 ### BUGFIXES

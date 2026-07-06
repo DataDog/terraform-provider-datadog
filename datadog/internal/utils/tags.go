@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"sort"
+	"strings"
 	"unicode"
 	"unicode/utf8"
 )
@@ -99,4 +101,49 @@ func isValidASCIIStartChar(c byte) bool {
 
 func isValidASCIITagChar(c byte) bool {
 	return isValidASCIIStartChar(c) || ('0' <= c && c <= '9') || c == '.' || c == '/' || c == '-'
+}
+
+// StripIgnoredTags returns planTags with entries whose key appears in ignoreKeys replaced by the matching entries from stateTags.
+// Casing: lookup keys are normalized via tagKey so framework callers (which don't all apply the NormalizeTag plan modifier) match SDKv2 callers
+func StripIgnoredTags(planTags, stateTags, ignoreKeys []string) []string {
+	if len(ignoreKeys) == 0 {
+		return planTags
+	}
+
+	if len(stateTags) == 0 {
+		return planTags
+	}
+
+	ignoreSet := make(map[string]struct{}, len(ignoreKeys))
+	for _, key := range ignoreKeys {
+		ignoreSet[tagKey(key)] = struct{}{}
+	}
+
+	result := make([]string, 0, len(planTags)+len(stateTags))
+
+	// Keep plan entries whose key is NOT ignored.
+	for _, key := range planTags {
+		if _, ignored := ignoreSet[tagKey(key)]; !ignored {
+			result = append(result, key)
+		}
+	}
+
+	// Pull state entries whose key IS ignored. A key may appear multiple times
+	// (multi-valued tag), so every matching state entry is re-injected.
+	for _, key := range stateTags {
+		if _, ignored := ignoreSet[tagKey(key)]; ignored {
+			result = append(result, key)
+		}
+	}
+
+	// Sort for stable plan output across runs
+	sort.Strings(result)
+	return result
+}
+
+// tagKey extracts the normalized key portion of a "key:value" tag string.
+// NormalizeTag is applied so framework callers (which don't all apply the NormalizeTag plan modifier) produce the same canonical form as SDKv2 ones.
+func tagKey(tag string) string {
+	key, _, _ := strings.Cut(tag, ":")
+	return NormalizeTag(key)
 }

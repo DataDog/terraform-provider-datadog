@@ -39,6 +39,8 @@ resource "datadog_logs_archive" "my_s3_archive" {
 - `compression_method` (String) The compression method for the archive. Valid values are `GZIP`, `ZSTD`. Defaults to `"GZIP"`.
 - `gcs_archive` (Block List, Max: 1) Definition of a GCS archive. (see [below for nested schema](#nestedblock--gcs_archive))
 - `include_tags` (Boolean) To store the tags in the archive, set the value `true`. If it is set to `false`, the tags will be dropped when the logs are sent to the archive. Defaults to `false`.
+- `lookup_attributes` (List of String) An array of attributes to use as lookup keys for the archive.
+- `partitioning_attributes` (List of String) An array of attributes to use as partition keys for the archive. The attribute used most frequently for querying should be first.
 - `rehydration_max_scan_size_in_gb` (Number) To limit the rehydration scan size for the archive, set a value in GB.
 - `rehydration_tags` (List of String) An array of tags to add to rehydrated logs from an archive.
 - `s3_archive` (Block List, Max: 1) Definition of an s3 archive. (see [below for nested schema](#nestedblock--s3_archive))
@@ -81,15 +83,16 @@ Optional:
 
 Required:
 
-- `account_id` (String) Your AWS account id.
 - `bucket` (String) Name of your s3 bucket.
-- `role_name` (String) Your AWS role name
 
 Optional:
 
+- `access_key_id` (String) Your AWS access key id, used as an alternative to `account_id`/`role_name`.
+- `account_id` (String) Your AWS account id. Required with `role_name`; mutually exclusive with `access_key_id`.
 - `encryption_key` (String) The AWS KMS encryption key.
 - `encryption_type` (String) The type of encryption on your archive. Valid values are `NO_OVERRIDE`, `SSE_S3`, `SSE_KMS`. Defaults to `"NO_OVERRIDE"`.
 - `path` (String) Path where the archive is stored.
+- `role_name` (String) Your AWS role name. Required with `account_id`; mutually exclusive with `access_key_id`.
 - `storage_class` (String) The AWS S3 storage class used to upload the logs. Valid values are `STANDARD`, `STANDARD_IA`, `ONEZONE_IA`, `INTELLIGENT_TIERING`, `GLACIER_IR`. Defaults to `"STANDARD"`.
 
 ## Import

@@ -304,7 +304,7 @@ var formulaAndFunctionEventQuerySearchFields = []FieldSpec{
 var formulaAndFunctionEventQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for event platform-based queries.",
-		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors"}},
+		ValidValues: []string{"logs", "spans", "network", "rum", "security_signals", "profiles", "audit", "events", "ci_tests", "ci_pipelines", "incident_analytics", "product_analytics", "on_call_events", "errors", "llm_observability"}},
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
 		Description: "Option for storage location. Feature in Private Beta."},
 	{HCLKey: "search", Type: TypeBlock, OmitEmpty: true,
@@ -1081,7 +1081,7 @@ var listStreamQueryFields = []FieldSpec{
 			"logs_stream", "audit_stream", "ci_pipeline_stream", "ci_test_stream",
 			"rum_issue_stream", "apm_issue_stream", "trace_stream", "logs_issue_stream",
 			"logs_pattern_stream", "logs_transaction_stream", "event_stream", "rum_stream",
-			"llm_observability_stream",
+			"llm_observability_stream", "issue_stream",
 		},
 	},
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Description: "Widget query."},
@@ -1489,7 +1489,7 @@ var sankeyNetworkQuerySortFields = []FieldSpec{
 var sankeyNetworkQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The data source for the Sankey network query.",
-		ValidValues: []string{"network_device_flows"}},
+		ValidValues: []string{"network_device_flows", "network"}},
 	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "The search query string."},
 	{HCLKey: "mode", Type: TypeString, OmitEmpty: true,
@@ -1616,6 +1616,69 @@ var wildcardWidgetRequestFields = []FieldSpec{
 	{HCLKey: "histogram_request", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
 		Description: "Histogram-mode distribution request (request_type=histogram).",
 		Children:    wildcardHistogramRequestFields},
+}
+
+// ============================================================
+// Point Plot Widget Field Groups
+// ============================================================
+
+// dataProjectionQueryFields corresponds to OpenAPI DataProjectionQuery.
+// Used by: point_plot (potentially also scatterplot data projection requests in the future).
+var dataProjectionQueryFields = []FieldSpec{
+	{HCLKey: "query_string", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The query string to filter events."},
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for the query (for example, `logs`)."},
+	{HCLKey: "indexes", Type: TypeStringList, OmitEmpty: true,
+		Description: "List of indexes to query."},
+	{HCLKey: "storage", Type: TypeString, OmitEmpty: true,
+		Description: "Storage location for the query."},
+}
+
+// pointPlotProjectionDimensionFields corresponds to OpenAPI PointPlotProjectionDimension.
+var pointPlotProjectionDimensionFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Source column name from the dataset."},
+	{HCLKey: "dimension", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Dimension of the point plot.",
+		ValidValues: []string{"group", "time", "y", "radius"}},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "Alias for the column."},
+}
+
+// pointPlotProjectionFields corresponds to OpenAPI PointPlotProjection.
+var pointPlotProjectionFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of the projection. Must be `point_plot`.",
+		ValidValues: []string{"point_plot"}},
+	// HCL: "dimension" (singular) → JSON: "dimensions" (plural)
+	{HCLKey: "dimension", JSONKey: "dimensions", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "List of dimension mappings for the projection.",
+		Children:    pointPlotProjectionDimensionFields},
+	{HCLKey: "extra_columns", Type: TypeStringList, OmitEmpty: true,
+		Description: "Additional columns to include in the projection."},
+}
+
+// pointPlotWidgetLegendFields corresponds to OpenAPI PointPlotWidgetLegend.
+var pointPlotWidgetLegendFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of legend to show for the point plot widget.",
+		ValidValues: []string{"automatic", "none"}},
+}
+
+// pointPlotWidgetRequestFields corresponds to OpenAPI PointPlotWidgetRequest.
+var pointPlotWidgetRequestFields = []FieldSpec{
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The type of data request. Must be `data_projection`.",
+		ValidValues: []string{"data_projection"}},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Query configuration for the point plot request.",
+		Children:    dataProjectionQueryFields},
+	{HCLKey: "projection", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Projection configuration for the point plot request.",
+		Children:    pointPlotProjectionFields},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of data points to return."},
 }
 
 // ============================================================

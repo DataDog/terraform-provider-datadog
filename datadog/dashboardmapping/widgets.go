@@ -1486,6 +1486,7 @@ var allWidgetSpecs = []WidgetSpec{
 	BarChartWidgetSpec,
 	SankeyWidgetSpec,
 	WildcardWidgetSpec,
+	PointPlotWidgetSpec,
 }
 
 // FunnelWidgetSpec corresponds to OpenAPI FunnelWidgetDefinition.
@@ -1545,6 +1546,28 @@ var SankeyWidgetSpec = WidgetSpec{
 					Description:   "Network request for the Sankey widget.",
 					Children:      sankeyNetworkRequestFields},
 			}},
+	},
+}
+
+// PointPlotWidgetSpec corresponds to OpenAPI PointPlotWidgetDefinition.
+var PointPlotWidgetSpec = WidgetSpec{
+	HCLKey:      "point_plot_definition",
+	JSONType:    "point_plot",
+	Description: "The definition for a Point Plot widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
+			Description: "A nested block describing the request to use when displaying the widget.",
+			Children:    pointPlotWidgetRequestFields},
+		{HCLKey: "yaxis", Type: TypeBlock, OmitEmpty: true,
+			Description: "A nested block describing the Y-Axis Controls. The structure of this block is described below.",
+			Children:    widgetAxisFields},
+		{HCLKey: "marker", JSONKey: "markers", Type: TypeBlockList, OmitEmpty: true,
+			Description: "A nested block describing a marker to use when displaying the widget. Multiple `marker` blocks are allowed.",
+			Children:    widgetMarkerFields},
+		{HCLKey: "legend", Type: TypeBlock, OmitEmpty: true,
+			Description: "Legend configuration for the widget.",
+			Children:    pointPlotWidgetLegendFields},
+		widgetCustomLinkField,
 	},
 }
 

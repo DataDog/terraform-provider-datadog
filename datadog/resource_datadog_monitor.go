@@ -33,7 +33,7 @@ func resourceDatadogMonitor() *schema.Resource {
 		ReadContext:   resourceDatadogMonitorRead,
 		UpdateContext: resourceDatadogMonitorUpdate,
 		DeleteContext: resourceDatadogMonitorDelete,
-		CustomizeDiff: customdiff.All(tagDiff, resourceDatadogMonitorCustomizeDiff),
+		CustomizeDiff: customdiff.All(ignoreTagKeysDiff, tagDiff, resourceDatadogMonitorCustomizeDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -307,6 +307,17 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional: true,
 					Computed: true,
 					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
+				"ignore_tag_keys": {
+					Type:        schema.TypeSet,
+					Description: "Tag keys whose drift Terraform should ignore. Use this to keep specific tags managed outside Terraform (for example, by the Datadog UI or a tagging service) without `terraform plan` reporting drift on every run. Other tags are still managed normally. Any `:value` suffix is ignored. Merged with the provider's `ignore_tag_keys` for this resource.",
+					Optional:    true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+						StateFunc: func(val any) string {
+							return utils.NormalizeTag(val.(string))
+						},
+					},
 				},
 				"groupby_simple_monitor": {
 					Description: "Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.",
@@ -1398,18 +1409,41 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		if len(variables) > 0 {
 			// we always have either zero or one
 			for _, v := range variables {
-				m := v.(map[string]interface{})
+				if v == nil {
+					// Empty `variables {}` block (e.g. produced by a dynamic block
+					// whose inner content is itself empty) shows up as a nil
+					// element. Skip it instead of panicking on the type assertion.
+					continue
+				}
+				m, ok := v.(map[string]interface{})
+				if !ok {
+					continue
+				}
 				var monitorVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition
 				if query, ok := m["event_query"]; ok {
-					queries := query.([]interface{})
+					queries, _ := query.([]interface{})
 					for _, q := range queries {
-						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{})))
+						if q == nil {
+							continue // Skip nil query entries
+						}
+						queryMap, ok := q.(map[string]interface{})
+						if !ok {
+							continue
+						}
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(queryMap))
 					}
 				}
 				if query, ok := m["cloud_cost_query"]; ok {
-					queries := query.([]interface{})
+					queries, _ := query.([]interface{})
 					for _, q := range queries {
-						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{})))
+						if q == nil {
+							continue // Skip nil query entries
+						}
+						queryMap, ok := q.(map[string]interface{})
+						if !ok {
+							continue
+						}
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(queryMap))
 					}
 				}
 				if query, ok := m["data_quality_query"]; ok {
@@ -2112,8 +2146,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("evaluation_delay", m.Options.GetEvaluationDelay()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("notify_no_data", m.Options.GetNotifyNoData()); err != nil {
-		return diag.FromErr(err)
+	if v, ok := m.Options.GetNotifyNoDataOk(); ok {
+		if err := d.Set("notify_no_data", v); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("on_missing_data", m.Options.GetOnMissingData()); err != nil {
 		return diag.FromErr(err)
@@ -2121,8 +2157,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("group_retention_duration", m.Options.GetGroupRetentionDuration()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("no_data_timeframe", m.Options.NoDataTimeframe.Get()); err != nil {
-		return diag.FromErr(err)
+	if v, ok := m.Options.GetNoDataTimeframeOk(); ok {
+		if err := d.Set("no_data_timeframe", v); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("renotify_interval", m.Options.GetRenotifyInterval()); err != nil {
 		return diag.FromErr(err)

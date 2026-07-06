@@ -65,10 +65,19 @@ var Resources = []func() resource.Resource{
 	NewRumMetricResource,
 	NewRumRetentionFilterResource,
 	NewRumRetentionFiltersOrderResource,
+	NewSecurityFindingsMuteRuleResource,
+	NewSecurityFindingsMuteRulesOrderResource,
+	NewSecurityFindingsDueDateRuleResource,
+	NewSecurityFindingsDueDateRulesOrderResource,
+	NewSecurityFindingsTicketCreationRuleResource,
+	NewSecurityFindingsTicketCreationRulesOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewServiceAccessTokenResource,
 	NewSpansMetricResource,
+	NewTagIndexingRuleResource,
+	NewTagIndexingRuleExemptionResource,
+	NewTagIndexingRuleOrderResource,
 	NewSyntheticsConcurrencyCapResource,
 	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
@@ -205,6 +214,7 @@ type FrameworkProvider struct {
 	ConfigureCallbackFunc func(p *FrameworkProvider, request *provider.ConfigureRequest, config *ProviderSchema) diag.Diagnostics
 	Now                   func() time.Time
 	DefaultTags           map[string]string
+	IgnoreTagKeys         []string
 }
 
 // ProviderSchema struct
@@ -226,6 +236,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
 	DefaultTags                      []DefaultTag `tfsdk:"default_tags"`
+	IgnoreTagKeys                    types.Set    `tfsdk:"ignore_tag_keys"`
 }
 
 type DefaultTag struct {
@@ -303,7 +314,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"cloud_provider_type": schema.StringAttribute{
 				Optional:    true,
-				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
+				Description: "Specifies the cloud provider used for cloud-provider-based authentication, enabling keyless access without API or app keys. Only [`aws`] is supported. This can also be set using the `DD_CLOUD_PROVIDER_TYPE` environment variable. This feature is in Preview. If you'd like to enable it for your organization, contact [support](https://docs.datadoghq.com/help/).",
 			},
 			"cloud_provider_region": schema.StringAttribute{
 				Optional:    true,
@@ -311,7 +322,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"org_uuid": schema.StringAttribute{
 				Optional:    true,
-				Description: "The organization UUID; used for cloud-provider-based authentication. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
+				Description: "The organization UUID; used for cloud-provider-based authentication. This can also be set using the `DD_ORG_UUID` environment variable. See the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"aws_access_key_id": schema.StringAttribute{
 				Optional:    true,
@@ -347,6 +358,11 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"http_client_retry_max_retries": schema.Int64Attribute{
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
+			},
+			"ignore_tag_keys": schema.SetAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "[Experimental - Monitors and Service Level Objectives only] Tag keys whose drift Terraform should ignore across all resources that support `ignore_tag_keys`. A resource's own `ignore_tag_keys` is merged with this list for that resource. Any `:value` suffix is ignored.",
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -422,6 +438,12 @@ func (p *FrameworkProvider) ConfigureConfigDefaults(ctx context.Context, config 
 		}
 	}
 
+	if config.CloudProviderType.IsNull() {
+		cloudProviderType, err := utils.GetMultiEnvVar(utils.CloudProviderTypeEnvVars...)
+		if err == nil {
+			config.CloudProviderType = types.StringValue(cloudProviderType)
+		}
+	}
 	if config.OrgUuid.IsNull() {
 		orgUUID, err := utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
 		if err == nil {
@@ -726,6 +748,26 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
 
+	// Security findings automation rules
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationMuteRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationMuteRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationMuteRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDueDateRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationDueDateRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationDueDateRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationTicketCreationRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
@@ -804,6 +846,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		diags.Append(tagBlock.Tags.ElementsAs(auth, &defaultTags, false)...)
 	}
 	p.DefaultTags = defaultTags
+
+	var ignoreTagKeys []string
+	if !config.IgnoreTagKeys.IsNull() && !config.IgnoreTagKeys.IsUnknown() {
+		diags.Append(config.IgnoreTagKeys.ElementsAs(auth, &ignoreTagKeys, false)...)
+	}
+	p.IgnoreTagKeys = ignoreTagKeys
 	/*  Commented out due to duplicate validation in SDK provider - remove after Framework migration is complete.
 	if validate {
 		log.Println("[INFO] Datadog client successfully initialized, now validating...")

@@ -1,0 +1,1 @@
+terraform import datadog_security_findings_ticket_creation_rule.critical_misconfigs "00000000-0000-0000-0000-000000000000"

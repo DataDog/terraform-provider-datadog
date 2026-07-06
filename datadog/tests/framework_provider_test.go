@@ -130,6 +130,26 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetDeploymentRule", true)
 	config.SetUnstableOperationEnabled("v2.GetDeploymentGateRules", true)
 
+	// Security findings automation rules
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationMuteRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationMuteRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationMuteRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationDueDateRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationDueDateRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationDueDateRules", true)
+	config.SetUnstableOperationEnabled("v2.ListSecurityFindingsAutomationTicketCreationRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.GetSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
+	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
@@ -244,6 +264,29 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 func withDefaultTagsFw(ctx context.Context, providers *compositeProviderStruct, defaultTags map[string]string) func() (tfprotov6.ProviderServer, error) {
 	return func() (tfprotov6.ProviderServer, error) {
 		providers.frameworkProvider.DefaultTags = defaultTags
+
+		upgradedSdkProvider, err := tf5to6server.UpgradeServer(
+			ctx,
+			providers.sdkV2Provider.GRPCProvider,
+		)
+		if err != nil {
+			return nil, err
+		}
+		muxServer, err := tf6muxserver.NewMuxServer(ctx,
+			providerserver.NewProtocol6(providers.frameworkProvider),
+			func() tfprotov6.ProviderServer { return upgradedSdkProvider },
+		)
+		return muxServer, err
+	}
+}
+
+// withIgnoreTagKeysFw wraps the muxed framework provider so the provider-level ignore_tag_keys is
+// set, mirroring withDefaultTagsFw. Framework resources read it via providerData.IgnoreTagKeys in
+// Configure, so setting it on the struct before the mux server is built is what a user's provider
+// block does.
+func withIgnoreTagKeysFw(ctx context.Context, providers *compositeProviderStruct, ignoreTagKeys []string) func() (tfprotov6.ProviderServer, error) {
+	return func() (tfprotov6.ProviderServer, error) {
+		providers.frameworkProvider.IgnoreTagKeys = ignoreTagKeys
 
 		upgradedSdkProvider, err := tf5to6server.UpgradeServer(
 			ctx,
