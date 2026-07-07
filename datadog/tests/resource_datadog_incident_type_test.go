@@ -96,6 +96,72 @@ func TestAccDatadogIncidentType_Import(t *testing.T) {
 	})
 }
 
+func TestAccDatadogIncidentType_Configuration(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	incidentTypeName := fmt.Sprintf("test-it-config-%d", clockFromContext(ctx).Now().Unix())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIncidentTypeDestroy(providers.frameworkProvider, "datadog_incident_type.foo"),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIncidentTypeConfigWithConfiguration(incidentTypeName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIncidentTypeExists(providers.frameworkProvider, "datadog_incident_type.foo"),
+					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.private_incidents", "true"),
+					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.test_incidents", "false"),
+					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.slug_source", "servicenow"),
+					// Fields omitted from the block are server-defaulted and populated as computed.
+					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.allow_workflows", "true"),
+				),
+			},
+			{
+				// Flip a single field; the others must not drift.
+				Config: testAccCheckDatadogIncidentTypeConfigWithConfigurationUpdated(incidentTypeName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIncidentTypeExists(providers.frameworkProvider, "datadog_incident_type.foo"),
+					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.test_incidents", "true"),
+					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.private_incidents", "true"),
+					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.slug_source", "servicenow"),
+				),
+			},
+			{
+				ResourceName:      "datadog_incident_type.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogIncidentTypeConfigWithConfiguration(name string) string {
+	return fmt.Sprintf(`
+	resource "datadog_incident_type" "foo" {
+		name        = "%s"
+		description = "Test incident type with configuration"
+		configuration = {
+			private_incidents = true
+			test_incidents    = false
+			slug_source       = "servicenow"
+		}
+	}`, name)
+}
+
+func testAccCheckDatadogIncidentTypeConfigWithConfigurationUpdated(name string) string {
+	return fmt.Sprintf(`
+	resource "datadog_incident_type" "foo" {
+		name        = "%s"
+		description = "Test incident type with configuration"
+		configuration = {
+			private_incidents = true
+			test_incidents    = true
+			slug_source       = "servicenow"
+		}
+	}`, name)
+}
+
 func testAccCheckDatadogIncidentTypeConfig(name string) string {
 	return fmt.Sprintf(`
 	resource "datadog_incident_type" "foo" {

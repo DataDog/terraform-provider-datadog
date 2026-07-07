@@ -27,6 +27,22 @@ data "datadog_incident_type" "example" {
 
 ### Read-Only
 
+- `configuration` (Attributes) The incident type's behavior settings. (see [below for nested schema](#nestedatt--configuration))
 - `description` (String) Description of the incident type.
 - `is_default` (Boolean) Whether this incident type is the default type.
 - `name` (String) Name of the incident type.
+
+<a id="nestedatt--configuration"></a>
+### Nested Schema for `configuration`
+
+Read-Only:
+
+- `allow_incident_deletion` (Boolean) Whether incidents of this type can be deleted.
+- `allow_workflows` (Boolean) Whether automation workflows can be triggered for incidents of this type.
+- `create_message` (String) An optional message shown to users when they declare an incident of this type.
+- `disable_out_of_the_box_postmortem_template` (Boolean) Whether the out-of-the-box postmortem template is disabled for incidents of this type.
+- `editable_timestamps` (Boolean) Whether responders can edit incident timestamps for incidents of this type.
+- `private_incidents` (Boolean) Whether responders can create private incidents of this type.
+- `private_incidents_by_default` (Boolean) Whether incidents of this type are created as private by default.
+- `slug_source` (String) The source used to derive the incident slug (`default` or `servicenow`).
+- `test_incidents` (Boolean) Whether incidents of this type are treated as test incidents.

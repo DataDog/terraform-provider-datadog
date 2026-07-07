@@ -5,11 +5,15 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -24,10 +28,23 @@ type incidentTypeResource struct {
 }
 
 type incidentTypeModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	IsDefault   types.Bool   `tfsdk:"is_default"`
+	ID            types.String                    `tfsdk:"id"`
+	Name          types.String                    `tfsdk:"name"`
+	Description   types.String                    `tfsdk:"description"`
+	IsDefault     types.Bool                      `tfsdk:"is_default"`
+	Configuration *incidentTypeConfigurationModel `tfsdk:"configuration"`
+}
+
+type incidentTypeConfigurationModel struct {
+	PrivateIncidents                     types.Bool   `tfsdk:"private_incidents"`
+	PrivateIncidentsByDefault            types.Bool   `tfsdk:"private_incidents_by_default"`
+	AllowWorkflows                       types.Bool   `tfsdk:"allow_workflows"`
+	AllowIncidentDeletion                types.Bool   `tfsdk:"allow_incident_deletion"`
+	EditableTimestamps                   types.Bool   `tfsdk:"editable_timestamps"`
+	TestIncidents                        types.Bool   `tfsdk:"test_incidents"`
+	CreateMessage                        types.String `tfsdk:"create_message"`
+	DisableOutOfTheBoxPostmortemTemplate types.Bool   `tfsdk:"disable_out_of_the_box_postmortem_template"`
+	SlugSource                           types.String `tfsdk:"slug_source"`
 }
 
 func NewIncidentTypeResource() resource.Resource {
@@ -67,6 +84,71 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Whether this incident type is the default type.",
 				Optional:    true,
 				Computed:    true,
+			},
+			"configuration": schema.SingleNestedAttribute{
+				Description: "The incident type's behavior settings. Fields left unset are managed by the server and default to their server-side values. Note: this block is applied after creation via a separate update call, since the create endpoint does not accept configuration.",
+				Optional:    true,
+				Computed:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.UseStateForUnknown(),
+				},
+				Attributes: map[string]schema.Attribute{
+					"private_incidents": schema.BoolAttribute{
+						Description:   "Whether responders can create private incidents of this type.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+					},
+					"private_incidents_by_default": schema.BoolAttribute{
+						Description:   "Whether incidents of this type are created as private by default.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+					},
+					"allow_workflows": schema.BoolAttribute{
+						Description:   "Whether automation workflows can be triggered for incidents of this type. Defaults to `true`.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+					},
+					"allow_incident_deletion": schema.BoolAttribute{
+						Description:   "Whether incidents of this type can be deleted.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+					},
+					"editable_timestamps": schema.BoolAttribute{
+						Description:   "Whether responders can edit incident timestamps for incidents of this type.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+					},
+					"test_incidents": schema.BoolAttribute{
+						Description:   "Whether incidents of this type are treated as test incidents. Defaults to `true`.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+					},
+					"create_message": schema.StringAttribute{
+						Description:   "An optional message shown to users when they declare an incident of this type.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+					},
+					"disable_out_of_the_box_postmortem_template": schema.BoolAttribute{
+						Description:   "Whether the out-of-the-box postmortem template is disabled for incidents of this type.",
+						Optional:      true,
+						Computed:      true,
+						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+					},
+					"slug_source": schema.StringAttribute{
+						Description:   "When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed.",
+						Optional:      true,
+						Computed:      true,
+						Validators:    []validator.String{stringvalidator.OneOf("default", "servicenow")},
+						PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+					},
+				},
 			},
 		},
 	}
@@ -116,7 +198,39 @@ func (r *incidentTypeResource) Create(ctx context.Context, request resource.Crea
 		return
 	}
 
-	r.updateStateFromResponse(&state, &resp)
+	// The create endpoint ignores configuration, so when the user specifies it we apply it
+	// with a follow-up PATCH against the newly created type.
+	if state.Configuration != nil {
+		patchBody := datadogV2.IncidentTypePatchRequest{
+			Data: datadogV2.IncidentTypePatchData{
+				Type: datadogV2.INCIDENTTYPETYPE_INCIDENT_TYPES,
+				Id:   resp.Data.GetId(),
+				Attributes: datadogV2.IncidentTypeUpdateAttributes{
+					Configuration: buildIncidentTypeConfiguration(state.Configuration),
+				},
+			},
+		}
+		patchResp, patchHTTPResp, err := r.Api.UpdateIncidentType(r.Auth, resp.Data.GetId(), patchBody)
+		if err != nil {
+			errorMsg := "Could not apply configuration to created incident type, unexpected error: " + err.Error()
+			if patchHTTPResp != nil {
+				errorMsg += fmt.Sprintf(" (Status: %d)", patchHTTPResp.StatusCode)
+			}
+			response.Diagnostics.AddError("Error applying incident type configuration", errorMsg)
+			return
+		}
+		if patchHTTPResp.StatusCode != 200 {
+			response.Diagnostics.AddError(
+				"Error applying incident type configuration",
+				fmt.Sprintf("Could not apply configuration, status code: %d", patchHTTPResp.StatusCode),
+			)
+			return
+		}
+		r.updateStateFromResponse(&state, &patchResp)
+	} else {
+		r.updateStateFromResponse(&state, &resp)
+	}
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -171,6 +285,10 @@ func (r *incidentTypeResource) Update(ctx context.Context, request resource.Upda
 		body.Data.Attributes.SetIsDefault(state.IsDefault.ValueBool())
 	}
 
+	if state.Configuration != nil {
+		body.Data.Attributes.Configuration = buildIncidentTypeConfiguration(state.Configuration)
+	}
+
 	resp, httpResp, err := r.Api.UpdateIncidentType(r.Auth, state.ID.ValueString(), body)
 	if err != nil {
 		response.Diagnostics.AddError(
@@ -222,5 +340,53 @@ func (r *incidentTypeResource) updateStateFromResponse(state *incidentTypeModel,
 		state.Name = types.StringValue(attributes.GetName())
 		state.Description = types.StringValue(attributes.GetDescription())
 		state.IsDefault = types.BoolValue(attributes.GetIsDefault())
+
+		if cfg, ok := attributes.GetConfigurationOk(); ok {
+			state.Configuration = &incidentTypeConfigurationModel{
+				PrivateIncidents:                     types.BoolValue(cfg.GetPrivateIncidents()),
+				PrivateIncidentsByDefault:            types.BoolValue(cfg.GetPrivateIncidentsByDefault()),
+				AllowWorkflows:                       types.BoolValue(cfg.GetAllowWorkflows()),
+				AllowIncidentDeletion:                types.BoolValue(cfg.GetAllowIncidentDeletion()),
+				EditableTimestamps:                   types.BoolValue(cfg.GetEditableTimestamps()),
+				TestIncidents:                        types.BoolValue(cfg.GetTestIncidents()),
+				CreateMessage:                        types.StringValue(cfg.GetCreateMessage()),
+				DisableOutOfTheBoxPostmortemTemplate: types.BoolValue(cfg.GetDisableOutOfTheBoxPostmortemTemplate()),
+				SlugSource:                           types.StringValue(string(cfg.GetSlugSource())),
+			}
+		}
 	}
+}
+
+// buildIncidentTypeConfiguration maps the Terraform configuration model into the API model,
+// sending only the fields the user explicitly set so the API's partial-update semantics apply.
+func buildIncidentTypeConfiguration(m *incidentTypeConfigurationModel) *datadogV2.IncidentTypeConfiguration {
+	cfg := datadogV2.NewIncidentTypeConfiguration()
+	if !m.PrivateIncidents.IsNull() && !m.PrivateIncidents.IsUnknown() {
+		cfg.SetPrivateIncidents(m.PrivateIncidents.ValueBool())
+	}
+	if !m.PrivateIncidentsByDefault.IsNull() && !m.PrivateIncidentsByDefault.IsUnknown() {
+		cfg.SetPrivateIncidentsByDefault(m.PrivateIncidentsByDefault.ValueBool())
+	}
+	if !m.AllowWorkflows.IsNull() && !m.AllowWorkflows.IsUnknown() {
+		cfg.SetAllowWorkflows(m.AllowWorkflows.ValueBool())
+	}
+	if !m.AllowIncidentDeletion.IsNull() && !m.AllowIncidentDeletion.IsUnknown() {
+		cfg.SetAllowIncidentDeletion(m.AllowIncidentDeletion.ValueBool())
+	}
+	if !m.EditableTimestamps.IsNull() && !m.EditableTimestamps.IsUnknown() {
+		cfg.SetEditableTimestamps(m.EditableTimestamps.ValueBool())
+	}
+	if !m.TestIncidents.IsNull() && !m.TestIncidents.IsUnknown() {
+		cfg.SetTestIncidents(m.TestIncidents.ValueBool())
+	}
+	if !m.CreateMessage.IsNull() && !m.CreateMessage.IsUnknown() {
+		cfg.SetCreateMessage(m.CreateMessage.ValueString())
+	}
+	if !m.DisableOutOfTheBoxPostmortemTemplate.IsNull() && !m.DisableOutOfTheBoxPostmortemTemplate.IsUnknown() {
+		cfg.SetDisableOutOfTheBoxPostmortemTemplate(m.DisableOutOfTheBoxPostmortemTemplate.ValueBool())
+	}
+	if !m.SlugSource.IsNull() && !m.SlugSource.IsUnknown() {
+		cfg.SetSlugSource(datadogV2.IncidentTypeSlugSource(m.SlugSource.ValueString()))
+	}
+	return cfg
 }
