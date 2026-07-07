@@ -20,20 +20,22 @@ resource "datadog_incident_type" "example" {
   is_default  = false
 }
 
-# Incident type with behavior configuration
+# Incident type with the full configuration block shown at its default values.
+# Every field is optional; omitted fields fall back to these same defaults.
 resource "datadog_incident_type" "with_configuration" {
   name        = "Customer Impacting"
   description = "Incidents that impact customers"
 
   configuration = {
-    private_incidents            = true
-    private_incidents_by_default = false
-    allow_workflows              = true
-    allow_incident_deletion      = false
-    editable_timestamps          = true
-    test_incidents               = false
-    create_message               = "Follow the SEV runbook before declaring."
-    slug_source                  = "servicenow"
+    private_incidents                          = false
+    private_incidents_by_default               = false
+    allow_workflows                            = true
+    allow_incident_deletion                    = false
+    editable_timestamps                        = false
+    test_incidents                             = true
+    create_message                             = ""
+    disable_out_of_the_box_postmortem_template = false
+    slug_source                                = "default"
   }
 }
 ```
@@ -60,14 +62,14 @@ resource "datadog_incident_type" "with_configuration" {
 
 Optional:
 
-- `allow_incident_deletion` (Boolean) Whether incidents of this type can be deleted.
+- `allow_incident_deletion` (Boolean) Whether incidents of this type can be deleted. Defaults to `false`.
 - `allow_workflows` (Boolean) Whether automation workflows can be triggered for incidents of this type. Defaults to `true`.
-- `create_message` (String) An optional message shown to users when they declare an incident of this type.
-- `disable_out_of_the_box_postmortem_template` (Boolean) Whether the out-of-the-box postmortem template is disabled for incidents of this type.
-- `editable_timestamps` (Boolean) Whether responders can edit incident timestamps for incidents of this type.
-- `private_incidents` (Boolean) Whether responders can create private incidents of this type.
-- `private_incidents_by_default` (Boolean) Whether incidents of this type are created as private by default.
-- `slug_source` (String) When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed. Valid values are `default`, `servicenow`.
+- `create_message` (String) An optional message shown to users when they declare an incident of this type. Defaults to `""`.
+- `disable_out_of_the_box_postmortem_template` (Boolean) Whether the out-of-the-box postmortem template is disabled for incidents of this type. Defaults to `false`.
+- `editable_timestamps` (Boolean) Whether responders can edit incident timestamps for incidents of this type. Defaults to `false`.
+- `private_incidents` (Boolean) Whether responders can create private incidents of this type. Defaults to `false`.
+- `private_incidents_by_default` (Boolean) Whether incidents of this type are created as private by default. Defaults to `false`.
+- `slug_source` (String) When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed. Valid values are `default`, `servicenow`. Defaults to `"default"`.
 - `test_incidents` (Boolean) Whether incidents of this type are treated as test incidents. Defaults to `true`.
 
 ## Import

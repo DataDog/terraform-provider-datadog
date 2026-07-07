@@ -9,9 +9,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -94,59 +95,59 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 				Attributes: map[string]schema.Attribute{
 					"private_incidents": schema.BoolAttribute{
-						Description:   "Whether responders can create private incidents of this type.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+						Description: "Whether responders can create private incidents of this type.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(false),
 					},
 					"private_incidents_by_default": schema.BoolAttribute{
-						Description:   "Whether incidents of this type are created as private by default.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+						Description: "Whether incidents of this type are created as private by default.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(false),
 					},
 					"allow_workflows": schema.BoolAttribute{
-						Description:   "Whether automation workflows can be triggered for incidents of this type. Defaults to `true`.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+						Description: "Whether automation workflows can be triggered for incidents of this type.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(true),
 					},
 					"allow_incident_deletion": schema.BoolAttribute{
-						Description:   "Whether incidents of this type can be deleted.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+						Description: "Whether incidents of this type can be deleted.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(false),
 					},
 					"editable_timestamps": schema.BoolAttribute{
-						Description:   "Whether responders can edit incident timestamps for incidents of this type.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+						Description: "Whether responders can edit incident timestamps for incidents of this type.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(false),
 					},
 					"test_incidents": schema.BoolAttribute{
-						Description:   "Whether incidents of this type are treated as test incidents. Defaults to `true`.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+						Description: "Whether incidents of this type are treated as test incidents.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(true),
 					},
 					"create_message": schema.StringAttribute{
-						Description:   "An optional message shown to users when they declare an incident of this type.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+						Description: "An optional message shown to users when they declare an incident of this type.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
 					},
 					"disable_out_of_the_box_postmortem_template": schema.BoolAttribute{
-						Description:   "Whether the out-of-the-box postmortem template is disabled for incidents of this type.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+						Description: "Whether the out-of-the-box postmortem template is disabled for incidents of this type.",
+						Optional:    true,
+						Computed:    true,
+						Default:     booldefault.StaticBool(false),
 					},
 					"slug_source": schema.StringAttribute{
-						Description:   "When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed.",
-						Optional:      true,
-						Computed:      true,
-						Validators:    []validator.String{stringvalidator.OneOf("default", "servicenow")},
-						PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+						Description: "When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("default"),
+						Validators:  []validator.String{stringvalidator.OneOf("default", "servicenow")},
 					},
 				},
 			},
