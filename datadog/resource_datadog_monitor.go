@@ -1228,7 +1228,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							"job_type": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `dbt.model`, `dbt.test`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.",
+								Description: "The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.",
 							},
 							"query_dialect": {
 								Type:        schema.TypeString,
