@@ -49,7 +49,7 @@ resource "datadog_incident_type" "with_configuration" {
 
 ### Optional
 
-- `configuration` (Attributes) The incident type's behavior settings. Fields left unset are managed by the server and default to their server-side values. Note: this block is applied after creation via a separate update call, since the create endpoint does not accept configuration. (see [below for nested schema](#nestedatt--configuration))
+- `configuration` (Attributes) The incident type's behavior settings. Fields left unset default to their server-side values. Note: this block is applied after creation via a separate update call, since the create endpoint does not accept configuration. (see [below for nested schema](#nestedatt--configuration))
 - `description` (String) Description of the incident type. The description can have a maximum of 512 characters.
 - `is_default` (Boolean) Whether this incident type is the default type.
 
