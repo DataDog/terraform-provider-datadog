@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -17,6 +19,11 @@ import (
 // errCheckFailed signals that --check found files that would change.
 // Execute translates this into exit code 3.
 var errCheckFailed = fmt.Errorf("check: one or more files would change")
+
+// apiInstancesHelperPath is the provider's ApiInstances helper, the source of
+// truth for SDK API accessor names. It is read relative to the working directory
+// (the repo root), like the other default paths.
+const apiInstancesHelperPath = "datadog/internal/utils/api_instances_helper.go"
 
 func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var check bool
@@ -50,6 +57,17 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 
 			filter := parseInclude(include)
 
+			// Resolve the provider's SDK-accessor names, the source of truth for
+			// APIAccessor. A missing file is expected outside a full checkout; a parse
+			// failure is worth surfacing. Either way we fall back to derived names.
+			accessors, accErr := emit.ResolveAPIAccessors(apiInstancesHelperPath)
+			if accErr != nil {
+				if !errors.Is(accErr, os.ErrNotExist) {
+					cmd.PrintErrln("tfgen: could not resolve API accessors, using derived names:", accErr)
+				}
+				accessors = nil
+			}
+
 			var registrations []emit.GeneratedRegistration
 			for _, op := range spec.Operations {
 				if op.Tracking == nil {
@@ -79,7 +97,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					continue
 				}
 
-				entry, testEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, emitTests, check)
+				entry, testEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, emitTests, check, accessors)
 				runReport.Artifacts = append(runReport.Artifacts, entry)
 				if testEntry != nil {
 					runReport.Artifacts = append(runReport.Artifacts, *testEntry)
@@ -141,7 +159,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 // operation. On success it also returns the GeneratedRegistration the caller
 // uses to wire the data source into the provider; it is nil for a skipped or
 // failed artifact.
-func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, emitTests, check bool) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, emitTests, check bool, accessors map[string]string) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -170,6 +188,9 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, e
 	if err != nil {
 		return failEntry(entry, err), nil, nil
 	}
+	// Correct APIAccessor to the name the provider's helper actually exposes,
+	// which diverges from the derived name for a few acronym/aliased APIs.
+	emit.ApplyAPIAccessor(&view, accessors)
 	// Members the emit flattener dropped (e.g. relationships) ride along as info.
 	for _, msg := range view.Dropped {
 		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityInfo, Message: msg})
