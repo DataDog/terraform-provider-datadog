@@ -132,6 +132,7 @@ var Resources = []func() resource.Resource{
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewIncidentUserDefinedFieldResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
 	NewDatadogCustomAllocationRuleResource,
@@ -659,6 +660,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
+
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedField", true)
 
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
