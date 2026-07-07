@@ -23,7 +23,6 @@ type datadogDatastoresDataSourceModel struct {
 }
 
 type DatastoreDataModel struct {
-	CreatedAt                    types.String `tfsdk:"created_at"`
 	CreatorUserId                types.Int64  `tfsdk:"creator_user_id"`
 	CreatorUserUuid              types.String `tfsdk:"creator_user_uuid"`
 	Description                  types.String `tfsdk:"description"`
@@ -65,10 +64,6 @@ func (d *datadogDatastoresDataSource) Schema(_ context.Context, _ datasource.Sch
 				Description: "An array of datastore objects containing their configurations and metadata.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
-						"created_at": schema.StringAttribute{
-							Description: "Timestamp when the datastore was created.",
-							Computed:    true,
-						},
 						"creator_user_id": schema.Int64Attribute{
 							Description: "The numeric ID of the user who created the datastore.",
 							Computed:    true,
@@ -135,7 +130,6 @@ func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSo
 	results := make([]*DatastoreDataModel, 0, len(*data))
 	for _, item := range *data {
 		r := DatastoreDataModel{
-			CreatedAt:                    types.StringValue(item.Attributes.GetCreatedAt().String()),
 			CreatorUserId:                types.Int64Value(int64(item.Attributes.GetCreatorUserId())),
 			CreatorUserUuid:              types.StringValue(item.Attributes.GetCreatorUserUuid()),
 			Description:                  types.StringValue(item.Attributes.GetDescription()),
