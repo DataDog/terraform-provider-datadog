@@ -62,7 +62,7 @@ var _ = Describe("BuildDataSourceView", func() {
 	It("renders a date-time string via .String(), a named enum via a string() cast, and avoids shadowing state", func() {
 		op := incidentTypeOperation()
 		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
-		attrs["created_at"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time"}
+		attrs["resolved_at"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time"}
 		attrs["state"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Enum: []string{"active", "archived"}}
 		art, err := model.BuildArtifact(op)
 		Expect(err).NotTo(HaveOccurred())
@@ -74,8 +74,8 @@ var _ = Describe("BuildDataSourceView", func() {
 		for _, a := range view.State.Assignments {
 			assign[a.LHS] = a
 		}
-		Expect(assign["state.CreatedAt"].RHS).To(Equal("types.StringValue(createdAt.String())"))
-		Expect(assign["state.CreatedAt"].GetterOk).To(Equal("attributes.GetCreatedAtOk()"))
+		Expect(assign["state.ResolvedAt"].RHS).To(Equal("types.StringValue(resolvedAt.String())"))
+		Expect(assign["state.ResolvedAt"].GetterOk).To(Equal("attributes.GetResolvedAtOk()"))
 		// "state" would shadow the updateState receiver, so its local is suffixed.
 		Expect(assign["state.State"].Var).To(Equal("stateValue"))
 		Expect(assign["state.State"].RHS).To(Equal("types.StringValue(string(*stateValue))"))
@@ -125,6 +125,53 @@ var _ = Describe("BuildDataSourceView", func() {
 		view, err := BuildDataSourceView(art)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view.Dropped).To(ContainElement(ContainSubstring("relationships")))
+	})
+})
+
+var _ = Describe("BuildDataSourceView audit fields", func() {
+	It("drops server-managed created_at/updated_at/created_by/updated_by from a singular record and records them", func() {
+		op := incidentTypeOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
+		for _, f := range []string{"created_at", "updated_at", "created_by", "updated_by"} {
+			attrs[f] = prim("string", "")
+		}
+		view := mustView(op)
+
+		for _, a := range view.Schema.Attributes {
+			Expect(a.TFName).NotTo(BeElementOf("created_at", "updated_at", "created_by", "updated_by"))
+		}
+		Expect(view.Dropped).To(ContainElement(ContainSubstring("created_at")))
+	})
+
+	It("keeps an audit-named field nested inside an object", func() {
+		view := mustView(retentionFilterOperation())
+
+		blocks := map[string]AttrView{}
+		for _, b := range view.Schema.Blocks {
+			blocks[b.TFName] = b
+		}
+		metadata := map[string]AttrView{}
+		for _, b := range blocks["filter"].Blocks {
+			metadata[b.TFName] = b
+		}
+		var nested []string
+		for _, a := range metadata["metadata"].Attributes {
+			nested = append(nested, a.TFName)
+		}
+		Expect(nested).To(ContainElement("created_by"))
+	})
+
+	It("drops top-level audit fields from plural item attributes but keeps non-audit siblings", func() {
+		view := mustView(datastoresOperation())
+
+		var itemAttrs []string
+		for _, b := range view.Schema.Blocks {
+			for _, a := range b.Attributes {
+				itemAttrs = append(itemAttrs, a.TFName)
+			}
+		}
+		Expect(itemAttrs).NotTo(ContainElement("created_at"))
+		Expect(itemAttrs).To(ContainElement("modified_at"))
 	})
 })
 
