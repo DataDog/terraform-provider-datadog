@@ -479,7 +479,7 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 				},
 				"algorithm": {
 					Type:             schema.TypeString,
-					Description:      "Algorithm to use for `jwt` authentication. Valid values are `HS256`, `RS256`, `ES256`.",
+					Description:      "Algorithm to use for `jwt` authentication.",
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBasicAuthJWTAlgorithmFromValue),
 				},
