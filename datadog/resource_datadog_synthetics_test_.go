@@ -387,7 +387,7 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Type:         schema.TypeString,
 					Optional:     true,
 					Default:      "web",
-					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm", "oauth-client", "oauth-rop", "digest"}, false),
+					ValidateFunc: validation.StringInSlice([]string{"web", "sigv4", "ntlm", "oauth-client", "oauth-rop", "digest", "jwt"}, false),
 				},
 				"username": {
 					Description: "Username for authentication.",
@@ -476,6 +476,48 @@ func syntheticsTestRequestBasicAuth() *schema.Schema {
 					Description: "Client secret for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
 					Sensitive:   true,
+				},
+				"algorithm": {
+					Type:             schema.TypeString,
+					Description:      "Algorithm to use for `jwt` authentication.",
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsBasicAuthJWTAlgorithmFromValue),
+				},
+				"secret": {
+					Type:        schema.TypeString,
+					Description: "Signing key for `jwt` authentication. Use the shared secret for `HS256` or the private key (PEM format) for `RS256` and `ES256`.",
+					Optional:    true,
+					Sensitive:   true,
+				},
+				"payload": {
+					Type:        schema.TypeString,
+					Description: "JWT claims as a JSON string, for `jwt` authentication.",
+					Optional:    true,
+				},
+				"header": {
+					Type:        schema.TypeString,
+					Description: "Custom JWT header as a JSON string, for `jwt` authentication.",
+					Optional:    true,
+				},
+				"expires_in": {
+					Type:        schema.TypeInt,
+					Description: "Token time-to-live in seconds, for `jwt` authentication.",
+					Optional:    true,
+				},
+				"add_claims_iat": {
+					Type:        schema.TypeBool,
+					Description: "Whether to inject the `iat` (issued at) claim automatically, for `jwt` authentication.",
+					Optional:    true,
+				},
+				"add_claims_exp": {
+					Type:        schema.TypeBool,
+					Description: "Whether to inject the `exp` (expiration) claim automatically, for `jwt` authentication.",
+					Optional:    true,
+				},
+				"token_prefix": {
+					Type:        schema.TypeString,
+					Description: "Prefix added before the token in the `Authorization` header for `jwt` authentication. Defaults to `Bearer`.",
+					Optional:    true,
 				},
 			},
 		},
@@ -2480,7 +2522,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
 		localAuth := buildTerraformBasicAuth(basicAuth)
 
-		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
+		if err := d.Set("request_basicauth", []map[string]interface{}{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -2711,7 +2753,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
 		localAuth := buildTerraformBasicAuth(basicAuth)
 
-		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
+		if err := d.Set("request_basicauth", []map[string]interface{}{localAuth}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -2810,7 +2852,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 				if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
 					localAuth := buildTerraformBasicAuth(basicAuth)
-					localStep["request_basicauth"] = []map[string]string{localAuth}
+					localStep["request_basicauth"] = []map[string]interface{}{localAuth}
 				}
 
 				if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
@@ -4489,6 +4531,42 @@ func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) (datadogV1.S
 		return datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth), diags
 	}
 
+	if requestBasicAuth["type"] == "jwt" {
+		algorithm, err := datadogV1.NewSyntheticsBasicAuthJWTAlgorithmFromValue(requestBasicAuth["algorithm"].(string))
+		if err != nil {
+			diags = append(diags, diag.FromErr(err)...)
+			return datadogV1.SyntheticsBasicAuth{}, diags
+		}
+		basicAuth := datadogV1.NewSyntheticsBasicAuthJWT(
+			*algorithm,
+			requestBasicAuth["payload"].(string),
+			requestBasicAuth["secret"].(string),
+			datadogV1.SYNTHETICSBASICAUTHJWTTYPE_JWT,
+		)
+		if v, ok := requestBasicAuth["header"].(string); ok && v != "" {
+			basicAuth.SetHeader(v)
+		}
+		if v, ok := requestBasicAuth["expires_in"].(int); ok && v > 0 {
+			basicAuth.SetExpiresIn(int64(v))
+		}
+		if v, ok := requestBasicAuth["token_prefix"].(string); ok && v != "" {
+			basicAuth.SetTokenPrefix(v)
+		}
+		addClaimsIat, hasIat := requestBasicAuth["add_claims_iat"].(bool)
+		addClaimsExp, hasExp := requestBasicAuth["add_claims_exp"].(bool)
+		if hasIat || hasExp {
+			addClaims := datadogV1.NewSyntheticsBasicAuthJWTAddClaims()
+			if hasIat {
+				addClaims.SetIat(addClaimsIat)
+			}
+			if hasExp {
+				addClaims.SetExp(addClaimsExp)
+			}
+			basicAuth.SetAddClaims(*addClaims)
+		}
+		return datadogV1.SyntheticsBasicAuthJWTAsSyntheticsBasicAuth(basicAuth), diags
+	}
+
 	diags = append(diags, diag.Diagnostic{
 		Severity: diag.Warning,
 		Summary:  fmt.Sprintf("Unrecognized `request_basicauth.type`: %s", requestBasicAuth["type"].(string)),
@@ -4496,8 +4574,8 @@ func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) (datadogV1.S
 	return datadogV1.SyntheticsBasicAuth{}, diags
 }
 
-func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
-	localAuth := make(map[string]string)
+func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]interface{} {
+	localAuth := make(map[string]interface{})
 
 	if basicAuth.SyntheticsBasicAuthWeb != nil {
 		basicAuthWeb := basicAuth.SyntheticsBasicAuthWeb
@@ -4592,6 +4670,31 @@ func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[strin
 		localAuth["password"] = basicAuthDigest.Password
 
 		localAuth["type"] = "digest"
+	}
+
+	if basicAuth.SyntheticsBasicAuthJWT != nil {
+		basicAuthJWT := basicAuth.SyntheticsBasicAuthJWT
+		localAuth["algorithm"] = string(basicAuthJWT.Algorithm)
+		localAuth["secret"] = basicAuthJWT.Secret
+		localAuth["payload"] = basicAuthJWT.Payload
+		if v, ok := basicAuthJWT.GetHeaderOk(); ok {
+			localAuth["header"] = *v
+		}
+		if v, ok := basicAuthJWT.GetExpiresInOk(); ok {
+			localAuth["expires_in"] = int(*v)
+		}
+		if v, ok := basicAuthJWT.GetTokenPrefixOk(); ok {
+			localAuth["token_prefix"] = *v
+		}
+		if v, ok := basicAuthJWT.GetAddClaimsOk(); ok {
+			if iat, ok := v.GetIatOk(); ok {
+				localAuth["add_claims_iat"] = *iat
+			}
+			if exp, ok := v.GetExpOk(); ok {
+				localAuth["add_claims_exp"] = *exp
+			}
+		}
+		localAuth["type"] = "jwt"
 	}
 
 	return localAuth
