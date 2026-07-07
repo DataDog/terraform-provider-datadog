@@ -1,3 +1,20 @@
+## 4.15.0 (July 7, 2026)
+
+### IMPROVEMENTS
+* [datadog_security_monitoring_critical_asset] Add description field by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/3925
+### FEATURES
+* [datadog_observability_pipeline] Add ClickHouse destination by @Jansen-w in https://github.com/DataDog/terraform-provider-datadog/pull/3917
+* [datadog_observability_pipeline] Add WebSocket source by @Jansen-w in https://github.com/DataDog/terraform-provider-datadog/pull/3855
+* [datadog_observability_pipeline] Update Grok processor in obs pipelines by @jackie8c in https://github.com/DataDog/terraform-provider-datadog/pull/3927
+* [datadog_logs_archive] Support access_key_id S3 destination by @glecetre in https://github.com/DataDog/terraform-provider-datadog/pull/3926
+
+## New Contributors
+* @Jansen-w made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3917
+* @glecetre made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3926
+* @BeatrizFeliciano made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3935
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.14.0...v4.15.0
+
 ## 4.14.0 (July 1, 2026)
 
 ### BUGFIXES
