@@ -6,11 +6,12 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -46,6 +47,35 @@ type incidentTypeConfigurationModel struct {
 	CreateMessage                        types.String `tfsdk:"create_message"`
 	DisableOutOfTheBoxPostmortemTemplate types.Bool   `tfsdk:"disable_out_of_the_box_postmortem_template"`
 	SlugSource                           types.String `tfsdk:"slug_source"`
+}
+
+var incidentTypeConfigurationAttrTypes = map[string]attr.Type{
+	"private_incidents":                          types.BoolType,
+	"private_incidents_by_default":               types.BoolType,
+	"allow_workflows":                            types.BoolType,
+	"allow_incident_deletion":                    types.BoolType,
+	"editable_timestamps":                        types.BoolType,
+	"test_incidents":                             types.BoolType,
+	"create_message":                             types.StringType,
+	"disable_out_of_the_box_postmortem_template": types.BoolType,
+	"slug_source":                                types.StringType,
+}
+
+// incidentTypeConfigurationDefault is the object used when the configuration block is omitted,
+// mirroring the API's server-side defaults. It keeps the block known (never unknown) so the
+// nested-struct model can decode it.
+func incidentTypeConfigurationDefault() types.Object {
+	return types.ObjectValueMust(incidentTypeConfigurationAttrTypes, map[string]attr.Value{
+		"private_incidents":                          types.BoolValue(false),
+		"private_incidents_by_default":               types.BoolValue(false),
+		"allow_workflows":                            types.BoolValue(true),
+		"allow_incident_deletion":                    types.BoolValue(false),
+		"editable_timestamps":                        types.BoolValue(false),
+		"test_incidents":                             types.BoolValue(true),
+		"create_message":                             types.StringValue(""),
+		"disable_out_of_the_box_postmortem_template": types.BoolValue(false),
+		"slug_source":                                types.StringValue("default"),
+	})
 }
 
 func NewIncidentTypeResource() resource.Resource {
@@ -87,12 +117,10 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 				Computed:    true,
 			},
 			"configuration": schema.SingleNestedAttribute{
-				Description: "The incident type's behavior settings. Fields left unset are managed by the server and default to their server-side values. Note: this block is applied after creation via a separate update call, since the create endpoint does not accept configuration.",
+				Description: "The incident type's behavior settings. Fields left unset default to their server-side values. Note: this block is applied after creation via a separate update call, since the create endpoint does not accept configuration.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.UseStateForUnknown(),
-				},
+				Default:     objectdefault.StaticValue(incidentTypeConfigurationDefault()),
 				Attributes: map[string]schema.Attribute{
 					"private_incidents": schema.BoolAttribute{
 						Description: "Whether responders can create private incidents of this type.",
