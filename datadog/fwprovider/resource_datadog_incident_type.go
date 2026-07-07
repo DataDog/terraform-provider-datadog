@@ -190,6 +190,15 @@ func (r *incidentTypeResource) Create(ctx context.Context, request resource.Crea
 		return
 	}
 
+	// Read the raw config (not the plan) to tell whether the user actually declared a
+	// configuration block. The plan always has one because of the schema Default, so we
+	// must only issue the follow-up PATCH when the user explicitly set it.
+	var config incidentTypeModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	body := datadogV2.IncidentTypeCreateRequest{
 		Data: datadogV2.IncidentTypeCreateData{
 			Type: datadogV2.INCIDENTTYPETYPE_INCIDENT_TYPES,
@@ -229,7 +238,7 @@ func (r *incidentTypeResource) Create(ctx context.Context, request resource.Crea
 
 	// The create endpoint ignores configuration, so when the user specifies it we apply it
 	// with a follow-up PATCH against the newly created type.
-	if state.Configuration != nil {
+	if config.Configuration != nil {
 		patchBody := datadogV2.IncidentTypePatchRequest{
 			Data: datadogV2.IncidentTypePatchData{
 				Type: datadogV2.INCIDENTTYPETYPE_INCIDENT_TYPES,
@@ -290,6 +299,14 @@ func (r *incidentTypeResource) Read(ctx context.Context, request resource.ReadRe
 func (r *incidentTypeResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state incidentTypeModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// Only send configuration when the user actually declared the block (the plan always
+	// carries one due to the schema Default).
+	var config incidentTypeModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
 	if response.Diagnostics.HasError() {
 		return
 	}

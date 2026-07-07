@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"Test incident type","is_default":false,"name":"test-it-basic-1754489599"},"type":"incident_types"}}
+            {"data":{"attributes":{"description":"Test incident type","is_default":false,"name":"test-it-basic-1783453067"},"type":"incident_types"}}
         form: {}
         headers:
             Accept:
@@ -23,20 +23,20 @@ interactions:
         url: https://api.datadoghq.com/api/v2/incidents/config/types
         method: POST
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 716
-        uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.294530078Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.294530168Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"f692065d-0c0d-400e-b277-cf4bfa85d486","type":"incident_types","attributes":{"configuration":{"private_incidents":false,"private_incidents_by_default":false,"allow_workflows":true,"allow_incident_deletion":false,"editable_timestamps":false,"test_incidents":true,"create_message":"","disable_out_of_the_box_postmortem_template":false,"slug_source":"default"},"createdAt":"2026-07-07T19:37:50.331439945Z","createdBy":"3dd3e8fb-8ead-11ef-b937-6257f296175f","description":"Test incident type","is_default":false,"lastModifiedBy":"3dd3e8fb-8ead-11ef-b937-6257f296175f","modifiedAt":"2026-07-07T19:37:50.331440051Z","name":"test-it-basic-1783453067","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3dd3e8fb-8ead-11ef-b937-6257f296175f","type":"users"}},"google_chat_configuration":{"data":null},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3dd3e8fb-8ead-11ef-b937-6257f296175f","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 182.381583ms
+        duration: 293.181833ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,23 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/f692065d-0c0d-400e-b277-cf4bfa85d486
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 708
-        uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.29453Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.29453Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"f692065d-0c0d-400e-b277-cf4bfa85d486","type":"incident_types","attributes":{"configuration":{"private_incidents":false,"private_incidents_by_default":false,"allow_workflows":true,"allow_incident_deletion":false,"editable_timestamps":false,"test_incidents":true,"create_message":"","disable_out_of_the_box_postmortem_template":false,"slug_source":"default"},"createdAt":"2026-07-07T19:37:50.331439Z","createdBy":"3dd3e8fb-8ead-11ef-b937-6257f296175f","description":"Test incident type","is_default":false,"lastModifiedBy":"3dd3e8fb-8ead-11ef-b937-6257f296175f","modifiedAt":"2026-07-07T19:37:50.33144Z","name":"test-it-basic-1783453067","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3dd3e8fb-8ead-11ef-b937-6257f296175f","type":"users"}},"google_chat_configuration":{"data":null},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3dd3e8fb-8ead-11ef-b937-6257f296175f","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 67.13725ms
+        duration: 83.517042ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,23 +86,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/f692065d-0c0d-400e-b277-cf4bfa85d486
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 708
-        uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.29453Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.29453Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"f692065d-0c0d-400e-b277-cf4bfa85d486","type":"incident_types","attributes":{"configuration":{"private_incidents":false,"private_incidents_by_default":false,"allow_workflows":true,"allow_incident_deletion":false,"editable_timestamps":false,"test_incidents":true,"create_message":"","disable_out_of_the_box_postmortem_template":false,"slug_source":"default"},"createdAt":"2026-07-07T19:37:50.331439Z","createdBy":"3dd3e8fb-8ead-11ef-b937-6257f296175f","description":"Test incident type","is_default":false,"lastModifiedBy":"3dd3e8fb-8ead-11ef-b937-6257f296175f","modifiedAt":"2026-07-07T19:37:50.33144Z","name":"test-it-basic-1783453067","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3dd3e8fb-8ead-11ef-b937-6257f296175f","type":"users"}},"google_chat_configuration":{"data":null},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3dd3e8fb-8ead-11ef-b937-6257f296175f","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 54.590125ms
+        duration: 76.727208ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,12 +119,12 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/f692065d-0c0d-400e-b277-cf4bfa85d486
         method: DELETE
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
         content_length: 0
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 54.623209ms
+        duration: 42.118834ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,20 +150,20 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/incidents/config/types/19b8bc2b-4a04-49e6-9c2e-571893d72424
+        url: https://api.datadoghq.com/api/v2/incidents/config/types/f692065d-0c0d-400e-b277-cf4bfa85d486
         method: GET
       response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 708
+        content_length: 77
         uncompressed: false
-        body: '{"data":{"id":"19b8bc2b-4a04-49e6-9c2e-571893d72424","type":"incident_types","attributes":{"createdAt":"2025-08-06T14:13:21.29453Z","createdBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","description":"Test incident type","is_default":false,"lastModifiedBy":"3ad549bf-eba0-11e9-a77a-0705486660d0","modifiedAt":"2025-08-06T14:13:21.29453Z","name":"test-it-basic-1754489599","prefix":"IR"},"relationships":{"created_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"google_meet_configuration":{"data":null},"last_modified_by_user":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"microsoft_teams_configuration":{"data":null},"zoom_configuration":{"data":null}}}}'
+        body: '{"errors":[{"title":"Generic Error","detail":"incident type doesn''t exist"}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 106.432208ms
+        status: 404 Not Found
+        code: 404
+        duration: 37.656333ms
