@@ -250,6 +250,10 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 	// a map is not.
 	leaves := make([]*model.Attribute, 0, len(attributes.Children))
 	for _, child := range attributes.Children {
+		if isAuditField(tfNameOf(child.Path)) {
+			b.dropped = append(b.dropped, droppedAuditField(child.Path))
+			continue
+		}
 		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isObjectType(child.TfType) {
 			b.unsupported = append(b.unsupported, UnsupportedNode{
 				Path:   child.Path,
@@ -306,6 +310,12 @@ type dataSourceBuilder struct {
 // member skipped from the attributes-only view, e.g. relationships.
 func droppedEnvelopeMember(path string) string {
 	return fmt.Sprintf("dropped %q: not part of the surfaced {id, type, attributes} envelope", path)
+}
+
+// droppedAuditField is the info-diagnostic note for a top-level audit attribute
+// omitted from a generated data source.
+func droppedAuditField(path string) string {
+	return fmt.Sprintf("dropped %q: server-managed audit field", path)
 }
 
 // walk processes one struct's worth of attributes in tree order, reserving the
@@ -466,6 +476,20 @@ func isArrayType(tfType string) bool {
 // isObjectType reports whether tfType is a bare nested object the envelope
 // hoists into single-object machinery (schema.SingleNestedBlock).
 func isObjectType(tfType string) bool { return tfType == "schema.SingleNestedBlock" }
+
+// auditFields are server-managed audit attributes dropped from the top level of a
+// generated data source: their timestamps and actor handles add schema noise
+// without configuration value.
+var auditFields = map[string]bool{
+	"created_at": true,
+	"updated_at": true,
+	"created_by": true,
+	"updated_by": true,
+}
+
+// isAuditField reports whether a top-level record attribute is server-managed
+// audit metadata the emit path drops rather than surfacing.
+func isAuditField(tfName string) bool { return auditFields[tfName] }
 
 // tfNameOf returns the Terraform attribute key for an attribute path: its last
 // dot-segment with array/map markers stripped.
@@ -791,6 +815,10 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 				continue
 			}
 			for _, leaf := range child.Children {
+				if isAuditField(tfNameOf(leaf.Path)) {
+					*dropped = append(*dropped, droppedAuditField(leaf.Path))
+					continue
+				}
 				switch {
 				case isLeafType(leaf.TfType):
 					scalars = append(scalars, itemElementLeaf{attr: leaf, chain: itemGetter("item.Attributes", tfNameOf(leaf.Path))})

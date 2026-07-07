@@ -21,7 +21,6 @@ type datadogDatastoreDataSourceModel struct {
 	ID types.String `tfsdk:"id"`
 
 	// Computed values
-	CreatedAt                    types.String `tfsdk:"created_at"`
 	CreatorUserId                types.Int64  `tfsdk:"creator_user_id"`
 	CreatorUserUuid              types.String `tfsdk:"creator_user_uuid"`
 	Description                  types.String `tfsdk:"description"`
@@ -58,10 +57,6 @@ func (d *datadogDatastoreDataSource) Schema(_ context.Context, _ datasource.Sche
 			"id": schema.StringAttribute{
 				Description: "The ID of this datastore data source.",
 				Optional:    true,
-				Computed:    true,
-			},
-			"created_at": schema.StringAttribute{
-				Description: "Timestamp when the datastore was created.",
 				Computed:    true,
 			},
 			"creator_user_id": schema.Int64Attribute{
@@ -142,9 +137,6 @@ func (d *datadogDatastoreDataSource) updateState(state *datadogDatastoreDataSour
 	attributes := data.GetAttributes()
 	if id, ok := data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)
-	}
-	if createdAt, ok := attributes.GetCreatedAtOk(); ok && createdAt != nil {
-		state.CreatedAt = types.StringValue(createdAt.String())
 	}
 	if creatorUserId, ok := attributes.GetCreatorUserIdOk(); ok && creatorUserId != nil {
 		state.CreatorUserId = types.Int64Value(int64(*creatorUserId))
