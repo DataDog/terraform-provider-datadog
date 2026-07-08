@@ -221,7 +221,8 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 	}
 
 	id := state.ID.ValueString()
-	path := catalogPath + "?include=raw_schema&filter[ref]=" + id
+	// includeDiscovered=true so entities Datadog has auto-discovered but never written to via this API are also found.
+	path := catalogPath + "?include=raw_schema&filter[ref]=" + id + "&includeDiscovered=true"
 	httpRespByte, _, err := utils.SendRequest(r.Auth, r.Api, "GET", path, nil)
 
 	if err != nil {
