@@ -8158,16 +8158,20 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
           limit_exceeded_action = "drop_tag"
           value_limit           = 5000
 
+          tracking_mode {
+            mode = "exact_fingerprint"
+          }
+
           per_metric_limit {
             metric_name           = "request.count"
-            mode                  = "tracked"
+            override_type         = "limit_override"
             limit_exceeded_action = "drop_tag"
             value_limit           = 1000
 
             per_tag_limit {
-              tag_key     = "env"
-              mode        = "limit_override"
-              value_limit = 50
+              tag_key       = "env"
+              override_type = "limit_override"
+              value_limit   = 50
             }
           }
         }
@@ -8186,10 +8190,11 @@ resource "datadog_observability_pipeline" "tag_cardinality_limit" {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.limit_exceeded_action", "drop_tag"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.value_limit", "5000"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.tracking_mode.0.mode", "exact_fingerprint"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.metric_name", "request.count"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.mode", "tracked"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.override_type", "limit_override"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.tag_key", "env"),
-					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.mode", "limit_override"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.override_type", "limit_override"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.processor_group.0.processor.0.tag_cardinality_limit.0.per_metric_limit.0.per_tag_limit.0.value_limit", "50"),
 				),
 			},

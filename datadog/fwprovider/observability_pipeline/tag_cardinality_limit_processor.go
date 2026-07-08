@@ -13,21 +13,26 @@ import (
 type TagCardinalityLimitProcessorModel struct {
 	LimitExceededAction types.String                                      `tfsdk:"limit_exceeded_action"`
 	ValueLimit          types.Int64                                       `tfsdk:"value_limit"`
+	TrackingMode        []TagCardinalityLimitProcessorTrackingModeModel   `tfsdk:"tracking_mode"`
 	PerMetricLimits     []TagCardinalityLimitProcessorPerMetricLimitModel `tfsdk:"per_metric_limit"`
+}
+
+type TagCardinalityLimitProcessorTrackingModeModel struct {
+	Mode types.String `tfsdk:"mode"`
 }
 
 type TagCardinalityLimitProcessorPerMetricLimitModel struct {
 	MetricName          types.String                                   `tfsdk:"metric_name"`
-	Mode                types.String                                   `tfsdk:"mode"`
+	OverrideType        types.String                                   `tfsdk:"override_type"`
 	LimitExceededAction types.String                                   `tfsdk:"limit_exceeded_action"`
 	ValueLimit          types.Int64                                    `tfsdk:"value_limit"`
 	PerTagLimits        []TagCardinalityLimitProcessorPerTagLimitModel `tfsdk:"per_tag_limit"`
 }
 
 type TagCardinalityLimitProcessorPerTagLimitModel struct {
-	TagKey     types.String `tfsdk:"tag_key"`
-	Mode       types.String `tfsdk:"mode"`
-	ValueLimit types.Int64  `tfsdk:"value_limit"`
+	TagKey       types.String `tfsdk:"tag_key"`
+	OverrideType types.String `tfsdk:"override_type"`
+	ValueLimit   types.Int64  `tfsdk:"value_limit"`
 }
 
 func TagCardinalityLimitProcessorSchema() schema.ListNestedBlock {
@@ -54,6 +59,24 @@ func TagCardinalityLimitProcessorSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
+				"tracking_mode": schema.ListNestedBlock{
+					Description: "Controls whether the processor uses exact or probabilistic tag tracking.",
+					Validators: []validator.List{
+						listvalidator.IsRequired(),
+						listvalidator.SizeAtMost(1),
+					},
+					NestedObject: schema.NestedBlockObject{
+						Attributes: map[string]schema.Attribute{
+							"mode": schema.StringAttribute{
+								Required:    true,
+								Description: "The cardinality tracking algorithm to use. One of `exact_fingerprint`, `probabilistic`.",
+								Validators: []validator.String{
+									stringvalidator.OneOf("exact_fingerprint", "probabilistic"),
+								},
+							},
+						},
+					},
+				},
 				"per_metric_limit": schema.ListNestedBlock{
 					Description: "Per-metric cardinality overrides that take precedence over the default `value_limit`.",
 					Validators: []validator.List{
@@ -65,23 +88,23 @@ func TagCardinalityLimitProcessorSchema() schema.ListNestedBlock {
 								Required:    true,
 								Description: "The metric name this override applies to.",
 							},
-							"mode": schema.StringAttribute{
+							"override_type": schema.StringAttribute{
 								Required:    true,
-								Description: "How the per-metric override is applied. One of `tracked`, `excluded`.",
+								Description: "How the per-metric override is applied. One of `limit_override`, `excluded`.",
 								Validators: []validator.String{
-									stringvalidator.OneOf("tracked", "excluded"),
+									stringvalidator.OneOf("limit_override", "excluded"),
 								},
 							},
 							"limit_exceeded_action": schema.StringAttribute{
 								Optional:    true,
-								Description: "The action to take on this metric when the limit is exceeded. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`.",
+								Description: "The action to take on this metric when the limit is exceeded. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`.",
 								Validators: []validator.String{
 									stringvalidator.OneOf("drop_tag", "drop_event"),
 								},
 							},
 							"value_limit": schema.Int64Attribute{
 								Optional:    true,
-								Description: "The cardinality cap for this metric. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`.",
+								Description: "The cardinality cap for this metric. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`.",
 								Validators: []validator.Int64{
 									int64validator.Between(0, 1000000),
 								},
@@ -89,7 +112,7 @@ func TagCardinalityLimitProcessorSchema() schema.ListNestedBlock {
 						},
 						Blocks: map[string]schema.Block{
 							"per_tag_limit": schema.ListNestedBlock{
-								Description: "Per-tag cardinality overrides that apply within this metric. Must be omitted when `mode` is `excluded`.",
+								Description: "Per-tag cardinality overrides that apply within this metric. Must be omitted when `override_type` is `excluded`.",
 								Validators: []validator.List{
 									listvalidator.SizeAtMost(50),
 								},
@@ -99,7 +122,7 @@ func TagCardinalityLimitProcessorSchema() schema.ListNestedBlock {
 											Required:    true,
 											Description: "The tag key this override applies to.",
 										},
-										"mode": schema.StringAttribute{
+										"override_type": schema.StringAttribute{
 											Required:    true,
 											Description: "How the per-tag override is applied. One of `limit_override`, `excluded`.",
 											Validators: []validator.String{
@@ -108,7 +131,7 @@ func TagCardinalityLimitProcessorSchema() schema.ListNestedBlock {
 										},
 										"value_limit": schema.Int64Attribute{
 											Optional:    true,
-											Description: "The cardinality cap for this tag. Required when `mode` is `limit_override`; must be omitted when `mode` is `excluded`.",
+											Description: "The cardinality cap for this tag. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`.",
 											Validators: []validator.Int64{
 												int64validator.Between(0, 1000000),
 											},
@@ -130,13 +153,18 @@ func ExpandTagCardinalityLimitProcessor(common BaseProcessorFields, src *TagCard
 
 	proc.SetLimitExceededAction(datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorAction(src.LimitExceededAction.ValueString()))
 	proc.SetValueLimit(src.ValueLimit.ValueInt64())
+	if len(src.TrackingMode) > 0 {
+		trackingMode := datadogV2.NewObservabilityPipelineTagCardinalityLimitProcessorTrackingModeWithDefaults()
+		trackingMode.SetMode(datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorTrackingModeMode(src.TrackingMode[0].Mode.ValueString()))
+		proc.SetTrackingMode(*trackingMode)
+	}
 
 	if len(src.PerMetricLimits) > 0 {
 		perMetric := make([]datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorPerMetricLimit, 0, len(src.PerMetricLimits))
 		for _, pm := range src.PerMetricLimits {
 			item := datadogV2.NewObservabilityPipelineTagCardinalityLimitProcessorPerMetricLimitWithDefaults()
 			item.SetMetricName(pm.MetricName.ValueString())
-			item.SetMode(datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorPerMetricMode(pm.Mode.ValueString()))
+			item.SetOverrideType(datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorOverrideType(pm.OverrideType.ValueString()))
 			if !pm.LimitExceededAction.IsNull() && !pm.LimitExceededAction.IsUnknown() {
 				item.SetLimitExceededAction(datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorAction(pm.LimitExceededAction.ValueString()))
 			}
@@ -148,7 +176,7 @@ func ExpandTagCardinalityLimitProcessor(common BaseProcessorFields, src *TagCard
 				for _, pt := range pm.PerTagLimits {
 					ti := datadogV2.NewObservabilityPipelineTagCardinalityLimitProcessorPerTagLimitWithDefaults()
 					ti.SetTagKey(pt.TagKey.ValueString())
-					ti.SetMode(datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorPerTagMode(pt.Mode.ValueString()))
+					ti.SetOverrideType(datadogV2.ObservabilityPipelineTagCardinalityLimitProcessorOverrideType(pt.OverrideType.ValueString()))
 					if !pt.ValueLimit.IsNull() && !pt.ValueLimit.IsUnknown() {
 						ti.SetValueLimit(pt.ValueLimit.ValueInt64())
 					}
@@ -172,10 +200,15 @@ func FlattenTagCardinalityLimitProcessor(src *datadogV2.ObservabilityPipelineTag
 		LimitExceededAction: types.StringValue(string(src.GetLimitExceededAction())),
 		ValueLimit:          types.Int64Value(src.GetValueLimit()),
 	}
+	if trackingMode, ok := src.GetTrackingModeOk(); ok && trackingMode != nil {
+		model.TrackingMode = append(model.TrackingMode, TagCardinalityLimitProcessorTrackingModeModel{
+			Mode: types.StringValue(string(trackingMode.GetMode())),
+		})
+	}
 	for _, pm := range src.GetPerMetricLimits() {
 		pmModel := TagCardinalityLimitProcessorPerMetricLimitModel{
-			MetricName: types.StringValue(pm.GetMetricName()),
-			Mode:       types.StringValue(string(pm.GetMode())),
+			MetricName:   types.StringValue(pm.GetMetricName()),
+			OverrideType: types.StringValue(string(pm.GetOverrideType())),
 		}
 		if v, ok := pm.GetLimitExceededActionOk(); ok && v != nil {
 			pmModel.LimitExceededAction = types.StringValue(string(*v))
@@ -189,8 +222,8 @@ func FlattenTagCardinalityLimitProcessor(src *datadogV2.ObservabilityPipelineTag
 		}
 		for _, pt := range pm.GetPerTagLimits() {
 			ptModel := TagCardinalityLimitProcessorPerTagLimitModel{
-				TagKey: types.StringValue(pt.GetTagKey()),
-				Mode:   types.StringValue(string(pt.GetMode())),
+				TagKey:       types.StringValue(pt.GetTagKey()),
+				OverrideType: types.StringValue(string(pt.GetOverrideType())),
 			}
 			if v, ok := pt.GetValueLimitOk(); ok && v != nil {
 				ptModel.ValueLimit = types.Int64Value(*v)
