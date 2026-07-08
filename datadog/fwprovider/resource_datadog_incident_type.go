@@ -96,9 +96,10 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 				Optional:    true,
 			},
 			"is_default": schema.BoolAttribute{
-				Description: "Whether this incident type is the default type.",
-				Optional:    true,
-				Computed:    true,
+				Description:   "Whether this incident type is the default type.",
+				Optional:      true,
+				Computed:      true,
+				PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 			},
 			"configuration": schema.SingleNestedAttribute{
 				Description: "The incident type's behavior settings. Any field left unset is managed by the server and returned as its server-side value. This block is applied after creation via a separate update call, since the create endpoint does not accept configuration.",
