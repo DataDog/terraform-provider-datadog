@@ -31,13 +31,12 @@ The RunReport shape: `artifacts[]` (`{name, status, path}`), `summary` (counts i
 - `summary.failed > 0`, or
 - any `diagnostics[].severity == "error"`.
 
-When gated: quote the failing artifact and each error diagnostic's `message`/`location`,
-state the concrete fix, and leave the working tree **uncommitted** for inspection. That
-explanation is the deliverable for the run — nothing is pushed. To reset a bad run:
-
-```bash
-git checkout -- datadog/ && git clean -fd datadog/fwprovider datadog/tests docs/data-sources
-```
+When gated: quote the failing artifact and each error diagnostic's `message`/`location`
+**verbatim**, say plainly why the data source could not be generated, and stop. Do **not**
+edit the spec/annotation, retry, or try to fix the failure — reporting it is the whole
+deliverable for a failed run. Leave the working tree **uncommitted**; nothing is pushed.
+(Optional cleanup — to discard the partial files: `git checkout -- datadog/ && git clean
+-fd datadog/fwprovider datadog/tests docs/data-sources`.)
 
 `warning`/`info` diagnostics do **not** gate — carry them into the Phase 3 risk section.
 
@@ -49,8 +48,8 @@ make build    # compiles the provider; fails loudly if the generated code doesn'
 ```
 
 If `make docs` produces no file for this data source, the registration didn't take — see
-troubleshooting below. If `make build` fails, treat it like a gate: fix or report, don't
-commit broken code.
+troubleshooting below. If `make build` fails, quote the compiler output and stop — do
+**not** attempt to fix the generated code; nothing is committed.
 
 ## 5. What tfgen changed — the files to commit
 
@@ -88,11 +87,14 @@ Confirm the branch name with the user (the example `generate/datadog_<name>_data
 default). Carry into Phase 3: the RunReport (`/tmp/tfgen-report.json`), the known
 scenario/cardinality, the slice path, and the branch name. Do not open the PR here.
 
-## Troubleshooting
+## What the failures mean (report — don't fix)
 
-| Symptom | Cause / fix |
+These are for your **report**, not a to-do list. Explain what happened and stop; don't act
+on them.
+
+| Symptom | What it means |
 |---|---|
-| `overwrites target %q not found in the framework Datasources slice` | The `--overwrites` constructor isn't a hand-written framework data source (e.g. it's an SDKv2 `DataSourcesMap` entry, or a typo). Fix the target or drop `--overwrites`. |
-| `make docs` shows no new file | Registration didn't take — confirm the constructor is in `datasources_generated.go`'s `generatedDatasources` slice (tfgen writes it). |
-| `make build` fails on the generated file | Report it as a gate failure with the compiler output; don't commit. |
+| `overwrites target %q not found in the framework Datasources slice` | The `--overwrites` constructor isn't a hand-written framework data source (e.g. an SDKv2 `DataSourcesMap` entry, or a typo). Report that the overwrite target is invalid — don't silently drop `--overwrites` and re-run. |
+| `make docs` shows no new file | Registration didn't take — the constructor isn't in `datasources_generated.go`'s `generatedDatasources` slice. Report it. |
+| `make build` fails on the generated file | The generated code doesn't compile. Quote the compiler output and stop; nothing is committed. |
 | Report has `warning`/`info` only | Not a gate — commit, and carry the diagnostics into the Phase 3 risk section. |

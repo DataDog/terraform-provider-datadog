@@ -5,9 +5,9 @@ description: >
   GitHub PR for it. Runs in three phases: (1) Input — collect the read group
   (operationIds), artifact name, cardinality, description, and overwrite target; (2)
   Generation — build an annotated OpenAPI slice with slice_and_annotate.py, run tfgen on
-  it, run make docs/build, and commit onto a new branch; (3) PR — classify the scenario,
-  evaluate the generated code against the emit goldens and runtime-risk heuristics, draft
-  the standard PR body with disclaimers + testing guide, and open the PR with `gh`. Use
+  it, run make docs/build, and commit onto a new branch; (3) PR — a quick runtime-risk scan
+  (trusting the generator for correctness), draft the standard PR body with disclaimers +
+  testing guide, and open the PR with `gh`. Use
   this skill whenever the user wants to generate a Datadog data source, mentions tfgen /
   generator-v2, slice_and_annotate, an OpenAPI operation they want a data source for,
   opening a PR for a generated data source, evaluating generated code against goldens, or
@@ -32,6 +32,23 @@ collect params  ──▶   slice_and_annotate.py → slice     ──▶  class
 
 Each phase has its own reference subdirectory under `references/`. Read the reference for a
 phase before running it.
+
+## Operating principles — run it fast and hands-off
+
+tfgen is deterministic and well-tested. This skill is a **thin wrapper** around it, not an
+audit. Three rules keep runs fast and honest:
+
+1. **Trust the generator.** If tfgen produced the files and `make build` passed, treat the
+   output as correct. Do not re-derive its decisions, re-verify field-by-field, or
+   second-guess the scenario it emitted. Report what happened — don't prove the code right.
+2. **Never fix — report and stop.** On ANY failure (spec/annotation error, generation
+   failure, `make build`/`make docs` failure, or a red CI check) do **not** edit the spec,
+   patch the generated code, retry, or work around it. Quote the error verbatim, say plainly
+   why the data source could not be generated, and stop. For a failed run, that report *is*
+   the deliverable.
+3. **Keep analysis light.** The only judgment that matters is a quick scan for *material*
+   runtime risks (`references/pr/risk-heuristics.md`) — minutes, not a line-by-line review,
+   and not a golden diff. If nothing clearly applies, say so and move on.
 
 ## The one rule that overrides everything: never overclaim "verified"
 
@@ -75,8 +92,8 @@ open a PR here.
 1. **Preconditions.** `gh auth status` authenticated. If HEAD is `master`, that's fine — this phase creates the branch. Ensure `bin/tfgen` exists (`make tfgen-build` if not).
 2. **Build the slice.** Call `slice_and_annotate.py` with the phase-1 params; capture the printed slice path (stdout is only the path). See `references/generation/slice-and-annotate.md`.
 3. **Generate.** Run `tfgen generate --spec "$SLICE" --report -`, capturing the RunReport JSON. See `references/generation/running-tfgen.md`.
-4. **Gate on the report — before committing.** Stop if `summary.failed > 0` or any `diagnostics[].severity == "error"`. Quote the failing artifact + diagnostics, state the fix, and leave the working tree uncommitted. That explanation is the deliverable; nothing is committed. `warning`/`info` do **not** gate — carry them into the PR risk section.
-5. **Docs + build.** Run `make docs` (creates `docs/data-sources/<name>.md`) and `make build` to confirm it compiles. Use make targets, never raw `go`.
+4. **Gate on the report — before committing.** Stop if `summary.failed > 0` or any `diagnostics[].severity == "error"`. Quote the failing artifact + diagnostics **verbatim**, say plainly why it couldn't be generated, and stop — do **not** edit the spec, retry, or fix anything (principle 2). Leave the working tree uncommitted. That report is the deliverable; nothing is committed. `warning`/`info` do **not** gate — carry them into the PR risk section.
+5. **Docs + build.** Run `make docs` (creates `docs/data-sources/<name>.md`) and `make build` to confirm it compiles. Use make targets, never raw `go`. If either fails, quote the output and stop (principle 2) — do not attempt to fix the generated code.
 6. **Branch + commit.** Create the branch off `master` and commit the generated `.go`, test, and docs files. Carry forward to Phase 3: the RunReport, the known scenario/cardinality, the slice path, and the branch name.
 
 **Details:** `references/generation/slice-and-annotate.md`, `references/generation/running-tfgen.md`.
@@ -88,12 +105,12 @@ open a PR here.
 **Goal:** turn the committed branch into a review-ready PR. The scenario and RunReport are
 already known from Phase 2 — do not re-derive them; just carry them in.
 
-1. **Read the ideal shape.** Open the matching emit golden(s) under `.generator-v2/internal/testdata/emit/` for the known scenario (e.g. `plural.golden`, `singular_both.golden`, plus the `data_source_test_*.golden`). These are scenario templates, not per-endpoint references.
-2. **Evaluate — reasoning, not diffing.** Read the generated source + test and the spec for this endpoint (list vs detail payloads, required fields, enums, numeric widths, pagination markers). Work through `references/pr/risk-heuristics.md` and reason about whether the scenario default fits *this* endpoint. Flag only genuine, endpoint-specific risks — no boilerplate.
+1. **Quick risk scan.** Skim `references/pr/risk-heuristics.md` and flag only the risks that *clearly* apply to this endpoint (e.g. paginated plural, sensitive detail-only fields, path-nested by-id). This is a fast pass, not a code audit — trust the generator for correctness. If nothing material jumps out, say so and move on.
+2. **(Optional) Golden sanity-check.** Only if a specific risk needs confirming, open the matching emit golden under `.generator-v2/internal/testdata/emit/` (the scenario template) to check that one doubt. Otherwise skip — do not diff the generated code against goldens by default.
 3. **Draft the PR body.** Use `references/pr/pr-body-template.md` exactly: project-context disclaimer first, verification disclaimer second, then a prominent risk callout if any material risk was found, then the docs callout if `docs/data-sources/<name>.md` is absent, then the body. Populate "Generated" from `artifacts[].{name,status,path}`.
 4. **CI-required metadata (all three, or CI never goes green).** Verification disclaimer in the body; title `[<service>] Add datadog_<name> data source` (derive `<service>` from the spec tag; ask if unsure — a wrong prefix fails CI); `changelog/feature` label.
 5. **Open the PR.** Push the branch, then `gh pr create`. Opening a PR publishes on the user's behalf — confirm the drafted title, body, and label with the user first.
-6. **Checks + report back.** After the PR exists, read `gh pr checks`; for a failing check, `gh run view <run-id> --log-failed` and summarize the fix. Report the PR URL, the gate result, the risks flagged (and why), and the build/check status — precise about verification per the top rule.
+6. **Checks + report back.** After the PR exists, read `gh pr checks`; for a failing check, `gh run view <run-id> --log-failed` and report which check failed with its output quoted — do **not** attempt to fix it (principle 2). Report the PR URL, the gate result, the risks flagged (and why), and the build/check status — precise about verification per the top rule.
 
 **Details:** `references/pr/risk-heuristics.md`, `references/pr/pr-body-template.md`, `references/pr/testing-guide.md`.
 
