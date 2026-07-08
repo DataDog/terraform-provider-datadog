@@ -220,10 +220,15 @@ func (d *datadogSoftwareCatalogDataSource) updateState(ctx context.Context, resp
 		return softwareEntities[i].Name.String() < softwareEntities[j].Name.String()
 	})
 
+	includeDiscoveredStr := ""
+	if !state.IncludeDiscovered.IsNull() {
+		includeDiscoveredStr = strconv.FormatBool(state.IncludeDiscovered.ValueBool())
+	}
+
 	idHash := fmt.Sprintf("%x", sha256.Sum256([]byte(
 		state.FilterID.ValueString()+state.FilterName.ValueString()+state.FilterExcludeSnapshot.ValueString()+
 			state.FilterKind.ValueString()+state.FilterOwner.ValueString()+state.FilterRelationType.ValueString()+
-			state.FilterRef.ValueString()+strconv.FormatBool(state.IncludeDiscovered.ValueBool()),
+			state.FilterRef.ValueString()+includeDiscoveredStr,
 	)))
 
 	state.ID = types.StringValue(idHash)
