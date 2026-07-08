@@ -1,20 +1,17 @@
 # Risk heuristics
 
-Read this every run. These are the logical, runtime-level risks the reviewer needs
-flagged — the generator is solid, so most real defects already surface as build errors or
-report failures and are gated before you get here. What's left is code that is *valid* but
-whose scenario default may be a poor fit for the endpoint. Flag what genuinely applies to
-*this* endpoint, and say why. Tie each flagged risk to something concrete in the generated
-code or the spec.
+**This is a quick scan, not an audit — a few minutes, not a code review.** The generator is
+solid and its defects surface as build/report failures that are already gated before you get
+here. So trust the generated code for correctness; your only job is to skim for the handful
+of *material* runtime risks below that clearly apply to this endpoint, and flag those. If
+none obviously applies, say "no material risks found" and move on. Don't diff against
+goldens, don't re-verify field-by-field, and don't pad the list with boilerplate.
 
-## How to reason (before the checklist)
-1. Read the spec for the backing operation(s). Note: what the **list** payload contains vs.
-   the **detail** payload, which fields are required, enums, numeric widths, and any
-   pagination markers.
-2. Determine what the endpoint *does* — is "get all of X in the org" even a sensible
-   Terraform data source? Is there a natural filter, or is the id computed?
-3. Compare against the emit golden for the scenario to see the intended shape, then judge
-   whether that shape fits this endpoint.
+## Fast scan (checklist below is the reference, not a per-field to-do)
+Glance at the backing operation(s) for the few things that actually bite: does the **list**
+payload differ from the **detail** payload, are there enums / wide integers / required
+fields, is the list paginated, and (for plural) is "get all of X in the org" even a sensible
+data source. Flag only what jumps out.
 
 ## Plural (`cardinality: plural`, list read)
 
@@ -54,10 +51,6 @@ code or the spec.
   then expecting a detail-only field will yield null. Flag any field the schema exposes
   that the chosen read path can't populate.
 
-## Prior art / context
-Relevant history worth checking when reasoning about a specific source:
+## Prior art / context (only if a flagged risk needs backing — don't go spelunking)
 - `rum_application`: PRs #2215, #3185, #3250, #1641.
 - plural semantics: #759.
-
-If you have access to the coding agent with repo context, it's often faster to ask it
-whether a specific heuristic applies to this endpoint than to infer from the spec alone.
