@@ -235,9 +235,8 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 
-	// A plain filter[ref] lookup only finds entities already written to via this API at
-	// least once. Retry with includeDiscovered=true so an entity Datadog has auto-discovered
-	// but that's never been touched via the API (e.g. on first import) is also found.
+	// A plain lookup only finds entities already written to via this API. Retry with
+	// includeDiscovered=true so an auto-discovered, never-touched entity is also found.
 	if len(entityResp.Included) == 0 {
 		path = path + "&includeDiscovered=true"
 		httpRespByte, _, err = utils.SendRequest(r.Auth, r.Api, "GET", path, nil)
