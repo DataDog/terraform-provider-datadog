@@ -59,7 +59,7 @@ For a list-all plural data source, the generated test should:
 - If a cassette was recorded and replays green this run: say so and name the cassette file.
 - If not: "Cassette is a scaffold — record once against the Frog org, then replay to verify.
   Steps: <record command>, then <replay command>." Flag any risk from
-  `references/risk-heuristics.md` that specifically needs live verification (e.g. plural
+  `risk-heuristics.md` that specifically needs live verification (e.g. plural
   silent-empty trap, read-after-write lag).
 
 ## Troubleshooting
@@ -68,4 +68,4 @@ For a list-all plural data source, the generated test should:
 | Assertion fails: seeded entity not in list | `depends_on` missing → list read before create. Keep the `depends_on`. |
 | Replay fails after a code change | The request signature changed; re-record and recommit the cassette + `.freeze`. |
 | `Can't configure a value for "id"` | Config set `id` on a no-input data source. Remove it. |
-| `make docs` shows no new file | Data source not registered — recheck the `Datasources` slice in `framework_provider.go`. |
+| `make docs` shows no new file | Data source not registered — confirm the constructor is in `datasources_generated.go`'s `generatedDatasources` slice (tfgen owns that file). |
