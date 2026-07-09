@@ -23,11 +23,31 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROMPTS_DIR="$(mktemp -d -t tfgen-prompts.XXXXXX)"
 cp "$SCRIPT_DIR/prompts/"*.md "$PROMPTS_DIR/" 2>/dev/null || true
 
+# Remove this run's scratch files on any exit. REPORT is excluded (its path is
+# returned in the result); only a spec we curled is removed, never a --spec file.
+cleanup() {
+  if [ -n "${PROMPTS_DIR:-}" ]; then rm -rf "$PROMPTS_DIR" 2>/dev/null || true; fi
+  rm -f "${CLAUDE_COST_FILE:-}" "${RISK_PROMPT_FILE:-}" \
+        "${PROSE_PROMPT_FILE:-}" "${PR_BODY_FILE:-}" 2>/dev/null || true
+  if [ "${SPEC_IS_TEMP:-0}" = 1 ]; then rm -f "${SPEC:-}" 2>/dev/null || true; fi
+  return 0
+}
+trap cleanup EXIT
+
 # ---------------------------------------------------------------------------
 # Logging + structured failure
 # ---------------------------------------------------------------------------
 STAGE="init"
 jlog() { printf '%s\n' "[$STAGE] $*" >&2; }
+
+# emit_result <json> — the single exit point for a terminal result: print it to
+# stdout and, when --output-json was given, also write it there. The trailing
+# `return 0` keeps a skipped file-write from failing the caller under `set -e`.
+emit_result() {
+  printf '%s\n' "$1"
+  [ -n "${OUTPUT_JSON:-}" ] && printf '%s\n' "$1" >"$OUTPUT_JSON"
+  return 0
+}
 
 # die <message> — emit a failure result on stdout and exit nonzero.
 die() {
@@ -44,11 +64,11 @@ die() {
     git checkout -f "${ORIG_BRANCH:-master}" >/dev/null 2>&1 || true
     git branch -D "$BRANCH" >/dev/null 2>&1 || true
   fi
-  jq -n \
+  emit_result "$(jq -n \
     --arg status failed --arg stage "$STAGE" --arg error "$msg" \
     --arg artifact_name "${ARTIFACT_NAME:-}" --arg branch "${BRANCH:-}" \
     --argjson metrics "$(metrics_json)" \
-    '{status:$status, stage:$stage, error:$error, artifact_name:$artifact_name, branch:$branch, verified:false, metrics:$metrics}'
+    '{status:$status, stage:$stage, error:$error, artifact_name:$artifact_name, branch:$branch, verified:false, metrics:$metrics}')"
   exit 1
 }
 
@@ -250,6 +270,7 @@ if [ -n "$SPEC" ]; then
   jlog "using provided spec: $SPEC"
 else
   SPEC="$(mktemp -t tfgen-oas.XXXXXX.yaml)"
+  SPEC_IS_TEMP=1
   local_url="https://raw.githubusercontent.com/DataDog/datadog-api-client-go/refs/heads/${SPEC_REF}/.generator/schemas/v2/openapi.yaml"
   jlog "curling upstream v2 spec ($SPEC_REF)"
   curl -fsSL "$local_url" -o "$SPEC" || die "failed to curl upstream spec from $local_url"
@@ -329,10 +350,11 @@ if [ "$FAILED" != "0" ] || [ "$ERROR_DIAGS" != "[]" ]; then
     git checkout "${ORIG_BRANCH:-master}" >/dev/null 2>&1 || true
     git branch -D "$BRANCH" >/dev/null 2>&1 || true
   fi
-  jq -n --arg status failed --arg stage gate \
+  emit_result "$(jq -n --arg status failed --arg stage gate \
         --argjson failed "$FAILED" --argjson errors "$ERROR_DIAGS" \
         --arg artifact_name "$ARTIFACT_NAME" \
-        '{status:$status, stage:$stage, error:"generation gate failed", failed:$failed, error_diagnostics:$errors, artifact_name:$artifact_name, verified:false}'
+        --argjson metrics "$(metrics_json)" \
+        '{status:$status, stage:$stage, error:"generation gate failed", failed:$failed, error_diagnostics:$errors, artifact_name:$artifact_name, verified:false, metrics:$metrics}')"
   exit 1
 fi
 # warning/info do not gate — carry them forward.
@@ -394,7 +416,6 @@ done < <(git status --porcelain)
 
 if [ "${#UNEXPECTED[@]}" -gt 0 ]; then
   jlog "UNEXPECTED changed files: ${UNEXPECTED[*]}"
-  printf -v joined '%s\n' "${UNEXPECTED[@]}"
   die "files changed outside the generated-artifact whitelist: ${UNEXPECTED[*]}"
 fi
 jlog "changed-file whitelist clean"
@@ -443,9 +464,12 @@ RISK_PROMPT_FILE="$(mktemp -t tfgen-risk.XXXXXX.txt)"
 } >"$RISK_PROMPT_FILE"
 
 if RISK_JSON="$(call_claude "$RISK_PROMPT_FILE")"; then
-  RISK_MATERIAL="$(printf '%s' "$RISK_JSON" | jq -r '.material_risk // false')"
-  RISK_SUMMARY="$(printf '%s' "$RISK_JSON" | jq -r '.risk_summary // ""')"
-  LLM_BULLETS_JSON="$(printf '%s' "$RISK_JSON" | jq -c '.reviewer_notes // []')"
+  # Coerce each field to its expected type. call_claude only guarantees the reply
+  # is valid JSON, not its shape — an unexpected type (or a non-object reply) would
+  # otherwise crash a later `jq --argjson` and, under `set -e`, abort with no result.
+  RISK_MATERIAL="$(printf '%s' "$RISK_JSON" | jq -r 'try (if .material_risk==true then "true" else "false" end) catch "false"')"
+  RISK_SUMMARY="$(printf '%s' "$RISK_JSON" | jq -r 'try (if (.risk_summary|type)=="string" then .risk_summary else "" end) catch ""')"
+  LLM_BULLETS_JSON="$(printf '%s' "$RISK_JSON" | jq -c 'try (if (.reviewer_notes|type)=="array" then [.reviewer_notes[]|tostring] else [] end) catch []')"
   jlog "risk scan ok (material=$RISK_MATERIAL, $(printf '%s' "$LLM_BULLETS_JSON" | jq 'length') notes)"
 else
   jlog "risk scan unavailable or unparseable — flagging manual review"
@@ -475,7 +499,8 @@ PROSE_PROMPT_FILE="$(mktemp -t tfgen-prose.XXXXXX.txt)"
 } >"$PROSE_PROMPT_FILE"
 
 if PROSE_JSON="$(call_claude "$PROSE_PROMPT_FILE")"; then
-  HOWTO_MD="$(printf '%s' "$PROSE_JSON" | jq -r '.how_to_test // ""')"
+  # Type-coerced like the risk fields above, for the same set -e safety reason.
+  HOWTO_MD="$(printf '%s' "$PROSE_JSON" | jq -r 'try (if (.how_to_test|type)=="string" then .how_to_test else "" end) catch ""')"
   [ -n "$HOWTO_MD" ] && jlog "pr prose ok"
 fi
 if [ -z "$HOWTO_MD" ]; then
@@ -643,5 +668,4 @@ RESULT_JSON="$(jq -n \
     risks:$risks, changed_files:$changed_files, generator_warnings:$warnings, metrics:$metrics}')"
 
 jlog "$(printf '%s' "$METRICS" | jq -r '"done in \(.runtime_seconds)s | claude: \(.claude_calls) calls, $\(.claude_cost_usd), \(.claude_input_tokens) in / \(.claude_output_tokens) out tokens"')"
-[ -n "$OUTPUT_JSON" ] && printf '%s\n' "$RESULT_JSON" >"$OUTPUT_JSON"
-printf '%s\n' "$RESULT_JSON"
+emit_result "$RESULT_JSON"
