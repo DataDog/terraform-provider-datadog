@@ -22,6 +22,42 @@ type or name "should" be. You are spotting credible problems, not reproducing th
 You do not need proof — a well-grounded "this looks wrong, a reviewer should check" is worth
 flagging. Point at the specific field, type, or line that prompted it.
 
+## The generator's known idioms — recognize these before flagging
+
+tfgen maps a v2 (JSON:API) spec with the fixed patterns below. They are correct by design,
+so do NOT flag them as bugs; use them as a baseline instead — code that *deviates* from the
+pattern its shape calls for is a credible signal that something was dropped or mishandled.
+These examples come from other schemas, so match the *pattern*, not the field names or types.
+
+- **Envelope flattened.** `data.id` becomes the top-level `id` and every
+  `data.attributes.<field>` becomes a top-level attribute; state mapping reads
+  `resp.Data.GetAttributes()` (single record) or `item.Attributes` (list item). A field from
+  under `data.attributes` appearing flat at the top is expected, not lost nesting.
+- **Scalars → typed attributes** under `Attributes`: string→`StringAttribute`, bool→`Bool`,
+  integer→`Int64` (`types.Int64Value(int64(*x))`), number→`Float64`, enum/date-time→string
+  (`string(*x)` / `.String()`).
+- **Array of objects → `schema.ListNestedBlock` under `Blocks`** (not `Attributes`), with a
+  generated `<Field>Model` struct and a `[]*<Field>Model` field; nested arrays recurse as
+  `Blocks` inside the `NestedObject`.
+- **Array of primitives → `schema.ListAttribute{ElementType: ...}`** with a `types.List`
+  field, mapped via `types.ListValueFrom(...)` and `types.ListNull(...)` when absent.
+- **Nullability.** Single-record mapping (read-only / search / "both") is guarded:
+  `if x, ok := attributes.GetXOk(); ok && x != nil { ... }`, so an absent field stays null. A
+  *plural* list maps item scalars with unguarded getters (`GetX()`), so an absent scalar
+  becomes a zero value (e.g. `""`, not null) — flag only if null-vs-empty matters there.
+- **`id` by cardinality.** read-only: `id` is `Required` (input to the by-id GET). "both"
+  (`--read`+`--search`): `Optional`+`Computed`, Read branches on `state.ID.IsNull()` — by-id
+  GET when set, else list-and-resolve-exactly-one (errors on 0 or >1 matches). search-only:
+  `Optional`+`Computed` (`utils.ResourceIDAttribute()`), always list→exactly-one with the id
+  taken from the resolved record. plural: `Optional`+`Computed` but a synthetic
+  `utils.ConvertToSha256` hash of the filter params — NOT a server id.
+- **Pagination + query params.** A paginated collection is drained via
+  `List<X>WithPagination` (a channel loop checking `paginationResult.Error`); list/search
+  query params become `Optional` attributes mapped into `List<X>OptionalParameters` guarded
+  by `!state.X.IsNull()`.
+- **Errors.** By-id reads special-case 404 → an explicit "not found" AddError; the
+  list/search/"both"/plural paths surface errors via `utils.FrameworkErrorDiag`.
+
 ## Signs of a possible generator issue (review the code for these)
 
 - A field in the response schema that has no matching schema attribute, or no assignment in
