@@ -304,3 +304,9 @@ skipped_tests:
     reason: "retention_filter_ids count mismatch — expected 3, got 2 — pre-existing filters in org"
     added: "2026-04-24"
     author: fpighi
+
+  # ObservabilityPipeline tag_cardinality_limit — backend/spec drift (1 test)
+  - test: TestAccDatadogObservabilityPipeline_tagCardinalityLimitProcessor
+    reason: "400 Bad Request — backend now requires tracking_mode/override_type, but datadog-api-client-go still models mode. Needs api-spec update + client regen before this can pass live."
+    added: "2026-07-09"
+    author: andrei.patru
