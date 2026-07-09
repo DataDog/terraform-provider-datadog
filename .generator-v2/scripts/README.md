@@ -63,7 +63,7 @@ Run it from anywhere inside the provider checkout — it finds the repo root its
 | `--service NAME` | derived from the spec tag | The `[service]` prefix CI requires in the PR title. |
 | `--spec PATH` | curl upstream | Use a local spec file instead of downloading. |
 | `--spec-ref REF` | `master` | Which ref of the upstream spec repo to download. |
-| `--base BRANCH` | `master` | The branch the PR targets **and** is built from, so the PR shows only the generated files. |
+| `--base BRANCH` | current branch | The branch the PR targets **and** is built from, so the PR shows only the generated files. Defaults to the branch you run the script on. |
 | `--branch NAME` | `generate/datadog_<name>_datasource` | The feature branch to create. |
 | `--no-pr` | off | Stop after the local commit — no push, no PR. Use this for a safe dry run. |
 | `--output-json PATH` | none | Also write the result JSON to this file. |
@@ -83,9 +83,9 @@ Run it from anywhere inside the provider checkout — it finds the repo root its
 .generator-v2/scripts/generate_headless.sh \
   --artifact-name teams --cardinality plural --read ListTeams
 
-# Target a branch other than master, so the PR does not ping master reviewers:
+# Target master explicitly (default is the branch you're currently on):
 .generator-v2/scripts/generate_headless.sh \
-  --artifact-name teams --cardinality plural --read ListTeams --base my-team-branch
+  --artifact-name teams --cardinality plural --read ListTeams --base master
 
 # Dry run — generate and commit locally, open nothing:
 .generator-v2/scripts/generate_headless.sh \
