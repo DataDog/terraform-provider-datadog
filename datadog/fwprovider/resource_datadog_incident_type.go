@@ -102,7 +102,7 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 			},
 			"configuration": schema.SingleNestedAttribute{
-				Description: "The incident type's behavior settings. Any field left unset is managed by the server and returned as its server-side value. This block is applied after creation via a separate update call, since the create endpoint does not accept configuration.",
+				Description: "The incident type's behavior settings. Any field left unset takes its server-side default. This block is applied in a separate call after the incident type is created.",
 				Optional:    true,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Object{
@@ -116,13 +116,13 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 					},
 					"private_incidents_by_default": schema.BoolAttribute{
-						Description:   "Whether incidents of this type are created as private by default. Defaults to `false`.",
+						Description:   "Whether the private toggle is enabled by default in the incident creation modal for this type. Defaults to `false`.",
 						Optional:      true,
 						Computed:      true,
 						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 					},
 					"allow_workflows": schema.BoolAttribute{
-						Description:   "Whether automation workflows can be triggered for incidents of this type. Defaults to `true`.",
+						Description:   "Whether users can manually run a workflow from an incident of this type. Defaults to `true`.",
 						Optional:      true,
 						Computed:      true,
 						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
@@ -140,25 +140,25 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 					},
 					"test_incidents": schema.BoolAttribute{
-						Description:   "Whether incidents of this type are treated as test incidents. Defaults to `true`.",
+						Description:   "Whether test incidents of this type can be created. Defaults to `true`.",
 						Optional:      true,
 						Computed:      true,
 						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 					},
 					"create_message": schema.StringAttribute{
-						Description:   "An optional message shown to users when they declare an incident of this type.",
+						Description:   "An optional message shown to users when they declare an incident of this type. Defaults to an empty string.",
 						Optional:      true,
 						Computed:      true,
 						PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 					},
 					"disable_out_of_the_box_postmortem_template": schema.BoolAttribute{
-						Description:   "Whether the out-of-the-box postmortem template is disabled for incidents of this type. Defaults to `false`.",
+						Description:   "When enabled, incidents of this type do not use Datadog's out-of-the-box postmortem template. Defaults to `false`.",
 						Optional:      true,
 						Computed:      true,
 						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 					},
 					"slug_source": schema.StringAttribute{
-						Description:   "When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed. Defaults to `default`.",
+						Description:   "The source used to derive the incident slug. When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed. Defaults to `default`.",
 						Optional:      true,
 						Computed:      true,
 						Validators:    []validator.String{stringvalidator.OneOf("default", "servicenow")},
@@ -243,10 +243,14 @@ func (r *incidentTypeResource) Create(ctx context.Context, request resource.Crea
 			if patchHTTPResp != nil {
 				errorMsg += fmt.Sprintf(" (Status: %d)", patchHTTPResp.StatusCode)
 			}
+			// The type exists but its configuration could not be applied. Since we never
+			// persist it to state, roll back the create to avoid orphaning the type.
+			r.cleanupOrphanedIncidentType(ctx, resp.Data.GetId(), &response.Diagnostics)
 			response.Diagnostics.AddError("Error applying incident type configuration", errorMsg)
 			return
 		}
 		if patchHTTPResp.StatusCode != 200 {
+			r.cleanupOrphanedIncidentType(ctx, resp.Data.GetId(), &response.Diagnostics)
 			response.Diagnostics.AddError(
 				"Error applying incident type configuration",
 				fmt.Sprintf("Could not apply configuration, status code: %d", patchHTTPResp.StatusCode),
@@ -371,6 +375,22 @@ func (r *incidentTypeResource) Delete(ctx context.Context, request resource.Dele
 
 func (r *incidentTypeResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
+}
+
+// cleanupOrphanedIncidentType best-effort deletes an incident type that was created but whose
+// follow-up configuration PATCH failed. Because the resource is never written to state in that
+// path, leaving the type in place would orphan it. A failure to delete is surfaced as a warning
+// so the original error remains the primary diagnostic.
+func (r *incidentTypeResource) cleanupOrphanedIncidentType(ctx context.Context, id string, diags *diag.Diagnostics) {
+	if httpResp, err := r.Api.DeleteIncidentType(r.Auth, id); err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			return
+		}
+		diags.AddWarning(
+			"Could not clean up incident type after failed configuration",
+			fmt.Sprintf("Incident type %s was created but its configuration could not be applied, and the automatic cleanup delete also failed: %s. You may need to delete it manually.", id, err.Error()),
+		)
+	}
 }
 
 func (r *incidentTypeResource) updateStateFromResponse(ctx context.Context, state *incidentTypeModel, resp *datadogV2.IncidentTypeResponse) diag.Diagnostics {

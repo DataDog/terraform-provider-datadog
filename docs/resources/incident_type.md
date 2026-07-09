@@ -49,7 +49,7 @@ resource "datadog_incident_type" "with_configuration" {
 
 ### Optional
 
-- `configuration` (Attributes) The incident type's behavior settings. Any field left unset is managed by the server and returned as its server-side value. This block is applied after creation via a separate update call, since the create endpoint does not accept configuration. (see [below for nested schema](#nestedatt--configuration))
+- `configuration` (Attributes) The incident type's behavior settings. Any field left unset takes its server-side default. This block is applied in a separate call after the incident type is created. (see [below for nested schema](#nestedatt--configuration))
 - `description` (String) Description of the incident type. The description can have a maximum of 512 characters.
 - `is_default` (Boolean) Whether this incident type is the default type.
 
@@ -63,14 +63,14 @@ resource "datadog_incident_type" "with_configuration" {
 Optional:
 
 - `allow_incident_deletion` (Boolean) Whether incidents of this type can be deleted. Defaults to `false`.
-- `allow_workflows` (Boolean) Whether automation workflows can be triggered for incidents of this type. Defaults to `true`.
-- `create_message` (String) An optional message shown to users when they declare an incident of this type.
-- `disable_out_of_the_box_postmortem_template` (Boolean) Whether the out-of-the-box postmortem template is disabled for incidents of this type. Defaults to `false`.
+- `allow_workflows` (Boolean) Whether users can manually run a workflow from an incident of this type. Defaults to `true`.
+- `create_message` (String) An optional message shown to users when they declare an incident of this type. Defaults to an empty string.
+- `disable_out_of_the_box_postmortem_template` (Boolean) When enabled, incidents of this type do not use Datadog's out-of-the-box postmortem template. Defaults to `false`.
 - `editable_timestamps` (Boolean) Whether responders can edit incident timestamps for incidents of this type. Defaults to `false`.
 - `private_incidents` (Boolean) Whether responders can create private incidents of this type. Defaults to `false`.
-- `private_incidents_by_default` (Boolean) Whether incidents of this type are created as private by default. Defaults to `false`.
-- `slug_source` (String) When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed. Defaults to `default`. Valid values are `default`, `servicenow`.
-- `test_incidents` (Boolean) Whether incidents of this type are treated as test incidents. Defaults to `true`.
+- `private_incidents_by_default` (Boolean) Whether the private toggle is enabled by default in the incident creation modal for this type. Defaults to `false`.
+- `slug_source` (String) The source used to derive the incident slug. When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed. Defaults to `default`. Valid values are `default`, `servicenow`.
+- `test_incidents` (Boolean) Whether test incidents of this type can be created. Defaults to `true`.
 
 ## Import
 

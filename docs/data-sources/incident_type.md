@@ -38,11 +38,11 @@ data "datadog_incident_type" "example" {
 Read-Only:
 
 - `allow_incident_deletion` (Boolean) Whether incidents of this type can be deleted.
-- `allow_workflows` (Boolean) Whether automation workflows can be triggered for incidents of this type.
+- `allow_workflows` (Boolean) Whether users can manually run a workflow from an incident of this type.
 - `create_message` (String) An optional message shown to users when they declare an incident of this type.
-- `disable_out_of_the_box_postmortem_template` (Boolean) Whether the out-of-the-box postmortem template is disabled for incidents of this type.
+- `disable_out_of_the_box_postmortem_template` (Boolean) When enabled, incidents of this type do not use Datadog's out-of-the-box postmortem template.
 - `editable_timestamps` (Boolean) Whether responders can edit incident timestamps for incidents of this type.
 - `private_incidents` (Boolean) Whether responders can create private incidents of this type.
-- `private_incidents_by_default` (Boolean) Whether incidents of this type are created as private by default.
-- `slug_source` (String) The source used to derive the incident slug (`default` or `servicenow`).
-- `test_incidents` (Boolean) Whether incidents of this type are treated as test incidents.
+- `private_incidents_by_default` (Boolean) Whether the private toggle is enabled by default in the incident creation modal for this type.
+- `slug_source` (String) The source used to derive the incident slug. When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed.
+- `test_incidents` (Boolean) Whether test incidents of this type can be created.
