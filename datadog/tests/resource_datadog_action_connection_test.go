@@ -39,6 +39,7 @@ func TestAccDatadogActionConnectionResource_AWS_AssumeRole(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "aws.assume_role.role", testAWSRole),
 					resource.TestCheckResourceAttrSet(resourceName, "aws.assume_role.principal_id"),
 					resource.TestCheckResourceAttrSet(resourceName, "aws.assume_role.external_id"),
+					resource.TestCheckResourceAttrSet(resourceName, "aws.assume_role.external_id"),
 				),
 			},
 		},
