@@ -39,6 +39,7 @@ func TestAccDatadogIpRangesDatasource_existing(t *testing.T) {
 					resource.TestMatchResourceAttr("data.datadog_ip_ranges.test", "logs_ipv6.#", nonZeroRe),
 					resource.TestMatchResourceAttr("data.datadog_ip_ranges.test", "orchestrator_ipv6.#", nonZeroRe),
 					resource.TestMatchResourceAttr("data.datadog_ip_ranges.test", "process_ipv6.#", nonZeroRe),
+					resource.TestMatchResourceAttr("data.datadog_ip_ranges.test", "process_ipv6.#", nonZeroRe),
 					// These fields have no ip ranges set, this may change in the future.
 					// resource.TestMatchResourceAttr("data.datadog_ip_ranges.test", "synthetics_ipv6.#", nonZeroRe),
 					// resource.TestMatchResourceAttr("data.datadog_ip_ranges.test", "synthetics_ipv6_by_location.%", nonZeroRe),
