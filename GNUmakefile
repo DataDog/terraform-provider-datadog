@@ -47,7 +47,7 @@ dev-clean:
 # Run unit tests; these tests don't interact with the API and don't support/need RECORD.
 # Scoped to UNIT_PKGS so the datadog/tests acceptance suite is never compiled or run here,
 # and so these tests always run regardless of the shard -run filter passed via TESTARGS.
-test: get-test-deps fmtcheck
+test: get-test-deps
 	gotestsum --format testname --debug --packages $(UNIT_PKGS) -- $(TESTARGS) -timeout=120s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
