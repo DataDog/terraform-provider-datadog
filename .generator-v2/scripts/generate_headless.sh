@@ -36,11 +36,12 @@ die() {
   # If the branch was made but nothing was committed yet, delete it. If a commit
   # already exists, keep it so a push or PR can be retried.
   if [ "${BRANCH_CREATED:-0}" = 1 ] && [ "${COMMITTED:-0}" = 0 ]; then
-    git checkout -- datadog/fwprovider/datasources_generated.go >/dev/null 2>&1 || true
-    rm -f "datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go" \
-          "datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go" \
-          "docs/data-sources/${ARTIFACT_NAME}.md" 2>/dev/null || true
-    git checkout "${ORIG_BRANCH:-master}" >/dev/null 2>&1 || true
+    # Discard everything this run touched, then force-switch back: a bare checkout
+    # would refuse while tracked files (e.g. framework_provider.go under
+    # --overwrites) are still modified, stranding us on the throwaway branch.
+    git reset --hard >/dev/null 2>&1 || true
+    git clean -fdq datadog/fwprovider datadog/tests docs/data-sources >/dev/null 2>&1 || true
+    git checkout -f "${ORIG_BRANCH:-master}" >/dev/null 2>&1 || true
     git branch -D "$BRANCH" >/dev/null 2>&1 || true
   fi
   jq -n \
@@ -83,9 +84,16 @@ CLAUDE_COST_FILE=""
 # return 0, or return 1 if claude is missing, errors, or returns non-JSON. The
 # whole file is passed as one argument, so any $ or backticks in it stay literal.
 call_claude() {
-  local pf="$1" raw result
+  local pf="$1" raw result scratch to
   command -v claude >/dev/null 2>&1 || return 1
-  raw="$(claude -p "$(cat "$pf")" --output-format json --max-turns 1 2>/dev/null || true)"
+  # timeout isn't guaranteed (notably on macOS), so wrap only if it's present.
+  to=""; for t in timeout gtimeout; do command -v "$t" >/dev/null 2>&1 && { to="$t 180"; break; }; done
+  # Run from an empty scratch dir with --strict-mcp-config so the call ignores the
+  # repo's project CLAUDE.md/settings and any auto-loaded MCP servers; the prompt
+  # file is self-contained, so nothing project-specific is needed.
+  scratch="$(mktemp -d -t tfgen-claude.XXXXXX)"
+  raw="$( cd "$scratch" && $to claude -p "$(cat "$pf")" --strict-mcp-config --output-format json --max-turns 1 2>/dev/null || true )"
+  rm -rf "$scratch" 2>/dev/null || true
   # Record what this call cost even if the reply is later unusable — we still paid.
   [ -n "$CLAUDE_COST_FILE" ] && printf '%s\n' "$raw" | jq -c \
     '{cost: (.total_cost_usd // .cost_usd // 0), in: ((.usage.input_tokens // 0) + (.usage.cache_read_input_tokens // 0) + (.usage.cache_creation_input_tokens // 0)), out: (.usage.output_tokens // 0)}' \
@@ -187,6 +195,14 @@ ORIG_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 if [ -z "$BASE" ]; then
   [ "$ORIG_BRANCH" != "HEAD" ] || die "detached HEAD — pass --base explicitly (cannot default base to current branch)"
   BASE="$ORIG_BRANCH"
+fi
+
+# If we'll open a PR, the base must exist on origin — GitHub can't target a branch
+# it doesn't have. Check now, before any work, so a local-only base fails fast
+# instead of after the commit + push.
+if [ "$NO_PR" -eq 0 ]; then
+  git ls-remote --exit-code --heads origin "$BASE" >/dev/null 2>&1 \
+    || die "base branch '$BASE' does not exist on origin; push it first, pass --base to an existing remote branch, or use --no-pr"
 fi
 
 BRANCH_CREATED=0
@@ -328,8 +344,26 @@ jlog "gate passed (failed=0, no error diagnostics)"
 # Stage: docs + build
 # ---------------------------------------------------------------------------
 STAGE="docs"
-make docs >&2 || die "make docs failed"
 DOCS_FILE="docs/data-sources/${ARTIFACT_NAME}.md"
+make docs >&2 || die "make docs failed"
+
+# tfplugindocs regenerates the WHOLE docs/ tree, so any pre-existing drift (often
+# just a Terraform-version rendering difference) surfaces as changed files that
+# aren't ours. Restore everything under docs/ except our artifact's page, so the
+# whitelist and commit see only the file we meant to add.
+while IFS= read -r line; do
+  [ -z "$line" ] && continue
+  status="${line:0:2}"; path="${line:3}"
+  path="${path#\"}"; path="${path%\"}"
+  [ "$path" = "$DOCS_FILE" ] && continue
+  if [ "$status" = "??" ]; then
+    rm -f "$path" 2>/dev/null || true
+  else
+    git checkout -- "$path" >/dev/null 2>&1 || true
+  fi
+  jlog "reverted unrelated doc drift: $path"
+done < <(git status --porcelain -- docs/)
+
 [ -f "$DOCS_FILE" ] || die "make docs produced no $DOCS_FILE — registration did not take"
 
 STAGE="build"
@@ -568,9 +602,16 @@ if [ "$NO_PR" -eq 1 ]; then
 else
   STAGE="pr"
   git push -u origin "$BRANCH" >&2 || die "git push failed"
-  PR_URL="$(gh pr create --draft --base "$BASE" --head "$BRANCH" \
-    --title "$TITLE" --label "changelog/feature" --body-file "$PR_BODY_FILE" 2>&1)" \
-    || die "gh pr create failed: $PR_URL"
+  # CI wants a changelog/* label, but a repo/fork that lacks it shouldn't sink the
+  # PR after we've pushed — attach it only if it exists, and warn otherwise.
+  PR_LABEL="changelog/feature"
+  pr_args=(--draft --base "$BASE" --head "$BRANCH" --title "$TITLE" --body-file "$PR_BODY_FILE")
+  if gh label list --json name --jq '.[].name' 2>/dev/null | grep -Fxq "$PR_LABEL"; then
+    pr_args+=(--label "$PR_LABEL")
+  else
+    jlog "WARNING: label '$PR_LABEL' not on the repo; opening PR without it (CI's changelog check may fail)"
+  fi
+  PR_URL="$(gh pr create "${pr_args[@]}" 2>&1)" || die "gh pr create failed: $PR_URL"
   jlog "draft PR: $PR_URL"
 fi
 
