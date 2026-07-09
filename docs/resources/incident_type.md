@@ -27,15 +27,14 @@ resource "datadog_incident_type" "with_configuration" {
   description = "Incidents that impact customers"
 
   configuration = {
-    private_incidents                          = false
-    private_incidents_by_default               = false
-    allow_workflows                            = true
-    allow_incident_deletion                    = false
-    editable_timestamps                        = false
-    test_incidents                             = true
-    create_message                             = ""
-    disable_out_of_the_box_postmortem_template = false
-    slug_source                                = "default"
+    private_incidents            = false
+    private_incidents_by_default = false
+    allow_workflows              = true
+    allow_incident_deletion      = false
+    editable_timestamps          = false
+    test_incidents               = true
+    create_message               = ""
+    slug_source                  = "default"
   }
 }
 ```
@@ -65,7 +64,6 @@ Optional:
 - `allow_incident_deletion` (Boolean) Whether incidents of this type can be deleted. Defaults to `false`.
 - `allow_workflows` (Boolean) Whether users can manually run a workflow from an incident of this type. Defaults to `true`.
 - `create_message` (String) An optional message shown to users when they declare an incident of this type. Defaults to an empty string.
-- `disable_out_of_the_box_postmortem_template` (Boolean) When enabled, incidents of this type do not use Datadog's out-of-the-box postmortem template. Defaults to `false`.
 - `editable_timestamps` (Boolean) Whether responders can edit incident timestamps for incidents of this type. Defaults to `false`.
 - `private_incidents` (Boolean) Whether responders can create private incidents of this type. Defaults to `false`.
 - `private_incidents_by_default` (Boolean) Whether the private toggle is enabled by default in the incident creation modal for this type. Defaults to `false`.

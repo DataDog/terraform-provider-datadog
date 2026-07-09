@@ -12,14 +12,13 @@ resource "datadog_incident_type" "with_configuration" {
   description = "Incidents that impact customers"
 
   configuration = {
-    private_incidents                          = false
-    private_incidents_by_default               = false
-    allow_workflows                            = true
-    allow_incident_deletion                    = false
-    editable_timestamps                        = false
-    test_incidents                             = true
-    create_message                             = ""
-    disable_out_of_the_box_postmortem_template = false
-    slug_source                                = "default"
+    private_incidents            = false
+    private_incidents_by_default = false
+    allow_workflows              = true
+    allow_incident_deletion      = false
+    editable_timestamps          = false
+    test_incidents               = true
+    create_message               = ""
+    slug_source                  = "default"
   }
 }

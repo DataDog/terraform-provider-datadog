@@ -40,7 +40,6 @@ Read-Only:
 - `allow_incident_deletion` (Boolean) Whether incidents of this type can be deleted.
 - `allow_workflows` (Boolean) Whether users can manually run a workflow from an incident of this type.
 - `create_message` (String) An optional message shown to users when they declare an incident of this type.
-- `disable_out_of_the_box_postmortem_template` (Boolean) When enabled, incidents of this type do not use Datadog's out-of-the-box postmortem template.
 - `editable_timestamps` (Boolean) Whether responders can edit incident timestamps for incidents of this type.
 - `private_incidents` (Boolean) Whether responders can create private incidents of this type.
 - `private_incidents_by_default` (Boolean) Whether the private toggle is enabled by default in the incident creation modal for this type.

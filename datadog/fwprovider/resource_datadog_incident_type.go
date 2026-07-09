@@ -39,27 +39,25 @@ type incidentTypeModel struct {
 }
 
 type incidentTypeConfigurationModel struct {
-	PrivateIncidents                     types.Bool   `tfsdk:"private_incidents"`
-	PrivateIncidentsByDefault            types.Bool   `tfsdk:"private_incidents_by_default"`
-	AllowWorkflows                       types.Bool   `tfsdk:"allow_workflows"`
-	AllowIncidentDeletion                types.Bool   `tfsdk:"allow_incident_deletion"`
-	EditableTimestamps                   types.Bool   `tfsdk:"editable_timestamps"`
-	TestIncidents                        types.Bool   `tfsdk:"test_incidents"`
-	CreateMessage                        types.String `tfsdk:"create_message"`
-	DisableOutOfTheBoxPostmortemTemplate types.Bool   `tfsdk:"disable_out_of_the_box_postmortem_template"`
-	SlugSource                           types.String `tfsdk:"slug_source"`
+	PrivateIncidents          types.Bool   `tfsdk:"private_incidents"`
+	PrivateIncidentsByDefault types.Bool   `tfsdk:"private_incidents_by_default"`
+	AllowWorkflows            types.Bool   `tfsdk:"allow_workflows"`
+	AllowIncidentDeletion     types.Bool   `tfsdk:"allow_incident_deletion"`
+	EditableTimestamps        types.Bool   `tfsdk:"editable_timestamps"`
+	TestIncidents             types.Bool   `tfsdk:"test_incidents"`
+	CreateMessage             types.String `tfsdk:"create_message"`
+	SlugSource                types.String `tfsdk:"slug_source"`
 }
 
 var incidentTypeConfigurationAttrTypes = map[string]attr.Type{
-	"private_incidents":                          types.BoolType,
-	"private_incidents_by_default":               types.BoolType,
-	"allow_workflows":                            types.BoolType,
-	"allow_incident_deletion":                    types.BoolType,
-	"editable_timestamps":                        types.BoolType,
-	"test_incidents":                             types.BoolType,
-	"create_message":                             types.StringType,
-	"disable_out_of_the_box_postmortem_template": types.BoolType,
-	"slug_source":                                types.StringType,
+	"private_incidents":            types.BoolType,
+	"private_incidents_by_default": types.BoolType,
+	"allow_workflows":              types.BoolType,
+	"allow_incident_deletion":      types.BoolType,
+	"editable_timestamps":          types.BoolType,
+	"test_incidents":               types.BoolType,
+	"create_message":               types.StringType,
+	"slug_source":                  types.StringType,
 }
 
 func NewIncidentTypeResource() resource.Resource {
@@ -150,12 +148,6 @@ func (r *incidentTypeResource) Schema(_ context.Context, _ resource.SchemaReques
 						Optional:      true,
 						Computed:      true,
 						PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
-					},
-					"disable_out_of_the_box_postmortem_template": schema.BoolAttribute{
-						Description:   "When enabled, incidents of this type do not use Datadog's out-of-the-box postmortem template. Defaults to `false`.",
-						Optional:      true,
-						Computed:      true,
-						PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
 					},
 					"slug_source": schema.StringAttribute{
 						Description:   "The source used to derive the incident slug. When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed. Defaults to `default`.",
@@ -404,15 +396,14 @@ func (r *incidentTypeResource) updateStateFromResponse(ctx context.Context, stat
 
 		if cfg, ok := attributes.GetConfigurationOk(); ok {
 			m := incidentTypeConfigurationModel{
-				PrivateIncidents:                     types.BoolValue(cfg.GetPrivateIncidents()),
-				PrivateIncidentsByDefault:            types.BoolValue(cfg.GetPrivateIncidentsByDefault()),
-				AllowWorkflows:                       types.BoolValue(cfg.GetAllowWorkflows()),
-				AllowIncidentDeletion:                types.BoolValue(cfg.GetAllowIncidentDeletion()),
-				EditableTimestamps:                   types.BoolValue(cfg.GetEditableTimestamps()),
-				TestIncidents:                        types.BoolValue(cfg.GetTestIncidents()),
-				CreateMessage:                        types.StringValue(cfg.GetCreateMessage()),
-				DisableOutOfTheBoxPostmortemTemplate: types.BoolValue(cfg.GetDisableOutOfTheBoxPostmortemTemplate()),
-				SlugSource:                           types.StringValue(string(cfg.GetSlugSource())),
+				PrivateIncidents:          types.BoolValue(cfg.GetPrivateIncidents()),
+				PrivateIncidentsByDefault: types.BoolValue(cfg.GetPrivateIncidentsByDefault()),
+				AllowWorkflows:            types.BoolValue(cfg.GetAllowWorkflows()),
+				AllowIncidentDeletion:     types.BoolValue(cfg.GetAllowIncidentDeletion()),
+				EditableTimestamps:        types.BoolValue(cfg.GetEditableTimestamps()),
+				TestIncidents:             types.BoolValue(cfg.GetTestIncidents()),
+				CreateMessage:             types.StringValue(cfg.GetCreateMessage()),
+				SlugSource:                types.StringValue(string(cfg.GetSlugSource())),
 			}
 			obj, d := types.ObjectValueFrom(ctx, incidentTypeConfigurationAttrTypes, m)
 			diags.Append(d...)
@@ -454,9 +445,6 @@ func buildIncidentTypeConfiguration(ctx context.Context, obj types.Object) (*dat
 	}
 	if !m.CreateMessage.IsNull() && !m.CreateMessage.IsUnknown() {
 		cfg.SetCreateMessage(m.CreateMessage.ValueString())
-	}
-	if !m.DisableOutOfTheBoxPostmortemTemplate.IsNull() && !m.DisableOutOfTheBoxPostmortemTemplate.IsUnknown() {
-		cfg.SetDisableOutOfTheBoxPostmortemTemplate(m.DisableOutOfTheBoxPostmortemTemplate.ValueBool())
 	}
 	if !m.SlugSource.IsNull() && !m.SlugSource.IsUnknown() {
 		cfg.SetSlugSource(datadogV2.IncidentTypeSlugSource(m.SlugSource.ValueString()))
