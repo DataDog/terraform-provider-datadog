@@ -238,7 +238,7 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 	// A plain lookup only finds entities already written to via this API. Retry with
 	// includeDiscovered=true so an auto-discovered, never-touched entity is also found.
 	if len(entityResp.Included) == 0 {
-		path = path + "&includeDiscovered=true"
+		path += "&includeDiscovered=true"
 		httpRespByte, _, err = utils.SendRequest(r.Auth, r.Api, "GET", path, nil)
 		if err != nil {
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting entity"))
