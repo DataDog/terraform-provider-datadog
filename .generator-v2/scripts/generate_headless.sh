@@ -16,9 +16,12 @@
 set -euo pipefail
 
 # This script's own directory, resolved before we cd elsewhere, so the prompt
-# files under prompts/ still load.
+# files under prompts/ still load. Copy them to a tmp dir OUTSIDE the working tree:
+# we later `git checkout` the base branch, which resets the tree to that branch's
+# content — if the base doesn't carry prompts/, they'd vanish mid-run.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROMPTS_DIR="$SCRIPT_DIR/prompts"
+PROMPTS_DIR="$(mktemp -d -t tfgen-prompts.XXXXXX)"
+cp "$SCRIPT_DIR/prompts/"*.md "$PROMPTS_DIR/" 2>/dev/null || true
 
 # ---------------------------------------------------------------------------
 # Logging + structured failure
@@ -64,7 +67,7 @@ Optional:
   --service NAME           PR title [prefix] (default: derived from the op's spec tag)
   --spec PATH              full v2 OAS file (default: curl upstream)
   --spec-ref REF           git ref of datadog-api-client-go to curl (default: master)
-  --base BRANCH            branch the PR targets and is built from (default: master)
+  --base BRANCH            branch the PR targets and is built from (default: current branch)
   --branch NAME            feature branch (default: generate/datadog_<name>_datasource)
   --no-pr                  stop after commit; do not push or open a PR
   --output-json PATH       also write the final result JSON here
@@ -111,7 +114,7 @@ metrics_json() {
 # Args
 # ---------------------------------------------------------------------------
 ARTIFACT_NAME="" CARDINALITY="" READ_OP="" SEARCH_OP="" TF_DESCRIPTION=""
-OVERWRITES="" SERVICE="" SPEC="" SPEC_REF="master" BASE="master" BRANCH=""
+OVERWRITES="" SERVICE="" SPEC="" SPEC_REF="master" BASE="" BRANCH=""
 NO_PR=0 OUTPUT_JSON=""
 
 while [ $# -gt 0 ]; do
@@ -178,6 +181,14 @@ SLICER=".generator-v2/internal/testdata/mini-oas/scripts/slice_and_annotate.py"
 
 # Remember the starting branch so a failure can put us back on it.
 ORIG_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+# Default the base (PR target + branch-point) to the branch we're on, so headless
+# generation cuts and merges into the current branch rather than master.
+if [ -z "$BASE" ]; then
+  [ "$ORIG_BRANCH" != "HEAD" ] || die "detached HEAD — pass --base explicitly (cannot default base to current branch)"
+  BASE="$ORIG_BRANCH"
+fi
+
 BRANCH_CREATED=0
 COMMITTED=0
 
