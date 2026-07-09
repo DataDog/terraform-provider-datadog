@@ -56,6 +56,7 @@ datadog/**/*datadog_monitor*                     @DataDog/monitor-app
 datadog/**/*datadog_appsec*                      @DataDog/asm-backend
 datadog/**/*datadog_azure_integration*           @DataDog/azure-integrations
 datadog/**/*datadog_compliance*                  @DataDog/k9-misconfigs
+datadog/**/*datadog_current_user*                @DataDog/team-aaa
 datadog/**/*datadog_dataset*                     @DataDog/aaa-granular-access
 datadog/**/*datadog_datastore*                   @DataDog/action-platform @DataDog/workflow-automation-backend
 datadog/**/*datadog_incident*                    @DataDog/incident-app
