@@ -24,7 +24,6 @@ type datadogDatastoreDataSourceModel struct {
 	CreatorUserId                types.Int64  `tfsdk:"creator_user_id"`
 	CreatorUserUuid              types.String `tfsdk:"creator_user_uuid"`
 	Description                  types.String `tfsdk:"description"`
-	ModifiedAt                   types.String `tfsdk:"modified_at"`
 	Name                         types.String `tfsdk:"name"`
 	OrgId                        types.Int64  `tfsdk:"org_id"`
 	PrimaryColumnName            types.String `tfsdk:"primary_column_name"`
@@ -69,10 +68,6 @@ func (d *datadogDatastoreDataSource) Schema(_ context.Context, _ datasource.Sche
 			},
 			"description": schema.StringAttribute{
 				Description: "A human-readable description about the datastore.",
-				Computed:    true,
-			},
-			"modified_at": schema.StringAttribute{
-				Description: "Timestamp when the datastore was last modified.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
@@ -146,9 +141,6 @@ func (d *datadogDatastoreDataSource) updateState(state *datadogDatastoreDataSour
 	}
 	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
 		state.Description = types.StringValue(*description)
-	}
-	if modifiedAt, ok := attributes.GetModifiedAtOk(); ok && modifiedAt != nil {
-		state.ModifiedAt = types.StringValue(modifiedAt.String())
 	}
 	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)

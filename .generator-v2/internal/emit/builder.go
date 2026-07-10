@@ -481,10 +481,11 @@ func isObjectType(tfType string) bool { return tfType == "schema.SingleNestedBlo
 // generated data source: their timestamps and actor handles add schema noise
 // without configuration value.
 var auditFields = map[string]bool{
-	"created_at": true,
-	"updated_at": true,
-	"created_by": true,
-	"updated_by": true,
+	"created_at":  true,
+	"updated_at":  true,
+	"created_by":  true,
+	"updated_by":  true,
+	"modified_at": true,
 }
 
 // isAuditField reports whether a top-level record attribute is server-managed
