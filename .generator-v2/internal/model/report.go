@@ -11,7 +11,7 @@ import (
 // RunReport functions
 
 // summarize tallies artifact entries by status into the convenience counts. The
-// five buckets correspond one-to-one to the ArtifactStatus values.
+// buckets correspond one-to-one to the ArtifactStatus values.
 func summarize(entries []ArtifactReportEntry) *RunSummary {
 	s := &RunSummary{}
 	for _, e := range entries {
@@ -26,6 +26,10 @@ func summarize(entries []ArtifactReportEntry) *RunSummary {
 			s.Skipped++
 		case ArtifactStatusFailed:
 			s.Failed++
+		case ArtifactStatusRetired:
+			s.Retired++
+		case ArtifactStatusRetireBlocked:
+			s.RetireBlocked++
 		}
 	}
 	return s
