@@ -140,6 +140,19 @@ func TestGenerateFailsOnMissingOverwriteTarget(t *testing.T) {
 	}
 }
 
+// TestGenerateRejectsReconcileWithInclude proves the guard: orphan detection is
+// only sound over the complete annotation set, so --reconcile refuses --include.
+// The check runs before the spec loads, so the (nonexistent) spec is never read.
+func TestGenerateRejectsReconcileWithInclude(t *testing.T) {
+	err := runTfgen("generate", "--reconcile", "--include", "team", "--spec", "does-not-matter.yaml")
+	if err == nil {
+		t.Fatal("expected --reconcile combined with --include to be rejected, got nil")
+	}
+	if !strings.Contains(err.Error(), "reconcile") {
+		t.Errorf("error should mention reconcile, got: %v", err)
+	}
+}
+
 func mustRead(t *testing.T, path string) string {
 	t.Helper()
 	content, err := os.ReadFile(path)

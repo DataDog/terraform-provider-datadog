@@ -36,81 +36,118 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var reportPath string
 	var emitTests bool
 	var testsOutputRoot string
+	var docsRoot string
+	var reconcile bool
+	var retire string
 
 	cmd := &cobra.Command{
 		Use:   "generate",
 		Short: "Generate Terraform artifacts from the OpenAPI spec",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			spec, err := parser.LoadSpec(specPath,
-				parser.WithMaxDepth(maxDepth),
-				parser.WithTrackingFieldName(trackingField))
-			if err != nil {
-				return err
+			// Orphan detection is only valid when tfgen sees the complete annotation
+			// set, so --reconcile cannot be narrowed by --include.
+			if reconcile && include != "" {
+				return fmt.Errorf("generate: --reconcile cannot be combined with --include (orphan detection needs the complete annotation set)")
 			}
 
 			runReport := model.RunReport{
 				RunId:            uuid.NewString(),
 				GeneratorVersion: cmd.Root().Version,
-				SpecHash:         spec.Hash,
 				StartedAt:        time.Now(),
 			}
 
-			filter := parseInclude(include)
+			var wiringChanged bool
+			var deferredErr error // surfaced after the report is written
 
-			// Resolve the provider's SDK-accessor names, the source of truth for
-			// APIAccessor. A missing file is expected outside a full checkout; a parse
-			// failure is worth surfacing. Either way we fall back to derived names.
-			accessors, accErr := emit.ResolveAPIAccessors(apiInstancesHelperPath)
-			if accErr != nil {
-				if !errors.Is(accErr, os.ErrNotExist) {
-					cmd.PrintErrln("tfgen: could not resolve API accessors, using derived names:", accErr)
+			if retire != "" {
+				// Scoped retirement: retire the named artifacts and stop, without
+				// loading the spec or regenerating anything.
+				for raw := range strings.SplitSeq(retire, ",") {
+					name := strings.TrimSpace(raw)
+					if name == "" {
+						continue
+					}
+					runReport.Artifacts = append(runReport.Artifacts, retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, check))
 				}
-				accessors = nil
+			} else {
+				spec, err := parser.LoadSpec(specPath,
+					parser.WithMaxDepth(maxDepth),
+					parser.WithTrackingFieldName(trackingField))
+				if err != nil {
+					return err
+				}
+				runReport.SpecHash = spec.Hash
+
+				filter := parseInclude(include)
+
+				// Resolve the provider's SDK-accessor names, the source of truth for
+				// APIAccessor. A missing file is expected outside a full checkout; a parse
+				// failure is worth surfacing. Either way we fall back to derived names.
+				accessors, accErr := emit.ResolveAPIAccessors(apiInstancesHelperPath)
+				if accErr != nil {
+					if !errors.Is(accErr, os.ErrNotExist) {
+						cmd.PrintErrln("tfgen: could not resolve API accessors, using derived names:", accErr)
+					}
+					accessors = nil
+				}
+
+				var registrations []emit.GeneratedRegistration
+				for _, op := range spec.Operations {
+					if op.Tracking == nil {
+						runReport.SkippedOperations = append(runReport.SkippedOperations, model.SkippedOperation{
+							OperationId: op.OperationId,
+							Path:        op.Path,
+							Method:      op.Method,
+							Reason:      model.SkipReasonTrackingFieldAbsent,
+						})
+						continue
+					}
+					if op.Tracking.Skip {
+						runReport.SkippedOperations = append(runReport.SkippedOperations, model.SkippedOperation{
+							OperationId: op.OperationId,
+							Path:        op.Path,
+							Method:      op.Method,
+							Reason:      model.SkipReasonTrackingFieldSkip,
+						})
+						continue
+					}
+					if len(filter) > 0 && !filter[op.Tracking.ArtifactName] {
+						runReport.Artifacts = append(runReport.Artifacts, model.ArtifactReportEntry{
+							Name:   op.Tracking.ArtifactName,
+							Kind:   op.Tracking.ArtifactKind,
+							Status: model.ArtifactStatusSkipped,
+						})
+						continue
+					}
+
+					entry, testEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, emitTests, check, accessors)
+					runReport.Artifacts = append(runReport.Artifacts, entry)
+					if testEntry != nil {
+						runReport.Artifacts = append(runReport.Artifacts, *testEntry)
+					}
+					if reg != nil {
+						registrations = append(registrations, *reg)
+					}
+				}
+
+				// Wire the generated data sources into the provider (register their
+				// constructors, retire any they overwrite). Surface the result after
+				// the report is written so a wiring I/O error still emits the report.
+				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, registrations, check)
+
+				// Reconcile: retire generated data sources whose annotation is gone.
+				// Runs after wiring so the registry already holds this run's set; skip
+				// it if wiring failed, since the registry state is then uncertain.
+				if reconcile && deferredErr == nil {
+					desired := make(map[string]bool, len(registrations))
+					for _, reg := range registrations {
+						desired[reg.Constructor] = true
+					}
+					orphanEntries, recErr := reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, desired, check)
+					runReport.Artifacts = append(runReport.Artifacts, orphanEntries...)
+					deferredErr = recErr
+				}
 			}
-
-			var registrations []emit.GeneratedRegistration
-			for _, op := range spec.Operations {
-				if op.Tracking == nil {
-					runReport.SkippedOperations = append(runReport.SkippedOperations, model.SkippedOperation{
-						OperationId: op.OperationId,
-						Path:        op.Path,
-						Method:      op.Method,
-						Reason:      model.SkipReasonTrackingFieldAbsent,
-					})
-					continue
-				}
-				if op.Tracking.Skip {
-					runReport.SkippedOperations = append(runReport.SkippedOperations, model.SkippedOperation{
-						OperationId: op.OperationId,
-						Path:        op.Path,
-						Method:      op.Method,
-						Reason:      model.SkipReasonTrackingFieldSkip,
-					})
-					continue
-				}
-				if len(filter) > 0 && !filter[op.Tracking.ArtifactName] {
-					runReport.Artifacts = append(runReport.Artifacts, model.ArtifactReportEntry{
-						Name:   op.Tracking.ArtifactName,
-						Kind:   op.Tracking.ArtifactKind,
-						Status: model.ArtifactStatusSkipped,
-					})
-					continue
-				}
-
-				entry, testEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, emitTests, check, accessors)
-				runReport.Artifacts = append(runReport.Artifacts, entry)
-				if testEntry != nil {
-					runReport.Artifacts = append(runReport.Artifacts, *testEntry)
-				}
-				if reg != nil {
-					registrations = append(registrations, *reg)
-				}
-			}
-
-			// Wire the generated data sources into the provider (register their
-			// constructors, retire any they overwrite). Surface the result after
-			// the report is written so a wiring I/O error still emits the report.
-			wiringChanged, wiringErr := wireGeneratedDatasources(outputRoot, registrations, check)
 
 			runReport.FinishedAt = time.Now()
 
@@ -118,8 +155,8 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				return err
 			}
 
-			if wiringErr != nil {
-				return wiringErr
+			if deferredErr != nil {
+				return deferredErr
 			}
 
 			if runReport.Summary != nil && runReport.Summary.Failed > 0 {
@@ -151,6 +188,9 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	cmd.PersistentFlags().StringVar(&reportPath, "report", "-", "Where to write the run report (\"-\" = stdout)")
 	cmd.PersistentFlags().BoolVar(&emitTests, "emit-tests", false, "Also emit a generated acceptance-test scaffold for each data source")
 	cmd.PersistentFlags().StringVar(&testsOutputRoot, "tests-output-root", "datadog/tests", "Root directory for generated acceptance-test files")
+	cmd.PersistentFlags().StringVar(&docsRoot, "docs-root", "docs/data-sources", "Root directory for data-source docs pages (used when retiring)")
+	cmd.PersistentFlags().BoolVar(&reconcile, "reconcile", false, "Retire generated data sources no longer annotated (requires the full spec; incompatible with --include)")
+	cmd.PersistentFlags().StringVar(&retire, "retire", "", "Comma-separated artifact names to retire without generating (deletes files + registration)")
 
 	return cmd
 }
@@ -297,9 +337,10 @@ func wireGeneratedDatasources(outputRoot string, regs []emit.GeneratedRegistrati
 }
 
 // wouldChange reports whether a write status represents a file that was (or, in
-// check mode, would be) modified.
+// check mode, would be) modified. A retirement deletes files, so it counts;
+// retire_blocked leaves everything in place, so it does not.
 func wouldChange(s model.ArtifactStatus) bool {
-	return s == model.ArtifactStatusCreated || s == model.ArtifactStatusUpdated
+	return s == model.ArtifactStatusCreated || s == model.ArtifactStatusUpdated || s == model.ArtifactStatusRetired
 }
 
 func failEntry(e model.ArtifactReportEntry, err error) model.ArtifactReportEntry {

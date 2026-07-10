@@ -51,6 +51,25 @@ func GeneratedDatasourceRegistered(path, constructor string) (bool, error) {
 	return slices.Contains(datasourceConstructorRe.FindAllString(string(data), -1), constructor), nil
 }
 
+// RegisteredGeneratedDatasources returns the constructor identifiers currently
+// registered in the generatedDatasources file at path, sorted and de-duplicated.
+// A missing file yields an empty slice. The reconcile pass uses it to find
+// orphans: registered constructors no longer backed by an annotation.
+func RegisteredGeneratedDatasources(path string) ([]string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	set := map[string]struct{}{}
+	for _, c := range datasourceConstructorRe.FindAllString(string(data), -1) {
+		set[c] = struct{}{}
+	}
+	return sortedKeys(set), nil
+}
+
 // generatedDatasourcesHeader is everything in datasources_generated.go up to and
 // including the slice literal's opening brace. SyncGeneratedDatasources appends
 // the sorted constructors and the closing brace, then gofmt canonicalizes it.
@@ -73,28 +92,55 @@ var generatedDatasources = []func() datasource.DataSource{`
 // --include run from dropping data sources it did not regenerate this time. It
 // honors check mode through WriteFile.
 func SyncGeneratedDatasources(path string, constructors []string, check bool) (model.ArtifactStatus, error) {
-	set := map[string]struct{}{}
-	existing, err := os.ReadFile(path)
-	if err != nil && !errors.Is(err, os.ErrNotExist) {
+	set, err := registeredSet(path)
+	if err != nil {
 		return model.ArtifactStatusFailed, err
-	}
-	for _, c := range datasourceConstructorRe.FindAllString(string(existing), -1) {
-		set[c] = struct{}{}
 	}
 	for _, c := range constructors {
 		set[c] = struct{}{}
 	}
+	return writeGeneratedDatasources(path, set, check)
+}
 
-	names := make([]string, 0, len(set))
-	for c := range set {
-		names = append(names, c)
+// RemoveGeneratedDatasource deletes constructor from path's generatedDatasources
+// slice, the set-difference inverse of SyncGeneratedDatasources's union. The
+// scoped per-branch retire uses it to drop exactly one registration while leaving
+// the rest of the base file intact. It is idempotent: an already-absent
+// constructor (or a missing file) reports Unchanged. It honors check mode.
+func RemoveGeneratedDatasource(path, constructor string, check bool) (model.ArtifactStatus, error) {
+	set, err := registeredSet(path)
+	if err != nil {
+		return model.ArtifactStatusFailed, err
 	}
-	sort.Strings(names)
+	if _, ok := set[constructor]; !ok {
+		return model.ArtifactStatusUnchanged, nil
+	}
+	delete(set, constructor)
+	return writeGeneratedDatasources(path, set, check)
+}
 
+// registeredSet reads the constructor identifiers currently in the
+// generatedDatasources file at path into a set; a missing file yields an empty
+// set.
+func registeredSet(path string) (map[string]struct{}, error) {
+	set := map[string]struct{}{}
+	existing, err := os.ReadFile(path)
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, err
+	}
+	for _, c := range datasourceConstructorRe.FindAllString(string(existing), -1) {
+		set[c] = struct{}{}
+	}
+	return set, nil
+}
+
+// writeGeneratedDatasources renders the generatedDatasources file from a set of
+// constructors (sorted, gofmt-canonicalized) and writes it through WriteFile.
+func writeGeneratedDatasources(path string, set map[string]struct{}, check bool) (model.ArtifactStatus, error) {
 	var buf bytes.Buffer
 	buf.WriteString(generatedDatasourcesHeader)
 	buf.WriteByte('\n')
-	for _, c := range names {
+	for _, c := range sortedKeys(set) {
 		buf.WriteByte('\t')
 		buf.WriteString(c)
 		buf.WriteString(",\n")
@@ -106,6 +152,16 @@ func SyncGeneratedDatasources(path string, constructors []string, check bool) (m
 		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of generatedDatasources: %w", err)
 	}
 	return WriteFile(path, src, check)
+}
+
+// sortedKeys returns a set's keys as a sorted slice.
+func sortedKeys(set map[string]struct{}) []string {
+	names := make([]string, 0, len(set))
+	for c := range set {
+		names = append(names, c)
+	}
+	sort.Strings(names)
+	return names
 }
 
 // datasourcesSliceHeader is the line opening the hand-written Datasources slice

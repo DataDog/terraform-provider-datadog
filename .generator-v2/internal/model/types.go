@@ -343,6 +343,12 @@ const (
 	ArtifactStatusUnchanged ArtifactStatus = "unchanged"
 	ArtifactStatusSkipped   ArtifactStatus = "skipped"
 	ArtifactStatusFailed    ArtifactStatus = "failed"
+	// ArtifactStatusRetired marks an artifact whose files and registration were
+	// deleted because its annotation is gone and no recorded cassette adopted it.
+	ArtifactStatusRetired ArtifactStatus = "retired"
+	// ArtifactStatusRetireBlocked marks an orphaned artifact left in place because
+	// a recorded cassette (or a missing generated marker) makes deletion unsafe.
+	ArtifactStatusRetireBlocked ArtifactStatus = "retire_blocked"
 )
 
 // DiagnosticSeverity classifies a Diagnostic.
@@ -376,11 +382,13 @@ type RunReport struct {
 
 // RunSummary holds convenience counts for CI assertions, one per ArtifactStatus.
 type RunSummary struct {
-	Created   int `json:"created"`
-	Updated   int `json:"updated"`
-	Unchanged int `json:"unchanged"`
-	Skipped   int `json:"skipped"`
-	Failed    int `json:"failed"`
+	Created       int `json:"created"`
+	Updated       int `json:"updated"`
+	Unchanged     int `json:"unchanged"`
+	Skipped       int `json:"skipped"`
+	Failed        int `json:"failed"`
+	Retired       int `json:"retired"`
+	RetireBlocked int `json:"retire_blocked"`
 }
 
 // ArtifactReportEntry is the per-artifact section of a RunReport.

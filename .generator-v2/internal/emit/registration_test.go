@@ -76,6 +76,96 @@ var _ = Describe("SyncGeneratedDatasources", func() {
 	})
 })
 
+var _ = Describe("RemoveGeneratedDatasource", func() {
+	var path string
+
+	BeforeEach(func() {
+		dir, err := os.MkdirTemp("", "registration-remove-generated-*")
+		Expect(err).NotTo(HaveOccurred())
+		DeferCleanup(os.RemoveAll, dir)
+		path = filepath.Join(dir, "datasources_generated.go")
+	})
+
+	read := func() string {
+		content, err := os.ReadFile(path)
+		Expect(err).NotTo(HaveOccurred())
+		return string(content)
+	}
+
+	It("drops one constructor and leaves the rest of the slice intact", func() {
+		_, err := SyncGeneratedDatasources(path, []string{"NewAbcDataSource", "NewTeamDataSource", "NewZooDataSource"}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		status, err := RemoveGeneratedDatasource(path, "NewTeamDataSource", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(read()).NotTo(ContainSubstring("NewTeamDataSource"))
+		Expect(read()).To(ContainSubstring("NewAbcDataSource"))
+		Expect(read()).To(ContainSubstring("NewZooDataSource"))
+	})
+
+	It("renders the canonical empty slice when the last constructor is removed", func() {
+		_, err := SyncGeneratedDatasources(path, []string{"NewTeamDataSource"}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		status, err := RemoveGeneratedDatasource(path, "NewTeamDataSource", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(read()).To(ContainSubstring("var generatedDatasources = []func() datasource.DataSource{}"))
+	})
+
+	It("is idempotent: removing an already-absent constructor reports Unchanged", func() {
+		_, err := SyncGeneratedDatasources(path, []string{"NewTeamDataSource"}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		status, err := RemoveGeneratedDatasource(path, "NewAbsentDataSource", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUnchanged))
+	})
+
+	It("reports Unchanged when the file does not exist", func() {
+		status, err := RemoveGeneratedDatasource(path, "NewTeamDataSource", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUnchanged))
+	})
+
+	It("reports the change in check mode without writing", func() {
+		_, err := SyncGeneratedDatasources(path, []string{"NewAbcDataSource", "NewTeamDataSource"}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		status, err := RemoveGeneratedDatasource(path, "NewTeamDataSource", true)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(read()).To(ContainSubstring("NewTeamDataSource"))
+	})
+})
+
+var _ = Describe("RegisteredGeneratedDatasources", func() {
+	var path string
+
+	BeforeEach(func() {
+		dir, err := os.MkdirTemp("", "registration-registered-*")
+		Expect(err).NotTo(HaveOccurred())
+		DeferCleanup(os.RemoveAll, dir)
+		path = filepath.Join(dir, "datasources_generated.go")
+	})
+
+	It("returns the registered constructors sorted", func() {
+		_, err := SyncGeneratedDatasources(path, []string{"NewZooDataSource", "NewAbcDataSource"}, false)
+		Expect(err).NotTo(HaveOccurred())
+
+		got, err := RegisteredGeneratedDatasources(path)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(got).To(Equal([]string{"NewAbcDataSource", "NewZooDataSource"}))
+	})
+
+	It("returns an empty slice for a missing file", func() {
+		got, err := RegisteredGeneratedDatasources(path)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(got).To(BeEmpty())
+	})
+})
+
 var _ = Describe("RemoveHandwrittenDatasource", func() {
 	const provider = `package fwprovider
 
