@@ -1,4 +1,7 @@
 TEST?=$$(go list ./...)
+# Unit-test packages: everything except the datadog/tests acceptance suite. These
+# don't interact with the API, use no cassettes, and need no terraform binary.
+UNIT_PKGS?=$$(go list ./... | grep -vE '/datadog/tests(/|$$)')
 RECORD?=false
 GOIMPORTS_FILES?=$$(find . -name '*.go')
 PKG_NAME=datadog
@@ -41,13 +44,15 @@ dev-build:
 dev-clean:
 	@rm -vf $(DEV_PLUGIN_DIR)/terraform-provider-datadog $(DEV_TFRC)
 
-# Run unit tests; these tests don't interact with the API and don't support/need RECORD
-test: get-test-deps fmtcheck
-	gotestsum --hide-summary skipped --format testname --debug --packages $(TEST) -- $(TESTARGS) -timeout=30s
+# Run unit tests; these tests don't interact with the API and don't support/need RECORD.
+# Scoped to UNIT_PKGS so the datadog/tests acceptance suite is never compiled or run here,
+# and so these tests always run regardless of the shard -run filter passed via TESTARGS.
+test: get-test-deps
+	gotestsum --format testname --debug --packages $(UNIT_PKGS) -- $(TESTARGS) -timeout=120s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
 testacc: get-test-deps
-	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./... -- -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
 testall: test testacc
