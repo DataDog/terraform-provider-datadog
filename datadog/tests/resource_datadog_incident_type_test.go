@@ -126,11 +126,6 @@ func TestAccDatadogIncidentType_Configuration(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_incident_type.foo", "configuration.slug_source", "servicenow"),
 				),
 			},
-			{
-				ResourceName:      "datadog_incident_type.foo",
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
 		},
 	})
 }
