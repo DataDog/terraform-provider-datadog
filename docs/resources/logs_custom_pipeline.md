@@ -202,6 +202,7 @@ Optional:
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--category_processor))
 - `date_remapper` (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--date_remapper))
 - `decoder_processor` (Block List, Max: 1) Decoder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#decoder-processor) (see [below for nested schema](#nestedblock--processor--decoder_processor))
+- `exclude_attribute_processor` (Block List, Max: 1) Exclude Attribute Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#exclude-attribute-processor) (see [below for nested schema](#nestedblock--processor--exclude_attribute_processor))
 - `geo_ip_parser` (Block List, Max: 1) Date GeoIP Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#geoip-parser) (see [below for nested schema](#nestedblock--processor--geo_ip_parser))
 - `grok_parser` (Block List, Max: 1) Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser) (see [below for nested schema](#nestedblock--processor--grok_parser))
 - `lookup_processor` (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--lookup_processor))
@@ -468,6 +469,19 @@ Optional:
 - `name` (String) Name of the processor.
 
 
+<a id="nestedblock--processor--exclude_attribute_processor"></a>
+### Nested Schema for `processor.exclude_attribute_processor`
+
+Required:
+
+- `attribute_to_exclude` (String) Name of the log attribute to remove from the log event.
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+
+
 <a id="nestedblock--processor--geo_ip_parser"></a>
 ### Nested Schema for `processor.geo_ip_parser`
 
@@ -570,6 +584,7 @@ Optional:
 - `category_processor` (Block List, Max: 1) Category Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#category-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--category_processor))
 - `date_remapper` (Block List, Max: 1) Date Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#log-date-remapper) (see [below for nested schema](#nestedblock--processor--pipeline--processor--date_remapper))
 - `decoder_processor` (Block List, Max: 1) Decoder Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#decoder-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--decoder_processor))
+- `exclude_attribute_processor` (Block List, Max: 1) Exclude Attribute Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#exclude-attribute-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--exclude_attribute_processor))
 - `geo_ip_parser` (Block List, Max: 1) Date GeoIP Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#geoip-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--geo_ip_parser))
 - `grok_parser` (Block List, Max: 1) Grok Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#grok-parser) (see [below for nested schema](#nestedblock--processor--pipeline--processor--grok_parser))
 - `lookup_processor` (Block List, Max: 1) Lookup Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/processing/processors/?tab=ui#lookup-processor) (see [below for nested schema](#nestedblock--processor--pipeline--processor--lookup_processor))
@@ -828,6 +843,19 @@ Required:
 - `input_representation` (String) Input representation: utf-8 or integer
 - `source` (String) Encoded message
 - `target` (String) Decoded message
+
+Optional:
+
+- `is_enabled` (Boolean) If the processor is enabled or not.
+- `name` (String) Name of the processor.
+
+
+<a id="nestedblock--processor--pipeline--processor--exclude_attribute_processor"></a>
+### Nested Schema for `processor.pipeline.processor.exclude_attribute_processor`
+
+Required:
+
+- `attribute_to_exclude` (String) Name of the log attribute to remove from the log event.
 
 Optional:
 
