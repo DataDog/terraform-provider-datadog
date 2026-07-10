@@ -142,3 +142,86 @@ what a laptop already has:
 4. Run the script with the same flags (typically wired up as pipeline inputs).
 5. Read the JSON from stdout — use `.status` and the exit code as the pass/fail gate, and
    `.pr_url` and `.metrics` for reporting runtime and token cost.
+
+---
+
+# `generate_batch.sh` — keep the provider in lockstep with an annotated spec
+
+Where `generate_headless.sh` adds **one** data source, `generate_batch.sh` reconciles the
+**whole** generated set against an already-annotated spec and fans each impacted artifact out
+to its own **draft** PR:
+
+- an annotation appears → the data source is **created**,
+- a schema under an annotation changes → it is **updated**,
+- an annotation is removed → the data source is **retired** (deleted), unless a recorded
+  cassette shows it was adopted — those are flagged, never deleted.
+
+The spec is assumed **already annotated** with `x-datadog-tf-generator`; this script does not
+slice or annotate (pass `--spec`). It never needs test credentials — it emits code and opens
+draft PRs; a human records cassettes afterward.
+
+## What it does, in order
+
+1. Validate arguments/environment; stop if the working tree is dirty.
+2. `make tfgen-build`.
+3. **One** expensive run on a staging branch: `tfgen generate --reconcile` (generate-all +
+   retire orphans) → `make docs` → `make build`. This proves the whole impacted set compiles
+   together. On any failure it restores the tree and stops.
+4. Capture the generated docs + report, then restore the tree to base.
+5. Enforce `--max-prs`; with `--dry-run`, print the plan and stop here (no branches/PRs).
+6. **Fan out** (fail-slow — a bad artifact is recorded and skipped, never aborting the batch):
+   for each created / updated / retired artifact, cut a branch from base, re-emit just that
+   artifact (`--include`) or retire it (`--retire`), confirm only its files changed, and open
+   a draft PR. Build is verified in aggregate (step 3); each PR's own CI is the per-artifact net.
+7. For adopted orphans left in place, open one GitHub tracking issue.
+8. Emit one aggregate batch JSON.
+
+## Usage
+
+```
+.generator-v2/scripts/generate_batch.sh --spec PATH [flags]
+```
+
+| Flag | Default | Meaning |
+|---|---|---|
+| `--spec PATH` | — (required) | Full v2 OAS, already annotated with `x-datadog-tf-generator`. |
+| `--base BRANCH` | current branch | Branch each PR targets **and** is built from. |
+| `--max-prs N` | `25` | Abort before fan-out if more than N PRs would open. |
+| `--dry-run` | off | Verify + print the plan; open no branches or PRs. |
+| `--no-ai` | off | Skip all `claude` calls; PR bodies use deterministic notes only. |
+| `--no-pr` | off | Commit each artifact on its branch but do not push or open a PR. |
+| `--output-json PATH` | none | Also write the final batch JSON here. |
+
+```bash
+# See what a batch would do, without touching git or GitHub:
+.generator-v2/scripts/generate_batch.sh --spec annotated-openapi.yaml --dry-run | jq .
+
+# Open the PRs, targeting master, capped at 40:
+.generator-v2/scripts/generate_batch.sh --spec annotated-openapi.yaml --base master --max-prs 40
+```
+
+## Output
+
+Result JSON on **stdout**, human logs on **stderr**. `status` is `succeeded` (all artifacts
+handled), `partial` (some artifacts failed but the batch finished), `planned` (`--dry-run`),
+or `failed` (a setup/verify gate stopped it). Each artifact carries its own `status`, `branch`,
+`pr_url`, and any risk summary; `retire_blocked` lists the adopted orphans, and
+`tracking_issue_url` points at the issue filed for them.
+
+## Safety
+
+- **Nothing runs on a dirty tree**, and the staging/fan-out resets only ever discard changes
+  this script created (guarded so a precondition failure never touches your work).
+- **Build verified in aggregate.** The single `make build` covers the whole set; per-branch
+  builds are intentionally skipped, so each PR relies on its own CI build.
+- **Retirement is gated.** Only never-adopted (no recorded cassette) tfgen-generated files are
+  deleted; adopted ones and any non-generated file are refused and flagged for a human.
+- **Draft PRs only, always unverified**, carrying the same "must be verified before merging"
+  disclaimer as the single-artifact script.
+- **`overwrites` retirement is out of scope.** If a retired data source had replaced a
+  hand-written one, the original is not resurrected — the retire PR flags this for a reviewer.
+
+## Cross-PR note
+
+Each PR edits the sorted `datasources_generated.go`; the first to merge shifts the base, so a
+later PR may need a trivial rebase. The resolution is deterministic — re-run the scoped emit.
