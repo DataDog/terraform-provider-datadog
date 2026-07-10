@@ -12,7 +12,9 @@ import (
 )
 
 func TestAccDatadogIncidentType_Basic(t *testing.T) {
-	t.Parallel()
+	// Not parallel: these incident-type acceptance tests all create incident types
+	// against the shared staging org, and running them concurrently bursts the
+	// per-org rate limit on the incidents config API (429s). Serialize to flatten it.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	incidentTypeName := fmt.Sprintf("test-it-basic-%d", clockFromContext(ctx).Now().Unix())
 
@@ -40,7 +42,6 @@ func TestAccDatadogIncidentType_Basic(t *testing.T) {
 }
 
 func TestAccDatadogIncidentType_Updated(t *testing.T) {
-	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	incidentTypeName := fmt.Sprintf("test-it-updated-%d", clockFromContext(ctx).Now().Unix())
 	incidentTypeNameUpdated := incidentTypeName + "-updated"
@@ -75,7 +76,6 @@ func TestAccDatadogIncidentType_Updated(t *testing.T) {
 }
 
 func TestAccDatadogIncidentType_Import(t *testing.T) {
-	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	incidentTypeName := fmt.Sprintf("test-it-import-%d", clockFromContext(ctx).Now().Unix())
 
@@ -97,7 +97,6 @@ func TestAccDatadogIncidentType_Import(t *testing.T) {
 }
 
 func TestAccDatadogIncidentType_Configuration(t *testing.T) {
-	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	incidentTypeName := fmt.Sprintf("test-it-config-%d", clockFromContext(ctx).Now().Unix())
 
