@@ -139,13 +139,29 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				// Runs after wiring so the registry already holds this run's set; skip
 				// it if wiring failed, since the registry state is then uncertain.
 				if reconcile && deferredErr == nil {
-					desired := make(map[string]bool, len(registrations))
-					for _, reg := range registrations {
-						desired[reg.Constructor] = true
+					// A failed artifact contributes no registration, so it is absent
+					// from the desired set and reconcile would retire it as a false
+					// orphan. Skip reconcile entirely when any artifact failed; the
+					// failure is still surfaced below. This keeps reconcile fail-closed:
+					// a transient build failure must never delete a live data source.
+					failed := false
+					for _, e := range runReport.Artifacts {
+						if e.Status == model.ArtifactStatusFailed {
+							failed = true
+							break
+						}
 					}
-					orphanEntries, recErr := reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, desired, check)
-					runReport.Artifacts = append(runReport.Artifacts, orphanEntries...)
-					deferredErr = recErr
+					if failed {
+						cmd.PrintErrln("tfgen: skipping --reconcile because one or more artifacts failed to generate (retiring orphans now could delete a data source that only failed this run)")
+					} else {
+						desired := make(map[string]bool, len(registrations))
+						for _, reg := range registrations {
+							desired[reg.Constructor] = true
+						}
+						orphanEntries, recErr := reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, desired, check)
+						runReport.Artifacts = append(runReport.Artifacts, orphanEntries...)
+						deferredErr = recErr
+					}
 				}
 			}
 

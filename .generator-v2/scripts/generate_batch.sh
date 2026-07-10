@@ -446,6 +446,13 @@ process_artifact() {
     return 1
   }
 
+  # Names come from tfgen's schema/gate-validated report, but re-check here before
+  # any name becomes a git ref or path, so a drifted report can never inject a
+  # traversal or a bad ref (fail closed; branch_created is still 0).
+  if [[ ! "$name" =~ ^[a-z][a-z0-9_]*$ ]]; then
+    pa_fail "invalid artifact name '$name'"; return 1
+  fi
+
   # Branch collision — skip rather than clobber (branch_created stays 0, so pa_fail
   # leaves the pre-existing branch untouched).
   if git rev-parse --verify --quiet "refs/heads/$branch" >/dev/null \
