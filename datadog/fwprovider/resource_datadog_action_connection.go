@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -31,10 +32,32 @@ type actionConnectionResource struct {
 }
 
 type connectionResourceModel struct {
-	ID   types.String         `tfsdk:"id"`
-	Name types.String         `tfsdk:"name"`
-	AWS  *awsConnectionModel  `tfsdk:"aws"`
-	HTTP *httpConnectionModel `tfsdk:"http"`
+	ID           types.String                 `tfsdk:"id"`
+	Name         types.String                 `tfsdk:"name"`
+	AWS          *awsConnectionModel          `tfsdk:"aws"`
+	Anthropic    *apiTokenConnectionModel     `tfsdk:"anthropic"`
+	Asana        *asanaConnectionModel        `tfsdk:"asana"`
+	Azure        *azureConnectionModel        `tfsdk:"azure"`
+	CircleCI     *apiTokenConnectionModel     `tfsdk:"circle_ci"`
+	Clickup      *apiTokenConnectionModel     `tfsdk:"clickup"`
+	Cloudflare   *cloudflareConnectionModel   `tfsdk:"cloudflare"`
+	ConfigCat    *configCatConnectionModel    `tfsdk:"config_cat"`
+	Datadog      *datadogConnectionModel      `tfsdk:"datadog"`
+	Fastly       *apiKeyConnectionModel       `tfsdk:"fastly"`
+	Freshservice *freshserviceConnectionModel `tfsdk:"freshservice"`
+	GCP          *gcpConnectionModel          `tfsdk:"gcp"`
+	Gemini       *apiKeyConnectionModel       `tfsdk:"gemini"`
+	Gitlab       *apiTokenConnectionModel     `tfsdk:"gitlab"`
+	GreyNoise    *apiKeyConnectionModel       `tfsdk:"grey_noise"`
+	HTTP         *httpConnectionModel         `tfsdk:"http"`
+	LaunchDarkly *apiTokenConnectionModel     `tfsdk:"launch_darkly"`
+	Notion       *apiTokenConnectionModel     `tfsdk:"notion"`
+	Okta         *oktaConnectionModel         `tfsdk:"okta"`
+	OpenAI       *apiTokenConnectionModel     `tfsdk:"openai"`
+	ServiceNow   *serviceNowConnectionModel   `tfsdk:"service_now"`
+	Split        *apiKeyConnectionModel       `tfsdk:"split"`
+	Statsig      *apiKeyConnectionModel       `tfsdk:"statsig"`
+	VirusTotal   *apiKeyConnectionModel       `tfsdk:"virus_total"`
 }
 
 type awsConnectionModel struct {
@@ -81,6 +104,324 @@ type httpConnectionBodyModel struct {
 	Content     types.String `tfsdk:"content"`
 }
 
+type apiTokenConnectionModel struct {
+	APIKey *apiTokenCredentialModel `tfsdk:"api_key"`
+}
+
+type apiTokenCredentialModel struct {
+	APIToken types.String `tfsdk:"api_token"`
+}
+
+type apiKeyConnectionModel struct {
+	APIKey *apiKeyCredentialModel `tfsdk:"api_key"`
+}
+
+type apiKeyCredentialModel struct {
+	APIKey types.String `tfsdk:"api_key"`
+}
+
+type asanaConnectionModel struct {
+	AccessToken *asanaAccessTokenCredentialModel `tfsdk:"access_token"`
+}
+
+type asanaAccessTokenCredentialModel struct {
+	AccessToken types.String `tfsdk:"access_token"`
+}
+
+type azureConnectionModel struct {
+	Tenant *azureTenantCredentialModel `tfsdk:"tenant"`
+}
+
+type azureTenantCredentialModel struct {
+	AppClientID  types.String `tfsdk:"app_client_id"`
+	ClientSecret types.String `tfsdk:"client_secret"`
+	CustomScopes types.String `tfsdk:"custom_scopes"`
+	TenantID     types.String `tfsdk:"tenant_id"`
+}
+
+type cloudflareConnectionModel struct {
+	APIToken       *cloudflareAPITokenCredentialModel       `tfsdk:"api_token"`
+	GlobalAPIToken *cloudflareGlobalAPITokenCredentialModel `tfsdk:"global_api_token"`
+}
+
+type cloudflareAPITokenCredentialModel struct {
+	APIToken types.String `tfsdk:"api_token"`
+}
+
+type cloudflareGlobalAPITokenCredentialModel struct {
+	AuthEmail    types.String `tfsdk:"auth_email"`
+	GlobalAPIKey types.String `tfsdk:"global_api_key"`
+}
+
+type configCatConnectionModel struct {
+	SDKKey *configCatSDKKeyCredentialModel `tfsdk:"sdk_key"`
+}
+
+type configCatSDKKeyCredentialModel struct {
+	APIPassword types.String `tfsdk:"api_password"`
+	APIUsername types.String `tfsdk:"api_username"`
+	SDKKey      types.String `tfsdk:"sdk_key"`
+}
+
+type datadogConnectionModel struct {
+	APIKey *datadogAPIKeyCredentialModel `tfsdk:"api_key"`
+}
+
+type datadogAPIKeyCredentialModel struct {
+	APIKey     types.String `tfsdk:"api_key"`
+	AppKey     types.String `tfsdk:"app_key"`
+	Datacenter types.String `tfsdk:"datacenter"`
+	Subdomain  types.String `tfsdk:"subdomain"`
+}
+
+type freshserviceConnectionModel struct {
+	APIKey *freshserviceAPIKeyCredentialModel `tfsdk:"api_key"`
+}
+
+type freshserviceAPIKeyCredentialModel struct {
+	APIKey types.String `tfsdk:"api_key"`
+	Domain types.String `tfsdk:"domain"`
+}
+
+type gcpConnectionModel struct {
+	ServiceAccount *gcpServiceAccountCredentialModel `tfsdk:"service_account"`
+}
+
+type gcpServiceAccountCredentialModel struct {
+	PrivateKey          types.String `tfsdk:"private_key"`
+	ServiceAccountEmail types.String `tfsdk:"service_account_email"`
+}
+
+type oktaConnectionModel struct {
+	APIToken *oktaAPITokenCredentialModel `tfsdk:"api_token"`
+}
+
+type oktaAPITokenCredentialModel struct {
+	APIToken types.String `tfsdk:"api_token"`
+	Domain   types.String `tfsdk:"domain"`
+}
+
+type serviceNowConnectionModel struct {
+	BasicAuth *serviceNowBasicAuthCredentialModel `tfsdk:"basic_auth"`
+}
+
+type serviceNowBasicAuthCredentialModel struct {
+	Instance types.String `tfsdk:"instance"`
+	Password types.String `tfsdk:"password"`
+	Username types.String `tfsdk:"username"`
+}
+
+type actionConnectionFieldSpec struct {
+	Name        string
+	Description string
+	Sensitive   bool
+}
+
+type actionConnectionCredentialSpec struct {
+	Name        string
+	Description string
+	Fields      []actionConnectionFieldSpec
+}
+
+type actionConnectionIntegrationSpec struct {
+	Name        string
+	Description string
+	Credentials []actionConnectionCredentialSpec
+}
+
+var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
+	{
+		Name: "anthropic", Description: "Configuration for an Anthropic connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Anthropic API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Anthropic API token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "asana", Description: "Configuration for an Asana connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "access_token", Description: "Configuration for Asana access token authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "access_token", Description: "Asana access token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "azure", Description: "Configuration for an Azure connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "tenant", Description: "Configuration for Azure tenant authentication",
+			Fields: []actionConnectionFieldSpec{
+				{Name: "app_client_id", Description: "Azure application client ID"},
+				{Name: "client_secret", Description: "Azure application client secret", Sensitive: true},
+				{Name: "custom_scopes", Description: "Custom scope requested when acquiring an OAuth 2 access token"},
+				{Name: "tenant_id", Description: "Azure Active Directory tenant ID"},
+			},
+		}},
+	},
+	{
+		Name: "circle_ci", Description: "Configuration for a CircleCI connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for CircleCI API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "CircleCI API token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "clickup", Description: "Configuration for a ClickUp connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for ClickUp API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "ClickUp API token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "cloudflare", Description: "Configuration for a Cloudflare connection",
+		Credentials: []actionConnectionCredentialSpec{
+			{
+				Name: "api_token", Description: "Configuration for Cloudflare API token authentication",
+				Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Cloudflare API token", Sensitive: true}},
+			},
+			{
+				Name: "global_api_token", Description: "Configuration for Cloudflare global API token authentication",
+				Fields: []actionConnectionFieldSpec{
+					{Name: "auth_email", Description: "Email address associated with the Cloudflare account"},
+					{Name: "global_api_key", Description: "Cloudflare global API key", Sensitive: true},
+				},
+			},
+		},
+	},
+	{
+		Name: "config_cat", Description: "Configuration for a ConfigCat connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "sdk_key", Description: "Configuration for ConfigCat SDK key authentication",
+			Fields: []actionConnectionFieldSpec{
+				{Name: "api_password", Description: "ConfigCat Public Management API password", Sensitive: true},
+				{Name: "api_username", Description: "ConfigCat Public Management API username"},
+				{Name: "sdk_key", Description: "ConfigCat SDK key", Sensitive: true},
+			},
+		}},
+	},
+	{
+		Name: "datadog", Description: "Configuration for a Datadog connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Datadog API and application key authentication",
+			Fields: []actionConnectionFieldSpec{
+				{Name: "api_key", Description: "Datadog API key", Sensitive: true},
+				{Name: "app_key", Description: "Datadog application key", Sensitive: true},
+				{Name: "datacenter", Description: "Datadog site datacenter"},
+				{Name: "subdomain", Description: "Custom subdomain used for URLs generated with this connection"},
+			},
+		}},
+	},
+	{
+		Name: "fastly", Description: "Configuration for a Fastly connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Fastly API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Fastly API key", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "freshservice", Description: "Configuration for a Freshservice connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Freshservice API key authentication",
+			Fields: []actionConnectionFieldSpec{
+				{Name: "api_key", Description: "Freshservice API key", Sensitive: true},
+				{Name: "domain", Description: "Freshservice domain"},
+			},
+		}},
+	},
+	{
+		Name: "gcp", Description: "Configuration for a Google Cloud connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "service_account", Description: "Configuration for Google Cloud service account authentication",
+			Fields: []actionConnectionFieldSpec{
+				{Name: "private_key", Description: "Google Cloud service account private key", Sensitive: true},
+				{Name: "service_account_email", Description: "Google Cloud service account email"},
+			},
+		}},
+	},
+	{
+		Name: "gemini", Description: "Configuration for a Gemini connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Gemini API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Gemini API key", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "gitlab", Description: "Configuration for a GitLab connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for GitLab API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "GitLab API token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "grey_noise", Description: "Configuration for a GreyNoise connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for GreyNoise API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "GreyNoise API key", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "launch_darkly", Description: "Configuration for a LaunchDarkly connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for LaunchDarkly API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "LaunchDarkly API token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "notion", Description: "Configuration for a Notion connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Notion API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Notion API token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "okta", Description: "Configuration for an Okta connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_token", Description: "Configuration for Okta API token authentication",
+			Fields: []actionConnectionFieldSpec{
+				{Name: "api_token", Description: "Okta API token", Sensitive: true},
+				{Name: "domain", Description: "Okta domain"},
+			},
+		}},
+	},
+	{
+		Name: "openai", Description: "Configuration for an OpenAI connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for OpenAI API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "OpenAI API token", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "service_now", Description: "Configuration for a ServiceNow connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "basic_auth", Description: "Configuration for ServiceNow basic authentication",
+			Fields: []actionConnectionFieldSpec{
+				{Name: "instance", Description: "ServiceNow instance"},
+				{Name: "password", Description: "ServiceNow password", Sensitive: true},
+				{Name: "username", Description: "ServiceNow username"},
+			},
+		}},
+	},
+	{
+		Name: "split", Description: "Configuration for a Split connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Split API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Split API key", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "statsig", Description: "Configuration for a Statsig connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for Statsig API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Statsig API key", Sensitive: true}},
+		}},
+	},
+	{
+		Name: "virus_total", Description: "Configuration for a VirusTotal connection",
+		Credentials: []actionConnectionCredentialSpec{{
+			Name: "api_key", Description: "Configuration for VirusTotal API key authentication",
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "VirusTotal API key", Sensitive: true}},
+		}},
+	},
+}
+
 func NewActionConnectionResource() resource.Resource {
 	return &actionConnectionResource{}
 }
@@ -96,7 +437,29 @@ func (r *actionConnectionResource) ConfigValidators(ctx context.Context) []resou
 	return []resource.ConfigValidator{
 		resourcevalidator.ExactlyOneOf(
 			path.MatchRoot("aws"),
+			path.MatchRoot("anthropic"),
+			path.MatchRoot("asana"),
+			path.MatchRoot("azure"),
+			path.MatchRoot("circle_ci"),
+			path.MatchRoot("clickup"),
+			path.MatchRoot("cloudflare"),
+			path.MatchRoot("config_cat"),
+			path.MatchRoot("datadog"),
+			path.MatchRoot("fastly"),
+			path.MatchRoot("freshservice"),
+			path.MatchRoot("gcp"),
+			path.MatchRoot("gemini"),
+			path.MatchRoot("gitlab"),
+			path.MatchRoot("grey_noise"),
 			path.MatchRoot("http"),
+			path.MatchRoot("launch_darkly"),
+			path.MatchRoot("notion"),
+			path.MatchRoot("okta"),
+			path.MatchRoot("openai"),
+			path.MatchRoot("service_now"),
+			path.MatchRoot("split"),
+			path.MatchRoot("statsig"),
+			path.MatchRoot("virus_total"),
 		),
 	}
 }
@@ -126,6 +489,81 @@ func (r *actionConnectionResource) ValidateConfig(ctx context.Context, request r
 			"You must specify a credential type block.",
 		)
 		return
+	}
+
+	if conn.Cloudflare != nil {
+		credentialCount := 0
+		if conn.Cloudflare.APIToken != nil {
+			credentialCount++
+		}
+		if conn.Cloudflare.GlobalAPIToken != nil {
+			credentialCount++
+		}
+		if credentialCount != 1 {
+			response.Diagnostics.AddAttributeError(
+				path.Root("cloudflare"),
+				"Exactly one Cloudflare credential type required",
+				"You must specify exactly one of the api_token or global_api_token credential blocks.",
+			)
+			return
+		}
+	}
+
+	if integrationName := missingAdditionalConnectionCredential(conn); integrationName != "" {
+		response.Diagnostics.AddAttributeError(
+			path.Root(integrationName),
+			"Credential type required",
+			"You must specify a credential type block.",
+		)
+	}
+}
+
+func missingAdditionalConnectionCredential(conn connectionResourceModel) string {
+	switch {
+	case conn.Anthropic != nil && conn.Anthropic.APIKey == nil:
+		return "anthropic"
+	case conn.Asana != nil && conn.Asana.AccessToken == nil:
+		return "asana"
+	case conn.Azure != nil && conn.Azure.Tenant == nil:
+		return "azure"
+	case conn.CircleCI != nil && conn.CircleCI.APIKey == nil:
+		return "circle_ci"
+	case conn.Clickup != nil && conn.Clickup.APIKey == nil:
+		return "clickup"
+	case conn.ConfigCat != nil && conn.ConfigCat.SDKKey == nil:
+		return "config_cat"
+	case conn.Datadog != nil && conn.Datadog.APIKey == nil:
+		return "datadog"
+	case conn.Fastly != nil && conn.Fastly.APIKey == nil:
+		return "fastly"
+	case conn.Freshservice != nil && conn.Freshservice.APIKey == nil:
+		return "freshservice"
+	case conn.GCP != nil && conn.GCP.ServiceAccount == nil:
+		return "gcp"
+	case conn.Gemini != nil && conn.Gemini.APIKey == nil:
+		return "gemini"
+	case conn.Gitlab != nil && conn.Gitlab.APIKey == nil:
+		return "gitlab"
+	case conn.GreyNoise != nil && conn.GreyNoise.APIKey == nil:
+		return "grey_noise"
+	case conn.LaunchDarkly != nil && conn.LaunchDarkly.APIKey == nil:
+		return "launch_darkly"
+	case conn.Notion != nil && conn.Notion.APIKey == nil:
+		return "notion"
+	case conn.Okta != nil && conn.Okta.APIToken == nil:
+		return "okta"
+	case conn.OpenAI != nil && conn.OpenAI.APIKey == nil:
+		return "openai"
+	case conn.ServiceNow != nil && conn.ServiceNow.BasicAuth == nil:
+		return "service_now"
+	case conn.Split != nil && conn.Split.APIKey == nil:
+		return "split"
+	case conn.Statsig != nil && conn.Statsig.APIKey == nil:
+		return "statsig"
+	case conn.VirusTotal != nil && conn.VirusTotal.APIKey == nil:
+		return "virus_total"
+	default:
+		return ""
 	}
 }
 
@@ -286,6 +724,36 @@ func (r *actionConnectionResource) Schema(_ context.Context, _ resource.SchemaRe
 				},
 			},
 		},
+	}
+
+	for _, integrationSpec := range additionalActionConnectionSpecs {
+		response.Schema.Blocks[integrationSpec.Name] = actionConnectionResourceBlock(integrationSpec)
+	}
+}
+
+func actionConnectionResourceBlock(integrationSpec actionConnectionIntegrationSpec) schema.Block {
+	credentialBlocks := make(map[string]schema.Block, len(integrationSpec.Credentials))
+	for _, credentialSpec := range integrationSpec.Credentials {
+		attributes := make(map[string]schema.Attribute, len(credentialSpec.Fields))
+		for _, fieldSpec := range credentialSpec.Fields {
+			attributes[fieldSpec.Name] = schema.StringAttribute{
+				Description: fieldSpec.Description,
+				Optional:    true,
+				Sensitive:   fieldSpec.Sensitive,
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+			}
+		}
+		credentialBlocks[credentialSpec.Name] = schema.SingleNestedBlock{
+			Description: credentialSpec.Description,
+			Attributes:  attributes,
+		}
+	}
+
+	return schema.SingleNestedBlock{
+		Description: integrationSpec.Description,
+		Blocks:      credentialBlocks,
 	}
 }
 
@@ -499,7 +967,157 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 		}
 	}
 
+	if err := setAdditionalConnectionModelFromAPI(connModel, attributes.Integration); err != nil {
+		return nil, err
+	}
+
 	return connModel, nil
+}
+
+func setAdditionalConnectionModelFromAPI(connModel *connectionResourceModel, integration datadogV2.ActionConnectionIntegration) error {
+	integrationJSON, err := json.Marshal(integration)
+	if err != nil {
+		return fmt.Errorf("could not serialize connection integration: %w", err)
+	}
+
+	var integrationData struct {
+		Type        string                 `json:"type"`
+		Credentials map[string]interface{} `json:"credentials"`
+	}
+	if err := json.Unmarshal(integrationJSON, &integrationData); err != nil {
+		return fmt.Errorf("could not deserialize connection integration: %w", err)
+	}
+
+	credential := integrationData.Credentials
+	switch integrationData.Type {
+	case "AWS", "HTTP":
+		return nil
+	case "Anthropic":
+		connModel.Anthropic = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+		}}
+	case "Asana":
+		connModel.Asana = &asanaConnectionModel{AccessToken: &asanaAccessTokenCredentialModel{
+			AccessToken: actionConnectionCredentialString(credential, "access_token"),
+		}}
+	case "Azure":
+		connModel.Azure = &azureConnectionModel{Tenant: &azureTenantCredentialModel{
+			AppClientID:  actionConnectionCredentialString(credential, "app_client_id"),
+			ClientSecret: actionConnectionCredentialString(credential, "client_secret"),
+			CustomScopes: actionConnectionCredentialString(credential, "custom_scopes"),
+			TenantID:     actionConnectionCredentialString(credential, "tenant_id"),
+		}}
+	case "CircleCI":
+		connModel.CircleCI = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+		}}
+	case "Clickup":
+		connModel.Clickup = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+		}}
+	case "Cloudflare":
+		connModel.Cloudflare = &cloudflareConnectionModel{}
+		credentialType, _ := credential["type"].(string)
+		switch credentialType {
+		case "CloudflareAPIToken":
+			connModel.Cloudflare.APIToken = &cloudflareAPITokenCredentialModel{
+				APIToken: actionConnectionCredentialString(credential, "api_token"),
+			}
+		case "CloudflareGlobalAPIToken":
+			connModel.Cloudflare.GlobalAPIToken = &cloudflareGlobalAPITokenCredentialModel{
+				AuthEmail:    actionConnectionCredentialString(credential, "auth_email"),
+				GlobalAPIKey: actionConnectionCredentialString(credential, "global_api_key"),
+			}
+		default:
+			return fmt.Errorf("unsupported Cloudflare credential type %q", credentialType)
+		}
+	case "ConfigCat":
+		connModel.ConfigCat = &configCatConnectionModel{SDKKey: &configCatSDKKeyCredentialModel{
+			APIPassword: actionConnectionCredentialString(credential, "api_password"),
+			APIUsername: actionConnectionCredentialString(credential, "api_username"),
+			SDKKey:      actionConnectionCredentialString(credential, "sdk_key"),
+		}}
+	case "Datadog":
+		connModel.Datadog = &datadogConnectionModel{APIKey: &datadogAPIKeyCredentialModel{
+			APIKey:     actionConnectionCredentialString(credential, "api_key"),
+			AppKey:     actionConnectionCredentialString(credential, "app_key"),
+			Datacenter: actionConnectionCredentialString(credential, "datacenter"),
+			Subdomain:  actionConnectionCredentialString(credential, "subdomain"),
+		}}
+	case "Fastly":
+		connModel.Fastly = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
+			APIKey: actionConnectionCredentialString(credential, "api_key"),
+		}}
+	case "Freshservice":
+		connModel.Freshservice = &freshserviceConnectionModel{APIKey: &freshserviceAPIKeyCredentialModel{
+			APIKey: actionConnectionCredentialString(credential, "api_key"),
+			Domain: actionConnectionCredentialString(credential, "domain"),
+		}}
+	case "GCP":
+		connModel.GCP = &gcpConnectionModel{ServiceAccount: &gcpServiceAccountCredentialModel{
+			PrivateKey:          actionConnectionCredentialString(credential, "private_key"),
+			ServiceAccountEmail: actionConnectionCredentialString(credential, "service_account_email"),
+		}}
+	case "Gemini":
+		connModel.Gemini = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
+			APIKey: actionConnectionCredentialString(credential, "api_key"),
+		}}
+	case "Gitlab":
+		connModel.Gitlab = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+		}}
+	case "GreyNoise":
+		connModel.GreyNoise = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
+			APIKey: actionConnectionCredentialString(credential, "api_key"),
+		}}
+	case "LaunchDarkly":
+		connModel.LaunchDarkly = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+		}}
+	case "Notion":
+		connModel.Notion = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+		}}
+	case "Okta":
+		connModel.Okta = &oktaConnectionModel{APIToken: &oktaAPITokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+			Domain:   actionConnectionCredentialString(credential, "domain"),
+		}}
+	case "OpenAI":
+		connModel.OpenAI = &apiTokenConnectionModel{APIKey: &apiTokenCredentialModel{
+			APIToken: actionConnectionCredentialString(credential, "api_token"),
+		}}
+	case "ServiceNow":
+		connModel.ServiceNow = &serviceNowConnectionModel{BasicAuth: &serviceNowBasicAuthCredentialModel{
+			Instance: actionConnectionCredentialString(credential, "instance"),
+			Password: actionConnectionCredentialString(credential, "password"),
+			Username: actionConnectionCredentialString(credential, "username"),
+		}}
+	case "Split":
+		connModel.Split = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
+			APIKey: actionConnectionCredentialString(credential, "api_key"),
+		}}
+	case "Statsig":
+		connModel.Statsig = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
+			APIKey: actionConnectionCredentialString(credential, "api_key"),
+		}}
+	case "VirusTotal":
+		connModel.VirusTotal = &apiKeyConnectionModel{APIKey: &apiKeyCredentialModel{
+			APIKey: actionConnectionCredentialString(credential, "api_key"),
+		}}
+	default:
+		return fmt.Errorf("unsupported connection integration type %q", integrationData.Type)
+	}
+
+	return nil
+}
+
+func actionConnectionCredentialString(credential map[string]interface{}, name string) types.String {
+	value, ok := credential[name].(string)
+	if !ok {
+		return types.StringNull()
+	}
+	return types.StringValue(value)
 }
 
 func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
@@ -571,6 +1189,14 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 		attributes.SetIntegration(integration)
 	}
 
+	if connectionModel.AWS == nil && connectionModel.HTTP == nil {
+		integration, err := additionalCreateActionConnectionIntegration(connectionModel)
+		if err != nil {
+			return nil, err
+		}
+		attributes.SetIntegration(*integration)
+	}
+
 	data := datadogV2.NewActionConnectionData(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
 	req := datadogV2.NewCreateActionConnectionRequest(*data)
 
@@ -638,10 +1264,184 @@ func connectionModelToUpdateApiRequest(plan, oldState connectionResourceModel) (
 		attributes.SetIntegration(integration)
 	}
 
+	if plan.AWS == nil && plan.HTTP == nil {
+		integration, err := additionalUpdateActionConnectionIntegration(plan)
+		if err != nil {
+			return nil, err
+		}
+		attributes.SetIntegration(*integration)
+	}
+
 	data := datadogV2.NewActionConnectionDataUpdate(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
 	req := datadogV2.NewUpdateActionConnectionRequest(*data)
 
 	return req, nil
+}
+
+func additionalCreateActionConnectionIntegration(connectionModel connectionResourceModel) (*datadogV2.ActionConnectionIntegration, error) {
+	integrationData, err := additionalActionConnectionIntegrationData(connectionModel)
+	if err != nil {
+		return nil, err
+	}
+	integrationJSON, err := json.Marshal(integrationData)
+	if err != nil {
+		return nil, fmt.Errorf("could not serialize connection integration: %w", err)
+	}
+
+	var integration datadogV2.ActionConnectionIntegration
+	if err := json.Unmarshal(integrationJSON, &integration); err != nil {
+		return nil, fmt.Errorf("could not build connection integration: %w", err)
+	}
+	if integration.UnparsedObject != nil {
+		return nil, fmt.Errorf("could not build connection integration for the configured credential type")
+	}
+	return &integration, nil
+}
+
+func additionalUpdateActionConnectionIntegration(connectionModel connectionResourceModel) (*datadogV2.ActionConnectionIntegrationUpdate, error) {
+	integrationData, err := additionalActionConnectionIntegrationData(connectionModel)
+	if err != nil {
+		return nil, err
+	}
+	integrationJSON, err := json.Marshal(integrationData)
+	if err != nil {
+		return nil, fmt.Errorf("could not serialize connection integration update: %w", err)
+	}
+
+	var integration datadogV2.ActionConnectionIntegrationUpdate
+	if err := json.Unmarshal(integrationJSON, &integration); err != nil {
+		return nil, fmt.Errorf("could not build connection integration update: %w", err)
+	}
+	if integration.UnparsedObject != nil {
+		return nil, fmt.Errorf("could not build connection integration update for the configured credential type")
+	}
+	return &integration, nil
+}
+
+func additionalActionConnectionIntegrationData(connectionModel connectionResourceModel) (map[string]interface{}, error) {
+	switch {
+	case connectionModel.Anthropic != nil && connectionModel.Anthropic.APIKey != nil:
+		return actionConnectionIntegrationData("Anthropic", "AnthropicAPIKey", map[string]types.String{
+			"api_token": connectionModel.Anthropic.APIKey.APIToken,
+		}), nil
+	case connectionModel.Asana != nil && connectionModel.Asana.AccessToken != nil:
+		return actionConnectionIntegrationData("Asana", "AsanaAccessToken", map[string]types.String{
+			"access_token": connectionModel.Asana.AccessToken.AccessToken,
+		}), nil
+	case connectionModel.Azure != nil && connectionModel.Azure.Tenant != nil:
+		return actionConnectionIntegrationData("Azure", "AzureTenant", map[string]types.String{
+			"app_client_id": connectionModel.Azure.Tenant.AppClientID,
+			"client_secret": connectionModel.Azure.Tenant.ClientSecret,
+			"custom_scopes": connectionModel.Azure.Tenant.CustomScopes,
+			"tenant_id":     connectionModel.Azure.Tenant.TenantID,
+		}), nil
+	case connectionModel.CircleCI != nil && connectionModel.CircleCI.APIKey != nil:
+		return actionConnectionIntegrationData("CircleCI", "CircleCIAPIKey", map[string]types.String{
+			"api_token": connectionModel.CircleCI.APIKey.APIToken,
+		}), nil
+	case connectionModel.Clickup != nil && connectionModel.Clickup.APIKey != nil:
+		return actionConnectionIntegrationData("Clickup", "ClickupAPIKey", map[string]types.String{
+			"api_token": connectionModel.Clickup.APIKey.APIToken,
+		}), nil
+	case connectionModel.Cloudflare != nil && connectionModel.Cloudflare.APIToken != nil:
+		return actionConnectionIntegrationData("Cloudflare", "CloudflareAPIToken", map[string]types.String{
+			"api_token": connectionModel.Cloudflare.APIToken.APIToken,
+		}), nil
+	case connectionModel.Cloudflare != nil && connectionModel.Cloudflare.GlobalAPIToken != nil:
+		return actionConnectionIntegrationData("Cloudflare", "CloudflareGlobalAPIToken", map[string]types.String{
+			"auth_email":     connectionModel.Cloudflare.GlobalAPIToken.AuthEmail,
+			"global_api_key": connectionModel.Cloudflare.GlobalAPIToken.GlobalAPIKey,
+		}), nil
+	case connectionModel.ConfigCat != nil && connectionModel.ConfigCat.SDKKey != nil:
+		return actionConnectionIntegrationData("ConfigCat", "ConfigCatSDKKey", map[string]types.String{
+			"api_password": connectionModel.ConfigCat.SDKKey.APIPassword,
+			"api_username": connectionModel.ConfigCat.SDKKey.APIUsername,
+			"sdk_key":      connectionModel.ConfigCat.SDKKey.SDKKey,
+		}), nil
+	case connectionModel.Datadog != nil && connectionModel.Datadog.APIKey != nil:
+		return actionConnectionIntegrationData("Datadog", "DatadogAPIKey", map[string]types.String{
+			"api_key":    connectionModel.Datadog.APIKey.APIKey,
+			"app_key":    connectionModel.Datadog.APIKey.AppKey,
+			"datacenter": connectionModel.Datadog.APIKey.Datacenter,
+			"subdomain":  connectionModel.Datadog.APIKey.Subdomain,
+		}), nil
+	case connectionModel.Fastly != nil && connectionModel.Fastly.APIKey != nil:
+		return actionConnectionIntegrationData("Fastly", "FastlyAPIKey", map[string]types.String{
+			"api_key": connectionModel.Fastly.APIKey.APIKey,
+		}), nil
+	case connectionModel.Freshservice != nil && connectionModel.Freshservice.APIKey != nil:
+		return actionConnectionIntegrationData("Freshservice", "FreshserviceAPIKey", map[string]types.String{
+			"api_key": connectionModel.Freshservice.APIKey.APIKey,
+			"domain":  connectionModel.Freshservice.APIKey.Domain,
+		}), nil
+	case connectionModel.GCP != nil && connectionModel.GCP.ServiceAccount != nil:
+		return actionConnectionIntegrationData("GCP", "GCPServiceAccount", map[string]types.String{
+			"private_key":           connectionModel.GCP.ServiceAccount.PrivateKey,
+			"service_account_email": connectionModel.GCP.ServiceAccount.ServiceAccountEmail,
+		}), nil
+	case connectionModel.Gemini != nil && connectionModel.Gemini.APIKey != nil:
+		return actionConnectionIntegrationData("Gemini", "GeminiAPIKey", map[string]types.String{
+			"api_key": connectionModel.Gemini.APIKey.APIKey,
+		}), nil
+	case connectionModel.Gitlab != nil && connectionModel.Gitlab.APIKey != nil:
+		return actionConnectionIntegrationData("Gitlab", "GitlabAPIKey", map[string]types.String{
+			"api_token": connectionModel.Gitlab.APIKey.APIToken,
+		}), nil
+	case connectionModel.GreyNoise != nil && connectionModel.GreyNoise.APIKey != nil:
+		return actionConnectionIntegrationData("GreyNoise", "GreyNoiseAPIKey", map[string]types.String{
+			"api_key": connectionModel.GreyNoise.APIKey.APIKey,
+		}), nil
+	case connectionModel.LaunchDarkly != nil && connectionModel.LaunchDarkly.APIKey != nil:
+		return actionConnectionIntegrationData("LaunchDarkly", "LaunchDarklyAPIKey", map[string]types.String{
+			"api_token": connectionModel.LaunchDarkly.APIKey.APIToken,
+		}), nil
+	case connectionModel.Notion != nil && connectionModel.Notion.APIKey != nil:
+		return actionConnectionIntegrationData("Notion", "NotionAPIKey", map[string]types.String{
+			"api_token": connectionModel.Notion.APIKey.APIToken,
+		}), nil
+	case connectionModel.Okta != nil && connectionModel.Okta.APIToken != nil:
+		return actionConnectionIntegrationData("Okta", "OktaAPIToken", map[string]types.String{
+			"api_token": connectionModel.Okta.APIToken.APIToken,
+			"domain":    connectionModel.Okta.APIToken.Domain,
+		}), nil
+	case connectionModel.OpenAI != nil && connectionModel.OpenAI.APIKey != nil:
+		return actionConnectionIntegrationData("OpenAI", "OpenAIAPIKey", map[string]types.String{
+			"api_token": connectionModel.OpenAI.APIKey.APIToken,
+		}), nil
+	case connectionModel.ServiceNow != nil && connectionModel.ServiceNow.BasicAuth != nil:
+		return actionConnectionIntegrationData("ServiceNow", "ServiceNowBasicAuth", map[string]types.String{
+			"instance": connectionModel.ServiceNow.BasicAuth.Instance,
+			"password": connectionModel.ServiceNow.BasicAuth.Password,
+			"username": connectionModel.ServiceNow.BasicAuth.Username,
+		}), nil
+	case connectionModel.Split != nil && connectionModel.Split.APIKey != nil:
+		return actionConnectionIntegrationData("Split", "SplitAPIKey", map[string]types.String{
+			"api_key": connectionModel.Split.APIKey.APIKey,
+		}), nil
+	case connectionModel.Statsig != nil && connectionModel.Statsig.APIKey != nil:
+		return actionConnectionIntegrationData("Statsig", "StatsigAPIKey", map[string]types.String{
+			"api_key": connectionModel.Statsig.APIKey.APIKey,
+		}), nil
+	case connectionModel.VirusTotal != nil && connectionModel.VirusTotal.APIKey != nil:
+		return actionConnectionIntegrationData("VirusTotal", "VirusTotalAPIKey", map[string]types.String{
+			"api_key": connectionModel.VirusTotal.APIKey.APIKey,
+		}), nil
+	default:
+		return nil, fmt.Errorf("connection credential type is missing or unsupported")
+	}
+}
+
+func actionConnectionIntegrationData(integrationType, credentialType string, fields map[string]types.String) map[string]interface{} {
+	credential := map[string]interface{}{"type": credentialType}
+	for name, value := range fields {
+		if !value.IsNull() && !value.IsUnknown() {
+			credential[name] = value.ValueString()
+		}
+	}
+	return map[string]interface{}{
+		"type":        integrationType,
+		"credentials": credential,
+	}
 }
 
 // The connections API handles deletions of tokens, headers, and URL params with a "deleted" flag instead of
@@ -756,5 +1556,104 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 		}
 	}
 
+	preserveAdditionalConnectionSecrets(connModel, currentState)
+
 	return connModel, nil
+}
+
+func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, currentState connectionResourceModel) {
+	if currentState.Anthropic != nil && currentState.Anthropic.APIKey != nil &&
+		connModel.Anthropic != nil && connModel.Anthropic.APIKey != nil {
+		connModel.Anthropic.APIKey.APIToken = currentState.Anthropic.APIKey.APIToken
+	}
+	if currentState.Asana != nil && currentState.Asana.AccessToken != nil &&
+		connModel.Asana != nil && connModel.Asana.AccessToken != nil {
+		connModel.Asana.AccessToken.AccessToken = currentState.Asana.AccessToken.AccessToken
+	}
+	if currentState.Azure != nil && currentState.Azure.Tenant != nil &&
+		connModel.Azure != nil && connModel.Azure.Tenant != nil {
+		connModel.Azure.Tenant.ClientSecret = currentState.Azure.Tenant.ClientSecret
+	}
+	if currentState.CircleCI != nil && currentState.CircleCI.APIKey != nil &&
+		connModel.CircleCI != nil && connModel.CircleCI.APIKey != nil {
+		connModel.CircleCI.APIKey.APIToken = currentState.CircleCI.APIKey.APIToken
+	}
+	if currentState.Clickup != nil && currentState.Clickup.APIKey != nil &&
+		connModel.Clickup != nil && connModel.Clickup.APIKey != nil {
+		connModel.Clickup.APIKey.APIToken = currentState.Clickup.APIKey.APIToken
+	}
+	if currentState.Cloudflare != nil && connModel.Cloudflare != nil {
+		if currentState.Cloudflare.APIToken != nil && connModel.Cloudflare.APIToken != nil {
+			connModel.Cloudflare.APIToken.APIToken = currentState.Cloudflare.APIToken.APIToken
+		}
+		if currentState.Cloudflare.GlobalAPIToken != nil && connModel.Cloudflare.GlobalAPIToken != nil {
+			connModel.Cloudflare.GlobalAPIToken.GlobalAPIKey = currentState.Cloudflare.GlobalAPIToken.GlobalAPIKey
+		}
+	}
+	if currentState.ConfigCat != nil && currentState.ConfigCat.SDKKey != nil &&
+		connModel.ConfigCat != nil && connModel.ConfigCat.SDKKey != nil {
+		connModel.ConfigCat.SDKKey.APIPassword = currentState.ConfigCat.SDKKey.APIPassword
+		connModel.ConfigCat.SDKKey.SDKKey = currentState.ConfigCat.SDKKey.SDKKey
+	}
+	if currentState.Datadog != nil && currentState.Datadog.APIKey != nil &&
+		connModel.Datadog != nil && connModel.Datadog.APIKey != nil {
+		connModel.Datadog.APIKey.APIKey = currentState.Datadog.APIKey.APIKey
+		connModel.Datadog.APIKey.AppKey = currentState.Datadog.APIKey.AppKey
+	}
+	if currentState.Fastly != nil && currentState.Fastly.APIKey != nil &&
+		connModel.Fastly != nil && connModel.Fastly.APIKey != nil {
+		connModel.Fastly.APIKey.APIKey = currentState.Fastly.APIKey.APIKey
+	}
+	if currentState.Freshservice != nil && currentState.Freshservice.APIKey != nil &&
+		connModel.Freshservice != nil && connModel.Freshservice.APIKey != nil {
+		connModel.Freshservice.APIKey.APIKey = currentState.Freshservice.APIKey.APIKey
+	}
+	if currentState.GCP != nil && currentState.GCP.ServiceAccount != nil &&
+		connModel.GCP != nil && connModel.GCP.ServiceAccount != nil {
+		connModel.GCP.ServiceAccount.PrivateKey = currentState.GCP.ServiceAccount.PrivateKey
+	}
+	if currentState.Gemini != nil && currentState.Gemini.APIKey != nil &&
+		connModel.Gemini != nil && connModel.Gemini.APIKey != nil {
+		connModel.Gemini.APIKey.APIKey = currentState.Gemini.APIKey.APIKey
+	}
+	if currentState.Gitlab != nil && currentState.Gitlab.APIKey != nil &&
+		connModel.Gitlab != nil && connModel.Gitlab.APIKey != nil {
+		connModel.Gitlab.APIKey.APIToken = currentState.Gitlab.APIKey.APIToken
+	}
+	if currentState.GreyNoise != nil && currentState.GreyNoise.APIKey != nil &&
+		connModel.GreyNoise != nil && connModel.GreyNoise.APIKey != nil {
+		connModel.GreyNoise.APIKey.APIKey = currentState.GreyNoise.APIKey.APIKey
+	}
+	if currentState.LaunchDarkly != nil && currentState.LaunchDarkly.APIKey != nil &&
+		connModel.LaunchDarkly != nil && connModel.LaunchDarkly.APIKey != nil {
+		connModel.LaunchDarkly.APIKey.APIToken = currentState.LaunchDarkly.APIKey.APIToken
+	}
+	if currentState.Notion != nil && currentState.Notion.APIKey != nil &&
+		connModel.Notion != nil && connModel.Notion.APIKey != nil {
+		connModel.Notion.APIKey.APIToken = currentState.Notion.APIKey.APIToken
+	}
+	if currentState.Okta != nil && currentState.Okta.APIToken != nil &&
+		connModel.Okta != nil && connModel.Okta.APIToken != nil {
+		connModel.Okta.APIToken.APIToken = currentState.Okta.APIToken.APIToken
+	}
+	if currentState.OpenAI != nil && currentState.OpenAI.APIKey != nil &&
+		connModel.OpenAI != nil && connModel.OpenAI.APIKey != nil {
+		connModel.OpenAI.APIKey.APIToken = currentState.OpenAI.APIKey.APIToken
+	}
+	if currentState.ServiceNow != nil && currentState.ServiceNow.BasicAuth != nil &&
+		connModel.ServiceNow != nil && connModel.ServiceNow.BasicAuth != nil {
+		connModel.ServiceNow.BasicAuth.Password = currentState.ServiceNow.BasicAuth.Password
+	}
+	if currentState.Split != nil && currentState.Split.APIKey != nil &&
+		connModel.Split != nil && connModel.Split.APIKey != nil {
+		connModel.Split.APIKey.APIKey = currentState.Split.APIKey.APIKey
+	}
+	if currentState.Statsig != nil && currentState.Statsig.APIKey != nil &&
+		connModel.Statsig != nil && connModel.Statsig.APIKey != nil {
+		connModel.Statsig.APIKey.APIKey = currentState.Statsig.APIKey.APIKey
+	}
+	if currentState.VirusTotal != nil && currentState.VirusTotal.APIKey != nil &&
+		connModel.VirusTotal != nil && connModel.VirusTotal.APIKey != nil {
+		connModel.VirusTotal.APIKey.APIKey = currentState.VirusTotal.APIKey.APIKey
+	}
 }

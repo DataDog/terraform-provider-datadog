@@ -150,6 +150,33 @@ func (d *actionConnectionDatasource) Schema(_ context.Context, request datasourc
 			},
 		},
 	}
+
+	for _, integrationSpec := range additionalActionConnectionSpecs {
+		response.Schema.Blocks[integrationSpec.Name] = actionConnectionDataSourceBlock(integrationSpec)
+	}
+}
+
+func actionConnectionDataSourceBlock(integrationSpec actionConnectionIntegrationSpec) schema.Block {
+	credentialBlocks := make(map[string]schema.Block, len(integrationSpec.Credentials))
+	for _, credentialSpec := range integrationSpec.Credentials {
+		attributes := make(map[string]schema.Attribute, len(credentialSpec.Fields))
+		for _, fieldSpec := range credentialSpec.Fields {
+			attributes[fieldSpec.Name] = schema.StringAttribute{
+				Description: fieldSpec.Description,
+				Computed:    true,
+				Sensitive:   fieldSpec.Sensitive,
+			}
+		}
+		credentialBlocks[credentialSpec.Name] = schema.SingleNestedBlock{
+			Description: credentialSpec.Description,
+			Attributes:  attributes,
+		}
+	}
+
+	return schema.SingleNestedBlock{
+		Description: integrationSpec.Description,
+		Blocks:      credentialBlocks,
+	}
 }
 
 func (d *actionConnectionDatasource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
