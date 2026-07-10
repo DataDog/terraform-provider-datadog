@@ -133,6 +133,27 @@ var _ = Describe("retireArtifact", func() {
 		Expect(f.goPath("team")).To(BeAnExistingFile())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 	})
+
+	It("fails closed on a traversal name and deletes nothing outside the roots", func() {
+		f := newFixture()
+		// docPath is filepath.Join(docsRoot, name+".md"), so a "../" name escapes
+		// the docs root; this sentinel sits where "../secret" would resolve to.
+		sentinel := filepath.Join(filepath.Dir(f.docsRoot), "secret.md")
+		Expect(os.WriteFile(sentinel, []byte("keep me"), 0o644)).To(Succeed())
+
+		entry := f.retire("../secret", false)
+
+		Expect(entry.Status).To(Equal(model.ArtifactStatusFailed))
+		Expect(sentinel).To(BeAnExistingFile())
+	})
+
+	It("fails closed on a name carrying path or ref metacharacters", func() {
+		f := newFixture()
+		for _, bad := range []string{"foo/bar", "foo;rm", "Foo", "foo bar", ".."} {
+			Expect(f.retire(bad, false).Status).To(Equal(model.ArtifactStatusFailed),
+				"expected %q to be rejected", bad)
+		}
+	})
 })
 
 var _ = Describe("reconcileOrphans", func() {
