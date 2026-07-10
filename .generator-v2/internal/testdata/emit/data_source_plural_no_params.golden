@@ -27,7 +27,6 @@ type DatastoreDataModel struct {
 	CreatorUserUuid              types.String `tfsdk:"creator_user_uuid"`
 	Description                  types.String `tfsdk:"description"`
 	ID                           types.String `tfsdk:"id"`
-	ModifiedAt                   types.String `tfsdk:"modified_at"`
 	Name                         types.String `tfsdk:"name"`
 	OrgId                        types.Int64  `tfsdk:"org_id"`
 	PrimaryColumnName            types.String `tfsdk:"primary_column_name"`
@@ -80,10 +79,6 @@ func (d *datadogDatastoresDataSource) Schema(_ context.Context, _ datasource.Sch
 							Description: "The unique identifier of the datastore.",
 							Computed:    true,
 						},
-						"modified_at": schema.StringAttribute{
-							Description: "Timestamp when the datastore was last modified.",
-							Computed:    true,
-						},
 						"name": schema.StringAttribute{
 							Description: "The display name of the datastore.",
 							Computed:    true,
@@ -134,7 +129,6 @@ func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSo
 			CreatorUserUuid:              types.StringValue(item.Attributes.GetCreatorUserUuid()),
 			Description:                  types.StringValue(item.Attributes.GetDescription()),
 			ID:                           types.StringValue(item.GetId()),
-			ModifiedAt:                   types.StringValue(item.Attributes.GetModifiedAt().String()),
 			Name:                         types.StringValue(item.Attributes.GetName()),
 			OrgId:                        types.Int64Value(int64(item.Attributes.GetOrgId())),
 			PrimaryColumnName:            types.StringValue(item.Attributes.GetPrimaryColumnName()),

@@ -129,16 +129,16 @@ var _ = Describe("BuildDataSourceView", func() {
 })
 
 var _ = Describe("BuildDataSourceView audit fields", func() {
-	It("drops server-managed created_at/updated_at/created_by/updated_by from a singular record and records them", func() {
+	It("drops server-managed created_at/updated_at/created_by/updated_by/modified_at from a singular record and records them", func() {
 		op := incidentTypeOperation()
 		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
-		for _, f := range []string{"created_at", "updated_at", "created_by", "updated_by"} {
+		for _, f := range []string{"created_at", "updated_at", "created_by", "updated_by", "modified_at"} {
 			attrs[f] = prim("string", "")
 		}
 		view := mustView(op)
 
 		for _, a := range view.Schema.Attributes {
-			Expect(a.TFName).NotTo(BeElementOf("created_at", "updated_at", "created_by", "updated_by"))
+			Expect(a.TFName).NotTo(BeElementOf("created_at", "updated_at", "created_by", "updated_by", "modified_at"))
 		}
 		Expect(view.Dropped).To(ContainElement(ContainSubstring("created_at")))
 	})
@@ -171,7 +171,8 @@ var _ = Describe("BuildDataSourceView audit fields", func() {
 			}
 		}
 		Expect(itemAttrs).NotTo(ContainElement("created_at"))
-		Expect(itemAttrs).To(ContainElement("modified_at"))
+		Expect(itemAttrs).NotTo(ContainElement("modified_at"))
+		Expect(itemAttrs).To(ContainElement("description"))
 	})
 })
 
