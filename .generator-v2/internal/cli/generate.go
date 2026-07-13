@@ -133,7 +133,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				// Wire the generated data sources into the provider (register their
 				// constructors, retire any they overwrite). Surface the result after
 				// the report is written so a wiring I/O error still emits the report.
-				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, registrations, check)
+				wiringChanged, deferredErr = wireGeneratedDatasources(outputRoot, testsOutputRoot, registrations, check)
 
 				// Reconcile: retire generated data sources whose annotation is gone.
 				// Runs after wiring so the registry already holds this run's set; skip
@@ -268,10 +268,24 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, e
 		testEntry = emitDatasourceTest(&entry, view, artifact.Name, testsOutputRoot, check)
 	}
 
-	return entry, testEntry, &emit.GeneratedRegistration{
+	reg := &emit.GeneratedRegistration{
 		Constructor: emit.DatasourceConstructor(artifact.Name),
 		Overwrites:  op.Tracking.Overwrites,
 	}
+	// A generated test must also be registered in testFiles2EndpointTags or it
+	// t.Fatals at startup. Carry the key + tag only when a test was emitted, so a
+	// run without --emit-tests never touches provider_test.go. Fall back to the
+	// artifact name when the operation has no OpenAPI tag, so the span tag is never
+	// blank.
+	if testEntry != nil {
+		reg.TestFileKey = emit.EndpointTagTestKey(artifact.Name)
+		reg.EndpointTag = emit.NormalizeEndpointTag(op.Tag)
+		if reg.EndpointTag == "" {
+			reg.EndpointTag = artifact.Name
+		}
+	}
+
+	return entry, testEntry, reg
 }
 
 // emitDatasourceTest renders and writes the acceptance-test scaffold for a data
@@ -304,9 +318,11 @@ func emitDatasourceTest(entry *model.ArtifactReportEntry, view emit.DataSourceVi
 // provider and retires the hand-written ones they overwrite. It rewrites the
 // generatedDatasources slice with every generated constructor and, for each
 // artifact whose spec set overwrites, removes the named hand-written constructor
-// from the Datasources slice. It reports whether any of those files would change
-// (so --check can fail) and honors check mode by not writing.
-func wireGeneratedDatasources(outputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
+// from the Datasources slice. Each generated test is also registered in
+// provider_test.go's testFiles2EndpointTags map (under testsOutputRoot). It reports
+// whether any of those files would change (so --check can fail) and honors check
+// mode by not writing.
+func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.GeneratedRegistration, check bool) (changed bool, err error) {
 	// A run that generated no data sources has nothing to register; leave the
 	// provider files untouched rather than conjuring an empty generatedDatasources.
 	if len(regs) == 0 {
@@ -349,7 +365,23 @@ func wireGeneratedDatasources(outputRoot string, regs []emit.GeneratedRegistrati
 	if err != nil {
 		return changed, err
 	}
-	return changed || wouldChange(status), nil
+	changed = changed || wouldChange(status)
+
+	// Register each generated test in provider_test.go's testFiles2EndpointTags
+	// map. Only regs with a test emitted this run carry a TestFileKey.
+	providerTestPath := filepath.Join(testsOutputRoot, "provider_test.go")
+	for _, reg := range regs {
+		if reg.TestFileKey == "" {
+			continue
+		}
+		tagStatus, tagErr := emit.InsertEndpointTag(providerTestPath, reg.TestFileKey, reg.EndpointTag, check)
+		if tagErr != nil {
+			return changed, tagErr
+		}
+		changed = changed || wouldChange(tagStatus)
+	}
+
+	return changed, nil
 }
 
 // wouldChange reports whether a write status represents a file that was (or, in

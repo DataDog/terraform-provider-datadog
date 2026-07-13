@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
@@ -21,6 +22,12 @@ import (
 type GeneratedRegistration struct {
 	Constructor string
 	Overwrites  string
+	// TestFileKey is the testFiles2EndpointTags key for the generated test, or
+	// empty when no test was emitted (so the endpoint-tag map is left untouched).
+	TestFileKey string
+	// EndpointTag is the normalized OpenAPI tag registered as the test's map
+	// value; empty exactly when TestFileKey is.
+	EndpointTag string
 }
 
 // DatasourceConstructor returns the exported constructor a generated data source
@@ -218,4 +225,130 @@ func RemoveHandwrittenDatasource(path, constructor string, check bool) (model.Ar
 	}
 
 	return WriteFile(path, []byte(strings.Join(out, "\n")), check)
+}
+
+// endpointTagsMapHeader is the line opening the hand-written testFiles2EndpointTags
+// map in provider_test.go. Insert/RemoveEndpointTag scope their edit to this block
+// so a like-named key in another map is never touched.
+const endpointTagsMapHeader = "var testFiles2EndpointTags = map[string]string{"
+
+// EndpointTagTestKey returns the testFiles2EndpointTags key for a generated data
+// source's acceptance test: "tests/data_source_datadog_<name>_test". The tests/
+// prefix and missing .go suffix match the convention getEndpointTagValue keys on
+// (it appends "datadog/" and ".go" before comparing).
+func EndpointTagTestKey(name string) string {
+	return "tests/data_source_datadog_" + name + "_test"
+}
+
+// NormalizeEndpointTag maps an OpenAPI tag to the map's value form: lowercase with
+// spaces turned to hyphens, matching existing entries ("Cloud Workload Security"
+// -> "cloud-workload-security"). An empty tag normalizes to empty; the caller
+// substitutes a non-empty fallback.
+func NormalizeEndpointTag(tag string) string {
+	return strings.ToLower(strings.ReplaceAll(tag, " ", "-"))
+}
+
+// endpointTagsBlock returns the line indices of the testFiles2EndpointTags map
+// header and its closing brace. Map values hold no braces, so the first "}" after
+// the header terminates the block.
+func endpointTagsBlock(lines []string, path string) (start, end int, err error) {
+	start = -1
+	for i, line := range lines {
+		if strings.TrimSpace(line) == endpointTagsMapHeader {
+			start = i
+			break
+		}
+	}
+	if start == -1 {
+		return 0, 0, fmt.Errorf("emit: %s: testFiles2EndpointTags map not found", path)
+	}
+	for i := start + 1; i < len(lines); i++ {
+		if strings.TrimSpace(lines[i]) == "}" {
+			return start, i, nil
+		}
+	}
+	return 0, 0, fmt.Errorf("emit: %s: testFiles2EndpointTags map is not terminated", path)
+}
+
+// InsertEndpointTag sets `"<key>": "<value>",` in the testFiles2EndpointTags map in
+// provider_test.go (the file at path), scoped between endpointTagsMapHeader and its
+// closing brace. An existing entry for key is rewritten in place (minimal diff, no
+// duplicate); a new key is appended just before the closing brace. gofmt
+// canonicalizes the result; WriteFile decides Created/Updated/Unchanged and honors
+// check mode, so a re-run rebuilding the identical file is idempotently Unchanged. A
+// missing file is a hard error: a test was emitted, so the map must exist — failing
+// here beats a t.Fatal at test time.
+func InsertEndpointTag(path, key, value string, check bool) (model.ArtifactStatus, error) {
+	original, err := os.ReadFile(path)
+	if err != nil {
+		return model.ArtifactStatusFailed, err
+	}
+
+	lines := strings.Split(string(original), "\n")
+	start, end, err := endpointTagsBlock(lines, path)
+	if err != nil {
+		return model.ArtifactStatusFailed, err
+	}
+
+	entry := "\t" + strconv.Quote(key) + ": " + strconv.Quote(value) + ","
+	keyPrefix := strconv.Quote(key) + ":"
+	out := make([]string, 0, len(lines)+1)
+	replaced := false
+	for i, line := range lines {
+		if i > start && i < end && strings.HasPrefix(strings.TrimSpace(line), keyPrefix) {
+			out = append(out, entry)
+			replaced = true
+			continue
+		}
+		if i == end && !replaced {
+			out = append(out, entry)
+		}
+		out = append(out, line)
+	}
+
+	src, err := format.Source([]byte(strings.Join(out, "\n")))
+	if err != nil {
+		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of testFiles2EndpointTags: %w", err)
+	}
+	return WriteFile(path, src, check)
+}
+
+// RemoveEndpointTag deletes the entry keyed by key from the testFiles2EndpointTags
+// map, scoped to the block, idempotent (an absent key or a missing file reports
+// Unchanged). It gofmt-canonicalizes and honors check mode. Retire/reconcile use it,
+// so a missing provider_test.go is tolerated rather than fatal.
+func RemoveEndpointTag(path, key string, check bool) (model.ArtifactStatus, error) {
+	original, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return model.ArtifactStatusUnchanged, nil
+		}
+		return model.ArtifactStatusFailed, err
+	}
+
+	lines := strings.Split(string(original), "\n")
+	start, end, err := endpointTagsBlock(lines, path)
+	if err != nil {
+		return model.ArtifactStatusFailed, err
+	}
+
+	keyPrefix := strconv.Quote(key) + ":"
+	out := make([]string, 0, len(lines))
+	removed := false
+	for i, line := range lines {
+		if i > start && i < end && !removed && strings.HasPrefix(strings.TrimSpace(line), keyPrefix) {
+			removed = true
+			continue
+		}
+		out = append(out, line)
+	}
+	if !removed {
+		return model.ArtifactStatusUnchanged, nil
+	}
+
+	src, err := format.Source([]byte(strings.Join(out, "\n")))
+	if err != nil {
+		return model.ArtifactStatusFailed, fmt.Errorf("emit: gofmt of testFiles2EndpointTags: %w", err)
+	}
+	return WriteFile(path, src, check)
 }

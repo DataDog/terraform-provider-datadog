@@ -102,6 +102,48 @@ func TestGenerateWiresOverwrite(t *testing.T) {
 	}
 }
 
+// TestGenerateWiresEndpointTag proves that generating a data source with
+// --emit-tests registers its test in provider_test.go's testFiles2EndpointTags map
+// (so the generated test does not t.Fatal at startup), and that retiring it removes
+// the entry again.
+func TestGenerateWiresEndpointTag(t *testing.T) {
+	specPath := filepath.Join("..", "testdata", "mini-oas", "scripts", "gen-test", "datastore.yaml")
+	if _, err := os.Stat(specPath); err != nil {
+		t.Fatalf("datastore spec fixture: %v", err)
+	}
+
+	dir := t.TempDir()
+	testsDir := filepath.Join(dir, "tests")
+	if err := os.MkdirAll(testsDir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	providerTest := "package test\n\nvar testFiles2EndpointTags = map[string]string{\n\t\"tests/provider_test\": \"terraform\",\n}\n"
+	providerTestPath := filepath.Join(testsDir, "provider_test.go")
+	if err := os.WriteFile(providerTestPath, []byte(providerTest), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := runTfgen("generate", "--spec", specPath, "--emit-tests",
+		"--output-root", dir, "--tests-output-root", testsDir,
+		"--report", filepath.Join(dir, "report.json")); err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+
+	key := emit.EndpointTagTestKey("datastore")
+	if pt := mustRead(t, providerTestPath); !strings.Contains(pt, key) {
+		t.Errorf("generated test not registered in testFiles2EndpointTags (missing %q):\n%s", key, pt)
+	}
+
+	if err := runTfgen("generate", "--retire", "datastore",
+		"--output-root", dir, "--tests-output-root", testsDir,
+		"--report", filepath.Join(dir, "retire-report.json")); err != nil {
+		t.Fatalf("retire: %v", err)
+	}
+	if pt := mustRead(t, providerTestPath); strings.Contains(pt, key) {
+		t.Errorf("retire did not remove the testFiles2EndpointTags entry %q:\n%s", key, pt)
+	}
+}
+
 // TestGenerateFailsOnMissingOverwriteTarget proves the safety guard: an
 // overwrites target absent from the framework Datasources slice — a typo, or an
 // SDKv2 DataSourcesMap entry the generator cannot retire — fails the run rather

@@ -400,6 +400,7 @@ declare -a ALLOWED=(
   "datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go"
   "datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go"
   "datadog/fwprovider/datasources_generated.go"
+  "datadog/tests/provider_test.go"
   "$DOCS_FILE"
 )
 [ -n "$OVERWRITES" ] && ALLOWED+=("datadog/fwprovider/framework_provider.go")
@@ -546,7 +547,8 @@ fi
 # Build the Generated-files list so empty (additive-case) pieces add no blank bullet.
 GEN_LIST="- \`datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go\`
 - \`datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go\`
-- \`datadog/fwprovider/datasources_generated.go\` — registers the new constructor"
+- \`datadog/fwprovider/datasources_generated.go\` — registers the new constructor
+- \`datadog/tests/provider_test.go\` (updated) — registers the test's endpoint tag"
 if [ -n "$OVERWRITES" ]; then
   GEN_LIST="${GEN_LIST}
 - \`datadog/fwprovider/framework_provider.go\` (updated) — retired constructor removed"
@@ -612,6 +614,7 @@ STAGE="commit"
 git add "datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go" \
         "datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go" \
         "datadog/fwprovider/datasources_generated.go" \
+        "datadog/tests/provider_test.go" \
         "$DOCS_FILE" >&2
 [ -n "$OVERWRITES" ] && git add "datadog/fwprovider/framework_provider.go" >&2
 git commit -m "$TITLE (generated)" >&2 || die "git commit failed"

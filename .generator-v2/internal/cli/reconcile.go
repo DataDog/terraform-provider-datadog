@@ -90,6 +90,12 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot string, check bo
 	if _, err := emit.RemoveGeneratedDatasource(genPath, emit.DatasourceConstructor(name), check); err != nil {
 		return failEntry(entry, err)
 	}
+	// Also drop the test's testFiles2EndpointTags entry. Tolerant of a missing
+	// provider_test.go, so this is safe wherever retire runs.
+	providerTestPath := filepath.Join(testsOutputRoot, "provider_test.go")
+	if _, err := emit.RemoveEndpointTag(providerTestPath, emit.EndpointTagTestKey(name), check); err != nil {
+		return failEntry(entry, err)
+	}
 	entry.Status = model.ArtifactStatusRetired
 	return entry
 }
