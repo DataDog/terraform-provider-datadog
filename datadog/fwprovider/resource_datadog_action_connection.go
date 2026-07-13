@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
@@ -215,6 +217,7 @@ type actionConnectionFieldSpec struct {
 	Name        string
 	Description string
 	Sensitive   bool
+	Required bool
 }
 
 type actionConnectionCredentialSpec struct {
@@ -234,14 +237,14 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Name: "anthropic", Description: "Configuration for an Anthropic connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Anthropic API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Anthropic API token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Anthropic API token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "asana", Description: "Configuration for an Asana connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "access_token", Description: "Configuration for Asana access token authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "access_token", Description: "Asana access token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "access_token", Description: "Asana access token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
@@ -249,10 +252,10 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "tenant", Description: "Configuration for Azure tenant authentication",
 			Fields: []actionConnectionFieldSpec{
-				{Name: "app_client_id", Description: "Azure application client ID"},
-				{Name: "client_secret", Description: "Azure application client secret", Sensitive: true},
+				{Name: "app_client_id", Description: "Azure application client ID", Required: true},
+				{Name: "client_secret", Description: "Azure application client secret", Sensitive: true, Required: true},
 				{Name: "custom_scopes", Description: "Custom scope requested when acquiring an OAuth 2 access token"},
-				{Name: "tenant_id", Description: "Azure Active Directory tenant ID"},
+				{Name: "tenant_id", Description: "Azure Active Directory tenant ID", Required: true},
 			},
 		}},
 	},
@@ -260,14 +263,14 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Name: "circle_ci", Description: "Configuration for a CircleCI connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for CircleCI API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "CircleCI API token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "CircleCI API token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "clickup", Description: "Configuration for a ClickUp connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for ClickUp API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "ClickUp API token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "ClickUp API token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
@@ -275,13 +278,13 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{
 			{
 				Name: "api_token", Description: "Configuration for Cloudflare API token authentication",
-				Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Cloudflare API token", Sensitive: true}},
+				Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Cloudflare API token", Sensitive: true, Required: true}},
 			},
 			{
 				Name: "global_api_token", Description: "Configuration for Cloudflare global API token authentication",
 				Fields: []actionConnectionFieldSpec{
-					{Name: "auth_email", Description: "Email address associated with the Cloudflare account"},
-					{Name: "global_api_key", Description: "Cloudflare global API key", Sensitive: true},
+					{Name: "auth_email", Description: "Email address associated with the Cloudflare account", Required: true},
+					{Name: "global_api_key", Description: "Cloudflare global API key", Sensitive: true, Required: true},
 				},
 			},
 		},
@@ -291,9 +294,9 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "sdk_key", Description: "Configuration for ConfigCat SDK key authentication",
 			Fields: []actionConnectionFieldSpec{
-				{Name: "api_password", Description: "ConfigCat Public Management API password", Sensitive: true},
-				{Name: "api_username", Description: "ConfigCat Public Management API username"},
-				{Name: "sdk_key", Description: "ConfigCat SDK key", Sensitive: true},
+				{Name: "api_password", Description: "ConfigCat Public Management API password", Sensitive: true, Required: true},
+				{Name: "api_username", Description: "ConfigCat Public Management API username", Required: true},
+				{Name: "sdk_key", Description: "ConfigCat SDK key", Sensitive: true, Required: true},
 			},
 		}},
 	},
@@ -302,9 +305,9 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Datadog API and application key authentication",
 			Fields: []actionConnectionFieldSpec{
-				{Name: "api_key", Description: "Datadog API key", Sensitive: true},
-				{Name: "app_key", Description: "Datadog application key", Sensitive: true},
-				{Name: "datacenter", Description: "Datadog site datacenter"},
+				{Name: "api_key", Description: "Datadog API key", Sensitive: true, Required: true},
+				{Name: "app_key", Description: "Datadog application key", Sensitive: true, Required: true},
+				{Name: "datacenter", Description: "Datadog site datacenter", Required: true},
 				{Name: "subdomain", Description: "Custom subdomain used for URLs generated with this connection"},
 			},
 		}},
@@ -313,7 +316,7 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Name: "fastly", Description: "Configuration for a Fastly connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Fastly API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Fastly API key", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Fastly API key", Sensitive: true, Required: true}},
 		}},
 	},
 	{
@@ -321,8 +324,8 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Freshservice API key authentication",
 			Fields: []actionConnectionFieldSpec{
-				{Name: "api_key", Description: "Freshservice API key", Sensitive: true},
-				{Name: "domain", Description: "Freshservice domain"},
+				{Name: "api_key", Description: "Freshservice API key", Sensitive: true, Required: true},
+				{Name: "domain", Description: "Freshservice domain", Required: true},
 			},
 		}},
 	},
@@ -331,8 +334,8 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "service_account", Description: "Configuration for Google Cloud service account authentication",
 			Fields: []actionConnectionFieldSpec{
-				{Name: "private_key", Description: "Google Cloud service account private key", Sensitive: true},
-				{Name: "service_account_email", Description: "Google Cloud service account email"},
+				{Name: "private_key", Description: "Google Cloud service account private key", Sensitive: true, Required: true},
+				{Name: "service_account_email", Description: "Google Cloud service account email", Required: true},
 			},
 		}},
 	},
@@ -340,35 +343,35 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Name: "gemini", Description: "Configuration for a Gemini connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Gemini API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Gemini API key", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Gemini API key", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "gitlab", Description: "Configuration for a GitLab connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for GitLab API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "GitLab API token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "GitLab API token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "grey_noise", Description: "Configuration for a GreyNoise connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for GreyNoise API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "GreyNoise API key", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "GreyNoise API key", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "launch_darkly", Description: "Configuration for a LaunchDarkly connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for LaunchDarkly API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "LaunchDarkly API token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "LaunchDarkly API token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "notion", Description: "Configuration for a Notion connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Notion API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Notion API token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "Notion API token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
@@ -376,8 +379,8 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_token", Description: "Configuration for Okta API token authentication",
 			Fields: []actionConnectionFieldSpec{
-				{Name: "api_token", Description: "Okta API token", Sensitive: true},
-				{Name: "domain", Description: "Okta domain"},
+				{Name: "api_token", Description: "Okta API token", Sensitive: true, Required: true},
+				{Name: "domain", Description: "Okta domain", Required: true},
 			},
 		}},
 	},
@@ -385,7 +388,7 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Name: "openai", Description: "Configuration for an OpenAI connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for OpenAI API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "OpenAI API token", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_token", Description: "OpenAI API token", Sensitive: true, Required: true}},
 		}},
 	},
 	{
@@ -393,9 +396,9 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "basic_auth", Description: "Configuration for ServiceNow basic authentication",
 			Fields: []actionConnectionFieldSpec{
-				{Name: "instance", Description: "ServiceNow instance"},
-				{Name: "password", Description: "ServiceNow password", Sensitive: true},
-				{Name: "username", Description: "ServiceNow username"},
+				{Name: "instance", Description: "ServiceNow instance", Required: true},
+				{Name: "password", Description: "ServiceNow password", Sensitive: true, Required: true},
+				{Name: "username", Description: "ServiceNow username", Required: true},
 			},
 		}},
 	},
@@ -403,21 +406,21 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 		Name: "split", Description: "Configuration for a Split connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Split API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Split API key", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Split API key", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "statsig", Description: "Configuration for a Statsig connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for Statsig API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Statsig API key", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "Statsig API key", Sensitive: true, Required: true}},
 		}},
 	},
 	{
 		Name: "virus_total", Description: "Configuration for a VirusTotal connection",
 		Credentials: []actionConnectionCredentialSpec{{
 			Name: "api_key", Description: "Configuration for VirusTotal API key authentication",
-			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "VirusTotal API key", Sensitive: true}},
+			Fields: []actionConnectionFieldSpec{{Name: "api_key", Description: "VirusTotal API key", Sensitive: true, Required: true}},
 		}},
 	},
 }
@@ -491,80 +494,93 @@ func (r *actionConnectionResource) ValidateConfig(ctx context.Context, request r
 		return
 	}
 
-	if conn.Cloudflare != nil {
-		credentialCount := 0
-		if conn.Cloudflare.APIToken != nil {
-			credentialCount++
-		}
-		if conn.Cloudflare.GlobalAPIToken != nil {
-			credentialCount++
-		}
-		if credentialCount != 1 {
-			response.Diagnostics.AddAttributeError(
-				path.Root("cloudflare"),
-				"Exactly one Cloudflare credential type required",
-				"You must specify exactly one of the api_token or global_api_token credential blocks.",
-			)
-			return
-		}
-	}
+	validateAdditionalConnectionCredentials(conn, response)
+}
 
-	if integrationName := missingAdditionalConnectionCredential(conn); integrationName != "" {
-		response.Diagnostics.AddAttributeError(
-			path.Root(integrationName),
-			"Credential type required",
-			"You must specify a credential type block.",
-		)
+func validateAdditionalConnectionCredentials(conn connectionResourceModel, response *resource.ValidateConfigResponse) {
+	connValue := reflect.ValueOf(conn)
+	for _, integrationSpec := range additionalActionConnectionSpecs {
+		integrationField, ok := lookupTFSDKField(connValue, integrationSpec.Name)
+		if !ok || integrationField.IsNil() {
+			continue
+		}
+
+		var setCredentials []actionConnectionCredentialSpec
+		credentialValues := make(map[string]reflect.Value, len(integrationSpec.Credentials))
+		for _, credentialSpec := range integrationSpec.Credentials {
+			credentialField, ok := lookupTFSDKField(integrationField, credentialSpec.Name)
+			if ok && !credentialField.IsNil() {
+				setCredentials = append(setCredentials, credentialSpec)
+				credentialValues[credentialSpec.Name] = credentialField
+			}
+		}
+
+		if len(setCredentials) != 1 {
+			response.Diagnostics.AddAttributeError(
+				path.Root(integrationSpec.Name),
+				"Credential type required",
+				credentialBlockRequirementMessage(integrationSpec),
+			)
+			continue
+		}
+
+		credentialSpec := setCredentials[0]
+		var missingFields []string
+		for _, fieldSpec := range credentialSpec.Fields {
+			if !fieldSpec.Required {
+				continue
+			}
+			fieldValue, ok := lookupTFSDKField(credentialValues[credentialSpec.Name], fieldSpec.Name)
+			if !ok {
+				continue
+			}
+			// A null value means the field was omitted. Unknown values (e.g. references
+			// resolved at apply time) can't be validated here, so we let them through.
+			if value, ok := fieldValue.Interface().(types.String); ok && value.IsNull() {
+				missingFields = append(missingFields, fieldSpec.Name)
+			}
+		}
+		if len(missingFields) > 0 {
+			response.Diagnostics.AddAttributeError(
+				path.Root(integrationSpec.Name).AtName(credentialSpec.Name),
+				"Missing required fields",
+				fmt.Sprintf(
+					"The following fields are required for the %q credential type: %s.",
+					credentialSpec.Name, strings.Join(missingFields, ", "),
+				),
+			)
+		}
 	}
 }
 
-func missingAdditionalConnectionCredential(conn connectionResourceModel) string {
-	switch {
-	case conn.Anthropic != nil && conn.Anthropic.APIKey == nil:
-		return "anthropic"
-	case conn.Asana != nil && conn.Asana.AccessToken == nil:
-		return "asana"
-	case conn.Azure != nil && conn.Azure.Tenant == nil:
-		return "azure"
-	case conn.CircleCI != nil && conn.CircleCI.APIKey == nil:
-		return "circle_ci"
-	case conn.Clickup != nil && conn.Clickup.APIKey == nil:
-		return "clickup"
-	case conn.ConfigCat != nil && conn.ConfigCat.SDKKey == nil:
-		return "config_cat"
-	case conn.Datadog != nil && conn.Datadog.APIKey == nil:
-		return "datadog"
-	case conn.Fastly != nil && conn.Fastly.APIKey == nil:
-		return "fastly"
-	case conn.Freshservice != nil && conn.Freshservice.APIKey == nil:
-		return "freshservice"
-	case conn.GCP != nil && conn.GCP.ServiceAccount == nil:
-		return "gcp"
-	case conn.Gemini != nil && conn.Gemini.APIKey == nil:
-		return "gemini"
-	case conn.Gitlab != nil && conn.Gitlab.APIKey == nil:
-		return "gitlab"
-	case conn.GreyNoise != nil && conn.GreyNoise.APIKey == nil:
-		return "grey_noise"
-	case conn.LaunchDarkly != nil && conn.LaunchDarkly.APIKey == nil:
-		return "launch_darkly"
-	case conn.Notion != nil && conn.Notion.APIKey == nil:
-		return "notion"
-	case conn.Okta != nil && conn.Okta.APIToken == nil:
-		return "okta"
-	case conn.OpenAI != nil && conn.OpenAI.APIKey == nil:
-		return "openai"
-	case conn.ServiceNow != nil && conn.ServiceNow.BasicAuth == nil:
-		return "service_now"
-	case conn.Split != nil && conn.Split.APIKey == nil:
-		return "split"
-	case conn.Statsig != nil && conn.Statsig.APIKey == nil:
-		return "statsig"
-	case conn.VirusTotal != nil && conn.VirusTotal.APIKey == nil:
-		return "virus_total"
-	default:
-		return ""
+func credentialBlockRequirementMessage(integrationSpec actionConnectionIntegrationSpec) string {
+	if len(integrationSpec.Credentials) == 1 {
+		return "You must specify a credential type block."
 	}
+	names := make([]string, len(integrationSpec.Credentials))
+	for i, credentialSpec := range integrationSpec.Credentials {
+		names[i] = credentialSpec.Name
+	}
+	return fmt.Sprintf("You must specify exactly one of the %s credential blocks.", strings.Join(names, " or "))
+}
+
+func lookupTFSDKField(v reflect.Value, tfsdkTag string) (reflect.Value, bool) {
+	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return reflect.Value{}, false
+		}
+		v = v.Elem()
+	}
+	if v.Kind() != reflect.Struct {
+		return reflect.Value{}, false
+	}
+	structType := v.Type()
+	for i := 0; i < structType.NumField(); i++ {
+		if structType.Field(i).Tag.Get("tfsdk") == tfsdkTag {
+			return v.Field(i), true
+		}
+	}
+	return reflect.Value{}, false
 }
 
 func (r *actionConnectionResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
