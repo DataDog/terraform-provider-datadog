@@ -23,9 +23,22 @@ reviewer expectations):
 > on it — see the verification note and testing guide below.
 ```
 
-## Required verification disclaimer (immediately after the project-context disclaimer)
-This is a safety statement (separate from and in addition to the footer). It must be the
-second block in the body, directly under the project-context disclaimer:
+## Test-scaffold disclaimer (immediately after the project-context disclaimer)
+The generated `_test.go` is a scaffold, not a finished test. This block must sit directly
+under the project-context disclaimer, above the verification disclaimer, so reviewers see
+it near the top. Use it verbatim, substituting `<name>`:
+
+```
+> 📝 **The generated acceptance test is boilerplate — it must be filled in before this
+> data source is considered tested.** `datadog/tests/data_source_datadog_<name>_test.go`
+> ships with `TODO(tfgen)` placeholders (config, seed resource(s), assertions) and no
+> recorded cassette. A passing generated test is **not** verification on its own; this
+> data source still needs to be thoroughly tested before anyone relies on it.
+```
+
+## Required verification disclaimer (immediately after the test-scaffold disclaimer)
+This is a safety statement (separate from and in addition to the footer). It must sit
+directly under the test-scaffold disclaimer:
 
 ```
 > ⚠️ **This PR contains auto-generated code and must be verified before merging.** Do not
@@ -63,6 +76,8 @@ result, and push — CI's docs check fails without it.
 
 ```
 <project-context disclaimer block — required, the very first thing, from above>
+
+<test-scaffold disclaimer block — required, from above>
 
 <verification disclaimer block — required, from above>
 

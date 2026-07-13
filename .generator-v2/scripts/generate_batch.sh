@@ -597,6 +597,12 @@ build_generate_body() {
   cat >"$f" <<EOF
 ${DISCLAIMER_TOP}
 
+> 📝 **The generated acceptance test is boilerplate — it must be filled in before this
+> data source is considered tested.** \`datadog/tests/data_source_datadog_${name}_test.go\`
+> ships with \`TODO(tfgen)\` placeholders (config, seed resource(s), assertions) and no
+> recorded cassette. A passing generated test is **not** verification on its own; this
+> data source still needs to be thoroughly tested before anyone relies on it.
+
 ${DISCLAIMER_VERIFY}
 
 ${risk_callout}## ${name} data source (generator-v2)
