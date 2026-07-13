@@ -483,8 +483,12 @@ process_artifact() {
   local test_f="datadog/tests/data_source_datadog_${name}_test.go"
   local doc_f="docs/data-sources/${name}.md"
   local reg_f="datadog/fwprovider/datasources_generated.go"
+  local pt_f="datadog/tests/provider_test.go"
   declare -A allow=()
   allow["$go_f"]=1; allow["$test_f"]=1; allow["$doc_f"]=1; allow["$reg_f"]=1
+  # Every action touches provider_test.go's testFiles2EndpointTags: generate adds
+  # the entry, retire removes it.
+  allow["$pt_f"]=1
   # A created/updated artifact with overwrites also edits framework_provider.go.
   [[ "$action" != "retired" ]] && allow["datadog/fwprovider/framework_provider.go"]=1
   local unexpected=()
@@ -562,7 +566,7 @@ process_artifact() {
   fi
   rm -f "$report"
 
-  git add -A "$go_f" "$test_f" "$reg_f" "$doc_f" datadog/fwprovider/framework_provider.go >/dev/null 2>&1 || true
+  git add -A "$go_f" "$test_f" "$reg_f" "$pt_f" "$doc_f" datadog/fwprovider/framework_provider.go >/dev/null 2>&1 || true
   git commit -m "$title (generated)" >&2 || { rm -f "$body_file"; pa_fail "git commit failed"; return 1; }
   committed=1
 
@@ -607,6 +611,7 @@ a batch that keeps the generated set in lockstep with the spec. It is registered
 - \`datadog/fwprovider/data_source_datadog_${name}.go\`
 - \`datadog/tests/data_source_datadog_${name}_test.go\`
 - \`datadog/fwprovider/datasources_generated.go\` — registers the constructor
+- \`datadog/tests/provider_test.go\` — registers the test's endpoint tag
 - \`docs/data-sources/${name}.md\`
 
 ### Test / cassette
@@ -645,6 +650,7 @@ was found for it, so it was never verified toward release and is safe to remove.
 - \`datadog/fwprovider/data_source_datadog_${name}.go\`
 - \`datadog/tests/data_source_datadog_${name}_test.go\`
 - \`datadog/fwprovider/datasources_generated.go\` — constructor removed
+- \`datadog/tests/provider_test.go\` — test's endpoint tag removed
 - \`docs/data-sources/${name}.md\`
 
 > ⚠️ **Reviewer:** if this data source ever *replaced* a hand-written one (\`overwrites:\`), this

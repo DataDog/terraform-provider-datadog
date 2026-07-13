@@ -3,6 +3,7 @@ package emit
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -229,5 +230,145 @@ var Datasources = []func() datasource.DataSource{
 		Expect(os.WriteFile(other, []byte("package fwprovider\n"), 0o644)).To(Succeed())
 		_, err := RemoveHandwrittenDatasource(other, "NewDatadogTeamDataSource", false)
 		Expect(err).To(HaveOccurred())
+	})
+})
+
+var _ = Describe("EndpointTagTestKey", func() {
+	It("builds the tests/-prefixed, no-.go key getEndpointTagValue matches on", func() {
+		Expect(EndpointTagTestKey("gcp_uc_configs")).To(Equal("tests/data_source_datadog_gcp_uc_configs_test"))
+	})
+})
+
+var _ = Describe("NormalizeEndpointTag", func() {
+	It("lowercases and turns spaces into hyphens like the existing map values", func() {
+		Expect(NormalizeEndpointTag("Cloud Workload Security")).To(Equal("cloud-workload-security"))
+		Expect(NormalizeEndpointTag("integration-aws")).To(Equal("integration-aws"))
+		Expect(NormalizeEndpointTag("")).To(Equal(""))
+	})
+})
+
+// endpointTagsFixture is a provider_test.go-shaped file: the target map plus a
+// decoy map so the scoped edit can be shown not to touch a like-named key elsewhere.
+const endpointTagsFixture = `package test
+
+var otherMap = map[string]string{
+	"tests/data_source_datadog_decoy_test": "decoy",
+}
+
+var testFiles2EndpointTags = map[string]string{
+	"tests/data_source_datadog_team_test":             "team",
+	"tests/data_source_datadog_team_memberships_test": "team",
+}
+`
+
+var _ = Describe("InsertEndpointTag", func() {
+	var path string
+
+	BeforeEach(func() {
+		dir, err := os.MkdirTemp("", "registration-insert-*")
+		Expect(err).NotTo(HaveOccurred())
+		DeferCleanup(os.RemoveAll, dir)
+		path = filepath.Join(dir, "provider_test.go")
+		Expect(os.WriteFile(path, []byte(endpointTagsFixture), 0o644)).To(Succeed())
+	})
+
+	read := func() string {
+		content, err := os.ReadFile(path)
+		Expect(err).NotTo(HaveOccurred())
+		return string(content)
+	}
+
+	It("appends a new entry into the testFiles2EndpointTags map", func() {
+		status, err := InsertEndpointTag(path, "tests/data_source_datadog_gcp_uc_configs_test", "cloud-cost", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		// gofmt pads the value column, so match key and value without fixed spacing.
+		Expect(read()).To(MatchRegexp(`"tests/data_source_datadog_gcp_uc_configs_test":\s+"cloud-cost",`))
+	})
+
+	It("is idempotent: re-inserting the same entry reports Unchanged", func() {
+		_, err := InsertEndpointTag(path, "tests/data_source_datadog_gcp_uc_configs_test", "cloud-cost", false)
+		Expect(err).NotTo(HaveOccurred())
+		status, err := InsertEndpointTag(path, "tests/data_source_datadog_gcp_uc_configs_test", "cloud-cost", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUnchanged))
+	})
+
+	It("rewrites an existing key's value in place without duplicating it", func() {
+		status, err := InsertEndpointTag(path, "tests/data_source_datadog_team_test", "teams", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(read()).To(MatchRegexp(`"tests/data_source_datadog_team_test":\s+"teams",`))
+		Expect(strings.Count(read(), `"tests/data_source_datadog_team_test":`)).To(Equal(1))
+	})
+
+	It("leaves a like-named key in another map untouched", func() {
+		_, err := InsertEndpointTag(path, "tests/data_source_datadog_new_test", "svc", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(read()).To(ContainSubstring(`"tests/data_source_datadog_decoy_test": "decoy",`))
+	})
+
+	It("reports the change in check mode without writing", func() {
+		status, err := InsertEndpointTag(path, "tests/data_source_datadog_new_test", "svc", true)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(read()).NotTo(ContainSubstring("data_source_datadog_new_test"))
+	})
+
+	It("errors when the file has no testFiles2EndpointTags map", func() {
+		other := filepath.Join(filepath.Dir(path), "other.go")
+		Expect(os.WriteFile(other, []byte("package test\n"), 0o644)).To(Succeed())
+		_, err := InsertEndpointTag(other, "tests/data_source_datadog_new_test", "svc", false)
+		Expect(err).To(HaveOccurred())
+	})
+
+	It("errors when the file is missing", func() {
+		_, err := InsertEndpointTag(filepath.Join(filepath.Dir(path), "absent.go"), "tests/data_source_datadog_new_test", "svc", false)
+		Expect(err).To(HaveOccurred())
+	})
+})
+
+var _ = Describe("RemoveEndpointTag", func() {
+	var path string
+
+	BeforeEach(func() {
+		dir, err := os.MkdirTemp("", "registration-remove-tag-*")
+		Expect(err).NotTo(HaveOccurred())
+		DeferCleanup(os.RemoveAll, dir)
+		path = filepath.Join(dir, "provider_test.go")
+		Expect(os.WriteFile(path, []byte(endpointTagsFixture), 0o644)).To(Succeed())
+	})
+
+	read := func() string {
+		content, err := os.ReadFile(path)
+		Expect(err).NotTo(HaveOccurred())
+		return string(content)
+	}
+
+	It("removes the named entry from the map", func() {
+		status, err := RemoveEndpointTag(path, "tests/data_source_datadog_team_test", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(read()).NotTo(ContainSubstring(`"tests/data_source_datadog_team_test":`))
+		Expect(read()).To(ContainSubstring(`"tests/data_source_datadog_team_memberships_test":`))
+	})
+
+	It("is idempotent: removing an already-absent key reports Unchanged", func() {
+		status, err := RemoveEndpointTag(path, "tests/data_source_datadog_absent_test", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUnchanged))
+	})
+
+	It("tolerates a missing file, reporting Unchanged", func() {
+		status, err := RemoveEndpointTag(filepath.Join(filepath.Dir(path), "absent.go"), "tests/data_source_datadog_team_test", false)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUnchanged))
+	})
+
+	It("reports the change in check mode without writing", func() {
+		status, err := RemoveEndpointTag(path, "tests/data_source_datadog_team_test", true)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(read()).To(ContainSubstring(`"tests/data_source_datadog_team_test":`))
 	})
 })
