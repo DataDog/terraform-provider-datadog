@@ -27,6 +27,7 @@ func Execute(version string) int {
 	root := newRootCmd(version, flags)
 	root.AddCommand(newGenerateCmd(flags))
 	root.AddCommand(newVerifyCmd(flags))
+	root.AddCommand(newSplitCmd(flags))
 
 	if err := root.Execute(); err != nil {
 		if err == errCheckFailed {
