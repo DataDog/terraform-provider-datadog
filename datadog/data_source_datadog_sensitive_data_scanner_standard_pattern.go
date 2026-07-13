@@ -76,34 +76,56 @@ func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Contex
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error listing standard patterns")
 	}
 
-	foundStandardPatterns := make([]datadogV2.SensitiveDataScannerStandardPatternsResponseItem, 0)
-	matchDescription := ""
 	if standardPatternID, ok := d.GetOk("standard_pattern_id"); ok {
-		matchDescription = fmt.Sprintf("id %s", standardPatternID.(string))
+		// Look up by ID
+		matchDescription := fmt.Sprintf("id %s", standardPatternID.(string))
 		for _, resource := range resp.GetData() {
 			if resource.GetId() == standardPatternID.(string) {
-				foundStandardPatterns = append(foundStandardPatterns, resource)
+				d.SetId(resource.GetId())
+				return dataSourceSensitiveDataScannerStandardPatternUpdate(d, &resource)
 			}
 		}
-	} else {
-		searchedName := d.Get("filter").(string)
-		matchDescription = fmt.Sprintf("name %s", searchedName)
-		for _, resource := range resp.GetData() {
-			if strings.Contains(strings.ToLower(*resource.Attributes.Name), strings.ToLower(searchedName)) {
-				foundStandardPatterns = append(foundStandardPatterns, resource)
-			}
-		}
-	}
-
-	if len(foundStandardPatterns) == 0 {
 		return diag.Errorf("Couldn't find the standard pattern with %s", matchDescription)
 	}
-	if len(foundStandardPatterns) > 1 {
+
+	// Look up by name filter with exact match priority
+	searchedName := d.Get("filter").(string)
+
+	var exactMatch *datadogV2.SensitiveDataScannerStandardPatternsResponseItem
+	partialMatches := make([]datadogV2.SensitiveDataScannerStandardPatternsResponseItem, 0)
+
+	for _, resource := range resp.GetData() {
+		name := resource.Attributes.GetName()
+
+		// Exact match takes priority
+		if name == searchedName {
+			match := resource
+			exactMatch = &match
+			break
+		}
+
+		// Collect partial matches as fallback
+		if strings.Contains(strings.ToLower(name), strings.ToLower(searchedName)) {
+			partialMatches = append(partialMatches, resource)
+		}
+	}
+
+	// Return exact match if found
+	if exactMatch != nil {
+		d.SetId(exactMatch.GetId())
+		return dataSourceSensitiveDataScannerStandardPatternUpdate(d, exactMatch)
+	}
+
+	// Fall back to partial match logic
+	if len(partialMatches) == 0 {
+		return diag.Errorf("Couldn't find the standard pattern with name %s", searchedName)
+	}
+	if len(partialMatches) > 1 {
 		return diag.Errorf("Your query returned more than one result, please try a more specific search criteria")
 	}
-	d.SetId(foundStandardPatterns[0].GetId())
+	d.SetId(partialMatches[0].GetId())
 
-	return dataSourceSensitiveDataScannerStandardPatternUpdate(d, &foundStandardPatterns[0])
+	return dataSourceSensitiveDataScannerStandardPatternUpdate(d, &partialMatches[0])
 
 }
 
