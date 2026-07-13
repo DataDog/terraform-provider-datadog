@@ -569,6 +569,12 @@ cat >"$PR_BODY_FILE" <<EOF
 > this generated data source, please **review it thoroughly and test it** before relying
 > on it — see the verification note and testing guide below.
 
+> 📝 **The generated acceptance test is boilerplate — it must be filled in before this
+> data source is considered tested.** \`datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go\`
+> ships with \`TODO(tfgen)\` placeholders (config, seed resource(s), assertions) and no
+> recorded cassette. A passing generated test is **not** verification on its own; this
+> data source still needs to be thoroughly tested before anyone relies on it.
+
 > ⚠️ **This PR contains auto-generated code and must be verified before merging.** Do not
 > merge until the acceptance test has been recorded and replays green against the Frog org
 > (see "How to test"). A clean build and a green generator report do **not** prove runtime
