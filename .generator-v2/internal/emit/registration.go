@@ -85,9 +85,10 @@ const generatedDatasourcesHeader = `package fwprovider
 import "github.com/hashicorp/terraform-plugin-framework/datasource"
 
 // generatedDatasources holds the data sources produced by the generator-v2 emit
-// pipeline. tfgen owns this file: every generate run rewrites it from the set of
-// data sources it produced, keeping the generated registrations in one
-// reviewable place without churning framework_provider.go. Do not edit by hand.
+// pipeline. tfgen owns this file: each run merges the constructors it produced
+// into the existing set (union, sorted) so a scoped --include run never drops
+// data sources it did not regenerate; reconcile prunes entries whose annotation
+// is gone. Do not edit by hand.
 //
 // FrameworkProvider.DataSources registers this slice alongside the hand-written
 // Datasources.
