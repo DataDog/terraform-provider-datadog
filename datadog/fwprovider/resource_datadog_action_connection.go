@@ -217,7 +217,7 @@ type actionConnectionFieldSpec struct {
 	Name        string
 	Description string
 	Sensitive   bool
-	Required bool
+	Required    bool
 }
 
 type actionConnectionCredentialSpec struct {
@@ -307,7 +307,7 @@ var additionalActionConnectionSpecs = []actionConnectionIntegrationSpec{
 			Fields: []actionConnectionFieldSpec{
 				{Name: "api_key", Description: "Datadog API key", Sensitive: true, Required: true},
 				{Name: "app_key", Description: "Datadog application key", Sensitive: true, Required: true},
-				{Name: "datacenter", Description: "Datadog site datacenter", Required: true},
+				{Name: "datacenter", Description: "Datadog site data center", Required: true},
 				{Name: "subdomain", Description: "Custom subdomain used for URLs generated with this connection"},
 			},
 		}},

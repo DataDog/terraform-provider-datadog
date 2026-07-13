@@ -286,7 +286,7 @@ Optional:
 
 - `api_key` (String, Sensitive) Datadog API key. String length must be at least 1.
 - `app_key` (String, Sensitive) Datadog application key. String length must be at least 1.
-- `datacenter` (String) Datadog site datacenter. String length must be at least 1.
+- `datacenter` (String) Datadog site data center. String length must be at least 1.
 - `subdomain` (String) Custom subdomain used for URLs generated with this connection. String length must be at least 1.
 
 

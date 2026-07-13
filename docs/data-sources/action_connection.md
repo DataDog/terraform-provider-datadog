@@ -213,7 +213,7 @@ Read-Only:
 
 - `api_key` (String, Sensitive) Datadog API key
 - `app_key` (String, Sensitive) Datadog application key
-- `datacenter` (String) Datadog site datacenter
+- `datacenter` (String) Datadog site data center
 - `subdomain` (String) Custom subdomain used for URLs generated with this connection
 
 
