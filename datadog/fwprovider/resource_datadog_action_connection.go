@@ -846,8 +846,14 @@ func (r *actionConnectionResource) Read(ctx context.Context, request resource.Re
 		return
 	}
 
-	connModel, err := readConnection(r.Auth, r.Api, state.ID.ValueString(), state)
+	connModel, err, httpStatusCode := readConnection(r.Auth, r.Api, state.ID.ValueString(), state)
 	if err != nil {
+		if httpStatusCode == http.StatusNotFound {
+			// If the connection is not found, we log a warning and remove the resource from state. This may be due to changes outside of Terraform.
+			response.Diagnostics.AddWarning("The connection with ID '"+state.ID.ValueString()+"' is not found. It may have been deleted outside of Terraform.", err.Error())
+			response.State.RemoveResource(ctx)
+			return
+		}
 		response.Diagnostics.AddError("Could not read connection", err.Error())
 		return
 	}
@@ -1550,26 +1556,26 @@ func buildHttpDeletions(plan, oldState connectionResourceModel, updateModel *dat
 }
 
 // Read logic is shared between data source and resource
-func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi, id string, currentState connectionResourceModel) (*connectionResourceModel, error) {
+func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi, id string, currentState connectionResourceModel) (*connectionResourceModel, error, int) {
 	conn, httpResponse, err := api.GetActionConnection(authCtx, id)
 	if err != nil {
 		if httpResponse != nil {
 			body, err := io.ReadAll(httpResponse.Body)
 			if err != nil {
-				return nil, fmt.Errorf("could not read error response")
+				return nil, fmt.Errorf("could not read error response"), httpResponse.StatusCode
 			}
-			return nil, fmt.Errorf("%s", body)
+			return nil, fmt.Errorf("%s", body), httpResponse.StatusCode
 		}
-		return nil, err
+		return nil, err, 0
 	}
 
 	if _, ok := conn.GetDataOk(); !ok {
-		return nil, fmt.Errorf("connection not found")
+		return nil, fmt.Errorf("connection not found"), httpResponse.StatusCode
 	}
 
 	connModel, err := apiResponseToConnectionModel(conn)
 	if err != nil {
-		return nil, err
+		return nil, err, httpResponse.StatusCode
 	}
 
 	// The API does not return SECRET token values, and may omit tokens entirely
@@ -1594,7 +1600,7 @@ func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi,
 
 	preserveAdditionalConnectionSecrets(connModel, currentState)
 
-	return connModel, nil
+	return connModel, nil, httpResponse.StatusCode
 }
 
 func preserveAdditionalConnectionSecrets(connModel *connectionResourceModel, currentState connectionResourceModel) {
