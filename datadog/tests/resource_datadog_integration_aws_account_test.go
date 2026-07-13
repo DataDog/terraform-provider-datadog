@@ -62,6 +62,8 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.2", "AWS/Usage"),
 					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.#", "0"),
+					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "resources_config.cloud_security_posture_management_collection", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "resources_config.extended_collection", "true"),
@@ -108,6 +110,20 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 						"datadog_integration_aws_account.foo", "metrics_config.enabled", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.include_only.0", "AWS/EC2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.0.namespace", "AWS/EC2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.0.include_only.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.0.include_only.0", "aws.ec2.network_in"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.1.namespace", "AWS/RDS"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.1.exclude_only.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.1.exclude_only.0", "aws.rds.aurora*"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.tag_filters.0.namespace", "AWS/EC2"),
 					resource.TestCheckResourceAttr(
@@ -158,6 +174,8 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.0", "AWS/SQS"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.1", "AWS/ElasticMapReduce"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws_account.foo", "metrics_config.metric_name_filters.#", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "resources_config.cloud_security_posture_management_collection", "false"),
 					resource.TestCheckResourceAttr(
@@ -240,6 +258,14 @@ resource "datadog_integration_aws_account" "foo" {
       namespace_filters {
         include_only = ["AWS/EC2"]
       }
+	  metric_name_filters {
+		namespace = "AWS/EC2"
+		include_only = ["aws.ec2.network_in"]
+	  }
+	  metric_name_filters {
+		namespace = "AWS/RDS"
+		exclude_only = ["aws.rds.aurora*"]
+	  }
 	  tag_filters {
 	  	namespace = "AWS/EC2"
 	  	tags = ["tag1", "tag2"]
