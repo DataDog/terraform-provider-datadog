@@ -18,6 +18,7 @@ func runTfgen(args ...string) error {
 	root := newRootCmd("test", flags)
 	root.AddCommand(newGenerateCmd(flags))
 	root.AddCommand(newVerifyCmd(flags))
+	root.AddCommand(newSplitCmd(flags))
 	root.SetArgs(args)
 	root.SilenceErrors = true
 	return root.Execute()
