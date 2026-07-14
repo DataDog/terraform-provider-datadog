@@ -1,9 +1,10 @@
 // Package split turns one aggregate tfgen push — all N generated data sources on
 // a single branch — into per-artifact bundles, one directory per data source, so
-// each can land as its own PR. It is pure: it diffs two on-disk trees (a master
-// checkout and the pushed-branch checkout), reuses tfgen's registry serializer to
-// reconstruct each artifact's datasources_generated.go as "the base set plus this
-// one artifact", and never touches git, the network, or the OpenAPI spec.
+// each can land as its own PR. It is pure: it diffs the provider and docs paths
+// in two on-disk trees (a master checkout and the pushed-branch checkout), reuses
+// tfgen's registry serializer to reconstruct each artifact's
+// datasources_generated.go as "the base set plus this one artifact", and never
+// touches git, the network, or the OpenAPI spec.
 //
 // Attribution is exact and fail-loud: a changed file that maps to no artifact and
 // is not a known shared registry file is a hard error, never silently dropped, so
@@ -86,6 +87,10 @@ var (
 	constructorDeclRe = regexp.MustCompile(`func (New[A-Za-z0-9_]+DataSource)\(`)
 	// constructorRe recovers constructor identifiers listed inside a slice literal.
 	constructorRe = regexp.MustCompile(`New[A-Za-z0-9_]+DataSource`)
+	// diffScopes limits routing to provider and generated-documentation paths.
+	// Upstream branches can lag master without unrelated repository drift making
+	// the split fail; unexpected changes inside these owned paths still fail loud.
+	diffScopes = []string{filepath.FromSlash("datadog/fwprovider"), "docs"}
 )
 
 // datasourcesSliceHeader opens the hand-written Datasources slice in
@@ -335,24 +340,12 @@ func attributeOverwrites(opts Options, plans map[string]*artifactPlan, provider 
 	return overwrites, problems
 }
 
-// diffTrees returns the files that differ between base and generated (added or
-// modified), plus files present in base but gone from generated (deleted). The
-// .git directory is skipped; clean checkouts are assumed.
+// diffTrees returns scoped files that differ between base and generated (added
+// or modified), plus scoped files present in base but gone from generated
+// (deleted). Paths outside diffScopes are intentionally ignored so unrelated
+// master drift cannot invalidate an otherwise self-contained generator push.
 func diffTrees(baseDir, genDir string) (changed []changedFile, deleted []string, err error) {
-	err = filepath.WalkDir(genDir, func(path string, d fs.DirEntry, walkErr error) error {
-		if walkErr != nil {
-			return walkErr
-		}
-		if d.IsDir() {
-			if d.Name() == ".git" {
-				return fs.SkipDir
-			}
-			return nil
-		}
-		rel, relErr := filepath.Rel(genDir, path)
-		if relErr != nil {
-			return relErr
-		}
+	err = walkDiffScopes(genDir, func(path, rel string, d fs.DirEntry) error {
 		same, existed, cmpErr := sameContent(filepath.Join(baseDir, rel), path)
 		if cmpErr != nil {
 			return cmpErr
@@ -366,22 +359,12 @@ func diffTrees(baseDir, genDir string) (changed []changedFile, deleted []string,
 		return nil, nil, err
 	}
 
-	err = filepath.WalkDir(baseDir, func(path string, d fs.DirEntry, walkErr error) error {
-		if walkErr != nil {
-			return walkErr
-		}
-		if d.IsDir() {
-			if d.Name() == ".git" {
-				return fs.SkipDir
-			}
-			return nil
-		}
-		rel, relErr := filepath.Rel(baseDir, path)
-		if relErr != nil {
-			return relErr
-		}
-		if _, statErr := os.Stat(filepath.Join(genDir, rel)); os.IsNotExist(statErr) {
+	err = walkDiffScopes(baseDir, func(_ string, rel string, _ fs.DirEntry) error {
+		_, statErr := os.Stat(filepath.Join(genDir, rel))
+		if os.IsNotExist(statErr) {
 			deleted = append(deleted, rel)
+		} else if statErr != nil {
+			return statErr
 		}
 		return nil
 	})
@@ -390,6 +373,37 @@ func diffTrees(baseDir, genDir string) (changed []changedFile, deleted []string,
 	}
 	sort.Strings(deleted)
 	return changed, deleted, nil
+}
+
+// walkDiffScopes visits files under the paths split owns. A scope may be absent
+// from either synthetic test fixture or checkout; the other tree's walk will
+// still classify its files as additions or removals.
+func walkDiffScopes(root string, visit func(path, rel string, d fs.DirEntry) error) error {
+	for _, scope := range diffScopes {
+		scopePath := filepath.Join(root, scope)
+		if _, err := os.Stat(scopePath); err != nil {
+			if os.IsNotExist(err) {
+				continue
+			}
+			return err
+		}
+		if err := filepath.WalkDir(scopePath, func(path string, d fs.DirEntry, walkErr error) error {
+			if walkErr != nil {
+				return walkErr
+			}
+			if d.IsDir() {
+				return nil
+			}
+			rel, err := filepath.Rel(root, path)
+			if err != nil {
+				return err
+			}
+			return visit(path, rel, d)
+		}); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // sameContent reports whether basePath and genPath hold identical bytes, and
