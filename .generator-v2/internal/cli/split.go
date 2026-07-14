@@ -11,8 +11,9 @@ import (
 
 // newSplitCmd builds the `tfgen split` subcommand. It fans one aggregate generated
 // push (a branch carrying all N data sources) out into one bundle per artifact so
-// each can land as its own PR, by diffing a base checkout against the pushed-branch
-// checkout. It never runs the generator, the spec, or git — it routes emitted files.
+// each can land as its own PR, by diffing the provider and docs paths in a base
+// checkout against the pushed-branch checkout. It never runs the generator, the
+// spec, or git — it routes emitted files.
 func newSplitCmd(flags *globalFlags) *cobra.Command {
 	var baseDir, generatedDir, outDir, reportPath string
 	var check bool

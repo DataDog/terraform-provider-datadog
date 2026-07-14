@@ -336,6 +336,10 @@ jobs:
           > **Merge note:** auto-generated. If the merge queue reports a conflict in
           > \`datasources_generated.go\`, resolve by keeping both entries and re-queue
           > (append-only registrations).
+          >
+          > If this PR updates \`framework_provider.go\`, resolve conflicts manually:
+          > preserve unrelated upstream edits while keeping this artifact's retired
+          > hand-written constructor removed.
 
           ---
           > 🚧 **This Terraform data source generation is still under development.** Reach out to

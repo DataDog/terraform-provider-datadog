@@ -93,6 +93,36 @@ var _ = Describe("Split", func() {
 		Expect(routedSrc).To(Equal(dataSourceContent(ctor)), "source file must be copied verbatim")
 	})
 
+	It("ignores unrelated repository drift outside the provider and docs scopes", func() {
+		writeFile(base, "README.md", "older base content\n")
+		writeFile(gen, "README.md", "newer generated-branch content\n")
+		writeFile(base, "scripts/removed_upstream.sh", "removed after the branch was cut\n")
+		writeFile(gen, "config/new_upstream.yaml", "added after the branch was cut\n")
+
+		writeRegistry(base)
+		ctor := emit.DatasourceConstructor("rum_applications")
+		writeFile(gen, filepath.Join(fwDir, dsFileName("rum_applications")), dataSourceContent(ctor))
+		writeRegistry(gen, ctor)
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(rep.Errors).To(BeEmpty())
+		Expect(rep.Artifacts).To(HaveLen(1))
+		Expect(rep.Artifacts[0].Name).To(Equal("rum_applications"))
+	})
+
+	It("continues to fail loud on unexpected changes inside the scoped docs path", func() {
+		writeRegistry(base)
+		ctor := emit.DatasourceConstructor("rum_applications")
+		writeFile(gen, filepath.Join(fwDir, dsFileName("rum_applications")), dataSourceContent(ctor))
+		writeRegistry(gen, ctor)
+		writeFile(gen, filepath.Join("docs", "data-sources", "unexpected.md"), "unexpected upstream docs\n")
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out})
+		Expect(err).To(HaveOccurred())
+		Expect(rep.Errors).To(ContainElement(ContainSubstring(filepath.Join("docs", "data-sources", "unexpected.md"))))
+	})
+
 	It("gives each artifact of a multi-artifact push its own bundle whose registry holds base plus only that artifact", func() {
 		existing := emit.DatasourceConstructor("existing")
 		writeRegistry(base, existing) // base already has one generated data source
