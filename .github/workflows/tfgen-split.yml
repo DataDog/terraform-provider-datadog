@@ -2,6 +2,7 @@ name: tfgen Split
 
 permissions:
   contents: write
+  issues: write
   pull-requests: write
   id-token: write
 
@@ -59,15 +60,21 @@ jobs:
 
           BASE_DIR="$GITHUB_WORKSPACE/base"
           GENERATED_DIR="$GITHUB_WORKSPACE/generated"
+          GENERATION_REPORT="$GENERATED_DIR/.tfgen-run-report.json"
           PLAN_PATH="$RUNNER_TEMP/tfgen-split-plan.json"
           SPLIT_DIR="$RUNNER_TEMP/tfgen-split"
 
           make tfgen-build
           mkdir -p "$SPLIT_DIR"
+          if [[ ! -f "$GENERATION_REPORT" ]]; then
+            echo "::error::Incoming branch is missing .tfgen-run-report.json"
+            exit 1
+          fi
 
           if ! ./bin/tfgen split \
             --base-dir "$BASE_DIR" \
             --generated-dir "$GENERATED_DIR" \
+            --generation-report "$GENERATION_REPORT" \
             --out "$SPLIT_DIR" \
             --report "$PLAN_PATH"; then
             {
@@ -83,15 +90,28 @@ jobs:
           fi
 
           artifact_count="$(jq -r '.artifacts | length' "$PLAN_PATH")"
+          pr_count="$(jq -r '[.artifacts[] | select(.status == "created" or .status == "updated" or .status == "retired")] | length' "$PLAN_PATH")"
+          blocked_count="$(jq -r '[.artifacts[] | select(.status == "retire_blocked")] | length' "$PLAN_PATH")"
+          max_prs=25
+          if [[ "$pr_count" -gt "$max_prs" ]]; then
+            {
+              echo "## tfgen split blocked"
+              echo
+              echo "The batch would open $pr_count PRs, exceeding the safety cap of $max_prs."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
           echo "artifact_count=$artifact_count" >> "$GITHUB_OUTPUT"
+          echo "pr_count=$pr_count" >> "$GITHUB_OUTPUT"
+          echo "blocked_count=$blocked_count" >> "$GITHUB_OUTPUT"
           {
             echo "## tfgen split"
             echo
-            echo "Routed $artifact_count artifact(s) from \`$GITHUB_REF_NAME\`."
+            echo "Routed $pr_count PR artifact(s) and $blocked_count blocked retirement(s) from \`$GITHUB_REF_NAME\`."
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # Deployment prerequisite: provision this policy with contents:write and
-      # pull-requests:write before enabling the upstream generated-branch push.
+      # Deployment prerequisite: provision this policy with contents:write,
+      # pull-requests:write, and issues:write.
       - name: Mint Octo token
         if: steps.split.outputs.artifact_count != '0'
         id: octo-sts
@@ -135,6 +155,9 @@ jobs:
 
           failures=0
           successes=0
+          created_count=0
+          updated_count=0
+          retired_count=0
 
           reset_to_base() {
             git reset --hard >/dev/null 2>&1 || true
@@ -152,7 +175,7 @@ jobs:
           }
 
           reset_to_base
-          mapfile -t artifact_names < <(jq -r '.artifacts[].name' "$PLAN_PATH")
+          mapfile -t artifact_names < <(jq -r '.artifacts[] | select(.status != "retire_blocked") | .name' "$PLAN_PATH")
 
           for name in "${artifact_names[@]}"; do
             if [[ ! "$name" =~ ^[a-z][a-z0-9_]*$ ]]; then
@@ -163,15 +186,15 @@ jobs:
             status="$(jq -r --arg name "$name" \
               '.artifacts[] | select(.name == $name) | .status' "$PLAN_PATH")"
             case "$status" in
-              created) verb="Add" ;;
-              updated) verb="Update" ;;
+              created) verb="Add"; branch="generate/datadog_${name}_datasource" ;;
+              updated) verb="Update"; branch="generate/datadog_${name}_datasource" ;;
+              retired) verb="Retire"; branch="retire/datadog_${name}_datasource" ;;
               *)
                 record_failure "$name" "unsupported artifact status '$status'"
                 continue
                 ;;
             esac
 
-            branch="generate/datadog_${name}_datasource"
             if ! remote_ref="$(git ls-remote --heads origin "refs/heads/$branch")"; then
               record_failure "$name" "could not check whether branch '$branch' exists"
               continue
@@ -188,6 +211,8 @@ jobs:
 
             mapfile -t files < <(jq -r --arg name "$name" \
               '.artifacts[] | select(.name == $name) | .files[]' "$PLAN_PATH")
+            mapfile -t removed_files < <(jq -r --arg name "$name" \
+              '.artifacts[] | select(.name == $name) | .removed_files[]?' "$PLAN_PATH")
             if [[ "${#files[@]}" -eq 0 ]]; then
               record_failure "$name" "split report contains no files"
               continue
@@ -217,27 +242,63 @@ jobs:
               continue
             fi
 
+            removal_error=""
+            for rel in "${removed_files[@]}"; do
+              case "$rel" in
+                /* | .. | ../* | */../*)
+                  removal_error="unsafe removal path '$rel'"
+                  break
+                  ;;
+              esac
+              if ! git rm --ignore-unmatch -- "$rel"; then
+                removal_error="could not remove report-declared file: $rel"
+                break
+              fi
+            done
+            if [[ -n "$removal_error" ]]; then
+              record_failure "$name" "$removal_error"
+              continue
+            fi
+
             if ! make docs; then
               record_failure "$name" "make docs failed"
               continue
             fi
 
             doc_rel="docs/data-sources/${name}.md"
-            if [[ ! -f "$doc_rel" ]]; then
-              record_failure "$name" "make docs did not generate '$doc_rel'"
-              continue
-            fi
-            doc_copy="$(mktemp)"
-            if ! cp "$doc_rel" "$doc_copy" \
-              || ! git restore --source=HEAD --staged --worktree -- docs \
-              || ! git clean -fdq -- docs \
-              || ! mkdir -p "$(dirname "$doc_rel")" \
-              || ! cp "$doc_copy" "$doc_rel"; then
+            if [[ "$status" == "retired" ]]; then
+              if [[ -e "$doc_rel" ]]; then
+                record_failure "$name" "make docs still generated retired page '$doc_rel'"
+                continue
+              fi
+              if ! git restore --source=HEAD --staged --worktree -- docs \
+                || ! git clean -fdq -- docs; then
+                record_failure "$name" "could not restore unrelated docs drift"
+                continue
+              fi
+              for rel in "${removed_files[@]}"; do
+                if [[ "$rel" == "$doc_rel" ]] && ! git rm --ignore-unmatch -- "$doc_rel"; then
+                  record_failure "$name" "could not restore report-declared docs deletion"
+                  continue 2
+                fi
+              done
+            else
+              if [[ ! -f "$doc_rel" ]]; then
+                record_failure "$name" "make docs did not generate '$doc_rel'"
+                continue
+              fi
+              doc_copy="$(mktemp)"
+              if ! cp "$doc_rel" "$doc_copy" \
+                || ! git restore --source=HEAD --staged --worktree -- docs \
+                || ! git clean -fdq -- docs \
+                || ! mkdir -p "$(dirname "$doc_rel")" \
+                || ! cp "$doc_copy" "$doc_rel"; then
+                rm -f "$doc_copy"
+                record_failure "$name" "could not isolate '$doc_rel' from unrelated docs drift"
+                continue
+              fi
               rm -f "$doc_copy"
-              record_failure "$name" "could not isolate '$doc_rel' from unrelated docs drift"
-              continue
             fi
-            rm -f "$doc_copy"
 
             if ! make build; then
               record_failure "$name" "make build failed"
@@ -248,7 +309,12 @@ jobs:
             for rel in "${files[@]}"; do
               allowed["$rel"]=1
             done
-            allowed["$doc_rel"]=1
+            for rel in "${removed_files[@]}"; do
+              allowed["$rel"]=1
+            done
+            if [[ "$status" != "retired" ]]; then
+              allowed["$doc_rel"]=1
+            fi
 
             unexpected=()
             while IFS= read -r status_line; do
@@ -263,7 +329,11 @@ jobs:
               continue
             fi
 
-            if ! git add -- "${files[@]}" "$doc_rel"; then
+            stage_paths=("${files[@]}" "${removed_files[@]}")
+            if [[ "$status" != "retired" ]]; then
+              stage_paths+=("$doc_rel")
+            fi
+            if ! git add -A -- "${stage_paths[@]}"; then
               record_failure "$name" "could not stage generated files"
               continue
             fi
@@ -294,8 +364,39 @@ jobs:
             test_function="TestAccDatadog${pascal_name}DataSource"
             test_file="datadog/tests/data_source_datadog_${name}_test.go"
             body_file="$(mktemp)"
-            {
-              cat <<'BODY_HEADER'
+            if [[ "$status" == "retired" ]]; then
+              {
+                cat <<'RETIRE_HEADER'
+          > ℹ️ **This PR is part of a project that auto-generates Terraform provider data
+          > sources to keep generated coverage aligned with the annotated OpenAPI spec.**
+          > The retirement was selected deterministically by tfgen and still requires human review.
+          RETIRE_HEADER
+                printf '\n## Retire %s data source (generator-v2)\n\n' "$name"
+                printf 'The annotation for `datadog_%s` is no longer present, and tfgen reported the artifact safe to retire.\n\n' "$name"
+                echo "### Removed"
+                for rel in "${removed_files[@]}"; do
+                  printf -- '- `%s`\n' "$rel"
+                done
+                echo
+                echo "### Updated registrations"
+                for rel in "${files[@]}"; do
+                  printf -- '- `%s`\n' "$rel"
+                done
+                cat <<'RETIRE_FOOT'
+
+          ### Reviewer notes / risks
+          - Confirm this data source was never adopted or published. `retire_blocked` artifacts are routed to a tracking issue instead of an automatic deletion PR.
+          - Registry conflicts must be resolved by preserving this removal and unrelated registrations; additive “keep both” guidance does not apply to retirement.
+          - If this generated data source replaced a hand-written implementation, restoring that implementation is out of scope and requires manual review.
+
+          ---
+          > 🚧 **This Terraform data source generation is still under development.** Reach out to
+          > **#api-platform** with any questions.
+          RETIRE_FOOT
+              } > "$body_file"
+            else
+              {
+                cat <<'BODY_HEADER'
           > ℹ️ **This PR is part of a project that auto-generates Terraform provider data
           > sources to increase coverage.** The code is generated **deterministically by tfgen from an
           > annotated OpenAPI spec, without the use of LLMs**, and **reviewed via AI, though human review
@@ -315,12 +416,12 @@ jobs:
               printf -- '- `%s` (generated via `make docs`)\n\n' "$doc_rel"
               cat <<BODY_TEST
           ### Test / cassette
-          - Acceptance test: not generated; add \`$test_function\` in \`$test_file\`.
+          - Acceptance-test scaffold: \`$test_function\` in \`$test_file\`; complete its TODOs before recording.
           - Cassette: not recorded.
 
           ### Reviewer notes / risks
           - Automated risk scan skipped; a reviewer must inspect runtime behavior manually.
-          - The upstream MVP intentionally omits acceptance-test generation.
+          - Generated acceptance tests are boilerplate and do not prove runtime correctness.
 
           ### How to test
           Add and complete the acceptance test, record it once against the Frog org, then replay it:
@@ -345,7 +446,8 @@ jobs:
           > 🚧 **This Terraform data source generation is still under development.** Reach out to
           > **#api-platform** with any questions.
           BODY_TEST
-            } > "$body_file"
+              } > "$body_file"
+            fi
 
             if ! pr_url="$(gh pr create \
               --draft \
@@ -362,12 +464,50 @@ jobs:
 
             echo "- Created draft PR for \`$name\`: $pr_url" >> "$GITHUB_STEP_SUMMARY"
             successes=$((successes + 1))
+            case "$status" in
+              created) created_count=$((created_count + 1)) ;;
+              updated) updated_count=$((updated_count + 1)) ;;
+              retired) retired_count=$((retired_count + 1)) ;;
+            esac
             reset_to_base
           done
 
+          blocked_count="$(jq -r '[.artifacts[] | select(.status == "retire_blocked")] | length' "$PLAN_PATH")"
+          issue_url=""
+          if [[ "$blocked_count" -gt 0 ]]; then
+            issue_body="$(mktemp)"
+            {
+              echo "Reconcile found generated data sources whose automatic retirement was blocked."
+              echo "A recorded cassette or missing tfgen marker means deletion could be a breaking change."
+              echo "Each artifact requires a human deprecation or migration decision:"
+              echo
+              jq -r '.artifacts[]
+                | select(.status == "retire_blocked")
+                | "- [ ] `datadog_\(.name)`\n  - " +
+                  (if (.diagnostics | length) == 0
+                   then "No diagnostic supplied."
+                   else ([.diagnostics[].message] | join("; "))
+                   end)' "$PLAN_PATH"
+              echo
+              echo "Source branch: \`$GITHUB_REF_NAME\`"
+              echo "Source SHA: \`$GITHUB_SHA\`"
+              echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            } > "$issue_body"
+            issue_title="Retire blocked generated data sources (${GITHUB_SHA:0:7})"
+            if issue_url="$(gh issue create --title "$issue_title" --body-file "$issue_body" 2>&1)"; then
+              echo "- Created retirement tracking issue: $issue_url" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::error title=tfgen blocked-retirement issue failed::$issue_url"
+              echo "- Failed to create the blocked-retirement tracking issue: $issue_url" >> "$GITHUB_STEP_SUMMARY"
+              failures=$((failures + 1))
+            fi
+            rm -f "$issue_body"
+          fi
+
           {
             echo
-            echo "Created $successes draft PR(s); $failures artifact(s) failed."
+            echo "Created $successes draft PR(s): $created_count created, $updated_count updated, $retired_count retired."
+            echo "Reported $blocked_count blocked retirement(s); $failures operation(s) failed."
           } >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$failures" -gt 0 ]]; then
