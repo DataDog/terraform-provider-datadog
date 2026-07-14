@@ -271,6 +271,49 @@ func endpointTagsBlock(lines []string, path string) (start, end int, err error) 
 	return 0, 0, fmt.Errorf("emit: %s: testFiles2EndpointTags map is not terminated", path)
 }
 
+// RegisteredEndpointTags returns the testFiles2EndpointTags entries in path.
+// A missing file yields an empty map. Split uses this reader to reconstruct each
+// per-artifact provider_test.go from the base map plus or minus one exact key.
+func RegisteredEndpointTags(path string) (map[string]string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return map[string]string{}, nil
+		}
+		return nil, err
+	}
+
+	lines := strings.Split(string(data), "\n")
+	emptyMapLine := strings.TrimSuffix(endpointTagsMapHeader, "{") + "{}"
+	for _, line := range lines {
+		if strings.TrimSpace(line) == emptyMapLine {
+			return map[string]string{}, nil
+		}
+	}
+	start, end, err := endpointTagsBlock(lines, path)
+	if err != nil {
+		return nil, err
+	}
+
+	tags := map[string]string{}
+	for _, line := range lines[start+1 : end] {
+		keyText, valueText, ok := strings.Cut(strings.TrimSpace(line), ":")
+		if !ok {
+			continue
+		}
+		key, err := strconv.Unquote(strings.TrimSpace(keyText))
+		if err != nil {
+			return nil, fmt.Errorf("emit: %s: invalid endpoint-tag key %q: %w", path, keyText, err)
+		}
+		value, err := strconv.Unquote(strings.TrimSuffix(strings.TrimSpace(valueText), ","))
+		if err != nil {
+			return nil, fmt.Errorf("emit: %s: invalid endpoint-tag value %q: %w", path, valueText, err)
+		}
+		tags[key] = value
+	}
+	return tags, nil
+}
+
 // InsertEndpointTag sets `"<key>": "<value>",` in the testFiles2EndpointTags map in
 // provider_test.go (the file at path), scoped between endpointTagsMapHeader and its
 // closing brace. An existing entry for key is rewritten in place (minimal diff, no

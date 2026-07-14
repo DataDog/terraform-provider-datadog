@@ -1,19 +1,26 @@
 package split
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
 const fwDir = "datadog/fwprovider"
+const testsDir = "datadog/tests"
 
 func dsFileName(name string) string { return "data_source_datadog_" + name + ".go" }
+func dsTestFileName(name string) string {
+	return "data_source_datadog_" + name + "_test.go"
+}
 
 func writeFile(root, rel, content string) {
 	GinkgoHelper()
@@ -35,6 +42,30 @@ func writeRegistry(root string, constructors ...string) {
 	GinkgoHelper()
 	_, err := emit.SyncGeneratedDatasources(filepath.Join(root, fwDir, registryFile), constructors, false)
 	Expect(err).NotTo(HaveOccurred())
+}
+
+func writeGenerationReport(root string, entries ...model.ArtifactReportEntry) string {
+	GinkgoHelper()
+	data, err := json.Marshal(model.RunReport{Artifacts: entries})
+	Expect(err).NotTo(HaveOccurred())
+	const rel = "generation-report.json"
+	writeFile(root, rel, string(data))
+	return filepath.Join(root, rel)
+}
+
+func writeEndpointTags(root string, tags map[string]string) {
+	GinkgoHelper()
+	path := filepath.Join(root, testsDir, providerTestFile)
+	writeFile(root, filepath.Join(testsDir, providerTestFile), "package test\n\nvar testFiles2EndpointTags = map[string]string{\n}\n")
+	keys := make([]string, 0, len(tags))
+	for key := range tags {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		_, err := emit.InsertEndpointTag(path, key, tags[key], false)
+		Expect(err).NotTo(HaveOccurred())
+	}
 }
 
 // dataSourceContent is a minimal generated-file body declaring one constructor;
@@ -81,7 +112,7 @@ var _ = Describe("Split", func() {
 
 		art := rep.Artifacts[0]
 		Expect(art.Name).To(Equal("rum_applications"))
-		Expect(art.Status).To(Equal("created"))
+		Expect(art.Status).To(Equal(model.ArtifactStatusCreated))
 		Expect(art.Files).To(ConsistOf(
 			filepath.Join(fwDir, dsFileName("rum_applications")),
 			filepath.Join(fwDir, registryFile),
@@ -98,6 +129,9 @@ var _ = Describe("Split", func() {
 		writeFile(gen, "README.md", "newer generated-branch content\n")
 		writeFile(base, "scripts/removed_upstream.sh", "removed after the branch was cut\n")
 		writeFile(gen, "config/new_upstream.yaml", "added after the branch was cut\n")
+		writeFile(base, filepath.Join(testsDir, "unrelated_test.go"), "package test\n// old\n")
+		writeFile(gen, filepath.Join(testsDir, "unrelated_test.go"), "package test\n// new\n")
+		writeFile(base, filepath.Join(testsDir, "cassettes", "unrelated.yaml"), "old cassette\n")
 
 		writeRegistry(base)
 		ctor := emit.DatasourceConstructor("rum_applications")
@@ -154,6 +188,162 @@ var _ = Describe("Split", func() {
 		}
 	})
 
+	It("routes generated tests and gives each artifact only its own endpoint tag", func() {
+		writeRegistry(base)
+		writeEndpointTags(base, nil)
+
+		names := []string{"alpha", "bravo"}
+		var entries []model.ArtifactReportEntry
+		var constructors []string
+		tags := map[string]string{}
+		for _, name := range names {
+			constructor := emit.DatasourceConstructor(name)
+			constructors = append(constructors, constructor)
+			writeFile(gen, filepath.Join(fwDir, dsFileName(name)), dataSourceContent(constructor))
+			writeFile(gen, filepath.Join(testsDir, dsTestFileName(name)), "package test\n")
+			tags[emit.EndpointTagTestKey(name)] = name + "-service"
+			entries = append(entries,
+				model.ArtifactReportEntry{
+					Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusCreated,
+					Path:        filepath.Join(fwDir, dsFileName(name)),
+					Diagnostics: []model.Diagnostic{{Severity: model.SeverityInfo, Message: name + " diagnostic"}},
+				},
+				model.ArtifactReportEntry{
+					Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusCreated,
+					Path: filepath.Join(testsDir, dsTestFileName(name)),
+				},
+			)
+		}
+		writeRegistry(gen, constructors...)
+		writeEndpointTags(gen, tags)
+		reportPath := writeGenerationReport(gen, entries...)
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out, GenerationReport: reportPath})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(rep.Artifacts).To(HaveLen(2))
+
+		for _, artifact := range rep.Artifacts {
+			Expect(artifact.Files).To(ContainElement(filepath.Join(testsDir, dsTestFileName(artifact.Name))))
+			Expect(artifact.Files).To(ContainElement(filepath.Join(testsDir, providerTestFile)))
+			Expect(artifact.Diagnostics).To(ConsistOf(model.Diagnostic{Severity: model.SeverityInfo, Message: artifact.Name + " diagnostic"}))
+
+			routedTags, err := emit.RegisteredEndpointTags(filepath.Join(out, artifact.Name, testsDir, providerTestFile))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(routedTags).To(Equal(map[string]string{
+				emit.EndpointTagTestKey(artifact.Name): artifact.Name + "-service",
+			}))
+		}
+	})
+
+	It("routes a test-only rollout as an updated artifact when its generated source is unchanged", func() {
+		name := "existing"
+		constructor := emit.DatasourceConstructor(name)
+		sourceRel := filepath.Join(fwDir, dsFileName(name))
+		source := dataSourceContent(constructor)
+		writeFile(base, sourceRel, source)
+		writeFile(gen, sourceRel, source)
+		writeRegistry(base, constructor)
+		writeRegistry(gen, constructor)
+		writeEndpointTags(base, nil)
+		writeEndpointTags(gen, map[string]string{emit.EndpointTagTestKey(name): "existing-service"})
+		writeFile(gen, filepath.Join(testsDir, dsTestFileName(name)), "package test\n")
+		reportPath := writeGenerationReport(gen,
+			model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusUnchanged, Path: sourceRel},
+			model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusCreated, Path: filepath.Join(testsDir, dsTestFileName(name))},
+		)
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out, GenerationReport: reportPath})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(rep.Artifacts).To(HaveLen(1))
+		Expect(rep.Artifacts[0].Status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(rep.Artifacts[0].Files).To(ConsistOf(
+			filepath.Join(fwDir, registryFile),
+			filepath.Join(testsDir, dsTestFileName(name)),
+			filepath.Join(testsDir, providerTestFile),
+		))
+	})
+
+	It("routes a retirement as exact file deletions plus reconstructed shared registrations", func() {
+		name := "gone"
+		constructor := emit.DatasourceConstructor(name)
+		existing := emit.DatasourceConstructor("existing")
+		sourceRel := filepath.Join(fwDir, dsFileName(name))
+		testRel := filepath.Join(testsDir, dsTestFileName(name))
+		docRel := filepath.Join("docs", "data-sources", name+".md")
+
+		writeRegistry(base, existing, constructor)
+		writeRegistry(gen, existing)
+		writeFile(base, sourceRel, dataSourceContent(constructor))
+		writeFile(base, testRel, "package test\n")
+		writeFile(base, docRel, "# gone\n")
+		writeEndpointTags(base, map[string]string{emit.EndpointTagTestKey(name): "gone-service"})
+		writeEndpointTags(gen, nil)
+		reportPath := writeGenerationReport(gen, model.ArtifactReportEntry{
+			Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusRetired, Path: sourceRel,
+			Diagnostics: []model.Diagnostic{{Severity: model.SeverityInfo, Message: "safe to retire"}},
+		})
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out, GenerationReport: reportPath})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(rep.Artifacts).To(HaveLen(1))
+		artifact := rep.Artifacts[0]
+		Expect(artifact.Status).To(Equal(model.ArtifactStatusRetired))
+		Expect(artifact.RemovedFiles).To(ConsistOf(sourceRel, testRel, docRel))
+		Expect(artifact.Files).To(ConsistOf(
+			filepath.Join(fwDir, registryFile),
+			filepath.Join(testsDir, providerTestFile),
+		))
+
+		routedRegistry := readFile(filepath.Join(out, name, fwDir, registryFile))
+		Expect(routedRegistry).NotTo(ContainSubstring(constructor))
+		Expect(routedRegistry).To(ContainSubstring(existing))
+		routedTags, err := emit.RegisteredEndpointTags(filepath.Join(out, name, testsDir, providerTestFile))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(routedTags).NotTo(HaveKey(emit.EndpointTagTestKey(name)))
+	})
+
+	It("reports retire_blocked without materializing a deletion bundle", func() {
+		name := "adopted"
+		constructor := emit.DatasourceConstructor(name)
+		sourceRel := filepath.Join(fwDir, dsFileName(name))
+		source := dataSourceContent(constructor)
+		writeRegistry(base, constructor)
+		writeRegistry(gen, constructor)
+		writeFile(base, sourceRel, source)
+		writeFile(gen, sourceRel, source)
+		reportPath := writeGenerationReport(gen, model.ArtifactReportEntry{
+			Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusRetireBlocked, Path: sourceRel,
+			Diagnostics: []model.Diagnostic{{Severity: model.SeverityWarning, Message: "recorded cassette"}},
+		})
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out, GenerationReport: reportPath})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(rep.Artifacts).To(HaveLen(1))
+		Expect(rep.Artifacts[0].Status).To(Equal(model.ArtifactStatusRetireBlocked))
+		Expect(rep.Artifacts[0].Files).To(BeEmpty())
+		Expect(rep.Artifacts[0].RemovedFiles).To(BeEmpty())
+		_, statErr := os.Stat(filepath.Join(out, name))
+		Expect(os.IsNotExist(statErr)).To(BeTrue())
+	})
+
+	It("fails loud when the generation report contradicts the tree diff", func() {
+		name := "mismatch"
+		constructor := emit.DatasourceConstructor(name)
+		sourceRel := filepath.Join(fwDir, dsFileName(name))
+		source := dataSourceContent(constructor)
+		writeRegistry(base, constructor)
+		writeRegistry(gen, constructor)
+		writeFile(base, sourceRel, source)
+		writeFile(gen, sourceRel, source)
+		reportPath := writeGenerationReport(gen, model.ArtifactReportEntry{
+			Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusCreated, Path: sourceRel,
+		})
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out, GenerationReport: reportPath})
+		Expect(err).To(HaveOccurred())
+		Expect(rep.Errors).To(ContainElement(ContainSubstring("not newly added")))
+	})
+
 	It("fails loud on a changed file it cannot attribute to any artifact", func() {
 		writeRegistry(base)
 		writeFile(gen, filepath.Join(fwDir, registryFile), readFile(filepath.Join(base, fwDir, registryFile)))
@@ -183,7 +373,7 @@ var _ = Describe("Split", func() {
 		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out})
 		Expect(err).NotTo(HaveOccurred())
 		Expect(rep.Artifacts).To(HaveLen(1))
-		Expect(rep.Artifacts[0].Status).To(Equal("updated"))
+		Expect(rep.Artifacts[0].Status).To(Equal(model.ArtifactStatusUpdated))
 		Expect(rep.Artifacts[0].Files).To(ContainElement(filepath.Join(fwDir, providerFile)))
 
 		routedProvider := readFile(filepath.Join(out, "team", fwDir, providerFile))

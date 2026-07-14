@@ -261,6 +261,27 @@ var testFiles2EndpointTags = map[string]string{
 }
 `
 
+var _ = Describe("RegisteredEndpointTags", func() {
+	It("returns only entries from testFiles2EndpointTags", func() {
+		dir := GinkgoT().TempDir()
+		path := filepath.Join(dir, "provider_test.go")
+		Expect(os.WriteFile(path, []byte(endpointTagsFixture), 0o644)).To(Succeed())
+
+		tags, err := RegisteredEndpointTags(path)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(tags).To(Equal(map[string]string{
+			"tests/data_source_datadog_team_test":             "team",
+			"tests/data_source_datadog_team_memberships_test": "team",
+		}))
+	})
+
+	It("returns an empty map when provider_test.go is absent", func() {
+		tags, err := RegisteredEndpointTags(filepath.Join(GinkgoT().TempDir(), "provider_test.go"))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(tags).To(BeEmpty())
+	})
+})
+
 var _ = Describe("InsertEndpointTag", func() {
 	var path string
 

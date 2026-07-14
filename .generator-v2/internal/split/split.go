@@ -8,8 +8,8 @@
 //
 // Attribution is exact and fail-loud: a changed file that maps to no artifact and
 // is not a known shared registry file is a hard error, never silently dropped, so
-// a future shared helper file can't vanish. Removals (retirement) are out of scope
-// for this create/update MVP and are reported as errors.
+// a future shared helper file can't vanish. Retirements require the upstream
+// generation report and are emitted as explicit file-removal plans.
 package split
 
 import (
@@ -26,6 +26,7 @@ import (
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
 // Options configures a split run.
@@ -37,6 +38,9 @@ type Options struct {
 	// OutDir receives one <name>/ subdirectory per artifact, each holding the exact
 	// files to commit at their repo-relative paths.
 	OutDir string
+	// GenerationReport is the upstream tfgen generate report. When supplied, it
+	// authorizes and cross-checks retirement and retire_blocked routing.
+	GenerationReport string
 	// Check computes the plan and report without writing any output bundle.
 	Check bool
 }
@@ -54,12 +58,11 @@ type Result struct {
 // Artifact is one routed data source: the files materialized under OutDir/<name>/
 // (repo-relative), and how it changed relative to base.
 type Artifact struct {
-	Name   string `json:"name"`
-	Status string `json:"status"` // "created" (net-new) or "updated" (overwrote an existing file)
-	// ServiceTag is the [service] PR-title prefix; derived in Phase 2 (the incoming
-	// diff carries no OpenAPI tag), so it is left empty here.
-	ServiceTag string   `json:"service_tag,omitempty"`
-	Files      []string `json:"files"`
+	Name         string               `json:"name"`
+	Status       model.ArtifactStatus `json:"status"`
+	Files        []string             `json:"files"`
+	RemovedFiles []string             `json:"removed_files,omitempty"`
+	Diagnostics  []model.Diagnostic   `json:"diagnostics,omitempty"`
 }
 
 // WriteJSON encodes the report as indented JSON.
@@ -83,14 +86,18 @@ const (
 var (
 	dataSourceFileRe     = regexp.MustCompile(`^data_source_datadog_([a-z][a-z0-9_]*)\.go$`)
 	dataSourceTestFileRe = regexp.MustCompile(`^data_source_datadog_([a-z][a-z0-9_]*)_test\.go$`)
+	dataSourceDocFileRe  = regexp.MustCompile(`^([a-z][a-z0-9_]*)\.md$`)
+	artifactNameRe       = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	// constructorDeclRe recovers the constructor(s) a data-source file declares.
 	constructorDeclRe = regexp.MustCompile(`func (New[A-Za-z0-9_]+DataSource)\(`)
 	// constructorRe recovers constructor identifiers listed inside a slice literal.
 	constructorRe = regexp.MustCompile(`New[A-Za-z0-9_]+DataSource`)
-	// diffScopes limits routing to provider and generated-documentation paths.
-	// Upstream branches can lag master without unrelated repository drift making
-	// the split fail; unexpected changes inside these owned paths still fail loud.
-	diffScopes = []string{filepath.FromSlash("datadog/fwprovider"), "docs"}
+	// Directory scopes are walked in full. Test routing is added separately by
+	// scopedFiles so unrelated acceptance-test and cassette drift is ignored.
+	diffDirectoryScopes = []string{
+		filepath.FromSlash("datadog/fwprovider"),
+		filepath.FromSlash("docs/data-sources"),
+	}
 )
 
 // datasourcesSliceHeader opens the hand-written Datasources slice in
@@ -107,23 +114,35 @@ const (
 	kindRegistry
 	kindProvider
 	kindProviderTest
+	kindDataSourceDoc
 )
 
-// classify maps a changed file's basename to its role in the split.
-func classify(base string) (fileKind, string) {
-	switch base {
-	case registryFile:
+// classify maps an exact repo-relative path to its role in the split.
+func classify(rel string) (fileKind, string) {
+	clean := filepath.Clean(rel)
+	base := filepath.Base(clean)
+	switch clean {
+	case filepath.Join("datadog", "fwprovider", registryFile):
 		return kindRegistry, ""
-	case providerFile:
+	case filepath.Join("datadog", "fwprovider", providerFile):
 		return kindProvider, ""
-	case providerTestFile:
+	case filepath.Join("datadog", "tests", providerTestFile):
 		return kindProviderTest, ""
 	}
-	if m := dataSourceTestFileRe.FindStringSubmatch(base); m != nil {
-		return kindDataSourceTest, m[1]
+	if filepath.Dir(clean) == filepath.Join("datadog", "fwprovider") {
+		if m := dataSourceFileRe.FindStringSubmatch(base); m != nil {
+			return kindDataSource, m[1]
+		}
 	}
-	if m := dataSourceFileRe.FindStringSubmatch(base); m != nil {
-		return kindDataSource, m[1]
+	if filepath.Dir(clean) == filepath.Join("datadog", "tests") {
+		if m := dataSourceTestFileRe.FindStringSubmatch(base); m != nil {
+			return kindDataSourceTest, m[1]
+		}
+	}
+	if filepath.Dir(clean) == filepath.Join("docs", "data-sources") {
+		if m := dataSourceDocFileRe.FindStringSubmatch(base); m != nil {
+			return kindDataSourceDoc, m[1]
+		}
 	}
 	return kindUnknown, ""
 }
@@ -131,14 +150,21 @@ func classify(base string) (fileKind, string) {
 // changedFile is a file differing between base and generated.
 type changedFile struct {
 	rel   string // repo-relative path
-	base  string // basename
 	added bool   // absent in base (net-new) vs. modified
 }
 
 // artifactPlan gathers the self-contained files discovered for one data source.
 type artifactPlan struct {
-	source *changedFile
-	test   *changedFile
+	source  *changedFile
+	test    *changedFile
+	doc     *changedFile
+	removed []string
+	report  *generationArtifact
+}
+
+type generationArtifact struct {
+	status      model.ArtifactStatus
+	diagnostics []model.Diagnostic
 }
 
 // Split diffs the two trees, routes each artifact into OutDir/<name>/, and returns
@@ -146,6 +172,15 @@ type artifactPlan struct {
 // as an error (so the caller exits non-zero); the report is still complete.
 func Split(opts Options) (*Result, error) {
 	rep := &Result{BaseDir: opts.BaseDir, GeneratedDir: opts.GeneratedDir, OutDir: opts.OutDir}
+
+	reportArtifacts := map[string]generationArtifact{}
+	if opts.GenerationReport != "" {
+		var err error
+		reportArtifacts, err = readGenerationArtifacts(opts.GenerationReport)
+		if err != nil {
+			return rep, fmt.Errorf("split: reading generation report: %w", err)
+		}
+	}
 
 	changed, deleted, err := diffTrees(opts.BaseDir, opts.GeneratedDir)
 	if err != nil {
@@ -159,7 +194,7 @@ func Split(opts Options) (*Result, error) {
 	var registry, provider, providerTest *changedFile
 	for i := range changed {
 		cf := &changed[i]
-		kind, name := classify(cf.base)
+		kind, name := classify(cf.rel)
 		switch kind {
 		case kindRegistry:
 			registry = cf
@@ -171,17 +206,25 @@ func Split(opts Options) (*Result, error) {
 			planFor(plans, name).source = cf
 		case kindDataSourceTest:
 			planFor(plans, name).test = cf
+		case kindDataSourceDoc:
+			planFor(plans, name).doc = cf
 		default:
 			fail("changed file maps to no artifact and is not a known shared file: %s", cf.rel)
 		}
 	}
 	for _, d := range deleted {
-		fail("file removed (retirement is out of scope for the create/update MVP): %s", d)
+		kind, name := classify(d)
+		switch kind {
+		case kindDataSource, kindDataSourceTest, kindDataSourceDoc:
+			planFor(plans, name).removed = append(planFor(plans, name).removed, d)
+		default:
+			fail("removed file maps to no artifact or is a shared file that cannot be deleted: %s", d)
+		}
 	}
-	// The shared endpoint-tag map only appears with --emit-tests, which the pipeline
-	// omits; reconstructing it needs the OpenAPI tag the branch does not carry.
-	if providerTest != nil {
-		fail("%s changed, but test routing (--emit-tests) is deferred; the incoming push must omit --emit-tests", providerTest.rel)
+	for name, reported := range reportArtifacts {
+		p := planFor(plans, name)
+		reportedCopy := reported
+		p.report = &reportedCopy
 	}
 
 	if len(plans) == 0 {
@@ -191,12 +234,18 @@ func Split(opts Options) (*Result, error) {
 		}
 		return finish(rep, problems)
 	}
-	if registry == nil {
-		fail("data source files changed but %s did not", registryFile)
-		return finish(rep, problems)
+
+	for _, name := range sortedNames(plans) {
+		p := plans[name]
+		status, statusProblems := validatePlan(name, p, opts.GenerationReport != "")
+		problems = append(problems, statusProblems...)
+		if p.report == nil && status != "" {
+			p.report = &generationArtifact{status: status}
+		}
 	}
 
-	baseSet, err := emit.RegisteredGeneratedDatasources(filepath.Join(opts.BaseDir, registry.rel))
+	registryRel := filepath.Join("datadog", "fwprovider", registryFile)
+	baseSet, err := emit.RegisteredGeneratedDatasources(filepath.Join(opts.BaseDir, registryRel))
 	if err != nil {
 		return rep, fmt.Errorf("split: reading base registry: %w", err)
 	}
@@ -204,23 +253,92 @@ func Split(opts Options) (*Result, error) {
 	overwrites, provProblems := attributeOverwrites(opts, plans, provider)
 	problems = append(problems, provProblems...)
 
-	// Cross-check: base ∪ every artifact's constructor must equal the incoming
-	// registry, or an artifact is unaccounted for (a registration with no file, or
-	// vice versa).
-	incoming, err := emit.RegisteredGeneratedDatasources(filepath.Join(opts.GeneratedDir, registry.rel))
+	incoming, err := emit.RegisteredGeneratedDatasources(filepath.Join(opts.GeneratedDir, registryRel))
 	if err != nil {
 		return rep, fmt.Errorf("split: reading generated registry: %w", err)
 	}
-	want := append(slices.Clone(baseSet), constructorsFor(plans)...)
+	want := slices.Clone(baseSet)
+	prProducing := 0
+	for name, p := range plans {
+		if p.report == nil {
+			continue
+		}
+		switch p.report.status {
+		case model.ArtifactStatusCreated, model.ArtifactStatusUpdated:
+			want = append(want, emit.DatasourceConstructor(name))
+			prProducing++
+		case model.ArtifactStatusRetired:
+			want = without(want, emit.DatasourceConstructor(name))
+			prProducing++
+		}
+	}
+	registrySetChanged := len(onlyIn(want, baseSet)) > 0 || len(onlyIn(baseSet, want)) > 0
+	if prProducing > 0 && registrySetChanged && registry == nil {
+		fail("PR-producing data source changes require %s to change", registryRel)
+	}
 	if diff := onlyIn(incoming, want); len(diff) > 0 {
-		fail("%s registers constructor(s) not accounted for by any changed data source file: %s", registry.rel, strings.Join(diff, ", "))
+		fail("%s registers constructor(s) not accounted for by the generation report: %s", registryRel, strings.Join(diff, ", "))
 	}
 	if diff := onlyIn(want, incoming); len(diff) > 0 {
-		fail("data source(s) changed whose constructor is missing from the incoming %s: %s", registry.rel, strings.Join(diff, ", "))
+		fail("generation report expects constructor(s) missing from incoming %s: %s", registryRel, strings.Join(diff, ", "))
+	}
+
+	providerTestRel := filepath.Join("datadog", "tests", providerTestFile)
+	baseTags, err := emit.RegisteredEndpointTags(filepath.Join(opts.BaseDir, providerTestRel))
+	if err != nil {
+		return rep, fmt.Errorf("split: reading base endpoint tags: %w", err)
+	}
+	incomingTags, err := emit.RegisteredEndpointTags(filepath.Join(opts.GeneratedDir, providerTestRel))
+	if err != nil {
+		return rep, fmt.Errorf("split: reading generated endpoint tags: %w", err)
+	}
+	wantTags := cloneMap(baseTags)
+	for name, p := range plans {
+		if p.report == nil {
+			continue
+		}
+		key := emit.EndpointTagTestKey(name)
+		switch p.report.status {
+		case model.ArtifactStatusCreated, model.ArtifactStatusUpdated:
+			if p.test != nil {
+				tag, ok := incomingTags[key]
+				if !ok {
+					fail("%s changed for %q, but %s has no %q entry", p.test.rel, name, providerTestRel, key)
+				} else {
+					wantTags[key] = tag
+				}
+			}
+		case model.ArtifactStatusRetired:
+			delete(wantTags, key)
+		}
+	}
+	if !mapsEqual(wantTags, incomingTags) {
+		fail("%s changes are not fully attributable to the reported artifacts", providerTestRel)
+	}
+	if !mapsEqual(baseTags, incomingTags) && providerTest == nil {
+		fail("%s content changed but was not discovered in the scoped diff", providerTestRel)
 	}
 
 	for _, name := range sortedNames(plans) {
-		art, artProblems := materialize(opts, name, plans[name], registry.rel, baseSet, overwrites[name], provider)
+		p := plans[name]
+		if p.report == nil {
+			continue
+		}
+		var art *Artifact
+		var artProblems []string
+		switch p.report.status {
+		case model.ArtifactStatusCreated, model.ArtifactStatusUpdated:
+			art, artProblems = materializeActive(opts, name, p, registryRel, baseSet, overwrites[name], provider, providerTestRel, incomingTags)
+		case model.ArtifactStatusRetired:
+			art, artProblems = materializeRetired(opts, name, p, registryRel, providerTestRel, baseTags)
+		case model.ArtifactStatusRetireBlocked:
+			art = &Artifact{
+				Name:        name,
+				Status:      model.ArtifactStatusRetireBlocked,
+				Files:       []string{},
+				Diagnostics: slices.Clone(p.report.diagnostics),
+			}
+		}
 		problems = append(problems, artProblems...)
 		if art != nil {
 			rep.Artifacts = append(rep.Artifacts, *art)
@@ -230,22 +348,20 @@ func Split(opts Options) (*Result, error) {
 	return finish(rep, problems)
 }
 
-// materialize writes one artifact's bundle under OutDir/<name>/ and returns its
-// report entry. The self-contained files (source, optional test) are copied
-// verbatim; datasources_generated.go is reconstructed as baseSet ∪ {this
-// constructor}; framework_provider.go is base with this artifact's overwritten
-// constructor(s) removed.
-func materialize(opts Options, name string, p *artifactPlan, registryRel string, baseSet, overwritten []string, provider *changedFile) (*Artifact, []string) {
+func materializeActive(opts Options, name string, p *artifactPlan, registryRel string, baseSet, overwritten []string, provider *changedFile, providerTestRel string, incomingTags map[string]string) (*Artifact, []string) {
 	var problems []string
-	art := &Artifact{Name: name}
-	if p.source.added {
-		art.Status = "created"
-	} else {
-		art.Status = "updated"
+	art := &Artifact{
+		Name:        name,
+		Status:      p.report.status,
+		Files:       []string{},
+		Diagnostics: slices.Clone(p.report.diagnostics),
 	}
 	outDir := filepath.Join(opts.OutDir, name)
 
-	files := []string{p.source.rel}
+	var files []string
+	if p.source != nil {
+		files = append(files, p.source.rel)
+	}
 	if p.test != nil {
 		files = append(files, p.test.rel)
 	}
@@ -266,26 +382,226 @@ func materialize(opts Options, name string, p *artifactPlan, registryRel string,
 	}
 	art.Files = append(art.Files, registryRel)
 
-	// An overwrite retires hand-written constructor(s) from framework_provider.go;
-	// replay that removal against the base copy (there is no from-set rebuild for it).
 	if len(overwritten) > 0 {
 		provOut := filepath.Join(outDir, provider.rel)
 		if !opts.Check {
 			if err := copyFile(filepath.Join(opts.BaseDir, provider.rel), provOut); err != nil {
 				problems = append(problems, fmt.Sprintf("copying %s for %q: %v", provider.rel, name, err))
 			}
-		}
-		for _, c := range overwritten {
-			if _, err := emit.RemoveHandwrittenDatasource(provOut, c, opts.Check); err != nil {
-				problems = append(problems, fmt.Sprintf("retiring %s from %s for %q: %v", c, provider.rel, name, err))
+			for _, c := range overwritten {
+				if _, err := emit.RemoveHandwrittenDatasource(provOut, c, false); err != nil {
+					problems = append(problems, fmt.Sprintf("retiring %s from %s for %q: %v", c, provider.rel, name, err))
+				}
 			}
 		}
 		art.Files = append(art.Files, provider.rel)
 	}
 
+	if p.test != nil {
+		key := emit.EndpointTagTestKey(name)
+		tag, ok := incomingTags[key]
+		if !ok {
+			problems = append(problems, fmt.Sprintf("reconstructing %s for %q: endpoint tag %q is absent", providerTestRel, name, key))
+		} else {
+			testOut := filepath.Join(outDir, providerTestRel)
+			if !opts.Check {
+				if err := copyFile(filepath.Join(opts.BaseDir, providerTestRel), testOut); err != nil {
+					problems = append(problems, fmt.Sprintf("copying %s for %q: %v", providerTestRel, name, err))
+				} else if _, err := emit.InsertEndpointTag(testOut, key, tag, false); err != nil {
+					problems = append(problems, fmt.Sprintf("reconstructing %s for %q: %v", providerTestRel, name, err))
+				}
+			}
+			art.Files = append(art.Files, providerTestRel)
+		}
+	}
+
 	sort.Strings(art.Files)
 	art.Files = slices.Compact(art.Files)
 	return art, problems
+}
+
+func materializeRetired(opts Options, name string, p *artifactPlan, registryRel, providerTestRel string, baseTags map[string]string) (*Artifact, []string) {
+	var problems []string
+	art := &Artifact{
+		Name:         name,
+		Status:       model.ArtifactStatusRetired,
+		Files:        []string{registryRel},
+		RemovedFiles: slices.Clone(p.removed),
+		Diagnostics:  slices.Clone(p.report.diagnostics),
+	}
+	outDir := filepath.Join(opts.OutDir, name)
+	registryOut := filepath.Join(outDir, registryRel)
+	if !opts.Check {
+		if err := copyFile(filepath.Join(opts.BaseDir, registryRel), registryOut); err != nil {
+			problems = append(problems, fmt.Sprintf("copying %s for %q: %v", registryRel, name, err))
+		} else if _, err := emit.RemoveGeneratedDatasource(registryOut, emit.DatasourceConstructor(name), false); err != nil {
+			problems = append(problems, fmt.Sprintf("reconstructing %s for retirement %q: %v", registryRel, name, err))
+		}
+	}
+
+	key := emit.EndpointTagTestKey(name)
+	if _, ok := baseTags[key]; ok {
+		testOut := filepath.Join(outDir, providerTestRel)
+		if !opts.Check {
+			if err := copyFile(filepath.Join(opts.BaseDir, providerTestRel), testOut); err != nil {
+				problems = append(problems, fmt.Sprintf("copying %s for %q: %v", providerTestRel, name, err))
+			} else if _, err := emit.RemoveEndpointTag(testOut, key, false); err != nil {
+				problems = append(problems, fmt.Sprintf("reconstructing %s for retirement %q: %v", providerTestRel, name, err))
+			}
+		}
+		art.Files = append(art.Files, providerTestRel)
+	}
+
+	sort.Strings(art.Files)
+	art.Files = slices.Compact(art.Files)
+	sort.Strings(art.RemovedFiles)
+	art.RemovedFiles = slices.Compact(art.RemovedFiles)
+	return art, problems
+}
+
+func validatePlan(name string, p *artifactPlan, reportRequired bool) (model.ArtifactStatus, []string) {
+	var problems []string
+	fail := func(format string, a ...any) { problems = append(problems, fmt.Sprintf(format, a...)) }
+
+	if !artifactNameRe.MatchString(name) {
+		fail("artifact name %q from diff/report is unsafe", name)
+		return "", problems
+	}
+	if reportRequired && p.report == nil {
+		fail("artifact %q changed but is absent from the generation report", name)
+		return "", problems
+	}
+
+	status := model.ArtifactStatus("")
+	if p.report != nil {
+		status = p.report.status
+	} else if p.source != nil {
+		if p.source.added {
+			status = model.ArtifactStatusCreated
+		} else {
+			status = model.ArtifactStatusUpdated
+		}
+	}
+
+	switch status {
+	case model.ArtifactStatusCreated:
+		if p.source == nil || !p.source.added {
+			fail("generation report marks %q created, but its source file is not newly added", name)
+		}
+		if len(p.removed) > 0 {
+			fail("created artifact %q also removes files: %s", name, strings.Join(p.removed, ", "))
+		}
+	case model.ArtifactStatusUpdated:
+		if p.source == nil && p.test == nil {
+			fail("generation report marks %q updated, but no source or test file changed", name)
+		}
+		if p.source != nil && p.source.added {
+			fail("generation report marks %q updated, but its source file is newly added", name)
+		}
+		if len(p.removed) > 0 {
+			fail("updated artifact %q also removes files: %s", name, strings.Join(p.removed, ", "))
+		}
+	case model.ArtifactStatusRetired:
+		if p.source != nil || p.test != nil || p.doc != nil {
+			fail("retired artifact %q contains added or modified self-contained files", name)
+		}
+	case model.ArtifactStatusRetireBlocked:
+		if p.source != nil || p.test != nil || p.doc != nil || len(p.removed) > 0 {
+			fail("retire_blocked artifact %q unexpectedly changes files", name)
+		}
+	case "":
+		if len(p.removed) > 0 {
+			fail("removed file for %q requires a generation report declaring retired", name)
+		} else {
+			fail("artifact %q has no routable source change or report status", name)
+		}
+	default:
+		fail("artifact %q has unsupported generation status %q", name, status)
+	}
+	if p.doc != nil {
+		fail("documentation file changed upstream for %q (%s); docs must be generated per artifact in CI", name, p.doc.rel)
+	}
+	return status, problems
+}
+
+func readGenerationArtifacts(path string) (map[string]generationArtifact, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	var report model.RunReport
+	if err := json.NewDecoder(f).Decode(&report); err != nil {
+		return nil, err
+	}
+
+	type accumulated struct {
+		mainSeen    bool
+		mainStatus  model.ArtifactStatus
+		testChanged bool
+		diagnostics []model.Diagnostic
+	}
+	acc := map[string]*accumulated{}
+	for _, entry := range report.Artifacts {
+		if entry.Kind != model.ArtifactKindDataSource {
+			continue
+		}
+		if !artifactNameRe.MatchString(entry.Name) {
+			if entry.Status == model.ArtifactStatusRetired || entry.Status == model.ArtifactStatusRetireBlocked {
+				return nil, fmt.Errorf("unsafe retired artifact name %q", entry.Name)
+			}
+			continue
+		}
+		a := acc[entry.Name]
+		if a == nil {
+			a = &accumulated{}
+			acc[entry.Name] = a
+		}
+		base := filepath.Base(entry.Path)
+		if base == "data_source_datadog_"+entry.Name+"_test.go" {
+			if entry.Status == model.ArtifactStatusCreated || entry.Status == model.ArtifactStatusUpdated {
+				a.testChanged = true
+			}
+			continue
+		}
+		if base != "" && base != "data_source_datadog_"+entry.Name+".go" &&
+			entry.Status != model.ArtifactStatusRetired &&
+			entry.Status != model.ArtifactStatusRetireBlocked {
+			continue
+		}
+		if a.mainSeen {
+			return nil, fmt.Errorf("duplicate generation report entry for artifact %q", entry.Name)
+		}
+		a.mainSeen = true
+		a.mainStatus = entry.Status
+		a.diagnostics = slices.Clone(entry.Diagnostics)
+	}
+
+	out := map[string]generationArtifact{}
+	for name, a := range acc {
+		if !a.mainSeen {
+			if a.testChanged {
+				return nil, fmt.Errorf("generation report has a changed test for %q without a data-source entry", name)
+			}
+			continue
+		}
+		status := a.mainStatus
+		if status == model.ArtifactStatusUnchanged && a.testChanged {
+			status = model.ArtifactStatusUpdated
+		}
+		switch status {
+		case model.ArtifactStatusCreated, model.ArtifactStatusUpdated, model.ArtifactStatusRetired, model.ArtifactStatusRetireBlocked:
+			out[name] = generationArtifact{status: status, diagnostics: a.diagnostics}
+		case model.ArtifactStatusUnchanged, model.ArtifactStatusSkipped:
+			continue
+		case model.ArtifactStatusFailed:
+			return nil, fmt.Errorf("generation report contains failed artifact %q", name)
+		default:
+			return nil, fmt.Errorf("generation report contains unknown status %q for %q", status, name)
+		}
+	}
+	return out, nil
 }
 
 // attributeOverwrites maps each hand-written constructor removed from
@@ -317,6 +633,10 @@ func attributeOverwrites(opts Options, plans map[string]*artifactPlan, provider 
 	claimed := map[string]bool{}
 	for _, name := range sortedNames(plans) {
 		p := plans[name]
+		if p.source == nil || p.report == nil ||
+			(p.report.status != model.ArtifactStatusCreated && p.report.status != model.ArtifactStatusUpdated) {
+			continue
+		}
 		if p.source.added {
 			continue // net-new file: nothing pre-existed to overwrite
 		}
@@ -342,50 +662,54 @@ func attributeOverwrites(opts Options, plans map[string]*artifactPlan, provider 
 
 // diffTrees returns scoped files that differ between base and generated (added
 // or modified), plus scoped files present in base but gone from generated
-// (deleted). Paths outside diffScopes are intentionally ignored so unrelated
-// master drift cannot invalidate an otherwise self-contained generator push.
+// (deleted). scopedFiles limits the comparison to generator-owned directories
+// and selected test files so unrelated master drift cannot invalidate an
+// otherwise self-contained generator push.
 func diffTrees(baseDir, genDir string) (changed []changedFile, deleted []string, err error) {
-	err = walkDiffScopes(genDir, func(path, rel string, d fs.DirEntry) error {
-		same, existed, cmpErr := sameContent(filepath.Join(baseDir, rel), path)
-		if cmpErr != nil {
-			return cmpErr
-		}
-		if !same {
-			changed = append(changed, changedFile{rel: rel, base: d.Name(), added: !existed})
-		}
-		return nil
-	})
+	generatedFiles, err := scopedFiles(genDir)
+	if err != nil {
+		return nil, nil, err
+	}
+	baseFiles, err := scopedFiles(baseDir)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	err = walkDiffScopes(baseDir, func(_ string, rel string, _ fs.DirEntry) error {
+	for _, rel := range generatedFiles {
+		path := filepath.Join(genDir, rel)
+		same, existed, cmpErr := sameContent(filepath.Join(baseDir, rel), path)
+		if cmpErr != nil {
+			return nil, nil, cmpErr
+		}
+		if !same {
+			changed = append(changed, changedFile{rel: rel, added: !existed})
+		}
+	}
+
+	for _, rel := range baseFiles {
 		_, statErr := os.Stat(filepath.Join(genDir, rel))
 		if os.IsNotExist(statErr) {
 			deleted = append(deleted, rel)
 		} else if statErr != nil {
-			return statErr
+			return nil, nil, statErr
 		}
-		return nil
-	})
-	if err != nil {
-		return nil, nil, err
 	}
 	sort.Strings(deleted)
 	return changed, deleted, nil
 }
 
-// walkDiffScopes visits files under the paths split owns. A scope may be absent
-// from either synthetic test fixture or checkout; the other tree's walk will
-// still classify its files as additions or removals.
-func walkDiffScopes(root string, visit func(path, rel string, d fs.DirEntry) error) error {
-	for _, scope := range diffScopes {
+// scopedFiles returns every file under provider/docs plus only generated
+// data-source tests and provider_test.go. This preserves fail-loud attribution
+// without making unrelated test-suite or cassette drift part of the split.
+func scopedFiles(root string) ([]string, error) {
+	var out []string
+	for _, scope := range diffDirectoryScopes {
 		scopePath := filepath.Join(root, scope)
 		if _, err := os.Stat(scopePath); err != nil {
 			if os.IsNotExist(err) {
 				continue
 			}
-			return err
+			return nil, err
 		}
 		if err := filepath.WalkDir(scopePath, func(path string, d fs.DirEntry, walkErr error) error {
 			if walkErr != nil {
@@ -398,12 +722,32 @@ func walkDiffScopes(root string, visit func(path, rel string, d fs.DirEntry) err
 			if err != nil {
 				return err
 			}
-			return visit(path, rel, d)
+			out = append(out, rel)
+			return nil
 		}); err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+
+	providerTestRel := filepath.Join("datadog", "tests", providerTestFile)
+	if info, err := os.Stat(filepath.Join(root, providerTestRel)); err == nil && !info.IsDir() {
+		out = append(out, providerTestRel)
+	} else if err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
+	testMatches, err := filepath.Glob(filepath.Join(root, "datadog", "tests", "data_source_datadog_*_test.go"))
+	if err != nil {
+		return nil, err
+	}
+	for _, path := range testMatches {
+		rel, err := filepath.Rel(root, path)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, rel)
+	}
+	sort.Strings(out)
+	return slices.Compact(out), nil
 }
 
 // sameContent reports whether basePath and genPath hold identical bytes, and
@@ -507,12 +851,34 @@ func sortedNames(m map[string]*artifactPlan) []string {
 	return names
 }
 
-func constructorsFor(m map[string]*artifactPlan) []string {
-	out := make([]string, 0, len(m))
-	for _, n := range sortedNames(m) {
-		out = append(out, emit.DatasourceConstructor(n))
+func without(items []string, target string) []string {
+	out := make([]string, 0, len(items))
+	for _, item := range items {
+		if item != target {
+			out = append(out, item)
+		}
 	}
 	return out
+}
+
+func cloneMap[K comparable, V any](in map[K]V) map[K]V {
+	out := make(map[K]V, len(in))
+	for k, v := range in {
+		out[k] = v
+	}
+	return out
+}
+
+func mapsEqual[K comparable, V comparable](a, b map[K]V) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for k, v := range a {
+		if b[k] != v {
+			return false
+		}
+	}
+	return true
 }
 
 // onlyIn returns the sorted, de-duplicated members of a not present in b.
