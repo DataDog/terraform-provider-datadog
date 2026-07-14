@@ -29,12 +29,12 @@ jobs:
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
           script: |
-            const re = /^\[datadog_\w+\] .+/;
+            const re = /^\[(?:datadog_\w+|generated)\] .+/;
             const title = context.payload.pull_request.title;
             if (!re.test(title)) {
               core.setFailed(
-                "Invalid PR title format. Expected: '[datadog_<resource_or_datasource>] <Description>'.\n" +
-                "PR titles are used to generate CHANGELOG entries, so the bracketed tag must name the main affected resource or datasource (e.g. '[datadog_monitor]', '[datadog_logs_index]').\n" +
+                "Invalid PR title format. Expected: '[datadog_<resource_or_datasource>] <Description>' or '[generated] <Description>'.\n" +
+                "PR titles are used to generate CHANGELOG entries. The '[generated]' tag is reserved for automated tfgen pull requests; all other changes must name the main affected resource or data source (e.g. '[datadog_monitor]', '[datadog_logs_index]').\n" +
                 "If this change does not need to be included in the changelog, add the 'changelog/no-changelog' label to skip this check."
               );
             }

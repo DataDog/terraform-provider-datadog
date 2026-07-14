@@ -157,7 +157,7 @@ var _ = Describe("Split", func() {
 		Expect(rep.Artifacts[0].Files).To(ContainElement(filepath.Join(fwDir, providerFile)))
 
 		routedProvider := readFile(filepath.Join(out, "team", fwDir, providerFile))
-		Expect(routedProvider).NotTo(ContainSubstring(teamCtor + ","), "the overwritten constructor must be retired")
+		Expect(routedProvider).NotTo(ContainSubstring(teamCtor+","), "the overwritten constructor must be retired")
 		Expect(routedProvider).To(ContainSubstring(neighbor), "neighbors must be left intact")
 	})
 

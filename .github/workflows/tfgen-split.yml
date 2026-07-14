@@ -1,0 +1,371 @@
+name: tfgen Split
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+on:
+  push:
+    branches:
+      - "datadog-api-spec/generated/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  split:
+    name: Split generated data sources
+    runs-on: ubuntu-latest
+    env:
+      BASE_BRANCH: master
+    steps:
+      - name: Checkout generated branch
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          path: generated
+          persist-credentials: false
+
+      - name: Checkout master
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          ref: master
+          fetch-depth: 0
+          path: base
+          persist-credentials: false
+
+      - name: Install Go
+        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        with:
+          go-version-file: generated/.generator-v2/go.mod
+          cache: true
+          cache-dependency-path: |
+            generated/.generator-v2/go.sum
+            generated/go.sum
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@633666f66e0061ca3b725c73b2ec20cd13a8fdd1
+        with:
+          terraform_version: "1.13.1"
+          terraform_wrapper: false
+
+      - name: Build tfgen and split the incoming branch
+        id: split
+        working-directory: generated
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BASE_DIR="$GITHUB_WORKSPACE/base"
+          GENERATED_DIR="$GITHUB_WORKSPACE/generated"
+          PLAN_PATH="$RUNNER_TEMP/tfgen-split-plan.json"
+          SPLIT_DIR="$RUNNER_TEMP/tfgen-split"
+
+          make tfgen-build
+          mkdir -p "$SPLIT_DIR"
+
+          if ! ./bin/tfgen split \
+            --base-dir "$BASE_DIR" \
+            --generated-dir "$GENERATED_DIR" \
+            --out "$SPLIT_DIR" \
+            --report "$PLAN_PATH"; then
+            {
+              echo "## tfgen split failed"
+              echo
+              if jq -e '.errors | length > 0' "$PLAN_PATH" >/dev/null 2>&1; then
+                jq -r '.errors[] | "- " + .' "$PLAN_PATH"
+              else
+                echo "- tfgen exited without a structured attribution error."
+              fi
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          artifact_count="$(jq -r '.artifacts | length' "$PLAN_PATH")"
+          echo "artifact_count=$artifact_count" >> "$GITHUB_OUTPUT"
+          {
+            echo "## tfgen split"
+            echo
+            echo "Routed $artifact_count artifact(s) from \`$GITHUB_REF_NAME\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Deployment prerequisite: provision this policy with contents:write and
+      # pull-requests:write before enabling the upstream generated-branch push.
+      - name: Mint Octo token
+        if: steps.split.outputs.artifact_count != '0'
+        id: octo-sts
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: DataDog/terraform-provider-datadog
+          policy: self.generator.tfgen-split
+
+      - name: Create per-artifact draft PRs
+        if: steps.split.outputs.artifact_count != '0'
+        working-directory: base
+        shell: bash
+        env:
+          GH_TOKEN: ${{ steps.octo-sts.outputs.token }}
+        run: |
+          # GitHub's bash wrapper enables errexit. Disable it here so a failed
+          # artifact is recorded and siblings still run.
+          set +e
+          set -uo pipefail
+
+          PLAN_PATH="$RUNNER_TEMP/tfgen-split-plan.json"
+          SPLIT_DIR="$RUNNER_TEMP/tfgen-split"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          auth_header="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $auth_header"
+          unset auth_header
+
+          if ! git fetch --no-tags origin \
+            "refs/heads/$BASE_BRANCH:refs/remotes/origin/$BASE_BRANCH"; then
+            echo "::error::Could not refresh origin/$BASE_BRANCH"
+            exit 1
+          fi
+
+          {
+            echo
+            echo "## Per-artifact fan-out"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          failures=0
+          successes=0
+
+          reset_to_base() {
+            git reset --hard >/dev/null 2>&1 || true
+            git clean -fdq >/dev/null 2>&1 || true
+            git checkout --detach "origin/$BASE_BRANCH" >/dev/null 2>&1 || true
+          }
+
+          record_failure() {
+            local name="$1"
+            local message="$2"
+            echo "::error title=tfgen fan-out failed::$name: $message"
+            echo "- Failed \`$name\`: $message" >> "$GITHUB_STEP_SUMMARY"
+            failures=$((failures + 1))
+            reset_to_base
+          }
+
+          reset_to_base
+          mapfile -t artifact_names < <(jq -r '.artifacts[].name' "$PLAN_PATH")
+
+          for name in "${artifact_names[@]}"; do
+            if [[ ! "$name" =~ ^[a-z][a-z0-9_]*$ ]]; then
+              record_failure "$name" "invalid artifact name"
+              continue
+            fi
+
+            status="$(jq -r --arg name "$name" \
+              '.artifacts[] | select(.name == $name) | .status' "$PLAN_PATH")"
+            case "$status" in
+              created) verb="Add" ;;
+              updated) verb="Update" ;;
+              *)
+                record_failure "$name" "unsupported artifact status '$status'"
+                continue
+                ;;
+            esac
+
+            branch="generate/datadog_${name}_datasource"
+            if ! remote_ref="$(git ls-remote --heads origin "refs/heads/$branch")"; then
+              record_failure "$name" "could not check whether branch '$branch' exists"
+              continue
+            fi
+            if [[ -n "$remote_ref" ]] || git show-ref --verify --quiet "refs/heads/$branch"; then
+              record_failure "$name" "branch '$branch' already exists; refusing to overwrite it"
+              continue
+            fi
+
+            if ! git checkout -b "$branch" "origin/$BASE_BRANCH" >/dev/null; then
+              record_failure "$name" "could not create '$branch' from origin/$BASE_BRANCH"
+              continue
+            fi
+
+            mapfile -t files < <(jq -r --arg name "$name" \
+              '.artifacts[] | select(.name == $name) | .files[]' "$PLAN_PATH")
+            if [[ "${#files[@]}" -eq 0 ]]; then
+              record_failure "$name" "split report contains no files"
+              continue
+            fi
+
+            copy_error=""
+            for rel in "${files[@]}"; do
+              case "$rel" in
+                /* | .. | ../* | */../*)
+                  copy_error="unsafe bundle path '$rel'"
+                  break
+                  ;;
+              esac
+              source_file="$SPLIT_DIR/$name/$rel"
+              if [[ ! -f "$source_file" ]]; then
+                copy_error="bundle file is missing: $rel"
+                break
+              fi
+              mkdir -p "$(dirname "$rel")"
+              if ! cp "$source_file" "$rel"; then
+                copy_error="could not copy bundle file: $rel"
+                break
+              fi
+            done
+            if [[ -n "$copy_error" ]]; then
+              record_failure "$name" "$copy_error"
+              continue
+            fi
+
+            if ! make docs; then
+              record_failure "$name" "make docs failed"
+              continue
+            fi
+
+            doc_rel="docs/data-sources/${name}.md"
+            if [[ ! -f "$doc_rel" ]]; then
+              record_failure "$name" "make docs did not generate '$doc_rel'"
+              continue
+            fi
+            doc_copy="$(mktemp)"
+            if ! cp "$doc_rel" "$doc_copy" \
+              || ! git restore --source=HEAD --staged --worktree -- docs \
+              || ! git clean -fdq -- docs \
+              || ! mkdir -p "$(dirname "$doc_rel")" \
+              || ! cp "$doc_copy" "$doc_rel"; then
+              rm -f "$doc_copy"
+              record_failure "$name" "could not isolate '$doc_rel' from unrelated docs drift"
+              continue
+            fi
+            rm -f "$doc_copy"
+
+            if ! make build; then
+              record_failure "$name" "make build failed"
+              continue
+            fi
+
+            declare -A allowed=()
+            for rel in "${files[@]}"; do
+              allowed["$rel"]=1
+            done
+            allowed["$doc_rel"]=1
+
+            unexpected=()
+            while IFS= read -r status_line; do
+              [[ -z "$status_line" ]] && continue
+              changed_path="${status_line:3}"
+              if [[ -z "${allowed[$changed_path]+allowed}" ]]; then
+                unexpected+=("$changed_path")
+              fi
+            done < <(git status --porcelain)
+            if [[ "${#unexpected[@]}" -gt 0 ]]; then
+              record_failure "$name" "unexpected changed files: ${unexpected[*]}"
+              continue
+            fi
+
+            if ! git add -- "${files[@]}" "$doc_rel"; then
+              record_failure "$name" "could not stage generated files"
+              continue
+            fi
+            if ! git diff --cached --check; then
+              record_failure "$name" "generated changes fail git diff --check"
+              continue
+            fi
+            if git diff --cached --quiet; then
+              record_failure "$name" "bundle produced no committable changes"
+              continue
+            fi
+
+            title="[generated] $verb datadog_${name} data source"
+            if ! git commit -m "$title (generated)"; then
+              record_failure "$name" "git commit failed"
+              continue
+            fi
+            if ! git push --set-upstream origin "$branch"; then
+              record_failure "$name" "git push failed"
+              continue
+            fi
+
+            pascal_name=""
+            IFS="_" read -ra name_parts <<< "$name"
+            for part in "${name_parts[@]}"; do
+              pascal_name+="${part^}"
+            done
+            test_function="TestAccDatadog${pascal_name}DataSource"
+            test_file="datadog/tests/data_source_datadog_${name}_test.go"
+            body_file="$(mktemp)"
+            {
+              cat <<'BODY_HEADER'
+          > ℹ️ **This PR is part of a project that auto-generates Terraform provider data
+          > sources to increase coverage.** The code is generated **deterministically by tfgen from an
+          > annotated OpenAPI spec, without the use of LLMs**, and **reviewed via AI, though human review
+          > is still necessary**. If you use this data source, **review it thoroughly and test it** first.
+
+          > ⚠️ **This PR contains auto-generated code and must be verified before merging.** Do not
+          > merge until an acceptance test is recorded and replays green against the Frog org. A clean
+          > build and a successful split report do **not** prove runtime correctness.
+          BODY_HEADER
+              printf '\n## %s data source (generator-v2)\n\n' "$name"
+              printf 'This data source was %s by tfgen and routed from an aggregate upstream generation run.\n' "$status"
+              printf 'The split, documentation generation, and compile/format gate completed successfully.\n\n'
+              echo "### Generated"
+              for rel in "${files[@]}"; do
+                printf -- '- `%s`\n' "$rel"
+              done
+              printf -- '- `%s` (generated via `make docs`)\n\n' "$doc_rel"
+              cat <<BODY_TEST
+          ### Test / cassette
+          - Acceptance test: not generated; add \`$test_function\` in \`$test_file\`.
+          - Cassette: not recorded.
+
+          ### Reviewer notes / risks
+          - Automated risk scan skipped; a reviewer must inspect runtime behavior manually.
+          - The upstream MVP intentionally omits acceptance-test generation.
+
+          ### How to test
+          Add and complete the acceptance test, record it once against the Frog org, then replay it:
+
+          \`\`\`bash
+          eval "\$(dd-auth --domain frog.datadoghq.com --force-app-key --no-cache --output)"
+          export DD_TEST_CLIENT_API_KEY="\$DD_API_KEY" DD_TEST_CLIENT_APP_KEY="\$DD_APP_KEY"
+
+          RECORD=true TESTARGS='-run $test_function' make testacc
+          RECORD=false TESTARGS='-run $test_function' make testacc
+          \`\`\`
+
+          > **Merge note:** auto-generated. If the merge queue reports a conflict in
+          > \`datasources_generated.go\`, resolve by keeping both entries and re-queue
+          > (append-only registrations).
+
+          ---
+          > 🚧 **This Terraform data source generation is still under development.** Reach out to
+          > **#api-platform** with any questions.
+          BODY_TEST
+            } > "$body_file"
+
+            if ! pr_url="$(gh pr create \
+              --draft \
+              --base "$BASE_BRANCH" \
+              --head "$branch" \
+              --title "$title" \
+              --body-file "$body_file" \
+              --label "changelog/feature" 2>&1)"; then
+              rm -f "$body_file"
+              record_failure "$name" "draft PR creation failed: $pr_url"
+              continue
+            fi
+            rm -f "$body_file"
+
+            echo "- Created draft PR for \`$name\`: $pr_url" >> "$GITHUB_STEP_SUMMARY"
+            successes=$((successes + 1))
+            reset_to_base
+          done
+
+          {
+            echo
+            echo "Created $successes draft PR(s); $failures artifact(s) failed."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$failures" -gt 0 ]]; then
+            exit 1
+          fi
