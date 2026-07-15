@@ -22,6 +22,9 @@ jobs:
   pr-tests-selection:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
+    permissions:
+      contents: read
+      actions: read # Required to download the selector artifact from another run
     outputs:
       should_run: ${{ steps.read.outputs.should_run }}
       test_args: ${{ steps.read.outputs.test_args }}
