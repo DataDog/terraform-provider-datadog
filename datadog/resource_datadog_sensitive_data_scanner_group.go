@@ -15,6 +15,8 @@ import (
 
 var sensitiveDataScannerMutex = sync.Mutex{}
 
+const defaultSensitiveDataScannerSamplingRate float64 = 100.0
+
 func resourceDatadogSensitiveDataScannerGroupCustomizeDiff(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
 	if diff.HasChange("samplings") {
 		oldRaw, newRaw := diff.GetChange("samplings")
@@ -208,21 +210,21 @@ func buildTerraformSamplings(ddSamplings []datadogV2.SensitiveDataScannerSamplin
 	return tfSamplings
 }
 
-func reconcileTerraformSamplings(apiSamplings, referenceSamplings []interface{}) []interface{} {
+func reconcileTerraformSamplings(apiSamplings, tfConfiguredSamplings []interface{}) []interface{} {
 	apiByProduct := make(map[string]map[string]interface{}, len(apiSamplings))
 	for _, s := range apiSamplings {
 		m := s.(map[string]interface{})
 		apiByProduct[m["product"].(string)] = m
 	}
 
-	referenceProducts := make(map[string]bool, len(referenceSamplings))
+	referenceProducts := make(map[string]bool, len(tfConfiguredSamplings))
 	result := make([]interface{}, 0, len(apiSamplings))
 
 	// Keep configured products first, in reference order, using the API's rate.
 	// The API may omit samplings set to the default 100% rate, so a configured
 	// product that is absent from the response is an implicit 100% sampling and
 	// must be surfaced to keep config and state in sync.
-	for _, ref := range referenceSamplings {
+	for _, ref := range tfConfiguredSamplings {
 		product := ref.(map[string]interface{})["product"].(string)
 		referenceProducts[product] = true
 		if apiEntry, ok := apiByProduct[product]; ok {
@@ -230,19 +232,20 @@ func reconcileTerraformSamplings(apiSamplings, referenceSamplings []interface{})
 		} else {
 			result = append(result, map[string]interface{}{
 				"product": product,
-				"rate":    float64(100),
+				"rate":    defaultSensitiveDataScannerSamplingRate,
 			})
 		}
 	}
 
-	// A missing sampling is equivalent to a 100% sampling: drop implicit 100%
-	// entries for unconfigured products, but surface genuine non-default drift.
+	// Next, process products returned by the API that are not configured in
+	// Terraform. Ignore implicit default (100%) samplings, but surface any
+	// non-default rates as drift.
 	for _, s := range apiSamplings {
 		m := s.(map[string]interface{})
 		if referenceProducts[m["product"].(string)] {
 			continue
 		}
-		if rate, _ := m["rate"].(float64); rate != 100 {
+		if rate, _ := m["rate"].(float64); rate != defaultSensitiveDataScannerSamplingRate {
 			result = append(result, m)
 		}
 	}
