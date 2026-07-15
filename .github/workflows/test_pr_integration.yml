@@ -12,7 +12,7 @@ on: # yamllint disable-line rule:truthy
     types: [completed]
 
 concurrency:
-  group: ${{ github.event.workflow_run.head_sha }}-pr-integration
+  group: ${{ github.event.workflow_run.head_branch }}-pr-integration
   cancel-in-progress: true
 
 env:
