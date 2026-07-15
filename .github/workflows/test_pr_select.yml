@@ -1,0 +1,61 @@
+name: PR Test Selection
+
+permissions:
+  contents: read
+
+# Runs on the pull_request event so GitHub's fork-approval gate applies:
+# external contributors require a maintainer to approve the run before this
+# workflow executes. The PR Integration Tests workflow then triggers via
+# workflow_run once this one completes, inheriting that approval implicitly.
+on: # yamllint disable-line rule:truthy
+  pull_request:
+    branches: [master, v3]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}-pr-select
+  cancel-in-progress: true
+
+jobs:
+  determine-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          fetch-depth: 0
+      - name: Get changed files
+        run: |
+          # pull_request checks out the merge commit. Fetch the PR head so the
+          # diff and test-selection can see it. Untrusted PR code is never
+          # executed here: we diff by filename and the selection script only
+          # reads PR-head file *contents* (via git show) to find test function
+          # names — it never runs them.
+          git fetch --no-tags origin "refs/pull/${{ github.event.pull_request.number }}/head"
+          git diff --name-only "origin/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}" > /tmp/changed_files.txt
+          echo "Changed files:"
+          cat /tmp/changed_files.txt
+      - name: Select tests and build args
+        run: |
+          RUN_REGEX=$(python3 scripts/select_pr_tests.py --escape-for-make --git-ref "${{ github.event.pull_request.head.sha }}" < /tmp/changed_files.txt)
+
+          if [ -z "$RUN_REGEX" ]; then
+            echo '{"should_run":false,"test_args":""}' > /tmp/test-selection.json
+            echo "No resource/datasource changes detected, skipping integration tests"
+            exit 0
+          fi
+
+          ARGS="-run '${RUN_REGEX}'"
+
+          SKIP_REGEX=$(python3 scripts/build_skip_regex.py --escape-for-make)
+          if [ -n "$SKIP_REGEX" ]; then
+            ARGS="${ARGS} -skip '${SKIP_REGEX}'"
+          fi
+
+          jq -n --arg test_args "$ARGS" '{"should_run":true,"test_args":$test_args}' > /tmp/test-selection.json
+          echo "Test args: ${ARGS}"
+      - name: Upload test selection
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: test-selection
+          path: /tmp/test-selection.json
