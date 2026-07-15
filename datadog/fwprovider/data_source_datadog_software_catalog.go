@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"sort"
+	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -41,6 +42,7 @@ type datadogSoftwareCatalogDataSourceModel struct {
 	FilterKind            types.String `tfsdk:"filter_kind"`
 	FilterOwner           types.String `tfsdk:"filter_owner"`
 	FilterRelationType    types.String `tfsdk:"filter_relation_type"`
+	IncludeDiscovered     types.Bool   `tfsdk:"include_discovered"`
 
 	// Results
 	Entities []*CatalogEntityModel `tfsdk:"entities"`
@@ -100,6 +102,10 @@ func (d *datadogSoftwareCatalogDataSource) Schema(_ context.Context, _ datasourc
 				Optional:    true,
 				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRelationTypeFromValue)},
 			},
+			"include_discovered": schema.BoolAttribute{
+				Description: "Include entities that have been discovered but not yet enriched.",
+				Optional:    true,
+			},
 
 			// Computed values
 			"entities": schema.ListAttribute{
@@ -154,6 +160,9 @@ func (d *datadogSoftwareCatalogDataSource) Read(ctx context.Context, req datasou
 	}
 	if !state.FilterRef.IsNull() {
 		optionalParams.WithFilterRef(state.FilterRef.ValueString())
+	}
+	if !state.IncludeDiscovered.IsNull() {
+		optionalParams.WithIncludeDiscovered(state.IncludeDiscovered.ValueBool())
 	}
 
 	offset := int64(0)
@@ -211,10 +220,15 @@ func (d *datadogSoftwareCatalogDataSource) updateState(ctx context.Context, resp
 		return softwareEntities[i].Name.String() < softwareEntities[j].Name.String()
 	})
 
+	includeDiscoveredStr := ""
+	if !state.IncludeDiscovered.IsNull() {
+		includeDiscoveredStr = strconv.FormatBool(state.IncludeDiscovered.ValueBool())
+	}
+
 	idHash := fmt.Sprintf("%x", sha256.Sum256([]byte(
 		state.FilterID.ValueString()+state.FilterName.ValueString()+state.FilterExcludeSnapshot.ValueString()+
 			state.FilterKind.ValueString()+state.FilterOwner.ValueString()+state.FilterRelationType.ValueString()+
-			state.FilterRef.ValueString(),
+			state.FilterRef.ValueString()+includeDiscoveredStr,
 	)))
 
 	state.ID = types.StringValue(idHash)

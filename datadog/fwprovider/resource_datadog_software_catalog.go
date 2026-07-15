@@ -235,6 +235,22 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 
+	// A plain lookup only finds entities already written to via this API. Retry with
+	// includeDiscovered=true so an auto-discovered, never-touched entity is also found.
+	if len(entityResp.Included) == 0 {
+		path += "&includeDiscovered=true"
+		httpRespByte, _, err = utils.SendRequest(r.Auth, r.Api, "GET", path, nil)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting entity"))
+			return
+		}
+		err = json.Unmarshal(httpRespByte, &entityResp)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
+			return
+		}
+	}
+
 	// Entity not found via filter - remove from Terraform state (drift detection)
 	if len(entityResp.Included) == 0 {
 		response.State.RemoveResource(ctx)
