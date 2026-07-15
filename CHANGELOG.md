@@ -1,3 +1,28 @@
+## 4.16 (July 15, 2026)
+
+### BUGFIXES
+* [datadog_tag_pipeline_ruleset] Enforce canonical query form at plan time for tag pipeline resources by @dd-CyrilleChev in https://github.com/DataDog/terraform-provider-datadog/pull/3912
+* [datadog_metric_metadata] Fix perpetual type drift for distribution metrics by @traegerdog in https://github.com/DataDog/terraform-provider-datadog/pull/3975
+### IMPROVEMENTS
+* [datadog_software_catalog] Add includeDiscovered support by @AshTharappel in https://github.com/DataDog/terraform-provider-datadog/pull/3949
+### FEATURES
+* [datadog_incident_user_defined_field] allow CRUD operations on Incident management's property fields by @rakshith91 in https://github.com/DataDog/terraform-provider-datadog/pull/3928
+* [datadog_synthetics_test] Add JWT authentication type for HTTP API tests by @achrafl0 in https://github.com/DataDog/terraform-provider-datadog/pull/3901
+* [datadog_current_user] Add datadog_current_user data source by @alexandre-pocquet in https://github.com/DataDog/terraform-provider-datadog/pull/3934
+* [datadog_observability_pipelines] Add SSE-KMS encryption support to amazon_s3_generic destination by @apatruddog in https://github.com/DataDog/terraform-provider-datadog/pull/3922
+* [datadog_logs_custom_pipeline] Exclude Attribute Processor: add exclude attribute processor to terraform provider by @gbaudusseau in https://github.com/DataDog/terraform-provider-datadog/pull/3947
+
+## New Contributors
+* @RickyMarou made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3941
+* @rakshith91 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3928
+* @achrafl0 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3901
+* @dd-CyrilleChev made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3912
+* @gbaudusseau made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3947
+* @Sergio-Na made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3945
+* @AshTharappel made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3949
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.15.0...v4.16
+
 ## 4.15.0 (July 7, 2026)
 
 ### IMPROVEMENTS
