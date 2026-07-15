@@ -23,14 +23,18 @@ jobs:
       - name: Checkout base
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
         with:
+          # Check out the trusted base branch, NOT the default PR merge commit.
+          # The selection scripts run here must be the base-repo versions: a PR
+          # that edited them could otherwise dictate should_run / test_args,
+          # which feed the credentialed integration workflow.
+          ref: ${{ github.base_ref }}
           fetch-depth: 0
       - name: Get changed files
         run: |
-          # pull_request checks out the merge commit. Fetch the PR head so the
-          # diff and test-selection can see it. Untrusted PR code is never
-          # executed here: we diff by filename and the selection script only
-          # reads PR-head file *contents* (via git show) to find test function
-          # names — it never runs them.
+          # Fetch the PR head so the diff and test-selection can see it.
+          # Untrusted PR code is never executed here: we diff by filename and
+          # the selection script only reads PR-head file *contents* (via git
+          # show, --git-ref below) to find test function names — never runs them.
           git fetch --no-tags origin "refs/pull/${{ github.event.pull_request.number }}/head"
           git diff --name-only "origin/${{ github.base_ref }}...${{ github.event.pull_request.head.sha }}" > /tmp/changed_files.txt
           echo "Changed files:"
