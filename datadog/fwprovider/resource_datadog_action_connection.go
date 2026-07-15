@@ -15,6 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -532,6 +534,7 @@ func validateAdditionalConnectionCredentials(conn connectionResourceModel, respo
 			}
 			fieldValue, ok := lookupTFSDKField(credentialValues[credentialSpec.Name], fieldSpec.Name)
 			if !ok {
+				missingFields = append(missingFields, fieldSpec.Name)
 				continue
 			}
 			// A null value means the field was omitted. Unknown values (e.g. references
@@ -752,10 +755,20 @@ func actionConnectionResourceBlock(integrationSpec actionConnectionIntegrationSp
 	for _, credentialSpec := range integrationSpec.Credentials {
 		attributes := make(map[string]schema.Attribute, len(credentialSpec.Fields))
 		for _, fieldSpec := range credentialSpec.Fields {
+			var planModifiers []planmodifier.String
+			if !fieldSpec.Required {
+				const description = "Removing this attribute requires replacing the connection."
+				planModifiers = append(planModifiers, stringplanmodifier.RequiresReplaceIf(
+					replaceActionConnectionIfFieldRemoved,
+					description,
+					description,
+				))
+			}
 			attributes[fieldSpec.Name] = schema.StringAttribute{
-				Description: fieldSpec.Description,
-				Optional:    true,
-				Sensitive:   fieldSpec.Sensitive,
+				Description:   fieldSpec.Description,
+				Optional:      true,
+				Sensitive:     fieldSpec.Sensitive,
+				PlanModifiers: planModifiers,
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
@@ -771,6 +784,13 @@ func actionConnectionResourceBlock(integrationSpec actionConnectionIntegrationSp
 		Description: integrationSpec.Description,
 		Blocks:      credentialBlocks,
 	}
+}
+
+func replaceActionConnectionIfFieldRemoved(_ context.Context, request planmodifier.StringRequest, response *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+	if request.StateValue.IsNull() || request.StateValue.IsUnknown() {
+		return
+	}
+	response.RequiresReplace = request.PlanValue.IsNull()
 }
 
 func (r *actionConnectionResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
