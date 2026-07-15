@@ -270,4 +270,18 @@ go.sum,github.com/santhosh-tekuri/jsonschema/v6,Apache-2.0,Santhosh Kumar Tekuri
 go.sum,github.com/dlclark/regexp2,MIT,Doug Clark
 go.sum,github.com/cpuguy83/go-md2man/v2,MIT,2014 Brian Goff
 go.sum,github.com/russross/blackfriday/v2,BSD-2-Clause,2011 Russ Ross
+go.sum,github.com/gkampitakis/ciinfo,MIT,2021 Georgios Kampitakis
+go.sum,github.com/gkampitakis/go-diff,MIT,2012-2016 The go-diff Authors
+go.sum,github.com/gkampitakis/go-snaps,MIT,2021 Georgios Kampitakis
+go.sum,github.com/go-task/slim-sprig/v3,MIT,2013-2020 Masterminds
+go.sum,github.com/goccy/go-yaml,MIT,2019 Masaaki Goshima
+go.sum,github.com/joshdk/go-junit,MIT,Josh Komoroske
+go.sum,github.com/maruel/natural,Apache-2.0,2018 Marc-Antoine Ruel
+go.sum,github.com/mfridman/tparse,MIT,2018 Michael Fridman
+go.sum,github.com/onsi/ginkgo/v2,MIT,2013-2014 Onsi Fakhouri
+go.sum,github.com/onsi/gomega,MIT,2013-2014 Onsi Fakhouri
+go.sum,github.com/tidwall/gjson,MIT,2016 Josh Baker
+go.sum,github.com/tidwall/match,MIT,2016 Josh Baker
+go.sum,github.com/tidwall/pretty,MIT,2017 Josh Baker
+go.sum,github.com/tidwall/sjson,MIT,2016 Josh Baker
 
