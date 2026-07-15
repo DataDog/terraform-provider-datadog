@@ -1307,9 +1307,24 @@ Optional:
 
 Optional:
 
+- `auth` (Block List) Authentication settings for the OpenSearch destination. (see [below for nested schema](#nestedblock--config--destination--opensearch--auth))
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--opensearch--buffer))
 - `bulk_index` (String) The index or datastream to write logs to.
 - `data_stream` (Block List) Configuration options for writing to OpenSearch Data Streams instead of a fixed index. (see [below for nested schema](#nestedblock--config--destination--opensearch--data_stream))
+- `endpoint_url_key` (String) Name of the environment variable or secret that holds the OpenSearch endpoint URL.
+
+<a id="nestedblock--config--destination--opensearch--auth"></a>
+### Nested Schema for `config.destination.opensearch.auth`
+
+Required:
+
+- `strategy` (String) The authentication strategy to use. Valid values are `basic`, `aws`.
+
+Optional:
+
+- `password_key` (String) Name of the environment variable or secret that holds the OpenSearch password (used when `strategy` is `basic`).
+- `username_key` (String) Name of the environment variable or secret that holds the OpenSearch username (used when `strategy` is `basic`).
+
 
 <a id="nestedblock--config--destination--opensearch--buffer"></a>
 ### Nested Schema for `config.destination.opensearch.buffer`
