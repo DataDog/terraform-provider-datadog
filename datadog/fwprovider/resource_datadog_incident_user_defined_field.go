@@ -276,10 +276,21 @@ func (r *incidentUserDefinedFieldResource) Schema(_ context.Context, _ resource.
 						"description": schema.StringAttribute{
 							Description: "A detailed description of the valid value.",
 							Optional:    true,
+							// Computed: the API always returns a value for this field (and may
+							// normalize an omitted one), so let the server own the applied value
+							// to avoid "inconsistent result after apply" on set correlation.
+							Computed: true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 						},
 						"short_description": schema.StringAttribute{
 							Description: "A short description of the valid value.",
 							Optional:    true,
+							Computed:    true,
+							PlanModifiers: []planmodifier.String{
+								stringplanmodifier.UseStateForUnknown(),
+							},
 						},
 					},
 				},

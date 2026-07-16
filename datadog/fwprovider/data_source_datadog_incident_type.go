@@ -20,10 +20,11 @@ type incidentTypeDataSource struct {
 }
 
 type incidentTypeDataSourceModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	IsDefault   types.Bool   `tfsdk:"is_default"`
+	ID            types.String                    `tfsdk:"id"`
+	Name          types.String                    `tfsdk:"name"`
+	Description   types.String                    `tfsdk:"description"`
+	IsDefault     types.Bool                      `tfsdk:"is_default"`
+	Configuration *incidentTypeConfigurationModel `tfsdk:"configuration"`
 }
 
 func NewIncidentTypeDataSource() datasource.DataSource {
@@ -59,6 +60,20 @@ func (d *incidentTypeDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			"is_default": schema.BoolAttribute{
 				Description: "Whether this incident type is the default type.",
 				Computed:    true,
+			},
+			"configuration": schema.SingleNestedAttribute{
+				Description: "The incident type's behavior settings.",
+				Computed:    true,
+				Attributes: map[string]schema.Attribute{
+					"private_incidents":            schema.BoolAttribute{Description: "Whether responders can create private incidents of this type.", Computed: true},
+					"private_incidents_by_default": schema.BoolAttribute{Description: "Whether the private toggle is enabled by default in the incident creation modal for this type.", Computed: true},
+					"allow_workflows":              schema.BoolAttribute{Description: "Whether users can manually run a workflow from an incident of this type.", Computed: true},
+					"allow_incident_deletion":      schema.BoolAttribute{Description: "Whether incidents of this type can be deleted.", Computed: true},
+					"editable_timestamps":          schema.BoolAttribute{Description: "Whether responders can edit incident timestamps for incidents of this type.", Computed: true},
+					"test_incidents":               schema.BoolAttribute{Description: "Whether test incidents of this type can be created.", Computed: true},
+					"create_message":               schema.StringAttribute{Description: "An optional message shown to users when they declare an incident of this type.", Computed: true},
+					"slug_source":                  schema.StringAttribute{Description: "The source used to derive the incident slug. When set to `servicenow`, incidents display the ServiceNow record ID instead of the public ID. If no ServiceNow integration exists, the public ID is displayed.", Computed: true},
+				},
 			},
 		},
 	}
@@ -98,5 +113,18 @@ func (d *incidentTypeDataSource) updateStateFromResponse(state *incidentTypeData
 		state.Name = types.StringValue(attributes.GetName())
 		state.Description = types.StringValue(attributes.GetDescription())
 		state.IsDefault = types.BoolValue(attributes.GetIsDefault())
+
+		if cfg, ok := attributes.GetConfigurationOk(); ok {
+			state.Configuration = &incidentTypeConfigurationModel{
+				PrivateIncidents:          types.BoolValue(cfg.GetPrivateIncidents()),
+				PrivateIncidentsByDefault: types.BoolValue(cfg.GetPrivateIncidentsByDefault()),
+				AllowWorkflows:            types.BoolValue(cfg.GetAllowWorkflows()),
+				AllowIncidentDeletion:     types.BoolValue(cfg.GetAllowIncidentDeletion()),
+				EditableTimestamps:        types.BoolValue(cfg.GetEditableTimestamps()),
+				TestIncidents:             types.BoolValue(cfg.GetTestIncidents()),
+				CreateMessage:             types.StringValue(cfg.GetCreateMessage()),
+				SlugSource:                types.StringValue(string(cfg.GetSlugSource())),
+			}
+		}
 	}
 }
