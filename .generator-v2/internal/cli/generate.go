@@ -307,9 +307,7 @@ func emitDatasourceExample(entry *model.ArtifactReportEntry, view emit.DataSourc
 		return &failed
 	}
 	if status != model.ArtifactStatusSkipped {
-		for _, msg := range example.Diagnostics {
-			entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityInfo, Message: msg})
-		}
+		entry.Diagnostics = append(entry.Diagnostics, example.Diagnostics...)
 	}
 	return &model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Status: status, Path: path}
 }

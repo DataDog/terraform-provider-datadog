@@ -342,7 +342,7 @@ func TestEmitDatasourceExampleSurfacesIncompleteScaffold(t *testing.T) {
 	if len(mainEntry.Diagnostics) != 1 {
 		t.Fatalf("main artifact diagnostics = %#v, want one example limitation", mainEntry.Diagnostics)
 	}
-	if mainEntry.Diagnostics[0].Severity != model.SeverityInfo ||
+	if mainEntry.Diagnostics[0].Severity != model.SeverityWarning ||
 		!strings.Contains(mainEntry.Diagnostics[0].Message, `required attribute "account_ids"`) {
 		t.Fatalf("unexpected example diagnostic: %#v", mainEntry.Diagnostics[0])
 	}
