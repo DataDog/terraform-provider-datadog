@@ -266,8 +266,9 @@ func listCall(op *Operation) *SDKCall {
 // buildFilterLeaves converts op's scalar query parameters into Optional
 // top-level filter attributes. Pagination params are excluded (the SDK's
 // pagination form handles them); array- and enum-valued params are dropped with
-// an info Diagnostic rather than failing the build. The result preserves
-// QueryParams' name order.
+// an info Diagnostic rather than failing the build. Required query parameters
+// are surfaced as info diagnostics because the current SDK-call binding cannot
+// represent required query arguments. The result preserves QueryParams' order.
 func buildFilterLeaves(op *Operation) ([]*Attribute, []Diagnostic) {
 	var leaves []*Attribute
 	var diags []Diagnostic
@@ -276,19 +277,36 @@ func buildFilterLeaves(op *Operation) ([]*Attribute, []Diagnostic) {
 			continue
 		}
 		if reason := unsupportedFilterReason(p.Schema); reason != "" {
+			required := ""
+			if p.Required {
+				required = "required "
+			}
 			diags = append(diags, Diagnostic{
 				Severity: SeverityInfo,
-				Message:  fmt.Sprintf("dropped query parameter %q from filters: %s", p.Name, reason),
+				Message:  fmt.Sprintf("dropped %squery parameter %q from filters: %s", required, p.Name, reason),
 			})
 			continue
 		}
 		tfType, goType, err := FrameworkType(p.Schema)
 		if err != nil {
+			required := ""
+			if p.Required {
+				required = "required "
+			}
 			diags = append(diags, Diagnostic{
 				Severity: SeverityInfo,
-				Message:  fmt.Sprintf("dropped query parameter %q from filters: %v", p.Name, err),
+				Message:  fmt.Sprintf("dropped %squery parameter %q from filters: %v", required, p.Name, err),
 			})
 			continue
+		}
+		if p.Required {
+			diags = append(diags, Diagnostic{
+				Severity: SeverityInfo,
+				Message: fmt.Sprintf(
+					"required query parameter %q is represented as an optional Terraform filter; generated example may be incomplete and requires review",
+					p.Name,
+				),
+			})
 		}
 		leaves = append(leaves, &Attribute{
 			Path:        SnakeCase(p.Name),

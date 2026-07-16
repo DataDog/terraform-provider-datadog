@@ -16,10 +16,14 @@ import (
 
 const fwDir = "datadog/fwprovider"
 const testsDir = "datadog/tests"
+const examplesDir = "examples/data-sources"
 
 func dsFileName(name string) string { return "data_source_datadog_" + name + ".go" }
 func dsTestFileName(name string) string {
 	return "data_source_datadog_" + name + "_test.go"
+}
+func dsExampleFileName(name string) string {
+	return filepath.Join(examplesDir, "datadog_"+name, "data-source.tf")
 }
 
 func writeFile(root, rel, content string) {
@@ -103,6 +107,7 @@ var _ = Describe("Split", func() {
 		writeRegistry(base) // empty
 		ctor := emit.DatasourceConstructor("rum_applications")
 		writeFile(gen, filepath.Join(fwDir, dsFileName("rum_applications")), dataSourceContent(ctor))
+		writeFile(gen, dsExampleFileName("rum_applications"), "data \"datadog_rum_applications\" \"example\" {}\n")
 		writeRegistry(gen, ctor)
 
 		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out})
@@ -116,12 +121,15 @@ var _ = Describe("Split", func() {
 		Expect(art.Files).To(ConsistOf(
 			filepath.Join(fwDir, dsFileName("rum_applications")),
 			filepath.Join(fwDir, registryFile),
+			dsExampleFileName("rum_applications"),
 		))
 
 		routedReg := readFile(filepath.Join(out, "rum_applications", fwDir, registryFile))
 		Expect(routedReg).To(ContainSubstring(ctor))
 		routedSrc := readFile(filepath.Join(out, "rum_applications", fwDir, dsFileName("rum_applications")))
 		Expect(routedSrc).To(Equal(dataSourceContent(ctor)), "source file must be copied verbatim")
+		routedExample := readFile(filepath.Join(out, "rum_applications", dsExampleFileName("rum_applications")))
+		Expect(routedExample).To(Equal("data \"datadog_rum_applications\" \"example\" {}\n"))
 	})
 
 	It("ignores unrelated repository drift outside the provider and docs scopes", func() {
@@ -155,6 +163,19 @@ var _ = Describe("Split", func() {
 		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out})
 		Expect(err).To(HaveOccurred())
 		Expect(rep.Errors).To(ContainElement(ContainSubstring(filepath.Join("docs", "data-sources", "unexpected.md"))))
+	})
+
+	It("fails loud on an unrecognized file inside the scoped examples path", func() {
+		writeRegistry(base)
+		ctor := emit.DatasourceConstructor("rum_applications")
+		writeFile(gen, filepath.Join(fwDir, dsFileName("rum_applications")), dataSourceContent(ctor))
+		writeFile(gen, filepath.Join(examplesDir, "datadog_rum_applications", "README.md"), "unexpected\n")
+		writeRegistry(gen, ctor)
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out})
+
+		Expect(err).To(HaveOccurred())
+		Expect(rep.Errors).To(ContainElement(ContainSubstring("changed file maps to no artifact")))
 	})
 
 	It("gives each artifact of a multi-artifact push its own bundle whose registry holds base plus only that artifact", func() {
@@ -263,6 +284,33 @@ var _ = Describe("Split", func() {
 		))
 	})
 
+	It("routes an example-only rollout as an updated artifact when its generated source is unchanged", func() {
+		name := "existing"
+		constructor := emit.DatasourceConstructor(name)
+		sourceRel := filepath.Join(fwDir, dsFileName(name))
+		source := dataSourceContent(constructor)
+		exampleRel := dsExampleFileName(name)
+		writeFile(base, sourceRel, source)
+		writeFile(gen, sourceRel, source)
+		writeFile(gen, exampleRel, "data \"datadog_existing\" \"example\" {}\n")
+		writeRegistry(base, constructor)
+		writeRegistry(gen, constructor)
+		reportPath := writeGenerationReport(gen,
+			model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusUnchanged, Path: sourceRel},
+			model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusCreated, Path: exampleRel},
+		)
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out, GenerationReport: reportPath})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(rep.Artifacts).To(HaveLen(1))
+		Expect(rep.Artifacts[0].Status).To(Equal(model.ArtifactStatusUpdated))
+		Expect(rep.Artifacts[0].Files).To(ConsistOf(
+			filepath.Join(fwDir, registryFile),
+			exampleRel,
+		))
+		Expect(readFile(filepath.Join(out, name, exampleRel))).To(Equal("data \"datadog_existing\" \"example\" {}\n"))
+	})
+
 	It("routes a retirement as exact file deletions plus reconstructed shared registrations", func() {
 		name := "gone"
 		constructor := emit.DatasourceConstructor(name)
@@ -270,12 +318,14 @@ var _ = Describe("Split", func() {
 		sourceRel := filepath.Join(fwDir, dsFileName(name))
 		testRel := filepath.Join(testsDir, dsTestFileName(name))
 		docRel := filepath.Join("docs", "data-sources", name+".md")
+		exampleRel := dsExampleFileName(name)
 
 		writeRegistry(base, existing, constructor)
 		writeRegistry(gen, existing)
 		writeFile(base, sourceRel, dataSourceContent(constructor))
 		writeFile(base, testRel, "package test\n")
 		writeFile(base, docRel, "# gone\n")
+		writeFile(base, exampleRel, "data \"datadog_gone\" \"example\" {}\n")
 		writeEndpointTags(base, map[string]string{emit.EndpointTagTestKey(name): "gone-service"})
 		writeEndpointTags(gen, nil)
 		reportPath := writeGenerationReport(gen, model.ArtifactReportEntry{
@@ -288,7 +338,7 @@ var _ = Describe("Split", func() {
 		Expect(rep.Artifacts).To(HaveLen(1))
 		artifact := rep.Artifacts[0]
 		Expect(artifact.Status).To(Equal(model.ArtifactStatusRetired))
-		Expect(artifact.RemovedFiles).To(ConsistOf(sourceRel, testRel, docRel))
+		Expect(artifact.RemovedFiles).To(ConsistOf(sourceRel, testRel, docRel, exampleRel))
 		Expect(artifact.Files).To(ConsistOf(
 			filepath.Join(fwDir, registryFile),
 			filepath.Join(testsDir, providerTestFile),
