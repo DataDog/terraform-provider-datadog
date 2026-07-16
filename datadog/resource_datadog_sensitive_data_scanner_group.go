@@ -15,6 +15,8 @@ import (
 
 var sensitiveDataScannerMutex = sync.Mutex{}
 
+const defaultSensitiveDataScannerSamplingRate float64 = 100.0
+
 func resourceDatadogSensitiveDataScannerGroupCustomizeDiff(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
 	if diff.HasChange("samplings") {
 		oldRaw, newRaw := diff.GetChange("samplings")
@@ -208,24 +210,47 @@ func buildTerraformSamplings(ddSamplings []datadogV2.SensitiveDataScannerSamplin
 	return tfSamplings
 }
 
-func alignTerraformSamplingsOrder(apiSamplings []interface{}, preferredOrder []interface{}) []interface{} {
-	if !samplingsEqualOrderInsensitive(apiSamplings, preferredOrder) {
-		return apiSamplings
+func reconcileTerraformSamplings(apiSamplings, tfConfiguredSamplings []interface{}) []interface{} {
+	apiByProduct := make(map[string]map[string]interface{}, len(apiSamplings))
+	for _, s := range apiSamplings {
+		m := s.(map[string]interface{})
+		apiByProduct[m["product"].(string)] = m
 	}
 
-	byProduct := make(map[string]map[string]interface{}, len(apiSamplings))
-	for _, sampling := range apiSamplings {
-		samplingMap := sampling.(map[string]interface{})
-		byProduct[samplingMap["product"].(string)] = samplingMap
+	referenceProducts := make(map[string]bool, len(tfConfiguredSamplings))
+	result := make([]interface{}, 0, len(apiSamplings))
+
+	// Keep configured products first, in reference order, using the API's rate.
+	// The API may omit samplings set to the default 100% rate, so a configured
+	// product that is absent from the response is an implicit 100% sampling and
+	// must be surfaced to keep config and state in sync.
+	for _, ref := range tfConfiguredSamplings {
+		product := ref.(map[string]interface{})["product"].(string)
+		referenceProducts[product] = true
+		if apiEntry, ok := apiByProduct[product]; ok {
+			result = append(result, apiEntry)
+		} else {
+			result = append(result, map[string]interface{}{
+				"product": product,
+				"rate":    defaultSensitiveDataScannerSamplingRate,
+			})
+		}
 	}
 
-	aligned := make([]interface{}, 0, len(preferredOrder))
-	for _, sampling := range preferredOrder {
-		samplingMap := sampling.(map[string]interface{})
-		aligned = append(aligned, byProduct[samplingMap["product"].(string)])
+	// Next, process products returned by the API that are not configured in
+	// Terraform. Ignore implicit default (100%) samplings, but surface any
+	// non-default rates as drift.
+	for _, s := range apiSamplings {
+		m := s.(map[string]interface{})
+		if referenceProducts[m["product"].(string)] {
+			continue
+		}
+		if rate, _ := m["rate"].(float64); rate != defaultSensitiveDataScannerSamplingRate {
+			result = append(result, m)
+		}
 	}
 
-	return aligned
+	return result
 }
 
 func buildDatadogSamplings(tfSamplings []interface{}) []datadogV2.SensitiveDataScannerSamplings {
@@ -419,14 +444,10 @@ func updateSensitiveDataScannerGroupState(d *schema.ResourceData, groupAttribute
 	if err := d.Set("filter", buildTerraformGroupFilter(groupAttributes.GetFilter())); err != nil {
 		return diag.FromErr(err)
 	}
-	if samplings := groupAttributes.GetSamplings(); len(samplings) > 0 {
-		tfSamplings := buildTerraformSamplings(samplings)
-		if configSamplings, ok := d.GetOk("samplings"); ok {
-			tfSamplings = alignTerraformSamplingsOrder(tfSamplings, configSamplings.([]interface{}))
-		}
-		if err := d.Set("samplings", tfSamplings); err != nil {
-			return diag.FromErr(err)
-		}
+	apiSamplings := buildTerraformSamplings(groupAttributes.GetSamplings())
+	reference, _ := d.Get("samplings").([]interface{})
+	if err := d.Set("samplings", reconcileTerraformSamplings(apiSamplings, reference)); err != nil {
+		return diag.FromErr(err)
 	}
 	return nil
 }
