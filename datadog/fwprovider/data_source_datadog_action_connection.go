@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -187,8 +188,14 @@ func (d *actionConnectionDatasource) Read(ctx context.Context, request datasourc
 		return
 	}
 
-	connModel, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
+	connModel, httpStatusCode, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
 	if err != nil {
+		if httpStatusCode == http.StatusNotFound {
+			// If the connection is not found, we log a warning and remove the resource from state. This may be due to changes outside of Terraform.
+			response.Diagnostics.AddWarning("The connection with ID '"+state.ID.ValueString()+"' is not found. It may have been deleted outside of Terraform.", err.Error())
+			response.State.RemoveResource(ctx)
+			return
+		}
 		response.Diagnostics.AddError("Could not read connection", err.Error())
 		return
 	}
