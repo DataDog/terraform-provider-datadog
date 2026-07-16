@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
 )
 
@@ -80,7 +81,10 @@ func TestGenerateWiresOverwrite(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := runTfgen("generate", "--spec", specPath, "--output-root", dir, "--report", filepath.Join(dir, "report.json")); err != nil {
+	if err := runTfgen("generate", "--spec", specPath,
+		"--output-root", dir,
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--report", filepath.Join(dir, "report.json")); err != nil {
 		t.Fatalf("generate: %v", err)
 	}
 
@@ -115,6 +119,7 @@ func TestGenerateWiresEndpointTag(t *testing.T) {
 
 	dir := t.TempDir()
 	testsDir := filepath.Join(dir, "tests")
+	examplesDir := filepath.Join(dir, "examples")
 	if err := os.MkdirAll(testsDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -126,6 +131,7 @@ func TestGenerateWiresEndpointTag(t *testing.T) {
 
 	if err := runTfgen("generate", "--spec", specPath, "--emit-tests",
 		"--output-root", dir, "--tests-output-root", testsDir,
+		"--examples-output-root", examplesDir,
 		"--report", filepath.Join(dir, "report.json")); err != nil {
 		t.Fatalf("generate: %v", err)
 	}
@@ -137,6 +143,7 @@ func TestGenerateWiresEndpointTag(t *testing.T) {
 
 	if err := runTfgen("generate", "--retire", "datastore",
 		"--output-root", dir, "--tests-output-root", testsDir,
+		"--examples-output-root", examplesDir,
 		"--report", filepath.Join(dir, "retire-report.json")); err != nil {
 		t.Fatalf("retire: %v", err)
 	}
@@ -175,7 +182,10 @@ func TestGenerateFailsOnMissingOverwriteTarget(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = runTfgen("generate", "--spec", specPath, "--output-root", dir, "--report", filepath.Join(dir, "report.json"))
+	err = runTfgen("generate", "--spec", specPath,
+		"--output-root", dir,
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--report", filepath.Join(dir, "report.json"))
 	if err == nil {
 		t.Fatal("expected an error when overwrites names a constructor absent from the Datasources slice, got nil")
 	}
@@ -242,6 +252,7 @@ func TestReconcileSkippedWhenAnArtifactFails(t *testing.T) {
 		"--output-root", out,
 		"--tests-output-root", filepath.Join(dir, "tests"),
 		"--docs-root", filepath.Join(dir, "docs"),
+		"--examples-output-root", filepath.Join(dir, "examples"),
 		"--report", filepath.Join(dir, "report.json"))
 	if err == nil {
 		t.Fatal("expected the run to fail because the datastore artifact failed to build, got nil")
@@ -253,6 +264,98 @@ func TestReconcileSkippedWhenAnArtifactFails(t *testing.T) {
 	}
 	if reg := mustRead(t, genPath); !strings.Contains(reg, emit.DatasourceConstructor("ghost")) {
 		t.Errorf("orphan registration was removed despite a failed artifact:\n%s", reg)
+	}
+}
+
+func TestGenerateEmitsAndPreservesDatasourceExample(t *testing.T) {
+	specPath := filepath.Join("..", "testdata", "mini-oas", "scripts", "gen-test", "datastore.yaml")
+	dir := t.TempDir()
+	outputRoot := filepath.Join(dir, "fwprovider")
+	examplesRoot := filepath.Join(dir, "examples")
+	examplePath := filepath.Join(examplesRoot, "datadog_datastore", "data-source.tf")
+	args := []string{
+		"generate",
+		"--spec", specPath,
+		"--output-root", outputRoot,
+		"--examples-output-root", examplesRoot,
+		"--report", filepath.Join(dir, "report.json"),
+	}
+
+	if err := runTfgen(args...); err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+	const generated = `data "datadog_datastore" "example" {
+  id = "11111111-2222-3333-4444-555555555555"
+}
+`
+	if got := mustRead(t, examplePath); got != generated {
+		t.Fatalf("generated example mismatch:\n%s", got)
+	}
+
+	const handWritten = "data \"datadog_datastore\" \"custom\" {}\n"
+	if err := os.WriteFile(examplePath, []byte(handWritten), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := runTfgen(args...); err != nil {
+		t.Fatalf("regenerate: %v", err)
+	}
+	if got := mustRead(t, examplePath); got != handWritten {
+		t.Fatalf("regeneration overwrote the existing example:\n%s", got)
+	}
+}
+
+func TestGenerateCheckReportsMissingDatasourceExampleWithoutWritingIt(t *testing.T) {
+	specPath := filepath.Join("..", "testdata", "mini-oas", "scripts", "gen-test", "datastore.yaml")
+	dir := t.TempDir()
+	examplePath := filepath.Join(dir, "examples", "datadog_datastore", "data-source.tf")
+
+	err := runTfgen("generate",
+		"--check",
+		"--spec", specPath,
+		"--output-root", filepath.Join(dir, "fwprovider"),
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--report", filepath.Join(dir, "report.json"))
+	if !errors.Is(err, errCheckFailed) {
+		t.Fatalf("check error = %v, want errCheckFailed", err)
+	}
+	if _, statErr := os.Stat(examplePath); !errors.Is(statErr, os.ErrNotExist) {
+		t.Fatalf("check mode wrote example %s: %v", examplePath, statErr)
+	}
+}
+
+func TestEmitDatasourceExampleSurfacesIncompleteScaffold(t *testing.T) {
+	examplesRoot := t.TempDir()
+	view := emit.DataSourceView{
+		Cardinality: emit.Plural,
+		TypeName:    "widgets",
+		Schema: emit.SchemaView{Attributes: []emit.AttrView{
+			{TFName: "account_ids", TFType: "schema.ListAttribute", Required: true},
+		}},
+	}
+	mainEntry := model.ArtifactReportEntry{Name: "widgets", Kind: model.ArtifactKindDataSource}
+
+	exampleEntry := emitDatasourceExample(&mainEntry, view, "widgets", examplesRoot, false)
+
+	if exampleEntry.Status != model.ArtifactStatusCreated {
+		t.Fatalf("example status = %q, want created", exampleEntry.Status)
+	}
+	if len(mainEntry.Diagnostics) != 1 {
+		t.Fatalf("main artifact diagnostics = %#v, want one example limitation", mainEntry.Diagnostics)
+	}
+	if mainEntry.Diagnostics[0].Severity != model.SeverityInfo ||
+		!strings.Contains(mainEntry.Diagnostics[0].Message, `required attribute "account_ids"`) {
+		t.Fatalf("unexpected example diagnostic: %#v", mainEntry.Diagnostics[0])
+	}
+
+	// Once a maintainer owns the example, regeneration skips it and must not
+	// report limitations from a scaffold that was not written.
+	preservedEntry := model.ArtifactReportEntry{Name: "widgets", Kind: model.ArtifactKindDataSource}
+	skipped := emitDatasourceExample(&preservedEntry, view, "widgets", examplesRoot, false)
+	if skipped.Status != model.ArtifactStatusSkipped {
+		t.Fatalf("preserved example status = %q, want skipped", skipped.Status)
+	}
+	if len(preservedEntry.Diagnostics) != 0 {
+		t.Fatalf("preserved example produced diagnostics: %#v", preservedEntry.Diagnostics)
 	}
 }
 

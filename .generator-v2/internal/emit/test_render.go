@@ -31,7 +31,7 @@ type testView struct {
 	// UseUniq threads uniqueEntityName through the config so a recording produces
 	// stable unique names. True when at least one string filter is seeded.
 	UseUniq bool
-	// Filters are the optional attributes seeded in the data-source block.
+	// Filters are the configurable scalar attributes seeded in the data-source block.
 	Filters []testFilter
 	// CollectionKey is the plural item block's Terraform name, e.g. "teams",
 	// checked as "<CollectionKey>.#".
@@ -64,7 +64,7 @@ func buildTestView(v DataSourceView) testView {
 	tv.CassettePath = "datadog/tests/cassettes/" + tv.FuncName + ".yaml"
 
 	for _, a := range v.Schema.Attributes {
-		if !a.Optional {
+		if !a.Optional && !a.Required {
 			continue
 		}
 		value, ok := hclFilterValue(a.TFType)

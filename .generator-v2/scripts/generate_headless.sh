@@ -60,7 +60,7 @@ die() {
     # would refuse while tracked files (e.g. framework_provider.go under
     # --overwrites) are still modified, stranding us on the throwaway branch.
     git reset --hard >/dev/null 2>&1 || true
-    git clean -fdq datadog/fwprovider datadog/tests docs/data-sources >/dev/null 2>&1 || true
+    git clean -fdq datadog/fwprovider datadog/tests docs/data-sources examples/data-sources >/dev/null 2>&1 || true
     git checkout -f "${ORIG_BRANCH:-master}" >/dev/null 2>&1 || true
     git branch -D "$BRANCH" >/dev/null 2>&1 || true
   fi
@@ -345,7 +345,7 @@ if [ "$FAILED" != "0" ] || [ "$ERROR_DIAGS" != "[]" ]; then
   jlog "GATE FAILED — failed=$FAILED errors=$ERROR_DIAGS"
   # Discard partial output and drop the branch we just made.
   git checkout -- datadog/ 2>/dev/null || true
-  git clean -fdq datadog/fwprovider datadog/tests docs/data-sources 2>/dev/null || true
+  git clean -fdq datadog/fwprovider datadog/tests docs/data-sources examples/data-sources 2>/dev/null || true
   if [ "${BRANCH_CREATED:-0}" = 1 ]; then
     git checkout "${ORIG_BRANCH:-master}" >/dev/null 2>&1 || true
     git branch -D "$BRANCH" >/dev/null 2>&1 || true
@@ -367,6 +367,8 @@ jlog "gate passed (failed=0, no error diagnostics)"
 # ---------------------------------------------------------------------------
 STAGE="docs"
 DOCS_FILE="docs/data-sources/${ARTIFACT_NAME}.md"
+EXAMPLE_FILE="examples/data-sources/datadog_${ARTIFACT_NAME}/data-source.tf"
+[ -f "$EXAMPLE_FILE" ] || die "tfgen produced no $EXAMPLE_FILE"
 make docs >&2 || die "make docs failed"
 
 # tfplugindocs regenerates the WHOLE docs/ tree, so any pre-existing drift (often
@@ -401,6 +403,7 @@ declare -a ALLOWED=(
   "datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go"
   "datadog/fwprovider/datasources_generated.go"
   "datadog/tests/provider_test.go"
+  "$EXAMPLE_FILE"
   "$DOCS_FILE"
 )
 [ -n "$OVERWRITES" ] && ALLOWED+=("datadog/fwprovider/framework_provider.go")
@@ -549,6 +552,10 @@ GEN_LIST="- \`datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go\`
 - \`datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go\`
 - \`datadog/fwprovider/datasources_generated.go\` — registers the new constructor
 - \`datadog/tests/provider_test.go\` (updated) — registers the test's endpoint tag"
+if [ -n "$(git status --porcelain -- "$EXAMPLE_FILE")" ]; then
+  GEN_LIST="${GEN_LIST}
+- \`${EXAMPLE_FILE}\` — supplies the tfplugindocs example"
+fi
 if [ -n "$OVERWRITES" ]; then
   GEN_LIST="${GEN_LIST}
 - \`datadog/fwprovider/framework_provider.go\` (updated) — retired constructor removed"
@@ -621,6 +628,7 @@ git add "datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go" \
         "datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go" \
         "datadog/fwprovider/datasources_generated.go" \
         "datadog/tests/provider_test.go" \
+        "$EXAMPLE_FILE" \
         "$DOCS_FILE" >&2
 [ -n "$OVERWRITES" ] && git add "datadog/fwprovider/framework_provider.go" >&2
 git commit -m "$TITLE (generated)" >&2 || die "git commit failed"

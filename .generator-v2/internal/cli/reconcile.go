@@ -38,11 +38,11 @@ var artifactNameRe = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 //     a human adopted it toward release; deleting a published data source is a
 //     breaking change, so it is left in place with status retire_blocked.
 //
-// When both pass it removes the data source .go, its _test.go, its docs page and
-// its registration in generatedDatasources, reporting retired. Check mode skips
-// the file deletes and the registry write, reporting the status the run would
-// produce.
-func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot string, check bool) model.ArtifactReportEntry {
+// When both pass it removes the data source .go, its _test.go, its docs page,
+// its example and its registration in generatedDatasources, reporting retired.
+// Check mode skips the file deletes and the registry write, reporting the
+// status the run would produce.
+func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, check bool) model.ArtifactReportEntry {
 	// Fail closed on an unsafe name before any path is built from it: an invalid
 	// name deletes nothing.
 	if !artifactNameRe.MatchString(name) {
@@ -53,6 +53,7 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot string, check bo
 	goPath := filepath.Join(outputRoot, "data_source_datadog_"+name+".go")
 	testPath := filepath.Join(testsOutputRoot, "data_source_datadog_"+name+"_test.go")
 	docPath := filepath.Join(docsRoot, name+".md")
+	examplePath := filepath.Join(examplesOutputRoot, "datadog_"+name, "data-source.tf")
 	genPath := filepath.Join(outputRoot, "datasources_generated.go")
 	cassettesDir := filepath.Join(testsOutputRoot, "cassettes")
 
@@ -68,7 +69,7 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot string, check bo
 			return entry
 		}
 	case errors.Is(err, os.ErrNotExist):
-		// No source to guard; still clean up any stray test/doc/registration below.
+		// No source to guard; still clean up any stray test/doc/example/registration below.
 	default:
 		return failEntry(entry, err)
 	}
@@ -81,10 +82,13 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot string, check bo
 	}
 
 	if !check {
-		for _, p := range []string{goPath, testPath, docPath} {
+		for _, p := range []string{goPath, testPath, docPath, examplePath} {
 			if err := os.Remove(p); err != nil && !errors.Is(err, os.ErrNotExist) {
 				return failEntry(entry, err)
 			}
+		}
+		if err := removeDirIfEmpty(filepath.Dir(examplePath)); err != nil {
+			return failEntry(entry, err)
 		}
 	}
 	if _, err := emit.RemoveGeneratedDatasource(genPath, emit.DatasourceConstructor(name), check); err != nil {
@@ -98,6 +102,23 @@ func retireArtifact(name, outputRoot, testsOutputRoot, docsRoot string, check bo
 	}
 	entry.Status = model.ArtifactStatusRetired
 	return entry
+}
+
+// removeDirIfEmpty removes path only when it has no remaining entries. This
+// cleans up the per-artifact example directory without deleting unrelated files
+// a maintainer may have placed alongside data-source.tf.
+func removeDirIfEmpty(path string) error {
+	entries, err := os.ReadDir(path)
+	if errors.Is(err, os.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if len(entries) > 0 {
+		return nil
+	}
+	return os.Remove(path)
 }
 
 // hasRecordedCassette reports whether a recorded cassette exists for any
@@ -138,7 +159,7 @@ func hasRecordedCassette(testPath, cassettesDir string) (bool, string) {
 // orphan constructor is mapped back to its artifact name through the generated
 // files on disk, since the name→constructor transform is not reversible. Returns
 // one report entry per orphan.
-func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot string, desired map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
+func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot string, desired map[string]bool, check bool) ([]model.ArtifactReportEntry, error) {
 	genPath := filepath.Join(outputRoot, "datasources_generated.go")
 	registered, err := emit.RegisteredGeneratedDatasources(genPath)
 	if err != nil {
@@ -169,7 +190,7 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot string, desired map[
 			})
 			continue
 		}
-		entries = append(entries, retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, check))
+		entries = append(entries, retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot, check))
 	}
 	return entries, nil
 }

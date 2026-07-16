@@ -36,6 +36,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var reportPath string
 	var emitTests bool
 	var testsOutputRoot string
+	var examplesOutputRoot string
 	var docsRoot string
 	var reconcile bool
 	var retire string
@@ -67,7 +68,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					if name == "" {
 						continue
 					}
-					runReport.Artifacts = append(runReport.Artifacts, retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, check))
+					runReport.Artifacts = append(runReport.Artifacts, retireArtifact(name, outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot, check))
 				}
 			} else {
 				spec, err := parser.LoadSpec(specPath,
@@ -120,10 +121,13 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
-					entry, testEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, emitTests, check, accessors)
+					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors)
 					runReport.Artifacts = append(runReport.Artifacts, entry)
 					if testEntry != nil {
 						runReport.Artifacts = append(runReport.Artifacts, *testEntry)
+					}
+					if exampleEntry != nil {
+						runReport.Artifacts = append(runReport.Artifacts, *exampleEntry)
 					}
 					if reg != nil {
 						registrations = append(registrations, *reg)
@@ -158,7 +162,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						for _, reg := range registrations {
 							desired[reg.Constructor] = true
 						}
-						orphanEntries, recErr := reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, desired, check)
+						orphanEntries, recErr := reconcileOrphans(outputRoot, testsOutputRoot, docsRoot, examplesOutputRoot, desired, check)
 						runReport.Artifacts = append(runReport.Artifacts, orphanEntries...)
 						deferredErr = recErr
 					}
@@ -204,6 +208,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	cmd.PersistentFlags().StringVar(&reportPath, "report", "-", "Where to write the run report (\"-\" = stdout)")
 	cmd.PersistentFlags().BoolVar(&emitTests, "emit-tests", false, "Also emit a generated acceptance-test scaffold for each data source")
 	cmd.PersistentFlags().StringVar(&testsOutputRoot, "tests-output-root", "datadog/tests", "Root directory for generated acceptance-test files")
+	cmd.PersistentFlags().StringVar(&examplesOutputRoot, "examples-output-root", "examples/data-sources", "Root directory for generated data-source examples")
 	cmd.PersistentFlags().StringVar(&docsRoot, "docs-root", "docs/data-sources", "Root directory for data-source docs pages (used when retiring)")
 	cmd.PersistentFlags().BoolVar(&reconcile, "reconcile", false, "Retire generated data sources no longer annotated (requires the full spec; incompatible with --include)")
 	cmd.PersistentFlags().StringVar(&retire, "retire", "", "Comma-separated artifact names to retire without generating (deletes files + registration)")
@@ -215,7 +220,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 // operation. On success it also returns the GeneratedRegistration the caller
 // uses to wire the data source into the provider; it is nil for a skipped or
 // failed artifact.
-func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, emitTests, check bool, accessors map[string]string) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors map[string]string) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -227,12 +232,12 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, e
 			Severity: model.SeverityWarning,
 			Message:  fmt.Sprintf("resource generation not yet supported (kind=%s)", op.Tracking.ArtifactKind),
 		}}
-		return entry, nil, nil
+		return entry, nil, nil, nil
 	}
 
 	artifact, err := model.BuildArtifact(op)
 	if err != nil {
-		return failEntry(entry, err), nil, nil
+		return failEntry(entry, err), nil, nil, nil
 	}
 	artifact.SourceFile = filepath.Join(outputRoot, "data_source_datadog_"+artifact.Name+".go")
 	entry.Path = artifact.SourceFile
@@ -242,7 +247,7 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, e
 
 	view, err := emit.BuildDataSourceView(artifact)
 	if err != nil {
-		return failEntry(entry, err), nil, nil
+		return failEntry(entry, err), nil, nil, nil
 	}
 	// Correct APIAccessor to the name the provider's helper actually exposes,
 	// which diverges from the derived name for a few acronym/aliased APIs.
@@ -254,14 +259,16 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, e
 
 	src, err := emit.RenderDataSource(view)
 	if err != nil {
-		return failEntry(entry, err), nil, nil
+		return failEntry(entry, err), nil, nil, nil
 	}
 
 	status, err := emit.WriteFile(artifact.SourceFile, src, check)
 	if err != nil {
-		return failEntry(entry, err), nil, nil
+		return failEntry(entry, err), nil, nil, nil
 	}
 	entry.Status = status
+
+	exampleEntry := emitDatasourceExample(&entry, view, artifact.Name, examplesOutputRoot, check)
 
 	var testEntry *model.ArtifactReportEntry
 	if emitTests {
@@ -285,7 +292,26 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot string, e
 		}
 	}
 
-	return entry, testEntry, reg
+	return entry, testEntry, exampleEntry, reg
+}
+
+// emitDatasourceExample writes the tfplugindocs input for a data source. Like
+// acceptance-test scaffolds, examples are created once and never overwritten so
+// a hand-written or subsequently improved example remains authoritative.
+func emitDatasourceExample(entry *model.ArtifactReportEntry, view emit.DataSourceView, name, examplesOutputRoot string, check bool) *model.ArtifactReportEntry {
+	path := filepath.Join(examplesOutputRoot, "datadog_"+name, "data-source.tf")
+	example := emit.RenderDataSourceExample(view)
+	status, err := emit.WriteFileIfAbsent(path, example.Content, check)
+	if err != nil {
+		failed := failEntry(model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Path: path}, err)
+		return &failed
+	}
+	if status != model.ArtifactStatusSkipped {
+		for _, msg := range example.Diagnostics {
+			entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityInfo, Message: msg})
+		}
+	}
+	return &model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Status: status, Path: path}
 }
 
 // emitDatasourceTest renders and writes the acceptance-test scaffold for a data

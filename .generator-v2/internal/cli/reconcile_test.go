@@ -12,26 +12,28 @@ import (
 )
 
 // artifactFixture lays down the on-disk footprint of one generated data source
-// (source, test, doc, registration) under a fresh set of roots, so retirement
-// and reconcile can be exercised end-to-end against real files.
+// (source, test, doc, example, registration) under a fresh set of roots, so
+// retirement and reconcile can be exercised end-to-end against real files.
 type artifactFixture struct {
-	outputRoot, testsRoot, docsRoot string
+	outputRoot, testsRoot, docsRoot, examplesRoot string
 }
 
 func newFixture() *artifactFixture {
 	dir := GinkgoT().TempDir()
 	f := &artifactFixture{
-		outputRoot: filepath.Join(dir, "fwprovider"),
-		testsRoot:  filepath.Join(dir, "tests"),
-		docsRoot:   filepath.Join(dir, "docs"),
+		outputRoot:   filepath.Join(dir, "fwprovider"),
+		testsRoot:    filepath.Join(dir, "tests"),
+		docsRoot:     filepath.Join(dir, "docs"),
+		examplesRoot: filepath.Join(dir, "examples"),
 	}
 	Expect(os.MkdirAll(f.outputRoot, 0o755)).To(Succeed())
 	Expect(os.MkdirAll(filepath.Join(f.testsRoot, "cassettes"), 0o755)).To(Succeed())
 	Expect(os.MkdirAll(f.docsRoot, 0o755)).To(Succeed())
+	Expect(os.MkdirAll(f.examplesRoot, 0o755)).To(Succeed())
 	return f
 }
 
-// writeArtifact creates the four files for name; generated controls whether the
+// writeArtifact creates the artifact files for name; generated controls whether the
 // .go source carries the tfgen generated-code marker.
 func (f *artifactFixture) writeArtifact(name string, generated bool) {
 	src := "package fwprovider\n\n"
@@ -45,6 +47,8 @@ func (f *artifactFixture) writeArtifact(name string, generated bool) {
 	Expect(os.WriteFile(f.testPath(name), []byte(test), 0o644)).To(Succeed())
 
 	Expect(os.WriteFile(f.docPath(name), []byte("# "+name), 0o644)).To(Succeed())
+	Expect(os.MkdirAll(filepath.Dir(f.examplePath(name)), 0o755)).To(Succeed())
+	Expect(os.WriteFile(f.examplePath(name), []byte("data \"datadog_"+name+"\" \"example\" {}\n"), 0o644)).To(Succeed())
 
 	_, err := emit.SyncGeneratedDatasources(f.genPath(), []string{emit.DatasourceConstructor(name)}, false)
 	Expect(err).NotTo(HaveOccurred())
@@ -70,6 +74,12 @@ func (f *artifactFixture) testPath(name string) string {
 func (f *artifactFixture) docPath(name string) string {
 	return filepath.Join(f.docsRoot, name+".md")
 }
+func (f *artifactFixture) exampleDir(name string) string {
+	return filepath.Join(f.examplesRoot, "datadog_"+name)
+}
+func (f *artifactFixture) examplePath(name string) string {
+	return filepath.Join(f.exampleDir(name), "data-source.tf")
+}
 func (f *artifactFixture) genPath() string {
 	return filepath.Join(f.outputRoot, "datasources_generated.go")
 }
@@ -80,11 +90,11 @@ func (f *artifactFixture) registry() string {
 }
 
 func (f *artifactFixture) retire(name string, check bool) model.ArtifactReportEntry {
-	return retireArtifact(name, f.outputRoot, f.testsRoot, f.docsRoot, check)
+	return retireArtifact(name, f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, check)
 }
 
 var _ = Describe("retireArtifact", func() {
-	It("deletes the source, test and doc and removes the registration", func() {
+	It("deletes the source, test, doc and example and removes the registration", func() {
 		f := newFixture()
 		f.writeArtifact("team", true)
 
@@ -94,7 +104,23 @@ var _ = Describe("retireArtifact", func() {
 		Expect(f.goPath("team")).NotTo(BeAnExistingFile())
 		Expect(f.testPath("team")).NotTo(BeAnExistingFile())
 		Expect(f.docPath("team")).NotTo(BeAnExistingFile())
+		Expect(f.examplePath("team")).NotTo(BeAnExistingFile())
+		Expect(f.exampleDir("team")).NotTo(BeADirectory())
 		Expect(f.registry()).NotTo(ContainSubstring(emit.DatasourceConstructor("team")))
+	})
+
+	It("preserves a non-empty example directory", func() {
+		f := newFixture()
+		f.writeArtifact("team", true)
+		sidecar := filepath.Join(f.exampleDir("team"), "README.md")
+		Expect(os.WriteFile(sidecar, []byte("keep me"), 0o644)).To(Succeed())
+
+		entry := f.retire("team", false)
+
+		Expect(entry.Status).To(Equal(model.ArtifactStatusRetired))
+		Expect(f.examplePath("team")).NotTo(BeAnExistingFile())
+		Expect(f.exampleDir("team")).To(BeADirectory())
+		Expect(sidecar).To(BeAnExistingFile())
 	})
 
 	It("blocks retirement and keeps every file when a recorded cassette adopted it", func() {
@@ -108,6 +134,8 @@ var _ = Describe("retireArtifact", func() {
 		Expect(f.goPath("team")).To(BeAnExistingFile())
 		Expect(f.testPath("team")).To(BeAnExistingFile())
 		Expect(f.docPath("team")).To(BeAnExistingFile())
+		Expect(f.examplePath("team")).To(BeAnExistingFile())
+		Expect(f.exampleDir("team")).To(BeADirectory())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 	})
 
@@ -138,6 +166,8 @@ var _ = Describe("retireArtifact", func() {
 
 		Expect(entry.Status).To(Equal(model.ArtifactStatusRetired))
 		Expect(f.goPath("team")).To(BeAnExistingFile())
+		Expect(f.examplePath("team")).To(BeAnExistingFile())
+		Expect(f.exampleDir("team")).To(BeADirectory())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 	})
 
@@ -170,14 +200,16 @@ var _ = Describe("reconcileOrphans", func() {
 		f.writeArtifact("zoo", true)
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, desired, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(1))
 		Expect(entries[0].Name).To(Equal("zoo"))
 		Expect(entries[0].Status).To(Equal(model.ArtifactStatusRetired))
 		Expect(f.goPath("zoo")).NotTo(BeAnExistingFile())
+		Expect(f.examplePath("zoo")).NotTo(BeAnExistingFile())
 		Expect(f.goPath("team")).To(BeAnExistingFile())
+		Expect(f.examplePath("team")).To(BeAnExistingFile())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 		Expect(f.registry()).NotTo(ContainSubstring(emit.DatasourceConstructor("zoo")))
 	})
@@ -187,12 +219,13 @@ var _ = Describe("reconcileOrphans", func() {
 		f.writeArtifact("zoo", true)
 		f.writeCassette("TestAccDatadogzooDataSource.yaml")
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, map[string]bool{}, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(1))
 		Expect(entries[0].Status).To(Equal(model.ArtifactStatusRetireBlocked))
 		Expect(f.goPath("zoo")).To(BeAnExistingFile())
+		Expect(f.examplePath("zoo")).To(BeAnExistingFile())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("zoo")))
 	})
 
@@ -218,7 +251,7 @@ var _ = Describe("reconcileOrphans", func() {
 		f.writeArtifact("team", true)
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, desired, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(BeEmpty())

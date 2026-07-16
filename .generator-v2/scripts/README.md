@@ -6,8 +6,9 @@ prompts and no human in the loop. It is the non-interactive counterpart to the
 script takes every answer up front as a flag and fails fast if anything is unclear.
 
 The script is a deterministic orchestrator. It runs `slice_and_annotate.py` and `tfgen`,
-gates on the generator report, runs `make docs` / `make build`, checks only the expected
-files changed, then branches, commits, and opens the PR. The only non-deterministic step is
+which creates a data-source example when one does not already exist, gates on the generator
+report, runs `make docs` / `make build`, checks only the expected files changed, then
+branches, commits, and opens the PR. The only non-deterministic step is
 two small calls to the `claude` CLI that write the PR's risk notes and "How to test"
 section; both degrade gracefully if `claude` is missing.
 
@@ -17,8 +18,10 @@ section; both degrade gracefully if `claude` is missing.
 2. Start a fresh branch from `--base` (see below).
 3. Download the v2 OpenAPI spec (latest by default) and record which commit it was.
 4. Slice + annotate the chosen operation(s) with `slice_and_annotate.py`.
-5. Run `tfgen`, then stop if the report has any failure or error.
-6. `make docs` and `make build`; stop if either fails.
+5. Run `tfgen`, then stop if the report has any failure or error. The run creates
+   `examples/data-sources/datadog_<name>/data-source.tf` only when that path is absent;
+   existing hand-written examples are preserved.
+6. `make docs` (which consumes that example) and `make build`; stop if either fails.
 7. Confirm only the generated files changed.
 8. Ask `claude` for the risk notes and testing steps (skipped cleanly if unavailable).
 9. Commit, push, and open a **draft** PR against `--base`.
@@ -128,6 +131,10 @@ prose calls (and count cost even when a reply was unusable, since it was still b
   data source is verified.
 - **Overwrite is opt-in.** It will not retire a hand-written data source unless you pass
   `--overwrites`.
+- **Examples are create-only scaffolds.** tfgen supplies a deterministic HCL example for
+  tfplugindocs, but never overwrites an existing example that a maintainer has improved.
+  If a required input or lookup shape cannot be represented completely, the RunReport
+  carries an `info` diagnostic into the generated PR for reviewer follow-up.
 
 ## Running it in a pipeline
 
@@ -165,8 +172,8 @@ draft PRs; a human records cassettes afterward.
 1. Validate arguments/environment; stop if the working tree is dirty.
 2. `make tfgen-build`.
 3. **One** expensive run on a staging branch: `tfgen generate --reconcile` (generate-all +
-   retire orphans) → `make docs` → `make build`. This proves the whole impacted set compiles
-   together. On any failure it restores the tree and stops.
+   create missing examples + retire orphans) → `make docs` → `make build`. This proves the
+   whole impacted set compiles together. On any failure it restores the tree and stops.
 4. Capture the generated docs + report, then restore the tree to base.
 5. Enforce `--max-prs`; with `--dry-run`, print the plan and stop here (no branches/PRs).
 6. **Fan out** (fail-slow — a bad artifact is recorded and skipped, never aborting the batch):

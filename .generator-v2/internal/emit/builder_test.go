@@ -199,6 +199,7 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(view.State.ParamType).To(Equal("datadogV2.PowerpackData"))
 			Expect(view.State.Preamble).To(Equal([]string{"attributes := data.GetAttributes()"}))
 		})
+
 	})
 
 	Context("both", func() {
@@ -232,6 +233,7 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 				Optional:    true,
 			}))
 		})
+
 	})
 
 	DescribeTable("the emitted Read guards the result count and indexes only the single match",

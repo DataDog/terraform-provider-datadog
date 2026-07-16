@@ -1,8 +1,8 @@
 // Package split turns one aggregate tfgen push — all N generated data sources on
 // a single branch — into per-artifact bundles, one directory per data source, so
-// each can land as its own PR. It is pure: it diffs the provider and docs paths
-// in two on-disk trees (a master checkout and the pushed-branch checkout), reuses
-// tfgen's registry serializer to reconstruct each artifact's
+// each can land as its own PR. It is pure: it diffs the provider, docs and
+// examples paths in two on-disk trees (a master checkout and the pushed-branch
+// checkout), reuses tfgen's registry serializer to reconstruct each artifact's
 // datasources_generated.go as "the base set plus this one artifact", and never
 // touches git, the network, or the OpenAPI spec.
 //
@@ -84,10 +84,11 @@ const (
 )
 
 var (
-	dataSourceFileRe     = regexp.MustCompile(`^data_source_datadog_([a-z][a-z0-9_]*)\.go$`)
-	dataSourceTestFileRe = regexp.MustCompile(`^data_source_datadog_([a-z][a-z0-9_]*)_test\.go$`)
-	dataSourceDocFileRe  = regexp.MustCompile(`^([a-z][a-z0-9_]*)\.md$`)
-	artifactNameRe       = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+	dataSourceFileRe       = regexp.MustCompile(`^data_source_datadog_([a-z][a-z0-9_]*)\.go$`)
+	dataSourceTestFileRe   = regexp.MustCompile(`^data_source_datadog_([a-z][a-z0-9_]*)_test\.go$`)
+	dataSourceDocFileRe    = regexp.MustCompile(`^([a-z][a-z0-9_]*)\.md$`)
+	dataSourceExampleDirRe = regexp.MustCompile(`^datadog_([a-z][a-z0-9_]*)$`)
+	artifactNameRe         = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
 	// constructorDeclRe recovers the constructor(s) a data-source file declares.
 	constructorDeclRe = regexp.MustCompile(`func (New[A-Za-z0-9_]+DataSource)\(`)
 	// constructorRe recovers constructor identifiers listed inside a slice literal.
@@ -97,6 +98,7 @@ var (
 	diffDirectoryScopes = []string{
 		filepath.FromSlash("datadog/fwprovider"),
 		filepath.FromSlash("docs/data-sources"),
+		filepath.FromSlash("examples/data-sources"),
 	}
 )
 
@@ -115,6 +117,7 @@ const (
 	kindProvider
 	kindProviderTest
 	kindDataSourceDoc
+	kindDataSourceExample
 )
 
 // classify maps an exact repo-relative path to its role in the split.
@@ -144,6 +147,11 @@ func classify(rel string) (fileKind, string) {
 			return kindDataSourceDoc, m[1]
 		}
 	}
+	if base == "data-source.tf" && filepath.Dir(filepath.Dir(clean)) == filepath.Join("examples", "data-sources") {
+		if m := dataSourceExampleDirRe.FindStringSubmatch(filepath.Base(filepath.Dir(clean))); m != nil {
+			return kindDataSourceExample, m[1]
+		}
+	}
 	return kindUnknown, ""
 }
 
@@ -158,6 +166,7 @@ type artifactPlan struct {
 	source  *changedFile
 	test    *changedFile
 	doc     *changedFile
+	example *changedFile
 	removed []string
 	report  *generationArtifact
 }
@@ -211,6 +220,8 @@ func Split(opts Options) (*Result, error) {
 			planFor(plans, name).test = cf
 		case kindDataSourceDoc:
 			planFor(plans, name).doc = cf
+		case kindDataSourceExample:
+			planFor(plans, name).example = cf
 		default:
 			fail("changed file maps to no artifact and is not a known shared file: %s", cf.rel)
 		}
@@ -218,7 +229,7 @@ func Split(opts Options) (*Result, error) {
 	for _, d := range deleted {
 		kind, name := classify(d)
 		switch kind {
-		case kindDataSource, kindDataSourceTest, kindDataSourceDoc:
+		case kindDataSource, kindDataSourceTest, kindDataSourceDoc, kindDataSourceExample:
 			planFor(plans, name).removed = append(planFor(plans, name).removed, d)
 		default:
 			fail("removed file maps to no artifact or is a shared file that cannot be deleted: %s", d)
@@ -373,6 +384,9 @@ func materializeActive(opts Options, name string, p *artifactPlan, registryRel s
 	if p.test != nil {
 		files = append(files, p.test.rel)
 	}
+	if p.example != nil {
+		files = append(files, p.example.rel)
+	}
 	for _, rel := range files {
 		if !opts.Check {
 			if err := copyFile(filepath.Join(opts.GeneratedDir, rel), filepath.Join(outDir, rel)); err != nil {
@@ -523,8 +537,8 @@ func validatePlan(name string, p *artifactPlan, reportRequired bool) (model.Arti
 			fail("created artifact %q also removes files: %s", name, strings.Join(p.removed, ", "))
 		}
 	case model.ArtifactStatusUpdated:
-		if p.source == nil && p.test == nil {
-			fail("generation report marks %q updated, but no source or test file changed", name)
+		if p.source == nil && p.test == nil && p.example == nil {
+			fail("generation report marks %q updated, but no source, test or example file changed", name)
 		}
 		if p.source != nil && p.source.added {
 			fail("generation report marks %q updated, but its source file is newly added", name)
@@ -533,11 +547,11 @@ func validatePlan(name string, p *artifactPlan, reportRequired bool) (model.Arti
 			fail("updated artifact %q also removes files: %s", name, strings.Join(p.removed, ", "))
 		}
 	case model.ArtifactStatusRetired:
-		if p.source != nil || p.test != nil || p.doc != nil {
+		if p.source != nil || p.test != nil || p.doc != nil || p.example != nil {
 			fail("retired artifact %q contains added or modified self-contained files", name)
 		}
 	case model.ArtifactStatusRetireBlocked:
-		if p.source != nil || p.test != nil || p.doc != nil || len(p.removed) > 0 {
+		if p.source != nil || p.test != nil || p.doc != nil || p.example != nil || len(p.removed) > 0 {
 			fail("retire_blocked artifact %q unexpectedly changes files", name)
 		}
 	case model.ArtifactStatusRegistrationRetired:
@@ -572,11 +586,12 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 	}
 
 	type accumulated struct {
-		mainSeen    bool
-		mainStatus  model.ArtifactStatus
-		testChanged bool
-		diagnostics []model.Diagnostic
-		constructor string
+		mainSeen       bool
+		mainStatus     model.ArtifactStatus
+		testChanged    bool
+		exampleChanged bool
+		diagnostics    []model.Diagnostic
+		constructor    string
 	}
 	acc := map[string]*accumulated{}
 	for _, entry := range report.Artifacts {
@@ -603,6 +618,12 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 			}
 			continue
 		}
+		if base == "data-source.tf" && filepath.Base(filepath.Dir(entry.Path)) == "datadog_"+entry.Name {
+			if entry.Status == model.ArtifactStatusCreated || entry.Status == model.ArtifactStatusUpdated {
+				a.exampleChanged = true
+			}
+			continue
+		}
 		if base != "" && base != "data_source_datadog_"+entry.Name+".go" &&
 			entry.Status != model.ArtifactStatusRetired &&
 			entry.Status != model.ArtifactStatusRetireBlocked &&
@@ -621,13 +642,13 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 	out := map[string]generationArtifact{}
 	for name, a := range acc {
 		if !a.mainSeen {
-			if a.testChanged {
-				return nil, fmt.Errorf("generation report has a changed test for %q without a data-source entry", name)
+			if a.testChanged || a.exampleChanged {
+				return nil, fmt.Errorf("generation report has a changed auxiliary file for %q without a data-source entry", name)
 			}
 			continue
 		}
 		status := a.mainStatus
-		if status == model.ArtifactStatusUnchanged && a.testChanged {
+		if status == model.ArtifactStatusUnchanged && (a.testChanged || a.exampleChanged) {
 			status = model.ArtifactStatusUpdated
 		}
 		switch status {
@@ -738,9 +759,10 @@ func diffTrees(baseDir, genDir string) (changed []changedFile, deleted []string,
 	return changed, deleted, nil
 }
 
-// scopedFiles returns every file under provider/docs plus only generated
-// data-source tests and provider_test.go. This preserves fail-loud attribution
-// without making unrelated test-suite or cassette drift part of the split.
+// scopedFiles returns every file under provider/docs/examples plus only
+// generated data-source tests and provider_test.go. This preserves fail-loud
+// attribution without making unrelated test-suite or cassette drift part of
+// the split.
 func scopedFiles(root string) ([]string, error) {
 	var out []string
 	for _, scope := range diffDirectoryScopes {

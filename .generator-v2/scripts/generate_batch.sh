@@ -73,7 +73,7 @@ die() {
 restore_base() {
   if [[ "${MUTATED:-0}" -eq 1 ]]; then
     git reset --hard >/dev/null 2>&1 || true
-    git clean -fdq datadog/fwprovider datadog/tests docs/data-sources >/dev/null 2>&1 || true
+    git clean -fdq datadog/fwprovider datadog/tests docs/data-sources examples/data-sources >/dev/null 2>&1 || true
   fi
   if [[ -n "${ORIG_BRANCH:-}" ]]; then
     git checkout -f "$ORIG_BRANCH" >/dev/null 2>&1 || true
@@ -295,6 +295,10 @@ mapfile -t BLOCKED  < <(ds_names retire_blocked)
 # Stage: docs — regenerate, keep only impacted pages, revert unrelated drift
 # ---------------------------------------------------------------------------
 STAGE="docs"
+for n in "${CREATED[@]}" "${UPDATED[@]}"; do
+  [[ -z "$n" ]] && continue
+  [[ -f "examples/data-sources/datadog_${n}/data-source.tf" ]] || die "tfgen produced no example for '$n'"
+done
 make docs >&2 || die "make docs failed"
 
 # Pages we intend to change: created/updated stay (present), retired stay deleted.
@@ -438,7 +442,7 @@ process_artifact() {
     err="$1"; jlog "artifact '$name' failed: $err"
     if [[ "$branch_created" -eq 1 ]]; then
       git reset --hard >/dev/null 2>&1 || true
-      git clean -fdq datadog/fwprovider datadog/tests docs/data-sources >/dev/null 2>&1 || true
+      git clean -fdq datadog/fwprovider datadog/tests docs/data-sources examples/data-sources >/dev/null 2>&1 || true
       git checkout -f "$ORIG_BRANCH" >/dev/null 2>&1 || true
       [[ "$committed" -eq 0 ]] && git branch -D "$branch" >/dev/null 2>&1 || true
     fi
@@ -474,6 +478,8 @@ process_artifact() {
     if [[ "$(jq -r '.summary.failed // 0' "$report")" != "0" ]]; then
       rm -f "$report"; pa_fail "scoped re-emit reported a failed artifact"; return 1
     fi
+    [[ -f "examples/data-sources/datadog_${name}/data-source.tf" ]] \
+      || { rm -f "$report"; pa_fail "scoped re-emit produced no example for '$name'"; return 1; }
     cp "$CAPTURE_DIR/${name}.md" "docs/data-sources/${name}.md" 2>/dev/null \
       || { rm -f "$report"; pa_fail "captured docs page missing for '$name'"; return 1; }
   fi
@@ -482,10 +488,11 @@ process_artifact() {
   local go_f="datadog/fwprovider/data_source_datadog_${name}.go"
   local test_f="datadog/tests/data_source_datadog_${name}_test.go"
   local doc_f="docs/data-sources/${name}.md"
+  local example_f="examples/data-sources/datadog_${name}/data-source.tf"
   local reg_f="datadog/fwprovider/datasources_generated.go"
   local pt_f="datadog/tests/provider_test.go"
   declare -A allow=()
-  allow["$go_f"]=1; allow["$test_f"]=1; allow["$doc_f"]=1; allow["$reg_f"]=1
+  allow["$go_f"]=1; allow["$test_f"]=1; allow["$doc_f"]=1; allow["$example_f"]=1; allow["$reg_f"]=1
   # Every action touches provider_test.go's testFiles2EndpointTags: generate adds
   # the entry, retire removes it.
   allow["$pt_f"]=1
@@ -566,7 +573,7 @@ process_artifact() {
   fi
   rm -f "$report"
 
-  git add -A "$go_f" "$test_f" "$reg_f" "$pt_f" "$doc_f" datadog/fwprovider/framework_provider.go >/dev/null 2>&1 || true
+  git add -A "$go_f" "$test_f" "$reg_f" "$pt_f" "$doc_f" "$example_f" datadog/fwprovider/framework_provider.go >/dev/null 2>&1 || true
   git commit -m "$title (generated)" >&2 || { rm -f "$body_file"; pa_fail "git commit failed"; return 1; }
   committed=1
 
@@ -592,8 +599,11 @@ process_artifact() {
 # build_generate_body — writes the add/update PR body to a temp file, prints path.
 build_generate_body() {
   local name="$1" svc="$2" action="$3" test_func="$4" test_f="$5" risk_callout="$6" bullets="$7" warn_md="$8" howto="$9"
-  local f; f="$(mktemp -t tfgen-batch-body.XXXXXX.md)"
+  local f example_line=""; f="$(mktemp -t tfgen-batch-body.XXXXXX.md)"
   local verb_lc="added"; [[ "$action" == "updated" ]] && verb_lc="updated"
+  if [[ -n "$(git status --porcelain -- "examples/data-sources/datadog_${name}/data-source.tf")" ]]; then
+    example_line="- \`examples/data-sources/datadog_${name}/data-source.tf\` — supplies the tfplugindocs example"
+  fi
   cat >"$f" <<EOF
 ${DISCLAIMER_TOP}
 
@@ -616,6 +626,7 @@ a batch that keeps the generated set in lockstep with the spec. It is registered
 ### Generated
 - \`datadog/fwprovider/data_source_datadog_${name}.go\`
 - \`datadog/tests/data_source_datadog_${name}_test.go\`
+${example_line}
 - \`datadog/fwprovider/datasources_generated.go\` — registers the constructor
 - \`datadog/tests/provider_test.go\` — registers the test's endpoint tag
 - \`docs/data-sources/${name}.md\`
@@ -639,22 +650,27 @@ EOF
 # build_retire_body — writes the retirement PR body to a temp file, prints path.
 build_retire_body() {
   local name="$1"
-  local f; f="$(mktemp -t tfgen-batch-body.XXXXXX.md)"
+  local f example_line=""; f="$(mktemp -t tfgen-batch-body.XXXXXX.md)"
+  if [[ -n "$(git status --porcelain -- "examples/data-sources/datadog_${name}/data-source.tf")" ]]; then
+    example_line="- \`examples/data-sources/datadog_${name}/data-source.tf\`"
+  fi
   cat >"$f" <<EOF
 ${DISCLAIMER_TOP}
 
 ## Retire ${name} data source (generator-v2)
 
 The \`x-datadog-tf-generator\` annotation for \`datadog_${name}\` is no longer present in the
-spec, so tfgen retired it: this PR deletes the generated data source, its test scaffold and its
-docs page, and removes the constructor from \`datasources_generated.go\`. No recorded cassette
-was found for it, so it was never verified toward release and is safe to remove.
+spec, so tfgen retired it: this PR deletes the generated data source, its test scaffold, generated
+example when present, and docs page, and removes the constructor from
+\`datasources_generated.go\`. No recorded cassette was found for it, so it was never verified
+toward release and is safe to remove.
 
 **Spec hash:** \`${SPEC_HASH:-unknown}\`
 
 ### Removed
 - \`datadog/fwprovider/data_source_datadog_${name}.go\`
 - \`datadog/tests/data_source_datadog_${name}_test.go\`
+${example_line}
 - \`datadog/fwprovider/datasources_generated.go\` — constructor removed
 - \`datadog/tests/provider_test.go\` — test's endpoint tag removed
 - \`docs/data-sources/${name}.md\`

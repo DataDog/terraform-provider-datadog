@@ -78,24 +78,59 @@ var _ = Describe("BuildArtifact plural", func() {
 		Expect(names).To(Equal([]string{"filter_keyword", "filter_me", "response.data"}))
 		Expect(types).To(Equal([]string{"schema.StringAttribute", "schema.BoolAttribute", "schema.ListNestedBlock"}))
 
-		// Filter leaves are Optional inputs, not Computed.
+		// Filter leaves remain Optional inputs and are not Computed.
 		Expect(art.Schema.Attributes[0].Optional).To(BeTrue())
 		Expect(art.Schema.Attributes[0].Computed).To(BeFalse())
+		Expect(art.Schema.Attributes[1].Required).To(BeFalse())
+		Expect(art.Schema.Attributes[1].Optional).To(BeTrue())
+	})
+
+	It("reports required query parameters that remain optional filters", func() {
+		op := listThingsOp()
+		op.QueryParams[0].Required = true
+
+		art, err := BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		Expect(art.Schema.Attributes[0].Optional).To(BeTrue())
+		var msgs []string
+		for _, d := range art.Diagnostics {
+			msgs = append(msgs, d.Message)
+		}
+		Expect(msgs).To(ContainElement(ContainSubstring(
+			`required query parameter "filter[keyword]" is represented as an optional Terraform filter`,
+		)))
 	})
 
 	It("excludes pagination params and drops array/enum params with an info diagnostic", func() {
 		art, err := BuildArtifact(listThingsOp())
 		Expect(err).NotTo(HaveOccurred())
 
-		// page[number]/page[size] excluded silently; include (array) + sort (enum) dropped + logged.
+		// page[number]/page[size] excluded silently; include (array), sort
+		// (enum), and the required filter are logged.
 		var msgs []string
 		for _, d := range art.Diagnostics {
 			Expect(d.Severity).To(Equal(SeverityInfo))
 			msgs = append(msgs, d.Message)
 		}
-		Expect(msgs).To(HaveLen(2))
+		Expect(msgs).To(HaveLen(3))
 		Expect(msgs).To(ContainElement(ContainSubstring(`"include"`)))
 		Expect(msgs).To(ContainElement(ContainSubstring(`"sort"`)))
+		Expect(msgs).To(ContainElement(ContainSubstring(`required query parameter "filter[me]"`)))
+	})
+
+	It("identifies a dropped required query parameter in its diagnostic", func() {
+		op := listThingsOp()
+		op.QueryParams[2].Required = true // include: unsupported array-valued filter
+
+		art, err := BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+
+		var msgs []string
+		for _, d := range art.Diagnostics {
+			msgs = append(msgs, d.Message)
+		}
+		Expect(msgs).To(ContainElement(ContainSubstring(`dropped required query parameter "include"`)))
 	})
 
 	It("produces a deeply-equal plural artifact across two runs", func() {
