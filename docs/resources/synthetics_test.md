@@ -1337,6 +1337,7 @@ Optional:
 - `form` (Map of String) Form data to be sent when `body_type` is `multipart/form-data`.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
+- `ignore_certificate_validation` (Boolean) Ignore server certificate error for SSL tests.
 - `is_message_base64_encoded` (Boolean) For Websocket tests, whether the message is treated as a base64-encoded string in the server.
 - `max_ttl` (Number) For Network Path tests, the maximum time-to-live (max number of hops) used in outgoing probe packets.
 - `mcp_protocol_version` (String) For MCP API steps, the MCP protocol version used by the request.
