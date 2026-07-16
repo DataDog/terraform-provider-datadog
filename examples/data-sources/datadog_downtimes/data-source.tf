@@ -1,1 +1,3 @@
-data "datadog_downtimes" "example" {}
+data "datadog_downtimes" "example" {
+  current_only = true
+}
