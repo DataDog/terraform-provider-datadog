@@ -77,8 +77,8 @@ func TestAccDatadogCostCustomForecast_Update(t *testing.T) {
 
 func TestAccDatadogCostCustomForecast_NegativeAmountRejected(t *testing.T) {
 	t.Parallel()
-	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	budgetName := uniqueEntityName(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	budgetName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
