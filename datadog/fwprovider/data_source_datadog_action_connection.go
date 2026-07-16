@@ -188,7 +188,7 @@ func (d *actionConnectionDatasource) Read(ctx context.Context, request datasourc
 		return
 	}
 
-	connModel, err, httpStatusCode := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
+	connModel, httpStatusCode, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
 	if err != nil {
 		if httpStatusCode == http.StatusNotFound {
 			// If the connection is not found, we log a warning and remove the resource from state. This may be due to changes outside of Terraform.
