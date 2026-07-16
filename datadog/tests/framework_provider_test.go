@@ -69,6 +69,7 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	// Enable Custom Forecast
 	config.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
 	config.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	config.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
 
 	// Enable Observability Pipelines
 	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)

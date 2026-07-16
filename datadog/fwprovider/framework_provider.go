@@ -692,6 +692,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	// Enable Custom Forecast
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
