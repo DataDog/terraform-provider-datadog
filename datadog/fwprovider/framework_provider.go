@@ -689,6 +689,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
 
+	// Enable Custom Forecast
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetPipeline", true)
