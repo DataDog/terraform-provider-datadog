@@ -2541,6 +2541,7 @@ Required:
 Optional:
 
 - `per_metric_limit` (Block List) Per-metric cardinality overrides that take precedence over the default `value_limit`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit))
+- `tracking_mode` (Block List) Controls whether the processor uses exact or probabilistic tag tracking. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--tracking_mode))
 
 <a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit"></a>
 ### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit`
@@ -2548,26 +2549,34 @@ Optional:
 Required:
 
 - `metric_name` (String) The metric name this override applies to.
-- `mode` (String) How the per-metric override is applied. One of `tracked`, `excluded`. Valid values are `tracked`, `excluded`.
+- `override_type` (String) How the per-metric override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
 
 Optional:
 
-- `limit_exceeded_action` (String) The action to take on this metric when the limit is exceeded. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Valid values are `drop_tag`, `drop_event`.
-- `per_tag_limit` (Block List) Per-tag cardinality overrides that apply within this metric. Must be omitted when `mode` is `excluded`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit))
-- `value_limit` (Number) The cardinality cap for this metric. Required when `mode` is `tracked`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+- `limit_exceeded_action` (String) The action to take on this metric when the limit is exceeded. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`. Valid values are `drop_tag`, `drop_event`.
+- `per_tag_limit` (Block List) Per-tag cardinality overrides that apply within this metric. Must be omitted when `override_type` is `excluded`. (see [below for nested schema](#nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit))
+- `value_limit` (Number) The cardinality cap for this metric. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`. Value must be between 0 and 1000000.
 
 <a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--per_metric_limit--per_tag_limit"></a>
 ### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.per_metric_limit.per_tag_limit`
 
 Required:
 
-- `mode` (String) How the per-tag override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
+- `override_type` (String) How the per-tag override is applied. One of `limit_override`, `excluded`. Valid values are `limit_override`, `excluded`.
 - `tag_key` (String) The tag key this override applies to.
 
 Optional:
 
-- `value_limit` (Number) The cardinality cap for this tag. Required when `mode` is `limit_override`; must be omitted when `mode` is `excluded`. Value must be between 0 and 1000000.
+- `value_limit` (Number) The cardinality cap for this tag. Required when `override_type` is `limit_override`; must be omitted when `override_type` is `excluded`. Value must be between 0 and 1000000.
 
+
+
+<a id="nestedblock--config--processor_group--processor--tag_cardinality_limit--tracking_mode"></a>
+### Nested Schema for `config.processor_group.processor.tag_cardinality_limit.tracking_mode`
+
+Required:
+
+- `mode` (String) The cardinality tracking algorithm to use. One of `exact_fingerprint`, `probabilistic`. Valid values are `exact_fingerprint`, `probabilistic`.
 
 
 
