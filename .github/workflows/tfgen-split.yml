@@ -363,6 +363,10 @@ jobs:
             done
             test_function="TestAccDatadog${pascal_name}DataSource"
             test_file="datadog/tests/data_source_datadog_${name}_test.go"
+            example_warnings="$(jq -r --arg name "$name" \
+              '.artifacts[] | select(.name == $name) | .diagnostics[]?
+               | select(.severity == "warning" and (.message | startswith("generated example for")))
+               | "> - " + .message' "$PLAN_PATH")"
             body_file="$(mktemp)"
             if [[ "$status" == "retired" ]]; then
               {
@@ -406,6 +410,15 @@ jobs:
           > merge until an acceptance test is recorded and replays green against the Frog org. A clean
           > build and a successful split report do **not** prove runtime correctness.
           BODY_HEADER
+              if [[ -n "$example_warnings" ]]; then
+                cat <<'EXAMPLE_WARN_HEADER'
+
+          > 🚨 **Manual `Example Usage` required — do not merge as-is.** tfgen could not render a
+          > complete example for this data source. The committed `data-source.tf` (listed below) is a
+          > placeholder; replace it with a real, working example before merging:
+          EXAMPLE_WARN_HEADER
+                printf '%s\n' "$example_warnings"
+              fi
               printf '\n## %s data source (generator-v2)\n\n' "$name"
               printf 'This data source was %s by tfgen and routed from an aggregate upstream generation run.\n' "$status"
               printf 'The split, documentation generation, and compile/format gate completed successfully.\n\n'

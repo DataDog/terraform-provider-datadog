@@ -3,6 +3,8 @@ package emit
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
 var _ = Describe("data-source examples", func() {
@@ -26,11 +28,35 @@ var _ = Describe("data-source examples", func() {
 		Expect(got.Diagnostics).To(BeEmpty())
 	})
 
-	It("renders an unfiltered plural lookup", func() {
+	It("auto-selects a representative filter for an all-optional plural lookup", func() {
 		got := RenderDataSourceExample(pluralFixture())
 
-		Expect(string(got.Content)).To(Equal("data \"datadog_teams\" \"example\" {}\n"))
-		Expect(got.Diagnostics).To(BeEmpty())
+		Expect(string(got.Content)).To(Equal(`data "datadog_teams" "example" {
+  filter_keyword = "example"
+}
+`))
+		Expect(got.Diagnostics).To(ConsistOf(model.Diagnostic{
+			Severity: model.SeverityInfo,
+			Message:  `generated example for "teams" uses an auto-selected optional filter; confirm it is representative and add others as needed`,
+		}))
+	})
+
+	It("reports and leaves an empty block when a plural shape has no renderable scalar filter", func() {
+		view := DataSourceView{
+			Cardinality: Plural,
+			TypeName:    "widgets",
+			Schema: SchemaView{Attributes: []AttrView{
+				{TFName: "filter_ids", TFType: "schema.ListAttribute", Optional: true},
+			}},
+		}
+
+		got := RenderDataSourceExample(view)
+
+		Expect(string(got.Content)).To(Equal("data \"datadog_widgets\" \"example\" {}\n"))
+		Expect(got.Diagnostics).To(ConsistOf(model.Diagnostic{
+			Severity: model.SeverityWarning,
+			Message:  `generated example for "widgets" may be incomplete: all inputs are optional and none is a renderable scalar; a usable filter must be added by hand`,
+		}))
 	})
 
 	It("uses type-appropriate, terraform-formatted filter placeholders", func() {
@@ -91,8 +117,14 @@ var _ = Describe("data-source examples", func() {
 		got := RenderDataSourceExample(view)
 		Expect(string(got.Content)).To(Equal("data \"datadog_widgets\" \"example\" {}\n"))
 		Expect(got.Diagnostics).To(ConsistOf(
-			`generated example for "widgets" may be incomplete: required attribute "account_ids" has unsupported type "schema.ListAttribute"`,
-			`generated example for "widgets" may be incomplete: required block "scope" cannot be rendered`,
+			model.Diagnostic{
+				Severity: model.SeverityWarning,
+				Message:  `generated example for "widgets" may be incomplete: required attribute "account_ids" has unsupported type "schema.ListAttribute"`,
+			},
+			model.Diagnostic{
+				Severity: model.SeverityWarning,
+				Message:  `generated example for "widgets" may be incomplete: required block "scope" cannot be rendered`,
+			},
 		))
 	})
 
@@ -100,9 +132,10 @@ var _ = Describe("data-source examples", func() {
 		got := RenderDataSourceExample(DataSourceView{Cardinality: Singular, TypeName: "widgets"})
 
 		Expect(string(got.Content)).To(Equal("data \"datadog_widgets\" \"example\" {}\n"))
-		Expect(got.Diagnostics).To(ConsistOf(
-			`generated example for "widgets" may be incomplete: singular lookup has neither by-ID nor searchable resolution`,
-		))
+		Expect(got.Diagnostics).To(ConsistOf(model.Diagnostic{
+			Severity: model.SeverityWarning,
+			Message:  `generated example for "widgets" may be incomplete: singular lookup has neither by-ID nor searchable resolution`,
+		}))
 	})
 
 	It("renders deterministically", func() {
