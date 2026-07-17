@@ -24,7 +24,7 @@ jobs:
         id: get_token
         uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
         with:
-          scope: DataDog/terraform-provider-datadog
+          scope: ${{ github.repository }}
           policy: self.release.create-release
           pool_name: dd-api-reliability
       - name: Create tag
