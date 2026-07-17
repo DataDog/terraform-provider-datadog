@@ -47,6 +47,7 @@ jobs:
           go-version: "1.23"
       - name: Import GPG key
         id: import_gpg
+        if: ${{ secrets.GPG_PRIVATE_KEY != '' }}
         uses: paultyng/ghaction-import-gpg@53deb67fe3b05af114ad9488a4da7b782455d588
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -57,5 +58,5 @@ jobs:
           version: latest
           args: release --clean
         env:
-          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GPG_FINGERPRINT: ${{ secrets.GPG_PRIVATE_KEY != '' && steps.import_gpg.outputs.fingerprint || '' }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
