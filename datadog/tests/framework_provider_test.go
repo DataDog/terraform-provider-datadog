@@ -66,6 +66,11 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
 
+	// Enable Custom Forecast
+	config.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
+	config.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	config.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
+
 	// Enable Observability Pipelines
 	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)
 	config.SetUnstableOperationEnabled("v2.GetPipeline", true)

@@ -123,6 +123,7 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
+	NewCostCustomForecastResource,
 	NewTagPipelineRulesetResource,
 	NewTagPipelineRulesetsResource,
 	NewSecureEmbedDashboardResource,
@@ -189,6 +190,7 @@ var Datasources = []func() datasource.DataSource{
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 	NewCostBudgetDataSource,
+	NewCostCustomForecastDataSource,
 	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
@@ -686,6 +688,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable Custom Forecast
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
