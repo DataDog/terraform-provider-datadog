@@ -179,6 +179,7 @@ var Datasources = []func() datasource.DataSource{
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
+	NewDatadogRolePermissionsDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewSecurityMonitoringCriticalAssetDataSource,
 	NewSecurityMonitoringCriticalAssetsDataSource,
