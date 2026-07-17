@@ -20,20 +20,12 @@ jobs:
     environment: release
     if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/')
     steps:
-      - name: Get GitHub App token
-        id: get_token
-        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
-        with:
-          scope: ${{ github.repository }}
-          policy: self.release.create-release
-          pool_name: dd-api-reliability
       - name: Create tag
         id: create_tag
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         env:
           RELEASE_BRANCH: ${{ github.head_ref }}
         with:
-          github-token: ${{ steps.get_token.outputs.token }}
           script: |
             const tagName = `v${process.env.RELEASE_BRANCH.split("/")[1]}`;
             await github.rest.git.createRef({
