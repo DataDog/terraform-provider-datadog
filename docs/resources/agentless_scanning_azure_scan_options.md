@@ -16,8 +16,9 @@ Provides a Datadog Agentless Scanning Azure scan options resource. This can be u
 # Configure agentless scanning for an Azure subscription
 resource "datadog_agentless_scanning_azure_scan_options" "example" {
   azure_subscription_id = "12345678-1234-1234-1234-123456789012"
-  vuln_containers_os    = true
-  vuln_host_os          = true
+  function               = true
+  vuln_containers_os     = true
+  vuln_host_os           = true
   # compliance_host  = true  # Optional. Defaults to false. Enables host compliance benchmark scanning.
 }
 ```
@@ -28,6 +29,7 @@ resource "datadog_agentless_scanning_azure_scan_options" "example" {
 ### Required
 
 - `azure_subscription_id` (String) The Azure subscription ID for which agentless scanning is configured. Must be a valid Azure subscription ID (UUID format).
+- `function` (Boolean) Indicates if scanning of Azure Functions is enabled.
 - `vuln_containers_os` (Boolean) Indicates if scanning for vulnerabilities in containers is enabled.
 - `vuln_host_os` (Boolean) Indicates if scanning for vulnerabilities in hosts is enabled.
 
