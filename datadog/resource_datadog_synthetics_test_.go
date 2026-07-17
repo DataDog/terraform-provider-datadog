@@ -1203,6 +1203,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema.Schema["accept_self_signed"] = syntheticsTestAcceptSelfSigned()
 	requestElemSchema.Schema["check_certificate_revocation"] = syntheticsTestCheckCertificateRevocation()
 	requestElemSchema.Schema["disable_aia_intermediate_fetching"] = syntheticsTestDisableAiaIntermediateFetching()
+	requestElemSchema.Schema["ignore_certificate_validation"] = syntheticsTestIgnoreCertificateValidation()
 	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
@@ -3470,6 +3471,9 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) (*datadogV1.Synthetic
 						}
 						if v, ok := requestMap["disable_aia_intermediate_fetching"].(bool); ok {
 							request.SetDisableAiaIntermediateFetching(v)
+						}
+						if v, ok := requestMap["ignore_certificate_validation"].(bool); ok {
+							request.SetIgnoreCertificateValidation(v)
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "tcp" {
 						request.SetHost(requestMap["host"].(string))
@@ -5919,6 +5923,9 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[str
 	}
 	if request.HasDisableAiaIntermediateFetching() {
 		localRequest["disable_aia_intermediate_fetching"] = request.GetDisableAiaIntermediateFetching()
+	}
+	if request.HasIgnoreCertificateValidation() {
+		localRequest["ignore_certificate_validation"] = request.GetIgnoreCertificateValidation()
 	}
 	if request.HasIsMessageBase64Encoded() {
 		localRequest["is_message_base64_encoded"] = request.GetIsMessageBase64Encoded()
