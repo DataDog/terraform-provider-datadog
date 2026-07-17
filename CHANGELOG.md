@@ -1,3 +1,8 @@
+## 4.16.1 (July 17, 2026)
+
+### FEATURES
+* [datadog_role_permissions] resource to query permissions assigned to a role by @mattclegg in https://github.com/DataDog/terraform-provider-datadog/pull/3987
+
 ## 4.16 (July 15, 2026)
 
 ### BUGFIXES
