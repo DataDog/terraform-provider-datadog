@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -143,6 +144,114 @@ func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
 	})
 }
 
+func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
+	skipIfNoCassette(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	mUniq := metricSafeUniq(uniq)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagIndexingRuleDestroy(ctx, providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogTagIndexingRuleConfigExcludeUsage(uniq, mUniq),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.exclude", "exclude_tags_mode", "true"),
+					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.exclude", "options.data.dynamic_tags.exclude_not_queried_window_seconds", "604800"),
+					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.exclude", "options.data.dynamic_tags.exclude_not_used_in_assets", "true"),
+				),
+			},
+			{
+				ResourceName:            "datadog_tag_indexing_rule.exclude",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"modified_at"},
+			},
+		},
+	})
+}
+
+// TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet sets only
+// exclude_not_used_in_assets, leaving exclude_not_queried_window_seconds null. The framework's
+// automatic post-apply plan check fails the test if the null-preserving flatten in updateState were
+// to normalize the unset window to a zero value ("inconsistent result after apply").
+func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *testing.T) {
+	skipIfNoCassette(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	mUniq := metricSafeUniq(uniq)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagIndexingRuleDestroy(ctx, providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogTagIndexingRuleConfigExcludeUsageBoolOnly(uniq, mUniq),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("datadog_tag_indexing_rule.exclude_bool_only", "options.data.dynamic_tags.exclude_not_used_in_assets", "true"),
+					resource.TestCheckNoResourceAttr("datadog_tag_indexing_rule.exclude_bool_only", "options.data.dynamic_tags.exclude_not_queried_window_seconds"),
+				),
+			},
+		},
+	})
+}
+
+// TestAccDatadogTagIndexingRule_ExcludeMode_Update locks in that buildUpdateRequest always sends
+// exclude_tags_mode on update: the backend 400s an update touching exclude_not_* fields unless
+// exclude_tags_mode is explicit in the body (apiv2handler.go:1312), so this step failing would
+// signal a regression to a conditional SetExcludeTagsMode call.
+func TestAccDatadogTagIndexingRule_ExcludeMode_Update(t *testing.T) {
+	skipIfNoCassette(t)
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	mUniq := metricSafeUniq(uniq)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagIndexingRuleDestroy(ctx, providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogTagIndexingRuleConfigExcludeUsage(uniq, mUniq),
+				Check:  resource.TestCheckResourceAttr("datadog_tag_indexing_rule.exclude", "options.data.dynamic_tags.exclude_not_queried_window_seconds", "604800"),
+			},
+			{
+				Config: testAccCheckDatadogTagIndexingRuleConfigExcludeUsageUpdated(uniq, mUniq),
+				Check:  resource.TestCheckResourceAttr("datadog_tag_indexing_rule.exclude", "options.data.dynamic_tags.exclude_not_queried_window_seconds", "1209600"),
+			},
+		},
+	})
+}
+
+// TestAccDatadogTagIndexingRule_ExcludeMode_ValidateConfig proves the plan-time ValidateConfig
+// block fires (with no API call) when an exclude_not_* usage field is set but exclude_tags_mode
+// is left at its false default.
+func TestAccDatadogTagIndexingRule_ExcludeMode_ValidateConfig(t *testing.T) {
+	skipIfNoCassette(t)
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+	mUniq := metricSafeUniq(uniq)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogTagIndexingRuleConfigExcludeUsageWithoutMode(uniq, mUniq),
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile(`require exclude_tags_mode to be true`),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogTagIndexingRuleDestroy(ctx context.Context, frameworkProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := frameworkProvider.DatadogApiInstances
@@ -186,6 +295,81 @@ resource "datadog_tag_indexing_rule" "foo" {
   metric_name_matches = ["tf.test.%s.*"]
   tags                = ["env", "service"]
   exclude_tags_mode   = false
+}`, uniq, mUniq)
+}
+
+func testAccCheckDatadogTagIndexingRuleConfigExcludeUsage(uniq, mUniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_indexing_rule" "exclude" {
+  name                = "tf-test-tag-indexing-exclude-%s"
+  metric_name_matches = ["tf.test.exclude.%s.*"]
+  tags                = ["env"]
+  exclude_tags_mode   = true
+
+  options = {
+    version = 1
+    data = {
+      dynamic_tags = {
+        exclude_not_queried_window_seconds = 604800
+        exclude_not_used_in_assets         = true
+      }
+    }
+  }
+}`, uniq, mUniq)
+}
+
+func testAccCheckDatadogTagIndexingRuleConfigExcludeUsageUpdated(uniq, mUniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_indexing_rule" "exclude" {
+  name                = "tf-test-tag-indexing-exclude-%s"
+  metric_name_matches = ["tf.test.exclude.%s.*"]
+  tags                = ["env"]
+  exclude_tags_mode   = true
+
+  options = {
+    version = 1
+    data = {
+      dynamic_tags = {
+        exclude_not_queried_window_seconds = 1209600
+        exclude_not_used_in_assets         = true
+      }
+    }
+  }
+}`, uniq, mUniq)
+}
+
+func testAccCheckDatadogTagIndexingRuleConfigExcludeUsageBoolOnly(uniq, mUniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_indexing_rule" "exclude_bool_only" {
+  name                = "tf-test-tag-indexing-exclude-bool-only-%s"
+  metric_name_matches = ["tf.test.exclude.bool.only.%s.*"]
+  exclude_tags_mode   = true
+
+  options = {
+    version = 1
+    data = {
+      dynamic_tags = {
+        exclude_not_used_in_assets = true
+      }
+    }
+  }
+}`, uniq, mUniq)
+}
+
+func testAccCheckDatadogTagIndexingRuleConfigExcludeUsageWithoutMode(uniq, mUniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_tag_indexing_rule" "exclude_invalid" {
+  name                = "tf-test-tag-indexing-exclude-invalid-%s"
+  metric_name_matches = ["tf.test.exclude.invalid.%s.*"]
+
+  options = {
+    version = 1
+    data = {
+      dynamic_tags = {
+        exclude_not_used_in_assets = true
+      }
+    }
+  }
 }`, uniq, mUniq)
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -11,14 +12,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &tagIndexingRuleResource{}
-	_ resource.ResourceWithImportState = &tagIndexingRuleResource{}
+	_ resource.ResourceWithConfigure      = &tagIndexingRuleResource{}
+	_ resource.ResourceWithImportState    = &tagIndexingRuleResource{}
+	_ resource.ResourceWithValidateConfig = &tagIndexingRuleResource{}
 )
 
 type tagIndexingRuleResource struct {
@@ -50,20 +53,11 @@ type tagIndexingRuleOptionsDataModel struct {
 	OverridePreviousRules    types.Bool                       `tfsdk:"override_previous_rules"`
 	ManagePreexistingMetrics types.Bool                       `tfsdk:"manage_preexisting_metrics"`
 	DynamicTags              *tagIndexingRuleDynamicTagsModel `tfsdk:"dynamic_tags"`
-	MetricMatch              *tagIndexingRuleMetricMatchModel `tfsdk:"metric_match"`
 }
 
 type tagIndexingRuleDynamicTagsModel struct {
-	QueriedTagsWindowSeconds types.Int64 `tfsdk:"queried_tags_window_seconds"`
-	RelatedAssetTags         types.Bool  `tfsdk:"related_asset_tags"`
-}
-
-type tagIndexingRuleMetricMatchModel struct {
-	IsQueried            types.Bool  `tfsdk:"is_queried"`
-	NotQueried           types.Bool  `tfsdk:"not_queried"`
-	NotUsedInAssets      types.Bool  `tfsdk:"not_used_in_assets"`
-	QueriedWindowSeconds types.Int64 `tfsdk:"queried_window_seconds"`
-	UsedInAssets         types.Bool  `tfsdk:"used_in_assets"`
+	ExcludeNotQueriedWindowSeconds types.Int64 `tfsdk:"exclude_not_queried_window_seconds"`
+	ExcludeNotUsedInAssets         types.Bool  `tfsdk:"exclude_not_used_in_assets"`
 }
 
 func NewTagIndexingRuleResource() resource.Resource {
@@ -167,41 +161,18 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 							},
 							"dynamic_tags": schema.SingleNestedAttribute{
 								Optional:    true,
-								Description: "Configuration for including dynamically queried tags.",
+								Description: "Configuration for excluding tags based on dynamic usage signals. Only applies when `exclude_tags_mode` is `true`.",
 								Attributes: map[string]schema.Attribute{
-									"queried_tags_window_seconds": schema.Int64Attribute{
+									"exclude_not_queried_window_seconds": schema.Int64Attribute{
 										Optional:    true,
-										Description: "Lookback window for determining which tags were recently queried.",
+										Description: "Lookback window, in seconds, for excluding tags that were not queried in that period. Requires `exclude_tags_mode` to be `true`.",
+										Validators: []validator.Int64{
+											int64validator.Between(1, 7776000),
+										},
 									},
-									"related_asset_tags": schema.BoolAttribute{
+									"exclude_not_used_in_assets": schema.BoolAttribute{
 										Optional:    true,
-										Description: "When true, tags from related assets are included.",
-									},
-								},
-							},
-							"metric_match": schema.SingleNestedAttribute{
-								Optional:    true,
-								Description: "Criteria for matching metrics based on query state.",
-								Attributes: map[string]schema.Attribute{
-									"is_queried": schema.BoolAttribute{
-										Optional:    true,
-										Description: "Match metrics that are being queried.",
-									},
-									"not_queried": schema.BoolAttribute{
-										Optional:    true,
-										Description: "Match metrics that are not being queried.",
-									},
-									"not_used_in_assets": schema.BoolAttribute{
-										Optional:    true,
-										Description: "Match metrics not used in any dashboards or monitors.",
-									},
-									"queried_window_seconds": schema.Int64Attribute{
-										Optional:    true,
-										Description: "Window in seconds for evaluating query state.",
-									},
-									"used_in_assets": schema.BoolAttribute{
-										Optional:    true,
-										Description: "Match metrics used in dashboards or monitors.",
+										Description: "When true, excludes tags not used in any dashboards or monitors. Requires `exclude_tags_mode` to be `true`.",
 									},
 								},
 							},
@@ -215,6 +186,37 @@ func (r *tagIndexingRuleResource) Schema(_ context.Context, _ resource.SchemaReq
 
 func (r *tagIndexingRuleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+// ValidateConfig mirrors the backend's update-time check (apiv2handler.go:1312-1326) at plan time:
+// the exclude_not_* usage fields on dynamic_tags only take effect (and are only accepted by the API)
+// when exclude_tags_mode is true.
+func (r *tagIndexingRuleResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var config tagIndexingRuleModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if config.Options == nil || config.Options.Data == nil || config.Options.Data.DynamicTags == nil {
+		return
+	}
+
+	if config.ExcludeTagsMode.IsUnknown() {
+		return
+	}
+
+	dt := config.Options.Data.DynamicTags
+	usageFieldSet := (!dt.ExcludeNotQueriedWindowSeconds.IsNull() && !dt.ExcludeNotQueriedWindowSeconds.IsUnknown()) ||
+		(!dt.ExcludeNotUsedInAssets.IsNull() && !dt.ExcludeNotUsedInAssets.IsUnknown())
+
+	if usageFieldSet && !config.ExcludeTagsMode.ValueBool() {
+		response.Diagnostics.AddAttributeError(
+			frameworkPath.Root("exclude_tags_mode"),
+			"Invalid dynamic_tags usage configuration",
+			"options.data.dynamic_tags.exclude_not_queried_window_seconds and exclude_not_used_in_assets require exclude_tags_mode to be true.",
+		)
+	}
 }
 
 func (r *tagIndexingRuleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -347,19 +349,17 @@ func (r *tagIndexingRuleResource) updateState(_ context.Context, state *tagIndex
 				ManagePreexistingMetrics: types.BoolValue(d.GetManagePreexistingMetrics()),
 			}
 			if dt, ok := d.GetDynamicTagsOk(); ok && dt != nil {
-				dataModel.DynamicTags = &tagIndexingRuleDynamicTagsModel{
-					QueriedTagsWindowSeconds: types.Int64Value(int64(dt.GetQueriedTagsWindowSeconds())),
-					RelatedAssetTags:         types.BoolValue(dt.GetRelatedAssetTags()),
+				dtModel := &tagIndexingRuleDynamicTagsModel{
+					ExcludeNotQueriedWindowSeconds: types.Int64Null(),
+					ExcludeNotUsedInAssets:         types.BoolNull(),
 				}
-			}
-			if mm, ok := d.GetMetricMatchOk(); ok && mm != nil {
-				dataModel.MetricMatch = &tagIndexingRuleMetricMatchModel{
-					IsQueried:            types.BoolValue(mm.GetIsQueried()),
-					NotQueried:           types.BoolValue(mm.GetNotQueried()),
-					NotUsedInAssets:      types.BoolValue(mm.GetNotUsedInAssets()),
-					QueriedWindowSeconds: types.Int64Value(int64(mm.GetQueriedWindowSeconds())),
-					UsedInAssets:         types.BoolValue(mm.GetUsedInAssets()),
+				if v, ok := dt.GetExcludeNotQueriedWindowSecondsOk(); ok && v != nil {
+					dtModel.ExcludeNotQueriedWindowSeconds = types.Int64Value(*v)
 				}
+				if v, ok := dt.GetExcludeNotUsedInAssetsOk(); ok && v != nil {
+					dtModel.ExcludeNotUsedInAssets = types.BoolValue(*v)
+				}
+				dataModel.DynamicTags = dtModel
 			}
 			optModel.Data = dataModel
 		}
@@ -425,6 +425,10 @@ func (r *tagIndexingRuleResource) buildUpdateRequest(_ context.Context, state *t
 	state.MetricNameMatches.ElementsAs(context.Background(), &matches, false)
 	attrs.SetMetricNameMatches(matches)
 
+	// exclude_tags_mode is Optional+Computed+Default(false), so state.ExcludeTagsMode is always
+	// known by the time we get here. Do not make this conditional: the backend 400s an update that
+	// touches exclude_not_* fields unless exclude_tags_mode is explicitly present in the body
+	// (apiv2handler.go:1312).
 	if !state.ExcludeTagsMode.IsNull() && !state.ExcludeTagsMode.IsUnknown() {
 		attrs.SetExcludeTagsMode(state.ExcludeTagsMode.ValueBool())
 	}
@@ -465,33 +469,13 @@ func buildOptionsFromModel(m *tagIndexingRuleOptionsModel) datadogV2.TagIndexing
 
 		if m.Data.DynamicTags != nil {
 			dt := datadogV2.NewTagIndexingRuleDynamicTagsWithDefaults()
-			if !m.Data.DynamicTags.QueriedTagsWindowSeconds.IsNull() {
-				dt.SetQueriedTagsWindowSeconds(m.Data.DynamicTags.QueriedTagsWindowSeconds.ValueInt64())
+			if !m.Data.DynamicTags.ExcludeNotQueriedWindowSeconds.IsNull() {
+				dt.SetExcludeNotQueriedWindowSeconds(m.Data.DynamicTags.ExcludeNotQueriedWindowSeconds.ValueInt64())
 			}
-			if !m.Data.DynamicTags.RelatedAssetTags.IsNull() {
-				dt.SetRelatedAssetTags(m.Data.DynamicTags.RelatedAssetTags.ValueBool())
+			if !m.Data.DynamicTags.ExcludeNotUsedInAssets.IsNull() {
+				dt.SetExcludeNotUsedInAssets(m.Data.DynamicTags.ExcludeNotUsedInAssets.ValueBool())
 			}
 			d.SetDynamicTags(*dt)
-		}
-
-		if m.Data.MetricMatch != nil {
-			mm := datadogV2.NewTagIndexingRuleMetricMatchWithDefaults()
-			if !m.Data.MetricMatch.IsQueried.IsNull() {
-				mm.SetIsQueried(m.Data.MetricMatch.IsQueried.ValueBool())
-			}
-			if !m.Data.MetricMatch.NotQueried.IsNull() {
-				mm.SetNotQueried(m.Data.MetricMatch.NotQueried.ValueBool())
-			}
-			if !m.Data.MetricMatch.NotUsedInAssets.IsNull() {
-				mm.SetNotUsedInAssets(m.Data.MetricMatch.NotUsedInAssets.ValueBool())
-			}
-			if !m.Data.MetricMatch.QueriedWindowSeconds.IsNull() {
-				mm.SetQueriedWindowSeconds(m.Data.MetricMatch.QueriedWindowSeconds.ValueInt64())
-			}
-			if !m.Data.MetricMatch.UsedInAssets.IsNull() {
-				mm.SetUsedInAssets(m.Data.MetricMatch.UsedInAssets.ValueBool())
-			}
-			d.SetMetricMatch(*mm)
 		}
 
 		opts.SetData(*d)
