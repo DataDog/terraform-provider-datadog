@@ -347,16 +347,31 @@ func TestEmitDatasourceExampleSurfacesIncompleteScaffold(t *testing.T) {
 		t.Fatalf("unexpected example diagnostic: %#v", mainEntry.Diagnostics[0])
 	}
 
-	// Once a maintainer owns the example, regeneration skips it and must not
-	// report limitations from a scaffold that was not written.
-	preservedEntry := model.ArtifactReportEntry{Name: "widgets", Kind: model.ArtifactKindDataSource}
-	skipped := emitDatasourceExample(&preservedEntry, view, "widgets", examplesRoot, false)
-	if skipped.Status != model.ArtifactStatusSkipped {
-		t.Fatalf("preserved example status = %q, want skipped", skipped.Status)
-	}
-	if len(preservedEntry.Diagnostics) != 0 {
-		t.Fatalf("preserved example produced diagnostics: %#v", preservedEntry.Diagnostics)
-	}
+	t.Run("re-flags an untouched placeholder even though the write is skipped", func(t *testing.T) {
+		entry := model.ArtifactReportEntry{Name: "widgets", Kind: model.ArtifactKindDataSource}
+		skipped := emitDatasourceExample(&entry, view, "widgets", examplesRoot, false)
+		if skipped.Status != model.ArtifactStatusSkipped {
+			t.Fatalf("status = %q, want skipped", skipped.Status)
+		}
+		if len(entry.Diagnostics) != 1 {
+			t.Fatalf("diagnostics = %#v, want the limitation to persist while the placeholder is unedited", entry.Diagnostics)
+		}
+	})
+
+	t.Run("stays silent once a maintainer has edited the example", func(t *testing.T) {
+		examplePath := filepath.Join(examplesRoot, "datadog_widgets", "data-source.tf")
+		if err := os.WriteFile(examplePath, []byte("data \"datadog_widgets\" \"example\" {\n  account_ids = [\"abc\"]\n}\n"), 0o644); err != nil {
+			t.Fatalf("hand-editing example: %v", err)
+		}
+		entry := model.ArtifactReportEntry{Name: "widgets", Kind: model.ArtifactKindDataSource}
+		skipped := emitDatasourceExample(&entry, view, "widgets", examplesRoot, false)
+		if skipped.Status != model.ArtifactStatusSkipped {
+			t.Fatalf("status = %q, want skipped", skipped.Status)
+		}
+		if len(entry.Diagnostics) != 0 {
+			t.Fatalf("edited example produced diagnostics: %#v", entry.Diagnostics)
+		}
+	})
 }
 
 func mustRead(t *testing.T, path string) string {

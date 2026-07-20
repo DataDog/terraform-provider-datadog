@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -306,7 +307,16 @@ func emitDatasourceExample(entry *model.ArtifactReportEntry, view emit.DataSourc
 		failed := failEntry(model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Path: path}, err)
 		return &failed
 	}
-	if status != model.ArtifactStatusSkipped {
+	// if the on-disk file still byte-matches what we would generate, nobody has touched the
+	// placeholder so we should keep the diagnostics so an incomplete example is still flagged
+	// rather than silently suppressed.
+	untouchedPlaceholder := false
+	if status == model.ArtifactStatusSkipped {
+		if onDisk, readErr := os.ReadFile(path); readErr == nil {
+			untouchedPlaceholder = bytes.Equal(onDisk, example.Content)
+		}
+	}
+	if status != model.ArtifactStatusSkipped || untouchedPlaceholder {
 		entry.Diagnostics = append(entry.Diagnostics, example.Diagnostics...)
 	}
 	return &model.ArtifactReportEntry{Name: name, Kind: model.ArtifactKindDataSource, Status: status, Path: path}
