@@ -94,5 +94,5 @@ Optional:
 
 Optional:
 
-- `exclude_not_queried_window_seconds` (Number) Lookback window, in seconds, for excluding tags that were not queried in that period. Requires `exclude_tags_mode` to be `true`.
+- `exclude_not_queried_window_seconds` (Number) Lookback window, in seconds, for excluding tags that were not queried in that period. Requires `exclude_tags_mode` to be `true`. Value must be between 1 and 7776000.
 - `exclude_not_used_in_assets` (Boolean) When true, excludes tags not used in any dashboards or monitors. Requires `exclude_tags_mode` to be `true`.
