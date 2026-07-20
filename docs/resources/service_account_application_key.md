@@ -13,8 +13,7 @@ Provides a Datadog `service_account_application_key` resource. This can be used 
 ## Example Usage
 
 ```terraform
-# Source the permissions for scoped keys
-data "datadog_permissions" "dd_perms" {}
+# See the permissions available for scoped keys at https://docs.datadoghq.com/account_management/rbac/permissions/#permissions-list
 
 # Create an unrestricted Service Account Application Key
 # This key inherits all permissions of the service account that owns the key
@@ -29,8 +28,8 @@ resource "datadog_service_account_application_key" "monitor_management_key" {
   service_account_id = "00000000-0000-1234-0000-000000000000"
   name               = "Monitor Management Service Account Key"
   scopes = [
-    data.datadog_permissions.dd_perms.permissions.monitors_read,
-    data.datadog_permissions.dd_perms.permissions.monitors_write
+    "monitors_read",
+    "monitors_write"
   ]
 }
 ```
