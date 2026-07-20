@@ -326,6 +326,34 @@ var _ = Describe("Split", func() {
 		Expect(os.IsNotExist(statErr)).To(BeTrue())
 	})
 
+	It("routes a registration-only retirement as a registry edit with no file deletions", func() {
+		ghostCtor := emit.DatasourceConstructor("ghost")
+		existing := emit.DatasourceConstructor("existing")
+		slug := emit.RegistrationRetirementName(ghostCtor)
+
+		writeRegistry(base, existing, ghostCtor)
+		writeRegistry(gen, existing)
+		reportPath := writeGenerationReport(gen, model.ArtifactReportEntry{
+			Name: slug, Kind: model.ArtifactKindDataSource,
+			Status: model.ArtifactStatusRegistrationRetired, Constructor: ghostCtor,
+			Diagnostics: []model.Diagnostic{{Severity: model.SeverityWarning, Message: "no generated file"}},
+		})
+
+		rep, err := Split(Options{BaseDir: base, GeneratedDir: gen, OutDir: out, GenerationReport: reportPath})
+		Expect(err).NotTo(HaveOccurred())
+		Expect(rep.Errors).To(BeEmpty())
+		Expect(rep.Artifacts).To(HaveLen(1))
+		artifact := rep.Artifacts[0]
+		Expect(artifact.Status).To(Equal(model.ArtifactStatusRegistrationRetired))
+		Expect(artifact.Name).To(Equal(slug))
+		Expect(artifact.Files).To(ConsistOf(filepath.Join(fwDir, registryFile)))
+		Expect(artifact.RemovedFiles).To(BeEmpty())
+
+		routedRegistry := readFile(filepath.Join(out, slug, fwDir, registryFile))
+		Expect(routedRegistry).NotTo(ContainSubstring(ghostCtor))
+		Expect(routedRegistry).To(ContainSubstring(existing))
+	})
+
 	It("fails loud when the generation report contradicts the tree diff", func() {
 		name := "mismatch"
 		constructor := emit.DatasourceConstructor(name)

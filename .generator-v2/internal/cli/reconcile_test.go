@@ -50,6 +50,13 @@ func (f *artifactFixture) writeArtifact(name string, generated bool) {
 	Expect(err).NotTo(HaveOccurred())
 }
 
+// registerOnly wires a constructor into the registry without laying down any of
+// its generated files, reproducing a stale registration whose source is gone.
+func (f *artifactFixture) registerOnly(name string) {
+	_, err := emit.SyncGeneratedDatasources(f.genPath(), []string{emit.DatasourceConstructor(name)}, false)
+	Expect(err).NotTo(HaveOccurred())
+}
+
 func (f *artifactFixture) writeCassette(fn string) {
 	Expect(os.WriteFile(filepath.Join(f.testsRoot, "cassettes", fn), []byte("x"), 0o644)).To(Succeed())
 }
@@ -187,6 +194,23 @@ var _ = Describe("reconcileOrphans", func() {
 		Expect(entries[0].Status).To(Equal(model.ArtifactStatusRetireBlocked))
 		Expect(f.goPath("zoo")).To(BeAnExistingFile())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("zoo")))
+	})
+
+	It("drops a registration whose generated files are already gone as registration_retired", func() {
+		f := newFixture()
+		f.writeArtifact("team", true)
+		f.registerOnly("ghost")
+		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
+
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, desired, false)
+
+		Expect(err).NotTo(HaveOccurred())
+		Expect(entries).To(HaveLen(1))
+		Expect(entries[0].Status).To(Equal(model.ArtifactStatusRegistrationRetired))
+		Expect(entries[0].Constructor).To(Equal(emit.DatasourceConstructor("ghost")))
+		Expect(entries[0].Name).To(Equal(emit.RegistrationRetirementName(emit.DatasourceConstructor("ghost"))))
+		Expect(f.registry()).NotTo(ContainSubstring(emit.DatasourceConstructor("ghost")))
+		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 	})
 
 	It("finds no orphans when every registration is still desired", func() {

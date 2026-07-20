@@ -196,9 +196,9 @@ func buildChildren(props map[string]*Schema, prefix string, mode nestingMode, di
 
 	children := make([]*Attribute, 0, len(props))
 	for _, key := range keys {
-		// Terraform attribute names must be snake_case; snakeCase normalizes camelCase
+		// Terraform attribute names must be snake_case; SnakeCase normalizes camelCase
 		// OAS names and is idempotent on already-snake names (SdkName recovers the getter).
-		child, err := buildAttribute(props[key], prefix+snakeCase(key), mode, diags)
+		child, err := buildAttribute(props[key], prefix+SnakeCase(key), mode, diags)
 		if err != nil {
 			return nil, err
 		}

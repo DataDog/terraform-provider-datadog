@@ -30,6 +30,8 @@ func summarize(entries []ArtifactReportEntry) *RunSummary {
 			s.Retired++
 		case ArtifactStatusRetireBlocked:
 			s.RetireBlocked++
+		case ArtifactStatusRegistrationRetired:
+			s.RegistrationRetired++
 		}
 	}
 	return s

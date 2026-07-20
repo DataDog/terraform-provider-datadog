@@ -16,7 +16,8 @@ var (
 	patternDoubleUnderscore = regexp.MustCompile(`__+`)
 )
 
-func snakeCase(value string) string {
+// SnakeCase converts a camelCase or PascalCase identifier to snake_case.
+func SnakeCase(value string) string {
 	value = patternLeadingAlpha.ReplaceAllString(value, "${1}_${2}")
 	value = strings.ToLower(patternFollowingAlpha.ReplaceAllString(value, "${1}_${2}"))
 	value = patternWhitespace.ReplaceAllString(value, "_")
@@ -31,7 +32,7 @@ func snakeCase(value string) string {
 // method anchors directly; SdkName is for snake_case property and parameter names.
 func SdkName(openapiName string) string {
 	var b strings.Builder
-	for _, part := range strings.Split(snakeCase(openapiName), "_") {
+	for _, part := range strings.Split(SnakeCase(openapiName), "_") {
 		if part == "" {
 			continue
 		}

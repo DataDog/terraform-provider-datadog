@@ -349,6 +349,12 @@ const (
 	// ArtifactStatusRetireBlocked marks an orphaned artifact left in place because
 	// a recorded cassette (or a missing generated marker) makes deletion unsafe.
 	ArtifactStatusRetireBlocked ArtifactStatus = "retire_blocked"
+	// ArtifactStatusRegistrationRetired marks a stale registration dropped on its
+	// own: the constructor was still listed in datasources_generated.go but its
+	// generated files were already gone, so only the registration line changed.
+	// The entry's Constructor carries the removed identifier, since no file
+	// remains to recover the artifact name from.
+	ArtifactStatusRegistrationRetired ArtifactStatus = "registration_retired"
 )
 
 // DiagnosticSeverity classifies a Diagnostic.
@@ -382,13 +388,14 @@ type RunReport struct {
 
 // RunSummary holds convenience counts for CI assertions, one per ArtifactStatus.
 type RunSummary struct {
-	Created       int `json:"created"`
-	Updated       int `json:"updated"`
-	Unchanged     int `json:"unchanged"`
-	Skipped       int `json:"skipped"`
-	Failed        int `json:"failed"`
-	Retired       int `json:"retired"`
-	RetireBlocked int `json:"retire_blocked"`
+	Created             int `json:"created"`
+	Updated             int `json:"updated"`
+	Unchanged           int `json:"unchanged"`
+	Skipped             int `json:"skipped"`
+	Failed              int `json:"failed"`
+	Retired             int `json:"retired"`
+	RetireBlocked       int `json:"retire_blocked"`
+	RegistrationRetired int `json:"registration_retired"`
 }
 
 // ArtifactReportEntry is the per-artifact section of a RunReport.
@@ -400,6 +407,10 @@ type ArtifactReportEntry struct {
 	Diagnostics []Diagnostic   `json:"diagnostics,omitempty"`
 	// OrphanedHooks lists hook functions declared but no longer referenced.
 	OrphanedHooks []string `json:"orphaned_hooks,omitempty"`
+	// Constructor is set only on registration_retired entries: the removed
+	// registration identifier. It is authoritative because the artifact name
+	// cannot be recovered once the generated files are gone.
+	Constructor string `json:"constructor,omitempty"`
 }
 
 // Diagnostic is a single error/warning/info collected during generation.
