@@ -2819,7 +2819,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
+- `request` (Block List, Max: 2) A region-layer or point-layer request. Up to two `request` blocks are allowed. (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--geomap_definition--time))
 - `title` (String) The title of the widget.
@@ -2843,11 +2843,46 @@ Optional:
 
 Optional:
 
+- `columns` (Block List) Columns displayed by an event-list points layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--columns))
+- `conditional_formats` (Block List) Threshold conditional formatting rules for a regions layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--conditional_formats))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula))
+- `list_stream_query` (Block List, Max: 1) List Stream query for an event-list points layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--list_stream_query))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query))
+- `response_format` (String) Response format for the Geomap request. Valid values are `timeseries`, `scalar`, `event_list`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--rum_query))
+- `sort` (Block List, Max: 1) Controls for sorting a formula request. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--sort))
+- `style` (Block List, Max: 1) Style applied to a points layer request. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--style))
+- `text_format` (Block List) Text formatting rules for a points layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--text_format))
+
+<a id="nestedblock--widget--geomap_definition--request--columns"></a>
+### Nested Schema for `widget.geomap_definition.request.columns`
+
+Optional:
+
+- `field` (String) Widget column field.
+- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
+
+
+<a id="nestedblock--widget--geomap_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.geomap_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
 
 <a id="nestedblock--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula`
@@ -2956,6 +2991,41 @@ Optional:
 
 - `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
 - `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--list_stream_query"></a>
+### Nested Schema for `widget.geomap_definition.request.list_stream_query`
+
+Required:
+
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`, `issue_stream`.
+
+Optional:
+
+- `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
+- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--list_stream_query--group_by))
+- `indexes` (List of String) List of indexes.
+- `query_string` (String) Widget query.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--list_stream_query--sort))
+- `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--geomap_definition--request--list_stream_query--group_by"></a>
+### Nested Schema for `widget.geomap_definition.request.list_stream_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name
+
+
+<a id="nestedblock--widget--geomap_definition--request--list_stream_query--sort"></a>
+### Nested Schema for `widget.geomap_definition.request.list_stream_query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -3301,6 +3371,87 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--sort"></a>
+### Nested Schema for `widget.geomap_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--geomap_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.geomap_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--geomap_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.geomap_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--geomap_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.geomap_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--style"></a>
+### Nested Schema for `widget.geomap_definition.request.style`
+
+Optional:
+
+- `color_by` (String) The category used to color points.
+
+
+<a id="nestedblock--widget--geomap_definition--request--text_format"></a>
+### Nested Schema for `widget.geomap_definition.request.text_format`
+
+Required:
+
+- `match` (Block List, Min: 1, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--text_format--match))
+
+Optional:
+
+- `custom_bg_color` (String) The custom color palette to apply to the background.
+- `custom_fg_color` (String) The custom color palette to apply to the foreground text.
+- `palette` (String) The color palette to apply. Valid values are `white_on_red`, `white_on_yellow`, `white_on_green`, `black_on_light_red`, `black_on_light_yellow`, `black_on_light_green`, `red_on_white`, `yellow_on_white`, `green_on_white`, `custom_bg`, `custom_text`.
+- `replace` (Block List, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--text_format--replace))
+
+<a id="nestedblock--widget--geomap_definition--request--text_format--match"></a>
+### Nested Schema for `widget.geomap_definition.request.text_format.match`
+
+Required:
+
+- `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
+- `value` (String) Table Widget Match String.
+
+
+<a id="nestedblock--widget--geomap_definition--request--text_format--replace"></a>
+### Nested Schema for `widget.geomap_definition.request.text_format.replace`
+
+Required:
+
+- `type` (String) Table widget text format replace all type. Valid values are `all`, `substring`.
+- `with` (String) Table Widget Match String.
+
+Optional:
+
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
 
 
 
@@ -6124,7 +6275,7 @@ Optional:
 - `description` (String) The description of the widget.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
+- `request` (Block List, Max: 2) A region-layer or point-layer request. Up to two `request` blocks are allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--time))
 - `title` (String) The title of the widget.
@@ -6148,11 +6299,46 @@ Optional:
 
 Optional:
 
+- `columns` (Block List) Columns displayed by an event-list points layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--columns))
+- `conditional_formats` (Block List) Threshold conditional formatting rules for a regions layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--conditional_formats))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula))
+- `list_stream_query` (Block List, Max: 1) List Stream query for an event-list points layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query))
+- `response_format` (String) Response format for the Geomap request. Valid values are `timeseries`, `scalar`, `event_list`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--rum_query))
+- `sort` (Block List, Max: 1) Controls for sorting a formula request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--sort))
+- `style` (Block List, Max: 1) Style applied to a points layer request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--style))
+- `text_format` (Block List) Text formatting rules for a points layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--text_format))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--columns"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.columns`
+
+Optional:
+
+- `field` (String) Widget column field.
+- `width` (String) Widget column width. Valid values are `auto`, `compact`, `full`.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula"></a>
 ### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula`
@@ -6261,6 +6447,41 @@ Optional:
 
 - `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
 - `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.list_stream_query`
+
+Required:
+
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`, `issue_stream`.
+
+Optional:
+
+- `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
+- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query--group_by))
+- `indexes` (List of String) List of indexes.
+- `query_string` (String) Widget query.
+- `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query--sort))
+- `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.list_stream_query.group_by`
+
+Required:
+
+- `facet` (String) Facet name
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.list_stream_query.sort`
+
+Required:
+
+- `column` (String) The facet path for the column.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
 
@@ -6606,6 +6827,87 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--sort"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.style`
+
+Optional:
+
+- `color_by` (String) The category used to color points.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--text_format"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.text_format`
+
+Required:
+
+- `match` (Block List, Min: 1, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--text_format--match))
+
+Optional:
+
+- `custom_bg_color` (String) The custom color palette to apply to the background.
+- `custom_fg_color` (String) The custom color palette to apply to the foreground text.
+- `palette` (String) The color palette to apply. Valid values are `white_on_red`, `white_on_yellow`, `white_on_green`, `black_on_light_red`, `black_on_light_yellow`, `black_on_light_green`, `red_on_white`, `yellow_on_white`, `green_on_white`, `custom_bg`, `custom_text`.
+- `replace` (Block List, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--text_format--replace))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--text_format--match"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.text_format.match`
+
+Required:
+
+- `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
+- `value` (String) Table Widget Match String.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--text_format--replace"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.text_format.replace`
+
+Required:
+
+- `type` (String) Table widget text format replace all type. Valid values are `all`, `substring`.
+- `with` (String) Table Widget Match String.
+
+Optional:
+
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
 
 
 
