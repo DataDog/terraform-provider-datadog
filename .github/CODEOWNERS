@@ -58,7 +58,7 @@ datadog/**/*datadog_azure_integration*           @DataDog/azure-integrations
 datadog/**/*datadog_compliance*                  @DataDog/k9-misconfigs
 datadog/**/*datadog_current_user*                @DataDog/team-aaa
 datadog/**/*datadog_dataset*                     @DataDog/aaa-granular-access
-datadog/**/*datadog_datastore*                   @DataDog/action-platform @DataDog/workflow-automation-backend
+datadog/**/*datadog_datastore*                   @DataDog/action-platform @DataDog/workflow-core
 datadog/**/*datadog_incident*                    @DataDog/incident-app
 datadog/**/*datadog_ip_allowlist*                @DataDog/team-aaa
 datadog/**/*datadog_openapi*                     @DataDog/service-catalog
@@ -67,7 +67,7 @@ datadog/**/*datadog_org_group*                   @DataDog/org-management
 datadog/**/*datadog_reference_table*             @DataDog/redapl-experiences
 datadog/**/*datadog_action_connection*           @DataDog/action-platform
 datadog/**/*datadog_agentless*                   @DataDog/k9-agentless
-datadog/**/*datadog_app_key_registration*        @DataDog/action-platform @DataDog/workflow-automation-backend
+datadog/**/*datadog_app_key_registration*        @DataDog/action-platform @DataDog/workflow-core
 datadog/**/*datadog_api_key*                     @DataDog/credential-management
 datadog/**/*datadog_apm_retention_filter*        @DataDog/apm-trace-intake
 datadog/**/*datadog_application_key*             @DataDog/credential-management
@@ -98,7 +98,7 @@ datadog/**/*datadog_synthetics*                  @DataDog/synthetics-orchestrati
 datadog/**/*datadog_team*                        @DataDog/aaa-omg
 datadog/**/*datadog_user*                        @DataDog/team-aaa
 datadog/**/*datadog_webhook*                     @DataDog/collaboration-integrations
-datadog/**/*datadog_workflow_automation*         @DataDog/workflow-automation-backend
+datadog/**/*datadog_workflow_automation*         @DataDog/workflow-core
 datadog/**/*datadog_powerpack*                   @DataDog/dashboards-backend
 datadog/**/*datadog_role_users*                  @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/rum-backend
