@@ -71,7 +71,7 @@ vet:
 	fi
 
 fmt:
-	goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
+	$(GO) tool goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
 	terraform fmt -recursive examples
 
 fmtcheck:
@@ -115,7 +115,6 @@ update-go-client:
 
 get-test-deps:
 	gotestsum --version || go install gotest.tools/gotestsum@latest
-	which goimports || go install golang.org/x/tools/cmd/goimports@latest
 
 sweep:
 	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
