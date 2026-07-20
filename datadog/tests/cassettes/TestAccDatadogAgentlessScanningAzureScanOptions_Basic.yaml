@@ -39,14 +39,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 167
+        content_length: 183
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compliance_host":true,"vuln_containers_os":true,"vuln_host_os":true},"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options"}}
+            {"data":{"attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true},"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options"}}
         form: {}
         headers:
             Accept:
@@ -61,9 +61,9 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 166
+        content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -94,9 +94,9 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 166
+        content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
@@ -127,9 +127,9 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 166
+        content_length: 182
         uncompressed: false
-        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
+        body: '{"data":{"id":"12345678-1234-1234-1234-123456789012","type":"azure_scan_options","attributes":{"compliance_host":true,"function":true,"vuln_containers_os":true,"vuln_host_os":true}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json

@@ -30,6 +30,7 @@ type agentlessScanningGcpScanOptionsResource struct {
 type agentlessScanningGcpScanOptionsResourceModel struct {
 	ID               types.String `tfsdk:"id"`
 	GcpProjectId     types.String `tfsdk:"gcp_project_id"`
+	CloudFunction    types.Bool   `tfsdk:"cloud_function"`
 	ComplianceHost   types.Bool   `tfsdk:"compliance_host"`
 	VulnContainersOs types.Bool   `tfsdk:"vuln_containers_os"`
 	VulnHostOs       types.Bool   `tfsdk:"vuln_host_os"`
@@ -64,6 +65,10 @@ func (r *agentlessScanningGcpScanOptionsResource) Schema(_ context.Context, _ re
 						"must be a valid GCP project ID: 6–30 characters, start with a lowercase letter, and include only lowercase letters, digits, or hyphens.",
 					),
 				},
+			},
+			"cloud_function": schema.BoolAttribute{
+				Description: "Indicates if scanning of Cloud Functions is enabled.",
+				Required:    true,
 			},
 			"compliance_host": schema.BoolAttribute{
 				Description: "Indicates if host compliance scanning is enabled.",
@@ -171,6 +176,7 @@ func (r *agentlessScanningGcpScanOptionsResource) updateStateFromScanOptionsData
 	state.GcpProjectId = types.StringValue(data.GetId())
 
 	attributes := data.GetAttributes()
+	state.CloudFunction = types.BoolValue(attributes.GetCloudFunction())
 	state.ComplianceHost = types.BoolValue(attributes.GetComplianceHost())
 	state.VulnContainersOs = types.BoolValue(attributes.GetVulnContainersOs())
 	state.VulnHostOs = types.BoolValue(attributes.GetVulnHostOs())
@@ -198,6 +204,7 @@ func (r *agentlessScanningGcpScanOptionsResource) createOrUpdate(state *agentles
 				Id:   projectID,
 				Type: datadogV2.GCPSCANOPTIONSINPUTUPDATEDATATYPE_GCP_SCAN_OPTIONS,
 				Attributes: &datadogV2.GcpScanOptionsInputUpdateDataAttributes{
+					CloudFunction:    boolPtr(state.CloudFunction.ValueBool()),
 					ComplianceHost:   boolPtr(state.ComplianceHost.ValueBool()),
 					VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
 					VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),
@@ -223,6 +230,7 @@ func (r *agentlessScanningGcpScanOptionsResource) createOrUpdate(state *agentles
 				Id:   projectID,
 				Type: datadogV2.GCPSCANOPTIONSDATATYPE_GCP_SCAN_OPTIONS,
 				Attributes: &datadogV2.GcpScanOptionsDataAttributes{
+					CloudFunction:    boolPtr(state.CloudFunction.ValueBool()),
 					ComplianceHost:   boolPtr(state.ComplianceHost.ValueBool()),
 					VulnContainersOs: boolPtr(state.VulnContainersOs.ValueBool()),
 					VulnHostOs:       boolPtr(state.VulnHostOs.ValueBool()),

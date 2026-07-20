@@ -1,3 +1,23 @@
+## 4.16.0 (July 20, 2026)
+
+### BUGFIXES
+* [datadog_sensitive_data_scanner_group] omitted samplings are the same as 100% by @vhourdel in https://github.com/DataDog/terraform-provider-datadog/pull/3936
+* [datadog_action_connection] clean up action connection on delete by @shimupan in https://github.com/DataDog/terraform-provider-datadog/pull/3974
+### IMPROVEMENTS
+* [datadog_observability_pipeline] Update tag cardinality limit fields by @ArunPiduguDD in https://github.com/DataDog/terraform-provider-datadog/pull/3950
+* [datadog_action_connection] add remaining connection types by @shimupan in https://github.com/DataDog/terraform-provider-datadog/pull/3971
+* [datadog_agentless_scanning_azure_scan_options] Add function/cloud_function scan option support by @BraisCabo-DD in https://github.com/DataDog/terraform-provider-datadog/pull/3986
+### FEATURES
+* [datadog_observability_pipeline]  Add auth and endpoint_url_key fields to opensearch destination by @taylorchandleryoung in https://github.com/DataDog/terraform-provider-datadog/pull/3979
+* [datadog_incident_type] Add configuration attribute by @rakshith91 in https://github.com/DataDog/terraform-provider-datadog/pull/3942
+* [datadog_cost_custom_forecast] Add datadog_cost_custom_forecast resource and data source by @dmytro-kliagin-dd in https://github.com/DataDog/terraform-provider-datadog/pull/3969
+
+## New Contributors
+* @shimupan made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3971
+* @dmytro-kliagin-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3969
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.16...v4.16.0
+
 ## 4.16 (July 15, 2026)
 
 ### BUGFIXES
