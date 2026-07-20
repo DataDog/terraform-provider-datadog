@@ -72,7 +72,7 @@ vet:
 
 fmt:
 	goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
-	terraform fmt -recursive examples
+	terraform fmt -recursive
 
 fmtcheck:
 	@sh -c "'$(CURDIR)/scripts/fmtcheck.sh'"
