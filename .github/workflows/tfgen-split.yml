@@ -51,6 +51,12 @@ jobs:
           terraform_version: "1.13.1"
           terraform_wrapper: false
 
+      # make build -> fmtcheck relies on goimports; without it the Go format
+      # check silently no-ops.
+      - name: Install goimports
+        shell: bash
+        run: go install golang.org/x/tools/cmd/goimports@latest
+
       - name: Build tfgen and split the incoming branch
         id: split
         working-directory: generated
@@ -300,10 +306,17 @@ jobs:
               rm -f "$doc_copy"
             fi
 
+            # Scope the format gate to this artifact's own files so unrelated
+            # pre-existing drift elsewhere in the repo can't fail the build.
+            # The compile step stays whole-repo.
+            FMTCHECK_SCOPE="$(printf '%s\n' "${files[@]}")"
+            export FMTCHECK_SCOPE
             if ! make build; then
+              unset FMTCHECK_SCOPE
               record_failure "$name" "make build failed"
               continue
             fi
+            unset FMTCHECK_SCOPE
 
             declare -A allowed=()
             for rel in "${files[@]}"; do
