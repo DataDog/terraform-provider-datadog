@@ -789,6 +789,17 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
 
+	// Enable Tag Indexing Rules & Exemptions
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRule", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListTagIndexingRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ReorderTagIndexingRules", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
