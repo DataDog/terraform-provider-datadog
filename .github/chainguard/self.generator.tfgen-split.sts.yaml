@@ -2,7 +2,7 @@
 # Policy for: .github/workflows/tfgen-split.yml in DataDog/terraform-provider-datadog
 # Allows generated-branch pushes to create per-artifact branches and draft PRs.
 issuer: https://token.actions.githubusercontent.com
-subject_pattern: "repo:DataDog/terraform-provider-datadog:ref:refs/heads/datadog-api-spec/generated/.*"
+subject_pattern: "repo:DataDog/terraform-provider-datadog:ref:refs/heads/datadog-api-spec/generated/.+"
 
 claim_pattern:
   event_name: push
