@@ -704,6 +704,84 @@ var hostmapRequestFillSizeFields = append([]FieldSpec{
 		Description: "The metric query to use for this widget."},
 }, standardQueryFields...)
 
+// hostmapInfrastructureGroupByFields corresponds to OpenAPI HostMapWidgetGroupBy.
+var hostmapInfrastructureGroupByFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`."},
+	{HCLKey: "key", Type: TypeString, OmitEmpty: true,
+		Description: "Key within the column for nested attribute types, such as `service` within `tags`."},
+}
+
+// hostmapInfrastructureStyleFields corresponds to OpenAPI HostMapWidgetInfrastructureStyle.
+var hostmapInfrastructureStyleFields = []FieldSpec{
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "Color palette name or alias."},
+	{HCLKey: "palette_flip", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to invert the color palette."},
+	{HCLKey: "fill_min", Type: TypeFloat, OmitEmpty: true,
+		Description: "Minimum value for the fill color scale. Omit to use automatic scaling."},
+	{HCLKey: "fill_max", Type: TypeFloat, OmitEmpty: true,
+		Description: "Maximum value for the fill color scale. Omit to use automatic scaling."},
+}
+
+// hostmapInfrastructureFormulaFields corresponds to OpenAPI HostMapWidgetFormula.
+var hostmapInfrastructureFormulaFields = []FieldSpec{
+	{HCLKey: "formula_expression", JSONKey: "formula", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "String expression built from queries, formulas, and functions."},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "Expression alias."},
+	{HCLKey: "number_format", Type: TypeBlock, OmitEmpty: true,
+		Description: "Number formatting options for the formula.",
+		Children:    widgetNumberFormatFields},
+	{HCLKey: "dimension", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Visual dimension driven by the formula.",
+		ValidValues: []string{"node", "fill", "size"}},
+}
+
+// hostmapInfrastructureEnrichmentFields corresponds to OpenAPI HostMapWidgetScalarRequest.
+// query and formula are SchemaOnly because their polymorphic JSON is handled by the
+// hostmap infrastructure request post-processing hooks.
+var hostmapInfrastructureEnrichmentFields = []FieldSpec{
+	{HCLKey: "response_format", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Response format for the scalar formula request.",
+		ValidValues: []string{"scalar"}},
+	{HCLKey: "query", JSONKey: "queries", Type: TypeBlockList, OmitEmpty: false, Required: true, SchemaOnly: true,
+		Description: "Queries that can be returned directly or used in formulas.",
+		Children:    formulaAndFunctionQueryFields},
+	{HCLKey: "formula", JSONKey: "formulas", Type: TypeBlockList, OmitEmpty: false, Required: true, SchemaOnly: true,
+		Description: "Formulas that operate on queries and drive visual dimensions.",
+		Children:    hostmapInfrastructureFormulaFields},
+}
+
+// hostmapInfrastructureLeafFields corresponds to OpenAPI
+// HostMapWidgetInfrastructureRequestLeaf.
+var hostmapInfrastructureLeafFields = []FieldSpec{
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Identifies an infrastructure-backed host map request.",
+		ValidValues: []string{"infrastructure_hostmap"}},
+	{HCLKey: "node_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Infrastructure entity type to visualize.",
+		ValidValues: []string{"host", "container", "pod", "cluster"}},
+	{HCLKey: "filter", Type: TypeString, OmitEmpty: true,
+		Description: "Filter string for the entity set in tag format, such as `env:prod`."},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Ordered grouping hierarchy for infrastructure entities.",
+		Children:    hostmapInfrastructureGroupByFields},
+	{HCLKey: "enrichment", JSONKey: "enrichments", Type: TypeBlockList, OmitEmpty: false, Required: true, SchemaOnly: true,
+		Description: "Metric or event queries joined to the entity set.",
+		Children:    hostmapInfrastructureEnrichmentFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Style configuration for the infrastructure host map.",
+		Children:    hostmapInfrastructureStyleFields},
+	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Conditional formatting rules applied to fill values.",
+		Children:    widgetConditionalFormatFields},
+	{HCLKey: "no_group_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no group assignment."},
+	{HCLKey: "no_metric_hosts", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to hide entities that have no enrichment data."},
+}
+
 // hostmapStyleFields corresponds to the inline style block on HostMapWidgetDefinition.
 var hostmapStyleFields = []FieldSpec{
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
