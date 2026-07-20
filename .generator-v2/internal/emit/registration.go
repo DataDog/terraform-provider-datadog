@@ -37,6 +37,17 @@ func DatasourceConstructor(name string) string {
 	return "New" + upperFirst(dsGoName(name)) + "DataSource"
 }
 
+// RegistrationRetirementName derives a filesystem- and branch-safe artifact name
+// for a registration-only retirement, whose generated files are already gone so
+// its real artifact name can no longer be read back. It strips the New/DataSource
+// affixes from the constructor and snake-cases the remainder, e.g.
+// NewDatadogTeamDataSource -> datadog_team. The result only labels the split
+// directory; the constructor stays authoritative for editing the registry.
+func RegistrationRetirementName(constructor string) string {
+	base := strings.TrimSuffix(strings.TrimPrefix(constructor, "New"), "DataSource")
+	return model.SnakeCase(base)
+}
+
 // datasourceConstructorRe matches a New<...>DataSource constructor identifier.
 // datasources_generated.go holds nothing else that fits the pattern, so it
 // safely recovers the already-registered set from the file's current contents.

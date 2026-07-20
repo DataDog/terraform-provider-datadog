@@ -385,10 +385,12 @@ func wireGeneratedDatasources(outputRoot, testsOutputRoot string, regs []emit.Ge
 }
 
 // wouldChange reports whether a write status represents a file that was (or, in
-// check mode, would be) modified. A retirement deletes files, so it counts;
-// retire_blocked leaves everything in place, so it does not.
+// check mode, would be) modified. A retirement deletes files and a registration
+// retirement rewrites the registry, so both count; retire_blocked leaves
+// everything in place, so it does not.
 func wouldChange(s model.ArtifactStatus) bool {
-	return s == model.ArtifactStatusCreated || s == model.ArtifactStatusUpdated || s == model.ArtifactStatusRetired
+	return s == model.ArtifactStatusCreated || s == model.ArtifactStatusUpdated ||
+		s == model.ArtifactStatusRetired || s == model.ArtifactStatusRegistrationRetired
 }
 
 func failEntry(e model.ArtifactReportEntry, err error) model.ArtifactReportEntry {

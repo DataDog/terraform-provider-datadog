@@ -291,7 +291,7 @@ func buildFilterLeaves(op *Operation) ([]*Attribute, []Diagnostic) {
 			continue
 		}
 		leaves = append(leaves, &Attribute{
-			Path:        snakeCase(p.Name),
+			Path:        SnakeCase(p.Name),
 			TfType:      tfType,
 			GoType:      goType,
 			Format:      p.Schema.Format,

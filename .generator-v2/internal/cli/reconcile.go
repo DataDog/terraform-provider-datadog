@@ -162,7 +162,8 @@ func reconcileOrphans(outputRoot, testsOutputRoot, docsRoot string, desired map[
 				return entries, err
 			}
 			entries = append(entries, model.ArtifactReportEntry{
-				Name: ctor, Kind: model.ArtifactKindDataSource, Status: model.ArtifactStatusRetired,
+				Name: emit.RegistrationRetirementName(ctor), Kind: model.ArtifactKindDataSource,
+				Status: model.ArtifactStatusRegistrationRetired, Constructor: ctor,
 				Diagnostics: []model.Diagnostic{{Severity: model.SeverityWarning,
 					Message: fmt.Sprintf("registered constructor %q has no generated file; removed the stale registration only", ctor)}},
 			})

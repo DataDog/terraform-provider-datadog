@@ -165,6 +165,9 @@ type artifactPlan struct {
 type generationArtifact struct {
 	status      model.ArtifactStatus
 	diagnostics []model.Diagnostic
+	// constructor is set only for registration_retired artifacts; it is the
+	// registration to drop, since no file names the artifact.
+	constructor string
 }
 
 // Split diffs the two trees, routes each artifact into OutDir/<name>/, and returns
@@ -270,6 +273,9 @@ func Split(opts Options) (*Result, error) {
 		case model.ArtifactStatusRetired:
 			want = without(want, emit.DatasourceConstructor(name))
 			prProducing++
+		case model.ArtifactStatusRegistrationRetired:
+			want = without(want, p.report.constructor)
+			prProducing++
 		}
 	}
 	registrySetChanged := len(onlyIn(want, baseSet)) > 0 || len(onlyIn(baseSet, want)) > 0
@@ -331,6 +337,8 @@ func Split(opts Options) (*Result, error) {
 			art, artProblems = materializeActive(opts, name, p, registryRel, baseSet, overwrites[name], provider, providerTestRel, incomingTags)
 		case model.ArtifactStatusRetired:
 			art, artProblems = materializeRetired(opts, name, p, registryRel, providerTestRel, baseTags)
+		case model.ArtifactStatusRegistrationRetired:
+			art, artProblems = materializeRegistrationRetired(opts, name, p, registryRel)
 		case model.ArtifactStatusRetireBlocked:
 			art = &Artifact{
 				Name:        name,
@@ -459,6 +467,29 @@ func materializeRetired(opts Options, name string, p *artifactPlan, registryRel,
 	return art, problems
 }
 
+// materializeRegistrationRetired reconstructs the sole change of a
+// registration-only retirement: dropping the orphan's constructor from the
+// generated registry. Its files were already gone, so nothing else is touched
+// and the constructor — not the artifact name — drives the edit.
+func materializeRegistrationRetired(opts Options, name string, p *artifactPlan, registryRel string) (*Artifact, []string) {
+	var problems []string
+	art := &Artifact{
+		Name:        name,
+		Status:      model.ArtifactStatusRegistrationRetired,
+		Files:       []string{registryRel},
+		Diagnostics: slices.Clone(p.report.diagnostics),
+	}
+	if !opts.Check {
+		registryOut := filepath.Join(opts.OutDir, name, registryRel)
+		if err := copyFile(filepath.Join(opts.BaseDir, registryRel), registryOut); err != nil {
+			problems = append(problems, fmt.Sprintf("copying %s for %q: %v", registryRel, name, err))
+		} else if _, err := emit.RemoveGeneratedDatasource(registryOut, p.report.constructor, false); err != nil {
+			problems = append(problems, fmt.Sprintf("reconstructing %s for registration retirement %q: %v", registryRel, name, err))
+		}
+	}
+	return art, problems
+}
+
 func validatePlan(name string, p *artifactPlan, reportRequired bool) (model.ArtifactStatus, []string) {
 	var problems []string
 	fail := func(format string, a ...any) { problems = append(problems, fmt.Sprintf(format, a...)) }
@@ -509,6 +540,10 @@ func validatePlan(name string, p *artifactPlan, reportRequired bool) (model.Arti
 		if p.source != nil || p.test != nil || p.doc != nil || len(p.removed) > 0 {
 			fail("retire_blocked artifact %q unexpectedly changes files", name)
 		}
+	case model.ArtifactStatusRegistrationRetired:
+		if p.source != nil || p.test != nil || p.doc != nil || len(p.removed) > 0 {
+			fail("registration_retired artifact %q unexpectedly changes files", name)
+		}
 	case "":
 		if len(p.removed) > 0 {
 			fail("removed file for %q requires a generation report declaring retired", name)
@@ -541,6 +576,7 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 		mainStatus  model.ArtifactStatus
 		testChanged bool
 		diagnostics []model.Diagnostic
+		constructor string
 	}
 	acc := map[string]*accumulated{}
 	for _, entry := range report.Artifacts {
@@ -548,7 +584,9 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 			continue
 		}
 		if !artifactNameRe.MatchString(entry.Name) {
-			if entry.Status == model.ArtifactStatusRetired || entry.Status == model.ArtifactStatusRetireBlocked {
+			if entry.Status == model.ArtifactStatusRetired ||
+				entry.Status == model.ArtifactStatusRetireBlocked ||
+				entry.Status == model.ArtifactStatusRegistrationRetired {
 				return nil, fmt.Errorf("unsafe retired artifact name %q", entry.Name)
 			}
 			continue
@@ -567,7 +605,8 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 		}
 		if base != "" && base != "data_source_datadog_"+entry.Name+".go" &&
 			entry.Status != model.ArtifactStatusRetired &&
-			entry.Status != model.ArtifactStatusRetireBlocked {
+			entry.Status != model.ArtifactStatusRetireBlocked &&
+			entry.Status != model.ArtifactStatusRegistrationRetired {
 			continue
 		}
 		if a.mainSeen {
@@ -576,6 +615,7 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 		a.mainSeen = true
 		a.mainStatus = entry.Status
 		a.diagnostics = slices.Clone(entry.Diagnostics)
+		a.constructor = entry.Constructor
 	}
 
 	out := map[string]generationArtifact{}
@@ -591,8 +631,8 @@ func readGenerationArtifacts(path string) (map[string]generationArtifact, error)
 			status = model.ArtifactStatusUpdated
 		}
 		switch status {
-		case model.ArtifactStatusCreated, model.ArtifactStatusUpdated, model.ArtifactStatusRetired, model.ArtifactStatusRetireBlocked:
-			out[name] = generationArtifact{status: status, diagnostics: a.diagnostics}
+		case model.ArtifactStatusCreated, model.ArtifactStatusUpdated, model.ArtifactStatusRetired, model.ArtifactStatusRetireBlocked, model.ArtifactStatusRegistrationRetired:
+			out[name] = generationArtifact{status: status, diagnostics: a.diagnostics, constructor: a.constructor}
 		case model.ArtifactStatusUnchanged, model.ArtifactStatusSkipped:
 			continue
 		case model.ArtifactStatusFailed:
