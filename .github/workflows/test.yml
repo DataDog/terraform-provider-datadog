@@ -74,6 +74,8 @@ jobs:
           terraform_wrapper: false
       - name: Check Docs Are Up To Date
         run: make check-docs
+      - name: Run make fmtcheck
+        run: make fmtcheck
 
   # Unit tests don't touch the API, use no cassettes, and need no terraform binary,
   # so they run once here rather than being sharded across the version matrix. They
