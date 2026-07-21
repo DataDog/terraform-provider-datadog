@@ -35,6 +35,7 @@ func skipIfNoCassette(t *testing.T) {
 
 func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 	skipIfNoCassette(t)
+	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -80,6 +81,7 @@ func TestAccDatadogTagIndexingRule_Basic(t *testing.T) {
 
 func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 	skipIfNoCassette(t)
+	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -114,6 +116,7 @@ func TestAccDatadogTagIndexingRule_WithOptions(t *testing.T) {
 
 func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
 	skipIfNoCassette(t)
+	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -146,6 +149,7 @@ func TestAccDatadogTagIndexingRule_Update(t *testing.T) {
 
 func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
 	skipIfNoCassette(t)
+	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -180,6 +184,7 @@ func TestAccDatadogTagIndexingRule_ExcludeMode(t *testing.T) {
 // to normalize the unset window to a zero value ("inconsistent result after apply").
 func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *testing.T) {
 	skipIfNoCassette(t)
+	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
@@ -207,6 +212,7 @@ func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *test
 // signal a regression to a conditional SetExcludeTagsMode call.
 func TestAccDatadogTagIndexingRule_ExcludeMode_Update(t *testing.T) {
 	skipIfNoCassette(t)
+	cleanupTagIndexingRules(t)
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

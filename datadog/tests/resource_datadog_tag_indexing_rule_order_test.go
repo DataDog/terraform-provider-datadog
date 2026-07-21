@@ -10,15 +10,20 @@ import (
 
 func TestAccDatadogTagIndexingRuleOrder_Basic(t *testing.T) {
 	skipIfNoCassette(t)
-	t.Parallel()
+	// Intentionally NOT parallel: this resource is a whole-org singleton, so rule_ids must be the
+	// COMPLETE set of the org's active rules. Running serially guarantees the parallel sibling
+	// tests (which create tag indexing rules in the same org) are paused before creating anything,
+	// so the two rules this test creates are the org's only active rules.
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	_ = providers
+	// Clear any rules leaked by prior/interrupted runs so rule_ids is genuinely the complete set.
+	cleanupTagIndexingRules(t)
 	uniq := uniqueEntityName(ctx, t)
 	mUniq := metricSafeUniq(uniq)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogTagIndexingRuleDestroy(ctx, providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogTagIndexingRuleOrderConfig(uniq, mUniq),
