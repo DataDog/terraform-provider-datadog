@@ -782,6 +782,66 @@ var hostmapInfrastructureLeafFields = []FieldSpec{
 		Description: "Whether to hide entities that have no enrichment data."},
 }
 
+// datasetListQuerySortFieldFields corresponds to OpenAPI DatasetListQuerySortField.
+var datasetListQuerySortFieldFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Name of the field to sort on."},
+	{HCLKey: "order", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Sort direction for the field.",
+		ValidValues: []string{"asc", "desc"}},
+}
+
+// datasetListQuerySortFields corresponds to OpenAPI DatasetListQuerySort.
+var datasetListQuerySortFields = []FieldSpec{
+	{HCLKey: "field", JSONKey: "fields", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "List of fields to sort the dataset rows by, applied in order.",
+		Children:    datasetListQuerySortFieldFields},
+}
+
+// datasetListQueryFields corresponds to OpenAPI DatasetListQuery.
+var datasetListQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Identifies this as a published-dataset list query.",
+		ValidValues: []string{"dataset"}},
+	{HCLKey: "dataset_provider", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Product page that published the dataset.",
+		ValidValues: []string{"ddsql_query"}},
+	{HCLKey: "dataset_id", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "ID of the published dataset to query."},
+	{HCLKey: "filter", Type: TypeString, OmitEmpty: true,
+		Description: "Filter applied to the dataset rows using events-style search syntax."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of rows to return from the dataset query."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+		Description: "Sort configuration for the dataset query.",
+		Children:    datasetListQuerySortFields},
+}
+
+// hostmapProjectionDimensionMappingFields corresponds to OpenAPI
+// HostMapWidgetProjectionDimensionMapping.
+var hostmapProjectionDimensionMappingFields = []FieldSpec{
+	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Source column name from the dataset."},
+	{HCLKey: "dimension", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Visual dimension driven by the dataset column.",
+		ValidValues: []string{"node", "fill", "size", "group"}},
+	{HCLKey: "alias", Type: TypeString, OmitEmpty: true,
+		Description: "Alias used to label the column instead of its name."},
+	{HCLKey: "number_format", Type: TypeBlock, OmitEmpty: true,
+		Description: "Number formatting options for the projected column.",
+		Children:    widgetNumberFormatFields},
+}
+
+// hostmapProjectionFields corresponds to OpenAPI HostMapWidgetProjection.
+var hostmapProjectionFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of the host map projection.",
+		ValidValues: []string{"hostmap"}},
+	{HCLKey: "dimension", JSONKey: "dimensions", Type: TypeBlockList, OmitEmpty: false, Required: true,
+		Description: "Column-to-dimension mappings for the host map projection.",
+		Children:    hostmapProjectionDimensionMappingFields},
+}
+
 // hostmapStyleFields corresponds to the inline style block on HostMapWidgetDefinition.
 var hostmapStyleFields = []FieldSpec{
 	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,

@@ -922,8 +922,8 @@ var hostmapRequestInnerFields = []FieldSpec{
 		Description: "The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block).",
 		Children:    hostmapRequestFillSizeFields},
 	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
-		Description: "Identifies an infrastructure-backed host map request.",
-		ValidValues: []string{"infrastructure_hostmap"}},
+		Description: "Identifies an infrastructure-backed or DDSQL data-projection host map request.",
+		ValidValues: []string{"infrastructure_hostmap", "data_projection"}},
 	{HCLKey: "node_type", Type: TypeString, OmitEmpty: true,
 		Description: "Infrastructure entity type to visualize.",
 		ValidValues: []string{"host", "container", "pod", "cluster"}},
@@ -948,6 +948,14 @@ var hostmapRequestInnerFields = []FieldSpec{
 	{HCLKey: "child", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
 		Description: "Optional child request for one level of hierarchical visualization.",
 		Children:    hostmapInfrastructureLeafFields},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: true,
+		Description: "Published-dataset query used by the DDSQL data-projection request.",
+		Children:    datasetListQueryFields},
+	{HCLKey: "projection", Type: TypeBlock, OmitEmpty: true,
+		Description: "Mapping from published-dataset columns to host map dimensions.",
+		Children:    hostmapProjectionFields},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of rows to return from the DDSQL data-projection request."},
 }
 
 var HostmapWidgetSpec = WidgetSpec{
@@ -957,7 +965,7 @@ var HostmapWidgetSpec = WidgetSpec{
 	Fields: []FieldSpec{
 		// TypeBlock (not TypeBlockList) — "requests" is a JSON object, not array
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlock, OmitEmpty: true,
-			Description: "A request using either the legacy metric format (`fill` and `size`) or the infrastructure-backed format (`request_type`, `node_type`, and `enrichment`).",
+			Description: "A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format.",
 			Children:    hostmapRequestInnerFields},
 		{HCLKey: "node_type", Type: TypeString, OmitEmpty: true,
 			Description: "The type of node used.",

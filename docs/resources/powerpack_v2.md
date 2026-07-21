@@ -7397,7 +7397,7 @@ Optional:
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `notes` (String) Notes/description text for the host map widget.
-- `request` (Block List, Max: 1) A request using either the legacy metric format (`fill` and `size`) or the infrastructure-backed format (`request_type`, `node_type`, and `enrichment`). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
+- `request` (Block List, Max: 1) A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--time))
@@ -7427,10 +7427,13 @@ Optional:
 - `fill` (Block List, Max: 1) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill))
 - `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
 - `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--group_by))
+- `limit` (Number) Maximum number of rows to return from the DDSQL data-projection request.
 - `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
 - `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
 - `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
-- `request_type` (String) Identifies an infrastructure-backed host map request. Valid values are `infrastructure_hostmap`.
+- `projection` (Block List, Max: 1) Mapping from published-dataset columns to host map dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection))
+- `query` (Block List, Max: 1) Published-dataset query used by the DDSQL data-projection request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query))
+- `request_type` (String) Identifies an infrastructure-backed or DDSQL data-projection host map request. Valid values are `infrastructure_hostmap`, `data_projection`.
 - `size` (Block List, Max: 1) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size))
 - `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--style))
 
@@ -8710,6 +8713,108 @@ Required:
 Optional:
 
 - `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) Column-to-dimension mappings for the host map projection. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension))
+- `type` (String) Type of the host map projection. Valid values are `hostmap`.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Visual dimension driven by the dataset column. Valid values are `node`, `fill`, `size`, `group`.
+
+Optional:
+
+- `alias` (String) Alias used to label the column instead of its name.
+- `number_format` (Block List, Max: 1) Number formatting options for the projected column. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query`
+
+Required:
+
+- `data_source` (String) Identifies this as a published-dataset list query. Valid values are `dataset`.
+- `dataset_id` (String) ID of the published dataset to query.
+- `dataset_provider` (String) Product page that published the dataset. Valid values are `ddsql_query`.
+
+Optional:
+
+- `filter` (String) Filter applied to the dataset rows using events-style search syntax.
+- `limit` (Number) Maximum number of rows to return from the dataset query.
+- `sort` (Block List, Max: 1) Sort configuration for the dataset query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query.sort`
+
+Required:
+
+- `field` (Block List, Min: 1) List of fields to sort the dataset rows by, applied in order. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort--field))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort--field"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query.sort.field`
+
+Required:
+
+- `name` (String) Name of the field to sort on.
+- `order` (String) Sort direction for the field. Valid values are `asc`, `desc`.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size"></a>
@@ -19005,7 +19110,7 @@ Optional:
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `notes` (String) Notes/description text for the host map widget.
-- `request` (Block List, Max: 1) A request using either the legacy metric format (`fill` and `size`) or the infrastructure-backed format (`request_type`, `node_type`, and `enrichment`). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
+- `request` (Block List, Max: 1) A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--time))
@@ -19035,10 +19140,13 @@ Optional:
 - `fill` (Block List, Max: 1) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill))
 - `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
 - `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--group_by))
+- `limit` (Number) Maximum number of rows to return from the DDSQL data-projection request.
 - `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
 - `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
 - `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
-- `request_type` (String) Identifies an infrastructure-backed host map request. Valid values are `infrastructure_hostmap`.
+- `projection` (Block List, Max: 1) Mapping from published-dataset columns to host map dimensions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection))
+- `query` (Block List, Max: 1) Published-dataset query used by the DDSQL data-projection request. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query))
+- `request_type` (String) Identifies an infrastructure-backed or DDSQL data-projection host map request. Valid values are `infrastructure_hostmap`, `data_projection`.
 - `size` (Block List, Max: 1) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size))
 - `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--style))
 
@@ -20318,6 +20426,108 @@ Required:
 Optional:
 
 - `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) Column-to-dimension mappings for the host map projection. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension))
+- `type` (String) Type of the host map projection. Valid values are `hostmap`.
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Visual dimension driven by the dataset column. Valid values are `node`, `fill`, `size`, `group`.
+
+Optional:
+
+- `alias` (String) Alias used to label the column instead of its name.
+- `number_format` (Block List, Max: 1) Number formatting options for the projected column. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.query`
+
+Required:
+
+- `data_source` (String) Identifies this as a published-dataset list query. Valid values are `dataset`.
+- `dataset_id` (String) ID of the published dataset to query.
+- `dataset_provider` (String) Product page that published the dataset. Valid values are `ddsql_query`.
+
+Optional:
+
+- `filter` (String) Filter applied to the dataset rows using events-style search syntax.
+- `limit` (Number) Maximum number of rows to return from the dataset query.
+- `sort` (Block List, Max: 1) Sort configuration for the dataset query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--query--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.query.sort`
+
+Required:
+
+- `field` (Block List, Min: 1) List of fields to sort the dataset rows by, applied in order. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query--sort--field))
+
+<a id="nestedblock--widget--hostmap_definition--request--query--sort--field"></a>
+### Nested Schema for `widget.hostmap_definition.request.query.sort.field`
+
+Required:
+
+- `name` (String) Name of the field to sort on.
+- `order` (String) Sort direction for the field. Valid values are `asc`, `desc`.
+
+
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size"></a>
