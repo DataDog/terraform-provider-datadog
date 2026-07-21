@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/dashboardmapping"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -173,6 +174,7 @@ func resourceDatadogDashboard() *schema.Resource {
 						},
 					},
 				},
+				"default_timeframe": dashboardmapping.FieldSpecToSDKv2(dashboardmapping.DashboardDefaultTimeframeField()),
 			}
 		},
 	}
@@ -347,6 +349,20 @@ func updateDashboardState(d *schema.ResourceData, dashboard *datadogV1.Dashboard
 		return diag.FromErr(err)
 	}
 
+	// Set default_timeframe — always call d.Set so stale state is cleared when removed.
+	// Shares the TypeOneOf field spec and engine flatten with datadog_dashboard_v2.
+	var terraformDefaultTimeframe interface{}
+	if apiDefaultTimeframe := getDashboardDefaultTimeframeFromAPI(dashboard); apiDefaultTimeframe != nil {
+		dtfState := dashboardmapping.FlattenEngineJSON(
+			[]dashboardmapping.FieldSpec{dashboardmapping.DashboardDefaultTimeframeField()},
+			map[string]interface{}{"default_timeframe": apiDefaultTimeframe},
+		)
+		terraformDefaultTimeframe = dtfState["default_timeframe"]
+	}
+	if err := d.Set("default_timeframe", terraformDefaultTimeframe); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return nil
 }
 
@@ -477,17 +493,39 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 	templateVariablePresets := d.Get("template_variable_preset").([]interface{})
 	dashboard.TemplateVariablePresets = *buildDatadogTemplateVariablePresets(&templateVariablePresets)
 
-	// Build Tabs
+	// Build Tabs and default_timeframe via AdditionalProperties until the API client models them.
+	additionalProps := dashboard.AdditionalProperties
+	if additionalProps == nil {
+		additionalProps = make(map[string]interface{})
+	}
 	if v, ok := d.GetOk("tab"); ok {
 		terraformTabs := v.([]interface{})
-		tabs := buildDatadogTabs(&terraformTabs)
-		if dashboard.AdditionalProperties == nil {
-			dashboard.AdditionalProperties = make(map[string]interface{})
-		}
-		dashboard.AdditionalProperties["tabs"] = tabs
+		additionalProps["tabs"] = buildDatadogTabs(&terraformTabs)
+	}
+	// Build default_timeframe via the shared TypeOneOf engine (same as datadog_dashboard_v2).
+	// The NullOnClear flag emits JSON null when the block is removed from an existing resource.
+	dtfData := map[string]interface{}{"default_timeframe": d.Get("default_timeframe")}
+	if blocks, _ := dtfData["default_timeframe"].([]interface{}); len(blocks) == 0 && !d.IsNewResource() && d.HasChange("default_timeframe") {
+		dtfData["default_timeframe"] = nil
+	}
+	builtDTF := dashboardmapping.BuildEngineJSONFromMap(dtfData, []dashboardmapping.FieldSpec{dashboardmapping.DashboardDefaultTimeframeField()})
+	if v, ok := builtDTF["default_timeframe"]; ok {
+		additionalProps["default_timeframe"] = v
+	}
+	if len(additionalProps) > 0 {
+		dashboard.AdditionalProperties = additionalProps
 	}
 
 	return &dashboard, nil
+}
+
+func getDashboardDefaultTimeframeFromAPI(dashboard *datadogV1.Dashboard) map[string]interface{} {
+	if dashboard.AdditionalProperties != nil {
+		if dtf, ok := dashboard.AdditionalProperties["default_timeframe"].(map[string]interface{}); ok {
+			return dtf
+		}
+	}
+	return nil
 }
 
 //
