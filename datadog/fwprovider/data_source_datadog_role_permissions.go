@@ -38,10 +38,10 @@ type datadogRolePermissionsDataSource struct {
 	Auth context.Context
 }
 
-func (r *datadogRolePermissionsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadogRolePermissionsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetRolesApiV2()
-	r.Auth = providerData.Auth
+	d.Api = providerData.DatadogApiInstances.GetRolesApiV2()
+	d.Auth = providerData.Auth
 }
 
 func (d *datadogRolePermissionsDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {

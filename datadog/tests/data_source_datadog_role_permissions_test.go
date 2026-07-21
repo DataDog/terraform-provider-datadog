@@ -35,8 +35,12 @@ data "datadog_permissions" "foo" {}
 
 resource "datadog_role" "uniq_role" {
 	name = "%[1]s"
-	permission {
-		id = data.datadog_permissions.foo.permissions.dashboards_read
+
+	dynamic "permission" {
+		for_each = data.datadog_permissions.foo.permissions
+		content {
+		    id = permission.value
+		}
 	}
 }
 
