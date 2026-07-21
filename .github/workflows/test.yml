@@ -73,6 +73,7 @@ jobs:
           terraform_version: "1.13.1"
           terraform_wrapper: false
       - name: Check Docs Are Up To Date
+        if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'datadog-api-spec/generated/')
         run: make check-docs
 
   # Unit tests don't touch the API, use no cassettes, and need no terraform binary,
