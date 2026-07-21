@@ -12,12 +12,14 @@ import (
 
 // AmazonS3DestinationModel represents the Terraform model for the AmazonS3Destination
 type AmazonS3DestinationModel struct {
-	Bucket       types.String         `tfsdk:"bucket"`
-	Region       types.String         `tfsdk:"region"`
-	KeyPrefix    types.String         `tfsdk:"key_prefix"`
-	StorageClass types.String         `tfsdk:"storage_class"`
-	Auth         []AwsAuthModel       `tfsdk:"auth"`
-	Buffer       []BufferOptionsModel `tfsdk:"buffer"`
+	Bucket               types.String         `tfsdk:"bucket"`
+	Region               types.String         `tfsdk:"region"`
+	KeyPrefix            types.String         `tfsdk:"key_prefix"`
+	StorageClass         types.String         `tfsdk:"storage_class"`
+	ServerSideEncryption types.String         `tfsdk:"server_side_encryption"`
+	SseKmsKeyId          types.String         `tfsdk:"ssekms_key_id"`
+	Auth                 []AwsAuthModel       `tfsdk:"auth"`
+	Buffer               []BufferOptionsModel `tfsdk:"buffer"`
 }
 
 // AmazonS3DestinationSchema returns the schema for the AmazonS3Destination
@@ -45,6 +47,17 @@ func AmazonS3DestinationSchema() schema.ListNestedBlock {
 						stringvalidator.OneOf("STANDARD", "REDUCED_REDUNDANCY", "INTELLIGENT_TIERING", "STANDARD_IA", "EXPRESS_ONEZONE", "ONEZONE_IA", "GLACIER", "GLACIER_IR", "DEEP_ARCHIVE"),
 					},
 				},
+				"server_side_encryption": schema.StringAttribute{
+					Optional:    true,
+					Description: "The server-side encryption algorithm used when storing objects in S3. Valid values: `aws:kms`, `AES256`.",
+					Validators: []validator.String{
+						stringvalidator.OneOf("aws:kms", "AES256"),
+					},
+				},
+				"ssekms_key_id": schema.StringAttribute{
+					Optional:    true,
+					Description: "ID of the AWS KMS key to use for SSE-KMS encryption. Only applies when `server_side_encryption` is `aws:kms`.",
+				},
 			},
 			Blocks: map[string]schema.Block{
 				"auth":   AwsAuthSchema(),
@@ -67,6 +80,27 @@ func ExpandAmazonS3Destination(ctx context.Context, id string, inputs types.List
 	dest.SetRegion(src.Region.ValueString())
 	dest.SetKeyPrefix(src.KeyPrefix.ValueString())
 	dest.SetStorageClass(datadogV2.ObservabilityPipelineAmazonS3DestinationStorageClass(src.StorageClass.ValueString()))
+
+	// SSE-KMS fields.
+	// TODO(OPA-5637): the datadog-api-client-go `ObservabilityPipelineAmazonS3Destination` model does
+	// not yet expose typed `ServerSideEncryption`/`SsekmsKeyId` fields — those depend on the
+	// datadog_archives (amazon_s3) SSE-KMS api-spec change merging and the client being regenerated.
+	// Until then we bridge through AdditionalProperties (which round-trips through Marshal/Unmarshal).
+	// Once the client is regenerated, replace this block with the generated typed setters, mirroring
+	// amazon_s3_generic_destination.go:
+	//   dest.SetServerSideEncryption(datadogV2.ObservabilityPipelineAmazonS3DestinationServerSideEncryption(src.ServerSideEncryption.ValueString()))
+	//   dest.SetSsekmsKeyId(src.SseKmsKeyId.ValueString())
+	if !src.ServerSideEncryption.IsNull() || !src.SseKmsKeyId.IsNull() {
+		if dest.AdditionalProperties == nil {
+			dest.AdditionalProperties = map[string]interface{}{}
+		}
+		if !src.ServerSideEncryption.IsNull() {
+			dest.AdditionalProperties["server_side_encryption"] = src.ServerSideEncryption.ValueString()
+		}
+		if !src.SseKmsKeyId.IsNull() {
+			dest.AdditionalProperties["ssekms_key_id"] = src.SseKmsKeyId.ValueString()
+		}
+	}
 
 	if len(src.Auth) > 0 {
 		dest.SetAuth(ExpandAwsAuth(src.Auth[0]))
@@ -91,10 +125,25 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 	}
 
 	model := &AmazonS3DestinationModel{
-		Bucket:       types.StringValue(src.GetBucket()),
-		Region:       types.StringValue(src.GetRegion()),
-		KeyPrefix:    types.StringValue(src.GetKeyPrefix()),
-		StorageClass: types.StringValue(string(src.GetStorageClass())),
+		Bucket:               types.StringValue(src.GetBucket()),
+		Region:               types.StringValue(src.GetRegion()),
+		KeyPrefix:            types.StringValue(src.GetKeyPrefix()),
+		StorageClass:         types.StringValue(string(src.GetStorageClass())),
+		ServerSideEncryption: types.StringNull(),
+		SseKmsKeyId:          types.StringNull(),
+	}
+
+	// SSE-KMS fields.
+	// TODO(OPA-5637): read via AdditionalProperties until the client is regenerated with typed
+	// getters. Once available, replace with the generated typed getters, mirroring
+	// amazon_s3_generic_destination.go:
+	//   if v, ok := src.GetServerSideEncryptionOk(); ok { model.ServerSideEncryption = types.StringValue(string(*v)) }
+	//   if v, ok := src.GetSsekmsKeyIdOk(); ok { model.SseKmsKeyId = types.StringValue(*v) }
+	if v, ok := src.AdditionalProperties["server_side_encryption"].(string); ok && v != "" {
+		model.ServerSideEncryption = types.StringValue(v)
+	}
+	if v, ok := src.AdditionalProperties["ssekms_key_id"].(string); ok && v != "" {
+		model.SseKmsKeyId = types.StringValue(v)
 	}
 
 	if auth, ok := src.GetAuthOk(); ok {

@@ -5529,6 +5529,59 @@ resource "datadog_observability_pipeline" "amazon_s3_basic" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonS3DestinationSseKms(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.amazon_s3_sse_kms"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3_sse_kms" {
+  name = "amazon s3 sse-kms pipeline"
+
+  config {
+    source {
+      id = "source-1"
+      datadog_agent {
+      }
+    }
+
+    destination {
+      id     = "s3-sse-kms-1"
+      inputs = ["source-1"]
+
+      amazon_s3 {
+        bucket                 = "my-logs-bucket"
+        region                 = "us-east-1"
+        key_prefix             = "logs/"
+        storage_class          = "STANDARD"
+        server_side_encryption = "aws:kms"
+        ssekms_key_id          = "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.id", "s3-sse-kms-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.bucket", "my-logs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.storage_class", "STANDARD"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.server_side_encryption", "aws:kms"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.amazon_s3.0.ssekms_key_id", "arn:aws:kms:us-east-1:123456789012:key/mrk-abc123"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_amazonS3GenericDestination(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
