@@ -323,7 +323,7 @@ jobs:
               if [[ -z "${allowed[$changed_path]+allowed}" ]]; then
                 unexpected+=("$changed_path")
               fi
-            done < <(git status --porcelain)
+            done < <(git status --porcelain --untracked-files=all)
             if [[ "${#unexpected[@]}" -gt 0 ]]; then
               record_failure "$name" "unexpected changed files: ${unexpected[*]}"
               continue
