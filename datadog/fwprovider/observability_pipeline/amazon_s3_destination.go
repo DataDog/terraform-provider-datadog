@@ -81,15 +81,10 @@ func ExpandAmazonS3Destination(ctx context.Context, id string, inputs types.List
 	dest.SetKeyPrefix(src.KeyPrefix.ValueString())
 	dest.SetStorageClass(datadogV2.ObservabilityPipelineAmazonS3DestinationStorageClass(src.StorageClass.ValueString()))
 
-	// SSE-KMS fields.
-	// TODO(OPA-5637): the datadog-api-client-go `ObservabilityPipelineAmazonS3Destination` model does
-	// not yet expose typed `ServerSideEncryption`/`SsekmsKeyId` fields — those depend on the
-	// datadog_archives (amazon_s3) SSE-KMS api-spec change merging and the client being regenerated.
-	// Until then we bridge through AdditionalProperties (which round-trips through Marshal/Unmarshal).
-	// Once the client is regenerated, replace this block with the generated typed setters, mirroring
-	// amazon_s3_generic_destination.go:
-	//   dest.SetServerSideEncryption(datadogV2.ObservabilityPipelineAmazonS3DestinationServerSideEncryption(src.ServerSideEncryption.ValueString()))
-	//   dest.SetSsekmsKeyId(src.SseKmsKeyId.ValueString())
+	// TODO(OPA-5637): the client's ObservabilityPipelineAmazonS3Destination model has no typed
+	// ServerSideEncryption/SsekmsKeyId fields yet (unlike the generic destination), so bridge through
+	// AdditionalProperties, which round-trips via Marshal/Unmarshal. Replace with typed setters once
+	// the client is regenerated from the api-spec change.
 	if !src.ServerSideEncryption.IsNull() || !src.SseKmsKeyId.IsNull() {
 		if dest.AdditionalProperties == nil {
 			dest.AdditionalProperties = map[string]interface{}{}
@@ -133,12 +128,7 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 		SseKmsKeyId:          types.StringNull(),
 	}
 
-	// SSE-KMS fields.
-	// TODO(OPA-5637): read via AdditionalProperties until the client is regenerated with typed
-	// getters. Once available, replace with the generated typed getters, mirroring
-	// amazon_s3_generic_destination.go:
-	//   if v, ok := src.GetServerSideEncryptionOk(); ok { model.ServerSideEncryption = types.StringValue(string(*v)) }
-	//   if v, ok := src.GetSsekmsKeyIdOk(); ok { model.SseKmsKeyId = types.StringValue(*v) }
+	// TODO(OPA-5637): read via AdditionalProperties until the client exposes typed getters (see Expand).
 	if v, ok := src.AdditionalProperties["server_side_encryption"].(string); ok && v != "" {
 		model.ServerSideEncryption = types.StringValue(v)
 	}
