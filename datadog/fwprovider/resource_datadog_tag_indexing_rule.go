@@ -188,9 +188,9 @@ func (r *tagIndexingRuleResource) ImportState(ctx context.Context, request resou
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-// ValidateConfig mirrors the backend's update-time check (apiv2handler.go:1312-1326) at plan time:
-// the exclude_not_* usage fields on dynamic_tags only take effect (and are only accepted by the API)
-// when exclude_tags_mode is true.
+// ValidateConfig mirrors the API's server-side validation at plan time: the exclude_not_* usage
+// fields on dynamic_tags only take effect (and are only accepted by the API) when exclude_tags_mode
+// is true.
 func (r *tagIndexingRuleResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
 	var config tagIndexingRuleModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
@@ -426,9 +426,9 @@ func (r *tagIndexingRuleResource) buildUpdateRequest(_ context.Context, state *t
 	attrs.SetMetricNameMatches(matches)
 
 	// exclude_tags_mode is Optional+Computed+Default(false), so state.ExcludeTagsMode is always
-	// known by the time we get here. Do not make this conditional: the backend 400s an update that
-	// touches exclude_not_* fields unless exclude_tags_mode is explicitly present in the body
-	// (apiv2handler.go:1312).
+	// known by the time we get here. Do not make this conditional: the API rejects (400) an update
+	// that touches the exclude_not_* fields unless exclude_tags_mode is explicitly present in the
+	// request body.
 	if !state.ExcludeTagsMode.IsNull() && !state.ExcludeTagsMode.IsUnknown() {
 		attrs.SetExcludeTagsMode(state.ExcludeTagsMode.ValueBool())
 	}

@@ -207,9 +207,9 @@ func TestAccDatadogTagIndexingRule_ExcludeMode_UsageFieldIndividuallySet(t *test
 }
 
 // TestAccDatadogTagIndexingRule_ExcludeMode_Update locks in that buildUpdateRequest always sends
-// exclude_tags_mode on update: the backend 400s an update touching exclude_not_* fields unless
-// exclude_tags_mode is explicit in the body (apiv2handler.go:1312), so this step failing would
-// signal a regression to a conditional SetExcludeTagsMode call.
+// exclude_tags_mode on update: the API rejects (400) an update touching the exclude_not_* fields
+// unless exclude_tags_mode is explicit in the request body, so this step failing would signal a
+// regression to a conditional SetExcludeTagsMode call.
 func TestAccDatadogTagIndexingRule_ExcludeMode_Update(t *testing.T) {
 	skipIfNoCassette(t)
 	cleanupTagIndexingRules(t)
