@@ -134,7 +134,6 @@ jobs:
 
           PLAN_PATH="$RUNNER_TEMP/tfgen-split-plan.json"
           SPLIT_DIR="$RUNNER_TEMP/tfgen-split"
-          GENERATION_REPORT="$GITHUB_WORKSPACE/generated/.tfgen-run-report.json"
           OAPI_REPOSITORY="DataDog/datadog-api-spec"
 
           git config user.name "github-actions[bot]"
@@ -157,7 +156,6 @@ jobs:
           fi
 
           oapi_pr_url="https://github.com/$OAPI_REPOSITORY/pull/$oapi_pr_number"
-          spec_hash="$(jq -r '.spec_hash // "unknown"' "$GENERATION_REPORT")"
 
           aggregate_pr_json="[]"
           for attempt in 1 2 3 4 5 6; do
@@ -296,7 +294,7 @@ jobs:
                 ;;
             esac
 
-            source_body_marker="<!-- tfgen-source oapi_pr=$oapi_pr_number spec_hash=$spec_hash -->"
+            source_body_marker="<!-- tfgen-source oapi_pr=$oapi_pr_number artifact=$name -->"
             if ! existing_pr_json="$(gh pr list \
               --repo "$GITHUB_REPOSITORY" \
               --state open \
@@ -315,7 +313,7 @@ jobs:
             if [[ "$existing_pr_count" -eq 1 ]]; then
               if ! jq -e --arg marker "$source_body_marker" \
                 '.[0].body | contains($marker)' <<<"$existing_pr_json" >/dev/null; then
-                record_failure "$name" "branch '$branch' belongs to a PR from a different aggregate run"
+                record_failure "$name" "branch '$branch' belongs to a different OpenAPI PR or artifact"
                 continue
               fi
               pr_url="$(jq -r '.[0].url' <<<"$existing_pr_json")"
