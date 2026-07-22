@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1213
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2HostmapInfrastructure-local-1784746148","widgets":[{"definition":{"requests":{"child":{"enrichments":[{"formulas":[{"dimension":"size","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage{*} by {container_id}"}],"response_format":"scalar"}],"filter":"kube_namespace:store","group_by":[{"column":"tags","key":"kube_namespace"}],"node_type":"container","request_type":"infrastructure_hostmap"},"conditional_formats":[{"comparator":"\u003e","hide_value":false,"palette":"white_on_red","value":80}],"enrichments":[{"formulas":[{"alias":"CPU usage","dimension":"fill","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar"}],"filter":"env:prod","group_by":[{"column":"tags","key":"service"}],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","request_type":"infrastructure_hostmap","style":{"fill_max":100,"palette":"hostmap_blues","palette_flip":true}},"title":"Infrastructure host map","type":"hostmap"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"c33-ytp-zk8","title":"tf-TestAccDatadogDashboardV2HostmapInfrastructure-local-1784746148","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/c33-ytp-zk8/tf-testaccdatadogdashboardv2hostmapinfrastructure-local-1784746148","template_variables":[],"widgets":[{"definition":{"requests":{"child":{"enrichments":[{"formulas":[{"dimension":"size","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage{*} by {container_id}"}],"response_format":"scalar"}],"filter":"kube_namespace:store","group_by":[{"column":"tags","key":"kube_namespace"}],"node_type":"container","request_type":"infrastructure_hostmap"},"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":80}],"enrichments":[{"formulas":[{"alias":"CPU usage","dimension":"fill","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar"}],"filter":"env:prod","group_by":[{"column":"tags","key":"service"}],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","request_type":"infrastructure_hostmap","style":{"fill_max":100,"palette":"hostmap_blues","palette_flip":true}},"title":"Infrastructure host map","type":"hostmap"},"id":5307718475756182}],"notify_list":[],"created_at":"2026-07-22T18:49:10.444351+00:00","modified_at":"2026-07-22T18:49:10.444351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 340.567125ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/c33-ytp-zk8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"c33-ytp-zk8","title":"tf-TestAccDatadogDashboardV2HostmapInfrastructure-local-1784746148","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/c33-ytp-zk8/tf-testaccdatadogdashboardv2hostmapinfrastructure-local-1784746148","template_variables":[],"widgets":[{"definition":{"requests":{"child":{"enrichments":[{"formulas":[{"dimension":"size","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage{*} by {container_id}"}],"response_format":"scalar"}],"filter":"kube_namespace:store","group_by":[{"column":"tags","key":"kube_namespace"}],"node_type":"container","request_type":"infrastructure_hostmap"},"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":80}],"enrichments":[{"formulas":[{"alias":"CPU usage","dimension":"fill","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar"}],"filter":"env:prod","group_by":[{"column":"tags","key":"service"}],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","request_type":"infrastructure_hostmap","style":{"fill_max":100,"palette":"hostmap_blues","palette_flip":true}},"title":"Infrastructure host map","type":"hostmap"},"id":5307718475756182}],"notify_list":[],"created_at":"2026-07-22T18:49:10.444351+00:00","modified_at":"2026-07-22T18:49:10.444351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 184.484ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/c33-ytp-zk8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"c33-ytp-zk8","title":"tf-TestAccDatadogDashboardV2HostmapInfrastructure-local-1784746148","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/c33-ytp-zk8/tf-testaccdatadogdashboardv2hostmapinfrastructure-local-1784746148","template_variables":[],"widgets":[{"definition":{"requests":{"child":{"enrichments":[{"formulas":[{"dimension":"size","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage{*} by {container_id}"}],"response_format":"scalar"}],"filter":"kube_namespace:store","group_by":[{"column":"tags","key":"kube_namespace"}],"node_type":"container","request_type":"infrastructure_hostmap"},"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":80}],"enrichments":[{"formulas":[{"alias":"CPU usage","dimension":"fill","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar"}],"filter":"env:prod","group_by":[{"column":"tags","key":"service"}],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","request_type":"infrastructure_hostmap","style":{"fill_max":100,"palette":"hostmap_blues","palette_flip":true}},"title":"Infrastructure host map","type":"hostmap"},"id":5307718475756182}],"notify_list":[],"created_at":"2026-07-22T18:49:10.444351+00:00","modified_at":"2026-07-22T18:49:10.444351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 233.558041ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/c33-ytp-zk8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"c33-ytp-zk8","title":"tf-TestAccDatadogDashboardV2HostmapInfrastructure-local-1784746148","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/c33-ytp-zk8/tf-testaccdatadogdashboardv2hostmapinfrastructure-local-1784746148","template_variables":[],"widgets":[{"definition":{"requests":{"child":{"enrichments":[{"formulas":[{"dimension":"size","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:container.cpu.usage{*} by {container_id}"}],"response_format":"scalar"}],"filter":"kube_namespace:store","group_by":[{"column":"tags","key":"kube_namespace"}],"node_type":"container","request_type":"infrastructure_hostmap"},"conditional_formats":[{"comparator":">","hide_value":false,"palette":"white_on_red","value":80}],"enrichments":[{"formulas":[{"alias":"CPU usage","dimension":"fill","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*} by {host}"}],"response_format":"scalar"}],"filter":"env:prod","group_by":[{"column":"tags","key":"service"}],"no_group_hosts":true,"no_metric_hosts":true,"node_type":"host","request_type":"infrastructure_hostmap","style":{"fill_max":100,"palette":"hostmap_blues","palette_flip":true}},"title":"Infrastructure host map","type":"hostmap"},"id":5307718475756182}],"notify_list":[],"created_at":"2026-07-22T18:49:10.444351+00:00","modified_at":"2026-07-22T18:49:10.444351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 236.414833ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/c33-ytp-zk8
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"c33-ytp-zk8"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 616.575458ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/c33-ytp-zk8
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID c33-ytp-zk8 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 132.904333ms
