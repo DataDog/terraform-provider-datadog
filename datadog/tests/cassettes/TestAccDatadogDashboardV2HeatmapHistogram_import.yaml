@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 498
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2HeatmapHistogram_import-local-1784746460","widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3ar-fmy-gmf","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram_import-local-1784746460","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3ar-fmy-gmf/tf-testaccdatadogdashboardv2heatmaphistogramimport-local-1784746460","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":5575075900113841}],"notify_list":[],"created_at":"2026-07-22T18:54:21.727199+00:00","modified_at":"2026-07-22T18:54:21.727199+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 346.040958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3ar-fmy-gmf
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3ar-fmy-gmf","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram_import-local-1784746460","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3ar-fmy-gmf/tf-testaccdatadogdashboardv2heatmaphistogramimport-local-1784746460","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":5575075900113841}],"notify_list":[],"created_at":"2026-07-22T18:54:21.727199+00:00","modified_at":"2026-07-22T18:54:21.727199+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.1345ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3ar-fmy-gmf
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3ar-fmy-gmf","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram_import-local-1784746460","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3ar-fmy-gmf/tf-testaccdatadogdashboardv2heatmaphistogramimport-local-1784746460","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":5575075900113841}],"notify_list":[],"created_at":"2026-07-22T18:54:21.727199+00:00","modified_at":"2026-07-22T18:54:21.727199+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 232.375417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3ar-fmy-gmf
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"3ar-fmy-gmf","title":"tf-TestAccDatadogDashboardV2HeatmapHistogram_import-local-1784746460","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/3ar-fmy-gmf/tf-testaccdatadogdashboardv2heatmaphistogramimport-local-1784746460","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"data_source":"metrics","name":"query1","query":"histogram:trace.servlet.request{*}"},"request_type":"histogram","style":{"palette":"dog_classic"}}],"show_legend":true,"title":"Request duration distribution","type":"heatmap","xaxis":{"num_buckets":60}},"id":5575075900113841}],"notify_list":[],"created_at":"2026-07-22T18:54:21.727199+00:00","modified_at":"2026-07-22T18:54:21.727199+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 177.465416ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3ar-fmy-gmf
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"3ar-fmy-gmf"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 565.468833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/3ar-fmy-gmf
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID 3ar-fmy-gmf not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 134.258417ms
