@@ -34,7 +34,6 @@ var Resources = []func() resource.Resource{
 	NewAgentlessScanningAwsScanOptionsResource,
 	NewAgentlessScanningAzureScanOptionsResource,
 	NewAgentlessScanningGcpScanOptionsResource,
-	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
