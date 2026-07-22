@@ -1,0 +1,139 @@
+{
+  "run_id": "e4cdbbab-e454-4b39-82c3-b2b5874a0dfa",
+  "generator_version": "dev",
+  "spec_hash": "3c36bb6cc6042f0fd5f725a17ba5ee72d5b5b5345684d7918f2da697cd60a9a6",
+  "started_at": "2026-07-22T21:06:25.915279498Z",
+  "finished_at": "2026-07-22T21:06:25.953155426Z",
+  "artifacts": [
+    {
+      "name": "api_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/fwprovider/data_source_datadog_api_keys.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "dropped query parameter \"sort\" from filters: enum-valued query parameters are not supported as filters"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.created_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.modified_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].relationships\": not part of the surfaced {id, type, attributes} envelope"
+        },
+        {
+          "severity": "info",
+          "message": "generated example for \"api_keys\" uses an auto-selected optional filter; confirm it is representative and add others as needed"
+        }
+      ]
+    },
+    {
+      "name": "api_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/tests/data_source_datadog_api_keys_test.go"
+    },
+    {
+      "name": "api_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../examples/data-sources/datadog_api_keys/data-source.tf"
+    },
+    {
+      "name": "application_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/fwprovider/data_source_datadog_application_keys.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "dropped query parameter \"sort\" from filters: enum-valued query parameters are not supported as filters"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.created_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].relationships\": not part of the surfaced {id, type, attributes} envelope"
+        },
+        {
+          "severity": "info",
+          "message": "generated example for \"application_keys\" uses an auto-selected optional filter; confirm it is representative and add others as needed"
+        }
+      ]
+    },
+    {
+      "name": "application_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/tests/data_source_datadog_application_keys_test.go"
+    },
+    {
+      "name": "application_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../examples/data-sources/datadog_application_keys/data-source.tf"
+    },
+    {
+      "name": "authn_mappings",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/fwprovider/data_source_datadog_authn_mappings.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "dropped query parameter \"resource_type\" from filters: enum-valued query parameters are not supported as filters"
+        },
+        {
+          "severity": "info",
+          "message": "dropped query parameter \"sort\" from filters: enum-valued query parameters are not supported as filters"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.created_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.modified_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].relationships\": not part of the surfaced {id, type, attributes} envelope"
+        },
+        {
+          "severity": "info",
+          "message": "generated example for \"authn_mappings\" uses an auto-selected optional filter; confirm it is representative and add others as needed"
+        }
+      ]
+    },
+    {
+      "name": "authn_mappings",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/tests/data_source_datadog_authn_mappings_test.go"
+    },
+    {
+      "name": "authn_mappings",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../examples/data-sources/datadog_authn_mappings/data-source.tf"
+    }
+  ],
+  "summary": {
+    "created": 9,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 0,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
