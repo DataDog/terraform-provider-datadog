@@ -370,6 +370,9 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_incident_notification_rule_test":                          "incidents",
 	"tests/resource_datadog_incident_user_defined_field_test":                            "incidents",
 	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
+	"tests/resource_datadog_scorecard_rule_test":                                         "scorecards",
+	"tests/data_source_datadog_scorecard_rule_test":                                      "scorecards",
+	"tests/data_source_datadog_scorecard_rules_test":                                     "scorecards",
 }
 
 // getEndpointTagValue traverses callstack frames to find the test function that invoked this call;
