@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 790
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2SankeyAudience_import-local-1784742692","widgets":[{"definition":{"requests":[{"query":{"audience_filters":{"accounts":[{"name":"enterprise-accounts","query":"@account.tier:enterprise"}],"filter_condition":"users and segments and accounts","segments":[{"name":"returning-users","segment_id":"segment-id"}],"users":[{"name":"buyers","query":"@usr.plan:pro"}]},"data_source":"product_analytics","join_keys":{"primary":"session.id","secondary":["usr.id","account.id"]},"mode":"source","occurrences":{"operator":"gt","value":"2"},"query_string":"@type:view"},"request_type":"sankey"}],"title":"Product Analytics audience","type":"sankey"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5y2-29x-wnw","title":"tf-TestAccDatadogDashboardV2SankeyAudience_import-local-1784742692","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/5y2-29x-wnw/tf-testaccdatadogdashboardv2sankeyaudienceimport-local-1784742692","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"audience_filters":{"accounts":[{"name":"enterprise-accounts","query":"@account.tier:enterprise"}],"filter_condition":"users and segments and accounts","segments":[{"name":"returning-users","segment_id":"segment-id"}],"users":[{"name":"buyers","query":"@usr.plan:pro"}]},"data_source":"product_analytics","join_keys":{"primary":"session.id","secondary":["usr.id","account.id"]},"mode":"source","occurrences":{"operator":"gt","value":"2"},"query_string":"@type:view"},"request_type":"sankey"}],"title":"Product Analytics audience","type":"sankey"},"id":8664917588552303}],"notify_list":[],"created_at":"2026-07-22T17:51:36.636712+00:00","modified_at":"2026-07-22T17:51:36.636712+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 490.259916ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5y2-29x-wnw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5y2-29x-wnw","title":"tf-TestAccDatadogDashboardV2SankeyAudience_import-local-1784742692","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/5y2-29x-wnw/tf-testaccdatadogdashboardv2sankeyaudienceimport-local-1784742692","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"audience_filters":{"accounts":[{"name":"enterprise-accounts","query":"@account.tier:enterprise"}],"filter_condition":"users and segments and accounts","segments":[{"name":"returning-users","segment_id":"segment-id"}],"users":[{"name":"buyers","query":"@usr.plan:pro"}]},"data_source":"product_analytics","join_keys":{"primary":"session.id","secondary":["usr.id","account.id"]},"mode":"source","occurrences":{"operator":"gt","value":"2"},"query_string":"@type:view"},"request_type":"sankey"}],"title":"Product Analytics audience","type":"sankey"},"id":8664917588552303}],"notify_list":[],"created_at":"2026-07-22T17:51:36.636712+00:00","modified_at":"2026-07-22T17:51:36.636712+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 166.726708ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5y2-29x-wnw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5y2-29x-wnw","title":"tf-TestAccDatadogDashboardV2SankeyAudience_import-local-1784742692","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/5y2-29x-wnw/tf-testaccdatadogdashboardv2sankeyaudienceimport-local-1784742692","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"audience_filters":{"accounts":[{"name":"enterprise-accounts","query":"@account.tier:enterprise"}],"filter_condition":"users and segments and accounts","segments":[{"name":"returning-users","segment_id":"segment-id"}],"users":[{"name":"buyers","query":"@usr.plan:pro"}]},"data_source":"product_analytics","join_keys":{"primary":"session.id","secondary":["usr.id","account.id"]},"mode":"source","occurrences":{"operator":"gt","value":"2"},"query_string":"@type:view"},"request_type":"sankey"}],"title":"Product Analytics audience","type":"sankey"},"id":8664917588552303}],"notify_list":[],"created_at":"2026-07-22T17:51:36.636712+00:00","modified_at":"2026-07-22T17:51:36.636712+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 222.004917ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5y2-29x-wnw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5y2-29x-wnw","title":"tf-TestAccDatadogDashboardV2SankeyAudience_import-local-1784742692","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/5y2-29x-wnw/tf-testaccdatadogdashboardv2sankeyaudienceimport-local-1784742692","template_variables":[],"widgets":[{"definition":{"requests":[{"query":{"audience_filters":{"accounts":[{"name":"enterprise-accounts","query":"@account.tier:enterprise"}],"filter_condition":"users and segments and accounts","segments":[{"name":"returning-users","segment_id":"segment-id"}],"users":[{"name":"buyers","query":"@usr.plan:pro"}]},"data_source":"product_analytics","join_keys":{"primary":"session.id","secondary":["usr.id","account.id"]},"mode":"source","occurrences":{"operator":"gt","value":"2"},"query_string":"@type:view"},"request_type":"sankey"}],"title":"Product Analytics audience","type":"sankey"},"id":8664917588552303}],"notify_list":[],"created_at":"2026-07-22T17:51:36.636712+00:00","modified_at":"2026-07-22T17:51:36.636712+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 161.316125ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5y2-29x-wnw
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"5y2-29x-wnw"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 626.600917ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/5y2-29x-wnw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID 5y2-29x-wnw not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 149.373125ms
