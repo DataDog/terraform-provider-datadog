@@ -1,0 +1,103 @@
+{
+  "run_id": "7eb2a9d0-f1bf-426a-aecf-0479b8f7e76f",
+  "generator_version": "dev",
+  "spec_hash": "d90e72b4331cd13300c97782363ac0262d7972137a7ac51ee4f9817a253225ce",
+  "started_at": "2026-07-23T18:22:11.022922405Z",
+  "finished_at": "2026-07-23T18:22:11.164376625Z",
+  "artifacts": [
+    {
+      "name": "api_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/fwprovider/data_source_datadog_api_keys.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "dropped query parameter \"sort\" from filters: enum-valued query parameters are not supported as filters"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.created_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.modified_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].relationships\": not part of the surfaced {id, type, attributes} envelope"
+        },
+        {
+          "severity": "info",
+          "message": "generated example for \"api_keys\" uses an auto-selected optional filter; confirm it is representative and add others as needed"
+        }
+      ]
+    },
+    {
+      "name": "api_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/tests/data_source_datadog_api_keys_test.go"
+    },
+    {
+      "name": "api_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../examples/data-sources/datadog_api_keys/data-source.tf"
+    },
+    {
+      "name": "application_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/fwprovider/data_source_datadog_application_keys.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "dropped query parameter \"sort\" from filters: enum-valued query parameters are not supported as filters"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.created_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].relationships\": not part of the surfaced {id, type, attributes} envelope"
+        },
+        {
+          "severity": "info",
+          "message": "generated example for \"application_keys\" uses an auto-selected optional filter; confirm it is representative and add others as needed"
+        }
+      ]
+    },
+    {
+      "name": "application_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/tests/data_source_datadog_application_keys_test.go"
+    },
+    {
+      "name": "application_keys",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../examples/data-sources/datadog_application_keys/data-source.tf"
+    }
+  ],
+  "skipped_operations": [
+    {
+      "operation_id": "ListAuthNMappings",
+      "path": "/api/v2/authn_mappings",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    }
+  ],
+  "summary": {
+    "created": 6,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 0,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
