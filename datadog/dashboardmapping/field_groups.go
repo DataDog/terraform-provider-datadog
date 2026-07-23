@@ -1446,6 +1446,49 @@ var barChartWidgetRequestFields = append([]FieldSpec{
 // Sankey Widget Field Groups (OpenAPI: SankeyWidgetDefinition)
 // ============================================================
 
+// productAnalyticsAudienceUserSubqueryFields corresponds to OpenAPI
+// ProductAnalyticsAudienceUserSubquery.
+var productAnalyticsAudienceUserSubqueryFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "The name of the user subquery."},
+	{HCLKey: "query", Type: TypeString, OmitEmpty: true,
+		Description: "The query string for the user subquery."},
+}
+
+// productAnalyticsAudienceSegmentSubqueryFields corresponds to OpenAPI
+// ProductAnalyticsAudienceSegmentSubquery.
+var productAnalyticsAudienceSegmentSubqueryFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "The name of the segment subquery."},
+	{HCLKey: "segment_id", Type: TypeString, OmitEmpty: true,
+		Description: "The unique identifier of the segment."},
+}
+
+// productAnalyticsAudienceAccountSubqueryFields corresponds to OpenAPI
+// ProductAnalyticsAudienceAccountSubquery.
+var productAnalyticsAudienceAccountSubqueryFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "The name of the account subquery."},
+	{HCLKey: "query", Type: TypeString, OmitEmpty: true,
+		Description: "The query string for the account subquery."},
+}
+
+// productAnalyticsAudienceFiltersFields corresponds to OpenAPI
+// ProductAnalyticsAudienceFilters.
+var productAnalyticsAudienceFiltersFields = []FieldSpec{
+	{HCLKey: "user", JSONKey: "users", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Product Analytics audience user subqueries.",
+		Children:    productAnalyticsAudienceUserSubqueryFields},
+	{HCLKey: "segment", JSONKey: "segments", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Product Analytics audience segment subqueries.",
+		Children:    productAnalyticsAudienceSegmentSubqueryFields},
+	{HCLKey: "account", JSONKey: "accounts", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Product Analytics audience account subqueries.",
+		Children:    productAnalyticsAudienceAccountSubqueryFields},
+	{HCLKey: "filter_condition", Type: TypeString, OmitEmpty: true,
+		Description: "An optional filter condition applied to the audience subquery."},
+}
+
 // sankeyRumQueryFields corresponds to OpenAPI SankeyRumQuery.
 var sankeyRumQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
