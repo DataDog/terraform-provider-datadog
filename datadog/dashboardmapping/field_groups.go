@@ -1055,6 +1055,15 @@ var listStreamGroupByFields = []FieldSpec{
 	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true, Description: "Facet name"},
 }
 
+// listStreamComputeItemsFields corresponds to OpenAPI ListStreamComputeItems.
+var listStreamComputeItemsFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: true,
+		Description: "Facet name."},
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Aggregation value.",
+		ValidValues: []string{"count", "cardinality", "median", "pc75", "pc90", "pc95", "pc98", "pc99", "sum", "min", "max", "avg", "earliest", "latest", "most_frequent"}},
+}
+
 // listStreamSortFields corresponds to the sort block inside ListStreamQuery.
 var listStreamSortFields = []FieldSpec{
 	{HCLKey: "column", Type: TypeString, OmitEmpty: false, Required: true, Description: "The facet path for the column."},
@@ -1096,11 +1105,15 @@ var listStreamQueryFields = []FieldSpec{
 	{HCLKey: "storage", Type: TypeString, OmitEmpty: true, Description: "Storage location (private beta)."},
 	// indexes: OmitEmpty — only present when set in HCL
 	{HCLKey: "indexes", Type: TypeStringList, OmitEmpty: true, Description: "List of indexes."},
+	{HCLKey: "compute", Type: TypeBlockList, OmitEmpty: true, MinItems: 1, MaxItems: 5,
+		Description: "Compute configuration for the List Stream widget. Compute can be used only with the `logs_transaction_stream` source.",
+		Children:    listStreamComputeItemsFields},
 	// group_by: TypeBlockList
 	{
 		HCLKey:      "group_by",
 		Type:        TypeBlockList,
 		OmitEmpty:   true,
+		MaxItems:    4,
 		Description: "Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source.",
 		Children:    listStreamGroupByFields,
 	},
@@ -1112,6 +1125,21 @@ var listStreamQueryFields = []FieldSpec{
 		Description: "The facet and order to sort the data, for example: `{\"column\": \"time\", \"order\": \"desc\"}`.",
 		Children:    listStreamSortFields,
 	},
+	{HCLKey: "states", Type: TypeStringList, OmitEmpty: true,
+		Description: "Issue states to filter by. Usable only with `issue_stream`.",
+		ValidValues: []string{"OPEN", "IGNORED", "ACKNOWLEDGED", "RESOLVED"}},
+	{HCLKey: "assignee_uuids", Type: TypeStringList, OmitEmpty: true,
+		Description: "Assignee UUIDs to filter by. Usable only with `issue_stream`."},
+	{HCLKey: "suspected_causes", Type: TypeStringList, OmitEmpty: true,
+		Description: "Suspected causes to filter by. Usable only with `issue_stream`."},
+	{HCLKey: "team_handles", Type: TypeStringList, OmitEmpty: true,
+		Description: "Team handles to filter by. Usable only with `issue_stream`."},
+	{HCLKey: "persona", Type: TypeString, OmitEmpty: true,
+		Description: "Persona to filter by. Usable only with `issue_stream`.",
+		ValidValues: []string{"all", "browser", "mobile", "backend"}},
+	{HCLKey: "version", Type: TypeString, OmitEmpty: true,
+		Description: "Version of the query for the logs transaction stream widget. When omitted, v1 query behavior is preserved. Set to `sequential_query` to use v2 behavior. This feature is in Preview.",
+		ValidValues: []string{"sequential_query"}},
 }
 
 // listStreamRequestFields corresponds to OpenAPI
