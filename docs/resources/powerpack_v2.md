@@ -102,6 +102,7 @@ Optional:
 - `bar_chart_definition` (Block List, Max: 1) The definition for a Bar Chart widget. (see [below for nested schema](#nestedblock--widget--bar_chart_definition))
 - `change_definition` (Block List, Max: 1) The definition for a Change widget. (see [below for nested schema](#nestedblock--widget--change_definition))
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--check_status_definition))
+- `cohort_definition` (Block List, Max: 1) The definition for a Cohort retention-grid widget. (see [below for nested schema](#nestedblock--widget--cohort_definition))
 - `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--distribution_definition))
 - `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
 - `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
@@ -119,8 +120,10 @@ Optional:
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
 - `point_plot_definition` (Block List, Max: 1) The definition for a Point Plot widget. (see [below for nested schema](#nestedblock--widget--point_plot_definition))
+- `product_analytics_funnel_definition` (Block List, Max: 1) The definition for a Product Analytics user journey funnel widget. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--query_value_definition))
+- `retention_curve_definition` (Block List, Max: 1) The definition for a Retention Curve widget. (see [below for nested schema](#nestedblock--widget--retention_curve_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--run_workflow_definition))
 - `sankey_definition` (Block List, Max: 1) The definition for a Sankey diagram widget. (see [below for nested schema](#nestedblock--widget--sankey_definition))
 - `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--scatterplot_definition))
@@ -2744,6 +2747,306 @@ Required:
 
 
 
+<a id="nestedblock--widget--cohort_definition"></a>
+### Nested Schema for `widget.cohort_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) Cohort retention-grid requests. (see [below for nested schema](#nestedblock--widget--cohort_definition--request))
+
+Optional:
+
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--cohort_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--cohort_definition--request"></a>
+### Nested Schema for `widget.cohort_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Retention query displayed by the cohort grid. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query))
+- `request_type` (String) Request type for the retention grid widget. Valid values are `retention_grid`.
+
+<a id="nestedblock--widget--cohort_definition--request--query"></a>
+### Nested Schema for `widget.cohort_definition.request.query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search))
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention query. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--filters))
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--group_by))
+- `name` (String) Name of the retention query.
+
+<a id="nestedblock--widget--cohort_definition--request--query--compute"></a>
+### Nested Schema for `widget.cohort_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--search"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--return_criteria))
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--cohort_criteria"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--filters"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--return_criteria"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.cohort_definition.request.query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--filters"></a>
+### Nested Schema for `widget.cohort_definition.request.query.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--cohort_definition--request--query--filters--audience_filters"></a>
+### Nested Schema for `widget.cohort_definition.request.query.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--filters--audience_filters--user))
+
+<a id="nestedblock--widget--cohort_definition--request--query--filters--audience_filters--account"></a>
+### Nested Schema for `widget.cohort_definition.request.query.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.cohort_definition.request.query.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--filters--audience_filters--user"></a>
+### Nested Schema for `widget.cohort_definition.request.query.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--cohort_definition--request--query--group_by"></a>
+### Nested Schema for `widget.cohort_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--cohort_definition--request--query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--cohort_definition--request--query--group_by--sort"></a>
+### Nested Schema for `widget.cohort_definition.request.query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+
+<a id="nestedblock--widget--cohort_definition--time"></a>
+### Nested Schema for `widget.cohort_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--cohort_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--cohort_definition--time--live))
+
+<a id="nestedblock--widget--cohort_definition--time--fixed"></a>
+### Nested Schema for `widget.cohort_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--cohort_definition--time--live"></a>
+### Nested Schema for `widget.cohort_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+
 <a id="nestedblock--widget--distribution_definition"></a>
 ### Nested Schema for `widget.distribution_definition`
 
@@ -4286,6 +4589,7 @@ Required:
 Optional:
 
 - `description` (String) The description of the widget.
+- `grouped_display` (String) Display mode for grouped funnel results. Valid values are `stacked`, `side_by_side`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Only one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--funnel_definition--request))
@@ -5464,6 +5768,7 @@ Optional:
 - `bar_chart_definition` (Block List, Max: 1) The definition for a Bar Chart widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition))
 - `change_definition` (Block List, Max: 1) The definition for a Change widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition))
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--check_status_definition))
+- `cohort_definition` (Block List, Max: 1) The definition for a Cohort retention-grid widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition))
 - `distribution_definition` (Block List, Max: 1) The definition for a Distribution widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition))
 - `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_stream_definition))
 - `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--event_timeline_definition))
@@ -5480,8 +5785,10 @@ Optional:
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
 - `point_plot_definition` (Block List, Max: 1) The definition for a Point Plot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--point_plot_definition))
+- `product_analytics_funnel_definition` (Block List, Max: 1) The definition for a Product Analytics user journey funnel widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition))
+- `retention_curve_definition` (Block List, Max: 1) The definition for a Retention Curve widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition))
 - `sankey_definition` (Block List, Max: 1) The definition for a Sankey diagram widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition))
 - `scatterplot_definition` (Block List, Max: 1) The definition for a Scatterplot widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition))
@@ -8105,6 +8412,306 @@ Required:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--cohort_definition"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) Cohort retention-grid requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request))
+
+Optional:
+
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Retention query displayed by the cohort grid. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query))
+- `request_type` (String) Request type for the retention grid widget. Valid values are `retention_grid`.
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search))
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters))
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--group_by))
+- `name` (String) Name of the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--request--query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--request--query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.request.query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--cohort_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--cohort_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.cohort_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+
 <a id="nestedblock--widget--group_definition--widget--distribution_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.distribution_definition`
 
@@ -9647,6 +10254,7 @@ Required:
 Optional:
 
 - `description` (String) The description of the widget.
+- `grouped_display` (String) Display mode for grouped funnel results. Valid values are `stacked`, `side_by_side`.
 - `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Only one `request` block is allowed. (see [below for nested schema](#nestedblock--widget--group_definition--widget--funnel_definition--request))
@@ -14847,6 +15455,253 @@ Optional:
 
 
 
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) User journey funnel requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request))
+
+Optional:
+
+- `description` (String) The description of the widget.
+- `grouped_display` (String) Display mode for grouped funnel results. Valid values are `stacked`, `side_by_side`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) User journey query displayed by the funnel. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query))
+- `request_type` (String) Request type for the Product Analytics funnel. Valid values are `user_journey_funnel`.
+
+Optional:
+
+- `comparison_segments` (List of String) Segments to compare in the funnel.
+- `comparison_time` (Block List, Max: 1) Comparison time configuration for the funnel. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--comparison_time))
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query`
+
+Required:
+
+- `data_source` (String) Data source for Product Analytics funnel queries. Valid values are `product_analytics_journey`.
+- `search` (Block List, Min: 1, Max: 1) User journey search configuration. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search))
+
+Optional:
+
+- `compute` (Block List, Max: 1) Compute configuration for the user journey funnel. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--compute))
+- `group_by` (Block List) Group by configuration for the user journey funnel. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--group_by))
+- `subquery_id` (String) Subquery identifier.
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search`
+
+Required:
+
+- `expression` (String) Expression describing the journey between nodes.
+- `node_objects` (String) JSON object mapping journey node names to Product Analytics base queries.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the user journey search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters))
+- `join_keys` (Block List, Max: 1) Join keys for the user journey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--join_keys))
+- `step_aliases` (String) JSON object mapping journey step names to display aliases.
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters))
+- `graph_filter` (Block List) Graph filters for the user journey search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter))
+- `string_filter` (String) String filter for the user journey search.
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.filters.graph_filter`
+
+Optional:
+
+- `name` (String) Graph filter name.
+- `operator` (String) Graph filter operator.
+- `target` (Block List, Max: 1) Target for the graph filter. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter--target))
+- `value` (Number) Graph filter value.
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter--target"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.filters.graph_filter.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--search--join_keys"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.search.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation type for the user journey funnel computation. Valid values are `cardinality`, `count`.
+- `metric` (String) Metric for the user journey funnel computation. Valid values are `__dd.conversion`, `__dd.conversion_rate`.
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group the user journey funnel by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for the funnel groups. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--group_by--sort))
+- `target` (Block List, Max: 1) Journey target to group. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--group_by--target))
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) Aggregation used to sort the funnel groups.
+
+Optional:
+
+- `metric` (String) Metric to sort by.
+- `order` (String) Sort order for funnel groups. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--query--group_by--target"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.query.group_by.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--comparison_time"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.comparison_time`
+
+Required:
+
+- `type` (String) Type of comparison duration. Valid values are `previous_timeframe`, `custom_timeframe`, `previous_day`, `previous_week`, `previous_month`.
+
+Optional:
+
+- `custom_timeframe` (Block List, Max: 1) Custom comparison timeframe. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--comparison_time--custom_timeframe))
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--request--comparison_time--custom_timeframe"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.request.comparison_time.custom_timeframe`
+
+Required:
+
+- `from` (Number) Start of the custom comparison timeframe.
+- `to` (Number) End of the custom comparison timeframe.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--product_analytics_funnel_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.product_analytics_funnel_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition`
 
@@ -17422,6 +18277,318 @@ Optional:
 - `max` (String) Specifies the maximum numeric value to show on the axis. Defaults to `auto`.
 - `min` (String) Specifies the minimum numeric value to show on the axis. Defaults to `auto`.
 - `scale` (String) Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`).
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) Retention curve requests. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request))
+
+Optional:
+
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Retention query displayed by the retention curve. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query))
+- `request_type` (String) Request type for the retention curve widget. Valid values are `retention_curve`.
+
+Optional:
+
+- `style` (Block List, Max: 1) Style configuration for the retention curve. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--style))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search))
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters))
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--group_by))
+- `name` (String) Name of the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--filters--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.request.style`
+
+Optional:
+
+- `palette` (String) Color palette for the retention curve.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--time"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--group_definition--widget--retention_curve_definition--time--live))
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--time--fixed"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--group_definition--widget--retention_curve_definition--time--live"></a>
+### Nested Schema for `widget.group_definition.widget.retention_curve_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
 
 
 
@@ -32964,6 +34131,253 @@ Optional:
 
 
 
+<a id="nestedblock--widget--product_analytics_funnel_definition"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) User journey funnel requests. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request))
+
+Optional:
+
+- `description` (String) The description of the widget.
+- `grouped_display` (String) Display mode for grouped funnel results. Valid values are `stacked`, `side_by_side`.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) User journey query displayed by the funnel. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query))
+- `request_type` (String) Request type for the Product Analytics funnel. Valid values are `user_journey_funnel`.
+
+Optional:
+
+- `comparison_segments` (List of String) Segments to compare in the funnel.
+- `comparison_time` (Block List, Max: 1) Comparison time configuration for the funnel. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--comparison_time))
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query`
+
+Required:
+
+- `data_source` (String) Data source for Product Analytics funnel queries. Valid values are `product_analytics_journey`.
+- `search` (Block List, Min: 1, Max: 1) User journey search configuration. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search))
+
+Optional:
+
+- `compute` (Block List, Max: 1) Compute configuration for the user journey funnel. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--compute))
+- `group_by` (Block List) Group by configuration for the user journey funnel. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--group_by))
+- `subquery_id` (String) Subquery identifier.
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search`
+
+Required:
+
+- `expression` (String) Expression describing the journey between nodes.
+- `node_objects` (String) JSON object mapping journey node names to Product Analytics base queries.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the user journey search. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters))
+- `join_keys` (Block List, Max: 1) Join keys for the user journey query. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--join_keys))
+- `step_aliases` (String) JSON object mapping journey step names to display aliases.
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters))
+- `graph_filter` (Block List) Graph filters for the user journey search. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter))
+- `string_filter` (String) String filter for the user journey search.
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.filters.graph_filter`
+
+Optional:
+
+- `name` (String) Graph filter name.
+- `operator` (String) Graph filter operator.
+- `target` (Block List, Max: 1) Target for the graph filter. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter--target))
+- `value` (Number) Graph filter value.
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--filters--graph_filter--target"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.filters.graph_filter.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--search--join_keys"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.search.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--compute"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation type for the user journey funnel computation. Valid values are `cardinality`, `count`.
+- `metric` (String) Metric for the user journey funnel computation. Valid values are `__dd.conversion`, `__dd.conversion_rate`.
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--group_by"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group the user journey funnel by.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for the funnel groups. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--group_by--sort))
+- `target` (Block List, Max: 1) Journey target to group. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--query--group_by--target))
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--group_by--sort"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) Aggregation used to sort the funnel groups.
+
+Optional:
+
+- `metric` (String) Metric to sort by.
+- `order` (String) Sort order for funnel groups. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--query--group_by--target"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.query.group_by.target`
+
+Required:
+
+- `type` (String) Target type.
+
+Optional:
+
+- `end` (String) End node of the target range.
+- `start` (String) Start node of the target range.
+- `value` (String) Target node value.
+
+
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--comparison_time"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.comparison_time`
+
+Required:
+
+- `type` (String) Type of comparison duration. Valid values are `previous_timeframe`, `custom_timeframe`, `previous_day`, `previous_week`, `previous_month`.
+
+Optional:
+
+- `custom_timeframe` (Block List, Max: 1) Custom comparison timeframe. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--request--comparison_time--custom_timeframe))
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--request--comparison_time--custom_timeframe"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.request.comparison_time.custom_timeframe`
+
+Required:
+
+- `from` (Number) Start of the custom comparison timeframe.
+- `to` (Number) End of the custom comparison timeframe.
+
+
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--time"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--product_analytics_funnel_definition--time--live))
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--time--fixed"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--product_analytics_funnel_definition--time--live"></a>
+### Nested Schema for `widget.product_analytics_funnel_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
+
+
+
+
 <a id="nestedblock--widget--query_table_definition"></a>
 ### Nested Schema for `widget.query_table_definition`
 
@@ -35539,6 +36953,318 @@ Optional:
 - `max` (String) Specifies the maximum numeric value to show on the axis. Defaults to `auto`.
 - `min` (String) Specifies the minimum numeric value to show on the axis. Defaults to `auto`.
 - `scale` (String) Specifies the scale type. Possible values are `linear`, `log`, `sqrt`, and `pow##` (for example `pow2` or `pow0.5`).
+
+
+
+
+<a id="nestedblock--widget--retention_curve_definition"></a>
+### Nested Schema for `widget.retention_curve_definition`
+
+Required:
+
+- `request` (Block List, Min: 1) Retention curve requests. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request))
+
+Optional:
+
+- `description` (String) The description of the widget.
+- `hide_incomplete_cost_data` (Boolean) Hide any portion of the widget's timeframe that is incomplete due to cost data not being available.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
+- `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--time))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--retention_curve_definition--request"></a>
+### Nested Schema for `widget.retention_curve_definition.request`
+
+Required:
+
+- `query` (Block List, Min: 1, Max: 1) Retention query displayed by the retention curve. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query))
+- `request_type` (String) Request type for the retention curve widget. Valid values are `retention_curve`.
+
+Optional:
+
+- `style` (Block List, Max: 1) Style configuration for the retention curve. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--style))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query`
+
+Required:
+
+- `compute` (Block List, Min: 1, Max: 1) Compute configuration for the retention query. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--compute))
+- `data_source` (String) Data source for retention queries. Valid values are `product_analytics_retention`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the retention query. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search))
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention query. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--filters))
+- `group_by` (Block List) Group by configuration for the retention query. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--group_by))
+- `name` (String) Name of the retention query.
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--compute"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles.
+- `metric` (String) Metric for the retention computation. Valid values are `__dd.retention`, `__dd.retention_rate`.
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search`
+
+Required:
+
+- `cohort_criteria` (Block List, Min: 1, Max: 1) Criteria used to construct the retention cohort. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria))
+- `retention_entity` (String) Entity tracked for retention. Valid values are `@usr.id`, `@account.id`.
+- `return_condition` (String) Condition for counting an entity as returned. Valid values are `conversion_on`, `conversion_on_or_after`.
+
+Optional:
+
+- `filters` (Block List, Max: 1) Filters for the retention search. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--filters))
+- `return_criteria` (Block List, Max: 1) Criteria used to identify return activity. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--return_criteria))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.cohort_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for cohort membership. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query))
+- `time_interval` (Block List, Min: 1, Max: 1) Time interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.cohort_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query--search))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--base_query--search"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.cohort_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.cohort_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of cohort time interval. Valid values are `calendar`.
+- `value` (Block List, Min: 1, Max: 1) Calendar interval used to build the cohort. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval--value))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--cohort_criteria--time_interval--value"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.cohort_criteria.time_interval.value`
+
+Required:
+
+- `type` (String) Type of calendar interval. Valid values are `day`, `week`, `month`, `year`, `quarter`, `minute`, `hour`.
+
+Optional:
+
+- `alignment` (String) Alignment of the calendar interval.
+- `quantity` (Number) Quantity of the calendar interval.
+- `timezone` (String) Timezone for the calendar interval.
+
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--filters"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters--user))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters--account"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--filters--audience_filters--user"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--return_criteria"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.return_criteria`
+
+Required:
+
+- `base_query` (Block List, Min: 1, Max: 1) Base Product Analytics event query for return activity. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--return_criteria--base_query))
+
+Optional:
+
+- `time_interval` (Block List, Max: 1) Time interval for the return criteria. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--return_criteria--time_interval))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--return_criteria--base_query"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.return_criteria.base_query`
+
+Required:
+
+- `data_source` (String) Data source for the Product Analytics event query. Valid values are `product_analytics`.
+- `search` (Block List, Min: 1, Max: 1) Search configuration for the Product Analytics event query. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--search--return_criteria--base_query--search))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--return_criteria--base_query--search"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.return_criteria.base_query.search`
+
+Required:
+
+- `query` (String) RUM event search query used to filter views or actions.
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--search--return_criteria--time_interval"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.search.return_criteria.time_interval`
+
+Required:
+
+- `type` (String) Type of return interval. Valid values are `fixed`.
+- `unit` (String) Unit of the return interval. Valid values are `day`, `week`, `month`.
+- `value` (Number) Value of the return interval.
+
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--filters"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.filters`
+
+Optional:
+
+- `audience_filters` (Block List, Max: 1) Product Analytics audience filters. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters))
+- `string_filter` (String) String filter for the retention query.
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.filters.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters--user))
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters--account"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.filters.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters--segment"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.filters.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--filters--audience_filters--user"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.filters.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--group_by"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet to group by.
+- `target` (String) Target for the retention group by. Valid values are `cohort`, `return_period`.
+
+Optional:
+
+- `limit` (Number) Maximum number of groups.
+- `should_exclude_missing` (Boolean) Whether to exclude missing values.
+- `sort` (Block List, Max: 1) Sort configuration for retention group by results. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--request--query--group_by--sort))
+- `source` (String) Source field for the retention group by.
+
+<a id="nestedblock--widget--retention_curve_definition--request--query--group_by--sort"></a>
+### Nested Schema for `widget.retention_curve_definition.request.query.group_by.sort`
+
+Optional:
+
+- `order` (String) Sort order for retention group by results. Valid values are `asc`, `desc`.
+
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--request--style"></a>
+### Nested Schema for `widget.retention_curve_definition.request.style`
+
+Optional:
+
+- `palette` (String) Color palette for the retention curve.
+
+
+
+<a id="nestedblock--widget--retention_curve_definition--time"></a>
+### Nested Schema for `widget.retention_curve_definition.time`
+
+Optional:
+
+- `fixed` (Block List, Max: 1) A fixed time range with explicit start and end times. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--time--fixed))
+- `live` (Block List, Max: 1) An arbitrary live time span, such as 17 minutes or 6 hours. (see [below for nested schema](#nestedblock--widget--retention_curve_definition--time--live))
+
+<a id="nestedblock--widget--retention_curve_definition--time--fixed"></a>
+### Nested Schema for `widget.retention_curve_definition.time.fixed`
+
+Required:
+
+- `from` (Number) Start time in seconds since epoch.
+- `to` (Number) End time in seconds since epoch.
+
+
+<a id="nestedblock--widget--retention_curve_definition--time--live"></a>
+### Nested Schema for `widget.retention_curve_definition.time.live`
+
+Required:
+
+- `unit` (String) Unit of the time span. Valid values are `minute`, `hour`, `day`, `week`, `month`, `year`.
+- `value` (Number) Value of the time span.
 
 
 
