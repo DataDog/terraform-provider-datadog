@@ -433,8 +433,15 @@ func (r *securityMonitoringRuleResource) Schema(_ context.Context, _ resource.Sc
 								validators.NewEnumValidator[validator.String](datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
 							},
 						},
+						// metric is Computed because the backend always mirrors `metrics[0]`
+						// back into this deprecated field on every response. Without Computed, a
+						// config that sets only `metrics` leaves `metric` null in the plan while
+						// the API returns a value, producing "inconsistent result after apply".
+						// normalizeDeprecatedMetricPlan keeps the planned value equal to
+						// `metrics[0]` so it always matches what the API returns.
 						"metric": schema.StringAttribute{
 							Optional:           true,
+							Computed:           true,
 							Description:        "The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations.",
 							DeprecationMessage: "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
 						},
@@ -2622,21 +2629,46 @@ func stripDefaultTagsFromSet(ctx context.Context, tags types.Set, defaultTags ma
 	return result
 }
 
+// normalizeDeprecatedMetricPlan keeps the deprecated `metric` (singular) and its
+// replacement `metrics` (plural) consistent in the plan, mirroring the backend
+// which accepts either on input and always echoes both back on output
+// (`metric = metrics[0]`).
+//
+//   - metric-only config: derive `metrics` from `metric` so the plural is populated.
+//   - otherwise `metrics` is the source of truth (the API prefers it and ignores
+//     `metric` when both are sent): derive `metric` from `metrics[0]` so the
+//     deprecated, Computed field carries the value the API will return. This covers
+//     a `metrics`-only config as well as one that also sets a stale/conflicting
+//     `metric`. Without it, `metric` is null/unknown (or the stale config value) in
+//     the plan while the API returns `metrics[0]`, which surfaces as either a
+//     perpetual diff or "inconsistent result after apply".
 func normalizeDeprecatedMetricPlan(ctx context.Context, plan, config *securityMonitoringRuleResourceModel, response *resource.ModifyPlanResponse) {
 	if len(plan.Queries) != len(config.Queries) {
 		return
 	}
 	for idx, configQuery := range config.Queries {
-		if configQuery.Metric.IsNull() || configQuery.Metric.IsUnknown() || configQuery.Metric.ValueString() == "" {
-			continue
-		}
-		if !configQuery.Metrics.IsNull() && !configQuery.Metrics.IsUnknown() {
+		metricSet := !configQuery.Metric.IsNull() && !configQuery.Metric.IsUnknown() && configQuery.Metric.ValueString() != ""
+		metricsSet := !configQuery.Metrics.IsNull() && !configQuery.Metrics.IsUnknown()
+
+		if metricSet && !metricsSet {
+			metrics := types.ListValueMust(types.StringType, []attr.Value{types.StringValue(configQuery.Metric.ValueString())})
+			plan.Queries[idx].Metrics = metrics
+			response.Diagnostics.Append(response.Plan.SetAttribute(ctx, path.Root("query").AtListIndex(idx).AtName("metrics"), metrics)...)
 			continue
 		}
 
-		metrics := types.ListValueMust(types.StringType, []attr.Value{types.StringValue(configQuery.Metric.ValueString())})
-		plan.Queries[idx].Metrics = metrics
-		response.Diagnostics.Append(response.Plan.SetAttribute(ctx, path.Root("query").AtListIndex(idx).AtName("metrics"), metrics)...)
+		planMetrics := plan.Queries[idx].Metrics
+		if planMetrics.IsUnknown() {
+			continue
+		}
+		metric := types.StringNull()
+		if !planMetrics.IsNull() && len(planMetrics.Elements()) > 0 {
+			var values []string
+			response.Diagnostics.Append(planMetrics.ElementsAs(ctx, &values, false)...)
+			metric = types.StringValue(values[0])
+		}
+		plan.Queries[idx].Metric = metric
+		response.Diagnostics.Append(response.Plan.SetAttribute(ctx, path.Root("query").AtListIndex(idx).AtName("metric"), metric)...)
 	}
 }
 
