@@ -116,6 +116,163 @@ func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 	})
 }
 
+// TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRuleMetricsField runs the same
+// geo_data (impossible travel) lifecycle as the test above, but authored with the
+// non-deprecated `metrics` list and no `metric`. The API derives and echoes `metric`
+// back from `metrics` on every response; since `metric` is Optional (not Computed) and
+// unconfigured, reconcileEmptyQueryFields must restore it to null so the echo doesn't
+// produce "inconsistent result after apply" on create/update (GitHub #3038).
+func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRuleMetricsField(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := providers.frameworkProvider
+
+	withMetricsChecks := func(base resource.TestCheckFunc) resource.TestCheckFunc {
+		return resource.ComposeTestCheckFunc(
+			base,
+			resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.metrics.#", "1"),
+			resource.TestCheckResourceAttr(tfSecurityRuleName, "query.0.metrics.0", "@usr.handle"),
+			// metric was never configured; the API-echoed value must be reconciled back to null.
+			resource.TestCheckNoResourceAttr(tfSecurityRuleName, "query.0.metric"),
+		)
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigImpossibleTravelRuleMetricsField(ruleName),
+				Check:  withMetricsChecks(testAccCheckDatadogSecurityMonitorCreatedCheckImpossibleTravelRule(accProvider, ruleName)),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRuleMetricsField(ruleName),
+				Check:  withMetricsChecks(testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider, ruleName)),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleMetricsFieldNullDuration(ruleName),
+				Check:  withMetricsChecks(testAccCheckDatadogSecurityMonitorCheckImpossibleTravelRuleNullDuration(accProvider, ruleName)),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedConfigImpossibleTravelRuleMetricsField(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered"
+    enabled = false
+    validate = true
+
+    query {
+        name = "my_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metrics = ["@usr.handle"]
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = ""
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 20
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRuleMetricsField(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered (updated)"
+    enabled = false
+
+    query {
+        name = "my_updated_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metrics = ["@usr.handle"]
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "new case name (updated)"
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations          = true
+            baseline_user_locations_duration = 25
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringConfigImpossibleTravelRuleMetricsFieldNullDuration(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "impossible travel rule triggered (no duration)"
+    enabled = false
+
+    query {
+        name = "my_updated_query"
+        query = "*"
+        aggregation = "geo_data"
+        data_source = "logs"
+        metrics = ["@usr.handle"]
+        group_by_fields = ["@usr.handle"]
+		has_optional_group_by_fields = false
+    }
+
+    case {
+        name = "new case name (updated)"
+        status = "high"
+        notifications = ["@user"]
+    }
+
+    options {
+        detection_method = "impossible_travel"
+        keep_alive = 600
+        max_signal_duration = 900
+        impossible_travel_options {
+            baseline_user_locations = true
+        }
+    }
+
+    tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+
 func TestAccDatadogSecurityMonitoringRule_AnomalyDetectionRule(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
