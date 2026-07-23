@@ -17702,11 +17702,73 @@ Required:
 
 Optional:
 
+- `audience_filters` (Block List, Max: 1) Product Analytics and RUM audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters))
 - `entries_per_step` (Number) Entries per step.
+- `join_keys` (Block List, Max: 1) Join keys for the Sankey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--join_keys))
 - `number_of_steps` (Number) Number of steps.
+- `occurrences` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrences))
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--join_keys"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrences"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.occurrences`
+
+Optional:
+
+- `operator` (String) The comparison operator used for the occurrence filter.
+- `value` (String) The threshold value to compare occurrence counts against.
+
 
 
 
@@ -35903,11 +35965,73 @@ Required:
 
 Optional:
 
+- `audience_filters` (Block List, Max: 1) Product Analytics and RUM audience filters. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters))
 - `entries_per_step` (Number) Entries per step.
+- `join_keys` (Block List, Max: 1) Join keys for the Sankey query. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--join_keys))
 - `number_of_steps` (Number) Number of steps.
+- `occurrences` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--occurrences))
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--user))
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--account"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--segment"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--user"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--join_keys"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--occurrences"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.occurrences`
+
+Optional:
+
+- `operator` (String) The comparison operator used for the occurrence filter.
+- `value` (String) The threshold value to compare occurrence counts against.
+
 
 
 
