@@ -110,7 +110,7 @@ func FlattenClientTls(src *datadogV2.ObservabilityPipelineClientTls) []ClientTls
 // ClientTlsSchema returns the schema for outgoing (client) TLS configuration, with SNI override support
 func ClientTlsSchema() schema.ListNestedBlock {
 	return schema.ListNestedBlock{
-		Description: "Configuration for enabling TLS encryption between the pipeline component and external services, with support for overriding the server name used for the TLS handshake.",
+		Description: "Configuration for enabling TLS encryption between the pipeline component and external services.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"crt_file": schema.StringAttribute{

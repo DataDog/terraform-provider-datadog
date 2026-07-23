@@ -555,7 +555,7 @@ Optional:
 
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the endpoint URL.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services, with support for overriding the server name used for the TLS handshake. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--cloud_prem--tls))
 
 <a id="nestedblock--config--destination--cloud_prem--buffer"></a>
 ### Nested Schema for `config.destination.cloud_prem.buffer`
@@ -1072,7 +1072,7 @@ Optional:
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--http_client--buffer))
 - `compression` (Block List) Compression configuration for HTTP requests. (see [below for nested schema](#nestedblock--config--destination--http_client--compression))
 - `password_key` (String) Name of the environment variable or secret that holds the password.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services, with support for overriding the server name used for the TLS handshake. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--http_client--tls))
 - `token_key` (String) Name of the environment variable or secret that holds the authentication token.
 - `uri_key` (String) Name of the environment variable or secret that holds the request URI.
 - `username_key` (String) Name of the environment variable or secret that holds the username.
@@ -1474,7 +1474,7 @@ Optional:
 - `address_key` (String) Name of the environment variable or secret that holds the socket address (host:port).
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--socket--buffer))
 - `framing` (Block List) Defines the framing method for outgoing messages. (see [below for nested schema](#nestedblock--config--destination--socket--framing))
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services, with support for overriding the server name used for the TLS handshake. (see [below for nested schema](#nestedblock--config--destination--socket--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--socket--tls))
 
 <a id="nestedblock--config--destination--socket--buffer"></a>
 ### Nested Schema for `config.destination.socket.buffer`
@@ -1704,7 +1704,7 @@ Optional:
 - `buffer` (Block List) Configuration for buffer settings on destination components. Exactly one of `disk` or `memory` must be specified. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--buffer))
 - `endpoint_url_key` (String) Name of the environment variable or secret that holds the syslog-ng endpoint URL.
 - `keepalive` (Number) Optional socket keepalive duration in milliseconds.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services, with support for overriding the server name used for the TLS handshake. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--destination--syslog_ng--tls))
 
 <a id="nestedblock--config--destination--syslog_ng--buffer"></a>
 ### Nested Schema for `config.destination.syslog_ng.buffer`
@@ -2823,7 +2823,7 @@ Optional:
 - `password_key` (String) Name of the environment variable or secret that holds the password.
 - `scrape_interval_secs` (Number) The interval (in seconds) between HTTP scrape requests.
 - `scrape_timeout_secs` (Number) The timeout (in seconds) for each scrape request.
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services, with support for overriding the server name used for the TLS handshake. (see [below for nested schema](#nestedblock--config--source--http_client--tls))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--source--http_client--tls))
 - `token_key` (String) Name of the environment variable or secret that holds the authentication token.
 - `username_key` (String) Name of the environment variable or secret that holds the username.
 
