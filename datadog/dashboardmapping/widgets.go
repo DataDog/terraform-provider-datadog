@@ -968,6 +968,7 @@ var queryValueRequestFields = append([]FieldSpec{
 	{HCLKey: "conditional_formats", Type: TypeBlockList, OmitEmpty: true,
 		Description: "Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
 		Children:    widgetConditionalFormatFields},
+	queryValueWidgetComparisonField,
 }, standardQueryFields...)
 
 var QueryValueWidgetSpec = WidgetSpec{
