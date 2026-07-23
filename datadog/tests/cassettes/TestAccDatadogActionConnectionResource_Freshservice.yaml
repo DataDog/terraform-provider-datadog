@@ -1,0 +1,169 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 285
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"integration":{"credentials":{"api_key":"freshservice-api-key","domain":"example.freshservice.com","type":"FreshserviceAPIKey"},"type":"Freshservice"},"name":"tf-TestAccDatadogActionConnectionResource_Freshservice-local-1783949276"},"type":"action_connection"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 392
+        uncompressed: false
+        body: '{"data":{"id":"33ee22fc-1bce-4291-96fb-aff96d8358b2","type":"action_connection","attributes":{"acting_user_can_resolve":false,"external_secrets_manager":null,"integration":{"credentials":{"api_key":"","domain":"example.freshservice.com","type":"FreshserviceAPIKey"},"type":"Freshservice"},"is_favorite":false,"name":"tf-TestAccDatadogActionConnectionResource_Freshservice-local-1783949276"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 122.649035ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/33ee22fc-1bce-4291-96fb-aff96d8358b2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 603
+        uncompressed: false
+        body: '{"data":{"id":"33ee22fc-1bce-4291-96fb-aff96d8358b2","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-07-13 13:28:02.899689 +0000 UTC","external_secrets_manager":null,"integration":{"credentials":{"api_key":"","domain":"example.freshservice.com","type":"FreshserviceAPIKey"},"type":"Freshservice"},"is_favorite":false,"last_updated":"2026-07-13 13:28:02.899689 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_Freshservice-local-1783949276"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 71.455433ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/33ee22fc-1bce-4291-96fb-aff96d8358b2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 603
+        uncompressed: false
+        body: '{"data":{"id":"33ee22fc-1bce-4291-96fb-aff96d8358b2","type":"action_connection","attributes":{"acting_user_can_resolve":true,"created_at":"2026-07-13 13:28:02.899689 +0000 UTC","external_secrets_manager":null,"integration":{"credentials":{"api_key":"","domain":"example.freshservice.com","type":"FreshserviceAPIKey"},"type":"Freshservice"},"is_favorite":false,"last_updated":"2026-07-13 13:28:02.899689 +0000 UTC","name":"tf-TestAccDatadogActionConnectionResource_Freshservice-local-1783949276"},"relationships":{"created_by":{"data":{"id":"9c2cc44c-0fd5-4356-b457-9413333601f1","type":"created_by"}}}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 35.174169ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions/connections/33ee22fc-1bce-4291-96fb-aff96d8358b2
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 65.079196ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/33ee22fc-1bce-4291-96fb-aff96d8358b2
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 130
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"error getting connection: rpc error: code = NotFound desc = connection not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 48.602752ms

@@ -52,9 +52,15 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 			Description: "The name of the cloud configuration rule.",
 		},
 		messageField: {
-			Type:        schema.TypeString,
-			Required:    true,
-			Description: "The message associated to the rule that will be shown in findings and signals.",
+			Type:     schema.TypeString,
+			Required: true,
+			Description: "The message associated to the rule that will be shown in findings and signals. " +
+				"For cloud configuration rules, the message is rendered in the finding side panel. When the message is written as Markdown, " +
+				"you can use the following top-level section headers to control where each part appears in the finding: `Description` and " +
+				"`Rationale` appear under **What Happened**, `Remediation` appears in its own **Remediation** section, and `References` are " +
+				"shown separately. All of these sections are optional and can appear in any order; a typical message uses only `Description` " +
+				"and `Remediation`. Use level-2 (`##`) headers for each section. If none of these headers are present, the entire message is " +
+				"shown as the description.",
 		},
 		enabledField: {
 			Type:        schema.TypeBool,

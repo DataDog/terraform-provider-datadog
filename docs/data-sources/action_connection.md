@@ -27,9 +27,63 @@ data "datadog_action_connection" "my_connection" {
 
 ### Read-Only
 
+- `anthropic` (Block, Read-only) Configuration for an Anthropic connection (see [below for nested schema](#nestedblock--anthropic))
+- `asana` (Block, Read-only) Configuration for an Asana connection (see [below for nested schema](#nestedblock--asana))
 - `aws` (Block, Read-only) Configuration for an AWS connection (see [below for nested schema](#nestedblock--aws))
+- `azure` (Block, Read-only) Configuration for an Azure connection (see [below for nested schema](#nestedblock--azure))
+- `circle_ci` (Block, Read-only) Configuration for a CircleCI connection (see [below for nested schema](#nestedblock--circle_ci))
+- `clickup` (Block, Read-only) Configuration for a ClickUp connection (see [below for nested schema](#nestedblock--clickup))
+- `cloudflare` (Block, Read-only) Configuration for a Cloudflare connection (see [below for nested schema](#nestedblock--cloudflare))
+- `config_cat` (Block, Read-only) Configuration for a ConfigCat connection (see [below for nested schema](#nestedblock--config_cat))
+- `datadog` (Block, Read-only) Configuration for a Datadog connection (see [below for nested schema](#nestedblock--datadog))
+- `fastly` (Block, Read-only) Configuration for a Fastly connection (see [below for nested schema](#nestedblock--fastly))
+- `freshservice` (Block, Read-only) Configuration for a Freshservice connection (see [below for nested schema](#nestedblock--freshservice))
+- `gcp` (Block, Read-only) Configuration for a Google Cloud connection (see [below for nested schema](#nestedblock--gcp))
+- `gemini` (Block, Read-only) Configuration for a Gemini connection (see [below for nested schema](#nestedblock--gemini))
+- `gitlab` (Block, Read-only) Configuration for a GitLab connection (see [below for nested schema](#nestedblock--gitlab))
+- `grey_noise` (Block, Read-only) Configuration for a GreyNoise connection (see [below for nested schema](#nestedblock--grey_noise))
 - `http` (Block, Read-only) Configuration for an HTTP connection (see [below for nested schema](#nestedblock--http))
+- `launch_darkly` (Block, Read-only) Configuration for a LaunchDarkly connection (see [below for nested schema](#nestedblock--launch_darkly))
 - `name` (String) Name of the connection
+- `notion` (Block, Read-only) Configuration for a Notion connection (see [below for nested schema](#nestedblock--notion))
+- `okta` (Block, Read-only) Configuration for an Okta connection (see [below for nested schema](#nestedblock--okta))
+- `openai` (Block, Read-only) Configuration for an OpenAI connection (see [below for nested schema](#nestedblock--openai))
+- `service_now` (Block, Read-only) Configuration for a ServiceNow connection (see [below for nested schema](#nestedblock--service_now))
+- `split` (Block, Read-only) Configuration for a Split connection (see [below for nested schema](#nestedblock--split))
+- `statsig` (Block, Read-only) Configuration for a Statsig connection (see [below for nested schema](#nestedblock--statsig))
+- `virus_total` (Block, Read-only) Configuration for a VirusTotal connection (see [below for nested schema](#nestedblock--virus_total))
+
+<a id="nestedblock--anthropic"></a>
+### Nested Schema for `anthropic`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Anthropic API key authentication (see [below for nested schema](#nestedblock--anthropic--api_key))
+
+<a id="nestedblock--anthropic--api_key"></a>
+### Nested Schema for `anthropic.api_key`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) Anthropic API token
+
+
+
+<a id="nestedblock--asana"></a>
+### Nested Schema for `asana`
+
+Read-Only:
+
+- `access_token` (Block, Read-only) Configuration for Asana access token authentication (see [below for nested schema](#nestedblock--asana--access_token))
+
+<a id="nestedblock--asana--access_token"></a>
+### Nested Schema for `asana.access_token`
+
+Read-Only:
+
+- `access_token` (String, Sensitive) Asana access token
+
+
 
 <a id="nestedblock--aws"></a>
 ### Nested Schema for `aws`
@@ -47,6 +101,218 @@ Read-Only:
 - `external_id` (String) External ID that specifies which connection can be used to assume the role
 - `principal_id` (String) AWS account that will assume the role
 - `role` (String) Role to assume
+
+
+
+<a id="nestedblock--azure"></a>
+### Nested Schema for `azure`
+
+Read-Only:
+
+- `tenant` (Block, Read-only) Configuration for Azure tenant authentication (see [below for nested schema](#nestedblock--azure--tenant))
+
+<a id="nestedblock--azure--tenant"></a>
+### Nested Schema for `azure.tenant`
+
+Read-Only:
+
+- `app_client_id` (String) Azure application client ID
+- `client_secret` (String, Sensitive) Azure application client secret
+- `custom_scopes` (String) Custom scope requested when acquiring an OAuth 2 access token
+- `tenant_id` (String) Azure Active Directory tenant ID
+
+
+
+<a id="nestedblock--circle_ci"></a>
+### Nested Schema for `circle_ci`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for CircleCI API key authentication (see [below for nested schema](#nestedblock--circle_ci--api_key))
+
+<a id="nestedblock--circle_ci--api_key"></a>
+### Nested Schema for `circle_ci.api_key`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) CircleCI API token
+
+
+
+<a id="nestedblock--clickup"></a>
+### Nested Schema for `clickup`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for ClickUp API key authentication (see [below for nested schema](#nestedblock--clickup--api_key))
+
+<a id="nestedblock--clickup--api_key"></a>
+### Nested Schema for `clickup.api_key`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) ClickUp API token
+
+
+
+<a id="nestedblock--cloudflare"></a>
+### Nested Schema for `cloudflare`
+
+Read-Only:
+
+- `api_token` (Block, Read-only) Configuration for Cloudflare API token authentication (see [below for nested schema](#nestedblock--cloudflare--api_token))
+- `global_api_token` (Block, Read-only) Configuration for Cloudflare global API token authentication (see [below for nested schema](#nestedblock--cloudflare--global_api_token))
+
+<a id="nestedblock--cloudflare--api_token"></a>
+### Nested Schema for `cloudflare.api_token`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) Cloudflare API token
+
+
+<a id="nestedblock--cloudflare--global_api_token"></a>
+### Nested Schema for `cloudflare.global_api_token`
+
+Read-Only:
+
+- `auth_email` (String) Email address associated with the Cloudflare account
+- `global_api_key` (String, Sensitive) Cloudflare global API key
+
+
+
+<a id="nestedblock--config_cat"></a>
+### Nested Schema for `config_cat`
+
+Read-Only:
+
+- `sdk_key` (Block, Read-only) Configuration for ConfigCat SDK key authentication (see [below for nested schema](#nestedblock--config_cat--sdk_key))
+
+<a id="nestedblock--config_cat--sdk_key"></a>
+### Nested Schema for `config_cat.sdk_key`
+
+Read-Only:
+
+- `api_password` (String, Sensitive) ConfigCat Public Management API password
+- `api_username` (String) ConfigCat Public Management API username
+- `sdk_key` (String, Sensitive) ConfigCat SDK key
+
+
+
+<a id="nestedblock--datadog"></a>
+### Nested Schema for `datadog`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Datadog API and application key authentication (see [below for nested schema](#nestedblock--datadog--api_key))
+
+<a id="nestedblock--datadog--api_key"></a>
+### Nested Schema for `datadog.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) Datadog API key
+- `app_key` (String, Sensitive) Datadog application key
+- `datacenter` (String) Datadog site data center
+- `subdomain` (String) Custom subdomain used for URLs generated with this connection
+
+
+
+<a id="nestedblock--fastly"></a>
+### Nested Schema for `fastly`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Fastly API key authentication (see [below for nested schema](#nestedblock--fastly--api_key))
+
+<a id="nestedblock--fastly--api_key"></a>
+### Nested Schema for `fastly.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) Fastly API key
+
+
+
+<a id="nestedblock--freshservice"></a>
+### Nested Schema for `freshservice`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Freshservice API key authentication (see [below for nested schema](#nestedblock--freshservice--api_key))
+
+<a id="nestedblock--freshservice--api_key"></a>
+### Nested Schema for `freshservice.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) Freshservice API key
+- `domain` (String) Freshservice domain
+
+
+
+<a id="nestedblock--gcp"></a>
+### Nested Schema for `gcp`
+
+Read-Only:
+
+- `service_account` (Block, Read-only) Configuration for Google Cloud service account authentication (see [below for nested schema](#nestedblock--gcp--service_account))
+
+<a id="nestedblock--gcp--service_account"></a>
+### Nested Schema for `gcp.service_account`
+
+Read-Only:
+
+- `private_key` (String, Sensitive) Google Cloud service account private key
+- `service_account_email` (String) Google Cloud service account email
+
+
+
+<a id="nestedblock--gemini"></a>
+### Nested Schema for `gemini`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Gemini API key authentication (see [below for nested schema](#nestedblock--gemini--api_key))
+
+<a id="nestedblock--gemini--api_key"></a>
+### Nested Schema for `gemini.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) Gemini API key
+
+
+
+<a id="nestedblock--gitlab"></a>
+### Nested Schema for `gitlab`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for GitLab API key authentication (see [below for nested schema](#nestedblock--gitlab--api_key))
+
+<a id="nestedblock--gitlab--api_key"></a>
+### Nested Schema for `gitlab.api_key`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) GitLab API token
+
+
+
+<a id="nestedblock--grey_noise"></a>
+### Nested Schema for `grey_noise`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for GreyNoise API key authentication (see [below for nested schema](#nestedblock--grey_noise--api_key))
+
+<a id="nestedblock--grey_noise--api_key"></a>
+### Nested Schema for `grey_noise.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) GreyNoise API key
 
 
 
@@ -103,3 +369,135 @@ Read-Only:
 
 - `name` (String) URL parameter name
 - `value` (String) URL parameter value
+
+
+
+
+<a id="nestedblock--launch_darkly"></a>
+### Nested Schema for `launch_darkly`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for LaunchDarkly API key authentication (see [below for nested schema](#nestedblock--launch_darkly--api_key))
+
+<a id="nestedblock--launch_darkly--api_key"></a>
+### Nested Schema for `launch_darkly.api_key`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) LaunchDarkly API token
+
+
+
+<a id="nestedblock--notion"></a>
+### Nested Schema for `notion`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Notion API key authentication (see [below for nested schema](#nestedblock--notion--api_key))
+
+<a id="nestedblock--notion--api_key"></a>
+### Nested Schema for `notion.api_key`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) Notion API token
+
+
+
+<a id="nestedblock--okta"></a>
+### Nested Schema for `okta`
+
+Read-Only:
+
+- `api_token` (Block, Read-only) Configuration for Okta API token authentication (see [below for nested schema](#nestedblock--okta--api_token))
+
+<a id="nestedblock--okta--api_token"></a>
+### Nested Schema for `okta.api_token`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) Okta API token
+- `domain` (String) Okta domain
+
+
+
+<a id="nestedblock--openai"></a>
+### Nested Schema for `openai`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for OpenAI API key authentication (see [below for nested schema](#nestedblock--openai--api_key))
+
+<a id="nestedblock--openai--api_key"></a>
+### Nested Schema for `openai.api_key`
+
+Read-Only:
+
+- `api_token` (String, Sensitive) OpenAI API token
+
+
+
+<a id="nestedblock--service_now"></a>
+### Nested Schema for `service_now`
+
+Read-Only:
+
+- `basic_auth` (Block, Read-only) Configuration for ServiceNow basic authentication (see [below for nested schema](#nestedblock--service_now--basic_auth))
+
+<a id="nestedblock--service_now--basic_auth"></a>
+### Nested Schema for `service_now.basic_auth`
+
+Read-Only:
+
+- `instance` (String) ServiceNow instance
+- `password` (String, Sensitive) ServiceNow password
+- `username` (String) ServiceNow username
+
+
+
+<a id="nestedblock--split"></a>
+### Nested Schema for `split`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Split API key authentication (see [below for nested schema](#nestedblock--split--api_key))
+
+<a id="nestedblock--split--api_key"></a>
+### Nested Schema for `split.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) Split API key
+
+
+
+<a id="nestedblock--statsig"></a>
+### Nested Schema for `statsig`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for Statsig API key authentication (see [below for nested schema](#nestedblock--statsig--api_key))
+
+<a id="nestedblock--statsig--api_key"></a>
+### Nested Schema for `statsig.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) Statsig API key
+
+
+
+<a id="nestedblock--virus_total"></a>
+### Nested Schema for `virus_total`
+
+Read-Only:
+
+- `api_key` (Block, Read-only) Configuration for VirusTotal API key authentication (see [below for nested schema](#nestedblock--virus_total--api_key))
+
+<a id="nestedblock--virus_total--api_key"></a>
+### Nested Schema for `virus_total.api_key`
+
+Read-Only:
+
+- `api_key` (String, Sensitive) VirusTotal API key

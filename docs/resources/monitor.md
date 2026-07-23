@@ -684,7 +684,7 @@ Required:
 
 Required:
 
-- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `dbt.model`, `dbt.test`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.
+- `job_type` (String) The type of job being monitored. Valid values include `databricks.job`, `spark.application`, `airflow.dag`, `dbt.job`, `glue.job`. Custom job types are supported with the `custom.ol.` prefix.
 - `jobs_query` (String) Filter expression used to select the jobs to monitor.
 - `name` (String) Name of the query for use in formulas. Must be `run_query`.
 - `query_dialect` (String) Query dialect for data jobs queries. Currently only `metric` is supported.

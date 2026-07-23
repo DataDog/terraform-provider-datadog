@@ -62,6 +62,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_csm_threats_agent_rule_test":                              "cloud-workload-security",
 	"tests/data_source_datadog_csm_threats_agent_rules_test":                             "cloud-workload-security",
 	"tests/data_source_datadog_csm_threats_policies_test":                                "cloud-workload-security",
+	"tests/data_source_datadog_current_user_test":                                        "users",
 	"tests/data_source_datadog_dashboard_list_test":                                      "dashboard-lists",
 	"tests/data_source_datadog_dashboard_test":                                           "dashboard",
 	"tests/data_source_datadog_hosts_test":                                               "hosts",
@@ -351,6 +352,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_compliance_resource_evaluation_filter_test":                  "resource_filters",
 	"tests/resource_datadog_compliance_custom_framework_test":                            "compliance_custom_framework",
 	"tests/resource_datadog_cost_budget_test":                                            "cost-budget",
+	"tests/resource_datadog_cost_custom_forecast_test":                                   "cost-custom-forecast",
 	"tests/resource_datadog_tag_pipeline_ruleset_test":                                   "tag-pipeline",
 	"tests/data_source_datadog_tag_pipeline_ruleset_test":                                "tag-pipeline",
 	"tests/resource_datadog_tag_pipeline_rulesets_test":                                  "tag-pipeline",
@@ -366,6 +368,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_incident_notification_template_test":                      "incidents",
 	"tests/resource_datadog_incident_notification_rule_test":                             "incidents",
 	"tests/data_source_datadog_incident_notification_rule_test":                          "incidents",
+	"tests/resource_datadog_incident_user_defined_field_test":                            "incidents",
 	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
 }
 

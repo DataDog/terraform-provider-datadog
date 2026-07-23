@@ -24,10 +24,11 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, false, true, true),
+				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, true, false, true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningGcpScanOptionsExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "gcp_project_id", projectID),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "cloud_function", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "compliance_host", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "vuln_containers_os", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "vuln_host_os", "true"),
@@ -48,7 +49,7 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_InvalidProjectID(t *testing.T
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, false, true, true),
+				Config:      testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, true, false, true, true),
 				ExpectError: regexp.MustCompile("must be a valid GCP project ID"),
 			},
 		},
@@ -66,18 +67,20 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Update(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, false, true, true),
+				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, true, false, true, true),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningGcpScanOptionsExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "cloud_function", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "compliance_host", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "vuln_containers_os", "true"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "vuln_host_os", "true"),
 				),
 			},
 			{
-				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, false, false, false),
+				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, false, false, false, false),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAgentlessScanningGcpScanOptionsExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "cloud_function", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "compliance_host", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "vuln_containers_os", "false"),
 					resource.TestCheckResourceAttr("datadog_agentless_scanning_gcp_scan_options.test", "vuln_host_os", "false"),
@@ -98,7 +101,7 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAgentlessScanningGcpScanOptionsDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, false, true, true),
+				Config: testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID, true, false, true, true),
 			},
 			{
 				ResourceName:      "datadog_agentless_scanning_gcp_scan_options.test",
@@ -109,14 +112,15 @@ func TestAccDatadogAgentlessScanningGcpScanOptions_Import(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID string, complianceHost, vulnContainers, vulnHost bool) string {
+func testAccCheckDatadogAgentlessScanningGcpScanOptionsConfig(projectID string, cloudFunction, complianceHost, vulnContainers, vulnHost bool) string {
 	return fmt.Sprintf(`
 resource "datadog_agentless_scanning_gcp_scan_options" "test" {
   gcp_project_id     = "%s"
+  cloud_function     = %s
   compliance_host    = %s
   vuln_containers_os = %s
   vuln_host_os       = %s
-}`, projectID, strconv.FormatBool(complianceHost), strconv.FormatBool(vulnContainers), strconv.FormatBool(vulnHost))
+}`, projectID, strconv.FormatBool(cloudFunction), strconv.FormatBool(complianceHost), strconv.FormatBool(vulnContainers), strconv.FormatBool(vulnHost))
 }
 
 func testAccCheckDatadogAgentlessScanningGcpScanOptionsExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

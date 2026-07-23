@@ -50,11 +50,12 @@ func (d *securityMonitoringCriticalAssetsDataSource) Schema(_ context.Context, _
 				Description: "List of critical assets",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
-						"id":         types.StringType,
-						"enabled":    types.BoolType,
-						"query":      types.StringType,
-						"rule_query": types.StringType,
-						"severity":   types.StringType,
+						"id":          types.StringType,
+						"enabled":     types.BoolType,
+						"query":       types.StringType,
+						"rule_query":  types.StringType,
+						"severity":    types.StringType,
+						"description": types.StringType,
 						"tags": types.ListType{
 							ElemType: types.StringType,
 						},
@@ -95,13 +96,19 @@ func (d *securityMonitoringCriticalAssetsDataSource) updateState(ctx context.Con
 
 		tags, _ := types.ListValueFrom(ctx, types.StringType, attrs.GetTags())
 
+		description := types.StringNull()
+		if desc := attrs.GetDescription(); desc != "" {
+			description = types.StringValue(desc)
+		}
+
 		a := &securityMonitoringCriticalAssetDataSourceModel{
-			Id:        types.StringValue(asset.GetId()),
-			Enabled:   types.BoolValue(attrs.GetEnabled()),
-			Query:     types.StringValue(attrs.GetQuery()),
-			RuleQuery: types.StringValue(attrs.GetRuleQuery()),
-			Severity:  types.StringValue(string(attrs.GetSeverity())),
-			Tags:      tags,
+			Id:          types.StringValue(asset.GetId()),
+			Enabled:     types.BoolValue(attrs.GetEnabled()),
+			Query:       types.StringValue(attrs.GetQuery()),
+			RuleQuery:   types.StringValue(attrs.GetRuleQuery()),
+			Severity:    types.StringValue(string(attrs.GetSeverity())),
+			Description: description,
+			Tags:        tags,
 		}
 
 		assets = append(assets, a)

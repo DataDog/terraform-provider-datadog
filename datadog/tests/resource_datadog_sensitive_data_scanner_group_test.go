@@ -47,6 +47,35 @@ func TestAccDatadogSensitiveDataScannerGroup_SamplingOrder(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSensitiveDataScannerGroup_ImplicitSampling(t *testing.T) {
+	cleanupSensitiveDataScannerGroups(t)
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	uniq := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "_", "-"))
+	resourceName := "datadog_sensitive_data_scanner_group.sample_group"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerGroupDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSensitiveDataScannerGroupImplicitSampling(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSensitiveDataScannerGroupExists(accProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", uniq),
+					resource.TestCheckResourceAttr(resourceName, "product_list.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "samplings.#", "1"),
+					resource.TestCheckResourceAttr(resourceName, "samplings.0.product", "logs"),
+					resource.TestCheckResourceAttr(resourceName, "samplings.0.rate", "50"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSensitiveDataScannerGroup_Basic(t *testing.T) {
 	//if isRecording() || isReplaying() {
 	//	t.Skip("This test doesn't support recording or replaying")
@@ -121,6 +150,23 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	samplings {
 		product = "apm"
 		rate    = 25
+	}
+}
+`, name)
+}
+
+func testAccCheckDatadogSensitiveDataScannerGroupImplicitSampling(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_sensitive_data_scanner_group" "sample_group" {
+	name         = "%s"
+	product_list = ["logs", "apm"]
+	is_enabled   = true
+	filter {
+		query = "*"
+	}
+	samplings {
+		product = "logs"
+		rate    = 50
 	}
 }
 `, name)

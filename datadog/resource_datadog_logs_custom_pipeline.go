@@ -20,11 +20,13 @@ var logCustomPipelineMutex = sync.Mutex{}
 
 const (
 	tfArithmeticProcessor           = "arithmetic_processor"
+	tfArrayMapProcessor             = "array_map_processor"
 	tfArrayProcessor                = "array_processor"
 	tfAttributeRemapperProcessor    = "attribute_remapper"
 	tfCategoryProcessor             = "category_processor"
 	tfDateRemapperProcessor         = "date_remapper"
 	tfDecoderProcessor              = "decoder_processor"
+	tfExcludeAttributeProcessor     = "exclude_attribute_processor"
 	tfGeoIPParserProcessor          = "geo_ip_parser"
 	tfGrokParserProcessor           = "grok_parser"
 	tfLookupProcessor               = "lookup_processor"
@@ -47,11 +49,13 @@ const (
 
 var tfProcessorTypes = map[string]string{
 	tfArithmeticProcessor:           string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR),
+	tfArrayMapProcessor:             string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR),
 	tfArrayProcessor:                string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR),
 	tfAttributeRemapperProcessor:    string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER),
 	tfCategoryProcessor:             string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR),
 	tfDateRemapperProcessor:         string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER),
 	tfDecoderProcessor:              string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR),
+	tfExcludeAttributeProcessor:     string(datadogV1.LOGSEXCLUDEATTRIBUTEPROCESSORTYPE_EXCLUDE_ATTRIBUTE),
 	tfGeoIPParserProcessor:          string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER),
 	tfGrokParserProcessor:           string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER),
 	tfLookupProcessor:               string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR),
@@ -75,11 +79,13 @@ var tfMapperTypes = map[string]string{
 
 var tfProcessors = map[string]*schema.Schema{
 	tfArithmeticProcessor:           arithmeticProcessor,
+	tfArrayMapProcessor:             arrayMapProcessor,
 	tfArrayProcessor:                arrayProcessor,
 	tfAttributeRemapperProcessor:    attributeRemapper,
 	tfCategoryProcessor:             categoryProcessor,
 	tfDateRemapperProcessor:         dateRemapper,
 	tfDecoderProcessor:              decoderProcessor,
+	tfExcludeAttributeProcessor:     excludeAttributeProcessor,
 	tfGeoIPParserProcessor:          geoIPParser,
 	tfGrokParserProcessor:           grokParser,
 	tfLookupProcessor:               lookupProcessor,
@@ -97,11 +103,13 @@ var tfProcessors = map[string]*schema.Schema{
 
 var ddProcessorTypes = map[string]string{
 	string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):        tfArithmeticProcessor,
+	string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR):           tfArrayMapProcessor,
 	string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):                  tfArrayProcessor,
 	string(datadogV1.LOGSATTRIBUTEREMAPPERTYPE_ATTRIBUTE_REMAPPER):            tfAttributeRemapperProcessor,
 	string(datadogV1.LOGSCATEGORYPROCESSORTYPE_CATEGORY_PROCESSOR):            tfCategoryProcessor,
 	string(datadogV1.LOGSDATEREMAPPERTYPE_DATE_REMAPPER):                      tfDateRemapperProcessor,
 	string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR):              tfDecoderProcessor,
+	string(datadogV1.LOGSEXCLUDEATTRIBUTEPROCESSORTYPE_EXCLUDE_ATTRIBUTE):     tfExcludeAttributeProcessor,
 	string(datadogV1.LOGSGEOIPPARSERTYPE_GEO_IP_PARSER):                       tfGeoIPParserProcessor,
 	string(datadogV1.LOGSGROKPARSERTYPE_GROK_PARSER):                          tfGrokParserProcessor,
 	string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR):                tfLookupProcessor,
@@ -321,6 +329,84 @@ var dateRemapper = &schema.Schema{
 	},
 }
 
+var arrayMapProcessor = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Array-Map Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#array-map-processor)",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":       {Description: "Name of the processor.", Type: schema.TypeString, Optional: true},
+			"is_enabled": {Description: "If the processor is enabled.", Type: schema.TypeBool, Optional: true},
+			"source":     {Description: "Attribute path of the source array.", Type: schema.TypeString, Required: true},
+			"target":     {Description: "Attribute path of the output array.", Type: schema.TypeString, Required: true},
+			"preserve_source": {
+				Description: "Remove or preserve the source array after processing.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+			},
+			"processors": {
+				Type:        schema.TypeList,
+				Required:    true,
+				Description: "Sub-processors applied to each element. Allowed types: attribute_remapper, string_builder_processor, arithmetic_processor, category_processor.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						tfAttributeRemapperProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map attribute remapper sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":                 {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"sources":              {Type: schema.TypeList, Required: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "List of source attributes."},
+								"target":               {Type: schema.TypeString, Required: true, Description: "Target attribute path."},
+								"preserve_source":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Remove or preserve the remapped source element."},
+								"override_on_conflict": {Type: schema.TypeBool, Optional: true, Description: "Override the target element if already set."},
+								"target_format":        {Type: schema.TypeString, Optional: true, Description: "If the target type is an attribute, cast the value to a new type (auto, string, integer, double).", ValidateFunc: validation.StringInSlice([]string{"auto", "string", "integer", "double"}, false)},
+							}},
+						},
+						tfArithmeticProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map arithmetic sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":               {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"expression":         {Type: schema.TypeString, Required: true, Description: "Arithmetic formula."},
+								"target":             {Type: schema.TypeString, Required: true, Description: "Target attribute path for the result."},
+								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with `0`."},
+							}},
+						},
+						tfStringBuilderProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map string builder sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":               {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"template":           {Type: schema.TypeString, Required: true, Description: "Formula with one or more attributes and raw text."},
+								"target":             {Type: schema.TypeString, Required: true, Description: "Target attribute path for the result."},
+								"is_replace_missing": {Type: schema.TypeBool, Optional: true, Description: "Replace missing attributes with an empty string."},
+							}},
+						},
+						tfCategoryProcessor: {
+							Type: schema.TypeList, MaxItems: 1, Optional: true,
+							Description: "Array-map category sub-processor.",
+							Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+								"name":   {Type: schema.TypeString, Optional: true, Description: "Name of the sub-processor."},
+								"target": {Type: schema.TypeString, Required: true, Description: "Target attribute path for the category value."},
+								"category": {
+									Type: schema.TypeList, Required: true,
+									Description: "List of filters to match or exclude a log.",
+									Elem: &schema.Resource{Schema: map[string]*schema.Schema{
+										"name":   {Type: schema.TypeString, Required: true, Description: "Name of the category."},
+										"filter": {Type: schema.TypeList, Required: true, MaxItems: 1, Elem: getFilterSchema()},
+									}},
+								},
+							}},
+						},
+					},
+				},
+			},
+		},
+	},
+}
+
 var decoderProcessor = &schema.Schema{
 	Type:        schema.TypeList,
 	MaxItems:    1,
@@ -334,6 +420,20 @@ var decoderProcessor = &schema.Schema{
 			"target":                  {Description: "Decoded message", Type: schema.TypeString, Required: true},
 			"binary_to_text_encoding": {Description: "Encoding type: base64 or base16", Type: schema.TypeString, Required: true},
 			"input_representation":    {Description: "Input representation: utf-8 or integer", Type: schema.TypeString, Required: true},
+		},
+	},
+}
+
+var excludeAttributeProcessor = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Exclude Attribute Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#exclude-attribute-processor)",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"name":                 {Description: "Name of the processor.", Type: schema.TypeString, Optional: true},
+			"is_enabled":           {Description: "If the processor is enabled or not.", Type: schema.TypeBool, Optional: true},
+			"attribute_to_exclude": {Description: "Name of the log attribute to remove from the log event.", Type: schema.TypeString, Required: true},
 		},
 	},
 }
@@ -870,6 +970,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	if ddProcessor.LogsArithmeticProcessor != nil {
 		tfProcessor = buildTerraformArithmeticProcessor(ddProcessor.LogsArithmeticProcessor)
 		processorType = string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR)
+	} else if ddProcessor.LogsArrayMapProcessor != nil {
+		tfProcessor = buildTerraformArrayMapProcessor(ddProcessor.LogsArrayMapProcessor)
+		processorType = string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR)
 	} else if ddProcessor.LogsArrayProcessor != nil {
 		tfProcessor = buildTerraformArrayProcessor(ddProcessor.LogsArrayProcessor)
 		processorType = string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR)
@@ -885,6 +988,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	} else if ddProcessor.LogsDecoderProcessor != nil {
 		tfProcessor = buildTerraformDecoderProcessor(ddProcessor.LogsDecoderProcessor)
 		processorType = string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR)
+	} else if ddProcessor.LogsExcludeAttributeProcessor != nil {
+		tfProcessor = buildTerraformExcludeAttributeProcessor(ddProcessor.LogsExcludeAttributeProcessor)
+		processorType = string(datadogV1.LOGSEXCLUDEATTRIBUTEPROCESSORTYPE_EXCLUDE_ATTRIBUTE)
 	} else if ddProcessor.LogsMessageRemapper != nil {
 		tfProcessor = buildTerraformMessageRemapper(ddProcessor.LogsMessageRemapper)
 		processorType = string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER)
@@ -1269,6 +1375,177 @@ func buildTerraformDecoderProcessor(ddDecoder *datadogV1.LogsDecoderProcessor) m
 	}
 }
 
+func buildTerraformExcludeAttributeProcessor(ddExcludeAttribute *datadogV1.LogsExcludeAttributeProcessor) map[string]interface{} {
+	return map[string]interface{}{
+		"name":                 ddExcludeAttribute.GetName(),
+		"is_enabled":           ddExcludeAttribute.GetIsEnabled(),
+		"attribute_to_exclude": ddExcludeAttribute.GetAttributeToExclude(),
+	}
+}
+
+func buildTerraformArrayMapProcessor(ddProc *datadogV1.LogsArrayMapProcessor) map[string]interface{} {
+	tfProc := map[string]interface{}{
+		"name":            ddProc.GetName(),
+		"is_enabled":      ddProc.GetIsEnabled(),
+		"source":          ddProc.GetSource(),
+		"target":          ddProc.GetTarget(),
+		"preserve_source": ddProc.GetPreserveSource(),
+	}
+	tfSubs := make([]interface{}, 0, len(ddProc.GetProcessors()))
+	for _, sub := range ddProc.GetProcessors() {
+		tfSub := map[string]interface{}{}
+		if r := sub.LogsArrayMapAttributeRemapper; r != nil {
+			m := map[string]interface{}{
+				"name":                 r.GetName(),
+				"sources":              r.GetSources(),
+				"target":               r.GetTarget(),
+				"preserve_source":      r.GetPreserveSource(),
+				"override_on_conflict": r.GetOverrideOnConflict(),
+			}
+			if tf, ok := r.GetTargetFormatOk(); ok {
+				m["target_format"] = string(*tf)
+			}
+			tfSub[tfAttributeRemapperProcessor] = []map[string]interface{}{m}
+		} else if r := sub.LogsArrayMapArithmeticSubProcessor; r != nil {
+			tfSub[tfArithmeticProcessor] = []map[string]interface{}{{
+				"name":               r.GetName(),
+				"expression":         r.GetExpression(),
+				"target":             r.GetTarget(),
+				"is_replace_missing": r.GetIsReplaceMissing(),
+			}}
+		} else if r := sub.LogsArrayMapStringBuilderSubProcessor; r != nil {
+			tfSub[tfStringBuilderProcessor] = []map[string]interface{}{{
+				"name":               r.GetName(),
+				"template":           r.GetTemplate(),
+				"target":             r.GetTarget(),
+				"is_replace_missing": r.GetIsReplaceMissing(),
+			}}
+		} else if r := sub.LogsArrayMapCategorySubProcessor; r != nil {
+			cats := make([]map[string]interface{}, 0, len(r.GetCategories()))
+			for _, c := range r.GetCategories() {
+				cats = append(cats, map[string]interface{}{
+					"name":   c.GetName(),
+					"filter": []map[string]interface{}{{"query": c.Filter.GetQuery()}},
+				})
+			}
+			tfSub[tfCategoryProcessor] = []map[string]interface{}{{
+				"name":     r.GetName(),
+				"target":   r.GetTarget(),
+				"category": cats,
+			}}
+		}
+		tfSubs = append(tfSubs, tfSub)
+	}
+	tfProc["processors"] = tfSubs
+	return tfProc
+}
+
+func buildDatadogArrayMapProcessor(tfProc map[string]interface{}) *datadogV1.LogsArrayMapProcessor {
+	ddProc := datadogV1.NewLogsArrayMapProcessorWithDefaults()
+	if v, ok := tfProc["name"].(string); ok {
+		ddProc.SetName(v)
+	}
+	if v, ok := tfProc["is_enabled"].(bool); ok {
+		ddProc.SetIsEnabled(v)
+	}
+	if v, ok := tfProc["source"].(string); ok {
+		ddProc.SetSource(v)
+	}
+	if v, ok := tfProc["target"].(string); ok {
+		ddProc.SetTarget(v)
+	}
+	if v, ok := tfProc["preserve_source"].(bool); ok {
+		ddProc.SetPreserveSource(v)
+	}
+	if tfSubs, ok := tfProc["processors"].([]interface{}); ok {
+		ddSubs := make([]datadogV1.LogsArrayMapSubProcessor, 0, len(tfSubs))
+		for _, rawSub := range tfSubs {
+			subMap := rawSub.(map[string]interface{})
+			if details, ok := subMap[tfAttributeRemapperProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapAttributeRemapperWithDefaults()
+				r.SetSources(buildDatadogSources(d))
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
+				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if v, ok := d["preserve_source"].(bool); ok {
+					r.SetPreserveSource(v)
+				}
+				if v, ok := d["override_on_conflict"].(bool); ok {
+					r.SetOverrideOnConflict(v)
+				}
+				if v, ok := d["target_format"].(string); ok && v != "" {
+					r.SetTargetFormat(datadogV1.TargetFormatType(v))
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapAttributeRemapperAsLogsArrayMapSubProcessor(r))
+			} else if details, ok := subMap[tfArithmeticProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapArithmeticSubProcessorWithDefaults()
+				if v, ok := d["expression"].(string); ok {
+					r.SetExpression(v)
+				}
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
+				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if v, ok := d["is_replace_missing"].(bool); ok {
+					r.SetIsReplaceMissing(v)
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapArithmeticSubProcessorAsLogsArrayMapSubProcessor(r))
+			} else if details, ok := subMap[tfStringBuilderProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapStringBuilderSubProcessorWithDefaults()
+				if v, ok := d["template"].(string); ok {
+					r.SetTemplate(v)
+				}
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
+				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if v, ok := d["is_replace_missing"].(bool); ok {
+					r.SetIsReplaceMissing(v)
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapStringBuilderSubProcessorAsLogsArrayMapSubProcessor(r))
+			} else if details, ok := subMap[tfCategoryProcessor].([]interface{}); ok && len(details) > 0 {
+				d := details[0].(map[string]interface{})
+				r := datadogV1.NewLogsArrayMapCategorySubProcessorWithDefaults()
+				if v, ok := d["target"].(string); ok {
+					r.SetTarget(v)
+				}
+				if v, ok := d["name"].(string); ok {
+					r.SetName(v)
+				}
+				if cats, ok := d["category"].([]interface{}); ok {
+					ddCats := make([]datadogV1.LogsCategoryProcessorCategory, 0, len(cats))
+					for _, rawCat := range cats {
+						cat := rawCat.(map[string]interface{})
+						ddCat := datadogV1.LogsCategoryProcessorCategory{}
+						if n, ok := cat["name"].(string); ok {
+							ddCat.SetName(n)
+						}
+						if filters, ok := cat["filter"].([]interface{}); ok && len(filters) > 0 {
+							f := filters[0].(map[string]interface{})
+							ddCat.SetFilter(*buildDatadogFilter(f))
+						}
+						ddCats = append(ddCats, ddCat)
+					}
+					r.SetCategories(ddCats)
+				}
+				ddSubs = append(ddSubs, datadogV1.LogsArrayMapCategorySubProcessorAsLogsArrayMapSubProcessor(r))
+			}
+		}
+		ddProc.SetProcessors(ddSubs)
+	}
+	return ddProc
+}
+
 func buildTerraformSpanRemapper(ddSpanRemapper *datadogV1.LogsSpanRemapper) map[string]interface{} {
 	return map[string]interface{}{
 		"sources":    ddSpanRemapper.GetSources(),
@@ -1334,6 +1611,8 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 	switch ddProcessorType {
 	case string(datadogV1.LOGSARITHMETICPROCESSORTYPE_ARITHMETIC_PROCESSOR):
 		ddProcessor = datadogV1.LogsArithmeticProcessorAsLogsProcessor(buildDatadogArithmeticProcessor(tfProcessor))
+	case string(datadogV1.LOGSARRAYMAPPROCESSORTYPE_ARRAY_MAP_PROCESSOR):
+		ddProcessor = datadogV1.LogsArrayMapProcessorAsLogsProcessor(buildDatadogArrayMapProcessor(tfProcessor))
 	case string(datadogV1.LOGSARRAYPROCESSORTYPE_ARRAY_PROCESSOR):
 		ddArrayProcessor, err := buildDatadogArrayProcessor(tfProcessor)
 		if err != nil {
@@ -1348,6 +1627,8 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor = datadogV1.LogsDateRemapperAsLogsProcessor(buildDatadogDateRemapperProcessor(tfProcessor))
 	case string(datadogV1.LOGSDECODERPROCESSORTYPE_DECODER_PROCESSOR):
 		ddProcessor = datadogV1.LogsDecoderProcessorAsLogsProcessor(buildDatadogDecoderProcessor(tfProcessor))
+	case string(datadogV1.LOGSEXCLUDEATTRIBUTEPROCESSORTYPE_EXCLUDE_ATTRIBUTE):
+		ddProcessor = datadogV1.LogsExcludeAttributeProcessorAsLogsProcessor(buildDatadogExcludeAttributeProcessor(tfProcessor))
 	case string(datadogV1.LOGSSCHEMAPROCESSORTYPE_SCHEMA_PROCESSOR):
 		ddProcessor = datadogV1.LogsSchemaProcessorAsLogsProcessor(buildDatadogSchemaProcessor(tfProcessor))
 	case string(datadogV1.LOGSMESSAGEREMAPPERTYPE_MESSAGE_REMAPPER):
@@ -1373,11 +1654,7 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		}
 		ddProcessor = datadogV1.LogsPipelineProcessorAsLogsProcessor(ddNestedPipeline)
 	case string(datadogV1.LOGSSTRINGBUILDERPROCESSORTYPE_STRING_BUILDER_PROCESSOR):
-		ddStringBuilderProcessor, err := buildDatadogStringBuilderProcessor(tfProcessor)
-		if err != nil {
-			return &ddProcessor, err
-		}
-		ddProcessor = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(ddStringBuilderProcessor)
+		ddProcessor = datadogV1.LogsStringBuilderProcessorAsLogsProcessor(buildDatadogStringBuilderProcessor(tfProcessor))
 	case string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER):
 		ddProcessor = datadogV1.LogsURLParserAsLogsProcessor(buildDatadogURLParser(tfProcessor))
 	case string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER):
@@ -1528,7 +1805,7 @@ func buildDatadogNestedPipeline(tfProcessor map[string]interface{}) (*datadogV1.
 	return ddNestedPipeline, nil
 }
 
-func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) (*datadogV1.LogsStringBuilderProcessor, error) {
+func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsStringBuilderProcessor {
 	ddStringBuilder := datadogV1.NewLogsStringBuilderProcessorWithDefaults()
 	if tfTemplate, exists := tfProcessor["template"].(string); exists {
 		ddStringBuilder.SetTemplate(tfTemplate)
@@ -1545,7 +1822,7 @@ func buildDatadogStringBuilderProcessor(tfProcessor map[string]interface{}) (*da
 	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
 		ddStringBuilder.SetIsEnabled(tfIsEnabled)
 	}
-	return ddStringBuilder, nil
+	return ddStringBuilder
 }
 
 func buildDatadogGeoIPParser(tfProcessor map[string]interface{}) *datadogV1.LogsGeoIPParser {
@@ -1868,6 +2145,21 @@ func buildDatadogDecoderProcessor(tfProcessor map[string]interface{}) *datadogV1
 		ddDecoder.SetInputRepresentation(datadogV1.LogsDecoderProcessorInputRepresentation(tfInputRepresentation))
 	}
 	return ddDecoder
+}
+
+func buildDatadogExcludeAttributeProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsExcludeAttributeProcessor {
+	ddExcludeAttribute := datadogV1.NewLogsExcludeAttributeProcessorWithDefaults()
+
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddExcludeAttribute.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddExcludeAttribute.SetIsEnabled(tfIsEnabled)
+	}
+	if tfAttributeToExclude, exists := tfProcessor["attribute_to_exclude"].(string); exists {
+		ddExcludeAttribute.SetAttributeToExclude(tfAttributeToExclude)
+	}
+	return ddExcludeAttribute
 }
 
 func buildDatadogDateRemapperProcessor(tfProcessor map[string]interface{}) *datadogV1.LogsDateRemapper {

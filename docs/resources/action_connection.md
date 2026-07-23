@@ -94,12 +94,66 @@ resource "datadog_action_connection" "http_connection" {
 
 ### Optional
 
+- `anthropic` (Block, Optional) Configuration for an Anthropic connection (see [below for nested schema](#nestedblock--anthropic))
+- `asana` (Block, Optional) Configuration for an Asana connection (see [below for nested schema](#nestedblock--asana))
 - `aws` (Block, Optional) Configuration for an AWS connection (see [below for nested schema](#nestedblock--aws))
+- `azure` (Block, Optional) Configuration for an Azure connection (see [below for nested schema](#nestedblock--azure))
+- `circle_ci` (Block, Optional) Configuration for a CircleCI connection (see [below for nested schema](#nestedblock--circle_ci))
+- `clickup` (Block, Optional) Configuration for a ClickUp connection (see [below for nested schema](#nestedblock--clickup))
+- `cloudflare` (Block, Optional) Configuration for a Cloudflare connection (see [below for nested schema](#nestedblock--cloudflare))
+- `config_cat` (Block, Optional) Configuration for a ConfigCat connection (see [below for nested schema](#nestedblock--config_cat))
+- `datadog` (Block, Optional) Configuration for a Datadog connection (see [below for nested schema](#nestedblock--datadog))
+- `fastly` (Block, Optional) Configuration for a Fastly connection (see [below for nested schema](#nestedblock--fastly))
+- `freshservice` (Block, Optional) Configuration for a Freshservice connection (see [below for nested schema](#nestedblock--freshservice))
+- `gcp` (Block, Optional) Configuration for a Google Cloud connection (see [below for nested schema](#nestedblock--gcp))
+- `gemini` (Block, Optional) Configuration for a Gemini connection (see [below for nested schema](#nestedblock--gemini))
+- `gitlab` (Block, Optional) Configuration for a GitLab connection (see [below for nested schema](#nestedblock--gitlab))
+- `grey_noise` (Block, Optional) Configuration for a GreyNoise connection (see [below for nested schema](#nestedblock--grey_noise))
 - `http` (Block, Optional) Configuration for an HTTP connection (see [below for nested schema](#nestedblock--http))
+- `launch_darkly` (Block, Optional) Configuration for a LaunchDarkly connection (see [below for nested schema](#nestedblock--launch_darkly))
+- `notion` (Block, Optional) Configuration for a Notion connection (see [below for nested schema](#nestedblock--notion))
+- `okta` (Block, Optional) Configuration for an Okta connection (see [below for nested schema](#nestedblock--okta))
+- `openai` (Block, Optional) Configuration for an OpenAI connection (see [below for nested schema](#nestedblock--openai))
+- `service_now` (Block, Optional) Configuration for a ServiceNow connection (see [below for nested schema](#nestedblock--service_now))
+- `split` (Block, Optional) Configuration for a Split connection (see [below for nested schema](#nestedblock--split))
+- `statsig` (Block, Optional) Configuration for a Statsig connection (see [below for nested schema](#nestedblock--statsig))
+- `virus_total` (Block, Optional) Configuration for a VirusTotal connection (see [below for nested schema](#nestedblock--virus_total))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--anthropic"></a>
+### Nested Schema for `anthropic`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Anthropic API key authentication (see [below for nested schema](#nestedblock--anthropic--api_key))
+
+<a id="nestedblock--anthropic--api_key"></a>
+### Nested Schema for `anthropic.api_key`
+
+Optional:
+
+- `api_token` (String, Sensitive) Anthropic API token. String length must be at least 1.
+
+
+
+<a id="nestedblock--asana"></a>
+### Nested Schema for `asana`
+
+Optional:
+
+- `access_token` (Block, Optional) Configuration for Asana access token authentication (see [below for nested schema](#nestedblock--asana--access_token))
+
+<a id="nestedblock--asana--access_token"></a>
+### Nested Schema for `asana.access_token`
+
+Optional:
+
+- `access_token` (String, Sensitive) Asana access token. String length must be at least 1.
+
+
 
 <a id="nestedblock--aws"></a>
 ### Nested Schema for `aws`
@@ -120,6 +174,218 @@ Read-Only:
 
 - `external_id` (String) External ID that specifies which connection can be used to assume the role
 - `principal_id` (String) AWS account that will assume the role
+
+
+
+<a id="nestedblock--azure"></a>
+### Nested Schema for `azure`
+
+Optional:
+
+- `tenant` (Block, Optional) Configuration for Azure tenant authentication (see [below for nested schema](#nestedblock--azure--tenant))
+
+<a id="nestedblock--azure--tenant"></a>
+### Nested Schema for `azure.tenant`
+
+Optional:
+
+- `app_client_id` (String) Azure application client ID. String length must be at least 1.
+- `client_secret` (String, Sensitive) Azure application client secret. String length must be at least 1.
+- `custom_scopes` (String) Custom scope requested when acquiring an OAuth 2 access token. String length must be at least 1.
+- `tenant_id` (String) Azure Active Directory tenant ID. String length must be at least 1.
+
+
+
+<a id="nestedblock--circle_ci"></a>
+### Nested Schema for `circle_ci`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for CircleCI API key authentication (see [below for nested schema](#nestedblock--circle_ci--api_key))
+
+<a id="nestedblock--circle_ci--api_key"></a>
+### Nested Schema for `circle_ci.api_key`
+
+Optional:
+
+- `api_token` (String, Sensitive) CircleCI API token. String length must be at least 1.
+
+
+
+<a id="nestedblock--clickup"></a>
+### Nested Schema for `clickup`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for ClickUp API key authentication (see [below for nested schema](#nestedblock--clickup--api_key))
+
+<a id="nestedblock--clickup--api_key"></a>
+### Nested Schema for `clickup.api_key`
+
+Optional:
+
+- `api_token` (String, Sensitive) ClickUp API token. String length must be at least 1.
+
+
+
+<a id="nestedblock--cloudflare"></a>
+### Nested Schema for `cloudflare`
+
+Optional:
+
+- `api_token` (Block, Optional) Configuration for Cloudflare API token authentication (see [below for nested schema](#nestedblock--cloudflare--api_token))
+- `global_api_token` (Block, Optional) Configuration for Cloudflare global API token authentication (see [below for nested schema](#nestedblock--cloudflare--global_api_token))
+
+<a id="nestedblock--cloudflare--api_token"></a>
+### Nested Schema for `cloudflare.api_token`
+
+Optional:
+
+- `api_token` (String, Sensitive) Cloudflare API token. String length must be at least 1.
+
+
+<a id="nestedblock--cloudflare--global_api_token"></a>
+### Nested Schema for `cloudflare.global_api_token`
+
+Optional:
+
+- `auth_email` (String) Email address associated with the Cloudflare account. String length must be at least 1.
+- `global_api_key` (String, Sensitive) Cloudflare global API key. String length must be at least 1.
+
+
+
+<a id="nestedblock--config_cat"></a>
+### Nested Schema for `config_cat`
+
+Optional:
+
+- `sdk_key` (Block, Optional) Configuration for ConfigCat SDK key authentication (see [below for nested schema](#nestedblock--config_cat--sdk_key))
+
+<a id="nestedblock--config_cat--sdk_key"></a>
+### Nested Schema for `config_cat.sdk_key`
+
+Optional:
+
+- `api_password` (String, Sensitive) ConfigCat Public Management API password. String length must be at least 1.
+- `api_username` (String) ConfigCat Public Management API username. String length must be at least 1.
+- `sdk_key` (String, Sensitive) ConfigCat SDK key. String length must be at least 1.
+
+
+
+<a id="nestedblock--datadog"></a>
+### Nested Schema for `datadog`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Datadog API and application key authentication (see [below for nested schema](#nestedblock--datadog--api_key))
+
+<a id="nestedblock--datadog--api_key"></a>
+### Nested Schema for `datadog.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) Datadog API key. String length must be at least 1.
+- `app_key` (String, Sensitive) Datadog application key. String length must be at least 1.
+- `datacenter` (String) Datadog site data center. String length must be at least 1.
+- `subdomain` (String) Custom subdomain used for URLs generated with this connection. String length must be at least 1.
+
+
+
+<a id="nestedblock--fastly"></a>
+### Nested Schema for `fastly`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Fastly API key authentication (see [below for nested schema](#nestedblock--fastly--api_key))
+
+<a id="nestedblock--fastly--api_key"></a>
+### Nested Schema for `fastly.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) Fastly API key. String length must be at least 1.
+
+
+
+<a id="nestedblock--freshservice"></a>
+### Nested Schema for `freshservice`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Freshservice API key authentication (see [below for nested schema](#nestedblock--freshservice--api_key))
+
+<a id="nestedblock--freshservice--api_key"></a>
+### Nested Schema for `freshservice.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) Freshservice API key. String length must be at least 1.
+- `domain` (String) Freshservice domain. String length must be at least 1.
+
+
+
+<a id="nestedblock--gcp"></a>
+### Nested Schema for `gcp`
+
+Optional:
+
+- `service_account` (Block, Optional) Configuration for Google Cloud service account authentication (see [below for nested schema](#nestedblock--gcp--service_account))
+
+<a id="nestedblock--gcp--service_account"></a>
+### Nested Schema for `gcp.service_account`
+
+Optional:
+
+- `private_key` (String, Sensitive) Google Cloud service account private key. String length must be at least 1.
+- `service_account_email` (String) Google Cloud service account email. String length must be at least 1.
+
+
+
+<a id="nestedblock--gemini"></a>
+### Nested Schema for `gemini`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Gemini API key authentication (see [below for nested schema](#nestedblock--gemini--api_key))
+
+<a id="nestedblock--gemini--api_key"></a>
+### Nested Schema for `gemini.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) Gemini API key. String length must be at least 1.
+
+
+
+<a id="nestedblock--gitlab"></a>
+### Nested Schema for `gitlab`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for GitLab API key authentication (see [below for nested schema](#nestedblock--gitlab--api_key))
+
+<a id="nestedblock--gitlab--api_key"></a>
+### Nested Schema for `gitlab.api_key`
+
+Optional:
+
+- `api_token` (String, Sensitive) GitLab API token. String length must be at least 1.
+
+
+
+<a id="nestedblock--grey_noise"></a>
+### Nested Schema for `grey_noise`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for GreyNoise API key authentication (see [below for nested schema](#nestedblock--grey_noise--api_key))
+
+<a id="nestedblock--grey_noise--api_key"></a>
+### Nested Schema for `grey_noise.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) GreyNoise API key. String length must be at least 1.
 
 
 
@@ -176,6 +442,138 @@ Optional:
 
 - `name` (String) URL parameter name. String length must be at least 1.
 - `value` (String) URL parameter value. String length must be at least 1.
+
+
+
+
+<a id="nestedblock--launch_darkly"></a>
+### Nested Schema for `launch_darkly`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for LaunchDarkly API key authentication (see [below for nested schema](#nestedblock--launch_darkly--api_key))
+
+<a id="nestedblock--launch_darkly--api_key"></a>
+### Nested Schema for `launch_darkly.api_key`
+
+Optional:
+
+- `api_token` (String, Sensitive) LaunchDarkly API token. String length must be at least 1.
+
+
+
+<a id="nestedblock--notion"></a>
+### Nested Schema for `notion`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Notion API key authentication (see [below for nested schema](#nestedblock--notion--api_key))
+
+<a id="nestedblock--notion--api_key"></a>
+### Nested Schema for `notion.api_key`
+
+Optional:
+
+- `api_token` (String, Sensitive) Notion API token. String length must be at least 1.
+
+
+
+<a id="nestedblock--okta"></a>
+### Nested Schema for `okta`
+
+Optional:
+
+- `api_token` (Block, Optional) Configuration for Okta API token authentication (see [below for nested schema](#nestedblock--okta--api_token))
+
+<a id="nestedblock--okta--api_token"></a>
+### Nested Schema for `okta.api_token`
+
+Optional:
+
+- `api_token` (String, Sensitive) Okta API token. String length must be at least 1.
+- `domain` (String) Okta domain. String length must be at least 1.
+
+
+
+<a id="nestedblock--openai"></a>
+### Nested Schema for `openai`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for OpenAI API key authentication (see [below for nested schema](#nestedblock--openai--api_key))
+
+<a id="nestedblock--openai--api_key"></a>
+### Nested Schema for `openai.api_key`
+
+Optional:
+
+- `api_token` (String, Sensitive) OpenAI API token. String length must be at least 1.
+
+
+
+<a id="nestedblock--service_now"></a>
+### Nested Schema for `service_now`
+
+Optional:
+
+- `basic_auth` (Block, Optional) Configuration for ServiceNow basic authentication (see [below for nested schema](#nestedblock--service_now--basic_auth))
+
+<a id="nestedblock--service_now--basic_auth"></a>
+### Nested Schema for `service_now.basic_auth`
+
+Optional:
+
+- `instance` (String) ServiceNow instance. String length must be at least 1.
+- `password` (String, Sensitive) ServiceNow password. String length must be at least 1.
+- `username` (String) ServiceNow username. String length must be at least 1.
+
+
+
+<a id="nestedblock--split"></a>
+### Nested Schema for `split`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Split API key authentication (see [below for nested schema](#nestedblock--split--api_key))
+
+<a id="nestedblock--split--api_key"></a>
+### Nested Schema for `split.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) Split API key. String length must be at least 1.
+
+
+
+<a id="nestedblock--statsig"></a>
+### Nested Schema for `statsig`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for Statsig API key authentication (see [below for nested schema](#nestedblock--statsig--api_key))
+
+<a id="nestedblock--statsig--api_key"></a>
+### Nested Schema for `statsig.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) Statsig API key. String length must be at least 1.
+
+
+
+<a id="nestedblock--virus_total"></a>
+### Nested Schema for `virus_total`
+
+Optional:
+
+- `api_key` (Block, Optional) Configuration for VirusTotal API key authentication (see [below for nested schema](#nestedblock--virus_total--api_key))
+
+<a id="nestedblock--virus_total--api_key"></a>
+### Nested Schema for `virus_total.api_key`
+
+Optional:
+
+- `api_key` (String, Sensitive) VirusTotal API key. String length must be at least 1.
 
 ## Import
 

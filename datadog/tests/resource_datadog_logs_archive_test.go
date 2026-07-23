@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
@@ -373,6 +374,124 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "GLACIER_IR"),
 				),
+			},
+		},
+	})
+}
+
+// create then update: Ok s3 with access_key_id (mutually exclusive with account_id/role_name)
+func archiveS3ConfigWithAccessKey() string {
+	return `
+resource "datadog_logs_archive" "my_s3_archive" {
+  name  = "my first s3 archive"
+  query = "service:tutu"
+  s3_archive {
+    bucket        = "my-bucket"
+    path          = "/path/foo"
+    access_key_id = "AKIAIOSFODNN7EXAMPLE"
+    storage_class = "STANDARD_IA"
+  }
+  rehydration_tags = ["team:intake", "team:app"]
+  include_tags      = true
+}`
+}
+
+func TestAccDatadogLogsArchiveS3AccessKey_basic(t *testing.T) {
+	t.Skip("This test doesn't support recording or replaying")
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				// role-based (existing behavior), proving no forced diff on upgrade
+				Config: archiveS3ConfigForCreation(accountID, ""),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckArchiveExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.access_key_id"),
+				),
+			},
+			{
+				// switch to access_key_id, dropping account_id/role_name
+				Config: archiveS3ConfigWithAccessKey(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckArchiveExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.access_key_id", "AKIAIOSFODNN7EXAMPLE"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name"),
+				),
+			},
+		},
+	})
+}
+
+// invalid: access_key_id and role_name are mutually exclusive
+func archiveS3ConfigAccessKeyAndRoleConflict() string {
+	return `
+resource "datadog_logs_archive" "my_s3_archive" {
+  name  = "my first s3 archive"
+  query = "service:tutu"
+  s3_archive {
+    bucket        = "my-bucket"
+    path          = "/path/foo"
+    access_key_id = "AKIAIOSFODNN7EXAMPLE"
+    role_name     = "testacc-datadog-integration-role"
+  }
+}`
+}
+
+func TestUnitDatadogLogsArchiveS3AccessKeyAndRoleConflict(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      archiveS3ConfigAccessKeyAndRoleConflict(),
+				ExpectError: regexp.MustCompile(`"s3_archive.0.access_key_id": conflicts with s3_archive.0.role_name`),
+			},
+		},
+	})
+}
+
+// invalid: neither account_id nor access_key_id specified
+func archiveS3ConfigNoAuth() string {
+	return `
+resource "datadog_logs_archive" "my_s3_archive" {
+  name  = "my first s3 archive"
+  query = "service:tutu"
+  s3_archive {
+    bucket = "my-bucket"
+    path   = "/path/foo"
+  }
+}`
+}
+
+func TestUnitDatadogLogsArchiveS3NoAuth(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      archiveS3ConfigNoAuth(),
+				ExpectError: regexp.MustCompile(`"s3_archive.0.account_id": one of`),
 			},
 		},
 	})

@@ -14,11 +14,12 @@ Provides a Datadog Security Monitoring Critical Asset resource. It can be used t
 
 ```terraform
 resource "datadog_security_monitoring_critical_asset" "my_critical_asset" {
-  enabled    = true
-  query      = "source:runtime-security-agent"
-  rule_query = "type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3"
-  severity   = "increase"
-  tags       = ["env:production", "team:security"]
+  description = "Production database servers that should trigger critical alerts"
+  enabled     = true
+  query       = "env:production service:database"
+  rule_query  = "type:(log_detection OR signal_correlation OR workload_security OR application_security) ruleId:007-d1a-1f3"
+  severity    = "increase"
+  tags        = ["env:production", "team:security"]
 }
 ```
 
@@ -33,6 +34,7 @@ resource "datadog_security_monitoring_critical_asset" "my_critical_asset" {
 
 ### Optional
 
+- `description` (String) A description of the critical asset.
 - `enabled` (Boolean) Whether the critical asset is enabled. Defaults to `true`.
 - `tags` (List of String) A list of tags associated with the critical asset.
 

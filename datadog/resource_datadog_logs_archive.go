@@ -38,12 +38,28 @@ func resourceDatadogLogsArchive() *schema.Resource {
 							"bucket": {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
 							"path":   {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
 							"account_id": {
-								Description:      "Your AWS account id.",
+								Description:      "Your AWS account id. Required with `role_name`; mutually exclusive with `access_key_id`.",
 								Type:             schema.TypeString,
-								Required:         true,
+								Optional:         true,
 								ValidateDiagFunc: validators.ValidateAWSAccountID,
+								RequiredWith:     []string{"s3_archive.0.role_name"},
+								ConflictsWith:    []string{"s3_archive.0.access_key_id"},
+								AtLeastOneOf:     []string{"s3_archive.0.account_id", "s3_archive.0.access_key_id"},
 							},
-							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
+							"role_name": {
+								Description:   "Your AWS role name. Required with `account_id`; mutually exclusive with `access_key_id`.",
+								Type:          schema.TypeString,
+								Optional:      true,
+								RequiredWith:  []string{"s3_archive.0.account_id"},
+								ConflictsWith: []string{"s3_archive.0.access_key_id"},
+							},
+							"access_key_id": {
+								Description:   "Your AWS access key id, used as an alternative to `account_id`/`role_name`.",
+								Type:          schema.TypeString,
+								Optional:      true,
+								ConflictsWith: []string{"s3_archive.0.account_id", "s3_archive.0.role_name"},
+								AtLeastOneOf:  []string{"s3_archive.0.account_id", "s3_archive.0.access_key_id"},
+							},
 							"encryption_type": {Description: "The type of encryption on your archive.",
 								Type:             schema.TypeString,
 								Optional:         true,
@@ -300,8 +316,13 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]inter
 	result := make(map[string]interface{})
 	integration := destination.GetIntegration()
 	encryption := destination.GetEncryption()
-	result["account_id"] = integration.GetAccountId()
-	result["role_name"] = integration.GetRoleName()
+	switch v := integration.GetActualInstance().(type) {
+	case *datadogV2.LogsArchiveIntegrationS3Role:
+		result["account_id"] = v.GetAccountId()
+		result["role_name"] = v.GetRoleName()
+	case *datadogV2.LogsArchiveIntegrationS3AccessKey:
+		result["access_key_id"] = v.GetAccessKeyId()
+	}
 	if encryptionType, ok := encryption.GetTypeOk(); ok {
 		result["encryption_type"] = encryptionType
 	}
@@ -468,18 +489,26 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 
 func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, error) {
 	d := dest.([]interface{})[0].(map[string]interface{})
-	accountID, ok := d["account_id"]
-	if !ok {
-		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("account_id is not defined")
+
+	accessKeyID, _ := d["access_key_id"].(string)
+	accountID, _ := d["account_id"].(string)
+	roleName, _ := d["role_name"].(string)
+
+	var integration datadogV2.LogsArchiveIntegrationS3
+	switch {
+	case accessKeyID != "":
+		integration = datadogV2.LogsArchiveIntegrationS3AccessKeyAsLogsArchiveIntegrationS3(
+			datadogV2.NewLogsArchiveIntegrationS3AccessKey(accessKeyID),
+		)
+	case accountID != "" && roleName != "":
+		integration = datadogV2.LogsArchiveIntegrationS3RoleAsLogsArchiveIntegrationS3(
+			datadogV2.NewLogsArchiveIntegrationS3Role(accountID, roleName),
+		)
+	default:
+		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf(
+			"s3_archive requires either access_key_id, or both account_id and role_name")
 	}
-	roleName, ok := d["role_name"]
-	if !ok {
-		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("role_name is not defined")
-	}
-	integration := datadogV2.NewLogsArchiveIntegrationS3(
-		accountID.(string),
-		roleName.(string),
-	)
+
 	bucket, ok := d["bucket"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("bucket is not defined")
@@ -490,7 +519,7 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	}
 	destination := datadogV2.NewLogsArchiveDestinationS3(
 		bucket.(string),
-		*integration,
+		integration,
 		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	)
 	encryptionType, ok := d["encryption_type"]

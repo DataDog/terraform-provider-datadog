@@ -36,7 +36,8 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				"description": {
 					Type:        schema.TypeString,
 					Optional:    true,
-					Description: "Description of the rule.",
+					Computed:    true,
+					Description: "Description of the rule. Computed when `standard_pattern_id` is set and this field is omitted.",
 				},
 				"group_id": {
 					Type:        schema.TypeString,
@@ -182,20 +183,38 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 }
 
 func resourceDatadogSensitiveDataScannerRuleCustomizeDiff(_ context.Context, diff *schema.ResourceDiff, _ interface{}) error {
-	if _, ok := diff.GetOk("text_replacement"); !ok {
-		return nil
-	}
-
-	// Only allow should_save_match when type == "replacement_string"
-	if typeValRaw, ok := diff.GetOk("text_replacement.0.type"); ok {
-		typeVal := typeValRaw.(string)
-		if shouldSaveMatchVal, present := diff.GetOk("text_replacement.0.should_save_match"); present && typeVal != "replacement_string" {
-			if shouldSaveMatch, ok := shouldSaveMatchVal.(bool); ok && shouldSaveMatch {
-				return fmt.Errorf("text_replacement.should_save_match can only be set when text_replacement.type is 'replacement_string'")
+	if _, ok := diff.GetOk("text_replacement"); ok {
+		// Only allow should_save_match when type == "replacement_string"
+		if typeValRaw, ok := diff.GetOk("text_replacement.0.type"); ok {
+			typeVal := typeValRaw.(string)
+			if shouldSaveMatchVal, present := diff.GetOk("text_replacement.0.should_save_match"); present && typeVal != "replacement_string" {
+				if shouldSaveMatch, ok := shouldSaveMatchVal.(bool); ok && shouldSaveMatch {
+					return fmt.Errorf("text_replacement.should_save_match can only be set when text_replacement.type is 'replacement_string'")
+				}
 			}
 		}
 	}
-	return nil
+
+	if isSensitiveDataScannerRuleDescriptionConfigured(diff) {
+		return nil
+	}
+
+	if _, hasSP := diff.GetOk("standard_pattern_id"); hasSP {
+		if diff.Id() == "" {
+			return diff.SetNewComputed("description")
+		}
+		return diff.Clear("description")
+	}
+
+	if diff.Id() == "" {
+		return diff.SetNew("description", "")
+	}
+	return diff.Clear("description")
+}
+
+func isSensitiveDataScannerRuleDescriptionConfigured(diff *schema.ResourceDiff) bool {
+	val, diags := diff.GetRawConfigAt(cty.GetAttrPath("description"))
+	return !diags.HasError() && !val.IsNull()
 }
 
 func resourceDatadogSensitiveDataScannerRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -297,8 +316,8 @@ func resourceDatadogSensitiveDataScannerRuleCreate(ctx context.Context, d *schem
 func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.SensitiveDataScannerRuleAttributes {
 	attributes := datadogV2.NewSensitiveDataScannerRuleAttributesWithDefaults()
 
-	if description, ok := d.GetOk("description"); ok {
-		attributes.SetDescription(description.(string))
+	if isSensitiveDataScannerRuleBlockConfigured(d, "description") {
+		attributes.SetDescription(d.Get("description").(string))
 	}
 
 	namespaces := []string{}
@@ -470,7 +489,7 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	}
 	d.SetId(id)
 
-	return updateSensitiveDataScannerRuleState(d, req.Data.Attributes)
+	return resourceDatadogSensitiveDataScannerRuleRead(ctx, d, meta)
 }
 
 func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

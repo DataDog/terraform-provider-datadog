@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -150,6 +151,33 @@ func (d *actionConnectionDatasource) Schema(_ context.Context, request datasourc
 			},
 		},
 	}
+
+	for _, integrationSpec := range additionalActionConnectionSpecs {
+		response.Schema.Blocks[integrationSpec.Name] = actionConnectionDataSourceBlock(integrationSpec)
+	}
+}
+
+func actionConnectionDataSourceBlock(integrationSpec actionConnectionIntegrationSpec) schema.Block {
+	credentialBlocks := make(map[string]schema.Block, len(integrationSpec.Credentials))
+	for _, credentialSpec := range integrationSpec.Credentials {
+		attributes := make(map[string]schema.Attribute, len(credentialSpec.Fields))
+		for _, fieldSpec := range credentialSpec.Fields {
+			attributes[fieldSpec.Name] = schema.StringAttribute{
+				Description: fieldSpec.Description,
+				Computed:    true,
+				Sensitive:   fieldSpec.Sensitive,
+			}
+		}
+		credentialBlocks[credentialSpec.Name] = schema.SingleNestedBlock{
+			Description: credentialSpec.Description,
+			Attributes:  attributes,
+		}
+	}
+
+	return schema.SingleNestedBlock{
+		Description: integrationSpec.Description,
+		Blocks:      credentialBlocks,
+	}
 }
 
 func (d *actionConnectionDatasource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
@@ -160,8 +188,14 @@ func (d *actionConnectionDatasource) Read(ctx context.Context, request datasourc
 		return
 	}
 
-	connModel, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
+	connModel, httpStatusCode, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
 	if err != nil {
+		if httpStatusCode == http.StatusNotFound {
+			// If the connection is not found, we log a warning and remove the resource from state. This may be due to changes outside of Terraform.
+			response.Diagnostics.AddWarning("The connection with ID '"+state.ID.ValueString()+"' is not found. It may have been deleted outside of Terraform.", err.Error())
+			response.State.RemoveResource(ctx)
+			return
+		}
 		response.Diagnostics.AddError("Could not read connection", err.Error())
 		return
 	}

@@ -123,6 +123,7 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
+	NewCostCustomForecastResource,
 	NewTagPipelineRulesetResource,
 	NewTagPipelineRulesetsResource,
 	NewSecureEmbedDashboardResource,
@@ -132,6 +133,7 @@ var Resources = []func() resource.Resource{
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewIncidentUserDefinedFieldResource,
 	NewAwsCurConfigResource,
 	NewGcpUcConfigResource,
 	NewDatadogCustomAllocationRuleResource,
@@ -188,6 +190,7 @@ var Datasources = []func() datasource.DataSource{
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 	NewCostBudgetDataSource,
+	NewCostCustomForecastDataSource,
 	NewTagPipelineRulesetDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
@@ -201,6 +204,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogReferenceTableDataSource,
 	NewDatadogReferenceTableRowsDataSource,
 	NewOrganizationSettingsDataSource,
+	NewDatadogCurrentUserDataSource,
 	NewDatadogDatastoreDataSource,
 	NewDatastoreItemDataSource,
 }
@@ -270,8 +274,14 @@ func (p *FrameworkProvider) Resources(_ context.Context) []func() resource.Resou
 }
 
 func (p *FrameworkProvider) DataSources(_ context.Context) []func() datasource.DataSource {
+	// Hand-written and generator-v2 data sources are kept in separate slices
+	// (see generatedDatasources) so regenerating does not churn this file.
+	all := make([]func() datasource.DataSource, 0, len(Datasources)+len(generatedDatasources))
+	all = append(all, Datasources...)
+	all = append(all, generatedDatasources...)
+
 	var wrappedDatasources []func() datasource.DataSource
-	for _, f := range Datasources {
+	for _, f := range all {
 		r := f()
 		wrappedDatasources = append(wrappedDatasources, func() datasource.DataSource { return NewFrameworkDatasourceWrapper(&r) })
 	}
@@ -660,6 +670,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDataset", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteDataset", true)
 
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedField", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedField", true)
+
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetWebIntegrationAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListWebIntegrationAccounts", true)
@@ -678,6 +694,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccountCCMConfig", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccountCCMConfig", true)
+
+	// Enable Custom Forecast
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpsertCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetCustomForecast", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteCustomForecast", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)

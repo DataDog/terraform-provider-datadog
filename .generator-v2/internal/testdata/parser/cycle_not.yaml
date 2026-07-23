@@ -1,0 +1,12 @@
+# Excluded references itself through `not`. Exercises the Not edge of the walk.
+openapi: 3.0.0
+info:
+  title: Cycles
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Excluded:
+      type: object
+      not:
+        $ref: '#/components/schemas/Excluded'
