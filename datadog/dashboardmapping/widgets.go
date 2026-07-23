@@ -773,6 +773,9 @@ var distributionHistogramQueryFields = []FieldSpec{
 	{HCLKey: "apm_resource_stats_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "APM resource stats query for histogram-mode distribution.",
 		Children:    formulaAndFunctionApmResourceStatsQueryFields},
+	{HCLKey: "apm_metrics_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "APM metrics query for histogram-mode distribution.",
+		Children:    formulaAndFunctionApmMetricsQueryFields},
 }
 
 // DistributionWidgetSpec corresponds to OpenAPI DistributionWidgetDefinition.

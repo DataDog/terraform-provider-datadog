@@ -649,6 +649,7 @@ var dataSourceToQueryType = map[string]string{
 	"cloud_cost":           "cloud_cost_query",
 	"apm_dependency_stats": "apm_dependency_stats_query",
 	"apm_resource_stats":   "apm_resource_stats_query",
+	"apm_metrics":          "apm_metrics_query",
 }
 
 // isFormulaCapableWidget returns true for widget types that support

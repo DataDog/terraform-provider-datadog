@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 940
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2ApmMetricsQuery_import-local-1784742891","widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"apm_metrics","group_by":["resource_name"],"name":"query1","operation_mode":"primary","operation_name":"web.request","peer_tags":["peer.service:payments"],"query_filter":"env:prod","resource_hash":"abc123","resource_name":"GET /api/v1/users","service":"web-store","span_kind":"server","stat":"hits"}],"response_format":"scalar"}],"title":"APM hits","type":"query_value"}},{"definition":{"requests":[{"query":{"data_source":"apm_metrics","name":"query1","service":"web-store","stat":"latency_distribution"},"request_type":"histogram"}],"show_legend":false,"title":"APM latency distribution","type":"distribution"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vvn-sw2-xu3","title":"tf-TestAccDatadogDashboardV2ApmMetricsQuery_import-local-1784742891","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vvn-sw2-xu3/tf-testaccdatadogdashboardv2apmmetricsqueryimport-local-1784742891","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"apm_metrics","group_by":["resource_name"],"name":"query1","operation_mode":"primary","operation_name":"web.request","peer_tags":["peer.service:payments"],"query_filter":"env:prod","resource_hash":"abc123","resource_name":"GET /api/v1/users","service":"web-store","span_kind":"server","stat":"hits"}],"response_format":"scalar"}],"title":"APM hits","type":"query_value"},"id":8028217679265540},{"definition":{"requests":[{"query":{"data_source":"apm_metrics","name":"query1","service":"web-store","stat":"latency_distribution"},"request_type":"histogram"}],"show_legend":false,"title":"APM latency distribution","type":"distribution"},"id":8611258212026767}],"notify_list":[],"created_at":"2026-07-22T17:54:53.761123+00:00","modified_at":"2026-07-22T17:54:53.761123+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 333.973958ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vvn-sw2-xu3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vvn-sw2-xu3","title":"tf-TestAccDatadogDashboardV2ApmMetricsQuery_import-local-1784742891","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vvn-sw2-xu3/tf-testaccdatadogdashboardv2apmmetricsqueryimport-local-1784742891","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"apm_metrics","group_by":["resource_name"],"name":"query1","operation_mode":"primary","operation_name":"web.request","peer_tags":["peer.service:payments"],"query_filter":"env:prod","resource_hash":"abc123","resource_name":"GET /api/v1/users","service":"web-store","span_kind":"server","stat":"hits"}],"response_format":"scalar"}],"title":"APM hits","type":"query_value"},"id":8028217679265540},{"definition":{"requests":[{"query":{"data_source":"apm_metrics","name":"query1","service":"web-store","stat":"latency_distribution"},"request_type":"histogram"}],"show_legend":false,"title":"APM latency distribution","type":"distribution"},"id":8611258212026767}],"notify_list":[],"created_at":"2026-07-22T17:54:53.761123+00:00","modified_at":"2026-07-22T17:54:53.761123+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 615.27075ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vvn-sw2-xu3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vvn-sw2-xu3","title":"tf-TestAccDatadogDashboardV2ApmMetricsQuery_import-local-1784742891","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vvn-sw2-xu3/tf-testaccdatadogdashboardv2apmmetricsqueryimport-local-1784742891","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"apm_metrics","group_by":["resource_name"],"name":"query1","operation_mode":"primary","operation_name":"web.request","peer_tags":["peer.service:payments"],"query_filter":"env:prod","resource_hash":"abc123","resource_name":"GET /api/v1/users","service":"web-store","span_kind":"server","stat":"hits"}],"response_format":"scalar"}],"title":"APM hits","type":"query_value"},"id":8028217679265540},{"definition":{"requests":[{"query":{"data_source":"apm_metrics","name":"query1","service":"web-store","stat":"latency_distribution"},"request_type":"histogram"}],"show_legend":false,"title":"APM latency distribution","type":"distribution"},"id":8611258212026767}],"notify_list":[],"created_at":"2026-07-22T17:54:53.761123+00:00","modified_at":"2026-07-22T17:54:53.761123+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 153.765542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vvn-sw2-xu3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"vvn-sw2-xu3","title":"tf-TestAccDatadogDashboardV2ApmMetricsQuery_import-local-1784742891","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/vvn-sw2-xu3/tf-testaccdatadogdashboardv2apmmetricsqueryimport-local-1784742891","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"apm_metrics","group_by":["resource_name"],"name":"query1","operation_mode":"primary","operation_name":"web.request","peer_tags":["peer.service:payments"],"query_filter":"env:prod","resource_hash":"abc123","resource_name":"GET /api/v1/users","service":"web-store","span_kind":"server","stat":"hits"}],"response_format":"scalar"}],"title":"APM hits","type":"query_value"},"id":8028217679265540},{"definition":{"requests":[{"query":{"data_source":"apm_metrics","name":"query1","service":"web-store","stat":"latency_distribution"},"request_type":"histogram"}],"show_legend":false,"title":"APM latency distribution","type":"distribution"},"id":8611258212026767}],"notify_list":[],"created_at":"2026-07-22T17:54:53.761123+00:00","modified_at":"2026-07-22T17:54:53.761123+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 230.6305ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vvn-sw2-xu3
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"vvn-sw2-xu3"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 616.156084ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/vvn-sw2-xu3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID vvn-sw2-xu3 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 1.482973375s
