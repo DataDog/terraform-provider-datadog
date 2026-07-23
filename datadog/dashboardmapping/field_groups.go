@@ -785,6 +785,152 @@ var formulaAndFunctionRetentionQueryFields = []FieldSpec{
 		Children:    retentionGroupByFields},
 }
 
+// retentionQueryFields corresponds to OpenAPI RetentionQuery and is shared by
+// the Cohort and Retention Curve widgets.
+var retentionQueryFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "Name of the retention query."},
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for retention queries.",
+		ValidValues: []string{"product_analytics_retention"}},
+	{HCLKey: "search", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Search configuration for the retention query.",
+		Children:    retentionSearchFields},
+	{HCLKey: "compute", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Compute configuration for the retention query.",
+		Children:    retentionComputeFields},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Group by configuration for the retention query.",
+		Children:    retentionGroupByFields},
+	{HCLKey: "filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Filters for the retention query.",
+		Children:    retentionFiltersFields},
+}
+
+// retentionGridRequestFields corresponds to OpenAPI RetentionGridRequest.
+var retentionGridRequestFields = []FieldSpec{
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Request type for the retention grid widget.",
+		ValidValues: []string{"retention_grid"}},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Retention query displayed by the cohort grid.",
+		Children:    retentionQueryFields},
+}
+
+// retentionCurveStyleFields corresponds to OpenAPI RetentionCurveStyle.
+var retentionCurveStyleFields = []FieldSpec{
+	{HCLKey: "palette", Type: TypeString, OmitEmpty: true,
+		Description: "Color palette for the retention curve."},
+}
+
+// retentionCurveWidgetRequestFields corresponds to OpenAPI
+// RetentionCurveWidgetRequest.
+var retentionCurveWidgetRequestFields = []FieldSpec{
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Request type for the retention curve widget.",
+		ValidValues: []string{"retention_curve"}},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Retention query displayed by the retention curve.",
+		Children:    retentionQueryFields},
+	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
+		Description: "Style configuration for the retention curve.",
+		Children:    retentionCurveStyleFields},
+}
+
+// productAnalyticsFunnelGroupBySortFields corresponds to OpenAPI
+// ProductAnalyticsFunnelGroupBySort.
+var productAnalyticsFunnelGroupBySortFields = []FieldSpec{
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: true,
+		Description: "Metric to sort by."},
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Aggregation used to sort the funnel groups."},
+	{HCLKey: "order", Type: TypeString, OmitEmpty: true,
+		Description: "Sort order for funnel groups.",
+		ValidValues: []string{"asc", "desc"}},
+}
+
+// productAnalyticsFunnelGroupByFields corresponds to OpenAPI
+// ProductAnalyticsFunnelGroupBy.
+var productAnalyticsFunnelGroupByFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Facet to group the user journey funnel by."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of groups."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+		Description: "Sort configuration for the funnel groups.",
+		Children:    productAnalyticsFunnelGroupBySortFields},
+	{HCLKey: "should_exclude_missing", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to exclude missing values."},
+	{HCLKey: "target", Type: TypeBlock, OmitEmpty: true,
+		Description: "Journey target to group.",
+		Children:    userJourneySearchTargetFields},
+}
+
+// productAnalyticsFunnelComputeFields corresponds to OpenAPI
+// ProductAnalyticsFunnelCompute.
+var productAnalyticsFunnelComputeFields = []FieldSpec{
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Aggregation type for the user journey funnel computation.",
+		ValidValues: []string{"cardinality", "count"}},
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Metric for the user journey funnel computation.",
+		ValidValues: []string{"__dd.conversion", "__dd.conversion_rate"}},
+}
+
+// productAnalyticsFunnelQueryFields corresponds to OpenAPI
+// ProductAnalyticsFunnelQuery.
+var productAnalyticsFunnelQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for Product Analytics funnel queries.",
+		ValidValues: []string{"product_analytics_journey"}},
+	{HCLKey: "search", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "User journey search configuration.",
+		Children:    userJourneySearchFields},
+	{HCLKey: "subquery_id", Type: TypeString, OmitEmpty: true,
+		Description: "Subquery identifier."},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Group by configuration for the user journey funnel.",
+		Children:    productAnalyticsFunnelGroupByFields},
+	{HCLKey: "compute", Type: TypeBlock, OmitEmpty: true,
+		Description: "Compute configuration for the user journey funnel.",
+		Children:    productAnalyticsFunnelComputeFields},
+}
+
+// funnelComparisonCustomTimeframeFields corresponds to OpenAPI
+// FunnelComparisonCustomTimeframe.
+var funnelComparisonCustomTimeframeFields = []FieldSpec{
+	{HCLKey: "from", Type: TypeFloat, OmitEmpty: false, Required: true,
+		Description: "Start of the custom comparison timeframe."},
+	{HCLKey: "to", Type: TypeFloat, OmitEmpty: false, Required: true,
+		Description: "End of the custom comparison timeframe."},
+}
+
+// funnelComparisonDurationFields corresponds to OpenAPI FunnelComparisonDuration.
+var funnelComparisonDurationFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of comparison duration.",
+		ValidValues: []string{"previous_timeframe", "custom_timeframe", "previous_day", "previous_week", "previous_month"}},
+	{HCLKey: "custom_timeframe", Type: TypeBlock, OmitEmpty: true,
+		Description: "Custom comparison timeframe.",
+		Children:    funnelComparisonCustomTimeframeFields},
+}
+
+// productAnalyticsFunnelRequestFields corresponds to OpenAPI
+// ProductAnalyticsFunnelRequest.
+var productAnalyticsFunnelRequestFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "User journey query displayed by the funnel.",
+		Children:    productAnalyticsFunnelQueryFields},
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Request type for the Product Analytics funnel.",
+		ValidValues: []string{"user_journey_funnel"}},
+	{HCLKey: "comparison_time", Type: TypeBlock, OmitEmpty: true,
+		Description: "Comparison time configuration for the funnel.",
+		Children:    funnelComparisonDurationFields},
+	{HCLKey: "comparison_segments", Type: TypeStringList, OmitEmpty: true, MinItems: 1,
+		Description: "Segments to compare in the funnel."},
+}
+
 // formulaAndFunctionQueryFields corresponds to the elements within a "query" TypeBlockList.
 // Each element is a oneOf FormulaAndFunction query type — exactly one sub-block should be set.
 // HCL: query { metric_query { ... } } or query { event_query { ... } } etc.

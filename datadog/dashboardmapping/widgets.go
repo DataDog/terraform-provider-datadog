@@ -1483,6 +1483,9 @@ var allWidgetSpecs = []WidgetSpec{
 	PowerpackWidgetSpec,
 	// Funnel widget (unique request structure; request_type injected by post-process hook)
 	FunnelWidgetSpec,
+	ProductAnalyticsFunnelWidgetSpec,
+	CohortWidgetSpec,
+	RetentionCurveWidgetSpec,
 	BarChartWidgetSpec,
 	SankeyWidgetSpec,
 	WildcardWidgetSpec,
@@ -1492,14 +1495,60 @@ var allWidgetSpecs = []WidgetSpec{
 // FunnelWidgetSpec corresponds to OpenAPI FunnelWidgetDefinition.
 // The JSON "request_type" field is always "funnel" and is injected by buildWidgetPostProcess.
 var FunnelWidgetSpec = WidgetSpec{
-	HCLKey:      "funnel_definition",
-	JSONType:    "funnel",
-	Description: "The definition for a Funnel widget.",
+	HCLKey:           "funnel_definition",
+	JSONType:         "funnel",
+	JSONMatchPath:    "requests.0.request_type",
+	JSONMatchValues:  []string{"funnel"},
+	JSONDefaultMatch: true,
+	Description:      "The definition for a Funnel widget.",
 	Fields: []FieldSpec{
 		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false,
 			MaxItems:    1,
 			Description: "A nested block describing the request to use when displaying the widget. Only one `request` block is allowed.",
 			Children:    funnelWidgetRequestFields},
+	},
+}
+
+// ProductAnalyticsFunnelWidgetSpec corresponds to OpenAPI
+// ProductAnalyticsFunnelWidgetDefinition. It shares JSON type "funnel" with the
+// legacy funnel widget and is selected on flatten by request_type.
+var ProductAnalyticsFunnelWidgetSpec = WidgetSpec{
+	HCLKey:          "product_analytics_funnel_definition",
+	JSONType:        "funnel",
+	JSONMatchPath:   "requests.0.request_type",
+	JSONMatchValues: []string{"user_journey_funnel"},
+	Description:     "The definition for a Product Analytics user journey funnel widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+			Description: "User journey funnel requests.",
+			Children:    productAnalyticsFunnelRequestFields},
+		{HCLKey: "grouped_display", Type: TypeString, OmitEmpty: true,
+			Description: "Display mode for grouped funnel results.",
+			ValidValues: []string{"stacked", "side_by_side"}},
+	},
+}
+
+// CohortWidgetSpec corresponds to OpenAPI CohortWidgetDefinition.
+var CohortWidgetSpec = WidgetSpec{
+	HCLKey:      "cohort_definition",
+	JSONType:    "cohort",
+	Description: "The definition for a Cohort retention-grid widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+			Description: "Cohort retention-grid requests.",
+			Children:    retentionGridRequestFields},
+	},
+}
+
+// RetentionCurveWidgetSpec corresponds to OpenAPI RetentionCurveWidgetDefinition.
+var RetentionCurveWidgetSpec = WidgetSpec{
+	HCLKey:      "retention_curve_definition",
+	JSONType:    "retention_curve",
+	Description: "The definition for a Retention Curve widget.",
+	Fields: []FieldSpec{
+		{HCLKey: "request", JSONKey: "requests", Type: TypeBlockList, OmitEmpty: false, Required: true, MinItems: 1,
+			Description: "Retention curve requests.",
+			Children:    retentionCurveWidgetRequestFields},
 	},
 }
 

@@ -182,6 +182,69 @@ type WidgetSpec struct {
 	// Fields are the widget-specific fields.
 	// CommonWidgetFields are automatically merged in by the engine.
 	Fields []FieldSpec
+
+	// JSONMatchPath and JSONMatchValues disambiguate widget schemas that share
+	// the same JSON type. The path supports object keys and array indexes, for
+	// example `requests.0.request_type` for the two funnel definitions.
+	JSONMatchPath   string
+	JSONMatchValues []string
+
+	// JSONDefaultMatch marks the fallback schema when the JSON type matches but
+	// the discriminator path is absent or contains an unknown value.
+	JSONDefaultMatch bool
+}
+
+// getAtInterfacePath reads a dotted path through JSON objects and arrays.
+func getAtInterfacePath(value interface{}, path string) interface{} {
+	if path == "" {
+		return value
+	}
+	parts := strings.Split(path, ".")
+	current := value
+	for _, part := range parts {
+		switch typed := current.(type) {
+		case map[string]interface{}:
+			current = typed[part]
+		case []interface{}:
+			index, err := strconv.Atoi(part)
+			if err != nil || index < 0 || index >= len(typed) {
+				return nil
+			}
+			current = typed[index]
+		default:
+			return nil
+		}
+	}
+	return current
+}
+
+// findWidgetSpecForJSON selects the schema for a widget definition, including
+// discriminator-aware selection when multiple HCL definitions share a JSON type.
+func findWidgetSpecForJSON(def map[string]interface{}) *WidgetSpec {
+	widgetType, _ := def["type"].(string)
+	var fallback *WidgetSpec
+	for i := range allWidgetSpecs {
+		spec := &allWidgetSpecs[i]
+		if spec.JSONType != widgetType {
+			continue
+		}
+		if spec.JSONMatchPath == "" {
+			if fallback == nil || spec.JSONDefaultMatch {
+				fallback = spec
+			}
+			continue
+		}
+		matchValue, _ := getAtInterfacePath(def, spec.JSONMatchPath).(string)
+		for _, expected := range spec.JSONMatchValues {
+			if matchValue == expected {
+				return spec
+			}
+		}
+		if spec.JSONDefaultMatch {
+			fallback = spec
+		}
+	}
+	return fallback
 }
 
 // ============================================================
@@ -686,12 +749,9 @@ func flattenWidgetEngineJSON(widgetData map[string]interface{}) (map[string]inte
 	if !ok {
 		return nil, nil
 	}
-	widgetType, _ := def["type"].(string)
 
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType != widgetType {
-			continue
-		}
+	if matchedSpec := findWidgetSpecForJSON(def); matchedSpec != nil {
+		spec := *matchedSpec
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
@@ -1285,11 +1345,8 @@ func flattenSplitConfigStaticSplitsJSON(staticSplits []interface{}) []interface{
 // flattenSplitGraphSourceWidgetJSON flattens the source_widget_definition JSON
 // for a split_graph widget response. Returns dropped paths from the inner widget.
 func flattenSplitGraphSourceWidgetJSON(srcDef map[string]interface{}) (map[string]interface{}, []string) {
-	widgetType, _ := srcDef["type"].(string)
-	for _, spec := range allWidgetSpecs {
-		if spec.JSONType != widgetType {
-			continue
-		}
+	if matchedSpec := findWidgetSpecForJSON(srcDef); matchedSpec != nil {
+		spec := *matchedSpec
 		allFields := make([]FieldSpec, 0, len(CommonWidgetFields)+len(spec.Fields))
 		allFields = append(allFields, CommonWidgetFields...)
 		allFields = append(allFields, spec.Fields...)
@@ -2399,7 +2456,7 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 	}
 
 	// ---- Funnel request_type injection ----
-	if spec.JSONType == "funnel" {
+	if spec.HCLKey == "funnel_definition" {
 		if requests, ok := defJSON["requests"].([]interface{}); ok {
 			for _, req := range requests {
 				if reqMap, ok := req.(map[string]interface{}); ok {
