@@ -421,6 +421,38 @@ var formulaAndFunctionApmResourceStatsQueryFields = []FieldSpec{
 		Description: "Array of fields to group results by."},
 }
 
+// formulaAndFunctionApmMetricsQueryFields corresponds to OpenAPI
+// FormulaAndFunctionApmMetricsQueryDefinition.
+var formulaAndFunctionApmMetricsQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The data source for APM metrics queries.",
+		ValidValues: []string{"apm_metrics"}},
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Name of this query to use in formulas."},
+	{HCLKey: "stat", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "APM metric stat name.",
+		ValidValues: []string{"errors", "error_rate", "errors_per_second", "latency_avg", "latency_max", "latency_p50", "latency_p75", "latency_p90", "latency_p95", "latency_p99", "latency_p999", "latency_distribution", "hits", "hits_per_second", "total_time", "apdex"}},
+	{HCLKey: "service", Type: TypeString, OmitEmpty: true,
+		Description: "APM service name."},
+	{HCLKey: "peer_tags", Type: TypeStringList, OmitEmpty: true,
+		Description: "Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`."},
+	{HCLKey: "resource_hash", Type: TypeString, OmitEmpty: true,
+		Description: "The hash of a specific resource to filter by."},
+	{HCLKey: "resource_name", Type: TypeString, OmitEmpty: true,
+		Description: "The full name of a specific resource to filter by."},
+	{HCLKey: "operation_name", Type: TypeString, OmitEmpty: true,
+		Description: "Name of the operation on the service. If omitted, the primary operation name is used."},
+	{HCLKey: "operation_mode", Type: TypeString, OmitEmpty: true,
+		Description: "Optional operation mode used to aggregate across operation names."},
+	{HCLKey: "query_filter", Type: TypeString, OmitEmpty: true,
+		Description: "Additional filters for the query using metrics query syntax."},
+	{HCLKey: "group_by", Type: TypeStringList, OmitEmpty: true,
+		Description: "Optional fields to group the query results by."},
+	{HCLKey: "span_kind", Type: TypeString, OmitEmpty: true,
+		Description: "The relationship between the span, its parents, and its children in a trace.",
+		ValidValues: []string{"consumer", "server", "client", "producer", "internal"}},
+}
+
 // formulaAndFunctionSLOQueryFields corresponds to OpenAPI
 // FormulaAndFunctionSLOQueryDefinition.
 var formulaAndFunctionSLOQueryFields = []FieldSpec{
@@ -482,6 +514,9 @@ var formulaAndFunctionQueryFields = []FieldSpec{
 	{HCLKey: "apm_resource_stats_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The APM Resource Stats query using formulas and functions.",
 		Children:    formulaAndFunctionApmResourceStatsQueryFields},
+	{HCLKey: "apm_metrics_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "The APM metrics query using formulas and functions.",
+		Children:    formulaAndFunctionApmMetricsQueryFields},
 	{HCLKey: "slo_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The SLO query using formulas and functions.",
 		Children:    formulaAndFunctionSLOQueryFields},
