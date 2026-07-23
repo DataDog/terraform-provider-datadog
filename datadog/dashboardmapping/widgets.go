@@ -1506,6 +1506,9 @@ var FunnelWidgetSpec = WidgetSpec{
 			MaxItems:    1,
 			Description: "A nested block describing the request to use when displaying the widget. Only one `request` block is allowed.",
 			Children:    funnelWidgetRequestFields},
+		{HCLKey: "grouped_display", Type: TypeString, OmitEmpty: true,
+			Description: "Display mode for grouped funnel results.",
+			ValidValues: []string{"stacked", "side_by_side"}},
 	},
 }
 
