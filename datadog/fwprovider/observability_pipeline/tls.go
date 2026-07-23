@@ -54,6 +54,93 @@ func FlattenTls(src *datadogV2.ObservabilityPipelineTls) []TlsModel {
 	return []TlsModel{out}
 }
 
+// ClientTlsModel represents TLS configuration for outgoing (client) connections, with SNI override support
+type ClientTlsModel struct {
+	CrtFile    types.String `tfsdk:"crt_file"`
+	CaFile     types.String `tfsdk:"ca_file"`
+	KeyFile    types.String `tfsdk:"key_file"`
+	KeyPassKey types.String `tfsdk:"key_pass_key"`
+	ServerName types.String `tfsdk:"server_name"`
+}
+
+// ExpandClientTls converts the Terraform client TLS model to the Datadog API model
+func ExpandClientTls(tlsTF []ClientTlsModel) *datadogV2.ObservabilityPipelineClientTls {
+	if len(tlsTF) == 0 {
+		return nil
+	}
+
+	tlsItem := tlsTF[0]
+	tls := &datadogV2.ObservabilityPipelineClientTls{
+		CrtFile: tlsItem.CrtFile.ValueString(),
+	}
+	if !tlsItem.CaFile.IsNull() {
+		tls.SetCaFile(tlsItem.CaFile.ValueString())
+	}
+	if !tlsItem.KeyFile.IsNull() {
+		tls.SetKeyFile(tlsItem.KeyFile.ValueString())
+	}
+	if !tlsItem.KeyPassKey.IsNull() {
+		tls.SetKeyPassKey(tlsItem.KeyPassKey.ValueString())
+	}
+	if !tlsItem.ServerName.IsNull() {
+		tls.SetServerName(tlsItem.ServerName.ValueString())
+	}
+	return tls
+}
+
+// FlattenClientTls converts the Datadog API client TLS model to the Terraform model
+func FlattenClientTls(src *datadogV2.ObservabilityPipelineClientTls) []ClientTlsModel {
+	if src == nil {
+		return []ClientTlsModel{}
+	}
+	out := ClientTlsModel{
+		CrtFile: types.StringValue(src.CrtFile),
+		CaFile:  types.StringPointerValue(src.CaFile),
+		KeyFile: types.StringPointerValue(src.KeyFile),
+	}
+	if v, ok := src.GetKeyPassKeyOk(); ok {
+		out.KeyPassKey = types.StringValue(*v)
+	}
+	if v, ok := src.GetServerNameOk(); ok {
+		out.ServerName = types.StringValue(*v)
+	}
+	return []ClientTlsModel{out}
+}
+
+// ClientTlsSchema returns the schema for outgoing (client) TLS configuration, with SNI override support
+func ClientTlsSchema() schema.ListNestedBlock {
+	return schema.ListNestedBlock{
+		Description: "Configuration for enabling TLS encryption between the pipeline component and external services, with support for overriding the server name used for the TLS handshake.",
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"crt_file": schema.StringAttribute{
+					Required:    true,
+					Description: "Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.",
+				},
+				"ca_file": schema.StringAttribute{
+					Optional:    true,
+					Description: "Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.",
+				},
+				"key_file": schema.StringAttribute{
+					Optional:    true,
+					Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
+				},
+				"key_pass_key": schema.StringAttribute{
+					Optional:    true,
+					Description: "Name of the environment variable or secret that holds the passphrase for the private key file.",
+				},
+				"server_name": schema.StringAttribute{
+					Optional:    true,
+					Description: "Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.",
+				},
+			},
+		},
+		Validators: []validator.List{
+			listvalidator.SizeAtMost(1),
+		},
+	}
+}
+
 // MtlsServerTlsModel represents mTLS server TLS configuration for sources
 type MtlsServerTlsModel struct {
 	CrtFile           types.String `tfsdk:"crt_file"`
