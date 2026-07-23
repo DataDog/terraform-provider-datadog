@@ -1,0 +1,51 @@
+{
+  "run_id": "76327fe3-cb57-4572-81d8-b331591a2464",
+  "generator_version": "dev",
+  "spec_hash": "21a4438dafbe9c6e3f9f6fa086b3fb51bb5abb4e44c9c0b738d63cae786eae73",
+  "started_at": "2026-07-20T17:17:36.108656426Z",
+  "finished_at": "2026-07-20T17:17:36.122506563Z",
+  "artifacts": [
+    {
+      "name": "datastores",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/fwprovider/data_source_datadog_datastores.go",
+      "diagnostics": [
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.created_at\": server-managed audit field"
+        },
+        {
+          "severity": "info",
+          "message": "dropped \"response.data[].attributes.modified_at\": server-managed audit field"
+        },
+        {
+          "severity": "warning",
+          "message": "generated example for \"datastores\" may be incomplete: all inputs are optional and none is a renderable scalar; a usable filter must be added by hand"
+        }
+      ]
+    },
+    {
+      "name": "datastores",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/tests/data_source_datadog_datastores_test.go"
+    },
+    {
+      "name": "datastores",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../examples/data-sources/datadog_datastores/data-source.tf"
+    }
+  ],
+  "summary": {
+    "created": 3,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 0,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
