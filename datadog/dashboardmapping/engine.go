@@ -491,6 +491,9 @@ type FormulaRequestConfig struct {
 	ExtraFields []FieldSpec
 	// IncludeSort: when true, build/flatten the sort block (toplist, geomap, etc.).
 	IncludeSort bool
+	// AllowResponseFormatOverride reads response_format from HCL when present,
+	// falling back to ResponseFormat when omitted.
+	AllowResponseFormatOverride bool
 }
 
 // Per-widget FormulaRequestConfig declarations.
@@ -559,6 +562,14 @@ var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ExtraFields:    queryTableRequestExtraFields,
 }
 
+var geomapFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat:              "scalar",
+	StyleFields:                 geomapWidgetRequestStyleFields,
+	ExtraFields:                 geomapRequestExtraFields,
+	IncludeSort:                 true,
+	AllowResponseFormatOverride: true,
+}
+
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
 func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 	switch jsonType {
@@ -570,6 +581,8 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return changeFormulaRequestConfig
 	case "query_value", "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
+	case "geomap":
+		return geomapFormulaRequestConfig
 	default:
 		return scalarFormulaRequestConfig
 	}
@@ -1950,7 +1963,13 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 
 	// response_format
 	if len(formulaList) > 0 || len(queryList) > 0 {
-		result["response_format"] = cfg.ResponseFormat
+		responseFormat := cfg.ResponseFormat
+		if cfg.AllowResponseFormatOverride {
+			if configured := getStringFromMap(reqMap, "response_format"); configured != "" {
+				responseFormat = configured
+			}
+		}
+		result["response_format"] = responseFormat
 	}
 
 	return result
