@@ -1820,6 +1820,23 @@ var productAnalyticsAudienceFiltersFields = []FieldSpec{
 		Description: "An optional filter condition applied to the audience subquery."},
 }
 
+// productAnalyticsAudienceOccurrenceFilterFields corresponds to OpenAPI
+// ProductAnalyticsAudienceOccurrenceFilter.
+var productAnalyticsAudienceOccurrenceFilterFields = []FieldSpec{
+	{HCLKey: "operator", Type: TypeString, OmitEmpty: true,
+		Description: "The comparison operator used for the occurrence filter."},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: true,
+		Description: "The threshold value to compare occurrence counts against."},
+}
+
+// sankeyJoinKeysFields corresponds to OpenAPI SankeyJoinKeys.
+var sankeyJoinKeysFields = []FieldSpec{
+	{HCLKey: "primary", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Primary join key."},
+	{HCLKey: "secondary", Type: TypeStringList, OmitEmpty: true,
+		Description: "Secondary join keys."},
+}
+
 // sankeyRumQueryFields corresponds to OpenAPI SankeyRumQuery.
 var sankeyRumQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
@@ -1840,6 +1857,15 @@ var sankeyRumQueryFields = []FieldSpec{
 		Description: "Number of steps."},
 	{HCLKey: "subquery_id", Type: TypeString, OmitEmpty: true,
 		Description: "Subquery ID."},
+	{HCLKey: "audience_filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Product Analytics and RUM audience filters.",
+		Children:    productAnalyticsAudienceFiltersFields},
+	{HCLKey: "occurrences", Type: TypeBlock, OmitEmpty: true,
+		Description: "Filter applied to occurrence counts when building a Product Analytics audience.",
+		Children:    productAnalyticsAudienceOccurrenceFilterFields},
+	{HCLKey: "join_keys", Type: TypeBlock, OmitEmpty: true,
+		Description: "Join keys for the Sankey query.",
+		Children:    sankeyJoinKeysFields},
 }
 
 // sankeyNetworkQueryComputeFields corresponds to OpenAPI SankeyNetworkQueryCompute.
