@@ -134,6 +134,7 @@ jobs:
 
           PLAN_PATH="$RUNNER_TEMP/tfgen-split-plan.json"
           SPLIT_DIR="$RUNNER_TEMP/tfgen-split"
+          OAPI_REPOSITORY="DataDog/datadog-api-spec"
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -147,6 +148,44 @@ jobs:
             exit 1
           fi
 
+          if [[ "$GITHUB_REF_NAME" =~ ^datadog-api-spec/generated/([0-9]+)$ ]]; then
+            oapi_pr_number="${BASH_REMATCH[1]}"
+          else
+            echo "::error::Could not derive an OpenAPI PR number from '$GITHUB_REF_NAME'"
+            exit 1
+          fi
+
+          oapi_pr_url="https://github.com/$OAPI_REPOSITORY/pull/$oapi_pr_number"
+
+          aggregate_pr_json="[]"
+          for attempt in 1 2 3 4 5 6; do
+            if ! aggregate_pr_json="$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --base "$BASE_BRANCH" \
+              --head "$GITHUB_REF_NAME" \
+              --limit 2 \
+              --json number,url 2>&1)"; then
+              echo "::error::Could not look up the aggregate PR: $aggregate_pr_json"
+              exit 1
+            fi
+            aggregate_pr_count="$(jq 'length' <<<"$aggregate_pr_json")"
+            if [[ "$aggregate_pr_count" -eq 1 ]]; then
+              break
+            fi
+            if [[ "$aggregate_pr_count" -gt 1 ]]; then
+              echo "::error::Found multiple open aggregate PRs for '$GITHUB_REF_NAME'"
+              exit 1
+            fi
+            sleep 10
+          done
+          if [[ "$(jq 'length' <<<"$aggregate_pr_json")" -ne 1 ]]; then
+            echo "::error::No open aggregate PR found for '$GITHUB_REF_NAME'"
+            exit 1
+          fi
+          aggregate_pr_number="$(jq -r '.[0].number' <<<"$aggregate_pr_json")"
+          aggregate_pr_url="$(jq -r '.[0].url' <<<"$aggregate_pr_json")"
+
           {
             echo
             echo "## Per-artifact fan-out"
@@ -158,6 +197,8 @@ jobs:
           created_count=0
           updated_count=0
           retired_count=0
+          child_pr_entries=()
+          failure_entries=()
 
           reset_to_base() {
             git reset --hard >/dev/null 2>&1 || true
@@ -165,13 +206,71 @@ jobs:
             git checkout --detach "origin/$BASE_BRANCH" >/dev/null 2>&1 || true
           }
 
+          find_comment_id() {
+            local pr_number="$1"
+            local marker="$2"
+            gh api "repos/$GITHUB_REPOSITORY/issues/$pr_number/comments?per_page=100" \
+              | jq -r --arg marker "$marker" \
+                '[.[] | select(.body | contains($marker))][0].id // empty'
+          }
+
+          upsert_pr_comment() {
+            local pr_number="$1"
+            local marker="$2"
+            local body_file="$3"
+            local comment_id
+            if ! comment_id="$(find_comment_id "$pr_number" "$marker")"; then
+              return 1
+            fi
+            if [[ -n "$comment_id" ]]; then
+              gh api \
+                --method PATCH \
+                "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" \
+                --raw-field body="$(<"$body_file")" >/dev/null
+            else
+              gh pr comment "$pr_number" --body-file "$body_file" >/dev/null
+            fi
+          }
+
           record_failure() {
             local name="$1"
             local message="$2"
             echo "::error title=tfgen fan-out failed::$name: $message"
             echo "- Failed \`$name\`: $message" >> "$GITHUB_STEP_SUMMARY"
+            failure_entries+=("- \`$name\`: $message")
             failures=$((failures + 1))
             reset_to_base
+          }
+
+          record_success() {
+            local name="$1"
+            local status="$2"
+            local pr_url="$3"
+            echo "- Created or reused draft PR for \`$name\`: $pr_url" >> "$GITHUB_STEP_SUMMARY"
+            child_pr_entries+=("- \`datadog_$name\` ($status): $pr_url")
+            successes=$((successes + 1))
+            case "$status" in
+              created) created_count=$((created_count + 1)) ;;
+              updated) updated_count=$((updated_count + 1)) ;;
+              retired) retired_count=$((retired_count + 1)) ;;
+            esac
+          }
+
+          post_source_comment() {
+            local pr_number="$1"
+            local comment_file
+            comment_file="$(mktemp)"
+            {
+              echo "<!-- tfgen-oapi-source -->"
+              echo "### OpenAPI source"
+              echo
+              echo "Generated from [$OAPI_REPOSITORY#$oapi_pr_number]($oapi_pr_url)."
+            } > "$comment_file"
+            if ! upsert_pr_comment "$pr_number" "<!-- tfgen-oapi-source -->" "$comment_file"; then
+              rm -f "$comment_file"
+              return 1
+            fi
+            rm -f "$comment_file"
           }
 
           reset_to_base
@@ -194,6 +293,39 @@ jobs:
                 continue
                 ;;
             esac
+
+            source_body_marker="<!-- tfgen-source oapi_pr=$oapi_pr_number artifact=$name -->"
+            if ! existing_pr_json="$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --base "$BASE_BRANCH" \
+              --head "$branch" \
+              --limit 2 \
+              --json number,url,body 2>&1)"; then
+              record_failure "$name" "could not look up an existing child PR: $existing_pr_json"
+              continue
+            fi
+            existing_pr_count="$(jq 'length' <<<"$existing_pr_json")"
+            if [[ "$existing_pr_count" -gt 1 ]]; then
+              record_failure "$name" "multiple open PRs already use branch '$branch'"
+              continue
+            fi
+            if [[ "$existing_pr_count" -eq 1 ]]; then
+              if ! jq -e --arg marker "$source_body_marker" \
+                '.[0].body | contains($marker)' <<<"$existing_pr_json" >/dev/null; then
+                record_failure "$name" "branch '$branch' belongs to a different OpenAPI PR or artifact"
+                continue
+              fi
+              pr_url="$(jq -r '.[0].url' <<<"$existing_pr_json")"
+              pr_number="$(jq -r '.[0].number' <<<"$existing_pr_json")"
+              if ! post_source_comment "$pr_number"; then
+                record_failure "$name" "could not add the OpenAPI source comment to $pr_url"
+                continue
+              fi
+              record_success "$name" "$status" "$pr_url"
+              reset_to_base
+              continue
+            fi
 
             if ! remote_ref="$(git ls-remote --heads origin "refs/heads/$branch")"; then
               record_failure "$name" "could not check whether branch '$branch' exists"
@@ -323,7 +455,7 @@ jobs:
               if [[ -z "${allowed[$changed_path]+allowed}" ]]; then
                 unexpected+=("$changed_path")
               fi
-            done < <(git status --porcelain)
+            done < <(git status --porcelain --untracked-files=all)
             if [[ "${#unexpected[@]}" -gt 0 ]]; then
               record_failure "$name" "unexpected changed files: ${unexpected[*]}"
               continue
@@ -462,7 +594,9 @@ jobs:
               } > "$body_file"
             fi
 
-            if ! pr_url="$(gh pr create \
+            printf '\n%s\n' "$source_body_marker" >> "$body_file"
+
+            if ! create_output="$(gh pr create \
               --draft \
               --base "$BASE_BRANCH" \
               --head "$branch" \
@@ -470,18 +604,25 @@ jobs:
               --body-file "$body_file" \
               --label "changelog/feature" 2>&1)"; then
               rm -f "$body_file"
-              record_failure "$name" "draft PR creation failed: $pr_url"
+              record_failure "$name" "draft PR creation failed: $create_output"
               continue
             fi
             rm -f "$body_file"
 
-            echo "- Created draft PR for \`$name\`: $pr_url" >> "$GITHUB_STEP_SUMMARY"
-            successes=$((successes + 1))
-            case "$status" in
-              created) created_count=$((created_count + 1)) ;;
-              updated) updated_count=$((updated_count + 1)) ;;
-              retired) retired_count=$((retired_count + 1)) ;;
-            esac
+            if ! created_pr_json="$(gh pr view "$branch" \
+              --repo "$GITHUB_REPOSITORY" \
+              --json number,url 2>&1)"; then
+              record_failure "$name" "draft PR was created but could not be read: $created_pr_json"
+              continue
+            fi
+            pr_url="$(jq -r '.url' <<<"$created_pr_json")"
+            pr_number="$(jq -r '.number' <<<"$created_pr_json")"
+            if ! post_source_comment "$pr_number"; then
+              record_failure "$name" "could not add the OpenAPI source comment to $pr_url"
+              continue
+            fi
+
+            record_success "$name" "$status" "$pr_url"
             reset_to_base
           done
 
@@ -507,11 +648,30 @@ jobs:
               echo "Workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             } > "$issue_body"
             issue_title="Retire blocked generated data sources (${GITHUB_SHA:0:7})"
-            if issue_url="$(gh issue create --title "$issue_title" --body-file "$issue_body" 2>&1)"; then
+            if ! existing_issue_json="$(gh issue list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state all \
+              --limit 100 \
+              --json title,url \
+              --jq "[.[] | select(.title == \"$issue_title\")]" 2>&1)"; then
+              echo "::error title=tfgen blocked-retirement lookup failed::$existing_issue_json"
+              echo "- Failed to look up an existing blocked-retirement issue: $existing_issue_json" >> "$GITHUB_STEP_SUMMARY"
+              failure_entries+=("- Blocked retirement tracking issue lookup failed.")
+              failures=$((failures + 1))
+            elif [[ "$(jq 'length' <<<"$existing_issue_json")" -gt 1 ]]; then
+              echo "::error title=tfgen blocked-retirement lookup failed::multiple issues have title '$issue_title'"
+              echo "- Multiple blocked-retirement issues have title \`$issue_title\`." >> "$GITHUB_STEP_SUMMARY"
+              failure_entries+=("- Multiple blocked-retirement issues matched \`$issue_title\`.")
+              failures=$((failures + 1))
+            elif [[ "$(jq 'length' <<<"$existing_issue_json")" -eq 1 ]]; then
+              issue_url="$(jq -r '.[0].url' <<<"$existing_issue_json")"
+              echo "- Reused retirement tracking issue: $issue_url" >> "$GITHUB_STEP_SUMMARY"
+            elif issue_url="$(gh issue create --title "$issue_title" --body-file "$issue_body" 2>&1)"; then
               echo "- Created retirement tracking issue: $issue_url" >> "$GITHUB_STEP_SUMMARY"
             else
               echo "::error title=tfgen blocked-retirement issue failed::$issue_url"
               echo "- Failed to create the blocked-retirement tracking issue: $issue_url" >> "$GITHUB_STEP_SUMMARY"
+              failure_entries+=("- Blocked retirement tracking issue creation failed.")
               failures=$((failures + 1))
             fi
             rm -f "$issue_body"
@@ -522,6 +682,64 @@ jobs:
             echo "Created $successes draft PR(s): $created_count created, $updated_count updated, $retired_count retired."
             echo "Reported $blocked_count blocked retirement(s); $failures operation(s) failed."
           } >> "$GITHUB_STEP_SUMMARY"
+
+          aggregate_comment_file="$(mktemp)"
+          {
+            echo "<!-- tfgen-split-summary -->"
+            if [[ "$failures" -eq 0 ]]; then
+              echo "## tfgen split completed"
+              echo
+              echo "Every generated artifact was routed successfully. Work continues in the child PRs below, so this aggregate transport PR will be closed."
+            else
+              echo "## tfgen split incomplete"
+              echo
+              echo "The aggregate PR remains open because one or more fan-out operations failed."
+            fi
+            echo
+            echo "### OpenAPI source"
+            echo "- [$OAPI_REPOSITORY#$oapi_pr_number]($oapi_pr_url)"
+            echo
+            echo "### Child PRs"
+            if [[ "${#child_pr_entries[@]}" -gt 0 ]]; then
+              printf '%s\n' "${child_pr_entries[@]}"
+            else
+              echo "- None."
+            fi
+            if [[ -n "$issue_url" ]]; then
+              echo
+              echo "### Blocked retirements"
+              echo "- Tracking issue: $issue_url"
+            fi
+            if [[ "${#failure_entries[@]}" -gt 0 ]]; then
+              echo
+              echo "### Failures"
+              printf '%s\n' "${failure_entries[@]}"
+            fi
+            echo
+            echo "Pipeline run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > "$aggregate_comment_file"
+
+          if ! upsert_pr_comment \
+            "$aggregate_pr_number" \
+            "<!-- tfgen-split-summary -->" \
+            "$aggregate_comment_file"; then
+            echo "::error::Could not update aggregate PR #$aggregate_pr_number"
+            echo "- Failed to update aggregate PR $aggregate_pr_url." >> "$GITHUB_STEP_SUMMARY"
+            failures=$((failures + 1))
+          fi
+          rm -f "$aggregate_comment_file"
+
+          if [[ "$failures" -eq 0 ]]; then
+            if close_output="$(gh pr close \
+              "$aggregate_pr_number" \
+              --repo "$GITHUB_REPOSITORY" 2>&1)"; then
+              echo "- Closed aggregate PR: $aggregate_pr_url" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::error::Could not close aggregate PR #$aggregate_pr_number: $close_output"
+              echo "- Failed to close aggregate PR $aggregate_pr_url." >> "$GITHUB_STEP_SUMMARY"
+              failures=$((failures + 1))
+            fi
+          fi
 
           if [[ "$failures" -gt 0 ]]; then
             exit 1
