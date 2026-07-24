@@ -31,7 +31,7 @@ jobs:
       code: ${{ steps.filter.outputs.code }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Detect non-changelog changes
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     if: (github.event.action != 'closed' && github.event.pull_request.merged != true) || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236
         with:
           python-version: '3.11'
@@ -80,7 +80,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - name: Checkout code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Install Go
@@ -117,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install Go
         uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
         with:
@@ -144,7 +144,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Install Go
@@ -186,7 +186,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Install Go
