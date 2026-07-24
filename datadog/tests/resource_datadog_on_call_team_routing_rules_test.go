@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -111,4 +112,64 @@ func testAccCheckDatadogOnCallTeamRoutingRulesDestroy(accProvider *fwprovider.Fr
 			return nil
 		})
 	}
+}
+
+func TestAccOnCallTeamRoutingRulesCatchAllValidation(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "catch_all_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    query             = "tags.service:test"
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				  }
+				}`,
+				ExpectError: regexp.MustCompile("invalid query on last rule"),
+			},
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "catch_all_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				    time_restrictions {
+				      time_zone = "America/New_York"
+				      restriction {
+				        end_day    = "monday"
+				        end_time   = "17:00:00"
+				        start_day  = "monday"
+				        start_time = "09:00:00"
+				      }
+				    }
+				  }
+				}`,
+				ExpectError: regexp.MustCompile("invalid time_restrictions on last rule"),
+			},
+			{
+				Config: `
+				resource "datadog_on_call_team_routing_rules" "catch_all_validation" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    query             = "tags.service:test"
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				  }
+				  rule {
+				    action {
+				      send_slack_message {
+				        workspace = "workspace"
+				        channel   = "channel"
+				      }
+				    }
+				  }
+				}`,
+				ExpectError: regexp.MustCompile("missing escalation policy on last rule"),
+			},
+		},
+	})
 }
