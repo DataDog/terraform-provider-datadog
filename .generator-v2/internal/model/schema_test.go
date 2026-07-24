@@ -20,6 +20,9 @@ func objSchema(props map[string]*Schema) *Schema {
 }
 func arrSchema(item *Schema) *Schema { return &Schema{Kind: SchemaKindArray, Items: item} }
 func mapSchema(val *Schema) *Schema  { return &Schema{Kind: SchemaKindMap, Items: val} }
+func oneOfSchema(variants ...*Schema) *Schema {
+	return &Schema{Kind: SchemaKindVariant, Variants: variants}
+}
 
 // richSchema is a response schema exercising one of every shape, including the
 // block→attribute switch (cfg is a map<object{settings:object}>). A fresh tree
@@ -431,38 +434,73 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 	})
 })
 
-var _ = Describe("BuildResponseTree drops oneOf variants", func() {
+var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 
-	It("omits a oneOf property and records an info diagnostic", func() {
-		tree, diags, err := BuildResponseTree(objSchema(map[string]*Schema{
-			"name":     primSchema("string"),
-			"included": {Kind: SchemaKindVariant},
-		}))
+	assertRetained := func(schema *Schema, path string) {
+		GinkgoHelper()
+
+		tree, diags, err := BuildResponseTree(schema)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(tree.Attributes).To(HaveLen(1))
-		Expect(tree.Attributes[0].Path).To(Equal("response.name"))
-		Expect(diags).To(HaveLen(1))
-		Expect(diags[0].Severity).To(Equal(SeverityInfo))
-		Expect(diags[0].Message).To(ContainSubstring(`dropped "response.included"`))
+		Expect(attrByPath(tree, path)).NotTo(BeNil())
+		for _, diag := range diags {
+			Expect(diag.Message).NotTo(
+				ContainSubstring("dropped"),
+				"oneOf at %q must not be silently dropped", path,
+			)
+		}
+	}
+
+	It("retains a root oneOf as an envelope at the response root", func() {
+		assertRetained(
+			oneOfSchema(primSchema("boolean"), primSchema("string")),
+			"response",
+		)
 	})
 
-	It("drops the whole array attribute when its element is a oneOf variant", func() {
-		tree, diags, err := BuildResponseTree(objSchema(map[string]*Schema{
-			"name":     primSchema("string"),
-			"included": arrSchema(&Schema{Kind: SchemaKindVariant}),
-		}))
-		Expect(err).NotTo(HaveOccurred())
-		Expect(tree.Attributes).To(HaveLen(1))
-		Expect(tree.Attributes[0].Path).To(Equal("response.name"))
-		Expect(diags).To(HaveLen(1))
-		Expect(diags[0].Message).To(ContainSubstring("collection element is a oneOf variant"))
+	It("retains a oneOf object property as an envelope attribute", func() {
+		assertRetained(
+			objSchema(map[string]*Schema{
+				"choice": oneOfSchema(
+					primSchema("string"),
+					objSchema(map[string]*Schema{"name": primSchema("string")}),
+				),
+			}),
+			"response.choice",
+		)
 	})
 
-	It("fails when the schema root is itself a oneOf variant", func() {
-		tree, _, err := BuildResponseTree(&Schema{Kind: SchemaKindVariant})
-		Expect(tree).To(BeNil())
-		Expect(err).To(MatchError(ContainSubstring("dropped oneOf variant")))
+	It("retains a oneOf nested inside another object", func() {
+		assertRetained(
+			objSchema(map[string]*Schema{
+				"container": objSchema(map[string]*Schema{
+					"choice": oneOfSchema(
+						objSchema(map[string]*Schema{"enabled": primSchema("boolean")}),
+						objSchema(map[string]*Schema{"threshold": primSchema("number")}),
+					),
+				}),
+			}),
+			"response.container.choice",
+		)
 	})
+
+	DescribeTable("retains a collection whose element is a oneOf envelope",
+		func(collection *Schema, path string) {
+			assertRetained(
+				objSchema(map[string]*Schema{"choices": collection}),
+				path,
+			)
+		},
+		Entry(
+			"array element",
+			arrSchema(oneOfSchema(primSchema("boolean"), primSchema("string"))),
+			"response.choices",
+		),
+		Entry(
+			"map value",
+			mapSchema(oneOfSchema(primSchema("integer"), primSchema("string"))),
+			"response.choices",
+		),
+	)
 })
 
 // ---------------------------------------------------------------------------
