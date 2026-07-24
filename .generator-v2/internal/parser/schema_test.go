@@ -52,7 +52,7 @@ var _ = Describe("NormalizeSchemas kind classification", func() {
 		Entry("type:object with properties → object", "CreateObject", model.SchemaKindObject),
 		Entry("type:array with items → array", "CreateArray", model.SchemaKindArray),
 		Entry("additionalProperties without properties → map", "CreateMap", model.SchemaKindMap),
-		Entry("oneOf → variant", "CreateVariantOneOf", model.SchemaKindVariant),
+		Entry("oneOf → one_of", "CreateVariantOneOf", model.SchemaKindOneOf),
 		Entry("anyOf → unsupported", "CreateVariantAnyOf", model.SchemaKindUnsupported),
 	)
 
