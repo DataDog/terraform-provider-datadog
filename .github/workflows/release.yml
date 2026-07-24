@@ -53,7 +53,6 @@ jobs:
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: "1.23"
-          go-download-base-url: "https://depot-read-api-github-releases.us1.ddbuild.io/internal/mirror/github-releases/actions/go-versions/releases/download"
       - name: Import GPG key
         id: import_gpg
         uses: paultyng/ghaction-import-gpg@53deb67fe3b05af114ad9488a4da7b782455d588
