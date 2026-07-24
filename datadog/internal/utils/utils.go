@@ -176,16 +176,16 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 	}
 
 	if apiErr, ok := err.(CustomRequestAPIError); ok {
-		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+		return fmt.Errorf("%s: %w: %s", msg, err, apiErr.Body())
 	}
 	if apiErr, ok := err.(datadog.GenericOpenAPIError); ok {
-		return fmt.Errorf(msg+": %v: %s", err, apiErr.Body())
+		return fmt.Errorf("%s: %w: %s", msg, err, apiErr.Body())
 	}
 	if errURL, ok := err.(*url.Error); ok {
-		return fmt.Errorf(msg+" (url.Error): %s", errURL)
+		return fmt.Errorf("%s (url.Error): %w", msg, errURL)
 	}
 
-	return fmt.Errorf(msg+": %s", err.Error())
+	return fmt.Errorf("%s: %w", msg, err)
 }
 
 // CheckForUnparsed takes in a API response object and returns an error if it contains an unparsed element
