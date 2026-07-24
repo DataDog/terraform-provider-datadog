@@ -43,7 +43,10 @@ func TestListStreamOpenAPIParityRoundTrip(t *testing.T) {
 		t.Fatalf("list stream compute was not serialized: %#v", query)
 	}
 
-	flattened, _ := FlattenWidgetEngineJSON(built)
+	flattened, droppedPaths := FlattenWidgetEngineJSON(built)
+	if len(droppedPaths) != 0 {
+		t.Fatalf("list stream fields were dropped during flatten: %#v", droppedPaths)
+	}
 	flatDefinition := flattened["list_stream_definition"].([]interface{})[0].(map[string]interface{})
 	flatRequest := flatDefinition["request"].([]interface{})[0].(map[string]interface{})
 	flatQuery := flatRequest["query"].([]interface{})[0].(map[string]interface{})
