@@ -8831,13 +8831,32 @@ Required:
 
 Optional:
 
+- `assignee_uuids` (List of String) Assignee UUIDs to filter by. Usable only with `issue_stream`.
 - `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `compute` (Block List, Max: 5) Compute configuration for the List Stream widget. Compute can be used only with the `logs_transaction_stream` source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--compute))
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
-- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--group_by))
+- `group_by` (Block List, Max: 4) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--group_by))
 - `indexes` (List of String) List of indexes.
+- `persona` (String) Persona to filter by. Usable only with `issue_stream`. Valid values are `all`, `browser`, `mobile`, `backend`.
 - `query_string` (String) Widget query.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--sort))
+- `states` (List of String) Issue states to filter by. Usable only with `issue_stream`. Valid values are `OPEN`, `IGNORED`, `ACKNOWLEDGED`, `RESOLVED`.
 - `storage` (String) Storage location (private beta).
+- `suspected_causes` (List of String) Suspected causes to filter by. Usable only with `issue_stream`.
+- `team_handles` (List of String) Team handles to filter by. Usable only with `issue_stream`.
+- `version` (String) Version of the query for the logs transaction stream widget. When omitted, v1 query behavior is preserved. Set to `sequential_query` to use v2 behavior. This feature is in Preview. Valid values are `sequential_query`.
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
+
+Optional:
+
+- `facet` (String) Facet name.
+
 
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.query.group_by`
@@ -16190,13 +16209,32 @@ Required:
 
 Optional:
 
+- `assignee_uuids` (List of String) Assignee UUIDs to filter by. Usable only with `issue_stream`.
 - `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `compute` (Block List, Max: 5) Compute configuration for the List Stream widget. Compute can be used only with the `logs_transaction_stream` source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--compute))
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
-- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--group_by))
+- `group_by` (Block List, Max: 4) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--group_by))
 - `indexes` (List of String) List of indexes.
+- `persona` (String) Persona to filter by. Usable only with `issue_stream`. Valid values are `all`, `browser`, `mobile`, `backend`.
 - `query_string` (String) Widget query.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--sort))
+- `states` (List of String) Issue states to filter by. Usable only with `issue_stream`. Valid values are `OPEN`, `IGNORED`, `ACKNOWLEDGED`, `RESOLVED`.
 - `storage` (String) Storage location (private beta).
+- `suspected_causes` (List of String) Suspected causes to filter by. Usable only with `issue_stream`.
+- `team_handles` (List of String) Team handles to filter by. Usable only with `issue_stream`.
+- `version` (String) Version of the query for the logs transaction stream widget. When omitted, v1 query behavior is preserved. Set to `sequential_query` to use v2 behavior. This feature is in Preview. Valid values are `sequential_query`.
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.liststream_request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
+
+Optional:
+
+- `facet` (String) Facet name.
+
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--liststream_request--query--group_by"></a>
 ### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.liststream_request.query.group_by`
@@ -19752,13 +19790,32 @@ Required:
 
 Optional:
 
+- `assignee_uuids` (List of String) Assignee UUIDs to filter by. Usable only with `issue_stream`.
 - `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `compute` (Block List, Max: 5) Compute configuration for the List Stream widget. Compute can be used only with the `logs_transaction_stream` source. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--compute))
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
-- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--group_by))
+- `group_by` (Block List, Max: 4) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--group_by))
 - `indexes` (List of String) List of indexes.
+- `persona` (String) Persona to filter by. Usable only with `issue_stream`. Valid values are `all`, `browser`, `mobile`, `backend`.
 - `query_string` (String) Widget query.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--sort))
+- `states` (List of String) Issue states to filter by. Usable only with `issue_stream`. Valid values are `OPEN`, `IGNORED`, `ACKNOWLEDGED`, `RESOLVED`.
 - `storage` (String) Storage location (private beta).
+- `suspected_causes` (List of String) Suspected causes to filter by. Usable only with `issue_stream`.
+- `team_handles` (List of String) Team handles to filter by. Usable only with `issue_stream`.
+- `version` (String) Version of the query for the logs transaction stream widget. When omitted, v1 query behavior is preserved. Set to `sequential_query` to use v2 behavior. This feature is in Preview. Valid values are `sequential_query`.
+
+<a id="nestedblock--widget--list_stream_definition--request--query--compute"></a>
+### Nested Schema for `widget.list_stream_definition.request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
+
+Optional:
+
+- `facet` (String) Facet name.
+
 
 <a id="nestedblock--widget--list_stream_definition--request--query--group_by"></a>
 ### Nested Schema for `widget.list_stream_definition.request.query.group_by`
@@ -27111,13 +27168,32 @@ Required:
 
 Optional:
 
+- `assignee_uuids` (List of String) Assignee UUIDs to filter by. Usable only with `issue_stream`.
 - `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.
+- `compute` (Block List, Max: 5) Compute configuration for the List Stream widget. Compute can be used only with the `logs_transaction_stream` source. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--query--compute))
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
-- `group_by` (Block List) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--query--group_by))
+- `group_by` (Block List, Max: 4) Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--query--group_by))
 - `indexes` (List of String) List of indexes.
+- `persona` (String) Persona to filter by. Usable only with `issue_stream`. Valid values are `all`, `browser`, `mobile`, `backend`.
 - `query_string` (String) Widget query.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--liststream_request--query--sort))
+- `states` (List of String) Issue states to filter by. Usable only with `issue_stream`. Valid values are `OPEN`, `IGNORED`, `ACKNOWLEDGED`, `RESOLVED`.
 - `storage` (String) Storage location (private beta).
+- `suspected_causes` (List of String) Suspected causes to filter by. Usable only with `issue_stream`.
+- `team_handles` (List of String) Team handles to filter by. Usable only with `issue_stream`.
+- `version` (String) Version of the query for the logs transaction stream widget. When omitted, v1 query behavior is preserved. Set to `sequential_query` to use v2 behavior. This feature is in Preview. Valid values are `sequential_query`.
+
+<a id="nestedblock--widget--wildcard_definition--request--liststream_request--query--compute"></a>
+### Nested Schema for `widget.wildcard_definition.request.liststream_request.query.compute`
+
+Required:
+
+- `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
+
+Optional:
+
+- `facet` (String) Facet name.
+
 
 <a id="nestedblock--widget--wildcard_definition--request--liststream_request--query--group_by"></a>
 ### Nested Schema for `widget.wildcard_definition.request.liststream_request.query.group_by`
