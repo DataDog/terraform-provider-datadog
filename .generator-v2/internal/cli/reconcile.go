@@ -123,10 +123,11 @@ func removeDirIfEmpty(path string) error {
 
 // hasRecordedCassette reports whether a recorded cassette exists for any
 // acceptance-test function declared in the generated test file at testPath. A
-// cassette file uses its test function as a prefix (recorded variants append a
-// suffix), so a prefix match under cassettesDir signals adoption. A missing test
-// file or cassettes directory is no adoption signal. The matching cassette name
-// is returned for the diagnostic.
+// cassette file uses its test function as its basename (recorded variants append
+// an underscore suffix), so an exact basename or underscore-suffix match on a
+// regular .yaml/.freeze file signals adoption. A missing test file or cassettes
+// directory is no adoption signal. The matching cassette name is returned for
+// the diagnostic.
 func hasRecordedCassette(testPath, cassettesDir string) (bool, string) {
 	data, err := os.ReadFile(testPath)
 	if err != nil {
@@ -144,8 +145,16 @@ func hasRecordedCassette(testPath, cassettesDir string) (bool, string) {
 		return false, ""
 	}
 	for _, e := range entries {
+		if !e.Type().IsRegular() {
+			continue
+		}
+		ext := filepath.Ext(e.Name())
+		if ext != ".yaml" && ext != ".freeze" {
+			continue
+		}
+		base := strings.TrimSuffix(e.Name(), ext)
 		for _, fn := range funcs {
-			if strings.HasPrefix(e.Name(), fn) {
+			if base == fn || strings.HasPrefix(base, fn+"_") {
 				return true, e.Name()
 			}
 		}

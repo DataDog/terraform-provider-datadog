@@ -6,10 +6,8 @@ permissions:
 on:
   pull_request:
     paths:
-      - ".generator-v2/internal/**"
-      - ".generator-v2/cmd/tfgen/**"
-      - ".generator-v2/go.mod"
-      - ".generator-v2/go.sum"
+      - ".generator-v2/**"
+      - "GNUmakefile"
       - ".github/workflows/tfgen.yml"
 
 concurrency:
@@ -17,8 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-vet:
-    name: build and vet
+  build-vet-and-test:
+    name: build, vet, and test
     runs-on: ubuntu-latest
     if: github.event.action != 'closed' && github.event.pull_request.merged != true
     defaults:
@@ -40,3 +38,6 @@ jobs:
 
       - name: go vet
         run: go vet ./cmd/tfgen/...
+
+      - name: Test
+        run: make -C .. tfgen-test
