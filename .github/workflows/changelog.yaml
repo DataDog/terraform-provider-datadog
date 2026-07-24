@@ -26,7 +26,7 @@ jobs:
           exit 1;
       - name: Check PR title
         if: github.event.pull_request.draft == false && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/note') && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/no-changelog')
-        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
             const re = /^\[(?:datadog_\w+|generated)\] .+/;
