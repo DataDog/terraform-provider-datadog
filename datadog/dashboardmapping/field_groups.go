@@ -749,6 +749,47 @@ var timeseriesBackgroundFields = []FieldSpec{
 		Children:    widgetAxisFields},
 }
 
+// comparisonCustomTimeframeFields corresponds to OpenAPI ComparisonCustomTimeframe.
+var comparisonCustomTimeframeFields = []FieldSpec{
+	{HCLKey: "from", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Start time in milliseconds since epoch."},
+	{HCLKey: "to", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "End time in milliseconds since epoch."},
+}
+
+// comparisonDurationFields corresponds to OpenAPI ComparisonDuration.
+var comparisonDurationFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The comparison window type.",
+		ValidValues: []string{"previous_timeframe", "custom_timeframe", "previous_day", "previous_week", "previous_month"}},
+	{HCLKey: "custom_timeframe", Type: TypeBlock, OmitEmpty: true,
+		Description: "Fixed time range to compare against when `type` is `custom_timeframe`.",
+		Children:    comparisonCustomTimeframeFields},
+}
+
+// queryValueWidgetComparisonFields corresponds to OpenAPI QueryValueWidgetComparison.
+var queryValueWidgetComparisonFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Default: "absolute",
+		Description: "How the delta is expressed.",
+		ValidValues: []string{"absolute", "relative", "both"}},
+	{HCLKey: "directionality", Type: TypeString, OmitEmpty: false, Default: "neutral",
+		Description: "Which direction of change is considered an improvement.",
+		ValidValues: []string{"increase_better", "decrease_better", "neutral"}},
+	{HCLKey: "duration", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The comparison period.",
+		Children:    comparisonDurationFields},
+}
+
+// queryValueWidgetComparisonField is shared by schema generation and
+// formula-request post-processing.
+var queryValueWidgetComparisonField = FieldSpec{
+	HCLKey:      "comparison",
+	Type:        TypeBlock,
+	OmitEmpty:   true,
+	Description: "A change indicator that compares the current value to a historical period.",
+	Children:    queryValueWidgetComparisonFields,
+}
+
 // scatterplotXYRequestFields corresponds to OpenAPI ScatterPlotRequest.
 // Used by: scatterplot x and y sub-blocks.
 var scatterplotXYRequestFields = append([]FieldSpec{

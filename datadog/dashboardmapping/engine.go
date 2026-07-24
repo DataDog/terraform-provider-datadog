@@ -554,6 +554,16 @@ var scalarWithConditionalFormatsConfig = FormulaRequestConfig{
 	ExtraFields:    conditionalFormatsExtraFields,
 }
 
+var queryValueFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+	ExtraFields: append(
+		append([]FieldSpec{}, conditionalFormatsExtraFields...),
+		queryValueWidgetComparisonField,
+	),
+}
+
 var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
 	ExtraFields:    queryTableRequestExtraFields,
@@ -568,7 +578,9 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
-	case "query_value", "toplist", "bar_chart":
+	case "query_value":
+		return queryValueFormulaRequestConfig
+	case "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
 	default:
 		return scalarFormulaRequestConfig
