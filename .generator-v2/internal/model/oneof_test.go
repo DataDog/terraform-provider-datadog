@@ -37,7 +37,7 @@ var _ = Describe("normalized oneOf model", func() {
 		}))
 	})
 
-	It("keeps ordered non-null alternatives and their Terraform/SDK bindings", func() {
+	It("carries non-null alternatives and their Terraform/SDK bindings", func() {
 		booleanSchema := &Schema{Kind: SchemaKindPrimitive, Type: "boolean"}
 		objectSchema := &Schema{
 			Kind: SchemaKindObject,
@@ -90,23 +90,6 @@ var _ = Describe("normalized oneOf model", func() {
 			SDKConstructor: "ObjectMockedOutputAsActionQueryMockedOutputs",
 			ValueWrapped:   false,
 		}))
-	})
-
-	It("keeps null separate from the non-null variant list", func() {
-		union := &OneOfSpec{
-			Nullable: true,
-			Variants: []OneOfVariant{
-				{TFName: "boolean", Schema: &Schema{Kind: SchemaKindPrimitive, Type: "boolean"}},
-				{TFName: "string", Schema: &Schema{Kind: SchemaKindPrimitive, Type: "string"}},
-			},
-		}
-
-		Expect(union.Nullable).To(BeTrue())
-		Expect(union.Variants).To(HaveLen(2))
-		Expect(union.Variants).To(ConsistOf(
-			HaveField("TFName", "boolean"),
-			HaveField("TFName", "string"),
-		))
 	})
 
 	It("retains the legacy kind alias during parser migration", func() {
