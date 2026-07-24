@@ -467,7 +467,7 @@ var formulaAndFunctionCloudCostQueryFields = []FieldSpec{
 // ProductAnalyticsEventQuerySearch.
 var productAnalyticsEventQuerySearchFields = []FieldSpec{
 	{HCLKey: "query", Type: TypeString, OmitEmpty: false, Required: true,
-		Description: "RUM event search query used to filter views or actions."},
+		Description: "Product Analytics event search query used to filter views or actions."},
 }
 
 // productAnalyticsEventQueryFields corresponds to OpenAPI ProductAnalyticsEventQuery.
