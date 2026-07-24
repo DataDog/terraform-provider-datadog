@@ -40,7 +40,12 @@ jobs:
           files=$(git diff --name-only "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
           echo "Changed files:"
           echo "$files"
-          if echo "$files" | grep -qvE '^CHANGELOG\.md$'; then
+          # An empty diff (net-zero change, e.g. a commit reverting an earlier
+          # one) means no code changed, so skip. Guarding this before the grep
+          # avoids echo's blank line being counted as a non-changelog file.
+          if [ -z "$files" ]; then
+            echo "code=false" >> "$GITHUB_OUTPUT"
+          elif echo "$files" | grep -qvE '^CHANGELOG\.md$'; then
             echo "code=true" >> "$GITHUB_OUTPUT"
           else
             echo "code=false" >> "$GITHUB_OUTPUT"
