@@ -167,6 +167,16 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteSecurityFindingsAutomationTicketCreationRule", true)
 	config.SetUnstableOperationEnabled("v2.ReorderSecurityFindingsAutomationTicketCreationRules", true)
 
+	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.GetTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.UpdateTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRule", true)
+	config.SetUnstableOperationEnabled("v2.ListTagIndexingRules", true)
+	config.SetUnstableOperationEnabled("v2.ReorderTagIndexingRules", true)
+	config.SetUnstableOperationEnabled("v2.CreateTagIndexingRuleExemption", true)
+	config.SetUnstableOperationEnabled("v2.GetTagIndexingRuleExemption", true)
+	config.SetUnstableOperationEnabled("v2.DeleteTagIndexingRuleExemption", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}
