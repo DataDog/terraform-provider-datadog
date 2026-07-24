@@ -1,0 +1,208 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2364
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardV2ProductAnalyticsQueries_import-local-1784747420","widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"extended_query"}],"queries":[{"audience_filters":{"users":[{"name":"buyers","query":"@usr.plan:paid"}]},"compute":{"aggregation":"count","name":"views"},"data_source":"product_analytics_extended","group_by":[{"facet":"@geo.country","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"indexes":["*"],"name":"extended_query","query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/checkout"}}}],"response_format":"scalar"}],"title":"Product Analytics Extended","type":"query_value"}},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"journey_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.conversion_rate","target":{"type":"step","value":"node_1"}},"data_source":"product_analytics_journey","name":"journey_query","search":{"expression":"node_0 -\u003e node_1","join_keys":{"primary":"@session.id","secondary":["@usr.id"]},"node_objects":{"node_0":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"node_1":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}},"step_aliases":{"node_0":"Home","node_1":"Checkout"}}}],"response_format":"scalar"}],"title":"User Journey","type":"query_value"}},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"retention_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","group_by":[{"facet":"@geo.country","sort":{"order":"desc"},"target":"cohort"}],"name":"retention_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}}],"response_format":"scalar"}],"title":"Retention","type":"query_value"}}]}
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"56i-b7r-b8p","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsQueries_import-local-1784747420","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/56i-b7r-b8p/tf-testaccdatadogdashboardv2productanalyticsqueriesimport-local-1784747420","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"extended_query"}],"queries":[{"audience_filters":{"users":[{"name":"buyers","query":"@usr.plan:paid"}]},"compute":{"aggregation":"count","name":"views"},"data_source":"product_analytics_extended","group_by":[{"facet":"@geo.country","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"indexes":["*"],"name":"extended_query","query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/checkout"}}}],"response_format":"scalar"}],"title":"Product Analytics Extended","type":"query_value"},"id":3172904279106970},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"journey_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.conversion_rate","target":{"type":"step","value":"node_1"}},"data_source":"product_analytics_journey","name":"journey_query","search":{"expression":"node_0 -> node_1","join_keys":{"primary":"@session.id","secondary":["@usr.id"]},"node_objects":{"node_0":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"node_1":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}},"step_aliases":{"node_0":"Home","node_1":"Checkout"}}}],"response_format":"scalar"}],"title":"User Journey","type":"query_value"},"id":6090109920552322},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"retention_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","group_by":[{"facet":"@geo.country","sort":{"order":"desc"},"target":"cohort"}],"name":"retention_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}}],"response_format":"scalar"}],"title":"Retention","type":"query_value"},"id":2085165790761638}],"notify_list":[],"created_at":"2026-07-22T19:10:22.909351+00:00","modified_at":"2026-07-22T19:10:22.909351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 324.029458ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/56i-b7r-b8p
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"56i-b7r-b8p","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsQueries_import-local-1784747420","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/56i-b7r-b8p/tf-testaccdatadogdashboardv2productanalyticsqueriesimport-local-1784747420","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"extended_query"}],"queries":[{"audience_filters":{"users":[{"name":"buyers","query":"@usr.plan:paid"}]},"compute":{"aggregation":"count","name":"views"},"data_source":"product_analytics_extended","group_by":[{"facet":"@geo.country","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"indexes":["*"],"name":"extended_query","query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/checkout"}}}],"response_format":"scalar"}],"title":"Product Analytics Extended","type":"query_value"},"id":3172904279106970},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"journey_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.conversion_rate","target":{"type":"step","value":"node_1"}},"data_source":"product_analytics_journey","name":"journey_query","search":{"expression":"node_0 -> node_1","join_keys":{"primary":"@session.id","secondary":["@usr.id"]},"node_objects":{"node_0":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"node_1":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}},"step_aliases":{"node_0":"Home","node_1":"Checkout"}}}],"response_format":"scalar"}],"title":"User Journey","type":"query_value"},"id":6090109920552322},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"retention_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","group_by":[{"facet":"@geo.country","sort":{"order":"desc"},"target":"cohort"}],"name":"retention_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}}],"response_format":"scalar"}],"title":"Retention","type":"query_value"},"id":2085165790761638}],"notify_list":[],"created_at":"2026-07-22T19:10:22.909351+00:00","modified_at":"2026-07-22T19:10:22.909351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 201.662916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/56i-b7r-b8p
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"56i-b7r-b8p","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsQueries_import-local-1784747420","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/56i-b7r-b8p/tf-testaccdatadogdashboardv2productanalyticsqueriesimport-local-1784747420","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"extended_query"}],"queries":[{"audience_filters":{"users":[{"name":"buyers","query":"@usr.plan:paid"}]},"compute":{"aggregation":"count","name":"views"},"data_source":"product_analytics_extended","group_by":[{"facet":"@geo.country","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"indexes":["*"],"name":"extended_query","query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/checkout"}}}],"response_format":"scalar"}],"title":"Product Analytics Extended","type":"query_value"},"id":3172904279106970},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"journey_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.conversion_rate","target":{"type":"step","value":"node_1"}},"data_source":"product_analytics_journey","name":"journey_query","search":{"expression":"node_0 -> node_1","join_keys":{"primary":"@session.id","secondary":["@usr.id"]},"node_objects":{"node_0":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"node_1":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}},"step_aliases":{"node_0":"Home","node_1":"Checkout"}}}],"response_format":"scalar"}],"title":"User Journey","type":"query_value"},"id":6090109920552322},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"retention_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","group_by":[{"facet":"@geo.country","sort":{"order":"desc"},"target":"cohort"}],"name":"retention_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}}],"response_format":"scalar"}],"title":"Retention","type":"query_value"},"id":2085165790761638}],"notify_list":[],"created_at":"2026-07-22T19:10:22.909351+00:00","modified_at":"2026-07-22T19:10:22.909351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 302.870084ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/56i-b7r-b8p
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"56i-b7r-b8p","title":"tf-TestAccDatadogDashboardV2ProductAnalyticsQueries_import-local-1784747420","description":null,"author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/56i-b7r-b8p/tf-testaccdatadogdashboardv2productanalyticsqueriesimport-local-1784747420","template_variables":[],"widgets":[{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"extended_query"}],"queries":[{"audience_filters":{"users":[{"name":"buyers","query":"@usr.plan:paid"}]},"compute":{"aggregation":"count","name":"views"},"data_source":"product_analytics_extended","group_by":[{"facet":"@geo.country","limit":10,"sort":{"aggregation":"count","order":"desc"}}],"indexes":["*"],"name":"extended_query","query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/checkout"}}}],"response_format":"scalar"}],"title":"Product Analytics Extended","type":"query_value"},"id":3172904279106970},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"journey_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.conversion_rate","target":{"type":"step","value":"node_1"}},"data_source":"product_analytics_journey","name":"journey_query","search":{"expression":"node_0 -> node_1","join_keys":{"primary":"@session.id","secondary":["@usr.id"]},"node_objects":{"node_0":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/home"}},"node_1":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:checkout"}}},"step_aliases":{"node_0":"Home","node_1":"Checkout"}}}],"response_format":"scalar"}],"title":"User Journey","type":"query_value"},"id":6090109920552322},{"definition":{"autoscale":false,"precision":0,"requests":[{"formulas":[{"formula":"retention_query"}],"queries":[{"compute":{"aggregation":"count","metric":"__dd.retention_rate"},"data_source":"product_analytics_retention","group_by":[{"facet":"@geo.country","sort":{"order":"desc"},"target":"cohort"}],"name":"retention_query","search":{"cohort_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:view @view.name:/signup"}},"time_interval":{"type":"calendar","value":{"timezone":"UTC","type":"week"}}},"retention_entity":"@usr.id","return_condition":"conversion_on_or_after","return_criteria":{"base_query":{"data_source":"product_analytics","search":{"query":"@type:action @action.name:purchase"}}}}}],"response_format":"scalar"}],"title":"Retention","type":"query_value"},"id":2085165790761638}],"notify_list":[],"created_at":"2026-07-22T19:10:22.909351+00:00","modified_at":"2026-07-22T19:10:22.909351+00:00","template_variable_presets":[],"tags":[]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.084041ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/56i-b7r-b8p
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"deleted_dashboard_id":"56i-b7r-b8p"}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 532.468208ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/56i-b7r-b8p
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID 56i-b7r-b8p not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 209.452292ms
