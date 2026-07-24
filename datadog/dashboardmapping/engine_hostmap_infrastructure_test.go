@@ -61,6 +61,10 @@ func TestHostmapInfrastructureRequestRoundTrip(t *testing.T) {
 	if request["request_type"] != "infrastructure_hostmap" || request["node_type"] != "host" {
 		t.Fatalf("infrastructure discriminator was not serialized: %#v", request)
 	}
+	style := request["style"].(map[string]interface{})
+	if style["fill_min"] != 0.0 || style["fill_max"] != 100.0 {
+		t.Fatalf("explicit infrastructure style bounds were not serialized: %#v", style)
+	}
 	enrichments := request["enrichments"].([]interface{})
 	builtEnrichment := enrichments[0].(map[string]interface{})
 	builtQuery := builtEnrichment["queries"].([]interface{})[0].(map[string]interface{})

@@ -2043,6 +2043,22 @@ func buildHostmapInfrastructureEnrichmentJSONFromMap(enrichmentMap map[string]in
 
 func buildHostmapInfrastructureRequestJSONFromMap(requestMap map[string]interface{}, fields []FieldSpec) map[string]interface{} {
 	result := BuildEngineJSONFromMap(requestMap, fields)
+	if styleMap := getBlockFromMap(requestMap, "style"); styleMap != nil {
+		styleJSON, _ := result["style"].(map[string]interface{})
+		if styleJSON == nil {
+			styleJSON = map[string]interface{}{}
+		}
+		// Explicit zero bounds are meaningful for infrastructure host maps,
+		// but the generic OmitEmpty handling drops numeric zero values.
+		for _, key := range []string{"fill_min", "fill_max"} {
+			if _, ok := styleMap[key]; ok {
+				styleJSON[key] = getFloat64FromMap(styleMap, key)
+			}
+		}
+		if len(styleJSON) > 0 {
+			result["style"] = styleJSON
+		}
+	}
 	enrichmentList := getBlockListFromMap(requestMap, "enrichment")
 	if len(enrichmentList) > 0 {
 		enrichments := make([]interface{}, 0, len(enrichmentList))
