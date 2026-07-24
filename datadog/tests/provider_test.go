@@ -359,6 +359,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_app_key_registration_test":                                   "app_key_registration",
 	"tests/resource_datadog_aws_cur_config_test":                                         "cost-management",
 	"tests/resource_datadog_gcp_uc_config_test":                                          "cost-management",
+	"tests/data_source_datadog_gcp_uc_configs_test":                                      "cost-management",
 	"tests/resource_datadog_azure_uc_config_test":                                        "cost-management",
 	"tests/resource_datadog_custom_allocation_rule_test":                                 "cost-management",
 	"tests/resource_datadog_custom_allocation_rules_test":                                "cost-management",
