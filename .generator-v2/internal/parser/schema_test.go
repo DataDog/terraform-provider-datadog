@@ -208,6 +208,157 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 })
 
 // -------------------------------------------------------------------
+//  Normalized oneOf metadata
+// -------------------------------------------------------------------
+
+var _ = Describe("NormalizeSchemas oneOf metadata", func() {
+
+	var spec *model.Spec
+
+	BeforeEach(func() {
+		spec = loadSpecMust("schema_normalize_oneof.yaml")
+	})
+
+	oneOfFor := func(operationID string) *model.OneOfSpec {
+		GinkgoHelper()
+		schema := opByID(spec, operationID).RequestSchema
+		Expect(schema).NotTo(BeNil())
+		Expect(schema.Kind).To(Equal(model.SchemaKindOneOf))
+		Expect(schema.OneOf).NotTo(BeNil(), "normalized oneOf must use Schema.OneOf, not legacy Schema.Variants")
+		Expect(schema.Variants).To(BeEmpty(), "legacy Schema.Variants must be empty after oneOf normalization")
+		return schema.OneOf
+	}
+
+	It("normalizes an inline discriminator-less union and separates nullable from its variants", func() {
+		union := oneOfFor("CreateInlineOneOf")
+
+		Expect(union.Name).NotTo(BeEmpty())
+		Expect(union.Path).To(Equal("request"))
+		Expect(union.Optional).To(BeFalse())
+		Expect(union.Nullable).To(BeTrue())
+		Expect(union.Discriminator).To(BeNil())
+		Expect(union.Variants).To(HaveLen(2))
+		Expect(union.Variants).To(HaveEach(Not(HaveField("TFName", "null"))))
+		Expect(union.Variants).To(ConsistOf(
+			SatisfyAll(
+				HaveField("TFName", "boolean"),
+				HaveField("Schema.Kind", model.SchemaKindPrimitive),
+				HaveField("Schema.Type", "boolean"),
+				HaveField("ValueWrapped", true),
+			),
+			SatisfyAll(
+				HaveField("TFName", "string"),
+				HaveField("Schema.Kind", model.SchemaKindPrimitive),
+				HaveField("Schema.Type", "string"),
+				HaveField("ValueWrapped", true),
+			),
+		))
+	})
+
+	It("retains component identity, discriminator mapping, and referenced alternatives", func() {
+		union := oneOfFor("CreateAnimal")
+
+		Expect(union.Name).To(Equal("AnimalUnion"))
+		Expect(union.Discriminator).To(Equal(&model.OneOfDiscriminator{
+			PropertyName: "kind",
+			Mapping: map[string]string{
+				"dog": "#/components/schemas/Dog",
+				"cat": "#/components/schemas/Cat",
+			},
+		}))
+		Expect(union.Variants).To(HaveLen(2))
+		Expect(union.Variants[0]).To(SatisfyAll(
+			HaveField("TFName", "cat"),
+			HaveField("RefName", "Cat"),
+			HaveField("Schema.Kind", model.SchemaKindObject),
+			HaveField("ValueWrapped", false),
+		))
+		Expect(union.Variants[1]).To(SatisfyAll(
+			HaveField("TFName", "dog"),
+			HaveField("RefName", "Dog"),
+			HaveField("Schema.Kind", model.SchemaKindObject),
+			HaveField("ValueWrapped", false),
+		))
+	})
+
+	It("assigns canonical paths and optionality at property and collection placements", func() {
+		root := opByID(spec, "CreateNestedOneOf").RequestSchema
+		Expect(root.Kind).To(Equal(model.SchemaKindObject))
+
+		choice := root.Properties["choice"].OneOf
+		Expect(choice).NotTo(BeNil())
+		Expect(choice.Path).To(Equal("request.choice"))
+		Expect(choice.Optional).To(BeFalse())
+
+		optional := root.Properties["optional_choice"].OneOf
+		Expect(optional).NotTo(BeNil())
+		Expect(optional.Path).To(Equal("request.optional_choice"))
+		Expect(optional.Optional).To(BeTrue())
+
+		listItem := root.Properties["choices"].Items.OneOf
+		Expect(listItem).NotTo(BeNil())
+		Expect(listItem.Path).To(Equal("request.choices[]"))
+		Expect(listItem.Optional).To(BeFalse())
+
+		mapValue := root.Properties["choice_map"].Items.OneOf
+		Expect(mapValue).NotTo(BeNil())
+		Expect(mapValue.Path).To(Equal("request.choice_map{}"))
+		Expect(mapValue.Optional).To(BeFalse())
+	})
+
+	It("normalizes a oneOf recursively inside another alternative", func() {
+		outer := opByID(spec, "CreateNestedOneOf").RequestSchema.Properties["recursive"].OneOf
+		Expect(outer).NotTo(BeNil())
+
+		var objectVariant *model.OneOfVariant
+		for i := range outer.Variants {
+			if outer.Variants[i].Schema.Kind == model.SchemaKindObject {
+				objectVariant = &outer.Variants[i]
+				break
+			}
+		}
+		Expect(objectVariant).NotTo(BeNil())
+
+		nested := objectVariant.Schema.Properties["nested"].OneOf
+		Expect(nested).NotTo(BeNil())
+		Expect(nested.Path).To(Equal("request.recursive." + objectVariant.TFName + ".nested"))
+		Expect(nested.Variants).To(HaveLen(2))
+	})
+
+	It("merges properties and required constraints adjacent to oneOf into every alternative", func() {
+		union := oneOfFor("CreateOneOfWithSiblings")
+		Expect(union.Variants).To(HaveLen(2))
+
+		for _, variant := range union.Variants {
+			Expect(variant.Schema.Kind).To(Equal(model.SchemaKindObject))
+			Expect(variant.Schema.Properties).To(HaveKey("shared"))
+			Expect(variant.Schema.Required).To(ContainElement("shared"))
+		}
+		Expect(union.Variants).To(ConsistOf(
+			SatisfyAll(
+				HaveField("Schema.Properties", HaveKey("alpha")),
+				HaveField("Schema.Required", ConsistOf("alpha", "shared")),
+			),
+			SatisfyAll(
+				HaveField("Schema.Properties", HaveKey("beta")),
+				HaveField("Schema.Required", ConsistOf("beta", "shared")),
+			),
+		))
+	})
+
+	It("produces stable names and sorted variants across independent loads", func() {
+		first := oneOfFor("CreateInlineOneOf")
+		secondSpec := loadSpecMust("schema_normalize_oneof.yaml")
+		second := opByID(secondSpec, "CreateInlineOneOf").RequestSchema.OneOf
+		Expect(second).NotTo(BeNil())
+
+		Expect(second.Name).To(Equal(first.Name))
+		Expect(second.Variants).To(Equal(first.Variants))
+		Expect([]string{first.Variants[0].TFName, first.Variants[1].TFName}).To(Equal([]string{"boolean", "string"}))
+	})
+})
+
+// -------------------------------------------------------------------
 //  2xx response selection
 // -------------------------------------------------------------------
 
