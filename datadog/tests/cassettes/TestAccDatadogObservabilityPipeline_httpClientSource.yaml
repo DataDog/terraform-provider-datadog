@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 386
+        content_length: 425
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"auth_strategy":"basic","decoding":"json","id":"http-source-1","scrape_interval_secs":60,"scrape_timeout_secs":10,"tls":{"crt_file":"/path/to/http.crt"},"type":"http_client"}]},"name":"http-client pipeline"},"type":"pipelines"}}
+            {"data":{"attributes":{"config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","sources":[{"auth_strategy":"basic","decoding":"json","id":"http-source-1","scrape_interval_secs":60,"scrape_timeout_secs":10,"tls":{"crt_file":"/path/to/http.crt","server_name":"httpclient.example.com"},"type":"http_client"}]},"name":"http-client pipeline"},"type":"pipelines"}}
         form: {}
         headers:
             Accept:
@@ -28,16 +28,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 468
+        content_length: 507
         uncompressed: false
         body: |
-            {"data":{"id":"ccecc904-f20c-11f0-8686-da7ad0900002","type":"pipelines","attributes":{"name":"http-client pipeline","config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"basic","decoding":"json","id":"http-source-1","scrape_interval_secs":60,"scrape_timeout_secs":10,"tls":{"crt_file":"/path/to/http.crt"},"type":"http_client"}]}}}}
+            {"data":{"id":"09a197d6-867c-11f1-957b-da7ad0900002","type":"pipelines","attributes":{"name":"http-client pipeline","config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"basic","decoding":"json","id":"http-source-1","scrape_interval_secs":60,"scrape_timeout_secs":10,"tls":{"crt_file":"/path/to/http.crt","server_name":"httpclient.example.com"},"type":"http_client"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 389.989708ms
+        duration: 297.512423ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -54,7 +54,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ccecc904-f20c-11f0-8686-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/09a197d6-867c-11f1-957b-da7ad0900002
         method: GET
       response:
         proto: HTTP/1.1
@@ -62,16 +62,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 468
+        content_length: 507
         uncompressed: false
         body: |
-            {"data":{"id":"ccecc904-f20c-11f0-8686-da7ad0900002","type":"pipelines","attributes":{"name":"http-client pipeline","config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"basic","decoding":"json","id":"http-source-1","scrape_interval_secs":60,"scrape_timeout_secs":10,"tls":{"crt_file":"/path/to/http.crt"},"type":"http_client"}]}}}}
+            {"data":{"id":"09a197d6-867c-11f1-957b-da7ad0900002","type":"pipelines","attributes":{"name":"http-client pipeline","config":{"destinations":[{"id":"destination-1","inputs":["http-source-1"],"type":"datadog_logs"}],"pipeline_type":"logs","processor_groups":[],"processors":[],"sources":[{"auth_strategy":"basic","decoding":"json","id":"http-source-1","scrape_interval_secs":60,"scrape_timeout_secs":10,"tls":{"crt_file":"/path/to/http.crt","server_name":"httpclient.example.com"},"type":"http_client"}]}}}}
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 379.447667ms
+        duration: 142.724293ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -88,7 +88,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/ccecc904-f20c-11f0-8686-da7ad0900002
+        url: https://api.datadoghq.com/api/v2/obs-pipelines/pipelines/09a197d6-867c-11f1-957b-da7ad0900002
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -104,4 +104,4 @@ interactions:
                 - application/json
         status: 204 No Content
         code: 204
-        duration: 464.0195ms
+        duration: 279.290931ms

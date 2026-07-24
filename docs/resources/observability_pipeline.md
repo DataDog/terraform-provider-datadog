@@ -597,6 +597,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1124,6 +1125,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1534,6 +1536,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -1743,6 +1746,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
@@ -2835,6 +2839,7 @@ Optional:
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server's TLS certificate.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 - `key_pass_key` (String) Name of the environment variable or secret that holds the passphrase for the private key file.
+- `server_name` (String) Server name to use for Server Name Indication (SNI) and to verify against the certificate presented by the remote host. Use this when the address you connect to doesn't match the certificate's Common Name or Subject Alternative Name.
 
 
 
