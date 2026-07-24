@@ -47,7 +47,7 @@ Required:
 Optional:
 
 - `private_widget_share` (Boolean) Whether or not the organization users can share widgets outside of Datadog. Defaults to `false`.
-- `saml_autocreate_access_role` (String) The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm` , `ro`, `ERROR` Defaults to `"st"`.
+- `saml_autocreate_access_role` (String) The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm`, `ro`, `ERROR`. When omitted, the current value is left unchanged.
 
 Read-Only:
 
