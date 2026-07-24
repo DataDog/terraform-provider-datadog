@@ -7397,7 +7397,7 @@ Optional:
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `notes` (String) Notes/description text for the host map widget.
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
+- `request` (Block List, Max: 1) A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--time))
@@ -7421,8 +7421,675 @@ Optional:
 
 Optional:
 
+- `child` (Block List, Max: 1) Optional child request for one level of hierarchical visualization. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child))
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--conditional_formats))
+- `enrichment` (Block List) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment))
 - `fill` (Block List, Max: 1) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--group_by))
+- `limit` (Number) Maximum number of rows to return from the DDSQL data-projection request.
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `projection` (Block List, Max: 1) Mapping from published-dataset columns to host map dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection))
+- `query` (Block List, Max: 1) Published-dataset query used by the DDSQL data-projection request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query))
+- `request_type` (String) Identifies an infrastructure-backed or DDSQL data-projection host map request. Valid values are `infrastructure_hostmap`, `data_projection`.
 - `size` (Block List, Max: 1) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size))
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--style))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child`
+
+Required:
+
+- `enrichment` (Block List, Min: 1) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment))
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `request_type` (String) Identifies an infrastructure-backed host map request. Valid values are `infrastructure_hostmap`.
+
+Optional:
+
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--conditional_formats))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--group_by))
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--style))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--slo_query))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--child--style"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.child.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--slo_query))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--process_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill"></a>
 ### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill`
@@ -8032,6 +8699,120 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) Column-to-dimension mappings for the host map projection. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension))
+- `type` (String) Type of the host map projection. Valid values are `hostmap`.
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Visual dimension driven by the dataset column. Valid values are `node`, `fill`, `size`, `group`.
+
+Optional:
+
+- `alias` (String) Alias used to label the column instead of its name.
+- `number_format` (Block List, Max: 1) Number formatting options for the projected column. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.projection.dimension.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query`
+
+Required:
+
+- `data_source` (String) Identifies this as a published-dataset list query. Valid values are `dataset`.
+- `dataset_id` (String) ID of the published dataset to query.
+- `dataset_provider` (String) Product page that published the dataset. Valid values are `ddsql_query`.
+
+Optional:
+
+- `filter` (String) Filter applied to the dataset rows using events-style search syntax.
+- `limit` (Number) Maximum number of rows to return from the dataset query.
+- `sort` (Block List, Max: 1) Sort configuration for the dataset query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query.sort`
+
+Required:
+
+- `field` (Block List, Min: 1) List of fields to sort the dataset rows by, applied in order. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort--field))
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--query--sort--field"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.query.sort.field`
+
+Required:
+
+- `name` (String) Name of the field to sort on.
+- `order` (String) Sort direction for the field. Valid values are `asc`, `desc`.
 
 
 
@@ -8646,6 +9427,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
 
 
 
@@ -18318,7 +19110,7 @@ Optional:
 - `no_metric_hosts` (Boolean) A Boolean indicating whether to show nodes with no metrics.
 - `node_type` (String) The type of node used. Valid values are `host`, `container`.
 - `notes` (String) Notes/description text for the host map widget.
-- `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
+- `request` (Block List, Max: 1) A request using the legacy metric format, the infrastructure-backed format, or the DDSQL data-projection format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request))
 - `scope` (List of String) The list of tags used to filter the map.
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--hostmap_definition--style))
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--time))
@@ -18342,8 +19134,675 @@ Optional:
 
 Optional:
 
+- `child` (Block List, Max: 1) Optional child request for one level of hierarchical visualization. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child))
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--conditional_formats))
+- `enrichment` (Block List) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment))
 - `fill` (Block List, Max: 1) The query used to fill the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--group_by))
+- `limit` (Number) Maximum number of rows to return from the DDSQL data-projection request.
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `projection` (Block List, Max: 1) Mapping from published-dataset columns to host map dimensions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection))
+- `query` (Block List, Max: 1) Published-dataset query used by the DDSQL data-projection request. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query))
+- `request_type` (String) Identifies an infrastructure-backed or DDSQL data-projection host map request. Valid values are `infrastructure_hostmap`, `data_projection`.
 - `size` (Block List, Max: 1) The query used to size the map. Exactly one nested block is allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size))
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--style))
+
+<a id="nestedblock--widget--hostmap_definition--request--child"></a>
+### Nested Schema for `widget.hostmap_definition.request.child`
+
+Required:
+
+- `enrichment` (Block List, Min: 1) Metric or event queries joined to the entity set. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment))
+- `node_type` (String) Infrastructure entity type to visualize. Valid values are `host`, `container`, `pod`, `cluster`.
+- `request_type` (String) Identifies an infrastructure-backed host map request. Valid values are `infrastructure_hostmap`.
+
+Optional:
+
+- `conditional_formats` (Block List) Conditional formatting rules applied to fill values. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--conditional_formats))
+- `filter` (String) Filter string for the entity set in tag format, such as `env:prod`.
+- `group_by` (Block List) Ordered grouping hierarchy for infrastructure entities. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--group_by))
+- `no_group_hosts` (Boolean) Whether to hide entities that have no group assignment.
+- `no_metric_hosts` (Boolean) Whether to hide entities that have no enrichment data.
+- `style` (Block List, Max: 1) Style configuration for the infrastructure host map. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--style))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--slo_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--process_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--conditional_formats"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--child--style"></a>
+### Nested Schema for `widget.hostmap_definition.request.child.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.hostmap_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment`
+
+Required:
+
+- `formula` (Block List, Min: 1) Formulas that operate on queries and drive visual dimensions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula))
+- `query` (Block List, Min: 1) Queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query))
+- `response_format` (String) Response format for the scalar formula request. Valid values are `scalar`.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula`
+
+Required:
+
+- `dimension` (String) Visual dimension driven by the formula. Valid values are `node`, `fill`, `size`.
+- `formula_expression` (String) String expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) Expression alias.
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--cloud_cost_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--slo_query))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--cloud_cost_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) Query for Cloud Cost data.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`, `incident_analytics`, `product_analytics`, `on_call_events`, `errors`, `llm_observability`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by))
+- `group_by_fields` (Block List, Max: 1) Alternative group-by configuration that groups by multiple event facet fields. Use this or `group_by`, not both. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields))
+- `indexes` (List of String) An array of index names to query in the stream. Omit or use `[]` to query all indexes at once.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--search))
+- `storage` (String) Option for storage location. Feature in Private Beta.
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--compute"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields`
+
+Required:
+
+- `fields` (List of String) List of event facets to group by.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--group_by_fields--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.group_by_fields.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--event_query--search"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--metric_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+- `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--process_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--enrichment--query--slo_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.enrichment.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query measures.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `monitor`, `time_slice`. Defaults to `"metric"`.
+
+
+
 
 <a id="nestedblock--widget--hostmap_definition--request--fill"></a>
 ### Nested Schema for `widget.hostmap_definition.request.fill`
@@ -18953,6 +20412,120 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--group_by"></a>
+### Nested Schema for `widget.hostmap_definition.request.group_by`
+
+Required:
+
+- `column` (String) Column name from the entity table, such as `cloud_provider`, `tags`, or `labels`.
+
+Optional:
+
+- `key` (String) Key within the column for nested attribute types, such as `service` within `tags`.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection`
+
+Required:
+
+- `dimension` (Block List, Min: 1) Column-to-dimension mappings for the host map projection. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension))
+- `type` (String) Type of the host map projection. Valid values are `hostmap`.
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension`
+
+Required:
+
+- `column` (String) Source column name from the dataset.
+- `dimension` (String) Visual dimension driven by the dataset column. Valid values are `node`, `fill`, `size`, `group`.
+
+Optional:
+
+- `alias` (String) Alias used to label the column instead of its name.
+- `number_format` (Block List, Max: 1) Number formatting options for the projected column. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) The definition of `NumberFormatUnitScale` object. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom))
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--canonical"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit--custom"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--projection--dimension--number_format--unit_scale"></a>
+### Nested Schema for `widget.hostmap_definition.request.projection.dimension.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String) The name of the unit.
+
+
+
+
+
+<a id="nestedblock--widget--hostmap_definition--request--query"></a>
+### Nested Schema for `widget.hostmap_definition.request.query`
+
+Required:
+
+- `data_source` (String) Identifies this as a published-dataset list query. Valid values are `dataset`.
+- `dataset_id` (String) ID of the published dataset to query.
+- `dataset_provider` (String) Product page that published the dataset. Valid values are `ddsql_query`.
+
+Optional:
+
+- `filter` (String) Filter applied to the dataset rows using events-style search syntax.
+- `limit` (Number) Maximum number of rows to return from the dataset query.
+- `sort` (Block List, Max: 1) Sort configuration for the dataset query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query--sort))
+
+<a id="nestedblock--widget--hostmap_definition--request--query--sort"></a>
+### Nested Schema for `widget.hostmap_definition.request.query.sort`
+
+Required:
+
+- `field` (Block List, Min: 1) List of fields to sort the dataset rows by, applied in order. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--query--sort--field))
+
+<a id="nestedblock--widget--hostmap_definition--request--query--sort--field"></a>
+### Nested Schema for `widget.hostmap_definition.request.query.sort.field`
+
+Required:
+
+- `name` (String) Name of the field to sort on.
+- `order` (String) Sort direction for the field. Valid values are `asc`, `desc`.
 
 
 
@@ -19567,6 +21140,17 @@ Optional:
 - `interval` (Number) Define the time interval in seconds.
 
 
+
+
+<a id="nestedblock--widget--hostmap_definition--request--style"></a>
+### Nested Schema for `widget.hostmap_definition.request.style`
+
+Optional:
+
+- `fill_max` (Number) Maximum value for the fill color scale. Omit to use automatic scaling.
+- `fill_min` (Number) Minimum value for the fill color scale. Omit to use automatic scaling.
+- `palette` (String) Color palette name or alias.
+- `palette_flip` (Boolean) Whether to invert the color palette.
 
 
 

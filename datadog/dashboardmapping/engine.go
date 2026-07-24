@@ -634,6 +634,57 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 	return result
 }
 
+// flattenHostmapInfrastructureEnrichmentJSON flattens the polymorphic queries and
+// dimension-aware formulas in a HostMapWidgetScalarRequest.
+func flattenHostmapInfrastructureEnrichmentJSON(enrichment map[string]interface{}) map[string]interface{} {
+	result := FlattenEngineJSON(hostmapInfrastructureEnrichmentFields, enrichment)
+	if queries, ok := enrichment["queries"].([]interface{}); ok {
+		flatQueries := make([]interface{}, len(queries))
+		for i, query := range queries {
+			queryMap, ok := query.(map[string]interface{})
+			if !ok {
+				flatQueries[i] = map[string]interface{}{}
+				continue
+			}
+			flatQueries[i] = flattenFormulaQueryJSON(queryMap)
+		}
+		result["query"] = flatQueries
+	}
+	if formulas, ok := enrichment["formulas"].([]interface{}); ok {
+		flatFormulas := make([]interface{}, len(formulas))
+		for i, formula := range formulas {
+			formulaMap, ok := formula.(map[string]interface{})
+			if !ok {
+				flatFormulas[i] = map[string]interface{}{}
+				continue
+			}
+			flatFormulas[i] = FlattenEngineJSON(hostmapInfrastructureFormulaFields, formulaMap)
+		}
+		result["formula"] = flatFormulas
+	}
+	return result
+}
+
+func flattenHostmapInfrastructureRequestJSON(request map[string]interface{}, fields []FieldSpec) map[string]interface{} {
+	result := FlattenEngineJSON(fields, request)
+	if enrichments, ok := request["enrichments"].([]interface{}); ok {
+		flatEnrichments := make([]interface{}, len(enrichments))
+		for i, enrichment := range enrichments {
+			enrichmentMap, ok := enrichment.(map[string]interface{})
+			if !ok {
+				flatEnrichments[i] = map[string]interface{}{}
+				continue
+			}
+			flatEnrichments[i] = flattenHostmapInfrastructureEnrichmentJSON(enrichmentMap)
+		}
+		result["enrichment"] = flatEnrichments
+	}
+	if child, ok := request["child"].(map[string]interface{}); ok {
+		result["child"] = []interface{}{flattenHostmapInfrastructureRequestJSON(child, hostmapInfrastructureLeafFields)}
+	}
+	return result
+}
+
 // dataSourceToQueryType maps JSON data_source values to HCL query block keys.
 // Used by flattenFormulaQueryJSON to route flattened queries to the right block.
 var dataSourceToQueryType = map[string]string{
@@ -1070,6 +1121,15 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 				flatRequests[ri] = flattenQueryTableRequestJSON(reqMap)
 			}
 			defState["request"] = flatRequests
+		}
+	}
+
+	// ---- Host map infrastructure request ----
+	if spec.JSONType == "hostmap" {
+		if request, ok := def["requests"].(map[string]interface{}); ok {
+			if requestType, _ := request["request_type"].(string); requestType == "infrastructure_hostmap" {
+				defState["request"] = []interface{}{flattenHostmapInfrastructureRequestJSON(request, hostmapRequestInnerFields)}
+			}
 		}
 	}
 
@@ -1956,6 +2016,63 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 	return result
 }
 
+// buildHostmapInfrastructureEnrichmentJSONFromMap builds the polymorphic queries
+// and dimension-aware formulas in a HostMapWidgetScalarRequest.
+func buildHostmapInfrastructureEnrichmentJSONFromMap(enrichmentMap map[string]interface{}) map[string]interface{} {
+	result := BuildEngineJSONFromMap(enrichmentMap, hostmapInfrastructureEnrichmentFields)
+	queryList := getBlockListFromMap(enrichmentMap, "query")
+	if len(queryList) > 0 {
+		queries := make([]interface{}, 0, len(queryList))
+		for _, queryMap := range queryList {
+			if query := buildQueryFromMapAttrs(queryMap); query != nil {
+				queries = append(queries, query)
+			}
+		}
+		result["queries"] = queries
+	}
+	formulaList := getBlockListFromMap(enrichmentMap, "formula")
+	if len(formulaList) > 0 {
+		formulas := make([]interface{}, 0, len(formulaList))
+		for _, formulaMap := range formulaList {
+			formulas = append(formulas, BuildEngineJSONFromMap(formulaMap, hostmapInfrastructureFormulaFields))
+		}
+		result["formulas"] = formulas
+	}
+	return result
+}
+
+func buildHostmapInfrastructureRequestJSONFromMap(requestMap map[string]interface{}, fields []FieldSpec) map[string]interface{} {
+	result := BuildEngineJSONFromMap(requestMap, fields)
+	if styleMap := getBlockFromMap(requestMap, "style"); styleMap != nil {
+		styleJSON, _ := result["style"].(map[string]interface{})
+		if styleJSON == nil {
+			styleJSON = map[string]interface{}{}
+		}
+		// Explicit zero bounds are meaningful for infrastructure host maps,
+		// but the generic OmitEmpty handling drops numeric zero values.
+		for _, key := range []string{"fill_min", "fill_max"} {
+			if _, ok := styleMap[key]; ok {
+				styleJSON[key] = getFloat64FromMap(styleMap, key)
+			}
+		}
+		if len(styleJSON) > 0 {
+			result["style"] = styleJSON
+		}
+	}
+	enrichmentList := getBlockListFromMap(requestMap, "enrichment")
+	if len(enrichmentList) > 0 {
+		enrichments := make([]interface{}, 0, len(enrichmentList))
+		for _, enrichmentMap := range enrichmentList {
+			enrichments = append(enrichments, buildHostmapInfrastructureEnrichmentJSONFromMap(enrichmentMap))
+		}
+		result["enrichments"] = enrichments
+	}
+	if childMap := getBlockFromMap(requestMap, "child"); childMap != nil {
+		result["child"] = buildHostmapInfrastructureRequestJSONFromMap(childMap, hostmapInfrastructureLeafFields)
+	}
+	return result
+}
+
 // buildQueryFromMapAttrs dispatches a query map to the appropriate query builder.
 // Parallel to buildQueryFromAttrs in engine.go.
 func buildQueryFromMapAttrs(qMap map[string]interface{}) map[string]interface{} {
@@ -2368,6 +2485,15 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 	// ---- Query table requests override ----
 	if spec.JSONType == "query_table" {
 		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap)
+	}
+
+	// ---- Host map infrastructure request ----
+	if spec.JSONType == "hostmap" {
+		if requestMap := getBlockFromMap(defMap, "request"); requestMap != nil {
+			if getStringFromMap(requestMap, "request_type") == "infrastructure_hostmap" {
+				defJSON["requests"] = buildHostmapInfrastructureRequestJSONFromMap(requestMap, hostmapRequestInnerFields)
+			}
+		}
 	}
 
 	// ---- Split graph source widget + static_splits ----
