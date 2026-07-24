@@ -61,8 +61,8 @@ var _ = Describe("FrameworkType", func() {
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring(wantSubstr))
 		},
-		Entry("a variant (oneOf/anyOf) has no framework equivalent",
-			&Schema{Kind: SchemaKindVariant}, "variant"),
+		Entry("a oneOf has no direct framework equivalent",
+			&Schema{Kind: SchemaKindOneOf}, "one_of"),
 		Entry("a ref_cycle has no framework equivalent",
 			&Schema{Kind: SchemaKindRefCycle}, "ref_cycle"),
 		Entry("an unsupported node has no framework equivalent",

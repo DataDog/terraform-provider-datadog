@@ -1,0 +1,157 @@
+openapi: 3.0.0
+info:
+  title: normalized oneOf fixture
+  version: 1.0.0
+paths:
+  /inline:
+    post:
+      operationId: CreateInlineOneOf
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: inline_oneof
+        group:
+          create: CreateInlineOneOf
+          read: CreateInlineOneOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              nullable: true
+              oneOf:
+                - type: string
+                - type: boolean
+      responses:
+        "204":
+          description: no content
+  /animals:
+    post:
+      operationId: CreateAnimal
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: animal
+        group:
+          create: CreateAnimal
+          read: CreateAnimal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnimalUnion"
+      responses:
+        "204":
+          description: no content
+  /nested:
+    post:
+      operationId: CreateNestedOneOf
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: nested_oneof
+        group:
+          create: CreateNestedOneOf
+          read: CreateNestedOneOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [choice, choices]
+              properties:
+                choice:
+                  oneOf:
+                    - type: string
+                    - type: boolean
+                optional_choice:
+                  oneOf:
+                    - type: integer
+                    - type: string
+                choices:
+                  type: array
+                  items:
+                    oneOf:
+                      - type: string
+                      - type: integer
+                choice_map:
+                  type: object
+                  additionalProperties:
+                    oneOf:
+                      - type: string
+                      - type: number
+                recursive:
+                  oneOf:
+                    - type: string
+                    - type: object
+                      properties:
+                        nested:
+                          oneOf:
+                            - type: boolean
+                            - type: string
+      responses:
+        "204":
+          description: no content
+  /siblings:
+    post:
+      operationId: CreateOneOfWithSiblings
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: oneof_with_siblings
+        group:
+          create: CreateOneOfWithSiblings
+          read: CreateOneOfWithSiblings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [shared]
+              properties:
+                shared:
+                  type: string
+              oneOf:
+                - type: object
+                  required: [alpha]
+                  properties:
+                    alpha:
+                      type: boolean
+                - type: object
+                  required: [beta]
+                  properties:
+                    beta:
+                      type: integer
+      responses:
+        "204":
+          description: no content
+components:
+  schemas:
+    AnimalUnion:
+      discriminator:
+        propertyName: kind
+        mapping:
+          dog: "#/components/schemas/Dog"
+          cat: "#/components/schemas/Cat"
+      oneOf:
+        - $ref: "#/components/schemas/Dog"
+        - $ref: "#/components/schemas/Cat"
+    Cat:
+      type: object
+      required: [kind, lives]
+      properties:
+        kind:
+          type: string
+        lives:
+          type: integer
+    Dog:
+      type: object
+      required: [kind, bark]
+      properties:
+        kind:
+          type: string
+        bark:
+          type: boolean
