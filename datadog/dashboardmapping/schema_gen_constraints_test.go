@@ -3,6 +3,7 @@ package dashboardmapping
 import (
 	"testing"
 
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -35,5 +36,21 @@ func TestFieldSpecListConstraints(t *testing.T) {
 	elem, ok := statesSchema.Elem.(*schema.Schema)
 	if !ok || elem.ValidateDiagFunc == nil {
 		t.Fatalf("string-list enum validation was not registered: %#v", statesSchema.Elem)
+	}
+	if diagnostics := elem.ValidateDiagFunc("OPEN", cty.Path{}); len(diagnostics) != 0 {
+		t.Fatalf("valid string-list enum value was rejected: %#v", diagnostics)
+	}
+	if diagnostics := elem.ValidateDiagFunc("CLOSED", cty.Path{}); len(diagnostics) == 0 {
+		t.Fatal("invalid string-list enum value was accepted")
+	}
+
+	thresholdsSchema := FieldSpecToSDKv2(FieldSpec{
+		HCLKey:   "thresholds",
+		Type:     TypeIntList,
+		MinItems: 2,
+		MaxItems: 4,
+	})
+	if thresholdsSchema.MinItems != 2 || thresholdsSchema.MaxItems != 4 {
+		t.Fatalf("int list constraints were not registered: %#v", thresholdsSchema)
 	}
 }
