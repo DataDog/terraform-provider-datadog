@@ -142,7 +142,7 @@ func (r *incidentUserDefinedRoleResource) Create(ctx context.Context, request re
 
 	attributes := datadogV2.IncidentUserDefinedRoleDataAttributesRequest{
 		Name: plan.Name.ValueString(),
-		Policy: datadogV2.IncidentUserDefinedRolePolicy{
+		Policy: &datadogV2.IncidentUserDefinedRolePolicy{
 			IsSingle: plan.Policy.IsSingle.ValueBool(),
 		},
 	}
