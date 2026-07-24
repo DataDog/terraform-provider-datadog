@@ -102,6 +102,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedField", true)
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedField", true)
 
+	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedRoles", true)
+	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentUserDefinedRole", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentUserDefinedRole", true)
+
 	// Enable OrgGroup
 	config.SetUnstableOperationEnabled("v2.CreateOrgGroup", true)
 	config.SetUnstableOperationEnabled("v2.GetOrgGroup", true)

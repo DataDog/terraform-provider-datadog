@@ -1,7 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.62.1-0.20260720172544-e07ecef02fde
+	github.com/DataDog/datadog-api-client-go/v2 v2.62.1-0.20260723172526-2257dff26359
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
 	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/google/go-cmp v0.7.0
@@ -39,14 +39,18 @@ require (
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/bgentry/speakeasy v0.1.0 // indirect
+	github.com/bitfield/gotestdox v0.2.2 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.10.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/dnephin/pflag v1.0.7 // indirect
 	github.com/fatih/color v1.18.0 // indirect
+	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/pprof v0.0.0-20210423192551-a2663126120b // indirect
+	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/hashicorp/cli v1.1.7 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-checkpoint v0.5.0 // indirect
@@ -68,6 +72,7 @@ require (
 	github.com/hashicorp/yamux v0.1.2 // indirect
 	github.com/huandu/xstrings v1.3.3 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
+	github.com/kisielk/errcheck v1.20.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
@@ -99,6 +104,8 @@ require (
 	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sync v0.21.0 // indirect
 	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/telemetry v0.0.0-20260610154732-fb80ec83bdd9 // indirect
+	golang.org/x/term v0.44.0 // indirect
 	golang.org/x/text v0.38.0 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	golang.org/x/tools v0.46.0 // indirect
@@ -108,10 +115,16 @@ require (
 	google.golang.org/grpc v1.79.3 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
+	gotest.tools/gotestsum v1.13.0 // indirect
 )
 
 go 1.25.8
 
 toolchain go1.26.1
 
-tool github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+tool (
+	github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+	github.com/kisielk/errcheck
+	golang.org/x/tools/cmd/goimports
+	gotest.tools/gotestsum
+)

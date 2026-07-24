@@ -48,18 +48,18 @@ dev-clean:
 # Run unit tests; these tests don't interact with the API and don't support/need RECORD.
 # Scoped to UNIT_PKGS so the datadog/tests acceptance suite is never compiled or run here,
 # and so these tests always run regardless of the shard -run filter passed via TESTARGS.
-test: get-test-deps
-	gotestsum --format testname --debug --packages $(UNIT_PKGS) -- $(TESTARGS) -timeout=120s
+test:
+	$(GO) tool gotestsum --format testname --debug --packages $(UNIT_PKGS) -- $(TESTARGS) -timeout=120s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
-testacc: get-test-deps
-	RECORD=$(RECORD) TF_ACC=1 gotestsum --format testname --debug --rerun-fails --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
+testacc:
+	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
 testall: test testacc
 
-cassettes: get-test-deps fmtcheck
-	RECORD=true TF_ACC=1 gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
+cassettes: fmtcheck
+	RECORD=true TF_ACC=1 $(GO) tool gotestsum --format testname --packages ./... -- -v $(TESTARGS) -timeout 120m
 
 vet:
 	@echo "go vet ."
@@ -71,7 +71,7 @@ vet:
 	fi
 
 fmt:
-	goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
+	$(GO) tool goimports -format-only -local $(LOCAL_PACKAGE) -w $(GOIMPORTS_FILES)
 	terraform fmt -recursive examples
 
 fmtcheck:
@@ -89,13 +89,13 @@ lint-new:
 lint-fix:
 	golangci-lint run --fix ./...
 
-test-compile: get-test-deps
+test-compile:
 	@if [ "$(TEST)" = "./..." ]; then \
 		echo "ERROR: Set TEST to a specific package. For example,"; \
 		echo "  make test-compile TEST=./$(PKG_NAME)"; \
 		exit 1; \
 	fi
-	gotestsum --format testname -- -c $(TEST) $(TESTARGS)
+	$(GO) tool gotestsum --format testname -- -c $(TEST) $(TESTARGS)
 	
 # Build the tfgen binary into bin/tfgen (generator lives in its own module under .generator-v2)
 tfgen-build:
@@ -112,10 +112,6 @@ update-go-client:
 	go get github.com/zorkian/go-datadog-api@$(ZORKIAN_VERSION)
 	go get github.com/DataDog/datadog-api-client-go/v2@${API_CLIENT_VERSION}
 	go mod tidy
-
-get-test-deps:
-	gotestsum --version || go install gotest.tools/gotestsum@latest
-	which goimports || go install golang.org/x/tools/cmd/goimports@latest
 
 sweep:
 	TF_ACC=1 go test ./datadog/tests/ -run TestSweep -v -timeout 10m
@@ -141,4 +137,4 @@ check-docs: docs
 		echo "Success: No generated documentation changes detected"; \
 	fi
 
-.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile get-test-deps license-check sweep
+.PHONY: build dev-build dev-clean check-docs docs test testall testacc tfgen-build tfgen-test cassettes vet fmt fmtcheck errcheck lint lint-new lint-fix test-compile license-check sweep

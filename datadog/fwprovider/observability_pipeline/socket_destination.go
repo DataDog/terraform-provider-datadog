@@ -18,7 +18,7 @@ type SocketDestinationModel struct {
 	Mode       types.String         `tfsdk:"mode"`
 	Encoding   types.String         `tfsdk:"encoding"`
 	Framing    []SocketFramingModel `tfsdk:"framing"`
-	Tls        []TlsModel           `tfsdk:"tls"`
+	Tls        []ClientTlsModel     `tfsdk:"tls"`
 	Buffer     []BufferOptionsModel `tfsdk:"buffer"`
 }
 
@@ -64,7 +64,7 @@ func ExpandSocketDestination(ctx context.Context, id string, inputs types.List, 
 	}
 
 	if len(src.Tls) > 0 {
-		s.Tls = ExpandTls(src.Tls)
+		s.Tls = ExpandClientTls(src.Tls)
 	}
 
 	if len(src.Buffer) > 0 {
@@ -94,7 +94,7 @@ func FlattenSocketDestination(ctx context.Context, src *datadogV2.ObservabilityP
 	}
 
 	if src.Tls != nil {
-		out.Tls = FlattenTls(src.Tls)
+		out.Tls = FlattenClientTls(src.Tls)
 	}
 
 	outFraming := SocketFramingModel{}
@@ -189,7 +189,7 @@ func SocketDestinationSchema() schema.ListNestedBlock {
 						listvalidator.SizeAtMost(1),
 					},
 				},
-				"tls": TlsSchema(),
+				"tls": ClientTlsSchema(),
 			},
 		},
 	}

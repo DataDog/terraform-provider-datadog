@@ -16,7 +16,7 @@ on:
 jobs:
   create_release:
     name: Create release
-    runs-on: ubuntu-latest-self-hosted
+    runs-on: ubuntu-16-core-latest
     environment: release
     if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/')
     steps:
@@ -50,9 +50,12 @@ jobs:
       - name: Unshallow
         run: git fetch --prune --unshallow
       - name: Set up Go
-        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.23"
+          # Shared runner has public egress, so Go is resolved and downloaded
+          # from go.dev. Track the minor line; must satisfy go.mod's `go`
+          # directive (currently 1.25.8).
+          go-version: "1.25"
       - name: Import GPG key
         id: import_gpg
         uses: paultyng/ghaction-import-gpg@53deb67fe3b05af114ad9488a4da7b782455d588
