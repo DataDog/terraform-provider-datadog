@@ -688,6 +688,13 @@ var TimeseriesWidgetSpec = WidgetSpec{
 			Description: "A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below.",
 			Children:    widgetAxisFields,
 		},
+		{
+			HCLKey:      "anomaly_detection",
+			Type:        TypeBlock,
+			OmitEmpty:   true,
+			Description: "Anomaly detection configuration for this widget.",
+			Children:    timeseriesWidgetAnomalyDetectionFields,
+		},
 		// WidgetMarker: HCL singular "marker" → JSON plural "markers"
 		{
 			HCLKey:      "marker",
@@ -1650,6 +1657,19 @@ var timeseriesWidgetRequestStyleFields = []FieldSpec{
 		Type:        TypeBool,
 		OmitEmpty:   true,
 		Description: "Whether to display value labels on the timeseries.",
+	},
+}
+
+// timeseriesWidgetAnomalyDetectionFields corresponds to OpenAPI
+// components/schemas/TimeseriesWidgetAnomalyDetection.
+var timeseriesWidgetAnomalyDetectionFields = []FieldSpec{
+	{
+		HCLKey:      "detection_sensitivity",
+		Type:        TypeString,
+		OmitEmpty:   false,
+		Required:    true,
+		Description: "Sensitivity level for anomaly detection. Use `never_detect` to disable anomaly detection.",
+		ValidValues: []string{"never_detect"},
 	},
 }
 
