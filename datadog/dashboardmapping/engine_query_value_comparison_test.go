@@ -27,7 +27,7 @@ func TestQueryValueComparisonRoundTrip(t *testing.T) {
 	request := definition["requests"].([]interface{})[0].(map[string]interface{})
 	comparison := request["comparison"].(map[string]interface{})
 	if comparison["type"] != "absolute" || comparison["directionality"] != "neutral" {
-		t.Fatalf("comparison defaults were not serialized: %#v", comparison)
+		t.Fatalf("comparison was not serialized: %#v", comparison)
 	}
 	duration := comparison["duration"].(map[string]interface{})
 	custom := duration["custom_timeframe"].(map[string]interface{})
