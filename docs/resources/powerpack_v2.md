@@ -9240,6 +9240,7 @@ Optional:
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--sort))
 - `text_formats` (Block List) Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query"></a>
@@ -9886,6 +9887,42 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--sort"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
 
 
 
@@ -20161,6 +20198,7 @@ Optional:
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
+- `sort` (Block List, Max: 1) The controls for sorting the widget request. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--sort))
 - `text_formats` (Block List) Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
@@ -20807,6 +20845,42 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_table_definition--request--sort"></a>
+### Nested Schema for `widget.query_table_definition.request.sort`
+
+Optional:
+
+- `count` (Number) The number of items to limit the widget to.
+- `order_by` (Block List) The list of items to sort the widget by. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--sort--order_by))
+
+<a id="nestedblock--widget--query_table_definition--request--sort--order_by"></a>
+### Nested Schema for `widget.query_table_definition.request.sort.order_by`
+
+Optional:
+
+- `formula_sort` (Block List, Max: 1) Sort by a formula value. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--sort--order_by--formula_sort))
+- `group_sort` (Block List, Max: 1) Sort by a group (tag) value. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--sort--order_by--group_sort))
+
+<a id="nestedblock--widget--query_table_definition--request--sort--order_by--formula_sort"></a>
+### Nested Schema for `widget.query_table_definition.request.sort.order_by.formula_sort`
+
+Required:
+
+- `index` (Number) The index of the formula to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
+
+<a id="nestedblock--widget--query_table_definition--request--sort--order_by--group_sort"></a>
+### Nested Schema for `widget.query_table_definition.request.sort.order_by.group_sort`
+
+Required:
+
+- `name` (String) The name of the group tag to sort by.
+- `order` (String) Widget sorting direction. Valid values are `asc`, `desc`.
+
 
 
 

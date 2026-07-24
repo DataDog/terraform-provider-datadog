@@ -1022,6 +1022,9 @@ var queryTableOldRequestFields = append(append([]FieldSpec{
 		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"},
 	},
 	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "The alias for the column name (defaults to metric name)."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget request.",
+		Children:    widgetSortByFields},
 }, queryTableRequestExtraFields...), []FieldSpec{
 	// text_formats: each element is a list of text_format blocks
 	{HCLKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
