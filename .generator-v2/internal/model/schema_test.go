@@ -21,7 +21,7 @@ func objSchema(props map[string]*Schema) *Schema {
 func arrSchema(item *Schema) *Schema { return &Schema{Kind: SchemaKindArray, Items: item} }
 func mapSchema(val *Schema) *Schema  { return &Schema{Kind: SchemaKindMap, Items: val} }
 func oneOfSchema(variants ...*Schema) *Schema {
-	return &Schema{Kind: SchemaKindVariant, Variants: variants}
+	return &Schema{Kind: SchemaKindOneOf, Variants: variants}
 }
 
 // richSchema is a response schema exercising one of every shape, including the
