@@ -1,0 +1,88 @@
+# Manually triggered variant of release.yml that runs on a self-hosted runner.
+# Kept as a separate workflow (rather than parameterizing release.yml) while
+# self-hosted runners are still in alpha and the definition is expected to
+# diverge with networking workarounds.
+name: release (self-hosted)
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write # Required for dd-octo-sts action
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number to tag/release (e.g. '3.45.0', without the 'v' prefix)"
+        required: true
+      ref:
+        description: "Commit SHA to tag and release"
+        required: true
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest-self-hosted
+    environment: release
+    env:
+      # Exact Go version to build the release with. Must be a full patch version
+      # (the internal mirror has no manifest to resolve "1.25" -> "1.25.x") and
+      # must satisfy go.mod's `go` directive (currently 1.25.8).
+      GO_VERSION: "1.25.12"
+    steps:
+      - name: Get GitHub App token
+        id: get_token
+        uses: DataDog/dd-octo-sts-action@96a25462dbcb10ebf0bfd6e2ccc917d2ab235b9a # v1.0.4
+        with:
+          scope: DataDog/terraform-provider-datadog
+          policy: self.release.create-release-self-hosted
+          pool_name: dd-api-reliability
+      - name: Create tag
+        id: create_tag
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version }}
+          RELEASE_REF: ${{ github.event.inputs.ref }}
+        with:
+          github-token: ${{ steps.get_token.outputs.token }}
+          script: |
+            const tagName = `v${process.env.RELEASE_VERSION}`;
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tagName}`,
+              sha: process.env.RELEASE_REF,
+            });
+            core.setOutput("tag_name", tagName);
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        with:
+          ref: ${{ steps.create_tag.outputs.tag_name }}
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "${{ env.GO_VERSION }}"
+          # This job runs on a self-hosted runner with no github.com / go.dev
+          # egress, so Go is pulled from Datadog's internal magicmirror. The
+          # mirror has no version index, so setup-go's listing probe 404s and it
+          # falls back to constructing the download URL as
+          # `${go-download-base-url}/go${go-version}.linux-amd64.tar.gz`. The
+          # mirror nests each release under a `go<version>/` directory, so the
+          # base URL must include it — hence GO_VERSION appears in both inputs.
+          go-download-base-url: "https://depot-read-api-generic.us1.ddbuild.io/magicmirror/magicmirror/@current/runtime/go/go${{ env.GO_VERSION }}"
+      - name: Import GPG key
+        id: import_gpg
+        uses: paultyng/ghaction-import-gpg@53deb67fe3b05af114ad9488a4da7b782455d588
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@b953231f81b8dfd023c58e0854a721e35037f28b
+        with:
+          version: latest
+          args: release --clean
+        env:
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
