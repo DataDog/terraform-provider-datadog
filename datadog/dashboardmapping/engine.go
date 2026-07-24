@@ -2398,18 +2398,22 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 	// ---- Heatmap: histogram-mode request fields ----
 	if spec.JSONType == "heatmap" {
 		requestList := getBlockListFromMap(defMap, "request")
-		if len(requestList) == 1 {
-			requestMap := requestList[0]
-			histogramQuery := getBlockFromMap(requestMap, "histogram_query")
-			if getStringFromMap(requestMap, "request_type") == "histogram" && histogramQuery != nil {
-				requestJSON := map[string]interface{}{"request_type": "histogram"}
-				if styleMap := getBlockFromMap(requestMap, "style"); styleMap != nil {
-					requestJSON["style"] = BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields)
+		if existingRequests, ok := defJSON["requests"].([]interface{}); ok && len(existingRequests) == len(requestList) {
+			for i, requestMap := range requestList {
+				histogramQuery := getBlockFromMap(requestMap, "histogram_query")
+				if histogramQuery == nil {
+					continue
 				}
+				requestJSON := map[string]interface{}{"request_type": "histogram"}
 				if query := buildQueryFromMapAttrs(histogramQuery); query != nil {
 					requestJSON["query"] = query
 				}
-				defJSON["requests"] = []interface{}{requestJSON}
+				if styleMap := getBlockFromMap(requestMap, "style"); styleMap != nil {
+					if style := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(style) > 0 {
+						requestJSON["style"] = style
+					}
+				}
+				existingRequests[i] = requestJSON
 			}
 		}
 	}

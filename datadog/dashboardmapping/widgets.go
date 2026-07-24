@@ -881,11 +881,13 @@ var heatmapWidgetRequestFields = append([]FieldSpec{
 		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 		Children:    widgetRequestStyleFields},
 	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
-		Description: "Set to `histogram` for distribution of point values.",
-		ValidValues: []string{"histogram"}},
+		Description:   "Set to `histogram` for distribution of point values.",
+		ValidValues:   []string{"histogram"},
+		ConflictsWith: []string{"q", "log_query", "apm_query", "rum_query", "security_query", "process_query", "query", "formula"}},
 	{HCLKey: "histogram_query", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
-		Description: "Singular metric query for a histogram-mode heatmap request.",
-		Children:    heatmapHistogramQueryFields},
+		Description:   "Singular metric query for a histogram-mode heatmap request.",
+		Children:      heatmapHistogramQueryFields,
+		ConflictsWith: []string{"q", "log_query", "apm_query", "rum_query", "security_query", "process_query", "query", "formula"}},
 }, standardQueryFields...)
 
 // heatmapWidgetXAxisFields corresponds to OpenAPI components/schemas/HeatMapWidgetXAxis.
