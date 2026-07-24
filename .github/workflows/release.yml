@@ -16,14 +16,9 @@ on:
 jobs:
   create_release:
     name: Create release
-    runs-on: ubuntu-latest-self-hosted
+    runs-on: ubuntu-16-core-latest
     environment: release
     if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/')
-    env:
-      # Exact Go version to build the release with. Must be a full patch version
-      # (the internal mirror has no manifest to resolve "1.23" -> "1.23.x") and
-      # must satisfy go.mod's `go` directive (currently 1.25.8).
-      GO_VERSION: "1.25.12"
     steps:
       - name: Get GitHub App token
         id: get_token
@@ -57,15 +52,10 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "${{ env.GO_VERSION }}"
-          # This job runs on a self-hosted runner with no github.com / go.dev
-          # egress, so Go is pulled from Datadog's internal magicmirror. The
-          # mirror has no version index, so setup-go's listing probe 404s and it
-          # falls back to constructing the download URL as
-          # `${go-download-base-url}/go${go-version}.linux-amd64.tar.gz`. The
-          # mirror nests each release under a `go<version>/` directory, so the
-          # base URL must include it — hence GO_VERSION appears in both inputs.
-          go-download-base-url: "https://depot-read-api-generic.us1.ddbuild.io/magicmirror/magicmirror/@current/runtime/go/go${{ env.GO_VERSION }}"
+          # Shared runner has public egress, so Go is resolved and downloaded
+          # from go.dev. Track the minor line; must satisfy go.mod's `go`
+          # directive (currently 1.25.8).
+          go-version: "1.25"
       - name: Import GPG key
         id: import_gpg
         uses: paultyng/ghaction-import-gpg@53deb67fe3b05af114ad9488a4da7b782455d588
