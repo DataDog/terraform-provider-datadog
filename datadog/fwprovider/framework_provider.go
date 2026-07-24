@@ -133,6 +133,7 @@ var Resources = []func() resource.Resource{
 	NewIncidentTypeResource,
 	NewIncidentNotificationTemplateResource,
 	NewIncidentNotificationRuleResource,
+	NewIncidentPostmortemTemplateResource,
 	NewIncidentUserDefinedFieldResource,
 	NewIncidentUserDefinedRoleResource,
 	NewAwsCurConfigResource,
