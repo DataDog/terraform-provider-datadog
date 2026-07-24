@@ -845,9 +845,7 @@ func flattenWidgetSortByJSON(sortObj map[string]interface{}) map[string]interfac
 			switch sortType {
 			case "formula":
 				fs := map[string]interface{}{}
-				if idx, ok := obMap["index"].(float64); ok {
-					fs["index"] = int(idx)
-				}
+				fs["index"] = getIntFromMap(obMap, "index")
 				if ord, ok := obMap["order"].(string); ok {
 					fs["order"] = ord
 				}
@@ -2099,9 +2097,7 @@ func buildWidgetSortByJSONFromMap(sortMap map[string]interface{}) map[string]int
 			entry := map[string]interface{}{}
 			if fsMap := getBlockFromMap(obMap, "formula_sort"); fsMap != nil {
 				entry["type"] = "formula"
-				if idx := getIntFromMap(fsMap, "index"); idx != 0 {
-					entry["index"] = idx
-				}
+				entry["index"] = getIntFromMap(fsMap, "index")
 				if ord := getStringFromMap(fsMap, "order"); ord != "" {
 					entry["order"] = ord
 				}
