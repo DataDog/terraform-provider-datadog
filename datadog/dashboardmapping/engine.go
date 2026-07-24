@@ -1073,6 +1073,31 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 		}
 	}
 
+	// ---- Heatmap: histogram-mode request fields ----
+	if spec.JSONType == "heatmap" {
+		if requestStates, ok := defState["request"].([]interface{}); ok {
+			if requests, ok := def["requests"].([]interface{}); ok && len(requests) == len(requestStates) {
+				for i, request := range requests {
+					requestMap, ok := request.(map[string]interface{})
+					if !ok {
+						continue
+					}
+					if requestType, _ := requestMap["request_type"].(string); requestType != "histogram" {
+						continue
+					}
+					requestState, ok := requestStates[i].(map[string]interface{})
+					if !ok {
+						continue
+					}
+					requestState["request_type"] = "histogram"
+					if query, ok := requestMap["query"].(map[string]interface{}); ok {
+						requestState["histogram_query"] = []interface{}{flattenFormulaQueryJSON(query)}
+					}
+				}
+			}
+		}
+	}
+
 	// ---- Split graph source widget + static_splits ----
 	if spec.JSONType == "split_group" {
 		if srcDef, ok := def["source_widget_definition"].(map[string]interface{}); ok {
@@ -2368,6 +2393,29 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 	// ---- Query table requests override ----
 	if spec.JSONType == "query_table" {
 		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap)
+	}
+
+	// ---- Heatmap: histogram-mode request fields ----
+	if spec.JSONType == "heatmap" {
+		requestList := getBlockListFromMap(defMap, "request")
+		if existingRequests, ok := defJSON["requests"].([]interface{}); ok && len(existingRequests) == len(requestList) {
+			for i, requestMap := range requestList {
+				histogramQuery := getBlockFromMap(requestMap, "histogram_query")
+				if histogramQuery == nil {
+					continue
+				}
+				requestJSON := map[string]interface{}{"request_type": "histogram"}
+				if query := buildQueryFromMapAttrs(histogramQuery); query != nil {
+					requestJSON["query"] = query
+				}
+				if styleMap := getBlockFromMap(requestMap, "style"); styleMap != nil {
+					if style := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(style) > 0 {
+						requestJSON["style"] = style
+					}
+				}
+				existingRequests[i] = requestJSON
+			}
+		}
 	}
 
 	// ---- Split graph source widget + static_splits ----
