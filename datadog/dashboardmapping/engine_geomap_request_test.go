@@ -149,3 +149,31 @@ func TestGeomapEventListRequestRoundTrip(t *testing.T) {
 		t.Fatalf("geomap point-layer fields were not restored: %#v", flatRequest)
 	}
 }
+
+func TestGeomapRequestRejectsMixedRegionAndEventListShapes(t *testing.T) {
+	data := map[string]interface{}{
+		"widget": []interface{}{map[string]interface{}{
+			"geomap_definition": []interface{}{map[string]interface{}{
+				"request": []interface{}{map[string]interface{}{
+					"response_format": "event_list",
+					"query": []interface{}{map[string]interface{}{
+						"metric_query": []interface{}{map[string]interface{}{
+							"data_source": "metrics",
+							"name":        "query1",
+							"query":       "avg:system.cpu.user{*} by {country}",
+						}},
+					}},
+					"list_stream_query": []interface{}{map[string]interface{}{
+						"data_source":  "rum_stream",
+						"query_string": "@type:view",
+					}},
+				}},
+			}},
+		}},
+	}
+
+	errs := ValidateWidgetConflicts(data)
+	if len(errs) != 1 {
+		t.Fatalf("expected one mixed-shape validation error, got %#v", errs)
+	}
+}

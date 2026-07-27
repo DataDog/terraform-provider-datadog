@@ -1130,7 +1130,7 @@ var geomapWidgetRequestStyleFields = []FieldSpec{
 // geomapRequestExtraFields are request-level fields shared by formula region
 // layers and event-list point layers.
 var geomapRequestExtraFields = []FieldSpec{
-	{HCLKey: "response_format", Type: TypeString, OmitEmpty: true,
+	{HCLKey: "response_format", Type: TypeString, OmitEmpty: true, Computed: true,
 		Description: "Response format for the Geomap request.",
 		ValidValues: []string{"timeseries", "scalar", "event_list"}},
 	{HCLKey: "columns", Type: TypeBlockList, OmitEmpty: true,
@@ -1143,8 +1143,9 @@ var geomapRequestExtraFields = []FieldSpec{
 		Description: "Text formatting rules for a points layer.",
 		Children:    tableWidgetTextFormatRuleFields},
 	{HCLKey: "list_stream_query", JSONKey: "query", Type: TypeBlock, OmitEmpty: true,
-		Description: "List Stream query for an event-list points layer.",
-		Children:    listStreamQueryFields},
+		ConflictsWith: []string{"q", "log_query", "rum_query", "query", "formula"},
+		Description:   "List Stream query for an event-list points layer. Cannot be combined with a region-layer query or formula.",
+		Children:      listStreamQueryFields},
 }
 
 var geomapWidgetRequestFields = append([]FieldSpec{

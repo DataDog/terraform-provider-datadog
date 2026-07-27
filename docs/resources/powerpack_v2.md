@@ -2846,7 +2846,7 @@ Optional:
 - `columns` (Block List) Columns displayed by an event-list points layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--columns))
 - `conditional_formats` (Block List) Threshold conditional formatting rules for a regions layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--conditional_formats))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula))
-- `list_stream_query` (Block List, Max: 1) List Stream query for an event-list points layer. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--list_stream_query))
+- `list_stream_query` (Block List, Max: 1) List Stream query for an event-list points layer. Cannot be combined with a region-layer query or formula. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--list_stream_query))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--log_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query))
@@ -6302,7 +6302,7 @@ Optional:
 - `columns` (Block List) Columns displayed by an event-list points layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--columns))
 - `conditional_formats` (Block List) Threshold conditional formatting rules for a regions layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--conditional_formats))
 - `formula` (Block List) List of formulas that operate on queries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula))
-- `list_stream_query` (Block List, Max: 1) List Stream query for an event-list points layer. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query))
+- `list_stream_query` (Block List, Max: 1) List Stream query for an event-list points layer. Cannot be combined with a region-layer query or formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--list_stream_query))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--log_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) List of queries that can be returned directly or used in formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query))
