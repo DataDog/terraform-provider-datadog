@@ -8975,9 +8975,6 @@ Optional:
 Required:
 
 - `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
-
-Optional:
-
 - `facet` (String) Facet name.
 
 
@@ -16353,9 +16350,6 @@ Optional:
 Required:
 
 - `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
-
-Optional:
-
 - `facet` (String) Facet name.
 
 
@@ -19934,9 +19928,6 @@ Optional:
 Required:
 
 - `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
-
-Optional:
-
 - `facet` (String) Facet name.
 
 
@@ -34988,9 +34979,6 @@ Optional:
 Required:
 
 - `aggregation` (String) Aggregation value. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`, `earliest`, `latest`, `most_frequent`.
-
-Optional:
-
 - `facet` (String) Facet name.
 
 

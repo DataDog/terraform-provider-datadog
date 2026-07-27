@@ -1057,7 +1057,7 @@ var listStreamGroupByFields = []FieldSpec{
 
 // listStreamComputeItemsFields corresponds to OpenAPI ListStreamComputeItems.
 var listStreamComputeItemsFields = []FieldSpec{
-	{HCLKey: "facet", Type: TypeString, OmitEmpty: true,
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "Facet name."},
 	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
 		Description: "Aggregation value.",
