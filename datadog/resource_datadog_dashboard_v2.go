@@ -202,8 +202,70 @@ func collectDashboardData(d *schema.ResourceData) map[string]interface{} {
 			data[f.HCLKey] = d.Get(f.HCLKey)
 		}
 	}
-	data["widget"] = d.Get("widget")
+	widgets := d.Get("widget")
+	restoreHostmapExplicitZeroStyleBounds(d, widgets)
+	data["widget"] = widgets
 	return data
+}
+
+// restoreHostmapExplicitZeroStyleBounds restores explicitly configured zero
+// fill bounds that SDKv2 omits from nested block maps. An omitted bound means
+// automatic scaling to the API, so configuration presence must be preserved.
+func restoreHostmapExplicitZeroStyleBounds(d *schema.ResourceData, widgets interface{}) {
+	widgetList, ok := widgets.([]interface{})
+	if !ok {
+		return
+	}
+	for widgetIndex, widgetValue := range widgetList {
+		widgetMap, ok := widgetValue.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		definitionList, ok := widgetMap["hostmap_definition"].([]interface{})
+		if !ok || len(definitionList) == 0 {
+			continue
+		}
+		definitionMap, ok := definitionList[0].(map[string]interface{})
+		if !ok {
+			continue
+		}
+		requestList, ok := definitionMap["request"].([]interface{})
+		if !ok {
+			continue
+		}
+		for requestIndex, requestValue := range requestList {
+			requestMap, ok := requestValue.(map[string]interface{})
+			if !ok || requestMap["request_type"] != "infrastructure_hostmap" {
+				continue
+			}
+			path := fmt.Sprintf("widget.%d.hostmap_definition.0.request.%d", widgetIndex, requestIndex)
+			restoreHostmapRequestExplicitZeroStyleBounds(d, requestMap, path)
+		}
+	}
+}
+
+func restoreHostmapRequestExplicitZeroStyleBounds(d *schema.ResourceData, requestMap map[string]interface{}, path string) {
+	if styleList, ok := requestMap["style"].([]interface{}); ok && len(styleList) > 0 {
+		styleMap, _ := styleList[0].(map[string]interface{})
+		if styleMap == nil {
+			styleMap = map[string]interface{}{}
+			styleList[0] = styleMap
+		}
+		for _, field := range []string{"fill_min", "fill_max"} {
+			if _, present := styleMap[field]; present {
+				continue
+			}
+			if value, configured := d.GetOkExists(path + ".style.0." + field); configured {
+				styleMap[field] = value
+			}
+		}
+	}
+
+	if childList, ok := requestMap["child"].([]interface{}); ok && len(childList) > 0 {
+		if childMap, ok := childList[0].(map[string]interface{}); ok {
+			restoreHostmapRequestExplicitZeroStyleBounds(d, childMap, path+".child.0")
+		}
+	}
 }
 
 // setDashboardStateSDKv2 populates ResourceData from the dashboard API response map.

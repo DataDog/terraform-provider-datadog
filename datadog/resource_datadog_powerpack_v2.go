@@ -326,6 +326,7 @@ func buildPowerpackWidgets(d *schema.ResourceData) ([]datadogV2.PowerpackInnerWi
 		return []datadogV2.PowerpackInnerWidgets{}, nil
 	}
 	rawWidgets := widgetList.([]interface{})
+	restoreHostmapExplicitZeroStyleBounds(d, rawWidgets)
 	result := make([]datadogV2.PowerpackInnerWidgets, 0, len(rawWidgets))
 	for _, w := range rawWidgets {
 		wMap, ok := w.(map[string]interface{})
