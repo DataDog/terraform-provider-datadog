@@ -18,10 +18,10 @@ paths:
         content:
           application/json:
             schema:
-              nullable: true
               oneOf:
                 - type: string
                 - type: boolean
+                - nullable: true
       responses:
         "204":
           description: no content
@@ -42,8 +42,12 @@ paths:
             schema:
               $ref: "#/components/schemas/AnimalUnion"
       responses:
-        "204":
-          description: no content
+        "200":
+          description: animal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnimalUnion"
   /nested:
     post:
       operationId: CreateNestedOneOf

@@ -195,14 +195,17 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 		Expect(op.RequestSchema.Sensitive).To(BeFalse())
 	})
 
-	It("populates Variants for oneOf schemas and does not drop them", func() {
+	It("populates the normalized OneOf model and leaves the legacy Variants bridge empty", func() {
 		op := opByID(spec, "CreateVariantOneOf")
-		Expect(op.RequestSchema.Variants).To(HaveLen(2))
+		Expect(op.RequestSchema.OneOf).NotTo(BeNil())
+		Expect(op.RequestSchema.OneOf.Variants).To(HaveLen(2))
+		Expect(op.RequestSchema.Variants).To(BeEmpty())
 	})
 
-	It("classifies anyOf as unsupported and carries no Variants", func() {
+	It("classifies anyOf as unsupported and never treats it as a oneOf", func() {
 		op := opByID(spec, "CreateVariantAnyOf")
 		Expect(op.RequestSchema.Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(op.RequestSchema.OneOf).To(BeNil())
 		Expect(op.RequestSchema.Variants).To(BeEmpty())
 	})
 })
@@ -287,6 +290,25 @@ var _ = PDescribe("NormalizeSchemas oneOf metadata", func() {
 			HaveField("RefName", "Dog"),
 			HaveField("Schema.Kind", model.SchemaKindObject),
 			HaveField("ValueWrapped", false),
+		))
+	})
+
+	It("retains the same normalized metadata for a response oneOf", func() {
+		op := opByID(spec, "CreateAnimal")
+		Expect(op.ResponseRefName).To(Equal("AnimalUnion"))
+		Expect(op.ResponseSchema).NotTo(BeNil())
+		Expect(op.ResponseSchema.Kind).To(Equal(model.SchemaKindOneOf))
+		Expect(op.ResponseSchema.Variants).To(BeEmpty())
+
+		union := op.ResponseSchema.OneOf
+		Expect(union).NotTo(BeNil())
+		Expect(union.Name).To(Equal("AnimalUnion"))
+		Expect(union.Path).To(Equal("response"))
+		Expect(union.Optional).To(BeFalse())
+		Expect(union.Variants).To(HaveLen(2))
+		Expect(union.Variants).To(ConsistOf(
+			SatisfyAll(HaveField("TFName", "cat"), HaveField("RefName", "Cat")),
+			SatisfyAll(HaveField("TFName", "dog"), HaveField("RefName", "Dog")),
 		))
 	})
 
