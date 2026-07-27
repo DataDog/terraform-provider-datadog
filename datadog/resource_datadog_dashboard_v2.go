@@ -209,10 +209,14 @@ func collectDashboardData(d *schema.ResourceData) map[string]interface{} {
 	return data
 }
 
+type rawConfigAtReader interface {
+	GetRawConfigAt(cty.Path) (cty.Value, diag.Diagnostics)
+}
+
 // restoreHostmapExplicitZeroStyleBounds restores explicitly configured zero
 // fill bounds that SDKv2 omits from nested block maps. An omitted bound means
 // automatic scaling to the API, so configuration presence must be preserved.
-func restoreHostmapExplicitZeroStyleBounds(d *schema.ResourceData, widgets interface{}) {
+func restoreHostmapExplicitZeroStyleBounds(d rawConfigAtReader, widgets interface{}) {
 	widgetList, ok := widgets.([]interface{})
 	if !ok {
 		return
@@ -250,7 +254,7 @@ func restoreHostmapExplicitZeroStyleBounds(d *schema.ResourceData, widgets inter
 	}
 }
 
-func restoreHostmapRequestExplicitZeroStyleBounds(d *schema.ResourceData, requestMap map[string]interface{}, path cty.Path) {
+func restoreHostmapRequestExplicitZeroStyleBounds(d rawConfigAtReader, requestMap map[string]interface{}, path cty.Path) {
 	if styleList, ok := requestMap["style"].([]interface{}); ok && len(styleList) > 0 {
 		styleMap, _ := styleList[0].(map[string]interface{})
 		if styleMap == nil {
