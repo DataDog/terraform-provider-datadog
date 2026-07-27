@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -238,13 +239,18 @@ func restoreHostmapExplicitZeroStyleBounds(d *schema.ResourceData, widgets inter
 			if !ok || requestMap["request_type"] != "infrastructure_hostmap" {
 				continue
 			}
-			path := fmt.Sprintf("widget.%d.hostmap_definition.0.request.%d", widgetIndex, requestIndex)
+			path := cty.GetAttrPath("widget").
+				IndexInt(widgetIndex).
+				GetAttr("hostmap_definition").
+				IndexInt(0).
+				GetAttr("request").
+				IndexInt(requestIndex)
 			restoreHostmapRequestExplicitZeroStyleBounds(d, requestMap, path)
 		}
 	}
 }
 
-func restoreHostmapRequestExplicitZeroStyleBounds(d *schema.ResourceData, requestMap map[string]interface{}, path string) {
+func restoreHostmapRequestExplicitZeroStyleBounds(d *schema.ResourceData, requestMap map[string]interface{}, path cty.Path) {
 	if styleList, ok := requestMap["style"].([]interface{}); ok && len(styleList) > 0 {
 		styleMap, _ := styleList[0].(map[string]interface{})
 		if styleMap == nil {
@@ -255,15 +261,16 @@ func restoreHostmapRequestExplicitZeroStyleBounds(d *schema.ResourceData, reques
 			if _, present := styleMap[field]; present {
 				continue
 			}
-			if value, configured := d.GetOkExists(path + ".style.0." + field); configured {
-				styleMap[field] = value
+			value, diags := d.GetRawConfigAt(path.GetAttr("style").IndexInt(0).GetAttr(field))
+			if !diags.HasError() && value.IsKnown() && !value.IsNull() {
+				styleMap[field] = 0.0
 			}
 		}
 	}
 
 	if childList, ok := requestMap["child"].([]interface{}); ok && len(childList) > 0 {
 		if childMap, ok := childList[0].(map[string]interface{}); ok {
-			restoreHostmapRequestExplicitZeroStyleBounds(d, childMap, path+".child.0")
+			restoreHostmapRequestExplicitZeroStyleBounds(d, childMap, path.GetAttr("child").IndexInt(0))
 		}
 	}
 }
