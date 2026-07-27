@@ -173,3 +173,73 @@ func TestAccOnCallTeamRoutingRulesCatchAllValidation(t *testing.T) {
 		},
 	})
 }
+
+func TestAccOnCallTeamRoutingRulesUnknownBlocks(t *testing.T) {
+	t.Parallel()
+	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	unknownSet := `
+	resource "terraform_data" "unknown" {
+	  input = "trigger"
+	}
+	`
+
+	resource.Test(t, resource.TestCase{
+		ProtoV6ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				// Unknown `rule` list.
+				Config: unknownSet + `
+				resource "datadog_on_call_team_routing_rules" "unknown_blocks" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  dynamic "rule" {
+				    for_each = toset(split(",", terraform_data.unknown.id))
+				    content {
+				      escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				    }
+				  }
+				}`,
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				// Unknown `action` list nested in an otherwise known rule.
+				Config: unknownSet + `
+				resource "datadog_on_call_team_routing_rules" "unknown_blocks" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    query             = "tags.service:test"
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				  }
+				  rule {
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				    dynamic "action" {
+				      for_each = toset(split(",", terraform_data.unknown.id))
+				      content {
+				        trigger_workflow_automation {
+				          handle = "handle"
+				        }
+				      }
+				    }
+				  }
+				}`,
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				// An unknown scalar is not a reason to skip validation: the
+				// block structure is known, so the catch-all checks still run.
+				Config: unknownSet + `
+				resource "datadog_on_call_team_routing_rules" "unknown_blocks" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    query             = "tags.service:test"
+				    escalation_policy = terraform_data.unknown.id
+				  }
+				}`,
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile("invalid query on last rule"),
+			},
+		},
+	})
+}

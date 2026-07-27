@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -378,6 +379,10 @@ func (r *onCallTeamRoutingRulesResource) ImportState(ctx context.Context, reques
 // call. The same checks run again in Create/Update once unknown values are
 // resolved.
 func (r *onCallTeamRoutingRulesResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	if hasUnknownStructure(request.Config.Raw) {
+		return
+	}
+
 	var config onCallTeamRoutingRulesModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
 	if response.Diagnostics.HasError() {
@@ -385,6 +390,26 @@ func (r *onCallTeamRoutingRulesResource) ValidateConfig(ctx context.Context, req
 	}
 
 	response.Diagnostics.Append(config.Validate()...)
+}
+
+// hasUnknownStructure reports whether value contains an unknown collection or
+// object anywhere in its tree.
+func hasUnknownStructure(value tftypes.Value) bool {
+	found := false
+	_ = tftypes.Walk(value, func(_ *tftypes.AttributePath, v tftypes.Value) (bool, error) {
+		if found || v.IsNull() {
+			return false, nil
+		}
+		if !v.IsKnown() {
+			switch v.Type().(type) {
+			case tftypes.List, tftypes.Set, tftypes.Map, tftypes.Tuple, tftypes.Object:
+				found = true
+			}
+			return false, nil
+		}
+		return true, nil
+	})
+	return found
 }
 
 func (r *onCallTeamRoutingRulesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
