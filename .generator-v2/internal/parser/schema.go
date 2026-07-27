@@ -521,7 +521,6 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 		Discriminator: normalizeDiscriminator(s.Discriminator),
 	}
 
-	seenNames := make(map[string]struct{}, len(s.OneOf))
 	for _, proxy := range s.OneOf {
 		source, err := n.inspectOneOfVariants(proxy, depth)
 		if err != nil {
@@ -535,11 +534,6 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 		}
 
 		tfName := oneOfVariantName(s.Discriminator, proxy, source)
-		if _, exists := seenNames[tfName]; exists {
-			return nil, fmt.Errorf("parser: oneOf at %q has colliding variant name %q", ctx.path, tfName)
-		}
-		seenNames[tfName] = struct{}{}
-
 		variantPath := childPath(ctx.path, tfName)
 		variantSchema, err := n.normalizeProxyAt(proxy, depth, schemaContext{
 			path:     variantPath,
@@ -569,6 +563,9 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 	sort.Slice(union.Variants, func(i, j int) bool {
 		return union.Variants[i].TFName < union.Variants[j].TFName
 	})
+	if err := model.ValidateOneOfVariantNames(ctx.path, union.Variants); err != nil {
+		return nil, fmt.Errorf("parser: %w", err)
+	}
 	return union, nil
 }
 
@@ -624,29 +621,19 @@ func normalizeDiscriminator(discriminator *base.Discriminator) *model.OneOfDiscr
 }
 
 func oneOfVariantName(discriminator *base.Discriminator, proxy *base.SchemaProxy, source oneOfAlternativeSource) string {
-	candidate := discriminatorNameForRef(discriminator, source.ref, source.refName)
-	if candidate == "" {
-		candidate = source.refName
+	candidates := model.OneOfVariantNameCandidates{
+		DiscriminatorKey: discriminatorNameForRef(discriminator, source.ref, source.refName),
+		RefName:          source.refName,
 	}
-	if candidate == "" && source.schema != nil && isRepresentablePrimitive(source.schema) {
-		candidate = firstType(source.schema)
-		if candidate != "" && source.schema.Format != "" {
-			candidate += "_" + source.schema.Format
+	if source.schema != nil {
+		if isRepresentablePrimitive(source.schema) {
+			candidates.PrimitiveType = firstType(source.schema)
+			candidates.PrimitiveFormat = source.schema.Format
 		}
 	}
-	if candidate == "" {
-		sum := sha256.Sum256([]byte(schemaProxySignature(proxy)))
-		candidate = fmt.Sprintf("variant_%x", sum[:4])
-	}
-	candidate = model.SnakeCase(candidate)
-	candidate = strings.Trim(candidate, "_")
-	if candidate == "" {
-		candidate = "variant"
-	}
-	if candidate[0] >= '0' && candidate[0] <= '9' {
-		candidate = "variant_" + candidate
-	}
-	return candidate
+	sum := sha256.Sum256([]byte(schemaProxySignature(proxy)))
+	candidates.ShaSum = fmt.Sprintf("%x", sum[:4])
+	return model.ResolveOneOfVariantName(candidates)
 }
 
 func discriminatorNameForRef(discriminator *base.Discriminator, ref, refName string) string {

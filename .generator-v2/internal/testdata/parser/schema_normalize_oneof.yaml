@@ -25,6 +25,28 @@ paths:
       responses:
         "204":
           description: no content
+  /inline-reordered:
+    post:
+      operationId: CreateReorderedInlineOneOf
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: reordered_inline_oneof
+        group:
+          create: CreateReorderedInlineOneOf
+          read: CreateReorderedInlineOneOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - nullable: true
+                - type: boolean
+                - type: string
+      responses:
+        "204":
+          description: no content
   /animals:
     post:
       operationId: CreateAnimal

@@ -387,6 +387,29 @@ var _ = PDescribe("NormalizeSchemas oneOf metadata", func() {
 		Expect(second.Variants).To(Equal(first.Variants))
 		Expect([]string{first.Variants[0].TFName, first.Variants[1].TFName}).To(Equal([]string{"boolean", "string"}))
 	})
+
+	It("produces the same sorted names when oneOf alternatives are reordered", func() {
+		first := oneOfFor("CreateInlineOneOf")
+		reordered := oneOfFor("CreateReorderedInlineOneOf")
+
+		Expect([]string{reordered.Variants[0].TFName, reordered.Variants[1].TFName}).To(
+			Equal([]string{first.Variants[0].TFName, first.Variants[1].TFName}),
+		)
+	})
+})
+
+var _ = Describe("NormalizeSchemas oneOf naming failures", func() {
+
+	It("rejects variant names that collide after normalization", func() {
+		_, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_oneof_collision.yaml"))
+		Expect(err).To(HaveOccurred())
+
+		var collision *model.OneOfVariantNameCollisionError
+		Expect(errors.As(err, &collision)).To(BeTrue())
+		Expect(collision.Path).To(Equal("request"))
+		Expect(collision.Name).To(Equal("foo_bar"))
+		Expect(err.Error()).To(ContainSubstring(`parser: oneOf at "request" has colliding variant name "foo_bar"`))
+	})
 })
 
 // -------------------------------------------------------------------
