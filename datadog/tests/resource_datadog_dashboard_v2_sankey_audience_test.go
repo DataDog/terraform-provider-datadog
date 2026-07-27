@@ -37,7 +37,7 @@ resource "datadog_dashboard_v2" "sankey_audience_dashboard" {
               filter_condition = "users and segments and accounts"
             }
 
-            occurrences {
+            occurrence {
               operator = "gt"
               value    = "2"
             }
@@ -64,8 +64,8 @@ var datadogDashboardV2SankeyAudienceAsserts = []string{
 	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.audience_filters.0.account.0.name = enterprise-accounts",
 	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.audience_filters.0.account.0.query = @account.tier:enterprise",
 	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.audience_filters.0.filter_condition = users and segments and accounts",
-	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.occurrences.0.operator = gt",
-	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.occurrences.0.value = 2",
+	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.occurrence.0.operator = gt",
+	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.occurrence.0.value = 2",
 	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.join_keys.0.primary = session.id",
 	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.join_keys.0.secondary.0 = usr.id",
 	"widget.0.sankey_definition.0.request.0.rum_request.0.query.0.join_keys.0.secondary.1 = account.id",

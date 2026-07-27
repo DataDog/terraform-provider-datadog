@@ -1860,7 +1860,7 @@ var sankeyRumQueryFields = []FieldSpec{
 	{HCLKey: "audience_filters", Type: TypeBlock, OmitEmpty: true,
 		Description: "Product Analytics and RUM audience filters.",
 		Children:    productAnalyticsAudienceFiltersFields},
-	{HCLKey: "occurrences", Type: TypeBlock, OmitEmpty: true,
+	{HCLKey: "occurrence", JSONKey: "occurrences", Type: TypeBlock, OmitEmpty: true,
 		Description: "Filter applied to occurrence counts when building a Product Analytics audience.",
 		Children:    productAnalyticsAudienceOccurrenceFilterFields},
 	{HCLKey: "join_keys", Type: TypeBlock, OmitEmpty: true,

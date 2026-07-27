@@ -18,7 +18,7 @@ func TestSankeyAudienceFieldsRoundTrip(t *testing.T) {
 							}},
 							"filter_condition": "users",
 						}},
-						"occurrences": []interface{}{map[string]interface{}{
+						"occurrence": []interface{}{map[string]interface{}{
 							"operator": "gt",
 							"value":    "2",
 						}},
@@ -41,6 +41,13 @@ func TestSankeyAudienceFieldsRoundTrip(t *testing.T) {
 	}
 	if query["join_keys"].(map[string]interface{})["primary"] != "session.id" {
 		t.Fatalf("sankey join keys were not serialized: %#v", query)
+	}
+	occurrence, ok := query["occurrences"].(map[string]interface{})
+	if !ok || occurrence["operator"] != "gt" || occurrence["value"] != "2" {
+		t.Fatalf("sankey occurrence filter was not serialized under the plural JSON key: %#v", query)
+	}
+	if _, ok := query["occurrence"]; ok {
+		t.Fatalf("sankey occurrence filter leaked its singular HCL key into JSON: %#v", query)
 	}
 
 	flattened, _ := FlattenWidgetEngineJSON(built)

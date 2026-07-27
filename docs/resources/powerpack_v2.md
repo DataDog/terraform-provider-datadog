@@ -17583,7 +17583,7 @@ Optional:
 - `entries_per_step` (Number) Entries per step.
 - `join_keys` (Block List, Max: 1) Join keys for the Sankey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--join_keys))
 - `number_of_steps` (Number) Number of steps.
-- `occurrences` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrences))
+- `occurrence` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrence))
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
@@ -17638,8 +17638,8 @@ Optional:
 - `secondary` (List of String) Secondary join keys.
 
 
-<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrences"></a>
-### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.occurrences`
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrence"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.occurrence`
 
 Optional:
 
@@ -35762,7 +35762,7 @@ Optional:
 - `entries_per_step` (Number) Entries per step.
 - `join_keys` (Block List, Max: 1) Join keys for the Sankey query. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--join_keys))
 - `number_of_steps` (Number) Number of steps.
-- `occurrences` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--occurrences))
+- `occurrence` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--occurrence))
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
@@ -35817,8 +35817,8 @@ Optional:
 - `secondary` (List of String) Secondary join keys.
 
 
-<a id="nestedblock--widget--sankey_definition--request--rum_request--query--occurrences"></a>
-### Nested Schema for `widget.sankey_definition.request.rum_request.query.occurrences`
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--occurrence"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.occurrence`
 
 Optional:
 
