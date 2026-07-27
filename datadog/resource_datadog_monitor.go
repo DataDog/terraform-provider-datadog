@@ -2002,7 +2002,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 		// Same for type
 		return nil
 	}
-	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+	if isResourceDiffOptionalBoolFalse(diff, "validate") {
 		// Explicitly skip validation
 		return nil
 	}

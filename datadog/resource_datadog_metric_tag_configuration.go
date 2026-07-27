@@ -22,25 +22,29 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		UpdateContext: resourceDatadogMetricTagConfigurationUpdate,
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
 		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
+			includePercentilesConfigured := isResourceDiffAttributeConfigured(diff, "include_percentiles")
 			oldAggrs, newAggrs := diff.GetChange("aggregations")
-			metricType, metricTypeOk := diff.GetOkExists("metric_type")
-			tags, _ := diff.GetOkExists("tags")
-			excludeTagsMode, _ := diff.GetOkExists("exclude_tags_mode")
+			metricType, metricTypeOk := diff.GetOk("metric_type")
+			tags, tagsOk := diff.Get("tags").(*schema.Set)
+			excludeTagsMode, _ := diff.Get("exclude_tags_mode").(bool)
 
-			if excludeTagsMode.(bool) && len(tags.(*schema.Set).List()) == 0 {
+			if excludeTagsMode && (!tagsOk || tags.Len() == 0) {
 				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 			}
 
-			if !includePercentilesOk && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
+			if !includePercentilesConfigured && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
 				// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
+				return nil
+			}
+			if !metricTypeOk {
+				// The metric type may still be unknown during planning.
 				return nil
 			}
 			metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
 			if err != nil {
 				return fmt.Errorf("error validating diff: %w", err)
 			}
-			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+			if includePercentilesConfigured && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
 			}
 

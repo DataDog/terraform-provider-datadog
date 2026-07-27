@@ -386,9 +386,9 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 
 // Use CustomizeDiff to do monitor validation
 func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+	if isResourceDiffOptionalBoolFalse(diff, "validate") {
 		// Explicitly skip validation
-		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))
+		log.Printf("[DEBUG] Validate is false, skipping validation")
 		return nil
 	}
 

@@ -109,12 +109,12 @@ func getValidPermissions(ctx context.Context, apiInstances *utils.ApiInstances) 
 }
 
 func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+	if isResourceDiffOptionalBoolFalse(diff, "validate") {
 		// Explicitly skip validation
 		return nil
 	}
 
-	permissions, ok := diff.GetOkExists("permission")
+	permissions, ok := diff.GetOk("permission")
 	if !ok {
 		return nil
 	}
