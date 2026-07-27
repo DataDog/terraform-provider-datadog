@@ -880,7 +880,7 @@ var heatmapWidgetRequestFields = append([]FieldSpec{
 	{HCLKey: "style", Type: TypeBlock, OmitEmpty: true,
 		Description: "The style of the widget graph. One nested block is allowed using the structure below.",
 		Children:    widgetRequestStyleFields},
-	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true,
+	{HCLKey: "request_type", Type: TypeString, OmitEmpty: true, Computed: true,
 		Description:   "Set to `histogram` for distribution of point values.",
 		ValidValues:   []string{"histogram"},
 		ConflictsWith: []string{"q", "log_query", "apm_query", "rum_query", "security_query", "process_query", "query", "formula"}},
