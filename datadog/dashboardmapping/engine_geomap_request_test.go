@@ -151,29 +151,90 @@ func TestGeomapEventListRequestRoundTrip(t *testing.T) {
 }
 
 func TestGeomapRequestRejectsMixedRegionAndEventListShapes(t *testing.T) {
-	data := map[string]interface{}{
-		"widget": []interface{}{map[string]interface{}{
-			"geomap_definition": []interface{}{map[string]interface{}{
-				"request": []interface{}{map[string]interface{}{
-					"response_format": "event_list",
-					"query": []interface{}{map[string]interface{}{
-						"metric_query": []interface{}{map[string]interface{}{
-							"data_source": "metrics",
-							"name":        "query1",
-							"query":       "avg:system.cpu.user{*} by {country}",
-						}},
-					}},
-					"list_stream_query": []interface{}{map[string]interface{}{
-						"data_source":  "rum_stream",
-						"query_string": "@type:view",
-					}},
-				}},
-			}},
+	regionQuery := []interface{}{map[string]interface{}{
+		"metric_query": []interface{}{map[string]interface{}{
+			"data_source": "metrics",
+			"name":        "query1",
+			"query":       "avg:system.cpu.user{*} by {country}",
 		}},
+	}}
+	listStreamQuery := []interface{}{map[string]interface{}{
+		"data_source":  "rum_stream",
+		"query_string": "@type:view",
+	}}
+
+	tests := map[string]map[string]interface{}{
+		"both query shapes": {
+			"response_format":   "event_list",
+			"query":             regionQuery,
+			"list_stream_query": listStreamQuery,
+		},
+		"event list with region query": {
+			"response_format": "event_list",
+			"query":           regionQuery,
+		},
+		"scalar with list stream query": {
+			"response_format":   "scalar",
+			"list_stream_query": listStreamQuery,
+		},
+		"timeseries with list stream query": {
+			"response_format":   "timeseries",
+			"list_stream_query": listStreamQuery,
+		},
 	}
 
-	errs := ValidateWidgetConflicts(data)
-	if len(errs) != 1 {
-		t.Fatalf("expected one mixed-shape validation error, got %#v", errs)
+	for name, request := range tests {
+		t.Run(name, func(t *testing.T) {
+			data := map[string]interface{}{
+				"widget": []interface{}{map[string]interface{}{
+					"geomap_definition": []interface{}{map[string]interface{}{
+						"request": []interface{}{request},
+					}},
+				}},
+			}
+
+			errs := ValidateWidgetConflicts(data)
+			if len(errs) != 1 {
+				t.Fatalf("expected one request-variant validation error, got %#v", errs)
+			}
+		})
+	}
+}
+
+func TestGeomapRequestAcceptsMatchingRequestVariants(t *testing.T) {
+	tests := map[string]map[string]interface{}{
+		"region request": {
+			"response_format": "scalar",
+			"query": []interface{}{map[string]interface{}{
+				"metric_query": []interface{}{map[string]interface{}{
+					"data_source": "metrics",
+					"name":        "query1",
+					"query":       "avg:system.cpu.user{*} by {country}",
+				}},
+			}},
+		},
+		"event list request": {
+			"response_format": "event_list",
+			"list_stream_query": []interface{}{map[string]interface{}{
+				"data_source":  "rum_stream",
+				"query_string": "@type:view",
+			}},
+		},
+	}
+
+	for name, request := range tests {
+		t.Run(name, func(t *testing.T) {
+			data := map[string]interface{}{
+				"widget": []interface{}{map[string]interface{}{
+					"geomap_definition": []interface{}{map[string]interface{}{
+						"request": []interface{}{request},
+					}},
+				}},
+			}
+
+			if errs := ValidateWidgetConflicts(data); len(errs) != 0 {
+				t.Fatalf("expected matching request variant to pass validation, got %#v", errs)
+			}
+		})
 	}
 }

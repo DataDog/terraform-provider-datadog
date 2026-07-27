@@ -1143,9 +1143,8 @@ var geomapRequestExtraFields = []FieldSpec{
 		Description: "Text formatting rules for a points layer.",
 		Children:    tableWidgetTextFormatRuleFields},
 	{HCLKey: "list_stream_query", JSONKey: "query", Type: TypeBlock, OmitEmpty: true,
-		ConflictsWith: []string{"q", "log_query", "rum_query", "query", "formula"},
-		Description:   "List Stream query for an event-list points layer. Cannot be combined with a region-layer query or formula.",
-		Children:      listStreamQueryFields},
+		Description: "List Stream query for an event-list points layer. Cannot be combined with a region-layer query or formula.",
+		Children:    listStreamQueryFields},
 }
 
 var geomapWidgetRequestFields = append([]FieldSpec{
