@@ -179,8 +179,8 @@ func TestAccOnCallTeamRoutingRulesUnknownBlocks(t *testing.T) {
 	_, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	unknownSet := `
-	resource "terraform_data" "unknown" {
-	  input = "trigger"
+	resource "datadog_role" "unknown" {
+	  name = "tf-test-unknown-blocks"
 	}
 	`
 
@@ -193,7 +193,7 @@ func TestAccOnCallTeamRoutingRulesUnknownBlocks(t *testing.T) {
 				resource "datadog_on_call_team_routing_rules" "unknown_blocks" {
 				  id = "00000000-aba2-0000-0000-000000000000"
 				  dynamic "rule" {
-				    for_each = toset(split(",", terraform_data.unknown.id))
+				    for_each = toset(split(",", datadog_role.unknown.id))
 				    content {
 				      escalation_policy = "00000000-aba2-0000-0000-000000000001"
 				    }
@@ -214,7 +214,7 @@ func TestAccOnCallTeamRoutingRulesUnknownBlocks(t *testing.T) {
 				  rule {
 				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
 				    dynamic "action" {
-				      for_each = toset(split(",", terraform_data.unknown.id))
+				      for_each = toset(split(",", datadog_role.unknown.id))
 				      content {
 				        trigger_workflow_automation {
 				          handle = "handle"
@@ -234,7 +234,7 @@ func TestAccOnCallTeamRoutingRulesUnknownBlocks(t *testing.T) {
 				  id = "00000000-aba2-0000-0000-000000000000"
 				  rule {
 				    query             = "tags.service:test"
-				    escalation_policy = terraform_data.unknown.id
+				    escalation_policy = datadog_role.unknown.id
 				  }
 				}`,
 				PlanOnly:    true,
