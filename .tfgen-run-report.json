@@ -1,0 +1,67 @@
+{
+  "run_id": "ce3e760a-7ef7-402a-b619-baa785d6943d",
+  "generator_version": "dev",
+  "spec_hash": "b02e0cdbb30df23d9e1989808be9861ac4d2947129d034e8a336483b323dbde5",
+  "started_at": "2026-07-28T16:51:48.139461-04:00",
+  "finished_at": "2026-07-28T16:51:48.151516-04:00",
+  "artifacts": [
+    {
+      "name": "azure_uc_configs",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/fwprovider/data_source_datadog_azure_uc_configs.go",
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "message": "dropped \"response.data[].attributes.id\": collides with the envelope id surfaced as \"id\""
+        },
+        {
+          "severity": "warning",
+          "message": "generated example for \"azure_uc_configs\" may be incomplete: all inputs are optional and none is a renderable scalar; a usable filter must be added by hand"
+        }
+      ]
+    },
+    {
+      "name": "azure_uc_configs",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../datadog/tests/data_source_datadog_azure_uc_configs_test.go"
+    },
+    {
+      "name": "azure_uc_configs",
+      "kind": "data_source",
+      "status": "created",
+      "path": "../examples/data-sources/datadog_azure_uc_configs/data-source.tf"
+    },
+    {
+      "name": "downtimes",
+      "kind": "data_source",
+      "status": "skipped",
+      "path": ""
+    },
+    {
+      "name": "rum_applications",
+      "kind": "data_source",
+      "status": "skipped",
+      "path": ""
+    }
+  ],
+  "skipped_operations": [
+    {
+      "operation_id": "ListAuthNMappings",
+      "path": "/api/v2/authn_mappings",
+      "method": "GET",
+      "reason": "tracking_field_absent"
+    }
+  ],
+  "summary": {
+    "created": 3,
+    "updated": 0,
+    "unchanged": 0,
+    "skipped": 2,
+    "failed": 0,
+    "retired": 0,
+    "retire_blocked": 0,
+    "registration_retired": 0
+  }
+}
