@@ -67,6 +67,7 @@ jobs:
       should_run: ${{ steps.read.outputs.should_run }}
       test_args: ${{ steps.read.outputs.test_args }}
       run_regex: ${{ steps.read.outputs.run_regex }}
+      skip_regex: ${{ steps.read.outputs.skip_regex }}
     steps:
       - name: Download test selection
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
@@ -81,12 +82,15 @@ jobs:
           test_args=$(jq -r '.test_args' test-selection.json)
           echo "should_run=${should_run}" >> "$GITHUB_OUTPUT"
           echo "test_args=${test_args}" >> "$GITHUB_OUTPUT"
-          # The bare -run alternation, for the check summary: it lets the
-          # summarizer also report tests that were selected but then filtered out
-          # by the flaky-test -skip list.
+          # The bare -run and -skip alternations, for the check summary: together
+          # they let the summarizer tell a test held back by the flaky-test skip
+          # list apart from one that should have run but reported no result.
           run_regex=$(printf '%s' "${test_args}" \
             | sed -n "s/^-run '\([^']*\)'.*/\1/p" | sed 's/\$\$/$/g')
+          skip_regex=$(printf '%s' "${test_args}" \
+            | sed -n "s/.* -skip '\([^']*\)'.*/\1/p" | sed 's/\$\$/$/g')
           echo "run_regex=${run_regex}" >> "$GITHUB_OUTPUT"
+          echo "skip_regex=${skip_regex}" >> "$GITHUB_OUTPUT"
 
   integration-tests:
     needs: pr-tests-selection
@@ -95,12 +99,9 @@ jobs:
     permissions:
       contents: read
       id-token: write # Required to mint Datadog credentials via dd-sts
-    outputs:
-      check_title: ${{ steps.summary.outputs.title }}
-      check_summary: ${{ steps.summary.outputs.summary }}
     steps:
       - name: Checkout PR code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - name: Mint Datadog credentials
@@ -138,24 +139,17 @@ jobs:
           TF_ACC_TEMP_DIR: "/tmp"
           TESTACC_JSONFILE: "/tmp/testacc.json"
           TESTARGS: ${{ needs.pr-tests-selection.outputs.test_args }}
-      # Built from the raw test2json stream rather than the job's pass/fail, so
-      # the check names the tests that failed instead of only linking to logs.
-      - name: Build check summary
-        id: summary
+      # Handed to report-finish rather than summarized here: this job has the PR
+      # head checked out, which for an older PR branch has no summarizer script
+      # at all, and whose copy of it would be PR-authored anyway. The check that
+      # gates merges is built from base-branch code only.
+      - name: Upload raw test results
         if: always()
-        env:
-          RUN_REGEX: ${{ needs.pr-tests-selection.outputs.run_regex }}
-        run: |
-          result=$(python3 scripts/summarize_testacc.py \
-            --jsonfile /tmp/testacc.json \
-            --selected-regex "${RUN_REGEX}" \
-            --details-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
-          {
-            echo "title=$(jq -r .title <<<"$result")"
-            echo "summary<<CHECK_SUMMARY_EOF"
-            jq -r .summary <<<"$result"
-            echo "CHECK_SUMMARY_EOF"
-          } >> "$GITHUB_OUTPUT"
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: testacc-results
+          path: /tmp/testacc.json
+          if-no-files-found: ignore
 
   # Resolves the check run for every path through this workflow: tests ran and
   # passed or failed, nothing was affected, the selection run failed, or the
@@ -165,9 +159,43 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       checks: write
+      actions: read # Required to download the results artifact
     steps:
+      # No ref: for workflow_run this checks out the default branch, so both the
+      # summarizer and the workflow driving it come from base-branch code.
+      - name: Checkout base branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Absent when the tests never ran; the summarizer reports that as such.
+      - name: Download raw test results
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: testacc-results
+          path: /tmp/testacc-results
+      # Built from the raw test2json stream rather than the job's pass/fail, so
+      # the check names the tests that failed instead of only linking to logs.
+      - name: Build test summary
+        id: summary
+        if: needs.integration-tests.result != 'skipped'
+        env:
+          RUN_REGEX: ${{ needs.pr-tests-selection.outputs.run_regex }}
+          SKIP_REGEX: ${{ needs.pr-tests-selection.outputs.skip_regex }}
+        run: |
+          result=$(python3 scripts/summarize_testacc.py \
+            --jsonfile /tmp/testacc-results/testacc.json \
+            --selected-regex "${RUN_REGEX}" \
+            --skipped-regex "${SKIP_REGEX}" \
+            --details-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+          {
+            echo "title=$(jq -r .title <<<"$result")"
+            echo "summary<<CHECK_SUMMARY_EOF"
+            jq -r .summary <<<"$result"
+            echo "CHECK_SUMMARY_EOF"
+          } >> "$GITHUB_OUTPUT"
       - name: Complete check run
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
           CHECK_RUN_ID: ${{ needs.report-start.outputs.check_run_id }}
@@ -175,8 +203,8 @@ jobs:
           SELECTION_RESULT: ${{ needs.pr-tests-selection.result }}
           SHOULD_RUN: ${{ needs.pr-tests-selection.outputs.should_run }}
           TESTS_RESULT: ${{ needs.integration-tests.result }}
-          TESTS_TITLE: ${{ needs.integration-tests.outputs.check_title }}
-          TESTS_SUMMARY: ${{ needs.integration-tests.outputs.check_summary }}
+          TESTS_TITLE: ${{ steps.summary.outputs.title }}
+          TESTS_SUMMARY: ${{ steps.summary.outputs.summary }}
           SELECTION_RUN_URL: ${{ github.event.workflow_run.html_url }}
         run: |
           if [ -z "${CHECK_RUN_ID}" ]; then

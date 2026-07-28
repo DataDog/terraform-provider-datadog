@@ -68,12 +68,30 @@ class TestSummarize(unittest.TestCase):
         result = summarize(stream)
         self.assertEqual(result["title"], "1 failed")
 
-    def test_selected_but_absent_is_not_run(self):
+    def test_selected_but_absent_and_skip_listed_is_not_run(self):
         stream = _stream(_event("TestA", "pass"))
-        result = summarize(stream, selected_regex="^TestA$|^TestB$")
+        result = summarize(
+            stream, selected_regex="^TestA$|^TestB$", skipped_regex="^TestB$"
+        )
         self.assertEqual(result["title"], "1 passed, 1 not run")
         self.assertIn("`TestB` | :fast_forward: not run", result["summary"])
         self.assertIn("2 test(s) selected", result["summary"])
+
+    def test_selected_but_absent_without_skip_list_has_no_result(self):
+        # A compile failure produces no terminal events; those tests were not
+        # skipped and must not be reported as if they were.
+        stream = _stream(_event("TestA", "pass"))
+        result = summarize(
+            stream, selected_regex="^TestA$|^TestB$", skipped_regex="^TestOther$"
+        )
+        self.assertEqual(result["title"], "1 without a result, 1 passed")
+        self.assertIn("`TestB` | :grey_question: no result reported", result["summary"])
+        self.assertNotIn("flaky_tests.yaml", result["summary"])
+
+    def test_absent_with_no_skip_regex_has_no_result(self):
+        result = summarize("", selected_regex="^TestA$")
+        self.assertEqual(result["title"], "1 without a result")
+        self.assertIn(":grey_question: no result reported", result["summary"])
 
     def test_skipped_test(self):
         stream = _stream(_event("TestA", "skip"))
@@ -89,6 +107,58 @@ class TestSummarize(unittest.TestCase):
         stream = _stream(_event("TestA", "pass"))
         result = summarize(stream, selected_regex="^TestA$|TestB")
         self.assertEqual(result["title"], "1 passed")
+
+
+class TestSummaryLimit(unittest.TestCase):
+    """The check-run output.summary field is capped at 65535 characters.
+
+    Sized against the real suite: ~1050 acceptance tests averaging 44 characters
+    of name, which renders to roughly 84 KB untruncated.
+    """
+
+    LIMIT = 65535
+    SUITE_SIZE = 1050
+    # Padded to the measured mean name length so the row width is realistic.
+    NAME = "TestAccDatadog{:04d}".format(0).ljust(44, "x")
+
+    def _many(self, count, action="pass"):
+        return _stream(
+            *(_event(f"TestAccDatadog{i:04d}".ljust(44, "x"), action)
+              for i in range(count))
+        )
+
+    def test_full_suite_overflows_without_truncation(self):
+        # Guards the premise. If rows ever shrink enough to all fit, truncation
+        # stops being exercised and the tests below would pass vacuously.
+        rows = self.SUITE_SIZE * (len(f"| `{self.NAME}` | :white_check_mark: passed |") + 1)
+        self.assertGreater(rows, self.LIMIT)
+
+    def test_truncates_and_says_so(self):
+        result = summarize(
+            self._many(self.SUITE_SIZE), details_url="https://example.test/r/1"
+        )
+        self.assertLessEqual(len(result["summary"]), self.LIMIT)
+        self.assertIn(f"of {self.SUITE_SIZE} tests", result["summary"])
+        # The link out must survive truncation: it is the only way to reach the
+        # results that were dropped.
+        self.assertIn("[Full logs](https://example.test/r/1)", result["summary"])
+
+    def test_failures_survive_truncation(self):
+        # Rows are ordered worst-first, so failures must be what survives.
+        stream = "\n".join(
+            [_stream(_event("TestAccFailingOne", "fail")), self._many(self.SUITE_SIZE)]
+        )
+        result = summarize(stream)
+        self.assertLessEqual(len(result["summary"]), self.LIMIT)
+        self.assertIn("`TestAccFailingOne` | :x: failed", result["summary"])
+
+    def test_title_still_counts_every_test(self):
+        result = summarize(self._many(self.SUITE_SIZE, "fail"))
+        self.assertEqual(result["title"], f"{self.SUITE_SIZE} failed")
+
+    def test_small_result_is_not_truncated(self):
+        result = summarize(self._many(3))
+        self.assertNotIn("Showing", result["summary"])
 
 
 if __name__ == "__main__":
