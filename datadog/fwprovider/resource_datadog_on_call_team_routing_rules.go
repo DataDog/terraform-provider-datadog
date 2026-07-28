@@ -396,7 +396,7 @@ func (r *onCallTeamRoutingRulesResource) ValidateConfig(ctx context.Context, req
 // object anywhere in its tree.
 func hasUnknownStructure(value tftypes.Value) bool {
 	found := false
-	_ = tftypes.Walk(value, func(_ *tftypes.AttributePath, v tftypes.Value) (bool, error) {
+	err := tftypes.Walk(value, func(_ *tftypes.AttributePath, v tftypes.Value) (bool, error) {
 		if found || v.IsNull() {
 			return false, nil
 		}
@@ -409,7 +409,7 @@ func hasUnknownStructure(value tftypes.Value) bool {
 		}
 		return true, nil
 	})
-	return found
+	return found || err != nil
 }
 
 func (r *onCallTeamRoutingRulesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
