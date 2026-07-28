@@ -81,7 +81,9 @@ func backtickedToken(s string) (string, bool) {
 // application/json body of the lowest-numbered 2xx code that has one. A missing
 // body leaves the field nil. $refs resolve through spec.Components up to maxDepth
 // edges, beyond which a node is SchemaKindRefCycle; a missing target yields
-// *UnresolvableRefError. Untracked, ungrouped operations are left untouched.
+// *UnresolvableRefError. Local oneOf naming failures become
+// SchemaKindUnsupported nodes carrying their reason so unrelated operations can
+// still normalize. Untracked, ungrouped operations are left untouched.
 func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int, trackingFieldName string) error {
 	if spec == nil {
 		return nil
@@ -493,12 +495,26 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 	case model.SchemaKindOneOf:
 		union, err := n.normalizeOneOf(s, depth, ctx)
 		if err != nil {
+			if isLocalOneOfNamingError(err) {
+				out.Kind = model.SchemaKindUnsupported
+				out.UnsupportedReason = err.Error()
+				return out, nil
+			}
 			return nil, err
 		}
 		out.OneOf = union
 	}
 
 	return out, nil
+}
+
+func isLocalOneOfNamingError(err error) bool {
+	var unresolved *model.OneOfVariantNameResolutionError
+	if errors.As(err, &unresolved) {
+		return true
+	}
+	var collision *model.OneOfVariantNameCollisionError
+	return errors.As(err, &collision)
 }
 
 type oneOfAlternativeSource struct {
@@ -682,7 +698,29 @@ func (n *schemaNormalizer) mergeOneOfSiblings(
 	if err != nil {
 		return nil, err
 	}
+	// A type:object sibling carrying only required names is a constraint
+	// carrier, not a standalone Terraform object. General schema normalization
+	// correctly classifies an object with no properties as Unsupported, but
+	// retaining that sentinel here would cause mergeNormalizedSchemas to discard
+	// the required constraint. Give this merge-only schema an empty object shape
+	// so its required names are applied to every object alternative.
+	if common.Kind == model.SchemaKindUnsupported && isRequiredOnlyObjectConstraint(commonRaw) {
+		common.Kind = model.SchemaKindObject
+		common.Properties = make(map[string]*model.Schema)
+		common.Required = sortedRequired(commonRaw)
+	}
 	return mergeNormalizedSchemas(variant, common), nil
+}
+
+func isRequiredOnlyObjectConstraint(s *base.Schema) bool {
+	return s != nil &&
+		hasType(s, "object") &&
+		len(s.Required) > 0 &&
+		(s.Properties == nil || orderedmap.Len(s.Properties) == 0) &&
+		s.Items == nil &&
+		s.AdditionalProperties == nil &&
+		len(s.Enum) == 0 &&
+		s.Format == ""
 }
 
 func oneOfSiblingSchema(s *base.Schema) (*base.Schema, bool) {
@@ -725,6 +763,9 @@ func mergeNormalizedSchemas(variant, common *model.Schema) *model.Schema {
 		return variant
 	}
 	if variant.Kind == model.SchemaKindUnsupported {
+		if variant.UnsupportedReason != "" {
+			return variant
+		}
 		if common.Description == "" {
 			common.Description = variant.Description
 		}

@@ -188,6 +188,11 @@ type Schema struct {
 	Sensitive bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
+	// UnsupportedReason explains why a node with Kind == SchemaKindUnsupported
+	// cannot be represented. It is retained so the affected artifact can fail
+	// with the parser's actionable local diagnostic without aborting spec loading
+	// or preventing unrelated artifacts from being generated.
+	UnsupportedReason string
 }
 
 // OneOfSpec is the normalized representation of an OpenAPI oneOf. The envelope

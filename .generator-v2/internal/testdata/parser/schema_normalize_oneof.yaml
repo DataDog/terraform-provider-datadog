@@ -141,6 +141,29 @@ paths:
       responses:
         "204":
           description: no content
+  /required-only-sibling:
+    post:
+      operationId: CreateOneOfWithRequiredOnlySibling
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: oneof_with_required_only_sibling
+        group:
+          create: CreateOneOfWithRequiredOnlySibling
+          read: CreateOneOfWithRequiredOnlySibling
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind]
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+      responses:
+        "204":
+          description: no content
 components:
   schemas:
     RecursiveVariant:
@@ -154,12 +177,16 @@ components:
       type: object
       required: [alpha]
       properties:
+        kind:
+          type: string
         alpha:
           type: boolean
     BetaVariant:
       type: object
       required: [beta]
       properties:
+        kind:
+          type: string
         beta:
           type: integer
     AnimalUnion:

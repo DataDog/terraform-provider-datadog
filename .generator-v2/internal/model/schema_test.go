@@ -435,6 +435,23 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 			"response.m{}.bad"),
 	)
 
+	It("retains a parser-supplied reason when an unsupported node fails one artifact", func() {
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"choice": {
+				Kind:              SchemaKindUnsupported,
+				UnsupportedReason: `parser: oneOf at "response.choice" has colliding variant name "object"`,
+			},
+		}))
+		Expect(tree).To(BeNil())
+
+		var unsupported *UnsupportedKindError
+		Expect(errors.As(err, &unsupported)).To(BeTrue())
+		Expect(unsupported.Path).To(Equal("response.choice"))
+		Expect(unsupported.Kind).To(Equal(SchemaKindUnsupported))
+		Expect(unsupported.Reason).To(ContainSubstring("colliding variant name"))
+		Expect(err.Error()).To(ContainSubstring(`oneOf at "response.choice"`))
+	})
+
 	It("returns the type-mapping error for a non-object root that cannot be mapped (array-of-array)", func() {
 		tree, _, err := BuildResponseTree(arrSchema(arrSchema(primSchema("string"))))
 		Expect(tree).To(BeNil())

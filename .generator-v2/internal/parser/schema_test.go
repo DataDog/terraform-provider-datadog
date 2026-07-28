@@ -214,16 +214,7 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 //  Normalized oneOf metadata
 // -------------------------------------------------------------------
 
-// Pending: these specs describe the normalized oneOf metadata the parser does not
-// populate yet -- they assert Schema.OneOf where the parser still writes the
-// legacy Schema.Variants. Written ahead of the implementation on purpose, but a
-// red suite cannot be merged and this stack merges bottom-up, so PDescribe reports
-// them as pending rather than failing.
-//
-// The commit that updates the parser to populate Schema.OneOf turns this back into
-// Describe; all six specs must pass at that point, which is what makes them a
-// check on that commit.
-var _ = PDescribe("NormalizeSchemas oneOf metadata", func() {
+var _ = Describe("NormalizeSchemas oneOf metadata", func() {
 
 	var spec *model.Spec
 
@@ -377,6 +368,24 @@ var _ = PDescribe("NormalizeSchemas oneOf metadata", func() {
 		))
 	})
 
+	It("retains a required-only object constraint adjacent to oneOf", func() {
+		union := oneOfFor("CreateOneOfWithRequiredOnlySibling")
+		Expect(union.Variants).To(HaveLen(2))
+
+		Expect(union.Variants).To(ConsistOf(
+			SatisfyAll(
+				HaveField("Schema.Properties", HaveKey("kind")),
+				HaveField("Schema.Properties", HaveKey("alpha")),
+				HaveField("Schema.Required", ConsistOf("alpha", "kind")),
+			),
+			SatisfyAll(
+				HaveField("Schema.Properties", HaveKey("kind")),
+				HaveField("Schema.Properties", HaveKey("beta")),
+				HaveField("Schema.Required", ConsistOf("beta", "kind")),
+			),
+		))
+	})
+
 	It("produces stable names and sorted variants across independent loads", func() {
 		first := oneOfFor("CreateInlineOneOf")
 		secondSpec := loadSpecMust("schema_normalize_oneof.yaml")
@@ -400,28 +409,44 @@ var _ = PDescribe("NormalizeSchemas oneOf metadata", func() {
 
 var _ = Describe("NormalizeSchemas oneOf naming failures", func() {
 
-	It("rejects an anonymous non-primitive alternative instead of exposing a content-derived name", func() {
-		_, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_oneof_unnamed.yaml"))
-		Expect(err).To(HaveOccurred())
+	It("marks an anonymous non-primitive alternative unsupported without aborting spec loading", func() {
+		spec, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_oneof_unnamed.yaml"))
+		Expect(err).NotTo(HaveOccurred())
 
-		var unresolved *model.OneOfVariantNameResolutionError
-		Expect(errors.As(err, &unresolved)).To(BeTrue())
-		Expect(unresolved.Path).To(Equal("request"))
-		Expect(unresolved.Alternative).To(Equal(2))
-		Expect(err.Error()).To(Equal(
+		schema := opByID(spec, "CreateUnnamedOneOf").RequestSchema
+		Expect(schema.Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(schema.UnsupportedReason).To(Equal(
 			`parser: oneOf at "request" alternative 2 has no stable Terraform variant name; use a discriminator mapping key or a named schema reference`,
 		))
 	})
 
-	It("rejects variant names that collide after normalization", func() {
-		_, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_oneof_collision.yaml"))
-		Expect(err).To(HaveOccurred())
+	It("marks a colliding union unsupported without aborting spec loading", func() {
+		spec, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_oneof_collision.yaml"))
+		Expect(err).NotTo(HaveOccurred())
 
-		var collision *model.OneOfVariantNameCollisionError
-		Expect(errors.As(err, &collision)).To(BeTrue())
-		Expect(collision.Path).To(Equal("request"))
-		Expect(collision.Name).To(Equal("foo_bar"))
-		Expect(err.Error()).To(ContainSubstring(`parser: oneOf at "request" has colliding variant name "foo_bar"`))
+		schema := opByID(spec, "CreateCollidingOneOf").RequestSchema
+		Expect(schema.Kind).To(Equal(model.SchemaKindUnsupported))
+		Expect(schema.UnsupportedReason).To(Equal(
+			`parser: oneOf at "request" has colliding variant name "foo_bar"`,
+		))
+
+		healthy := opByID(spec, "CreateHealthyAfterCollision").RequestSchema
+		Expect(healthy.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(healthy.Type).To(Equal("string"))
+	})
+
+	It("does not replace a local naming failure with outer sibling constraints", func() {
+		unsupported := &model.Schema{
+			Kind:              model.SchemaKindUnsupported,
+			UnsupportedReason: `parser: oneOf at "request.choice" has colliding variant name "object"`,
+		}
+		common := &model.Schema{
+			Kind:       model.SchemaKindObject,
+			Properties: map[string]*model.Schema{"shared": {Kind: model.SchemaKindPrimitive, Type: "string"}},
+		}
+
+		Expect(mergeNormalizedSchemas(unsupported, common)).To(BeIdenticalTo(unsupported))
+		Expect(unsupported.UnsupportedReason).To(ContainSubstring("colliding variant name"))
 	})
 })
 

@@ -29,6 +29,25 @@ paths:
       responses:
         "204":
           description: no content
+  /healthy:
+    post:
+      operationId: CreateHealthyAfterCollision
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: healthy_after_collision
+        group:
+          create: CreateHealthyAfterCollision
+          read: CreateHealthyAfterCollision
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+      responses:
+        "204":
+          description: no content
 components:
   schemas:
     Alpha:
