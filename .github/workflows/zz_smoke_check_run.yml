@@ -1,0 +1,179 @@
+## TEMPORARY - DELETE BEFORE MERGING (APIR-3132)
+#
+# Proves the parts of test_pr_integration.yml that cannot be exercised from a PR
+# branch. That workflow runs on workflow_run, which always executes the copy on
+# the default branch, so its check-run publishing is unverifiable until merged.
+# workflow_dispatch is no help either: it also requires the file on the default
+# branch. push does run the branch's own copy, so this uses that.
+#
+# The steps below are copied verbatim from test_pr_integration.yml so that what
+# is proven here is the code that ships. Each scenario publishes its own check
+# run against the pushed commit, which is the PR head.
+name: zz smoke - check run publishing
+
+permissions:
+  contents: read
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: ["fpighi/APIR-3132/**"]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - passing # small result set, all green
+          - failing # a failure plus a re-run flake
+          - oversized # the whole suite, to exceed the 65535-char summary cap
+          - no-results # tests produced no jsonfile
+          - nothing-selected # should_run == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Build a results file for this scenario
+        id: fixture
+        env:
+          SCENARIO: ${{ matrix.scenario }}
+        run: |
+          mkdir -p /tmp/testacc-results
+          python3 - <<'PY'
+          import json, os, re, pathlib
+
+          scenario = os.environ["SCENARIO"]
+          out = pathlib.Path("/tmp/testacc-results/testacc.json")
+          gh_out = pathlib.Path(os.environ["GITHUB_OUTPUT"])
+
+          def ev(test, action):
+              return json.dumps({"Action": action, "Test": test, "Package": "datadog/tests"})
+
+          # Real acceptance-test names, so row widths match production.
+          names = sorted({
+              m.group(1)
+              for p in pathlib.Path("datadog/tests").glob("*_test.go")
+              for m in re.finditer(r"^func (TestAcc[A-Za-z0-9_]+)\(", p.read_text(errors="replace"), re.M)
+          })
+
+          selected, skipped, lines = [], [], []
+          if scenario == "passing":
+              selected = names[:4]
+              lines = [ev(n, "pass") for n in selected]
+          elif scenario == "failing":
+              selected = names[:4]
+              lines = [
+                  ev(selected[0], "fail"),
+                  ev(selected[1], "fail"), ev(selected[1], "pass"),  # flake
+                  ev(selected[2], "pass"),
+              ]
+              skipped = [selected[3]]  # held back by flaky_tests.yaml
+          elif scenario == "oversized":
+              selected = names
+              lines = [ev(n, "pass") for n in names]
+          elif scenario == "no-results":
+              selected = names[:2]
+              out = pathlib.Path("/tmp/testacc-results/absent.json")
+
+          if lines:
+              out.write_text("\n".join(lines) + "\n")
+
+          anchored = lambda xs: "|".join(f"^{n}$" for n in xs)
+          with gh_out.open("a") as fh:
+              fh.write(f"run_regex={anchored(selected)}\n")
+              fh.write(f"skip_regex={anchored(skipped)}\n")
+              fh.write(f"selected_count={len(selected)}\n")
+          print(f"{scenario}: {len(selected)} selected, {len(lines)} events, results file exists={out.exists()}")
+          PY
+
+      # Verbatim from test_pr_integration.yml (report-start).
+      - name: Create in-progress check run
+        id: create
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+          CHECK_NAME: "zz smoke: pr-integration-tests (${{ matrix.scenario }})"
+        run: |
+          details_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          check_run_id=$(gh api "repos/${GITHUB_REPOSITORY}/check-runs" \
+            -f name="${CHECK_NAME}" \
+            -f head_sha="${HEAD_SHA}" \
+            -f status=in_progress \
+            -f details_url="${details_url}" \
+            -f 'output[title]=Selecting and running affected integration tests' \
+            -f 'output[summary]=Integration tests affected by this PR are running against the live API.' \
+            --jq .id)
+          echo "check_run_id=${check_run_id}" >> "$GITHUB_OUTPUT"
+
+      # Verbatim from test_pr_integration.yml (report-finish, Build test summary).
+      - name: Build test summary
+        id: summary
+        if: matrix.scenario != 'nothing-selected'
+        env:
+          RUN_REGEX: ${{ steps.fixture.outputs.run_regex }}
+          SKIP_REGEX: ${{ steps.fixture.outputs.skip_regex }}
+        run: |
+          result=$(python3 scripts/summarize_testacc.py \
+            --jsonfile /tmp/testacc-results/testacc.json \
+            --selected-regex "${RUN_REGEX}" \
+            --skipped-regex "${SKIP_REGEX}" \
+            --details-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+          {
+            echo "title=$(jq -r .title <<<"$result")"
+            echo "summary<<CHECK_SUMMARY_EOF"
+            jq -r .summary <<<"$result"
+            echo "CHECK_SUMMARY_EOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "summary is $(jq -r .summary <<<"$result" | wc -c) bytes (API cap 65535)"
+
+      # Verbatim from test_pr_integration.yml (report-finish, Complete check run),
+      # with the job-result inputs faked per scenario.
+      - name: Complete check run
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECK_RUN_ID: ${{ steps.create.outputs.check_run_id }}
+          SELECTION_CONCLUSION: success
+          SELECTION_RESULT: success
+          SHOULD_RUN: ${{ matrix.scenario != 'nothing-selected' }}
+          TESTS_RESULT: ${{ matrix.scenario == 'failing' && 'failure' || 'success' }}
+          TESTS_TITLE: ${{ steps.summary.outputs.title }}
+          TESTS_SUMMARY: ${{ steps.summary.outputs.summary }}
+          SELECTION_RUN_URL: https://example.test/selection-run
+        run: |
+          if [ -z "${CHECK_RUN_ID}" ]; then
+            echo "report-start did not create a check run; nothing to complete." >&2
+            exit 1
+          fi
+
+          if [ "${SELECTION_CONCLUSION}" != "success" ] || [ "${SELECTION_RESULT}" != "success" ]; then
+            if [ "${SELECTION_CONCLUSION}" = "cancelled" ]; then
+              conclusion=cancelled
+            else
+              conclusion=failure
+            fi
+            title="Could not determine which tests to run"
+            summary="The [PR Test Selection run](${SELECTION_RUN_URL}) concluded \`${SELECTION_CONCLUSION}\`, so no integration tests were selected. Re-run it to retry."
+          elif [ "${SHOULD_RUN}" != "true" ]; then
+            conclusion=success
+            title="No affected integration tests"
+            summary="No resource, data source or acceptance test file changed in this PR, so there was nothing to run."
+          else
+            case "${TESTS_RESULT}" in
+              success) conclusion=success ;;
+              cancelled) conclusion=cancelled ;;
+              *) conclusion=failure ;;
+            esac
+            title="${TESTS_TITLE:-Integration tests ${TESTS_RESULT}}"
+            summary="${TESTS_SUMMARY:-The integration test job ${TESTS_RESULT} before producing results.}"
+          fi
+
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/check-runs/${CHECK_RUN_ID}" \
+            -f status=completed \
+            -f conclusion="${conclusion}" \
+            -f "output[title]=${title}" \
+            -f "output[summary]=${summary}"
+          echo "patched check ${CHECK_RUN_ID} -> ${conclusion} / ${title}"
