@@ -400,6 +400,19 @@ var _ = PDescribe("NormalizeSchemas oneOf metadata", func() {
 
 var _ = Describe("NormalizeSchemas oneOf naming failures", func() {
 
+	It("rejects an anonymous non-primitive alternative instead of exposing a content-derived name", func() {
+		_, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_oneof_unnamed.yaml"))
+		Expect(err).To(HaveOccurred())
+
+		var unresolved *model.OneOfVariantNameResolutionError
+		Expect(errors.As(err, &unresolved)).To(BeTrue())
+		Expect(unresolved.Path).To(Equal("request"))
+		Expect(unresolved.Alternative).To(Equal(2))
+		Expect(err.Error()).To(Equal(
+			`parser: oneOf at "request" alternative 2 has no stable Terraform variant name; use a discriminator mapping key or a named schema reference`,
+		))
+	})
+
 	It("rejects variant names that collide after normalization", func() {
 		_, err := LoadSpec(filepath.Join("../testdata/parser", "schema_normalize_oneof_collision.yaml"))
 		Expect(err).To(HaveOccurred())

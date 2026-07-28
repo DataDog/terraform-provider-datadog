@@ -103,7 +103,9 @@ var _ = Describe("deterministic oneOf variant naming", func() {
 
 	DescribeTable("uses the first meaningful candidate in the stable precedence order",
 		func(candidates OneOfVariantNameCandidates, want string) {
-			Expect(ResolveOneOfVariantName(candidates)).To(Equal(want))
+			name, err := ResolveOneOfVariantName("request.choice", 1, candidates)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(name).To(Equal(want))
 		},
 		Entry("discriminator mapping key wins",
 			OneOfVariantNameCandidates{
@@ -111,7 +113,6 @@ var _ = Describe("deterministic oneOf variant naming", func() {
 				RefName:          "ReferencedResult",
 				PrimitiveType:    "string",
 				PrimitiveFormat:  "uuid",
-				ShaSum:           "deadbeef",
 			},
 			"http_result",
 		),
@@ -119,7 +120,6 @@ var _ = Describe("deterministic oneOf variant naming", func() {
 			OneOfVariantNameCandidates{
 				RefName:       "ReferencedResult",
 				PrimitiveType: "string",
-				ShaSum:        "deadbeef",
 			},
 			"referenced_result",
 		),
@@ -127,19 +127,13 @@ var _ = Describe("deterministic oneOf variant naming", func() {
 			OneOfVariantNameCandidates{
 				PrimitiveType:   "string",
 				PrimitiveFormat: "uuid",
-				ShaSum:          "deadbeef",
 			},
 			"string_uuid",
-		),
-		Entry("structural fingerprint is the final fallback",
-			OneOfVariantNameCandidates{ShaSum: "deadbeef"},
-			"variant_deadbeef",
 		),
 		Entry("an unusable reference name falls through to the primitive name",
 			OneOfVariantNameCandidates{
 				RefName:       "!!!",
 				PrimitiveType: "boolean",
-				ShaSum:        "deadbeef",
 			},
 			"boolean",
 		),
@@ -147,19 +141,38 @@ var _ = Describe("deterministic oneOf variant naming", func() {
 			OneOfVariantNameCandidates{DiscriminatorKey: "123 result"},
 			"variant_123_result",
 		),
-		Entry("empty candidates still produce a stable name",
-			OneOfVariantNameCandidates{},
-			"variant",
-		),
 	)
 
+	It("rejects an anonymous non-primitive alternative", func() {
+		name, err := ResolveOneOfVariantName("request.choice", 2, OneOfVariantNameCandidates{})
+		Expect(name).To(BeEmpty())
+
+		var unresolved *OneOfVariantNameResolutionError
+		Expect(errors.As(err, &unresolved)).To(BeTrue())
+		Expect(unresolved.Path).To(Equal("request.choice"))
+		Expect(unresolved.Alternative).To(Equal(2))
+		Expect(err.Error()).To(Equal(
+			`oneOf at "request.choice" alternative 2 has no stable Terraform variant name; use a discriminator mapping key or a named schema reference`,
+		))
+	})
+
 	It("rejects names that collide after normalization", func() {
-		first := ResolveOneOfVariantName(OneOfVariantNameCandidates{DiscriminatorKey: "Foo Bar"})
-		second := ResolveOneOfVariantName(OneOfVariantNameCandidates{DiscriminatorKey: "foo_bar"})
+		first, err := ResolveOneOfVariantName(
+			"request.choice",
+			1,
+			OneOfVariantNameCandidates{DiscriminatorKey: "Foo Bar"},
+		)
+		Expect(err).NotTo(HaveOccurred())
+		second, err := ResolveOneOfVariantName(
+			"request.choice",
+			2,
+			OneOfVariantNameCandidates{DiscriminatorKey: "foo_bar"},
+		)
+		Expect(err).NotTo(HaveOccurred())
 		Expect(first).To(Equal("foo_bar"))
 		Expect(second).To(Equal(first))
 
-		err := ValidateOneOfVariantNames("request.choice", []OneOfVariant{
+		err = ValidateOneOfVariantNames("request.choice", []OneOfVariant{
 			{TFName: first},
 			{TFName: second},
 		})

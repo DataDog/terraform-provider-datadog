@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"crypto/sha256"
 	"errors"
 	"fmt"
 	"slices"
@@ -521,7 +520,7 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 		Discriminator: normalizeDiscriminator(s.Discriminator),
 	}
 
-	for _, proxy := range s.OneOf {
+	for alternativeIndex, proxy := range s.OneOf {
 		source, err := n.inspectOneOfVariants(proxy, depth)
 		if err != nil {
 			return nil, err
@@ -533,7 +532,15 @@ func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaC
 			continue
 		}
 
-		tfName := oneOfVariantName(s.Discriminator, proxy, source)
+		tfName, err := oneOfVariantName(
+			s.Discriminator,
+			source,
+			ctx.path,
+			alternativeIndex+1,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("parser: %w", err)
+		}
 		variantPath := childPath(ctx.path, tfName)
 		variantSchema, err := n.normalizeProxyAt(proxy, depth, schemaContext{
 			path:     variantPath,
@@ -620,7 +627,12 @@ func normalizeDiscriminator(discriminator *base.Discriminator) *model.OneOfDiscr
 	return out
 }
 
-func oneOfVariantName(discriminator *base.Discriminator, proxy *base.SchemaProxy, source oneOfAlternativeSource) string {
+func oneOfVariantName(
+	discriminator *base.Discriminator,
+	source oneOfAlternativeSource,
+	path string,
+	alternative int,
+) (string, error) {
 	candidates := model.OneOfVariantNameCandidates{
 		DiscriminatorKey: discriminatorNameForRef(discriminator, source.ref, source.refName),
 		RefName:          source.refName,
@@ -631,9 +643,7 @@ func oneOfVariantName(discriminator *base.Discriminator, proxy *base.SchemaProxy
 			candidates.PrimitiveFormat = source.schema.Format
 		}
 	}
-	sum := sha256.Sum256([]byte(schemaProxySignature(proxy)))
-	candidates.ShaSum = fmt.Sprintf("%x", sum[:4])
-	return model.ResolveOneOfVariantName(candidates)
+	return model.ResolveOneOfVariantName(path, alternative, candidates)
 }
 
 func discriminatorNameForRef(discriminator *base.Discriminator, ref, refName string) string {
@@ -652,58 +662,6 @@ func discriminatorNameForRef(discriminator *base.Discriminator, ref, refName str
 		}
 	}
 	return ""
-}
-
-// schemaProxySignature is deliberately independent of oneOf source order and
-// OpenAPI map insertion order. It is only the final naming fallback for inline,
-// non-primitive alternatives.
-func schemaProxySignature(proxy *base.SchemaProxy) string {
-	if proxy == nil {
-		return "nil"
-	}
-	if proxy.IsReference() {
-		return "ref:" + proxy.GetReference()
-	}
-	s := proxy.Schema()
-	if s == nil {
-		return "empty"
-	}
-
-	var parts []string
-	types := append([]string(nil), s.Type...)
-	sort.Strings(types)
-	parts = append(parts, "type="+strings.Join(types, ","), "format="+s.Format)
-
-	required := append([]string(nil), s.Required...)
-	sort.Strings(required)
-	parts = append(parts, "required="+strings.Join(required, ","))
-
-	for _, key := range sortedPropertyKeys(s) {
-		parts = append(parts, "property:"+key+"="+schemaProxySignature(s.Properties.GetOrZero(key)))
-	}
-	if s.Items != nil && s.Items.IsA() {
-		parts = append(parts, "items="+schemaProxySignature(s.Items.A))
-	}
-	if s.AdditionalProperties != nil {
-		switch {
-		case s.AdditionalProperties.IsA():
-			parts = append(parts, "additional="+schemaProxySignature(s.AdditionalProperties.A))
-		case s.AdditionalProperties.IsB():
-			parts = append(parts, fmt.Sprintf("additional=%t", s.AdditionalProperties.B))
-		}
-	}
-
-	oneOf := make([]string, 0, len(s.OneOf))
-	for _, child := range s.OneOf {
-		oneOf = append(oneOf, schemaProxySignature(child))
-	}
-	sort.Strings(oneOf)
-	parts = append(parts, "oneOf="+strings.Join(oneOf, "|"))
-
-	enum := enumValues(s)
-	sort.Strings(enum)
-	parts = append(parts, "enum="+strings.Join(enum, ","))
-	return strings.Join(parts, ";")
 }
 
 // mergeOneOfSiblings applies the constraints adjacent to oneOf to an

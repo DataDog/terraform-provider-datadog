@@ -111,12 +111,7 @@ paths:
                 recursive:
                   oneOf:
                     - type: string
-                    - type: object
-                      properties:
-                        nested:
-                          oneOf:
-                            - type: boolean
-                            - type: string
+                    - $ref: "#/components/schemas/RecursiveVariant"
       responses:
         "204":
           description: no content
@@ -141,21 +136,32 @@ paths:
                 shared:
                   type: string
               oneOf:
-                - type: object
-                  required: [alpha]
-                  properties:
-                    alpha:
-                      type: boolean
-                - type: object
-                  required: [beta]
-                  properties:
-                    beta:
-                      type: integer
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
       responses:
         "204":
           description: no content
 components:
   schemas:
+    RecursiveVariant:
+      type: object
+      properties:
+        nested:
+          oneOf:
+            - type: boolean
+            - type: string
+    AlphaVariant:
+      type: object
+      required: [alpha]
+      properties:
+        alpha:
+          type: boolean
+    BetaVariant:
+      type: object
+      required: [beta]
+      properties:
+        beta:
+          type: integer
     AnimalUnion:
       discriminator:
         propertyName: kind

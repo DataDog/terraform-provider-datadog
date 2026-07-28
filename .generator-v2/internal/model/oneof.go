@@ -8,19 +8,35 @@ import (
 
 // OneOfVariantNameCandidates contains the stable OpenAPI-derived identifiers
 // available for naming one Terraform oneOf variant block. The resolver considers
-// them in field order; StructuralFingerprint is the final fallback.
+// them in field order and rejects alternatives with no meaningful candidate.
 type OneOfVariantNameCandidates struct {
 	DiscriminatorKey string
 	RefName          string
 	PrimitiveType    string
 	PrimitiveFormat  string
-	ShaSum           string
+}
+
+// OneOfVariantNameResolutionError reports an alternative that has no
+// compatibility-stable source for its public Terraform block name.
+type OneOfVariantNameResolutionError struct {
+	Path        string
+	Alternative int
+}
+
+func (e *OneOfVariantNameResolutionError) Error() string {
+	return fmt.Sprintf(
+		"oneOf at %q alternative %d has no stable Terraform variant name; use a discriminator mapping key or a named schema reference",
+		e.Path,
+		e.Alternative,
+	)
 }
 
 // ResolveOneOfVariantName returns the stable snake_case Terraform block name for
 // a oneOf alternative. Empty or punctuation-only candidates are skipped so the
-// next meaningful source in the precedence chain can be used.
-func ResolveOneOfVariantName(candidates OneOfVariantNameCandidates) string {
+// next meaningful source in the precedence chain can be used. Anonymous
+// non-primitive alternatives fail rather than exposing a content- or
+// source-order-derived name as part of the public Terraform schema.
+func ResolveOneOfVariantName(path string, alternative int, candidates OneOfVariantNameCandidates) (string, error) {
 	primitive := candidates.PrimitiveType
 	if primitive != "" && candidates.PrimitiveFormat != "" {
 		primitive += "_" + candidates.PrimitiveFormat
@@ -32,20 +48,11 @@ func ResolveOneOfVariantName(candidates OneOfVariantNameCandidates) string {
 		primitive,
 	} {
 		if name := normalizeOneOfVariantName(candidate); name != "" {
-			return name
+			return name, nil
 		}
 	}
 
-	fallback := "variant"
-	if candidates.ShaSum != "" {
-		fallback += "_" + candidates.ShaSum
-	}
-	// "variant" makes this non-empty even when a caller supplies an unusable
-	// fingerprint, but normalize it for consistency with every other candidate.
-	if name := normalizeOneOfVariantName(fallback); name != "" {
-		return name
-	}
-	return "variant"
+	return "", &OneOfVariantNameResolutionError{Path: path, Alternative: alternative}
 }
 
 func normalizeOneOfVariantName(candidate string) string {
