@@ -63,7 +63,7 @@
         "type": "array",
         "items": { "type": "string", "minLength": 1 },
         "uniqueItems": true,
-        "description": "Dot-paths, from the request/response body root (e.g. \"data.attributes.foo\"), of attributes to omit from the generated Terraform schema. Each entry drops that node and its subtree. Paths are the spec structure, before envelope flattening."
+        "description": "Attributes to omit from the generated Terraform schema, named as they appear in Terraform after envelope flattening: a top-level attribute is just its name (e.g. \"creator\"), a nested one is a dot-path (e.g. \"settings.foo\"). Each entry drops that node and its subtree. The full spec-path (e.g. \"data.attributes.creator\") also matches, for fields outside the data.attributes envelope."
       },
       "overwrites": {
         "type": "string",

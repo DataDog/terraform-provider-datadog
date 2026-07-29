@@ -178,6 +178,26 @@ func (n *schemaNormalizer) beginIgnore(paths []string) {
 	}
 }
 
+// ignoreMatch reports whether path is on the current ignore list, and returns
+// the list entry that matched. It tries the full spec-path and its
+// envelope-relative form so an author can name the flattened attribute: the
+// JSON:API envelope hoists data.attributes.X (and data.id) to the top level, so
+// "creator" matches data.attributes.creator and "settings.foo" matches
+// data.attributes.settings.foo. The relative form is the whole path under the
+// envelope, not a suffix, so "creator" never matches a nested foo.creator.
+func (n *schemaNormalizer) ignoreMatch(path string) (string, bool) {
+	if n.ignore[path] {
+		return path, true
+	}
+	if rel, ok := strings.CutPrefix(path, "data.attributes."); ok && n.ignore[rel] {
+		return rel, true
+	}
+	if rel, ok := strings.CutPrefix(path, "data."); ok && n.ignore[rel] {
+		return rel, true
+	}
+	return "", false
+}
+
 // unmatchedIgnore returns the current operation's ignore paths that matched no
 // node, sorted — each is a likely typo or a stale path worth a warning.
 func (n *schemaNormalizer) unmatchedIgnore() []string {
@@ -463,12 +483,12 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, path strin
 		Description: s.Description,
 	}
 
-	// The ignore list targets a node by its spec-path; a fresh model.Schema is
-	// built per reference site (below), so stamping here never bleeds across
+	// The ignore list targets a node by its attribute path; a fresh model.Schema
+	// is built per reference site (below), so stamping here never bleeds across
 	// other usages of a shared component.
-	if n.ignore[path] {
+	if key, ok := n.ignoreMatch(path); ok {
 		out.Ignore = true
-		n.matched[path] = true
+		n.matched[key] = true
 	}
 
 	// The kind (set above by classifyKind) decides which children to recurse into

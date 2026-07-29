@@ -33,9 +33,11 @@ type TrackingFieldMetadata struct {
 	// Skip explicitly disables generation while keeping the annotation in
 	// place, equivalent to removing the extension.
 	Skip bool `json:"skip,omitempty"`
-	// Ignore lists dot-paths, from the request/response body root (e.g.
-	// "data.attributes.foo"), of attributes to omit from the generated artifact.
-	// Each entry drops that node and its subtree.
+	// Ignore lists attributes to omit from the generated artifact, named as they
+	// appear in Terraform after envelope flattening: a top-level attribute by its
+	// name ("creator"), a nested one by a dot-path ("settings.foo"). The full
+	// spec-path ("data.attributes.creator") also matches. Each entry drops that
+	// node and its subtree.
 	Ignore []string `json:"ignore,omitempty"`
 	// Overwrites names the hand-written data source constructor this generated
 	// artifact supersedes, e.g. "NewDatadogTeamDataSource". When set, the
