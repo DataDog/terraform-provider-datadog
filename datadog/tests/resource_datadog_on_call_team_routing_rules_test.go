@@ -240,6 +240,33 @@ func TestAccOnCallTeamRoutingRulesUnknownBlocks(t *testing.T) {
 				PlanOnly:    true,
 				ExpectError: regexp.MustCompile("invalid query on last rule"),
 			},
+			{
+				// A catch-all violation that is already known at plan time must
+				// still surface even when another rule carries an unknown block.
+				// Skipping all validation on any unknown structure (the earlier
+				// regression) would let this reach apply and fail there instead.
+				Config: unknownSet + `
+				resource "datadog_on_call_team_routing_rules" "unknown_blocks" {
+				  id = "00000000-aba2-0000-0000-000000000000"
+				  rule {
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				    dynamic "action" {
+				      for_each = toset(split(",", datadog_role.unknown.id))
+				      content {
+				        trigger_workflow_automation {
+				          handle = "handle"
+				        }
+				      }
+				    }
+				  }
+				  rule {
+				    query             = "tags.service:test"
+				    escalation_policy = "00000000-aba2-0000-0000-000000000001"
+				  }
+				}`,
+				PlanOnly:    true,
+				ExpectError: regexp.MustCompile("invalid query on last rule"),
+			},
 		},
 	})
 }

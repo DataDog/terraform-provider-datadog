@@ -378,38 +378,123 @@ func (r *onCallTeamRoutingRulesResource) ImportState(ctx context.Context, reques
 // ValidateConfig surfaces rule violations at `terraform plan`, before any API
 // call. The same checks run again in Create/Update once unknown values are
 // resolved.
+//
+// The config is decoded into onCallTeamRoutingRulesModel, whose `rule`/`action`
+// lists are plain Go slices. The framework cannot decode an unknown *collection*
+// into a slice (only types.X wrappers hold unknowns), so a config with an
+// unknown `rule` or nested list — e.g. a `dynamic` block driven by a value that
+// is computed until apply — fails to decode. Unknown *scalars* decode fine.
+//
+// When the whole config is fully known we decode and run every check. Otherwise
+// we skip the decode-based checks but still enforce the last-rule catch-all
+// contract directly against the raw config when the last rule is itself fully
+// known: it is the highest-value plan-time signal and is often knowable even
+// when another rule carries an unknown block.
 func (r *onCallTeamRoutingRulesResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
-	if hasUnknownStructure(request.Config.Raw) {
+	if request.Config.Raw.IsFullyKnown() {
+		var config onCallTeamRoutingRulesModel
+		response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
+		if response.Diagnostics.HasError() {
+			return
+		}
+		response.Diagnostics.Append(config.Validate()...)
 		return
 	}
 
-	var config onCallTeamRoutingRulesModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	response.Diagnostics.Append(config.Validate()...)
+	response.Diagnostics.Append(validateLastRuleCatchAll(request.Config.Raw)...)
 }
 
-// hasUnknownStructure reports whether value contains an unknown collection or
-// object anywhere in its tree.
-func hasUnknownStructure(value tftypes.Value) bool {
-	found := false
-	err := tftypes.Walk(value, func(_ *tftypes.AttributePath, v tftypes.Value) (bool, error) {
-		if found || v.IsNull() {
-			return false, nil
+// validateLastRuleCatchAll enforces, directly against the raw config, that the
+// last rule is a valid catch-all. It mirrors the last-rule branch of
+// onCallTeamRoutingRulesModel.Validate for the case where the full model cannot
+// be decoded because some part of the config is unknown. It returns no
+// diagnostics unless the rule list and the last rule are known well enough to
+// judge — an unknown rule list, or an unknown last rule, is left to apply-time
+// validation in Create/Update.
+func validateLastRuleCatchAll(config tftypes.Value) diag.Diagnostics {
+	diags := diag.Diagnostics{}
+
+	ruleList, ok := attrValue(config, "rule")
+	if !ok || !ruleList.IsKnown() || ruleList.IsNull() {
+		return diags
+	}
+
+	var rules []tftypes.Value
+	if err := ruleList.As(&rules); err != nil || len(rules) == 0 {
+		return diags
+	}
+
+	last := rules[len(rules)-1]
+
+	root := path.Root("rule").AtListIndex(len(rules) - 1)
+
+	// Each check runs only when its own input is known: an unknown value
+	// elsewhere in the last rule must not suppress a violation that is already
+	// unambiguous, and must not be reported as a violation itself.
+	if query, ok := attrValue(last, "query"); ok && query.IsKnown() {
+		var s string
+		if err := query.As(&s); err == nil && s != "" {
+			diags.AddAttributeError(root.AtName("query"), "invalid query on last rule", "the last rule acts as a catch-all and must not use a query. Remove `query` from the last rule, or move a catch-all rule to the end.")
 		}
-		if !v.IsKnown() {
-			switch v.Type().(type) {
-			case tftypes.List, tftypes.Set, tftypes.Map, tftypes.Tuple, tftypes.Object:
-				found = true
+	}
+
+	if tr, ok := attrValue(last, "time_restrictions"); ok && tr.IsKnown() && !tr.IsNull() {
+		diags.AddAttributeError(root.AtName("time_restrictions"), "invalid time_restrictions on last rule", "the last rule acts as a catch-all and must not use a time restriction. Remove `time_restrictions` from the last rule, or move a catch-all rule to the end.")
+	}
+
+	// Only flag a missing escalation policy when we can see the whole picture:
+	// both the rule-level attribute and the action list must be known, else an
+	// unknown one could be supplying it.
+	if ep, hasEP := attrValue(last, "escalation_policy"); hasEP && ep.IsKnown() {
+		if actions, ok := attrValue(last, "action"); ok && actions.IsFullyKnown() {
+			if !lastRuleDefinesEscalationPolicy(last) {
+				diags.AddAttributeError(root.AtName("escalation_policy"), "missing escalation policy on last rule", "the last rule acts as a catch-all and must define an escalation policy. Set `escalation_policy` or add an `escalation_policy` action to the last rule.")
 			}
-			return false, nil
 		}
-		return true, nil
-	})
-	return found || err != nil
+	}
+
+	return diags
+}
+
+// lastRuleDefinesEscalationPolicy reports whether a rule sets an escalation
+// policy, either via the rule-level `escalation_policy` attribute or via an
+// `escalation_policy` action.
+func lastRuleDefinesEscalationPolicy(rule tftypes.Value) bool {
+	if ep, ok := attrValue(rule, "escalation_policy"); ok && !ep.IsNull() {
+		return true
+	}
+
+	actions, ok := attrValue(rule, "action")
+	if !ok || !actions.IsKnown() || actions.IsNull() {
+		return false
+	}
+	var actionList []tftypes.Value
+	if err := actions.As(&actionList); err != nil {
+		return false
+	}
+	for _, action := range actionList {
+		if ep, ok := attrValue(action, "escalation_policy"); ok && !ep.IsNull() {
+			return true
+		}
+	}
+	return false
+}
+
+// attrValue returns the named attribute of an object value. The second return
+// is false when value is not a known, non-null object or has no such attribute.
+func attrValue(value tftypes.Value, name string) (tftypes.Value, bool) {
+	if !value.IsKnown() || value.IsNull() {
+		return tftypes.Value{}, false
+	}
+	if _, ok := value.Type().(tftypes.Object); !ok {
+		return tftypes.Value{}, false
+	}
+	attrs := map[string]tftypes.Value{}
+	if err := value.As(&attrs); err != nil {
+		return tftypes.Value{}, false
+	}
+	v, ok := attrs[name]
+	return v, ok
 }
 
 func (r *onCallTeamRoutingRulesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
