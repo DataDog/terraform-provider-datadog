@@ -17025,6 +17025,7 @@ Optional:
 - `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--audit_query))
+- `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--log_query))
@@ -17159,6 +17160,40 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--comparison"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.comparison`
+
+Required:
+
+- `duration` (Block List, Min: 1, Max: 1) The comparison period. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--comparison--duration))
+
+Optional:
+
+- `directionality` (String) Which direction of change is considered an improvement. Valid values are `increase_better`, `decrease_better`, `neutral`. Defaults to `"neutral"`.
+- `type` (String) How the delta is expressed. Valid values are `absolute`, `relative`, `both`. Defaults to `"absolute"`.
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--comparison--duration"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.comparison.duration`
+
+Required:
+
+- `type` (String) The comparison window type. Valid values are `previous_timeframe`, `custom_timeframe`, `previous_day`, `previous_week`, `previous_month`.
+
+Optional:
+
+- `custom_timeframe` (Block List, Max: 1) Fixed time range to compare against when `type` is `custom_timeframe`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--comparison--duration--custom_timeframe))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--comparison--duration--custom_timeframe"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.comparison.duration.custom_timeframe`
+
+Required:
+
+- `from` (Number) Start time in milliseconds since epoch.
+- `to` (Number) End time in milliseconds since epoch.
+
 
 
 
@@ -18746,11 +18781,73 @@ Required:
 
 Optional:
 
+- `audience_filters` (Block List, Max: 1) Product Analytics and RUM audience filters. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters))
 - `entries_per_step` (Number) Entries per step.
+- `join_keys` (Block List, Max: 1) Join keys for the Sankey query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--join_keys))
 - `number_of_steps` (Number) Number of steps.
+- `occurrence` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrence))
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--user))
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--account"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--segment"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--audience_filters--user"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--join_keys"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+<a id="nestedblock--widget--group_definition--widget--sankey_definition--request--rum_request--query--occurrence"></a>
+### Nested Schema for `widget.group_definition.widget.sankey_definition.request.rum_request.query.occurrence`
+
+Optional:
+
+- `operator` (String) The comparison operator used for the occurrence filter.
+- `value` (String) The threshold value to compare occurrence counts against.
+
 
 
 
@@ -35701,6 +35798,7 @@ Optional:
 - `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
 - `audit_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
+- `comparison` (Block List, Max: 1) A change indicator that compares the current value to a historical period. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--comparison))
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
@@ -35835,6 +35933,40 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--comparison"></a>
+### Nested Schema for `widget.query_value_definition.request.comparison`
+
+Required:
+
+- `duration` (Block List, Min: 1, Max: 1) The comparison period. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--comparison--duration))
+
+Optional:
+
+- `directionality` (String) Which direction of change is considered an improvement. Valid values are `increase_better`, `decrease_better`, `neutral`. Defaults to `"neutral"`.
+- `type` (String) How the delta is expressed. Valid values are `absolute`, `relative`, `both`. Defaults to `"absolute"`.
+
+<a id="nestedblock--widget--query_value_definition--request--comparison--duration"></a>
+### Nested Schema for `widget.query_value_definition.request.comparison.duration`
+
+Required:
+
+- `type` (String) The comparison window type. Valid values are `previous_timeframe`, `custom_timeframe`, `previous_day`, `previous_week`, `previous_month`.
+
+Optional:
+
+- `custom_timeframe` (Block List, Max: 1) Fixed time range to compare against when `type` is `custom_timeframe`. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--comparison--duration--custom_timeframe))
+
+<a id="nestedblock--widget--query_value_definition--request--comparison--duration--custom_timeframe"></a>
+### Nested Schema for `widget.query_value_definition.request.comparison.duration.custom_timeframe`
+
+Required:
+
+- `from` (Number) Start time in milliseconds since epoch.
+- `to` (Number) End time in milliseconds since epoch.
+
 
 
 
@@ -37422,11 +37554,73 @@ Required:
 
 Optional:
 
+- `audience_filters` (Block List, Max: 1) Product Analytics and RUM audience filters. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters))
 - `entries_per_step` (Number) Entries per step.
+- `join_keys` (Block List, Max: 1) Join keys for the Sankey query. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--join_keys))
 - `number_of_steps` (Number) Number of steps.
+- `occurrence` (Block List, Max: 1) Filter applied to occurrence counts when building a Product Analytics audience. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--occurrence))
 - `source` (String) Source field.
 - `subquery_id` (String) Subquery ID.
 - `target` (String) Target field.
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters`
+
+Optional:
+
+- `account` (Block List) Product Analytics audience account subqueries. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--account))
+- `filter_condition` (String) An optional filter condition applied to the audience subquery.
+- `segment` (Block List) Product Analytics audience segment subqueries. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--segment))
+- `user` (Block List) Product Analytics audience user subqueries. (see [below for nested schema](#nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--user))
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--account"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters.account`
+
+Optional:
+
+- `name` (String) The name of the account subquery.
+- `query` (String) The query string for the account subquery.
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--segment"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters.segment`
+
+Optional:
+
+- `name` (String) The name of the segment subquery.
+- `segment_id` (String) The unique identifier of the segment.
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--audience_filters--user"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.audience_filters.user`
+
+Optional:
+
+- `name` (String) The name of the user subquery.
+- `query` (String) The query string for the user subquery.
+
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--join_keys"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.join_keys`
+
+Required:
+
+- `primary` (String) Primary join key.
+
+Optional:
+
+- `secondary` (List of String) Secondary join keys.
+
+
+<a id="nestedblock--widget--sankey_definition--request--rum_request--query--occurrence"></a>
+### Nested Schema for `widget.sankey_definition.request.rum_request.query.occurrence`
+
+Optional:
+
+- `operator` (String) The comparison operator used for the occurrence filter.
+- `value` (String) The threshold value to compare occurrence counts against.
+
 
 
 

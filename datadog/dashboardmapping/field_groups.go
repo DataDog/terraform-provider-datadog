@@ -1226,6 +1226,47 @@ var timeseriesBackgroundFields = []FieldSpec{
 		Children:    widgetAxisFields},
 }
 
+// comparisonCustomTimeframeFields corresponds to OpenAPI ComparisonCustomTimeframe.
+var comparisonCustomTimeframeFields = []FieldSpec{
+	{HCLKey: "from", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Start time in milliseconds since epoch."},
+	{HCLKey: "to", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "End time in milliseconds since epoch."},
+}
+
+// comparisonDurationFields corresponds to OpenAPI ComparisonDuration.
+var comparisonDurationFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The comparison window type.",
+		ValidValues: []string{"previous_timeframe", "custom_timeframe", "previous_day", "previous_week", "previous_month"}},
+	{HCLKey: "custom_timeframe", Type: TypeBlock, OmitEmpty: true,
+		Description: "Fixed time range to compare against when `type` is `custom_timeframe`.",
+		Children:    comparisonCustomTimeframeFields},
+}
+
+// queryValueWidgetComparisonFields corresponds to OpenAPI QueryValueWidgetComparison.
+var queryValueWidgetComparisonFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Default: "absolute",
+		Description: "How the delta is expressed.",
+		ValidValues: []string{"absolute", "relative", "both"}},
+	{HCLKey: "directionality", Type: TypeString, OmitEmpty: false, Default: "neutral",
+		Description: "Which direction of change is considered an improvement.",
+		ValidValues: []string{"increase_better", "decrease_better", "neutral"}},
+	{HCLKey: "duration", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The comparison period.",
+		Children:    comparisonDurationFields},
+}
+
+// queryValueWidgetComparisonField is shared by schema generation and
+// formula-request post-processing.
+var queryValueWidgetComparisonField = FieldSpec{
+	HCLKey:      "comparison",
+	Type:        TypeBlock,
+	OmitEmpty:   true,
+	Description: "A change indicator that compares the current value to a historical period.",
+	Children:    queryValueWidgetComparisonFields,
+}
+
 // scatterplotXYRequestFields corresponds to OpenAPI ScatterPlotRequest.
 // Used by: scatterplot x and y sub-blocks.
 var scatterplotXYRequestFields = append([]FieldSpec{
@@ -1966,6 +2007,23 @@ var productAnalyticsAudienceFiltersFields = []FieldSpec{
 		Description: "An optional filter condition applied to the audience subquery."},
 }
 
+// productAnalyticsAudienceOccurrenceFilterFields corresponds to OpenAPI
+// ProductAnalyticsAudienceOccurrenceFilter.
+var productAnalyticsAudienceOccurrenceFilterFields = []FieldSpec{
+	{HCLKey: "operator", Type: TypeString, OmitEmpty: true,
+		Description: "The comparison operator used for the occurrence filter."},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: true,
+		Description: "The threshold value to compare occurrence counts against."},
+}
+
+// sankeyJoinKeysFields corresponds to OpenAPI SankeyJoinKeys.
+var sankeyJoinKeysFields = []FieldSpec{
+	{HCLKey: "primary", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Primary join key."},
+	{HCLKey: "secondary", Type: TypeStringList, OmitEmpty: true,
+		Description: "Secondary join keys."},
+}
+
 // sankeyRumQueryFields corresponds to OpenAPI SankeyRumQuery.
 var sankeyRumQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
@@ -1986,6 +2044,15 @@ var sankeyRumQueryFields = []FieldSpec{
 		Description: "Number of steps."},
 	{HCLKey: "subquery_id", Type: TypeString, OmitEmpty: true,
 		Description: "Subquery ID."},
+	{HCLKey: "audience_filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Product Analytics and RUM audience filters.",
+		Children:    productAnalyticsAudienceFiltersFields},
+	{HCLKey: "occurrence", JSONKey: "occurrences", Type: TypeBlock, OmitEmpty: true,
+		Description: "Filter applied to occurrence counts when building a Product Analytics audience.",
+		Children:    productAnalyticsAudienceOccurrenceFilterFields},
+	{HCLKey: "join_keys", Type: TypeBlock, OmitEmpty: true,
+		Description: "Join keys for the Sankey query.",
+		Children:    sankeyJoinKeysFields},
 }
 
 // sankeyNetworkQueryComputeFields corresponds to OpenAPI SankeyNetworkQueryCompute.
