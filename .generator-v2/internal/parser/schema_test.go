@@ -540,14 +540,16 @@ var _ = Describe("NormalizeSchemas $ref resolution", func() {
 })
 
 // -------------------------------------------------------------------
-//  Depth limit → SchemaKindRefCycle
+//  Depth limit → SchemaKindDepthExceeded (distinct from a $ref cycle)
 // -------------------------------------------------------------------
 
 var _ = Describe("NormalizeSchemas depth limit", func() {
 
-	It("classifies a $ref that would exceed --max-depth as SchemaKindRefCycle instead of returning an error", func() {
-		// maxDepth=1: body→OuterObject costs depth 1 (OK).
-		// OuterObject.properties.inner→MyString would cost depth 2, which exceeds the bound.
+	// depthLimited normalizes the nested-ref fixture at maxDepth=1 and returns the
+	// node that the bound stopped at. body→OuterObject costs depth 1 (OK);
+	// OuterObject.properties.inner→MyString would cost depth 2, exceeding the bound.
+	depthLimited := func() *model.Schema {
+		GinkgoHelper()
 		spec, err := LoadSpec(
 			filepath.Join("../testdata/parser", "schema_normalize_refs.yaml"),
 			WithMaxDepth(1),
@@ -560,8 +562,35 @@ var _ = Describe("NormalizeSchemas depth limit", func() {
 
 		inner, ok := op.RequestSchema.Properties["inner"]
 		Expect(ok).To(BeTrue(), "Properties must contain the depth-limited 'inner' entry")
-		Expect(inner.Kind).To(Equal(model.SchemaKindRefCycle),
-			"a $ref that exceeds --max-depth must be classified as ref_cycle, not dropped or errored")
+		return inner
+	}
+
+	It("classifies a $ref that would exceed --max-depth as depth_exceeded, not as a cycle", func() {
+		inner := depthLimited()
+		Expect(inner.Kind).To(Equal(model.SchemaKindDepthExceeded),
+			"exhausting --max-depth is not a $ref cycle: cycles.go finds those independently of depth, "+
+				"so labelling it ref_cycle sends the reader hunting for a cycle that does not exist")
+		Expect(inner.Kind).NotTo(Equal(model.SchemaKindRefCycle))
+	})
+
+	It("retains an actionable reason naming the bound, the blocked $ref, and the remedy", func() {
+		reason := depthLimited().UnsupportedReason
+		Expect(reason).To(ContainSubstring("--max-depth=1"), "the reason must name the bound that was hit")
+		Expect(reason).To(ContainSubstring("MyString"), "the reason must name the $ref it stopped short of")
+		Expect(reason).To(ContainSubstring("not a $ref cycle"), "the reason must rule out a cycle explicitly")
+		Expect(reason).To(ContainSubstring("higher --max-depth"), "the reason must state the remedy")
+	})
+
+	It("resolves the same node once the bound is raised, proving it was never a cycle", func() {
+		spec, err := LoadSpec(
+			filepath.Join("../testdata/parser", "schema_normalize_refs.yaml"),
+			WithMaxDepth(8),
+		)
+		Expect(err).To(Succeed())
+
+		inner := opByID(spec, "CreateNestedRef").RequestSchema.Properties["inner"]
+		Expect(inner.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(inner.Type).To(Equal("string"))
 	})
 })
 
@@ -759,3 +788,62 @@ func paramByName(op *model.Operation, name string) model.QueryParam {
 	Fail("query parameter " + name + " not found on " + op.OperationId)
 	return model.QueryParam{}
 }
+
+// -------------------------------------------------------------------
+//  $ref with sibling keywords
+// -------------------------------------------------------------------
+
+// OpenAPI 3.0 specifies that keywords beside a $ref are ignored. libopenapi
+// surfaces such a node as a non-reference schema carrying only the siblings, so
+// normalization must follow the $ref itself or the node silently loses its type
+// and fails its artifact as "unsupported".
+var _ = Describe("NormalizeSchemas $ref with sibling keywords", func() {
+
+	var props map[string]*model.Schema
+
+	BeforeEach(func() {
+		spec := loadSpecMust("schema_normalize_ref_siblings.yaml")
+		op := opByID(spec, "GetSiblings")
+		Expect(op.ResponseSchema).NotTo(BeNil())
+		Expect(op.ResponseSchema.Kind).To(Equal(model.SchemaKindObject))
+		props = op.ResponseSchema.Properties
+	})
+
+	// wantType is the OpenAPI "type" keyword the referenced schema declares.
+	// normalizeSchema records it for every kind, not only primitives, so an object
+	// alternative carries "object" here.
+	DescribeTable("resolves the reference and ignores the sibling",
+		func(property string, wantKind model.SchemaKind, wantType string) {
+			got := props[property]
+			Expect(got).NotTo(BeNil(), "property %q missing from the normalized object", property)
+			Expect(got.Kind).To(Equal(wantKind), "property %q normalized to the wrong kind", property)
+			Expect(got.Type).To(Equal(wantType))
+		},
+		Entry("$ref + example", "named", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + description", "described", model.SchemaKindPrimitive, "string"),
+		Entry("$ref + example + description", "multi", model.SchemaKindPrimitive, "string"),
+		Entry("a bare $ref (control)", "plain", model.SchemaKindPrimitive, "string"),
+		Entry("$ref to an object + example", "nested", model.SchemaKindObject, "object"),
+	)
+
+	It("keeps the referenced enum when a sibling is present", func() {
+		Expect(props["kind"].Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(props["kind"].Enum).To(Equal([]string{"SECRET", "PUBLIC"}))
+	})
+
+	It("resolves a collection element that is a $ref with a sibling", func() {
+		params := props["params"]
+		Expect(params.Kind).To(Equal(model.SchemaKindArray))
+		Expect(params.Items.Kind).To(Equal(model.SchemaKindObject))
+		Expect(params.Items.Properties).To(HaveKey("name"))
+	})
+
+	It("resolves a $ref-with-sibling nested inside a referenced object", func() {
+		// UrlParam.name is itself {$ref: TokenName, example: ...} — the shape that
+		// blocked datadog_action_connection.
+		name := props["nested"].Properties["name"]
+		Expect(name).NotTo(BeNil())
+		Expect(name.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(name.Type).To(Equal("string"))
+	})
+})

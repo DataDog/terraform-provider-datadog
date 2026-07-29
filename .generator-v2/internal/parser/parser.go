@@ -15,7 +15,18 @@ import (
 )
 
 // DefaultMaxDepth bounds recursive $ref expansion when no override is supplied.
-const DefaultMaxDepth = 8
+//
+// It is a guard against absurd-but-acyclic nesting only: genuine $ref cycles are
+// found by DetectRefCycles regardless of depth, so this bound never has to be
+// tight enough to catch them. Raising it therefore costs nothing in correctness.
+//
+// 20 is twice the deepest chain measured across the 33 real Datadog v2 slices in
+// internal/testdata/mini-oas (software_catalog and app_builder_app need 10;
+// action_connection needs 9). The previous value of 8 sat below three of them and
+// exactly at a fourth, so ordinary specs tripped the bound — and, before the two
+// conditions were separated, were reported as $ref cycles that did not exist.
+// Re-measure against that corpus before changing this.
+const DefaultMaxDepth = 20
 
 // Option configures LoadSpec.
 type Option func(*loadConfig)
