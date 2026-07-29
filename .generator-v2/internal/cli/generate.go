@@ -252,9 +252,10 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	// Correct APIAccessor to the name the provider's helper actually exposes,
 	// which diverges from the derived name for a few acronym/aliased APIs.
 	emit.ApplyAPIAccessor(&view, accessors)
-	// Members the emit flattener dropped (e.g. relationships) ride along as info.
-	for _, msg := range view.Dropped {
-		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityInfo, Message: msg})
+	// Members the emit flattener dropped (e.g. relationships) ride along at the
+	// severity the drop warrants.
+	for _, d := range view.Dropped {
+		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: d.Severity, Message: d.Message})
 	}
 
 	src, err := emit.RenderDataSource(view)
