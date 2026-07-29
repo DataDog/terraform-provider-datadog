@@ -112,6 +112,9 @@ type FieldSpec struct {
 	// TypeBlock always uses MaxItems: 1 automatically.
 	MaxItems int
 
+	// MinItems: minimum count for list and TypeBlockList fields (default 0 = unset).
+	MinItems int
+
 	// Sensitive: mask this field in logs and UI
 	Sensitive bool
 
