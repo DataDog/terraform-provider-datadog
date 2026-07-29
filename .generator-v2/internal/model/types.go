@@ -174,6 +174,9 @@ type Schema struct {
 	Enum []string
 	// Sensitive is true when the schema is annotated sensitive: true.
 	Sensitive bool
+	// Ignore is true when the parser matched this node against an operation's
+	// ignore list; the attribute-tree builder drops such nodes and their subtree.
+	Ignore bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
 }
