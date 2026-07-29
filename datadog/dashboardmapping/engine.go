@@ -557,6 +557,7 @@ var scalarWithConditionalFormatsConfig = FormulaRequestConfig{
 var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
 	ExtraFields:    queryTableRequestExtraFields,
+	IncludeSort:    true,
 }
 
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
@@ -844,9 +845,7 @@ func flattenWidgetSortByJSON(sortObj map[string]interface{}) map[string]interfac
 			switch sortType {
 			case "formula":
 				fs := map[string]interface{}{}
-				if idx, ok := obMap["index"].(float64); ok {
-					fs["index"] = int(idx)
-				}
+				fs["index"] = getIntFromMap(obMap, "index")
 				if ord, ok := obMap["order"].(string); ok {
 					fs["order"] = ord
 				}
@@ -1169,6 +1168,11 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 	}
 	// Old-style request
 	result := FlattenEngineJSON(queryTableOldRequestFields, req)
+	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
+		if s := flattenWidgetSortByJSON(sortObj); len(s) > 0 {
+			result["sort"] = []interface{}{s}
+		}
+	}
 	// text_formats (2D array) needs special handling
 	if textFormats, ok := req["text_formats"].([]interface{}); ok && len(textFormats) > 0 {
 		result["text_formats"] = flattenQueryTableTextFormatsJSON(textFormats)
@@ -2093,9 +2097,7 @@ func buildWidgetSortByJSONFromMap(sortMap map[string]interface{}) map[string]int
 			entry := map[string]interface{}{}
 			if fsMap := getBlockFromMap(obMap, "formula_sort"); fsMap != nil {
 				entry["type"] = "formula"
-				if idx := getIntFromMap(fsMap, "index"); idx != 0 {
-					entry["index"] = idx
-				}
+				entry["index"] = getIntFromMap(fsMap, "index")
 				if ord := getStringFromMap(fsMap, "order"); ord != "" {
 					entry["order"] = ord
 				}
@@ -2136,6 +2138,11 @@ func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interfa
 			requests = append(requests, req)
 		} else {
 			req := BuildEngineJSONFromMap(reqMap, queryTableOldRequestFields)
+			if sortMap := getBlockFromMap(reqMap, "sort"); sortMap != nil {
+				if sortJSON := buildWidgetSortByJSONFromMap(sortMap); len(sortJSON) > 0 {
+					req["sort"] = sortJSON
+				}
+			}
 			buildQueryTableTextFormatsJSONFromMap(reqMap, req)
 			requests = append(requests, req)
 		}
