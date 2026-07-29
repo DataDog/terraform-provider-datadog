@@ -201,8 +201,8 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	// Capture the response type name from the top-level body proxy before
 	// normalizeProxy follows the $ref and discards it. An inline/absent body
 	// leaves ResponseRefName empty.
-	if respProxy.IsReference() {
-		op.ResponseRefName = lastRefSegment(respProxy.GetReference())
+	if ref, ok := schemaRef(respProxy); ok {
+		op.ResponseRefName = lastRefSegment(ref)
 	}
 	resp, err := n.normalizeProxyAt(respProxy, 0, schemaContext{path: "response", required: true})
 	if err != nil {
@@ -288,8 +288,10 @@ func (n *schemaNormalizer) retainItemRef(op *model.Operation, respProxy *base.Sc
 	if !hasType(prop, "array") || prop.Items == nil || !prop.Items.IsA() {
 		return nil
 	}
-	if elem := prop.Items.A; elem != nil && elem.IsReference() {
-		op.ItemRefName = lastRefSegment(elem.GetReference())
+	if elem := prop.Items.A; elem != nil {
+		if ref, ok := schemaRef(elem); ok {
+			op.ItemRefName = lastRefSegment(ref)
+		}
 	}
 	return nil
 }
@@ -305,8 +307,10 @@ func (n *schemaNormalizer) retainResponseDataRef(op *model.Operation, respProxy 
 	if err != nil || body == nil || body.Properties == nil {
 		return err
 	}
-	if data := body.Properties.GetOrZero(defaultResultsPath); data != nil && data.IsReference() {
-		op.ResponseDataRefName = lastRefSegment(data.GetReference())
+	if data := body.Properties.GetOrZero(defaultResultsPath); data != nil {
+		if ref, ok := schemaRef(data); ok {
+			op.ResponseDataRefName = lastRefSegment(ref)
+		}
 	}
 	return nil
 }
@@ -318,8 +322,8 @@ func (n *schemaNormalizer) resolveToSchema(proxy *base.SchemaProxy) (*base.Schem
 	if proxy == nil {
 		return nil, nil
 	}
-	if proxy.IsReference() {
-		target, err := n.resolveRef(proxy.GetReference())
+	if ref, ok := schemaRef(proxy); ok {
+		target, err := n.resolveRef(ref)
 		if err != nil {
 			return nil, err
 		}
@@ -383,6 +387,34 @@ func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	return nil
 }
 
+// schemaRef returns the $ref a proxy points at, and whether it has one at all.
+//
+// libopenapi's high-level IsReference/GetReference cover a bare $ref, but a node
+// that writes $ref alongside other keywords — {$ref: TokenName, example: "x"},
+// which the Datadog spec does — is reported as a non-reference with an empty
+// reference, leaving a schema carrying only the siblings and therefore no type.
+// OpenAPI 3.0 says keywords beside a $ref are ignored, so the reference is the
+// whole meaning of such a node; the low-level model still records it.
+//
+// Every "is this a reference?" test in this file goes through here, so a sibling
+// can never cost a node its type, its component name, or its SDK type name.
+func schemaRef(proxy *base.SchemaProxy) (string, bool) {
+	if proxy == nil {
+		return "", false
+	}
+	if proxy.IsReference() {
+		if ref := proxy.GetReference(); ref != "" {
+			return ref, true
+		}
+	}
+	if low := proxy.GoLow(); low != nil && low.IsTransformedRefWithSiblings() {
+		if ref := low.GetTransformedRefReference(); ref != "" {
+			return ref, true
+		}
+	}
+	return "", false
+}
+
 // normalizeProxyAt normalizes one schema proxy, resolving a $ref through the
 // component set and counting it against the depth budget. The first component
 // name is retained in ctx before resolution, since libopenapi's resolved schema
@@ -391,15 +423,23 @@ func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, 
 	if proxy == nil {
 		return nil, nil
 	}
-	if proxy.IsReference() {
+	if ref, ok := schemaRef(proxy); ok {
 		if ctx.refName == "" {
-			ctx.refName = lastRefSegment(proxy.GetReference())
+			ctx.refName = lastRefSegment(ref)
 		}
 		// depth counts $ref edges already followed; the >= bound matches cycles.go.
+		// Exhausting the budget is not a cycle — cycles.go finds those independently
+		// of depth — so it gets its own kind and says how to lift the limit.
 		if n.maxDepth > 0 && depth >= n.maxDepth {
-			return &model.Schema{Kind: model.SchemaKindRefCycle}, nil
+			return &model.Schema{
+				Kind: model.SchemaKindDepthExceeded,
+				UnsupportedReason: fmt.Sprintf(
+					"$ref expansion stopped at --max-depth=%d before reaching %q; this is a depth limit, not a $ref cycle — re-run with a higher --max-depth if the chain is legitimately this deep",
+					n.maxDepth, ref,
+				),
+			}, nil
 		}
-		target, err := n.resolveRef(proxy.GetReference())
+		target, err := n.resolveRef(ref)
 		if err != nil {
 			return nil, err
 		}
