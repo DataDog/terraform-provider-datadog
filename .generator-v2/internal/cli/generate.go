@@ -2,7 +2,6 @@ package cli
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -21,10 +20,11 @@ import (
 // Execute translates this into exit code 3.
 var errCheckFailed = fmt.Errorf("check: one or more files would change")
 
-// apiInstancesHelperPath is the provider's ApiInstances helper, the source of
-// truth for SDK API accessor names. It is read relative to the working directory
-// (the repo root), like the other default paths.
-const apiInstancesHelperPath = "datadog/internal/utils/api_instances_helper.go"
+// apiInstancesHelperRelPath locates the provider's ApiInstances helper, the source
+// of truth for SDK API accessor names. It is resolved against --output-root rather
+// than the working directory, so it lands on the real file wherever tfgen is run
+// from.
+const apiInstancesHelperRelPath = "../internal/utils/api_instances_helper.go"
 
 func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var check bool
@@ -83,13 +83,12 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				filter := parseInclude(include)
 
 				// Resolve the provider's SDK-accessor names, the source of truth for
-				// APIAccessor. A missing file is expected outside a full checkout; a parse
-				// failure is worth surfacing. Either way we fall back to derived names.
-				accessors, accErr := emit.ResolveAPIAccessors(apiInstancesHelperPath)
+				// APIAccessor. Always surface a failure: the fallback to derived names
+				// emits code that does not compile for the APIs whose accessor diverges
+				// from the struct name (RUM, APM, Observability Pipelines).
+				accessors, accErr := emit.ResolveAPIAccessors(filepath.Join(outputRoot, apiInstancesHelperRelPath))
 				if accErr != nil {
-					if !errors.Is(accErr, os.ErrNotExist) {
-						cmd.PrintErrln("tfgen: could not resolve API accessors, using derived names:", accErr)
-					}
+					cmd.PrintErrln("tfgen: could not resolve API accessors, using derived names:", accErr)
 					accessors = nil
 				}
 
