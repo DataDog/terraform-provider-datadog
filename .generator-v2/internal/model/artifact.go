@@ -20,6 +20,23 @@ func BuildArtifact(op *Operation) (*Artifact, error) {
 	if op == nil || op.Tracking == nil {
 		return nil, fmt.Errorf("model: BuildArtifact requires a tracked operation")
 	}
+	art, err := buildArtifactByKind(op)
+	if err != nil {
+		return nil, err
+	}
+	// An ignore path that matched no node is a likely typo or stale entry: warn
+	// without failing, so a slightly-off path stays visible.
+	for _, p := range op.IgnoreUnmatched {
+		art.Diagnostics = append(art.Diagnostics, Diagnostic{
+			Severity: SeverityWarning,
+			Message:  fmt.Sprintf("ignore path %q matched no attribute", p),
+		})
+	}
+	return art, nil
+}
+
+// buildArtifactByKind dispatches to the cardinality- and lookup-specific builder.
+func buildArtifactByKind(op *Operation) (*Artifact, error) {
 	if op.Tracking.Cardinality == CardinalityPlural {
 		return buildPluralArtifact(op)
 	}

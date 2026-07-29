@@ -130,6 +130,9 @@ type Operation struct {
 	// search op (search-only), and is nil when no search is declared or the
 	// declared operationId is unknown.
 	SearchOp *Operation
+	// IgnoreUnmatched holds the Tracking.Ignore paths that matched no node during
+	// normalization, sorted. BuildArtifact turns each into a warning diagnostic.
+	IgnoreUnmatched []string
 }
 
 // QueryParam is one in:query OpenAPI parameter, with its inner schema
