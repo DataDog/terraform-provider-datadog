@@ -1,0 +1,214 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 498
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"display_timezone":"America/New_York","message":"Message about the downtime","monitor_identifier":{"monitor_tags":["cat:hat"]},"mute_first_recovery_notification":true,"notify_end_states":["alert","warn"],"notify_end_types":["expired"],"schedule":{"recurrences":[{"duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1","start":"2042-07-13T01:02:03"}],"timezone":"America/New_York"},"scope":"env:(staging OR tf-TestAccDatadogDowntimeDatasource-local-1785342121)"},"type":"downtime"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/downtime
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"downtime","id":"72115ed9-c4c8-4336-9822-c29efe08e48b","attributes":{"message":"Message about the downtime","status":"scheduled","monitor_identifier":{"monitor_tags":["cat:hat"]},"scope":"env:(staging OR tf-TestAccDatadogDowntimeDatasource-local-1785342121)","schedule":{"timezone":"America/New_York","recurrences":[{"start":"2042-07-13T01:02:03","duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1"}],"current_downtime":{"start":"2042-07-13T06:02:03+00:00","end":"2042-07-14T06:02:03+00:00"}},"display_timezone":"America/New_York","mute_first_recovery_notification":true,"notify_end_types":["expired"],"notify_end_states":["alert","warn"],"created":"2026-07-29T16:22:03.618348+00:00","modified":"2026-07-29T16:22:03.618348+00:00","canceled":null},"relationships":{"created_by":{"data":{"type":"users","id":"efc326e8-6127-4376-acc9-b6d29f9bb514"}},"monitor":{"data":null}}},"included":[{"type":"users","id":"efc326e8-6127-4376-acc9-b6d29f9bb514","attributes":{"uuid":"efc326e8-6127-4376-acc9-b6d29f9bb514","name":"Jason Tenczar","handle":"jason.tenczar@datadoghq.com","created_at":"2026-06-01T13:11:15.820407+00:00","modified_at":"2026-06-01T13:11:37.844697+00:00","email":"jason.tenczar@datadoghq.com","icon":"https://secure.gravatar.com/avatar/435ff4fa77428ff412ff65019ae222d0?s=48&d=retro","title":null,"verified":true,"service_account":false,"disabled":false,"allowed_login_methods":[],"status":"Active","last_login_time":null}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 311.014208ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/downtime/72115ed9-c4c8-4336-9822-c29efe08e48b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"downtime","id":"72115ed9-c4c8-4336-9822-c29efe08e48b","attributes":{"message":"Message about the downtime","status":"scheduled","monitor_identifier":{"monitor_tags":["cat:hat"]},"scope":"env:(staging OR tf-TestAccDatadogDowntimeDatasource-local-1785342121)","schedule":{"timezone":"America/New_York","recurrences":[{"start":"2042-07-13T01:02:03","duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1"}],"current_downtime":{"start":"2042-07-13T06:02:03+00:00","end":"2042-07-14T06:02:03+00:00"}},"display_timezone":"America/New_York","mute_first_recovery_notification":true,"notify_end_types":["expired"],"notify_end_states":["warn","alert"],"created":"2026-07-29T16:22:03.618348+00:00","modified":"2026-07-29T16:22:03.618348+00:00","canceled":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 89.781209ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/downtime/72115ed9-c4c8-4336-9822-c29efe08e48b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"downtime","id":"72115ed9-c4c8-4336-9822-c29efe08e48b","attributes":{"message":"Message about the downtime","status":"scheduled","monitor_identifier":{"monitor_tags":["cat:hat"]},"scope":"env:(staging OR tf-TestAccDatadogDowntimeDatasource-local-1785342121)","schedule":{"timezone":"America/New_York","recurrences":[{"start":"2042-07-13T01:02:03","duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1"}],"current_downtime":{"start":"2042-07-13T06:02:03+00:00","end":"2042-07-14T06:02:03+00:00"}},"display_timezone":"America/New_York","mute_first_recovery_notification":true,"notify_end_types":["expired"],"notify_end_states":["warn","alert"],"created":"2026-07-29T16:22:03.618348+00:00","modified":"2026-07-29T16:22:03.618348+00:00","canceled":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 134.966958ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/downtime/72115ed9-c4c8-4336-9822-c29efe08e48b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"downtime","id":"72115ed9-c4c8-4336-9822-c29efe08e48b","attributes":{"message":"Message about the downtime","status":"scheduled","monitor_identifier":{"monitor_tags":["cat:hat"]},"scope":"env:(staging OR tf-TestAccDatadogDowntimeDatasource-local-1785342121)","schedule":{"timezone":"America/New_York","recurrences":[{"start":"2042-07-13T01:02:03","duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1"}],"current_downtime":{"start":"2042-07-13T06:02:03+00:00","end":"2042-07-14T06:02:03+00:00"}},"display_timezone":"America/New_York","mute_first_recovery_notification":true,"notify_end_types":["expired"],"notify_end_states":["alert","warn"],"created":"2026-07-29T16:22:03.618348+00:00","modified":"2026-07-29T16:22:03.618348+00:00","canceled":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 138.793459ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/downtime/72115ed9-c4c8-4336-9822-c29efe08e48b
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"downtime","id":"72115ed9-c4c8-4336-9822-c29efe08e48b","attributes":{"message":"Message about the downtime","status":"scheduled","monitor_identifier":{"monitor_tags":["cat:hat"]},"scope":"env:(staging OR tf-TestAccDatadogDowntimeDatasource-local-1785342121)","schedule":{"timezone":"America/New_York","recurrences":[{"start":"2042-07-13T01:02:03","duration":"1d","rrule":"FREQ=DAILY;INTERVAL=1"}],"current_downtime":{"start":"2042-07-13T06:02:03+00:00","end":"2042-07-14T06:02:03+00:00"}},"display_timezone":"America/New_York","mute_first_recovery_notification":true,"notify_end_types":["expired"],"notify_end_states":["warn","alert"],"created":"2026-07-29T16:22:03.618348+00:00","modified":"2026-07-29T16:22:03.618348+00:00","canceled":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 79.10725ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/downtime/72115ed9-c4c8-4336-9822-c29efe08e48b
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 202.9325ms
