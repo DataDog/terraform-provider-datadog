@@ -112,6 +112,9 @@ type FieldSpec struct {
 	// TypeBlock always uses MaxItems: 1 automatically.
 	MaxItems int
 
+	// MinItems: minimum count for list and TypeBlockList fields (default 0 = unset).
+	MinItems int
+
 	// Sensitive: mask this field in logs and UI
 	Sensitive bool
 
@@ -554,6 +557,16 @@ var scalarWithConditionalFormatsConfig = FormulaRequestConfig{
 	ExtraFields:    conditionalFormatsExtraFields,
 }
 
+var queryValueFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+	ExtraFields: append(
+		append([]FieldSpec{}, conditionalFormatsExtraFields...),
+		queryValueWidgetComparisonField,
+	),
+}
+
 var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
 	ExtraFields:    queryTableRequestExtraFields,
@@ -569,7 +582,9 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
-	case "query_value", "toplist", "bar_chart":
+	case "query_value":
+		return queryValueFormulaRequestConfig
+	case "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
 	default:
 		return scalarFormulaRequestConfig
@@ -638,18 +653,22 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 // dataSourceToQueryType maps JSON data_source values to HCL query block keys.
 // Used by flattenFormulaQueryJSON to route flattened queries to the right block.
 var dataSourceToQueryType = map[string]string{
-	"metrics":              "metric_query",
-	"logs":                 "event_query",
-	"spans":                "event_query",
-	"profiling":            "event_query",
-	"audit":                "event_query",
-	"rum":                  "event_query",
-	"errors":               "event_query",
-	"process":              "process_query",
-	"slo":                  "slo_query",
-	"cloud_cost":           "cloud_cost_query",
-	"apm_dependency_stats": "apm_dependency_stats_query",
-	"apm_resource_stats":   "apm_resource_stats_query",
+	"metrics":                     "metric_query",
+	"logs":                        "event_query",
+	"spans":                       "event_query",
+	"profiling":                   "event_query",
+	"audit":                       "event_query",
+	"rum":                         "event_query",
+	"errors":                      "event_query",
+	"process":                     "process_query",
+	"slo":                         "slo_query",
+	"cloud_cost":                  "cloud_cost_query",
+	"apm_dependency_stats":        "apm_dependency_stats_query",
+	"apm_resource_stats":          "apm_resource_stats_query",
+	"product_analytics":           "event_query",
+	"product_analytics_extended":  "product_analytics_extended_query",
+	"product_analytics_journey":   "user_journey_query",
+	"product_analytics_retention": "retention_query",
 }
 
 // isFormulaCapableWidget returns true for widget types that support
