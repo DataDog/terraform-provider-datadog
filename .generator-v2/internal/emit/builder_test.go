@@ -82,6 +82,21 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(assign["state.State"].RHS).To(Equal("types.StringValue(string(*stateValue))"))
 	})
 
+	It("renders a Go-keyword attribute through a safe guarded local", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["attributes"].
+			Properties["type"] = prim("string", "The incident type category.")
+
+		got, err := RenderDataSource(mustView(op))
+		Expect(err).NotTo(HaveOccurred())
+		src := string(got)
+		Expect(src).To(ContainSubstring(
+			"if typeVar, ok := attributes.GetTypeOk(); ok && typeVar != nil {",
+		))
+		Expect(src).To(ContainSubstring("state.Type = types.StringValue(*typeVar)"))
+		Expect(src).NotTo(ContainSubstring("if type, ok :="))
+	})
+
 	It("produces a deeply-equal view across two runs", func() {
 		first, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())
@@ -215,6 +230,24 @@ var _ = Describe("BuildDataSourceView envelope id collision", func() {
 			return src
 		}
 		Expect(build()).To(Equal(build()))
+	})
+})
+
+var _ = Describe("leafVar", func() {
+	It("suffixes every Go keyword and preserves ordinary identifiers", func() {
+		keywords := []string{
+			"break", "default", "func", "interface", "select",
+			"case", "defer", "go", "map", "struct",
+			"chan", "else", "goto", "package", "switch",
+			"const", "fallthrough", "if", "range", "type",
+			"continue", "for", "import", "return", "var",
+		}
+		for _, keyword := range keywords {
+			Expect(leafVar(keyword)).To(Equal(keyword+"Var"), keyword)
+		}
+
+		Expect(leafVar("display_name")).To(Equal("displayName"))
+		Expect(leafVar("state")).To(Equal("stateValue"))
 	})
 })
 
@@ -943,6 +976,21 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 			Var: "label", GetterOk: "partsItem.GetLabelOk()",
 			LHS: "partsModel.Label", RHS: "types.StringValue(*label)",
 		}))
+	})
+
+	It("renders a nested Go-keyword attribute through a safe guarded local", func() {
+		op := pluralNestedOperation()
+		op.ResponseSchema.Properties["data"].Items.Properties["attributes"].
+			Properties["parts"].Items.Properties["type"] = prim("string", "The part type.")
+
+		got, err := RenderDataSource(mustView(op))
+		Expect(err).NotTo(HaveOccurred())
+		src := string(got)
+		Expect(src).To(ContainSubstring(
+			"if typeVar, ok := partsItem.GetTypeOk(); ok && typeVar != nil {",
+		))
+		Expect(src).To(ContainSubstring("partsModel.Type = types.StringValue(*typeVar)"))
+		Expect(src).NotTo(ContainSubstring("if type, ok :="))
 	})
 
 	It("produces a deeply-equal view across two runs", func() {
