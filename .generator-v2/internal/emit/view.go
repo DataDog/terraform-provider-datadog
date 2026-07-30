@@ -50,8 +50,12 @@ type DataSourceView struct {
 	// "IncidentsApi".
 	APIStruct string
 	// APIAccessor is the FrameworkProvider accessor returning that client, e.g.
-	// "GetIncidentsApiV2".
+	// "GetIncidentsApiV2". It is set when ApiInstances already exposes the API.
 	APIAccessor string
+	// APIConstructor is the pinned SDK constructor used when ApiInstances does
+	// not expose APIStruct, e.g. "NewCaseManagementApi". Exactly one of
+	// APIAccessor and APIConstructor is populated after accessor resolution.
+	APIConstructor string
 
 	// ByID and Searchable select how a singular data source resolves its one
 	// record, driving the Read body and the "id" attribute: ByID only → by-id
