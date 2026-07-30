@@ -137,6 +137,7 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(src).NotTo(ContainSubstring("if type, ok :="))
 	})
 
+<<<<<<< HEAD
 	It("casts a named string envelope id before storing it in Terraform state", func() {
 		op := incidentTypeOperation()
 		op.ResponseSchema.Properties["data"].Properties["id"].Enum = []string{"permanent"}
@@ -146,6 +147,8 @@ var _ = Describe("BuildDataSourceView", func() {
 		}))
 	})
 
+=======
+>>>>>>> 9d488d84c ([tfgen] Avoid Go keywords in generated locals)
 	It("produces a deeply-equal view across two runs", func() {
 		first, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())
