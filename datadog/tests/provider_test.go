@@ -203,6 +203,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_v2_treemap_style_sort_test":                        "dashboards",
 	"tests/resource_datadog_dashboard_v2_sunburst_sort_test":                             "dashboards",
 	"tests/resource_datadog_dashboard_v2_product_analytics_queries_test":                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_product_analytics_widgets_test":                 "dashboards",
+	"tests/resource_datadog_dashboard_v2_funnel_grouped_display_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_v2_sankey_audience_test":                           "dashboards",
 	"tests/resource_datadog_dataset_test":                                                "dataset",
 	"tests/resource_datadog_datastore_test":                                              "datastores",
