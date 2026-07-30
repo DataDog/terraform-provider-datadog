@@ -262,6 +262,42 @@ var arrayProcessor = &schema.Schema{
 								},
 							},
 						},
+						"key_value": {
+							Description: "Operation that extracts key-value pairs from a source array and stores the result in the target attribute.",
+							Type:        schema.TypeList,
+							Optional:    true,
+							MaxItems:    1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"source": {
+										Description: "Attribute path of the array to extract key-value pairs from.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"key_to_extract": {
+										Description: "Key of the attribute in each array element that holds the name to use for the extracted attribute.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"value_to_extract": {
+										Description: "Key of the attribute in each array element that holds the value to use for the extracted attribute.",
+										Type:        schema.TypeString,
+										Required:    true,
+									},
+									"target": {
+										Description: "Attribute that receives the extracted key-value pairs. If not specified, the extracted attributes are added at the root level of the log.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+									"override_on_conflict": {
+										Description: "Whether to override the target element if it's already set.",
+										Type:        schema.TypeBool,
+										Optional:    true,
+										Default:     false,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -1358,6 +1394,15 @@ func buildTerraformArrayProcessor(ddArray *datadogV1.LogsArrayProcessor) map[str
 			"value_to_extract": selectOp.GetValueToExtract(),
 		}
 		tfOperation["select"] = []map[string]interface{}{tfSelect}
+	} else if keyValueOp := operation.LogsArrayProcessorOperationExtractKeyValue; keyValueOp != nil {
+		tfKeyValue := map[string]interface{}{
+			"source":               keyValueOp.GetSource(),
+			"key_to_extract":       keyValueOp.GetKeyToExtract(),
+			"value_to_extract":     keyValueOp.GetValueToExtract(),
+			"target":               keyValueOp.GetTarget(),
+			"override_on_conflict": keyValueOp.GetOverrideOnConflict(),
+		}
+		tfOperation["key_value"] = []map[string]interface{}{tfKeyValue}
 	}
 
 	tfProcessor["operation"] = operationList
@@ -2113,8 +2158,31 @@ func buildDatadogArrayProcessor(tfProcessor map[string]interface{}) (*datadogV1.
 			}
 
 			operation.LogsArrayProcessorOperationSelect = selectOp
+		} else if tfKeyValues, exists := tfOperation["key_value"].([]interface{}); exists && len(tfKeyValues) > 0 {
+			// Check for key_value operation
+			tfKeyValue := tfKeyValues[0].(map[string]interface{})
+			keyValueOp := datadogV1.NewLogsArrayProcessorOperationExtractKeyValueWithDefaults()
+			keyValueOp.SetType(datadogV1.LOGSARRAYPROCESSOROPERATIONEXTRACTKEYVALUETYPE_KEY_VALUE)
+
+			if source, exists := tfKeyValue["source"].(string); exists {
+				keyValueOp.SetSource(source)
+			}
+			if keyToExtract, exists := tfKeyValue["key_to_extract"].(string); exists {
+				keyValueOp.SetKeyToExtract(keyToExtract)
+			}
+			if valueToExtract, exists := tfKeyValue["value_to_extract"].(string); exists {
+				keyValueOp.SetValueToExtract(valueToExtract)
+			}
+			if target, exists := tfKeyValue["target"].(string); exists && target != "" {
+				keyValueOp.SetTarget(target)
+			}
+			if overrideOnConflict, exists := tfKeyValue["override_on_conflict"].(bool); exists {
+				keyValueOp.SetOverrideOnConflict(overrideOnConflict)
+			}
+
+			operation.LogsArrayProcessorOperationExtractKeyValue = keyValueOp
 		} else {
-			return nil, fmt.Errorf("array processor must have exactly one operation type: append, length, or select")
+			return nil, fmt.Errorf("array processor must have exactly one operation type: append, length, select, or key_value")
 		}
 
 		ddArray.SetOperation(operation)

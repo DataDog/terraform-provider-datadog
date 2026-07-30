@@ -254,6 +254,12 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 			b.dropped = append(b.dropped, droppedAuditField(child.Path))
 			continue
 		}
+		// The envelope id is surfaced unconditionally below, so an id under
+		// attributes always collides with it.
+		if tfNameOf(child.Path) == "id" {
+			b.dropped = append(b.dropped, droppedIDCollision(child.Path))
+			continue
+		}
 		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isObjectType(child.TfType) {
 			b.unsupported = append(b.unsupported, UnsupportedNode{
 				Path:   child.Path,
@@ -302,20 +308,37 @@ type dataSourceBuilder struct {
 	models      []ModelStructView
 	unsupported []UnsupportedNode
 	// dropped notes envelope members skipped from the attributes-only view
-	// (e.g. relationships), surfaced as info diagnostics rather than failures.
-	dropped []string
+	// (e.g. relationships), surfaced as diagnostics rather than failures.
+	dropped []DroppedMember
 }
 
 // droppedEnvelopeMember is the info-diagnostic note for a JSON:API response
 // member skipped from the attributes-only view, e.g. relationships.
-func droppedEnvelopeMember(path string) string {
-	return fmt.Sprintf("dropped %q: not part of the surfaced {id, type, attributes} envelope", path)
+func droppedEnvelopeMember(path string) DroppedMember {
+	return DroppedMember{
+		Message:  fmt.Sprintf("dropped %q: not part of the surfaced {id, type, attributes} envelope", path),
+		Severity: model.SeverityInfo,
+	}
 }
 
 // droppedAuditField is the info-diagnostic note for a top-level audit attribute
 // omitted from a generated data source.
-func droppedAuditField(path string) string {
-	return fmt.Sprintf("dropped %q: server-managed audit field", path)
+func droppedAuditField(path string) DroppedMember {
+	return DroppedMember{
+		Message:  fmt.Sprintf("dropped %q: server-managed audit field", path),
+		Severity: model.SeverityInfo,
+	}
+}
+
+// droppedIDCollision is the warning-diagnostic note for a member promoted out of
+// attributes whose name is already claimed by the envelope id. Flattening would
+// emit two attributes named "id"; the envelope id wins because it carries the
+// data source's Terraform identity.
+func droppedIDCollision(path string) DroppedMember {
+	return DroppedMember{
+		Message:  fmt.Sprintf("dropped %q: collides with the envelope id surfaced as \"id\"", path),
+		Severity: model.SeverityWarning,
+	}
 }
 
 // walk processes one struct's worth of attributes in tree order, reserving the
@@ -597,7 +620,7 @@ func unsupportedReason(tfType string) string {
 // *UnsupportedEmitError, in which case the view is discarded.
 func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	var unsupported []UnsupportedNode
-	var dropped []string
+	var dropped []DroppedMember
 
 	var call *model.SDKCall
 	if a.Lifecycle != nil {
@@ -796,9 +819,17 @@ type itemElementLeaf struct {
 // "attributes" off item.Attributes, and "type" is dropped. Members outside
 // {id, type, attributes} (e.g. relationships) are dropped with a note on dropped;
 // non-leaf id/attributes still append to unsupported. Leaves are sorted by TF name.
-func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, dropped *[]string) (scalars []itemElementLeaf, nonScalars []*model.Attribute) {
+func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, dropped *[]DroppedMember) (scalars []itemElementLeaf, nonScalars []*model.Attribute) {
 	if block == nil {
 		return nil, nil
+	}
+	// Children are name-sorted, so "attributes" is walked before "id". Look the
+	// envelope id up first so a colliding id under attributes can be dropped.
+	envelopeHasID := false
+	for _, child := range block.Children {
+		if tfNameOf(child.Path) == "id" {
+			envelopeHasID = true
+		}
 	}
 	for _, child := range block.Children {
 		switch tfNameOf(child.Path) {
@@ -818,6 +849,10 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 			for _, leaf := range child.Children {
 				if isAuditField(tfNameOf(leaf.Path)) {
 					*dropped = append(*dropped, droppedAuditField(leaf.Path))
+					continue
+				}
+				if envelopeHasID && tfNameOf(leaf.Path) == "id" {
+					*dropped = append(*dropped, droppedIDCollision(leaf.Path))
 					continue
 				}
 				switch {

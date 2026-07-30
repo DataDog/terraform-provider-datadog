@@ -1,6 +1,7 @@
 package emit
 
 import (
+	"bytes"
 	"errors"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -124,7 +125,107 @@ var _ = Describe("BuildDataSourceView", func() {
 
 		view, err := BuildDataSourceView(art)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(view.Dropped).To(ContainElement(ContainSubstring("relationships")))
+		Expect(view.Dropped).To(ContainElement(And(
+			HaveField("Message", ContainSubstring("relationships")),
+			HaveField("Severity", model.SeverityInfo),
+		)))
+	})
+})
+
+var _ = Describe("BuildDataSourceView envelope id collision", func() {
+	It("drops an id under singular attributes in favour of the envelope id and warns", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["attributes"].
+			Properties["id"] = prim("string", "The incident type's config ID.")
+		view := mustView(op)
+
+		Expect(view.Models).To(HaveLen(1))
+		var fields []string
+		for _, f := range view.Models[0].Fields {
+			fields = append(fields, f.TFName)
+		}
+		Expect(fields).To(Equal([]string{"id", "description", "is_default", "name"}))
+		Expect(view.Dropped).To(ContainElement(And(
+			HaveField("Message", ContainSubstring("attributes.id")),
+			HaveField("Message", ContainSubstring(`collides with the envelope id`)),
+			HaveField("Severity", model.SeverityWarning),
+		)))
+	})
+
+	It("drops an id under plural item attributes in favour of the item's envelope id and warns", func() {
+		op := datastoresOperation()
+		op.ResponseSchema.Properties["data"].Items.
+			Properties["attributes"].Properties["id"] = prim("string", "The datastore's config ID.")
+		view := mustView(op)
+
+		var itemAttrs []string
+		for _, b := range view.Schema.Blocks {
+			for _, a := range b.Attributes {
+				itemAttrs = append(itemAttrs, a.TFName)
+			}
+		}
+		Expect(itemAttrs).To(Equal([]string{
+			"creator_user_id", "creator_user_uuid", "description", "id", "name",
+			"org_id", "primary_column_name", "primary_key_generation_strategy",
+		}))
+		Expect(view.Dropped).To(ContainElement(And(
+			HaveField("Message", ContainSubstring("attributes.id")),
+			HaveField("Severity", model.SeverityWarning),
+		)))
+	})
+
+	It("keeps an id under attributes when the envelope has no id of its own", func() {
+		op := datastoresOperation()
+		items := op.ResponseSchema.Properties["data"].Items
+		delete(items.Properties, "id")
+		items.Properties["attributes"].Properties["id"] = prim("string", "The datastore's config ID.")
+		view := mustView(op)
+
+		var itemAttrs []string
+		for _, b := range view.Schema.Blocks {
+			for _, a := range b.Attributes {
+				itemAttrs = append(itemAttrs, a.TFName)
+			}
+		}
+		Expect(itemAttrs).To(Equal([]string{
+			"creator_user_id", "creator_user_uuid", "description", "id", "name",
+			"org_id", "primary_column_name", "primary_key_generation_strategy",
+		}))
+		Expect(view.Dropped).NotTo(ContainElement(
+			HaveField("Message", ContainSubstring("collides with the envelope id"))))
+	})
+
+	It("renders a colliding singular envelope to compiling Go with a single id attribute", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["attributes"].
+			Properties["id"] = prim("string", "The incident type's config ID.")
+
+		src, err := RenderDataSource(mustView(op))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(bytes.Count(src, []byte("`tfsdk:\"id\"`"))).To(Equal(1))
+	})
+
+	It("produces byte-identical output across two runs of the same input", func() {
+		build := func() []byte {
+			op := datastoresOperation()
+			op.ResponseSchema.Properties["data"].Items.
+				Properties["attributes"].Properties["id"] = prim("string", "The datastore's config ID.")
+			src, err := RenderDataSource(mustView(op))
+			Expect(err).NotTo(HaveOccurred())
+			return src
+		}
+		Expect(build()).To(Equal(build()))
+	})
+})
+
+var _ = Describe("RenderDataSource duplicate field guard", func() {
+	It("fails instead of writing a model that declares the same tfsdk tag twice", func() {
+		view := mustView(incidentTypeOperation())
+		view.Models[0].Fields = append(view.Models[0].Fields,
+			ModelFieldView{GoField: "ID", GoType: "types.String", TFName: "id"})
+
+		_, err := RenderDataSource(view)
+		Expect(err).To(MatchError(ContainSubstring(`declares tfsdk:"id" twice`)))
 	})
 })
 
@@ -140,7 +241,10 @@ var _ = Describe("BuildDataSourceView audit fields", func() {
 		for _, a := range view.Schema.Attributes {
 			Expect(a.TFName).NotTo(BeElementOf("created_at", "updated_at", "created_by", "updated_by", "modified_at"))
 		}
-		Expect(view.Dropped).To(ContainElement(ContainSubstring("created_at")))
+		Expect(view.Dropped).To(ContainElement(And(
+			HaveField("Message", ContainSubstring("created_at")),
+			HaveField("Severity", model.SeverityInfo),
+		)))
 	})
 
 	It("keeps an audit-named field nested inside an object", func() {
