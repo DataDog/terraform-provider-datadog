@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -117,11 +118,15 @@ func (d *datadogDatastoresDataSource) Read(ctx context.Context, request datasour
 	}
 	items = append(items, resp.Data...)
 
-	d.updateState(&state, &items)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &items)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSourceModel, data *[]datadogV2.DatastoreData) {
+func (d *datadogDatastoresDataSource) updateState(ctx context.Context, state *datadogDatastoresDataSourceModel, data *[]datadogV2.DatastoreData) diag.Diagnostics {
+	var diags diag.Diagnostics
 	results := make([]*DatastoreDataModel, 0, len(*data))
 	for _, item := range *data {
 		r := DatastoreDataModel{
@@ -140,4 +145,5 @@ func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSo
 	hashingData := "datastores"
 	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.Datastores = results
+	return diags
 }

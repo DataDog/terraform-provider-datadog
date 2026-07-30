@@ -8,6 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -95,12 +96,16 @@ func (d *datadogTeamDataSource) Read(ctx context.Context, request datasource.Rea
 		return
 	}
 
-	d.updateState(&state, &resp)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &resp)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogTeamDataSource) updateState(state *datadogTeamDataSourceModel, resp *datadogV2.TeamResponse) {
+func (d *datadogTeamDataSource) updateState(ctx context.Context, state *datadogTeamDataSourceModel, resp *datadogV2.TeamResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)
@@ -112,13 +117,18 @@ func (d *datadogTeamDataSource) updateState(state *datadogTeamDataSourceModel, r
 		state.Name = types.StringValue(*name)
 	}
 	if hiddenModules, ok := attributes.GetHiddenModulesOk(); ok && hiddenModules != nil {
-		state.HiddenModules, _ = types.ListValueFrom(context.Background(), types.StringType, *hiddenModules)
+		var listDiags diag.Diagnostics
+		state.HiddenModules, listDiags = types.ListValueFrom(ctx, types.StringType, *hiddenModules)
+		diags.Append(listDiags...)
 	} else {
 		state.HiddenModules = types.ListNull(types.StringType)
 	}
 	if visibleModules, ok := attributes.GetVisibleModulesOk(); ok && visibleModules != nil {
-		state.VisibleModules, _ = types.ListValueFrom(context.Background(), types.StringType, *visibleModules)
+		var listDiags diag.Diagnostics
+		state.VisibleModules, listDiags = types.ListValueFrom(ctx, types.StringType, *visibleModules)
+		diags.Append(listDiags...)
 	} else {
 		state.VisibleModules = types.ListNull(types.StringType)
 	}
+	return diags
 }

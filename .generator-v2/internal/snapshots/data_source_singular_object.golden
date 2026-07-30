@@ -8,6 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -123,12 +124,16 @@ func (d *datadogApmRetentionFilterDataSource) Read(ctx context.Context, request 
 		return
 	}
 
-	d.updateState(&state, &resp)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &resp)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogApmRetentionFilterDataSource) updateState(state *datadogApmRetentionFilterDataSourceModel, resp *datadogV2.RetentionFilterResponse) {
+func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, state *datadogApmRetentionFilterDataSourceModel, resp *datadogV2.RetentionFilterResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)
@@ -152,10 +157,13 @@ func (d *datadogApmRetentionFilterDataSource) updateState(state *datadogApmReten
 			filterModel.Metadata = metadataModel
 		}
 		if tags, ok := filter.GetTagsOk(); ok && tags != nil {
-			filterModel.Tags, _ = types.ListValueFrom(context.Background(), types.StringType, *tags)
+			var listDiags diag.Diagnostics
+			filterModel.Tags, listDiags = types.ListValueFrom(ctx, types.StringType, *tags)
+			diags.Append(listDiags...)
 		} else {
 			filterModel.Tags = types.ListNull(types.StringType)
 		}
 		state.Filter = filterModel
 	}
+	return diags
 }
