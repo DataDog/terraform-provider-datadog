@@ -630,6 +630,10 @@ func UseMonitorFrameworkProvider() bool {
 	return getEnv("TERRAFORM_MONITOR_FRAMEWORK_PROVIDER", "false") == "true"
 }
 
+func DisallowDashboardV1Create() bool {
+	return getEnv("DD_TERRAFORM_DISALLOW_DASHBOARD_V1_CREATE", "false") == "true"
+}
+
 func IsDatabricksIntegrationEnabled() bool {
 	return getEnv("DD_TERRAFORM_DATABRICKS_INTEGRATION_ENABLED", "false") == "true"
 }

@@ -29,6 +29,11 @@ func resourceDatadogDashboard() *schema.Resource {
 		ReadContext:   resourceDatadogDashboardRead,
 		DeleteContext: resourceDatadogDashboardDelete,
 		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			oldLayoutType, newLayoutType := diff.GetChange("layout_type")
+			if err := validateDashboardV1Operation(diff.Id(), oldLayoutType, newLayoutType); err != nil {
+				return err
+			}
+
 			oldValue, newValue := diff.GetChange("dashboard_lists")
 			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
 				// Only calculate removed when the list change, to no create useless diffs
@@ -178,7 +183,27 @@ func resourceDatadogDashboard() *schema.Resource {
 	}
 }
 
+func validateDashboardV1Operation(id string, oldLayoutType, newLayoutType interface{}) error {
+	if !utils.DisallowDashboardV1Create() {
+		return nil
+	}
+
+	if id == "" {
+		return fmt.Errorf("creating dashboards with datadog_dashboard is disabled; use datadog_dashboard_v2 instead")
+	}
+
+	if oldLayoutType != newLayoutType {
+		return fmt.Errorf("replacing dashboards managed with datadog_dashboard is disabled; migrate to datadog_dashboard_v2 before changing layout_type")
+	}
+
+	return nil
+}
+
 func resourceDatadogDashboardCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	if err := validateDashboardV1Operation("", nil, nil); err != nil {
+		return diag.FromErr(err)
+	}
+
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
