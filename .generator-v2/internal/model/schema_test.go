@@ -465,6 +465,51 @@ var _ = Describe("BuildResponseTree drops oneOf variants", func() {
 	})
 })
 
+var _ = Describe("BuildResponseTree drops ignored attributes", func() {
+
+	It("omits an ignored leaf and records an info diagnostic", func() {
+		name := primSchema("string")
+		dropped := primSchema("string")
+		dropped.Ignore = true
+		tree, diags, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"name":    name,
+			"dropped": dropped,
+		}))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(pathsOf(tree.Attributes)).To(Equal([]string{"response.name"}))
+		Expect(diags).To(HaveLen(1))
+		Expect(diags[0].Severity).To(Equal(SeverityInfo))
+		Expect(diags[0].Message).To(ContainSubstring(`dropped "response.dropped"`))
+		Expect(diags[0].Message).To(ContainSubstring("ignored via x-datadog-tf-generator.ignore"))
+	})
+
+	It("omits an ignored object and its entire subtree", func() {
+		branch := objSchema(map[string]*Schema{
+			"child": objSchema(map[string]*Schema{"leaf": primSchema("string")}),
+		})
+		branch.Ignore = true
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"keep":   primSchema("string"),
+			"branch": branch,
+		}))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(pathsOf(allAttrs(tree))).To(Equal([]string{"response.keep"}))
+	})
+
+	It("builds the artifact when the ignored node is an otherwise-unrepresentable kind", func() {
+		bad := &Schema{Kind: SchemaKindUnsupported}
+		bad.Ignore = true
+		tree, diags, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"keep": primSchema("string"),
+			"bad":  bad,
+		}))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(pathsOf(tree.Attributes)).To(Equal([]string{"response.keep"}))
+		Expect(diags).To(HaveLen(1))
+		Expect(diags[0].Message).To(ContainSubstring(`dropped "response.bad"`))
+	})
+})
+
 // ---------------------------------------------------------------------------
 //  Golden full-tree shape — locks the whole conversion in one assertion
 // ---------------------------------------------------------------------------

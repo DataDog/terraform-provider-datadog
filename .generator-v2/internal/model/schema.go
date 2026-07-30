@@ -79,6 +79,14 @@ func build(s *Schema, root string) (*AttributeTree, []Diagnostic, error) {
 // Terraform representation, so buildAttribute drops it: it returns a nil
 // Attribute (for the caller to skip) and records an info diagnostic on diags.
 func buildAttribute(s *Schema, path string, mode nestingMode, diags *[]Diagnostic) (*Attribute, error) {
+	// An attribute the author listed under ignore: drop it and its subtree. This
+	// runs before the kind checks below, so ignoring an unrepresentable field
+	// rescues the artifact instead of failing it.
+	if s.Ignore {
+		*diags = append(*diags, droppedDiag(path, "ignored via x-datadog-tf-generator.ignore"))
+		return nil, nil
+	}
+
 	// A oneOf variant node: drop it from the tree.
 	if s.Kind == SchemaKindVariant {
 		*diags = append(*diags, droppedDiag(path, "oneOf variant has no Terraform representation"))

@@ -513,6 +513,16 @@ func incidentTypeOperation() *model.Operation {
 	}
 }
 
+// incidentTypeIgnoreOperation is incidentTypeOperation with the is_default
+// attribute ignored. Emit fixtures bypass the parser, so the node is pre-stamped
+// the way parser matching would from Tracking.Ignore ["is_default"].
+func incidentTypeIgnoreOperation() *model.Operation {
+	op := incidentTypeOperation()
+	op.Tracking.Ignore = []string{"is_default"}
+	op.ResponseSchema.Properties["data"].Properties["attributes"].Properties["is_default"].Ignore = true
+	return op
+}
+
 // incidentTypeArtifact resolves incidentTypeOperation into an *model.Artifact.
 func incidentTypeArtifact() *model.Artifact {
 	GinkgoHelper()
