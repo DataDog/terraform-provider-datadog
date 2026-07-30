@@ -1,3 +1,18 @@
+## 4.17.0 (July 29, 2026)
+
+### BUGFIXES
+* [datadog_integration_slack_channel] Do not use the error message as a format string in TranslateClientError by @Lucretiel in https://github.com/DataDog/terraform-provider-datadog/pull/4046
+### FEATURES
+* [datadog_tag_indexing_rule] Add exclude-mode usage fields; fix order resource rule-set validation by @efraese in https://github.com/DataDog/terraform-provider-datadog/pull/3990
+* [datadog_role_permissions] Add datadog_role_permissions resource to query permissions by @mattclegg in https://github.com/DataDog/terraform-provider-datadog/pull/3987
+* [datadog_incident_postmortem_template] Add incident postmortem template resource by @rakshith91 in https://github.com/DataDog/terraform-provider-datadog/pull/4026
+
+## New Contributors
+* @Lucretiel made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/4046
+* @mattclegg made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/3987
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v4.16.0...v4.17.0
+
 ## 4.16.0 (July 24, 2026)
 
 ### BUGFIXES

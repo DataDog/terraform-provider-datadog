@@ -10,6 +10,8 @@
 // fiddly logic in code that unit tests can pin down.
 package emit
 
+import "github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
+
 // Cardinality selects which data-source template renders an artifact. A
 // singular data source resolves exactly one item whereas a plural
 // data source returns a filtered list of items.
@@ -76,9 +78,18 @@ type DataSourceView struct {
 	State StateView
 
 	// Dropped lists response members skipped from the rendered view (e.g.
-	// relationships), surfaced as info diagnostics in the run report. It does
-	// not affect rendering.
-	Dropped []string
+	// relationships), surfaced as diagnostics in the run report. It does not
+	// affect rendering.
+	Dropped []DroppedMember
+}
+
+// DroppedMember is one response member omitted from the rendered view, carrying
+// the severity its omission warrants in the run report. A member with no
+// Terraform representation is informational; one dropped to resolve a name
+// collision is a warning, because data the API exposes is not surfaced.
+type DroppedMember struct {
+	Message  string
+	Severity model.DiagnosticSeverity
 }
 
 // SDKReadView describes the datadog-api-client-go call that backs Read.

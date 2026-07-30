@@ -19,9 +19,8 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure      = &onCallTeamRoutingRulesResource{}
-	_ resource.ResourceWithImportState    = &onCallTeamRoutingRulesResource{}
-	_ resource.ResourceWithValidateConfig = &onCallTeamRoutingRulesResource{}
+	_ resource.ResourceWithConfigure   = &onCallTeamRoutingRulesResource{}
+	_ resource.ResourceWithImportState = &onCallTeamRoutingRulesResource{}
 )
 
 type onCallTeamRoutingRulesResource struct {
@@ -372,19 +371,6 @@ func (r *onCallTeamRoutingRulesResource) Schema(_ context.Context, _ resource.Sc
 
 func (r *onCallTeamRoutingRulesResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
-}
-
-// ValidateConfig surfaces rule violations at `terraform plan`, before any API
-// call. The same checks run again in Create/Update once unknown values are
-// resolved.
-func (r *onCallTeamRoutingRulesResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
-	var config onCallTeamRoutingRulesModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &config)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	response.Diagnostics.Append(config.Validate()...)
 }
 
 func (r *onCallTeamRoutingRulesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {

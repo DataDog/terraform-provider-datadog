@@ -352,6 +352,7 @@ Optional:
 Optional:
 
 - `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--append))
+- `key_value` (Block List, Max: 1) Operation that extracts key-value pairs from a source array and stores the result in the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--key_value))
 - `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in a target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--length))
 - `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a value from that found object and puts that value into the target attribute. (see [below for nested schema](#nestedblock--processor--array_processor--operation--select))
 
@@ -366,6 +367,21 @@ Required:
 Optional:
 
 - `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `true`.
+
+
+<a id="nestedblock--processor--array_processor--operation--key_value"></a>
+### Nested Schema for `processor.array_processor.operation.key_value`
+
+Required:
+
+- `key_to_extract` (String) Key of the attribute in each array element that holds the name to use for the extracted attribute.
+- `source` (String) Attribute path of the array to extract key-value pairs from.
+- `value_to_extract` (String) Key of the attribute in each array element that holds the value to use for the extracted attribute.
+
+Optional:
+
+- `override_on_conflict` (Boolean) Whether to override the target element if it's already set. Defaults to `false`.
+- `target` (String) Attribute that receives the extracted key-value pairs. If not specified, the extracted attributes are added at the root level of the log.
 
 
 <a id="nestedblock--processor--array_processor--operation--length"></a>
@@ -733,6 +749,7 @@ Optional:
 Optional:
 
 - `append` (Block List, Max: 1) Operation that appends a value to a target array attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--append))
+- `key_value` (Block List, Max: 1) Operation that extracts key-value pairs from a source array and stores the result in the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--key_value))
 - `length` (Block List, Max: 1) Operation that computes the length of a source array and stores the result in a target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--length))
 - `select` (Block List, Max: 1) Operation that finds an object in a source array using a filter, and then extracts a value from that found object and puts that value into the target attribute. (see [below for nested schema](#nestedblock--processor--pipeline--processor--array_processor--operation--select))
 
@@ -747,6 +764,21 @@ Required:
 Optional:
 
 - `preserve_source` (Boolean) Remove or preserve the remapped source element. Defaults to `true`.
+
+
+<a id="nestedblock--processor--pipeline--processor--array_processor--operation--key_value"></a>
+### Nested Schema for `processor.pipeline.processor.array_processor.operation.key_value`
+
+Required:
+
+- `key_to_extract` (String) Key of the attribute in each array element that holds the name to use for the extracted attribute.
+- `source` (String) Attribute path of the array to extract key-value pairs from.
+- `value_to_extract` (String) Key of the attribute in each array element that holds the value to use for the extracted attribute.
+
+Optional:
+
+- `override_on_conflict` (Boolean) Whether to override the target element if it's already set. Defaults to `false`.
+- `target` (String) Attribute that receives the extracted key-value pairs. If not specified, the extracted attributes are added at the root level of the log.
 
 
 <a id="nestedblock--processor--pipeline--processor--array_processor--operation--length"></a>

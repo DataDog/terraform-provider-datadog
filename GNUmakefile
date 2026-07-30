@@ -52,8 +52,11 @@ test:
 	$(GO) tool gotestsum --format testname --debug --packages $(UNIT_PKGS) -- $(TESTARGS) -timeout=120s
 
 # Run acceptance tests (this runs integration CRUD tests through the terraform test framework)
+# Set TESTACC_JSONFILE to also have gotestsum write the raw test2json stream there;
+# scripts/summarize_testacc.py turns it into the PR integration check summary. Unset
+# by default, so local runs behave exactly as before.
 testacc:
-	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
+	RECORD=$(RECORD) TF_ACC=1 $(GO) tool gotestsum --format testname --debug --rerun-fails $(if $(TESTACC_JSONFILE),--jsonfile $(TESTACC_JSONFILE)) --packages ./datadog/tests/... -- -v $(TESTARGS) -timeout 120m
 
 # Run both unit and acceptance tests
 testall: test testacc
