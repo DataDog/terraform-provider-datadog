@@ -97,7 +97,7 @@ type httpClientDestinationModel struct {
 	UsernameKey  types.String                                `tfsdk:"username_key"`
 	Compression  []httpClientDestinationCompressionModel     `tfsdk:"compression"`
 	AuthStrategy types.String                                `tfsdk:"auth_strategy"`
-	Tls          []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Tls          []observability_pipeline.ClientTlsModel     `tfsdk:"tls"`
 	Buffer       []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
@@ -601,7 +601,7 @@ type rsyslogDestinationModel struct {
 type syslogNgDestinationModel struct {
 	EndpointUrlKey types.String                                `tfsdk:"endpoint_url_key"`
 	Keepalive      types.Int64                                 `tfsdk:"keepalive"`
-	Tls            []observability_pipeline.TlsModel           `tfsdk:"tls"`
+	Tls            []observability_pipeline.ClientTlsModel     `tfsdk:"tls"`
 	Buffer         []observability_pipeline.BufferOptionsModel `tfsdk:"buffer"`
 }
 
@@ -754,16 +754,16 @@ type amazonDataFirehoseSourceModel struct {
 }
 
 type httpClientSourceModel struct {
-	Decoding       types.String                      `tfsdk:"decoding"`
-	EndpointUrlKey types.String                      `tfsdk:"endpoint_url_key"`
-	ScrapeInterval types.Int64                       `tfsdk:"scrape_interval_secs"`
-	ScrapeTimeout  types.Int64                       `tfsdk:"scrape_timeout_secs"`
-	AuthStrategy   types.String                      `tfsdk:"auth_strategy"`
-	TokenKey       types.String                      `tfsdk:"token_key"`
-	PasswordKey    types.String                      `tfsdk:"password_key"`
-	UsernameKey    types.String                      `tfsdk:"username_key"`
-	CustomKey      types.String                      `tfsdk:"custom_key"`
-	Tls            []observability_pipeline.TlsModel `tfsdk:"tls"`
+	Decoding       types.String                            `tfsdk:"decoding"`
+	EndpointUrlKey types.String                            `tfsdk:"endpoint_url_key"`
+	ScrapeInterval types.Int64                             `tfsdk:"scrape_interval_secs"`
+	ScrapeTimeout  types.Int64                             `tfsdk:"scrape_timeout_secs"`
+	AuthStrategy   types.String                            `tfsdk:"auth_strategy"`
+	TokenKey       types.String                            `tfsdk:"token_key"`
+	PasswordKey    types.String                            `tfsdk:"password_key"`
+	UsernameKey    types.String                            `tfsdk:"username_key"`
+	CustomKey      types.String                            `tfsdk:"custom_key"`
+	Tls            []observability_pipeline.ClientTlsModel `tfsdk:"tls"`
 }
 
 type googlePubSubSourceModel struct {
@@ -1186,7 +1186,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls": observability_pipeline.TlsSchema(),
+												"tls": observability_pipeline.ClientTlsSchema(),
 											},
 										},
 									},
@@ -2322,7 +2322,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														listvalidator.SizeAtMost(1),
 													},
 												},
-												"tls":    observability_pipeline.TlsSchema(),
+												"tls":    observability_pipeline.ClientTlsSchema(),
 												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
@@ -2476,7 +2476,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 											Blocks: map[string]schema.Block{
-												"tls":    observability_pipeline.TlsSchema(),
+												"tls":    observability_pipeline.ClientTlsSchema(),
 												"buffer": observability_pipeline.BufferOptionsSchema(),
 											},
 										},
@@ -5444,7 +5444,7 @@ func expandHttpClientDestination(ctx context.Context, dest *destinationModel, sr
 		d.SetCompression(comp)
 	}
 
-	d.Tls = observability_pipeline.ExpandTls(src.Tls)
+	d.Tls = observability_pipeline.ExpandClientTls(src.Tls)
 
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
@@ -5479,7 +5479,7 @@ func flattenHttpClientDestination(ctx context.Context, src *datadogV2.Observabil
 		out.UsernameKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
 	}
 
 	if auth, ok := src.GetAuthStrategyOk(); ok {
@@ -6264,7 +6264,7 @@ func expandSyslogNgDestination(ctx context.Context, dest *destinationModel, src 
 	if !src.Keepalive.IsNull() {
 		obj.SetKeepalive(src.Keepalive.ValueInt64())
 	}
-	obj.Tls = observability_pipeline.ExpandTls(src.Tls)
+	obj.Tls = observability_pipeline.ExpandClientTls(src.Tls)
 
 	if len(src.Buffer) > 0 {
 		buffer := observability_pipeline.ExpandBufferOptions(src.Buffer[0])
@@ -6287,7 +6287,7 @@ func flattenSyslogNgDestination(ctx context.Context, src *datadogV2.Observabilit
 		out.EndpointUrlKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
 	}
 	if v, ok := src.GetKeepaliveOk(); ok {
 		out.Keepalive = types.Int64Value(*v)
@@ -6660,7 +6660,7 @@ func expandHttpClientSource(src *httpClientSourceModel, id string) datadogV2.Obs
 		auth := datadogV2.ObservabilityPipelineHttpClientSourceAuthStrategy(src.AuthStrategy.ValueString())
 		httpSrc.SetAuthStrategy(auth)
 	}
-	httpSrc.Tls = observability_pipeline.ExpandTls(src.Tls)
+	httpSrc.Tls = observability_pipeline.ExpandClientTls(src.Tls)
 
 	return datadogV2.ObservabilityPipelineConfigSourceItem{
 		ObservabilityPipelineHttpClientSource: httpSrc,
@@ -6691,7 +6691,7 @@ func flattenHttpClientSource(src *datadogV2.ObservabilityPipelineHttpClientSourc
 		out.CustomKey = types.StringValue(*v)
 	}
 	if src.Tls != nil {
-		out.Tls = observability_pipeline.FlattenTls(src.Tls)
+		out.Tls = observability_pipeline.FlattenClientTls(src.Tls)
 	}
 	if v, ok := src.GetScrapeIntervalSecsOk(); ok {
 		out.ScrapeInterval = types.Int64Value(*v)

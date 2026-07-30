@@ -94,6 +94,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_reference_table_test":                                     "reference-tables",
 	"tests/data_source_datadog_reference_table_rows_test":                                "reference-tables",
 	"tests/data_source_datadog_restriction_policy_test":                                  "restriction-policy",
+	"tests/data_source_datadog_role_permissions_test":                                    "roles",
 	"tests/data_source_datadog_role_test":                                                "roles",
 	"tests/data_source_datadog_role_users_test":                                          "roles",
 	"tests/data_source_datadog_roles_test":                                               "roles",
@@ -372,6 +373,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_incident_notification_rule_test":                             "incidents",
 	"tests/data_source_datadog_incident_notification_rule_test":                          "incidents",
 	"tests/resource_datadog_incident_user_defined_field_test":                            "incidents",
+	"tests/resource_datadog_incident_user_defined_role_test":                             "incidents",
 	"tests/resource_datadog_deployment_gate_test":                                        "deployment-gates",
 }
 
