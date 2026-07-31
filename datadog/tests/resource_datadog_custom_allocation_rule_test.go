@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
@@ -104,17 +105,21 @@ func TestAccDatadogCustomAllocationRuleInPlaceUpdate(t *testing.T) {
 			},
 			{
 				// Change only costs_to_allocate (not rule_name) so this is an in-place
-				// PATCH, not a replacement. The API bumps `updated` and `version` on
-				// every update.
+				// PATCH, not a replacement. The API bumps `updated` on every update but
+				// keeps `version` at 1, so the plan action is what asserts the update
+				// happened in place.
 				Config: testAccCheckDatadogCustomAllocationRuleInPlaceUpdate(uniq),
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("datadog_custom_allocation_rule.foo", plancheck.ResourceActionUpdate),
+					},
+				},
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogCustomAllocationRuleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "rule_name", fmt.Sprintf("tf-test-rule-%s", uniq)),
 					resource.TestCheckResourceAttr(
 						"datadog_custom_allocation_rule.foo", "costs_to_allocate.0.value", "AmazonS3"),
-					resource.TestCheckResourceAttr(
-						"datadog_custom_allocation_rule.foo", "version", "2"),
 				),
 			},
 		},
