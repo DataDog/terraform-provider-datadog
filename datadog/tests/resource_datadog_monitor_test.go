@@ -2904,6 +2904,16 @@ func TestAccDatadogMonitor_DataQuality_WithMonitorOptions(t *testing.T) {
 						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.schema_version", "0.0.1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.monitor_options.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.monitor_options.0.custom_sql", "SELECT * FROM table"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.monitor_options.0.custom_where", "database = 'production'"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.monitor_options.0.crontab_override", "0 0 * * *"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.monitor_options.0.model_type_override", "freshness"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.data_quality_with_options", "variables.0.data_quality_query.0.monitor_options.0.sensitivity", "2.5"),
 				),
 			},
 		},
@@ -2938,6 +2948,7 @@ resource "datadog_monitor" "data_quality_with_options" {
         group_by_columns   = ["column1", "column2"]
         crontab_override   = "0 0 * * *"
         model_type_override = "freshness"
+        sensitivity        = 2.5
       }
     }
   }

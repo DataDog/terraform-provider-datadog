@@ -1186,6 +1186,11 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 											Optional:    true,
 											Description: "Override for the model type. Valid values are `freshness`, `percentage`, `any`.",
 										},
+										"sensitivity": {
+											Type:        schema.TypeFloat,
+											Optional:    true,
+											Description: "Sensitivity of the anomaly detection model, expressed as a multiplier on the width of the predicted bounds. Higher values widen the bounds and produce fewer alerts, lower values tighten them and produce more alerts. Defaults to `3.0`.",
+										},
 									},
 								},
 							},
@@ -1887,6 +1892,14 @@ func getOptionalString(data map[string]interface{}, fieldName string) (string, b
 	return val, ok && len(val) > 0
 }
 
+// getOptionalFloat safely extracts an optional float from a map. A zero value is treated as unset:
+// the backend rejects a non-positive sensitivity and falls back to its own default, and SDKv2 cannot
+// distinguish an omitted float attribute from one explicitly set to 0.
+func getOptionalFloat(data map[string]interface{}, fieldName string) (float64, bool) {
+	val, ok := data[fieldName].(float64)
+	return val, ok && val != 0
+}
+
 // getOptionalStringSlice safely extracts an optional string slice from a map, filtering out nil and empty values
 func getOptionalStringSlice(data map[string]interface{}, fieldName string) []string {
 	list, ok := data[fieldName].([]interface{})
@@ -1931,6 +1944,10 @@ func buildDataQualityMonitorOptions(data map[string]interface{}) *datadogV1.Moni
 	}
 	if v, ok := getOptionalString(data, "model_type_override"); ok {
 		opts.SetModelTypeOverride(datadogV1.MonitorFormulaAndFunctionDataQualityModelTypeOverride(v))
+		hasAnyOption = true
+	}
+	if v, ok := getOptionalFloat(data, "sensitivity"); ok {
+		opts.SetSensitivity(v)
 		hasAnyOption = true
 	}
 
@@ -2708,6 +2725,9 @@ func buildTerraformDataQualityMonitorVariables(datadogVariables []datadogV1.Moni
 				}
 				if modelTypeOverride, ok := monitorOptions.GetModelTypeOverrideOk(); ok {
 					terraformMonitorOptions["model_type_override"] = modelTypeOverride
+				}
+				if sensitivity, ok := monitorOptions.GetSensitivityOk(); ok {
+					terraformMonitorOptions["sensitivity"] = sensitivity
 				}
 				terraformQuery["monitor_options"] = []map[string]interface{}{terraformMonitorOptions}
 			}

@@ -128,3 +128,5 @@ tool (
 	golang.org/x/tools/cmd/goimports
 	gotest.tools/gotestsum
 )
+
+replace github.com/DataDog/datadog-api-client-go/v2 => /Users/ansha.yu/dd/.local-datadog-api-client-go
