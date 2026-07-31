@@ -104,6 +104,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
+          # checkout v7 refuses fork-head checkouts under workflow_run by
+          # default. Executing the PR's own code is the entire purpose of this
+          # job, so opt in explicitly; without it every fork PR fails here
+          # before a single test runs.
+          allow-unsafe-pr-checkout: true
       - name: Mint Datadog credentials
         id: dd-sts
         uses: DataDog/dd-sts-action@7d2d231c02fd54a3da912e582ff87cb995d1fd30 # v1.0.4
