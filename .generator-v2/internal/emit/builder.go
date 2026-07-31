@@ -58,7 +58,8 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		read, search = a.Lifecycle.Read, a.Lifecycle.Search
 		idStrategy = a.Lifecycle.IdStrategy
 	}
-	byID, searchable := read != nil, search != nil
+	hasRead, searchable := read != nil, search != nil
+	byID := hasRead && (!read.BindingResolved || callHasArgument(read, "id"))
 
 	// The primary call provides the SDK package/struct the data source binds to:
 	// the by-id call when present, otherwise the list call.
@@ -87,13 +88,16 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		paramType = "*" + read.GoPackage + "." + read.GoResponseType
 	}
 
-	// Partition the schema: Optional leaves are the search filters, the lone
-	// envelope block is the record to flatten.
-	var topLevel, filterLeaves []*model.Attribute
+	// Partition the schema: required/optional leaves are SDK inputs, while the
+	// lone computed envelope block is the record to flatten.
+	var topLevel, inputLeaves, filterLeaves []*model.Attribute
 	if a.Schema != nil {
 		for _, attr := range a.Schema.Attributes {
-			if attr.Optional && isLeafType(attr.TfType) {
-				filterLeaves = append(filterLeaves, attr)
+			if (attr.Required || attr.Optional) && isLeafType(attr.TfType) {
+				inputLeaves = append(inputLeaves, attr)
+				if attr.Optional {
+					filterLeaves = append(filterLeaves, attr)
+				}
 			} else {
 				topLevel = append(topLevel, attr)
 			}
@@ -112,8 +116,13 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, b.receiver, "state", env.leaves)
 	leafFields := b.models[0].Fields
 
-	// Search filters: one Optional attribute + model field + param binding each.
-	filterAttrs, filterFields, filterParams := buildSingularFilters(filterLeaves)
+	inputAttrs, inputFields := buildInputViews(inputLeaves)
+	filterParams := buildFilterParams(search, filterLeaves, &b.unsupported)
+	readArgs, readUUID := buildArgumentViews(read, &b.unsupported)
+	searchArgs, searchUUID := buildArgumentViews(search, &b.unsupported)
+	if len(b.unsupported) > 0 {
+		return DataSourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
+	}
 
 	// Parent model fields: the lookup id, then the search filters, then the record
 	// leaves. The group comments are only emitted for the search shapes.
@@ -124,14 +133,14 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 			leafFields[0].Comment = "Computed values"
 		}
 	}
-	fields := append([]ModelFieldView{idField}, filterFields...)
+	fields := append([]ModelFieldView{idField}, inputFields...)
 	b.models[0].Fields = append(fields, leafFields...)
 
 	assignments := append([]StateAssignment{env.idAssign}, recordScalars...)
 
 	var readView, searchView SDKReadView
-	if byID {
-		readView = SDKReadView{Method: read.GoMethod, ResponseType: read.GoResponseType}
+	if hasRead {
+		readView = SDKReadView{Method: read.GoMethod, ResponseType: read.GoResponseType, Arguments: readArgs}
 	}
 	if searchable {
 		searchView = SDKReadView{
@@ -140,6 +149,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 			ItemType:           search.ItemType,
 			OptionalParamsType: search.OptionalParamsType,
 			Filters:            filterParams,
+			Arguments:          searchArgs,
 		}
 	}
 
@@ -151,12 +161,13 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
 		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
+		UsesUUID:    readUUID || searchUUID,
 		ByID:        byID,
 		Searchable:  searchable,
 		Read:        readView,
 		Search:      searchView,
 		Models:      b.models,
-		Schema:      SchemaView{Attributes: append(filterAttrs, recordAttrs...), Blocks: recordBlocks},
+		Schema:      SchemaView{Attributes: append(inputAttrs, recordAttrs...), Blocks: recordBlocks},
 		State: StateView{
 			ParamName:   paramName,
 			ParamType:   paramType,
@@ -168,25 +179,150 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	}, nil
 }
 
-// buildSingularFilters turns the Optional filter leaves of a search/both data
-// source into Terraform attributes, model fields, and the request-param bindings
-// that set the list call's optional parameters — mirroring the plural filter set.
-func buildSingularFilters(leaves []*model.Attribute) (attrs []AttrView, fields []ModelFieldView, params []FilterParamView) {
+// buildInputViews turns Terraform input leaves into schema attributes and model
+// fields shared by singular and plural data sources.
+func buildInputViews(leaves []*model.Attribute) (attrs []AttrView, fields []ModelFieldView) {
+	comment := "Query Parameters"
+	for _, leaf := range leaves {
+		if leaf.Required {
+			comment = "SDK call parameters"
+			break
+		}
+	}
 	for i, leaf := range leaves {
 		tfName := tfNameOf(leaf.Path)
-		attrs = append(attrs, AttrView{TFName: tfName, TFType: leaf.TfType, Description: leaf.Description, Optional: true})
+		attrs = append(attrs, AttrView{
+			TFName: tfName, TFType: leaf.TfType, Description: leaf.Description,
+			Required: leaf.Required, Optional: leaf.Optional,
+		})
 		field := ModelFieldView{GoField: model.SdkName(tfName), GoType: leaf.GoType, TFName: tfName}
 		if i == 0 {
-			field.Comment = "Query Parameters"
+			field.Comment = comment
 		}
 		fields = append(fields, field)
-		params = append(params, FilterParamView{
+	}
+	return attrs, fields
+}
+
+func buildHashInputs(leaves []*model.Attribute) []FilterParamView {
+	inputs := make([]FilterParamView, 0, len(leaves))
+	for _, leaf := range leaves {
+		tfName := tfNameOf(leaf.Path)
+		inputs = append(inputs, FilterParamView{
 			StateField: model.SdkName(tfName),
-			ParamField: model.SdkName(tfName),
 			ValueExpr:  pointerValueExpr(leaf.GoType),
 		})
 	}
-	return attrs, fields, params
+	return inputs
+}
+
+func callHasArgument(call *model.SDKCall, tfName string) bool {
+	if call == nil {
+		return false
+	}
+	for _, arg := range call.Arguments {
+		if arg.TFName == tfName {
+			return true
+		}
+	}
+	return false
+}
+
+func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]SDKArgumentView, bool) {
+	if call == nil || !call.BindingResolved {
+		return nil, false
+	}
+	var views []SDKArgumentView
+	usesUUID := false
+	for _, arg := range call.Arguments {
+		expr, uuidVar, uuidSource, reason := sdkArgumentExpression(call.GoPackage, arg)
+		if reason != "" {
+			*unsupported = append(*unsupported, UnsupportedNode{
+				Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: reason,
+			})
+			continue
+		}
+		views = append(views, SDKArgumentView{
+			Expression: expr, UUIDVar: uuidVar, UUIDSource: uuidSource, TFName: arg.TFName,
+		})
+		usesUUID = usesUUID || uuidVar != ""
+	}
+	return views, usesUUID
+}
+
+func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) []FilterParamView {
+	if call == nil {
+		return nil
+	}
+	byName := map[string]model.SDKArgument{}
+	for _, arg := range call.OptionalArguments {
+		byName[arg.TFName] = arg
+	}
+	var params []FilterParamView
+	for _, leaf := range leaves {
+		tfName := tfNameOf(leaf.Path)
+		if !call.BindingResolved {
+			params = append(params, FilterParamView{
+				StateField: model.SdkName(tfName), ParamField: model.SdkName(tfName), ValueExpr: pointerValueExpr(leaf.GoType),
+			})
+			continue
+		}
+		arg, ok := byName[tfName]
+		if !ok {
+			*unsupported = append(*unsupported, UnsupportedNode{
+				Path:   "sdk." + call.GoMethod + "." + tfName,
+				Reason: "no matching optional-parameter setter in the pinned SDK",
+			})
+			continue
+		}
+		expr, uuidVar, _, reason := sdkArgumentExpression(call.GoPackage, arg)
+		if uuidVar != "" {
+			reason = "optional UUID arguments are not supported by scalar-first binding"
+		}
+		if reason != "" {
+			*unsupported = append(*unsupported, UnsupportedNode{Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: reason})
+			continue
+		}
+		params = append(params, FilterParamView{
+			StateField: model.SdkName(tfName), ParamField: model.SdkName(tfName), ValueExpr: expr, Setter: arg.Setter,
+		})
+	}
+	return params
+}
+
+func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, uuidVar, uuidSource, reason string) {
+	if arg.Schema == nil || arg.Schema.Kind != model.SchemaKindPrimitive {
+		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
+	}
+	field := goFieldName(arg.TFName)
+	source := "state." + field
+	var value string
+	switch arg.Schema.Type {
+	case "string":
+		value = source + ".ValueString()"
+	case "boolean":
+		value = source + ".ValueBool()"
+	case "integer":
+		value = source + ".ValueInt64()"
+	case "number":
+		value = source + ".ValueFloat64()"
+	default:
+		return "", "", "", fmt.Sprintf("OpenAPI scalar type %q is not supported", arg.Schema.Type)
+	}
+
+	switch arg.GoType {
+	case "string", "bool", "int64", "float64":
+		return value, "", "", ""
+	case "int", "int32", "float32":
+		return arg.GoType + "(" + value + ")", "", "", ""
+	case "uuid.UUID":
+		name := "parsed" + model.SdkName(arg.TFName)
+		return name, name, value, ""
+	}
+	if strings.ContainsAny(arg.GoType, "[]*{}.") || arg.GoType == "interface{}" {
+		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
+	}
+	return sdkPackage + "." + arg.GoType + "(" + value + ")", "", "", ""
 }
 
 // flattenedEnvelope is the result of recognizing a singular JSON:API envelope:
@@ -216,12 +352,14 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 	data := topLevel[0]
 
 	// data members must be a subset of {id, type, attributes}.
-	var attributes *model.Attribute
+	var id, attributes *model.Attribute
 	ok := true
 	for _, child := range data.Children {
 		switch tfNameOf(child.Path) {
-		case "id", "type":
-			// id is surfaced from id_strategy below; type is the discriminator, dropped.
+		case "id":
+			id = child
+		case "type":
+			// type is the discriminator and is not surfaced.
 		case "attributes":
 			attributes = child
 		default:
@@ -287,6 +425,10 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		return nil
 	}
 
+	idValueExpr := "*id"
+	if id != nil && id.IsEnum {
+		idValueExpr = "string(*id)"
+	}
 	return &flattenedEnvelope{
 		leaves:  leaves,
 		idField: ModelFieldView{GoField: "ID", GoType: "types.String", TFName: "id"},
@@ -294,7 +436,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 			Var:      "id",
 			GetterOk: rootExpr + ".GetIdOk()",
 			LHS:      "state.ID",
-			RHS:      "types.StringValue(*id)",
+			RHS:      "types.StringValue(" + idValueExpr + ")",
 		},
 		preamble: []string{"attributes := " + rootExpr + ".GetAttributes()"},
 	}
@@ -635,18 +777,21 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		unsupported = append(unsupported, UnsupportedNode{Path: "response", Reason: "missing list item type"})
 	}
 
-	// Partition the top-level schema: Optional leaves are filters, the lone
+	// Partition the top-level schema: required/optional leaves are SDK inputs, the lone
 	// ListNestedBlock is the items block (the model already dropped response
 	// metadata siblings, keeping only the results array).
-	var filterLeaves []*model.Attribute
+	var inputLeaves, filterLeaves []*model.Attribute
 	var itemsBlock *model.Attribute
 	if a.Schema != nil {
 		for _, attr := range a.Schema.Attributes {
 			switch {
 			case attr.TfType == "schema.ListNestedBlock":
 				itemsBlock = attr
-			case attr.Optional && isLeafType(attr.TfType):
-				filterLeaves = append(filterLeaves, attr)
+			case (attr.Required || attr.Optional) && isLeafType(attr.TfType):
+				inputLeaves = append(inputLeaves, attr)
+				if attr.Optional {
+					filterLeaves = append(filterLeaves, attr)
+				}
 			default:
 				unsupported = append(unsupported, UnsupportedNode{Path: attr.Path, Reason: unsupportedReason(attr.TfType)})
 			}
@@ -656,26 +801,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		unsupported = append(unsupported, UnsupportedNode{Path: "response", Reason: "missing results array block"})
 	}
 
-	// Filters: one Optional attribute + model field + param binding each.
-	var filterAttrs []AttrView
-	var filterFields []ModelFieldView
-	var filterParams []FilterParamView
-	for i, leaf := range filterLeaves {
-		tfName := tfNameOf(leaf.Path)
-		filterAttrs = append(filterAttrs, AttrView{
-			TFName: tfName, TFType: leaf.TfType, Description: leaf.Description, Optional: true,
-		})
-		field := ModelFieldView{GoField: model.SdkName(tfName), GoType: leaf.GoType, TFName: tfName}
-		if i == 0 {
-			field.Comment = "Query Parameters"
-		}
-		filterFields = append(filterFields, field)
-		filterParams = append(filterParams, FilterParamView{
-			StateField: model.SdkName(tfName),
-			ParamField: model.SdkName(tfName),
-			ValueExpr:  pointerValueExpr(leaf.GoType),
-		})
-	}
+	inputAttrs, inputFields := buildInputViews(inputLeaves)
+	filterParams := buildFilterParams(call, filterLeaves, &unsupported)
+	callArgs, usesUUID := buildArgumentViews(call, &unsupported)
 
 	// b hosts walk so list-of-object item fields generate their element structs.
 	b := &dataSourceBuilder{}
@@ -761,7 +889,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	itemField := model.SdkName(a.Name)
 	goName := dsGoName(a.Name)
 
-	parentFields := append([]ModelFieldView{}, filterFields...)
+	parentFields := append([]ModelFieldView{}, inputFields...)
 	parentFields = append(parentFields,
 		ModelFieldView{Comment: "Results", GoField: "ID", GoType: "types.String", TFName: "id"},
 		ModelFieldView{GoField: itemField, GoType: "[]*" + itemStruct, TFName: a.Name},
@@ -783,16 +911,19 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		SDKPackage:  call.GoPackage,
 		APIStruct:   call.GoApiStruct,
 		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
+		UsesUUID:    usesUUID,
 		Read: SDKReadView{
 			Method:             call.GoMethod,
 			Paginated:          call.Paginated,
 			ItemType:           call.ItemType,
 			OptionalParamsType: call.OptionalParamsType,
 			Filters:            filterParams,
+			HashInputs:         buildHashInputs(inputLeaves),
+			Arguments:          callArgs,
 		},
 		Models: models,
 		Schema: SchemaView{
-			Attributes: filterAttrs,
+			Attributes: inputAttrs,
 			Blocks: []AttrView{{
 				TFName:      a.Name,
 				Description: itemsBlock.Description,

@@ -228,6 +228,10 @@ func pluralFixture() DataSourceView {
 				{StateField: "FilterKeyword", ParamField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
 				{StateField: "FilterMe", ParamField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
 			},
+			HashInputs: []FilterParamView{
+				{StateField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
+				{StateField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
+			},
 		},
 		Models: []ModelStructView{
 			{
