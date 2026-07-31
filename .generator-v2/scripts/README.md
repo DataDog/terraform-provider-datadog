@@ -5,12 +5,14 @@ prompts and no human in the loop. It is the non-interactive counterpart to the
 `generate-datadog-datasource` Claude skill: the skill asks you questions as it goes; this
 script takes every answer up front as a flag and fails fast if anything is unclear.
 
-The script is a deterministic orchestrator. It runs `slice_and_annotate.py` and `tfgen`,
-which creates a data-source example when one does not already exist, gates on the generator
-report, runs `make docs` / `make build`, checks only the expected files changed, then
-branches, commits, and opens the PR. The only non-deterministic step is
-two small calls to the `claude` CLI that write the PR's risk notes and "How to test"
-section; both degrade gracefully if `claude` is missing.
+The script is a **fully deterministic** orchestrator — there is **no LLM in the loop**. It
+runs `slice_and_annotate.py` and `tfgen` (which creates a data-source example when one does
+not already exist), gates on the generator report, runs `make docs` / `make build`, checks
+only the expected files changed, then branches, commits, and opens the PR. The PR title and
+body are static and mirror what the CI splitter (`.github/workflows/tfgen-split.yml`) fans
+out per artifact — same `[generated]` title convention, same disclaimers, same
+example-warning callout and merge note. Running it repeatedly for a demo? Reset with
+`--cleanup` (see below).
 
 ## What it does, in order
 
@@ -23,8 +25,8 @@ section; both degrade gracefully if `claude` is missing.
    existing hand-written examples are preserved.
 6. `make docs` (which consumes that example) and `make build`; stop if either fails.
 7. Confirm only the generated files changed.
-8. Ask `claude` for the risk notes and testing steps (skipped cleanly if unavailable).
-9. Commit, push, and open a **draft** PR against `--base`.
+8. Draft the static PR body (title `[generated] Add datadog_<name> data source`, splitter-shaped disclaimers, an example-warning callout if tfgen flagged the example as a placeholder, and the registry merge note).
+9. Commit, push, and open a **draft** PR against `--base`. With `--no-pr` it stops after the local commit and leaves the drafted body at the path reported in `pr_body_path`.
 
 On any failure it stops, prints a JSON error, and does not commit or push. It never edits
 generated code to "fix" a failure — a failed run's report is the deliverable.
@@ -36,9 +38,9 @@ On `PATH`: `git`, `gh` (authenticated), `python3` with PyYAML, `make`, `curl`, `
 For the generation itself, the same toolchain `make docs` / `make build` already need:
 Go, Terraform, `tfplugindocs`, and `goimports`.
 
-Optional but recommended: the `claude` CLI, authenticated (or `ANTHROPIC_API_KEY` set). If
-it is absent, the PR still opens but its risk notes say a reviewer must scan manually and
-the testing steps fall back to a fixed block.
+No `claude` / `ANTHROPIC_API_KEY` is needed — the PR body is fully static.
+
+`--cleanup` needs only `git` and `jq`.
 
 ## Usage
 
@@ -68,8 +70,9 @@ Run it from anywhere inside the provider checkout — it finds the repo root its
 | `--spec-ref REF` | `master` | Which ref of the upstream spec repo to download. |
 | `--base BRANCH` | current branch | The branch the PR targets **and** is built from, so the PR shows only the generated files. Defaults to the branch you run the script on. |
 | `--branch NAME` | `generate/datadog_<name>_datasource` | The feature branch to create. |
-| `--no-pr` | off | Stop after the local commit — no push, no PR. Use this for a safe dry run. |
+| `--no-pr` | off | Stop after the local commit — no push, no PR. Use this for a safe dry run or a local demo. |
 | `--output-json PATH` | none | Also write the result JSON to this file. |
+| `--cleanup` | off | Undo a local run instead of generating: switch to `--base` (default `master`), delete the feature branch, and discard any stray generated files. Local only — never touches origin or a PR. Needs `--artifact-name` or `--branch`. |
 
 ## Examples
 
@@ -93,7 +96,32 @@ Run it from anywhere inside the provider checkout — it finds the repo root its
 # Dry run — generate and commit locally, open nothing:
 .generator-v2/scripts/generate_headless.sh \
   --artifact-name teams --cardinality plural --read ListTeams --no-pr
+
+# Reset after a local (--no-pr) run so you can demo it again:
+.generator-v2/scripts/generate_headless.sh --cleanup --artifact-name teams
 ```
+
+## Repeatable demo loop
+
+For a `--no-pr` demo you can run over and over:
+
+```bash
+# 1. Generate locally (commits on a fresh branch, opens no PR):
+.generator-v2/scripts/generate_headless.sh \
+  --artifact-name teams --cardinality plural --read ListTeams \
+  --no-pr --output-json /tmp/run.json
+
+# 2. Show what it produced — the drafted PR body and the diff:
+cat "$(jq -r .pr_body_path /tmp/run.json)"
+git show --stat HEAD
+
+# 3. Reset back to base so step 1 runs clean again:
+.generator-v2/scripts/generate_headless.sh --cleanup --artifact-name teams --base master
+```
+
+`--cleanup` switches to `--base`, deletes the `generate/datadog_<name>_datasource` branch
+(which drops the commit and reverts the shared `datasources_generated.go` / `provider_test.go`
+edits), and clears any loose generated files — leaving the tree exactly as it was before the run.
 
 ## Output
 
@@ -110,16 +138,13 @@ Every run — success or failure — includes a `metrics` block:
 
 ```json
 "metrics": {
-  "runtime_seconds": 137,
-  "claude_cost_usd": 0.021,
-  "claude_input_tokens": 42500,
-  "claude_output_tokens": 860,
-  "claude_calls": 2
+  "runtime_seconds": 137
 }
 ```
 
-`runtime_seconds` is the whole script's wall-clock time; the `claude_*` fields sum both
-prose calls (and count cost even when a reply was unusable, since it was still billed).
+`runtime_seconds` is the whole script's wall-clock time. A successful run also reports
+`pr_body_path` (the drafted body), `title`, `status_word` (`created`/`updated`), `branch`,
+and the generated `changed_files`.
 
 ## Safety
 
@@ -143,12 +168,16 @@ what a laptop already has:
 
 1. Check out the repo with a git token that can push and open PRs. Use a real PAT or app
    token, not the default CI token, or the PR will not trigger the repo's own CI checks.
-2. Install the prerequisites above, including the `claude` CLI.
-3. Provide two secrets as environment variables: `ANTHROPIC_API_KEY` for `claude`, and the
-   git token for `gh`.
+2. Install the prerequisites above.
+3. Provide the git token for `gh` as an environment variable.
 4. Run the script with the same flags (typically wired up as pipeline inputs).
 5. Read the JSON from stdout — use `.status` and the exit code as the pass/fail gate, and
-   `.pr_url` and `.metrics` for reporting runtime and token cost.
+   `.pr_url` and `.metrics` for reporting.
+
+The production pipeline does not run this script — it runs the `tfgen split` splitter
+(`.github/workflows/tfgen-split.yml`), which fans an aggregate generated branch out into one
+PR per artifact. This script is the single-artifact, laptop-runnable equivalent, kept in
+lockstep with the splitter's PR output.
 
 ---
 

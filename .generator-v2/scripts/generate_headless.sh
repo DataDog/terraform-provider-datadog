@@ -2,33 +2,27 @@
 # Headless spine for generating a Datadog data source and opening a draft PR.
 #
 # Deterministic orchestrator: validate -> slice -> generate -> gate -> whitelist
-# -> docs -> build -> branch -> commit -> draft PR. The only non-deterministic
-# step is a single, tightly-scoped LLM call for the runtime-risk narrative, which
-# degrades gracefully (a failed scan never blocks the PR — it flags manual review).
+# -> docs -> build -> branch -> commit -> draft PR. There is NO LLM in the loop:
+# this mirrors the CI splitter (.github/workflows/tfgen-split.yml), whose PR title
+# and body are fully static — "no in-CI Claude" is a project decision. A run's PR
+# is byte-shaped like a per-artifact PR the splitter fans out.
 #
 # Safety model: every fork is an explicit flag or a hard failure. Nothing runs on
 # a base branch, every PR is a draft, and the verification disclaimer is always
 # present — the worst case is a draft PR a human closes.
+#
+# --cleanup undoes a local run (delete the feature branch, reset the tree to
+# --base) so the whole thing can be demoed over and over.
 #
 # stdout carries ONLY the final JSON result. All human logs go to stderr.
 # Exit 0 = success; nonzero = failure (with a JSON {status:"failed",...} on stdout).
 
 set -euo pipefail
 
-# This script's own directory, resolved before we cd elsewhere, so the prompt
-# files under prompts/ still load. Copy them to a tmp dir OUTSIDE the working tree:
-# we later `git checkout` the base branch, which resets the tree to that branch's
-# content — if the base doesn't carry prompts/, they'd vanish mid-run.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROMPTS_DIR="$(mktemp -d -t tfgen-prompts.XXXXXX)"
-cp "$SCRIPT_DIR/prompts/"*.md "$PROMPTS_DIR/" 2>/dev/null || true
-
-# Remove this run's scratch files on any exit. REPORT is excluded (its path is
-# returned in the result); only a spec we curled is removed, never a --spec file.
+# Remove this run's scratch files on any exit. REPORT and the PR-body file are
+# excluded — their paths are returned in the result so the output can be inspected
+# after the run finishes; only a spec we curled is removed, never a --spec file.
 cleanup() {
-  if [ -n "${PROMPTS_DIR:-}" ]; then rm -rf "$PROMPTS_DIR" 2>/dev/null || true; fi
-  rm -f "${CLAUDE_COST_FILE:-}" "${RISK_PROMPT_FILE:-}" \
-        "${PROSE_PROMPT_FILE:-}" "${PR_BODY_FILE:-}" 2>/dev/null || true
   if [ "${SPEC_IS_TEMP:-0}" = 1 ]; then rm -f "${SPEC:-}" 2>/dev/null || true; fi
   return 0
 }
@@ -76,8 +70,9 @@ usage() {
   cat >&2 <<'EOF'
 Usage: generate_headless.sh --artifact-name NAME --cardinality {singular|plural} \
          (--read OP | --search OP) [flags]
+   or: generate_headless.sh --cleanup (--artifact-name NAME | --branch NAME) [--base BRANCH]
 
-Required:
+Required (generate):
   --artifact-name NAME     snake_case, no datadog_ prefix (^[a-z][a-z0-9_]*$, <=64)
   --cardinality VALUE      singular | plural  (explicit — never inferred)
   --read OP / --search OP  operationId(s); >=1 required. Plural: list op in --read.
@@ -85,57 +80,26 @@ Required:
 Optional:
   --tf-description TEXT     doc string (default derived from the name)
   --overwrites CTOR        retire a hand-written constructor, e.g. NewDatadogTeamDataSource
-  --service NAME           PR title [prefix] (default: derived from the op's spec tag)
+  --service NAME           informational only (default: derived from the op's spec tag)
   --spec PATH              full v2 OAS file (default: curl upstream)
   --spec-ref REF           git ref of datadog-api-client-go to curl (default: master)
   --base BRANCH            branch the PR targets and is built from (default: current branch)
   --branch NAME            feature branch (default: generate/datadog_<name>_datasource)
-  --no-pr                  stop after commit; do not push or open a PR
+  --no-pr                  stop after commit; do not push or open a PR (use this for demos)
   --output-json PATH       also write the final result JSON here
+
+Cleanup:
+  --cleanup                undo a local run: switch to --base, delete the feature
+                           branch, and discard any stray generated files. Local
+                           only — it never touches origin or any PR. Requires
+                           --artifact-name or --branch; --base defaults to master.
 EOF
   exit 2
 }
 
-# Running tally of Claude usage, written to a file so it survives the subshells
-# that command substitution runs call_claude in.
-CLAUDE_COST_FILE=""
-
-# call_claude <prompt-file> — print the model's JSON reply (fences stripped) and
-# return 0, or return 1 if claude is missing, errors, or returns non-JSON. The
-# whole file is passed as one argument, so any $ or backticks in it stay literal.
-call_claude() {
-  local pf="$1" raw result scratch to
-  command -v claude >/dev/null 2>&1 || return 1
-  # timeout isn't guaranteed (notably on macOS), so wrap only if it's present.
-  to=""; for t in timeout gtimeout; do command -v "$t" >/dev/null 2>&1 && { to="$t 180"; break; }; done
-  # Run from an empty scratch dir with --strict-mcp-config so the call ignores the
-  # repo's project CLAUDE.md/settings and any auto-loaded MCP servers; the prompt
-  # file is self-contained, so nothing project-specific is needed.
-  scratch="$(mktemp -d -t tfgen-claude.XXXXXX)"
-  raw="$( cd "$scratch" && $to claude -p "$(cat "$pf")" --strict-mcp-config --output-format json --max-turns 1 2>/dev/null || true )"
-  rm -rf "$scratch" 2>/dev/null || true
-  # Record what this call cost even if the reply is later unusable — we still paid.
-  [ -n "$CLAUDE_COST_FILE" ] && printf '%s\n' "$raw" | jq -c \
-    '{cost: (.total_cost_usd // .cost_usd // 0), in: ((.usage.input_tokens // 0) + (.usage.cache_read_input_tokens // 0) + (.usage.cache_creation_input_tokens // 0)), out: (.usage.output_tokens // 0)}' \
-    >>"$CLAUDE_COST_FILE" 2>/dev/null || true
-  result="$(printf '%s' "$raw" | jq -r 'if type=="object" then (.result // "") else . end' 2>/dev/null || true)"
-  result="$(printf '%s' "$result" | sed -e 's/^```json//' -e 's/^```//' -e 's/```$//')"
-  printf '%s' "$result" | jq -e . >/dev/null 2>&1 || return 1
-  printf '%s' "$result"
-}
-
-# metrics_json — total runtime and Claude usage as one JSON object; safe anytime.
+# metrics_json — this run's wall-clock time as one JSON object; safe anytime.
 metrics_json() {
-  local cost=0 intok=0 outtok=0 calls=0
-  if [ -n "$CLAUDE_COST_FILE" ] && [ -s "$CLAUDE_COST_FILE" ]; then
-    cost="$(jq -s '(map(.cost) | add // 0) | (. * 1000000 | round) / 1000000' "$CLAUDE_COST_FILE" 2>/dev/null || echo 0)"
-    intok="$(jq -s 'map(.in) | add // 0' "$CLAUDE_COST_FILE" 2>/dev/null || echo 0)"
-    outtok="$(jq -s 'map(.out) | add // 0' "$CLAUDE_COST_FILE" 2>/dev/null || echo 0)"
-    calls="$(grep -c '' "$CLAUDE_COST_FILE" 2>/dev/null || echo 0)"
-  fi
-  jq -n --argjson rt "${SECONDS:-0}" --argjson cost "$cost" \
-        --argjson intok "$intok" --argjson outtok "$outtok" --argjson calls "$calls" \
-    '{runtime_seconds:$rt, claude_cost_usd:$cost, claude_input_tokens:$intok, claude_output_tokens:$outtok, claude_calls:$calls}'
+  jq -n --argjson rt "${SECONDS:-0}" '{runtime_seconds:$rt}'
 }
 
 # ---------------------------------------------------------------------------
@@ -143,7 +107,7 @@ metrics_json() {
 # ---------------------------------------------------------------------------
 ARTIFACT_NAME="" CARDINALITY="" READ_OP="" SEARCH_OP="" TF_DESCRIPTION=""
 OVERWRITES="" SERVICE="" SPEC="" SPEC_REF="master" BASE="" BRANCH=""
-NO_PR=0 OUTPUT_JSON=""
+NO_PR=0 OUTPUT_JSON="" CLEANUP=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -159,11 +123,58 @@ while [ $# -gt 0 ]; do
     --base)          BASE="${2:-}"; shift 2 ;;
     --branch)        BRANCH="${2:-}"; shift 2 ;;
     --no-pr)         NO_PR=1; shift ;;
+    --cleanup)       CLEANUP=1; shift ;;
     --output-json)   OUTPUT_JSON="${2:-}"; shift 2 ;;
     -h|--help)       usage ;;
     *) echo "unknown flag: $1" >&2; usage ;;
   esac
 done
+
+# ---------------------------------------------------------------------------
+# Stage: cleanup — undo a local run, then stop. Dispatched before the generate
+# preconditions so it needs neither the read/cardinality args nor gh/python.
+# ---------------------------------------------------------------------------
+if [ "$CLEANUP" = 1 ]; then
+  STAGE="cleanup"
+  for tool in git jq; do
+    command -v "$tool" >/dev/null 2>&1 || die "required tool not found: $tool"
+  done
+  ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || die "not inside a git checkout"
+  cd "$ROOT"
+
+  [ -n "$ARTIFACT_NAME" ] || [ -n "$BRANCH" ] || die "cleanup needs --artifact-name or --branch"
+  if [ -n "$ARTIFACT_NAME" ]; then
+    [[ "$ARTIFACT_NAME" =~ ^[a-z][a-z0-9_]*$ ]] || die "invalid --artifact-name '$ARTIFACT_NAME'"
+  fi
+  TARGET="${BRANCH:-generate/datadog_${ARTIFACT_NAME}_datasource}"
+  RETURN="${BASE:-master}"
+  git rev-parse --verify --quiet "refs/heads/$RETURN" >/dev/null 2>&1 \
+    || die "cleanup target base '$RETURN' does not exist locally (pass --base)"
+
+  CUR="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo HEAD)"
+  if [ "$CUR" = "$TARGET" ]; then
+    git checkout -f "$RETURN" >&2 || die "could not switch off '$TARGET' to '$RETURN'"
+    jlog "switched from $TARGET to $RETURN"
+  fi
+
+  # Discard any generated files still loose in the working tree (e.g. a run that
+  # failed before committing). Scoped to the generator-owned paths.
+  git checkout -- datadog docs examples >/dev/null 2>&1 || true
+  git clean -fdq datadog/fwprovider datadog/tests docs/data-sources examples/data-sources >/dev/null 2>&1 || true
+
+  REMOVED=false
+  if git rev-parse --verify --quiet "refs/heads/$TARGET" >/dev/null; then
+    git branch -D "$TARGET" >&2 && REMOVED=true || die "could not delete branch '$TARGET'"
+    jlog "deleted branch $TARGET"
+  else
+    jlog "no local branch '$TARGET' to delete"
+  fi
+
+  emit_result "$(jq -n --arg status cleaned --arg branch "$TARGET" --arg base "$RETURN" \
+    --arg artifact_name "$ARTIFACT_NAME" --argjson branch_removed "$REMOVED" \
+    '{status:$status, branch:$branch, base:$base, branch_removed:$branch_removed, artifact_name:$artifact_name}')"
+  exit 0
+fi
 
 # ---------------------------------------------------------------------------
 # Stage: preconditions — fail fast before touching anything
@@ -231,9 +242,9 @@ COMMITTED=0
 # Branch name + collision check.
 BRANCH="${BRANCH:-generate/datadog_${ARTIFACT_NAME}_datasource}"
 if git rev-parse --verify --quiet "refs/heads/$BRANCH" >/dev/null; then
-  die "branch already exists locally: $BRANCH"
+  die "branch already exists locally: $BRANCH (run with --cleanup to remove it)"
 fi
-if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+if [ "$NO_PR" -eq 0 ] && git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
   die "branch already exists on origin: $BRANCH"
 fi
 
@@ -304,7 +315,9 @@ SLICE="$(python3 "$SLICER" "${slice_args[@]}")" || die "slice_and_annotate.py fa
 [ -f "$SLICE" ] || die "slicer reported no output slice"
 jlog "slice: $SLICE"
 
-# Derive the service tag for the CI-enforced [prefix] if not supplied.
+# Derive the service tag for the informational [prefix] if not supplied. Unlike the
+# old title convention, the title now uses the splitter's static [generated] prefix,
+# so a missing service is non-fatal — it is only reported.
 if [ -z "$SERVICE" ]; then
   SERVICE="$(python3 - "$SLICE" <<'PY' || true
 import sys, yaml
@@ -321,8 +334,7 @@ for item in spec.get("paths", {}).values():
 PY
 )"
 fi
-[ -n "$SERVICE" ] || die "could not derive --service from the spec tag; pass --service explicitly"
-jlog "service prefix: [$SERVICE]"
+[ -n "$SERVICE" ] && jlog "service (informational): [$SERVICE]" || jlog "service tag not derived (informational only)"
 
 # ---------------------------------------------------------------------------
 # Stage: generate — run tfgen, capture the RunReport
@@ -416,7 +428,7 @@ while IFS= read -r line; do
   path="${line:3}"           # strip the "XY " status prefix
   path="${path#\"}"; path="${path%\"}"
   is_allowed "$path" || UNEXPECTED+=("$path")
-done < <(git status --porcelain)
+done < <(git status --porcelain --untracked-files=all)
 
 if [ "${#UNEXPECTED[@]}" -gt 0 ]; then
   jlog "UNEXPECTED changed files: ${UNEXPECTED[*]}"
@@ -424,195 +436,97 @@ if [ "${#UNEXPECTED[@]}" -gt 0 ]; then
 fi
 jlog "changed-file whitelist clean"
 
-CHANGED_JSON="$(git status --porcelain | sed 's/^...//' | jq -R . | jq -s .)"
+CHANGED_JSON="$(git status --porcelain --untracked-files=all | sed 's/^...//' | jq -R . | jq -s .)"
 
 # ---------------------------------------------------------------------------
-# Stage: risk-scan — model call over prompts/risk-scan.md (advisory; degrades gracefully)
-# ---------------------------------------------------------------------------
-STAGE="risk-scan"
-CLAUDE_COST_FILE="$(mktemp -t tfgen-claude-cost.XXXXXX.jsonl)"
-
-# Deterministic flags first — a grep is more reliable than a model for these.
-MECH_BULLETS=()
-grep -qiE 'x-pagination|"?paginated"?[[:space:]]*:' "$SLICE" 2>/dev/null && \
-  MECH_BULLETS+=("Endpoint appears paginated — confirm the generated read uses the SDK's ...WithPagination method, or results may be truncated.")
-grep -qE '^[[:space:]]*enum:' "$SLICE" 2>/dev/null && \
-  MECH_BULLETS+=("Schema contains enums — a new/unknown enum value can trip the SDK silent-empty trap; require cassette verification.")
-grep -qE 'format:[[:space:]]*int64' "$SLICE" 2>/dev/null && \
-  MECH_BULLETS+=("Wide (int64) integers present — large values can overflow strict parse into an empty result; verify against real data.")
-if [ "$CARDINALITY" = plural ]; then
-  MECH_BULLETS+=("Plural/list-all: no server-side filter (id is computed) — narrow client-side; test with set-membership, not a fixed index or count.")
-  MECH_BULLETS+=("Read-after-write lag: create-then-list in one apply can transiently return 0 rows — require cassette replay before claiming it works.")
-fi
-
-RISK_MATERIAL=false
-RISK_SUMMARY=""
-LLM_BULLETS_JSON="[]"
-
-# Static instructions live in prompts/risk-scan.md; the dynamic context (flags,
-# report diagnostics, slice) is appended below, then the whole file is sent.
-RISK_PROMPT_FILE="$(mktemp -t tfgen-risk.XXXXXX.txt)"
-{
-  cat "$PROMPTS_DIR/risk-scan.md"
-  printf '\n\n---\nCONTEXT FOR THIS DATA SOURCE\n'
-  printf 'Artifact: %s   Cardinality: %s\n' "$ARTIFACT_NAME" "$CARDINALITY"
-  printf 'Read op: %s   Search op: %s\n' "${READ_OP:-none}" "${SEARCH_OP:-none}"
-  printf 'Deterministic flags already recorded (do NOT repeat): '
-  [ "${#MECH_BULLETS[@]}" -gt 0 ] && printf '%s | ' "${MECH_BULLETS[@]}"
-  printf '\n\nGenerator report (summary + diagnostics):\n'
-  jq -c '{summary, diagnostics: [.artifacts[]?.diagnostics[]?]}' "$REPORT" 2>/dev/null || true
-  printf '\n\nSliced OpenAPI — the source of truth (may be truncated):\n'
-  head -c 50000 "$SLICE"
-  printf '\n\nGenerated Go — review this against the spec above (may be truncated):\n'
-  head -c 40000 "datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go" 2>/dev/null || true
-} >"$RISK_PROMPT_FILE"
-
-if RISK_JSON="$(call_claude "$RISK_PROMPT_FILE")"; then
-  # Coerce each field to its expected type. call_claude only guarantees the reply
-  # is valid JSON, not its shape — an unexpected type (or a non-object reply) would
-  # otherwise crash a later `jq --argjson` and, under `set -e`, abort with no result.
-  RISK_MATERIAL="$(printf '%s' "$RISK_JSON" | jq -r 'try (if .material_risk==true then "true" else "false" end) catch "false"')"
-  RISK_SUMMARY="$(printf '%s' "$RISK_JSON" | jq -r 'try (if (.risk_summary|type)=="string" then .risk_summary else "" end) catch ""')"
-  LLM_BULLETS_JSON="$(printf '%s' "$RISK_JSON" | jq -c 'try (if (.reviewer_notes|type)=="array" then [.reviewer_notes[]|tostring] else [] end) catch []')"
-  jlog "risk scan ok (material=$RISK_MATERIAL, $(printf '%s' "$LLM_BULLETS_JSON" | jq 'length') notes)"
-else
-  jlog "risk scan unavailable or unparseable — flagging manual review"
-  MECH_BULLETS+=("Automated risk scan did not run — a reviewer must scan runtime risks manually.")
-fi
-
-# Merge deterministic flags + model notes into one list.
-MECH_JSON="$(printf '%s\n' "${MECH_BULLETS[@]:-}" | jq -R . | jq -s '[.[] | select(length>0)]')"
-ALL_BULLETS_JSON="$(jq -c -n --argjson a "$MECH_JSON" --argjson b "$LLM_BULLETS_JSON" '$a + $b')"
-
-# ---------------------------------------------------------------------------
-# Stage: pr-prose — model writes the How-to-test steps from prompts/pr-prose.md
-# ---------------------------------------------------------------------------
-STAGE="pr-prose"
-TEST_FILE="datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go"
-TEST_FUNC="$(grep -oE 'func TestAcc[A-Za-z0-9_]+' "$TEST_FILE" 2>/dev/null | head -1 | sed 's/^func //' || true)"
-[ -n "$TEST_FUNC" ] || TEST_FUNC="TestAccDatadog${ARTIFACT_NAME}DataSource"
-
-HOWTO_MD=""
-PROSE_PROMPT_FILE="$(mktemp -t tfgen-prose.XXXXXX.txt)"
-{
-  cat "$PROMPTS_DIR/pr-prose.md"
-  printf '\n\n---\nCONTEXT\n'
-  printf 'Artifact: %s   Cardinality: %s\n' "$ARTIFACT_NAME" "$CARDINALITY"
-  printf 'Acceptance test function: %s\n' "$TEST_FUNC"
-  printf 'Test file: %s\n' "$TEST_FILE"
-} >"$PROSE_PROMPT_FILE"
-
-if PROSE_JSON="$(call_claude "$PROSE_PROMPT_FILE")"; then
-  # Type-coerced like the risk fields above, for the same set -e safety reason.
-  HOWTO_MD="$(printf '%s' "$PROSE_JSON" | jq -r 'try (if (.how_to_test|type)=="string" then .how_to_test else "" end) catch ""')"
-  [ -n "$HOWTO_MD" ] && jlog "pr prose ok"
-fi
-if [ -z "$HOWTO_MD" ]; then
-  jlog "pr prose unavailable — using static testing steps"
-  HOWTO_MD="Record once against the Frog org, then replay (replay is what CI runs):
-
-\`\`\`bash
-# Frog test-org creds
-eval \"\$(dd-auth --domain frog.datadoghq.com --force-app-key --no-cache --output)\"
-export DD_TEST_CLIENT_API_KEY=\"\$DD_API_KEY\" DD_TEST_CLIENT_APP_KEY=\"\$DD_APP_KEY\"
-
-# record (writes the cassette + .freeze), then commit both from datadog/tests/cassettes/
-make testacc RECORD=true TESTARGS='-run ${TEST_FUNC}'
-
-# replay offline — only a green replay proves it works
-make testacc RECORD=false TESTARGS='-run ${TEST_FUNC}'
-\`\`\`"
-fi
-
-# ---------------------------------------------------------------------------
-# Stage: PR body — templated deterministically, risk narrative injected
+# Stage: PR body — templated deterministically to mirror the CI splitter's
+# static, no-AI body (.github/workflows/tfgen-split.yml, non-retired path).
 # ---------------------------------------------------------------------------
 STAGE="pr-body"
-TITLE="[$SERVICE] Add datadog_${ARTIFACT_NAME} data source"
-OPS_STR="$READ_OP"; [ -n "$SEARCH_OP" ] && OPS_STR="${OPS_STR:+$OPS_STR, }$SEARCH_OP"
 
-RISK_CALLOUT=""
-if [ "$RISK_MATERIAL" = true ] && [ -n "$RISK_SUMMARY" ]; then
-  RISK_CALLOUT="> ⚠️ **Merge risks flagged — read before approving.** ${RISK_SUMMARY}
-> Details under \"Reviewer notes / risks\" below.
+# created vs updated drives the title verb and the body's status word, matching
+# the splitter (updated only when an overwrite retired a hand-written source).
+if [ -n "$OVERWRITES" ]; then VERB="Update"; STATUS="updated"; else VERB="Add"; STATUS="created"; fi
+TITLE="[generated] $VERB datadog_${ARTIFACT_NAME} data source"
 
+# Acceptance-test scaffold identity, referenced in the body's "How to test".
+TEST_FILE="datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go"
+TEST_FUNC="$(grep -oE 'func TestAcc[A-Za-z0-9_]+' "$TEST_FILE" 2>/dev/null | head -1 | sed 's/^func //' || true)"
+if [ -z "$TEST_FUNC" ]; then
+  # Fall back to the PascalCase name the splitter derives from the artifact name.
+  pascal=""; IFS='_' read -ra parts <<<"$ARTIFACT_NAME"
+  for p in "${parts[@]}"; do pascal+="$(tr '[:lower:]' '[:upper:]' <<<"${p:0:1}")${p:1}"; done
+  TEST_FUNC="TestAccDatadog${pascal}DataSource"
+fi
+
+# Example-warning callout: tfgen flags a placeholder example with a warning whose
+# message starts "generated example for". The splitter turns those into a
+# do-not-merge-as-is callout; reproduce it from our own RunReport.
+EXAMPLE_WARN_MD="$(jq -r '[.artifacts[]?.diagnostics[]?
+  | select(.severity=="warning" and (.message | startswith("generated example for")))
+  | "> - " + .message] | .[]' "$REPORT" 2>/dev/null || true)"
+EXAMPLE_CALLOUT=""
+if [ -n "$EXAMPLE_WARN_MD" ]; then
+  EXAMPLE_CALLOUT="
+> 🚨 **Manual \`Example Usage\` required — do not merge as-is.** tfgen could not render a
+> complete example for this data source. The committed \`data-source.tf\` (listed below) is a
+> placeholder; replace it with a real, working example before merging:
+${EXAMPLE_WARN_MD}
 "
 fi
 
-# Overwrite intro sentence carries its own leading newline so the additive case
-# leaves no blank line in the paragraph.
-OVERWRITE_LINE=""
-if [ -n "$OVERWRITES" ]; then
-  OVERWRITE_LINE="
-The hand-written \`${OVERWRITES}\` it replaces was removed from \`framework_provider.go\`'s \`Datasources\` slice."
-fi
-
-# Build the Generated-files list so empty (additive-case) pieces add no blank bullet.
-GEN_LIST="- \`datadog/fwprovider/data_source_datadog_${ARTIFACT_NAME}.go\`
-- \`datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go\`
-- \`datadog/fwprovider/datasources_generated.go\` — registers the new constructor
-- \`datadog/tests/provider_test.go\` (updated) — registers the test's endpoint tag"
-if [ -n "$(git status --porcelain -- "$EXAMPLE_FILE")" ]; then
-  GEN_LIST="${GEN_LIST}
-- \`${EXAMPLE_FILE}\` — supplies the tfplugindocs example"
-fi
-if [ -n "$OVERWRITES" ]; then
-  GEN_LIST="${GEN_LIST}
-- \`datadog/fwprovider/framework_provider.go\` (updated) — retired constructor removed"
-fi
-GEN_LIST="${GEN_LIST}
-- \`docs/data-sources/${ARTIFACT_NAME}.md\` (created via \`make docs\`)"
-
-RISK_BULLETS_MD="$(printf '%s' "$ALL_BULLETS_JSON" | jq -r '.[] | "- " + .')"
-[ -z "$RISK_BULLETS_MD" ] && RISK_BULLETS_MD="- No material runtime risks flagged by the automated scan."
-WARN_MD="$(printf '%s' "$WARN_DIAGS" | jq -r '.[]? | "- generator " + .severity + ": " + .message')"
+# Generated-files list: every changed file except the doc, then the doc line —
+# same shape the splitter prints from its per-artifact file set.
+FILES_MD="$(git status --porcelain --untracked-files=all | sed -e 's/^...//' -e 's/^"//' -e 's/"$//' \
+  | grep -vxF "$DOCS_FILE" | sed -e 's/^/- `/' -e 's/$/`/')"
+GEN_LIST="${FILES_MD}
+- \`${DOCS_FILE}\` (generated via \`make docs\`)"
 
 PR_BODY_FILE="$(mktemp -t tfgen-pr-body.XXXXXX.md)"
 cat >"$PR_BODY_FILE" <<EOF
-> ℹ️ **This PR is part of a new project that auto-generates Terraform provider data
-> sources to increase coverage.** The data source code is generated **deterministically
-> by tfgen from an annotated OpenAPI spec, without the use of LLMs**. This PR is
-> **reviewed via AI, though human review is still necessary**. If you decide to use
-> this generated data source, please **review it thoroughly and test it** before relying
-> on it — see the verification note and testing guide below.
-
-> 📝 **The generated acceptance test is boilerplate — it must be filled in before this
-> data source is considered tested.** \`datadog/tests/data_source_datadog_${ARTIFACT_NAME}_test.go\`
-> ships with \`TODO(tfgen)\` placeholders (config, seed resource(s), assertions) and no
-> recorded cassette. A passing generated test is **not** verification on its own; this
-> data source still needs to be thoroughly tested before anyone relies on it.
+> ℹ️ **This PR is part of a project that auto-generates Terraform provider data
+> sources to increase coverage.** The code is generated **deterministically by tfgen from an
+> annotated OpenAPI spec, without the use of LLMs**, and **reviewed via AI, though human review
+> is still necessary**. If you use this data source, **review it thoroughly and test it** first.
 
 > ⚠️ **This PR contains auto-generated code and must be verified before merging.** Do not
-> merge until the acceptance test has been recorded and replays green against the Frog org
-> (see "How to test"). A clean build and a green generator report do **not** prove runtime
-> correctness.
+> merge until an acceptance test is recorded and replays green against the Frog org. A clean
+> build and a successful generation report do **not** prove runtime correctness.
+${EXAMPLE_CALLOUT}
+## ${ARTIFACT_NAME} data source (generator-v2)
 
-${RISK_CALLOUT}## ${ARTIFACT_NAME} data source (generator-v2)
-
-Generated by tfgen from an annotated slice of the Datadog v2 OpenAPI spec
-(operations: \`${OPS_STR}\`; cardinality: \`${CARDINALITY}\`).
-Registered in \`datasources_generated.go\`'s \`generatedDatasources\` slice, which
-\`framework_provider.go\` appends alongside the hand-written \`Datasources\` — tfgen owns that
-file, so it is not hand-edited.${OVERWRITE_LINE}
-
-**Spec provenance:** ${SPEC_SOURCE}$([ -n "$SPEC_SHA" ] && echo " @ ${SPEC_SHA}")$([ -n "$SPEC_HASH" ] && echo " (slice hash \`${SPEC_HASH}\`)")
+This data source was ${STATUS} by tfgen from an annotated slice of the Datadog v2 OpenAPI spec.
+The generation, documentation, and compile/format gate completed successfully.
 
 ### Generated
 ${GEN_LIST}
 
-### Cardinality
-${CARDINALITY}
-
 ### Test / cassette
-- Acceptance test: \`${TEST_FUNC}\` in \`${TEST_FILE}\`
-- Cassette: scaffold, not yet recorded
+- Acceptance-test scaffold: \`${TEST_FUNC}\` in \`${TEST_FILE}\`; complete its TODOs before recording.
+- Cassette: not recorded.
 
 ### Reviewer notes / risks
-${RISK_BULLETS_MD}
-${WARN_MD}
+- Automated risk scan skipped; a reviewer must inspect runtime behavior manually.
+- Generated acceptance tests are boilerplate and do not prove runtime correctness.
 
 ### How to test
-${HOWTO_MD}
+Add and complete the acceptance test, record it once against the Frog org, then replay it:
+
+\`\`\`bash
+eval "\$(dd-auth --domain frog.datadoghq.com --force-app-key --no-cache --output)"
+export DD_TEST_CLIENT_API_KEY="\$DD_API_KEY" DD_TEST_CLIENT_APP_KEY="\$DD_APP_KEY"
+
+RECORD=true TESTARGS='-run ${TEST_FUNC}' make testacc
+RECORD=false TESTARGS='-run ${TEST_FUNC}' make testacc
+\`\`\`
+
+> **Merge note:** auto-generated. If the merge queue reports a conflict in
+> \`datasources_generated.go\`, resolve by keeping both entries and re-queue
+> (append-only registrations).
+>
+> If this PR updates \`framework_provider.go\`, resolve conflicts manually:
+> preserve unrelated upstream edits while keeping this artifact's retired
+> hand-written constructor removed.
 
 ---
 > 🚧 **This Terraform data source generation is still under development.** Reach out to
@@ -640,7 +554,7 @@ jlog "committed on $BRANCH (from $BASE_REF)"
 # ---------------------------------------------------------------------------
 PR_URL=""
 if [ "$NO_PR" -eq 1 ]; then
-  jlog "--no-pr set; stopping after commit"
+  jlog "--no-pr set; stopping after commit (PR body at $PR_BODY_FILE)"
 else
   STAGE="pr"
   git push -u origin "$BRANCH" >&2 || die "git push failed"
@@ -666,23 +580,23 @@ RESULT_JSON="$(jq -n \
   --arg status succeeded \
   --arg artifact_name "$ARTIFACT_NAME" \
   --arg cardinality "$CARDINALITY" \
+  --arg status_word "$STATUS" \
+  --arg title "$TITLE" \
   --arg service "$SERVICE" \
   --arg read_op "$READ_OP" --arg search_op "$SEARCH_OP" \
   --arg overwrites "$OVERWRITES" \
   --arg branch "$BRANCH" --arg base "$BASE" \
   --arg spec_source "$SPEC_SOURCE" --arg spec_sha "$SPEC_SHA" --arg spec_hash "$SPEC_HASH" \
-  --arg report "$REPORT" --arg pr_url "$PR_URL" \
-  --argjson material_risk "$RISK_MATERIAL" \
-  --arg risk_summary "$RISK_SUMMARY" \
-  --argjson risks "$ALL_BULLETS_JSON" \
+  --arg report "$REPORT" --arg pr_url "$PR_URL" --arg pr_body_path "$PR_BODY_FILE" \
   --argjson changed_files "$CHANGED_JSON" \
   --argjson warnings "$WARN_DIAGS" \
   --argjson metrics "$METRICS" \
   '{status:$status, verified:false, artifact_name:$artifact_name, cardinality:$cardinality,
-    service:$service, operations:{read:$read_op, search:$search_op}, overwrites:$overwrites,
+    status_word:$status_word, title:$title, service:$service,
+    operations:{read:$read_op, search:$search_op}, overwrites:$overwrites,
     branch:$branch, base:$base, spec:{source:$spec_source, sha:$spec_sha, slice_hash:$spec_hash},
-    report_path:$report, pr_url:$pr_url, material_risk:$material_risk, risk_summary:$risk_summary,
-    risks:$risks, changed_files:$changed_files, generator_warnings:$warnings, metrics:$metrics}')"
+    report_path:$report, pr_url:$pr_url, pr_body_path:$pr_body_path,
+    changed_files:$changed_files, generator_warnings:$warnings, metrics:$metrics}')"
 
-jlog "$(printf '%s' "$METRICS" | jq -r '"done in \(.runtime_seconds)s | claude: \(.claude_calls) calls, $\(.claude_cost_usd), \(.claude_input_tokens) in / \(.claude_output_tokens) out tokens"')"
+jlog "$(printf '%s' "$METRICS" | jq -r '"done in \(.runtime_seconds)s"')"
 emit_result "$RESULT_JSON"
