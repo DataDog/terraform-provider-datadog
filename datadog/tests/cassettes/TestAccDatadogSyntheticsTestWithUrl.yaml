@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 417
+        content_length: 729
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":164880892,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900,"bits_ai_auto_investigate":false},"locations":["aws:ap-northeast-1"],"created_by":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"},"deleted_at":null,"monitor_id":310189789,"org_id":321813,"modified_by":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"},"creation_source":"terraform"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 672.92325ms
+        duration: 534.9065ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.818708ms
+        duration: 185.406708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 158.376042ms
+        duration: 182.484291ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 161.403041ms
+        duration: 181.06625ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 435.094916ms
+        duration: 1.370172375s
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 181.179042ms
+        duration: 185.22775ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -242,13 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 183.462292ms
+        duration: 184.171667ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -265,7 +265,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -277,14 +277,84 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"syq-74b-b4g","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1739872157","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2025-02-18T09:49:19.935468+00:00","modified_at":"2025-02-18T09:49:19.935468+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":164880892,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 155.739042ms
+        duration: 187.586083ms
     - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8ga-ub3-ux9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 183.052ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8ga-ub3-ux9
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8ga-ub3-ux9","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130","status":"live","type":"api","subtype":"http","tags":["env:prod","foo"],"created_at":"2026-08-01T07:08:51.962464+00:00","modified_at":"2026-08-01T07:08:51.962464+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_failure_duration":120,"min_location_failed":1,"monitor_name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1785568130-monitor","monitor_options":{"escalation_message":"escalation message","notification_preset_name":"show_all","renotify_interval":60,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":3,"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:ap-northeast-1"],"monitor_id":310189789,"creator":{"name":"Frog","handle":"frog@example.com","email":"frog@example.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 190.738625ms
+    - id: 10
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -296,7 +366,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["syq-74b-b4g"]}
+            {"public_ids":["8ga-ub3-ux9"]}
         form: {}
         headers:
             Accept:
@@ -315,14 +385,14 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"syq-74b-b4g","deleted_at":"2025-02-18T09:49:24.269611+00:00"}]}
+            {"deleted_tests":[{"public_id":"8ga-ub3-ux9","deleted_at":"2026-08-01T07:08:56.789406+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 808.106ms
-    - id: 9
+        duration: 769.376666ms
+    - id: 11
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -338,7 +408,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -355,8 +425,8 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 170.074542ms
-    - id: 10
+        duration: 129.127417ms
+    - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -372,7 +442,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/syq-74b-b4g
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8ga-ub3-ux9
         method: GET
       response:
         proto: HTTP/1.1
@@ -389,4 +459,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 131.727333ms
+        duration: 1.042926s
