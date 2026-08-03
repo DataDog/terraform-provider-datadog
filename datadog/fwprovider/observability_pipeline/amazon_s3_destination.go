@@ -12,12 +12,13 @@ import (
 
 // AmazonS3DestinationModel represents the Terraform model for the AmazonS3Destination
 type AmazonS3DestinationModel struct {
-	Bucket       types.String         `tfsdk:"bucket"`
-	Region       types.String         `tfsdk:"region"`
-	KeyPrefix    types.String         `tfsdk:"key_prefix"`
-	StorageClass types.String         `tfsdk:"storage_class"`
-	Auth         []AwsAuthModel       `tfsdk:"auth"`
-	Buffer       []BufferOptionsModel `tfsdk:"buffer"`
+	Bucket       types.String              `tfsdk:"bucket"`
+	Region       types.String              `tfsdk:"region"`
+	KeyPrefix    types.String              `tfsdk:"key_prefix"`
+	StorageClass types.String              `tfsdk:"storage_class"`
+	Auth         []AwsAuthModel            `tfsdk:"auth"`
+	Buffer       []BufferOptionsModel      `tfsdk:"buffer"`
+	Compression  []ArchiveCompressionModel `tfsdk:"compression"`
 }
 
 // AmazonS3DestinationSchema returns the schema for the AmazonS3Destination
@@ -47,8 +48,9 @@ func AmazonS3DestinationSchema() schema.ListNestedBlock {
 				},
 			},
 			Blocks: map[string]schema.Block{
-				"auth":   AwsAuthSchema(),
-				"buffer": BufferOptionsSchema(),
+				"auth":        AwsAuthSchema(),
+				"buffer":      BufferOptionsSchema(),
+				"compression": ArchiveCompressionSchema(),
 			},
 		},
 	}
@@ -79,8 +81,34 @@ func ExpandAmazonS3Destination(ctx context.Context, id string, inputs types.List
 		}
 	}
 
+	if len(src.Compression) > 0 {
+		dest.SetCompression(expandAmazonS3Compression(src.Compression[0]))
+	}
+
 	return datadogV2.ObservabilityPipelineConfigDestinationItem{
 		ObservabilityPipelineAmazonS3Destination: dest,
+	}
+}
+
+// expandAmazonS3Compression converts the Terraform archive compression model to the API oneOf.
+func expandAmazonS3Compression(m ArchiveCompressionModel) datadogV2.ObservabilityPipelineAmazonS3DestinationCompression {
+	switch m.Algorithm.ValueString() {
+	case "gzip":
+		c := datadogV2.NewObservabilityPipelineAmazonS3DestinationCompressionGzipWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineAmazonS3DestinationCompressionGzipAsObservabilityPipelineAmazonS3DestinationCompression(c)
+	case "zstd":
+		c := datadogV2.NewObservabilityPipelineAmazonS3DestinationCompressionZstdWithDefaults()
+		if !m.Level.IsNull() {
+			c.SetLevel(m.Level.ValueInt64())
+		}
+		return datadogV2.ObservabilityPipelineAmazonS3DestinationCompressionZstdAsObservabilityPipelineAmazonS3DestinationCompression(c)
+	default: // "none"
+		return datadogV2.ObservabilityPipelineAmazonS3DestinationCompressionNoneAsObservabilityPipelineAmazonS3DestinationCompression(
+			datadogV2.NewObservabilityPipelineAmazonS3DestinationCompressionNoneWithDefaults(),
+		)
 	}
 }
 
@@ -108,5 +136,35 @@ func FlattenAmazonS3Destination(ctx context.Context, src *datadogV2.Observabilit
 		}
 	}
 
+	if compression, ok := src.GetCompressionOk(); ok {
+		model.Compression = flattenAmazonS3Compression(compression)
+	}
+
 	return model
+}
+
+// flattenAmazonS3Compression converts the API archive compression oneOf to the Terraform model.
+func flattenAmazonS3Compression(src *datadogV2.ObservabilityPipelineAmazonS3DestinationCompression) []ArchiveCompressionModel {
+	if src == nil {
+		return nil
+	}
+	switch {
+	case src.ObservabilityPipelineAmazonS3DestinationCompressionGzip != nil:
+		return []ArchiveCompressionModel{{
+			Algorithm: types.StringValue("gzip"),
+			Level:     types.Int64Value(src.ObservabilityPipelineAmazonS3DestinationCompressionGzip.GetLevel()),
+		}}
+	case src.ObservabilityPipelineAmazonS3DestinationCompressionZstd != nil:
+		return []ArchiveCompressionModel{{
+			Algorithm: types.StringValue("zstd"),
+			Level:     types.Int64Value(src.ObservabilityPipelineAmazonS3DestinationCompressionZstd.GetLevel()),
+		}}
+	case src.ObservabilityPipelineAmazonS3DestinationCompressionNone != nil:
+		return []ArchiveCompressionModel{{
+			Algorithm: types.StringValue("none"),
+			Level:     types.Int64Null(),
+		}}
+	default:
+		return nil
+	}
 }
