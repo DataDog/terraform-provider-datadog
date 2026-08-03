@@ -123,6 +123,10 @@ func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasourc
 			return
 		}
 		d.updateState(&state, items[0])
+		if state.ID.IsNull() {
+			hashingData := "datastore"
+			state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
+		}
 	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)

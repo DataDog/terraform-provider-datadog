@@ -124,7 +124,7 @@ type SDKReadView struct {
 	// request's optional-parameters struct.
 	Filters []FilterParamView
 	// HashInputs includes every Terraform input that identifies the returned
-	// collection, both required positional arguments and optional filters.
+	// record or collection, both required positional arguments and optional filters.
 	HashInputs []FilterParamView
 }
 

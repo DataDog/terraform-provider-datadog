@@ -454,6 +454,23 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(src).To(ContainSubstring(`optionalParams.WithFilterName(parsedFilterName)`))
 		})
 
+		It("hashes the search inputs when the selected record has no id", func() {
+			op := powerpackSearchOperation()
+			delete(op.ResponseSchema.Properties["data"].Items.Properties, "id")
+
+			view := mustView(op)
+			Expect(view.Search.HashInputs).To(Equal([]FilterParamView{
+				{StateField: "FilterName", ValueExpr: "ValueStringPointer()"},
+			}))
+			Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`hashingData := fmt.Sprintf("%s", state.FilterName.ValueString())`))
+			Expect(src).To(ContainSubstring(`state.ID = types.StringValue(utils.ConvertToSha256(hashingData))`))
+		})
+
 	})
 
 	Context("both", func() {
@@ -486,6 +503,22 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 				Description: "Filter datastores by keyword.",
 				Optional:    true,
 			}))
+		})
+
+		It("hashes a fixed seed on the search path when the selected record has no id", func() {
+			op := datastoreBothOperation()
+			delete(op.ResponseSchema.Properties["data"].Properties, "id")
+			delete(op.SearchOp.ResponseSchema.Properties["data"].Items.Properties, "id")
+
+			view := mustView(op)
+			Expect(view.Search.HashInputs).To(BeEmpty())
+			Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`hashingData := "datastore"`))
+			Expect(src).To(ContainSubstring(`state.ID = types.StringValue(utils.ConvertToSha256(hashingData))`))
 		})
 
 	})

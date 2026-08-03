@@ -153,6 +153,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 			OptionalParamsType: search.OptionalParamsType,
 			Filters:            filterParams,
 			Arguments:          searchArgs,
+			HashInputs:         buildHashInputs(inputLeaves),
 		}
 	}
 

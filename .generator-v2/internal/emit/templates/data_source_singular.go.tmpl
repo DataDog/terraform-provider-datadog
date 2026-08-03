@@ -11,7 +11,7 @@ package fwprovider
 
 import (
 	"context"
-{{- if not .Searchable }}
+{{- if or (not .Searchable) .Search.HashInputs }}
 	"fmt"
 {{- end }}
 
@@ -129,10 +129,12 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 	} else {
 {{ template "searchFetch" . }}
 		d.updateState(&state, items[0])
+{{ template "searchIdentityFallback" . }}
 	}
 {{- else }}
 {{ template "searchFetch" . }}
 	d.updateState(&state, items[0])
+{{ template "searchIdentityFallback" . }}
 {{- end }}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -151,6 +153,17 @@ func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceMode
 	{{ template "renderList" . }}
 {{- end }}
 }
+{{- end -}}
+
+{{- define "searchIdentityFallback" -}}
+	if state.ID.IsNull() {
+{{- if .Search.HashInputs }}
+		hashingData := fmt.Sprintf("{{ range $i, $f := .Search.HashInputs }}{{ if $i }}:{{ end }}{{ fmtVerb $f.ValueExpr }}{{ end }}", {{- range .Search.HashInputs }} state.{{ .StateField }}.{{ hashExpr .ValueExpr }},{{ end }})
+{{- else }}
+		hashingData := {{ printf "%q" .TypeName }}
+{{- end }}
+		state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
+	}
 {{- end -}}
 
 {{/*
