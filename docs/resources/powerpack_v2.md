@@ -6667,7 +6667,7 @@ Optional:
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--marker))
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--time))
 - `title` (String) The title of the widget.
@@ -6720,12 +6720,11 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula))
-- `histogram_query` (Block List, Max: 1) Singular metric query for a histogram-mode heatmap request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_query))
+- `histogram_request` (Block List, Max: 1) Histogram request for distribution of point values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--process_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query))
-- `request_type` (String) Set to `histogram` for distribution of point values. Valid values are `histogram`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--style))
@@ -6904,15 +6903,26 @@ Optional:
 
 
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_query`
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request`
 
 Required:
 
-- `metric_query` (Block List, Min: 1, Max: 1) Metric query for distribution of point values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_query--metric_query))
+- `histogram_query` (Block List, Min: 1, Max: 1) Singular metric query for a histogram-mode heatmap request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query))
 
-<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_query--metric_query"></a>
-### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_query.metric_query`
+Optional:
+
+- `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--style))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request.histogram_query`
+
+Required:
+
+- `metric_query` (Block List, Min: 1, Max: 1) Metric query for distribution of point values. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request.histogram_query.metric_query`
 
 Required:
 
@@ -6925,6 +6935,16 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--histogram_request--style"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.histogram_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -17614,7 +17634,7 @@ Optional:
 - `legend_size` (String) The size of the legend displayed in the widget.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `heatmap_definition` block. (see [below for nested schema](#nestedblock--widget--heatmap_definition--marker))
-- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `time` (Block List, Max: 1) A nested block used to specify a time span for the widget. Use this or `live_span`, not both. (see [below for nested schema](#nestedblock--widget--heatmap_definition--time))
 - `title` (String) The title of the widget.
@@ -17667,12 +17687,11 @@ Optional:
 
 - `apm_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--apm_query))
 - `formula` (Block List) A list of formulas to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula))
-- `histogram_query` (Block List, Max: 1) Singular metric query for a histogram-mode heatmap request. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_query))
+- `histogram_request` (Block List, Max: 1) Histogram request for distribution of point values. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request))
 - `log_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--log_query))
 - `process_query` (Block List, Max: 1, Deprecated) The process query to use in the widget. The structure of this block is described below. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--process_query))
 - `q` (String, Deprecated) The metric query to use for this widget. **Deprecated.** Use queries and formulas instead.
 - `query` (Block List) A list of queries to use in the widget. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query))
-- `request_type` (String) Set to `histogram` for distribution of point values. Valid values are `histogram`.
 - `rum_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--rum_query))
 - `security_query` (Block List, Max: 1, Deprecated) The query to use for this widget. **Deprecated.** Use queries and formulas instead. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--security_query))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--style))
@@ -17851,15 +17870,26 @@ Optional:
 
 
 
-<a id="nestedblock--widget--heatmap_definition--request--histogram_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.histogram_query`
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request`
 
 Required:
 
-- `metric_query` (Block List, Min: 1, Max: 1) Metric query for distribution of point values. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_query--metric_query))
+- `histogram_query` (Block List, Min: 1, Max: 1) Singular metric query for a histogram-mode heatmap request. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query))
 
-<a id="nestedblock--widget--heatmap_definition--request--histogram_query--metric_query"></a>
-### Nested Schema for `widget.heatmap_definition.request.histogram_query.metric_query`
+Optional:
+
+- `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request--style))
+
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request.histogram_query`
+
+Required:
+
+- `metric_query` (Block List, Min: 1, Max: 1) Metric query for distribution of point values. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request--histogram_query--metric_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request.histogram_query.metric_query`
 
 Required:
 
@@ -17872,6 +17902,16 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 - `semantic_mode` (String) Semantic mode for metrics queries. This determines how metrics from different sources are combined or displayed. Valid values are `combined`, `native`.
+
+
+
+<a id="nestedblock--widget--heatmap_definition--request--histogram_request--style"></a>
+### Nested Schema for `widget.heatmap_definition.request.histogram_request.style`
+
+Optional:
+
+- `order_by` (String) How to order series. Valid values are `tags`, `values`.
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 

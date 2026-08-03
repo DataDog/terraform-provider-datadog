@@ -1073,7 +1073,7 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 		}
 	}
 
-	// ---- Heatmap: histogram-mode request fields ----
+	// ---- Heatmap: histogram request variant ----
 	if spec.JSONType == "heatmap" {
 		if requestStates, ok := defState["request"].([]interface{}); ok {
 			if requests, ok := def["requests"].([]interface{}); ok && len(requests) == len(requestStates) {
@@ -1085,13 +1085,8 @@ func flattenWidgetPostProcess(spec WidgetSpec, def map[string]interface{}, defSt
 					if requestType, _ := requestMap["request_type"].(string); requestType != "histogram" {
 						continue
 					}
-					requestState, ok := requestStates[i].(map[string]interface{})
-					if !ok {
-						continue
-					}
-					requestState["request_type"] = "histogram"
-					if query, ok := requestMap["query"].(map[string]interface{}); ok {
-						requestState["histogram_query"] = []interface{}{flattenFormulaQueryJSON(query)}
+					requestStates[i] = map[string]interface{}{
+						"histogram_request": []interface{}{flattenHistogramRequestJSON(requestMap)},
 					}
 				}
 			}
@@ -2395,25 +2390,16 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 		defJSON["requests"] = buildQueryTableRequestsJSONFromMap(defMap)
 	}
 
-	// ---- Heatmap: histogram-mode request fields ----
+	// ---- Heatmap: histogram request variant ----
 	if spec.JSONType == "heatmap" {
 		requestList := getBlockListFromMap(defMap, "request")
 		if existingRequests, ok := defJSON["requests"].([]interface{}); ok && len(existingRequests) == len(requestList) {
 			for i, requestMap := range requestList {
-				histogramQuery := getBlockFromMap(requestMap, "histogram_query")
-				if histogramQuery == nil {
+				histogramRequest := getBlockFromMap(requestMap, "histogram_request")
+				if histogramRequest == nil {
 					continue
 				}
-				requestJSON := map[string]interface{}{"request_type": "histogram"}
-				if query := buildQueryFromMapAttrs(histogramQuery); query != nil {
-					requestJSON["query"] = query
-				}
-				if styleMap := getBlockFromMap(requestMap, "style"); styleMap != nil {
-					if style := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(style) > 0 {
-						requestJSON["style"] = style
-					}
-				}
-				existingRequests[i] = requestJSON
+				existingRequests[i] = buildHistogramRequestJSONFromMap(histogramRequest)
 			}
 		}
 	}
@@ -2484,6 +2470,42 @@ func buildWidgetPostProcessFromMap(defMap map[string]interface{}, spec WidgetSpe
 }
 
 // ============================================================
+// Histogram Request Build/Flatten Helpers
+// ============================================================
+
+// flattenHistogramRequestJSON converts a histogram request API object into the
+// shared histogram_request block shape used by Heatmap and Wildcard widgets.
+func flattenHistogramRequestJSON(req map[string]interface{}) map[string]interface{} {
+	state := map[string]interface{}{}
+	if styleObj, ok := req["style"].(map[string]interface{}); ok {
+		if style := FlattenEngineJSON(widgetRequestStyleFields, styleObj); len(style) > 0 {
+			state["style"] = []interface{}{style}
+		}
+	}
+	if query, ok := req["query"].(map[string]interface{}); ok {
+		state["histogram_query"] = []interface{}{flattenFormulaQueryJSON(query)}
+	}
+	return state
+}
+
+// buildHistogramRequestJSONFromMap converts a shared histogram_request block
+// into the API's request_type=histogram request shape.
+func buildHistogramRequestJSONFromMap(histogramRequest map[string]interface{}) map[string]interface{} {
+	reqJSON := map[string]interface{}{"request_type": "histogram"}
+	if histogramQuery := getBlockFromMap(histogramRequest, "histogram_query"); histogramQuery != nil {
+		if query := buildQueryFromMapAttrs(histogramQuery); query != nil {
+			reqJSON["query"] = query
+		}
+	}
+	if styleMap := getBlockFromMap(histogramRequest, "style"); styleMap != nil {
+		if style := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(style) > 0 {
+			reqJSON["style"] = style
+		}
+	}
+	return reqJSON
+}
+
+// ============================================================
 // Wildcard Widget Build/Flatten Helpers
 // ============================================================
 
@@ -2505,16 +2527,7 @@ var wildcardTimeseriesConfig = FormulaRequestConfig{
 // request_type=histogram) using the histogram variant.
 func flattenWildcardRequestJSON(req map[string]interface{}) map[string]interface{} {
 	if rt, _ := req["request_type"].(string); rt == "histogram" {
-		variantState := map[string]interface{}{}
-		if styleObj, ok := req["style"].(map[string]interface{}); ok {
-			if s := FlattenEngineJSON(widgetRequestStyleFields, styleObj); len(s) > 0 {
-				variantState["style"] = []interface{}{s}
-			}
-		}
-		if q, ok := req["query"].(map[string]interface{}); ok {
-			variantState["histogram_query"] = []interface{}{flattenFormulaQueryJSON(q)}
-		}
-		return map[string]interface{}{"histogram_request": []interface{}{variantState}}
+		return map[string]interface{}{"histogram_request": []interface{}{flattenHistogramRequestJSON(req)}}
 	}
 	responseFormat, _ := req["response_format"].(string)
 	switch responseFormat {
@@ -2543,18 +2556,7 @@ func buildWildcardRequestsJSONFromMap(defMap map[string]interface{}) []interface
 		switch {
 		case getBlockFromMap(reqMap, "histogram_request") != nil:
 			variant := getBlockFromMap(reqMap, "histogram_request")
-			reqJSON := map[string]interface{}{"request_type": "histogram"}
-			if histQuery := getBlockFromMap(variant, "histogram_query"); histQuery != nil {
-				if built := buildQueryFromMapAttrs(histQuery); built != nil {
-					reqJSON["query"] = built
-				}
-			}
-			if styleMap := getBlockFromMap(variant, "style"); styleMap != nil {
-				if s := BuildEngineJSONFromMap(styleMap, widgetRequestStyleFields); len(s) > 0 {
-					reqJSON["style"] = s
-				}
-			}
-			requests = append(requests, reqJSON)
+			requests = append(requests, buildHistogramRequestJSONFromMap(variant))
 		case getBlockFromMap(reqMap, "timeseries_request") != nil:
 			variant := getBlockFromMap(reqMap, "timeseries_request")
 			requests = append(requests, buildFormulaRequestFromMap(variant, wildcardTimeseriesConfig))

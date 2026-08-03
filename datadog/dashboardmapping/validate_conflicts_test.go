@@ -170,12 +170,16 @@ func TestValidateWidgetConflicts_HeatmapHistogramWithFormulaQuery(t *testing.T) 
 					map[string]interface{}{
 						"request": []interface{}{
 							map[string]interface{}{
-								"histogram_query": []interface{}{
+								"histogram_request": []interface{}{
 									map[string]interface{}{
-										"metric_query": []interface{}{
+										"histogram_query": []interface{}{
 											map[string]interface{}{
-												"name":  "histogram",
-												"query": "histogram:trace.servlet.request{*}",
+												"metric_query": []interface{}{
+													map[string]interface{}{
+														"name":  "histogram",
+														"query": "histogram:trace.servlet.request{*}",
+													},
+												},
 											},
 										},
 									},
@@ -200,9 +204,9 @@ func TestValidateWidgetConflicts_HeatmapHistogramWithFormulaQuery(t *testing.T) 
 
 	errs := ValidateWidgetConflicts(data)
 	if len(errs) == 0 {
-		t.Fatal("expected validation error for histogram_query + query conflict, got none")
+		t.Fatal("expected validation error for histogram_request + query conflict, got none")
 	}
-	if combined := strings.Join(errs, "\n"); !strings.Contains(combined, `"histogram_query" conflicts with "query"`) {
-		t.Fatalf("expected histogram_query conflict, got: %s", combined)
+	if combined := strings.Join(errs, "\n"); !strings.Contains(combined, `"histogram_request" conflicts with "query"`) {
+		t.Fatalf("expected histogram_request conflict, got: %s", combined)
 	}
 }
