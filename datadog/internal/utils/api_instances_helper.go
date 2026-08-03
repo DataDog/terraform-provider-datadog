@@ -103,6 +103,7 @@ type ApiInstances struct {
 	ccmApiV2                       *datadogV2.CloudCostManagementApi
 	deploymentGatesV2              *datadogV2.DeploymentGatesApi
 	webIntegrationsApiV2           *datadogV2.WebIntegrationsApi
+	webhooksIntegrationApiV2       *datadogV2.WebhooksIntegrationApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -820,4 +821,12 @@ func (i *ApiInstances) GetWebIntegrationsApiV2() *datadogV2.WebIntegrationsApi {
 		i.webIntegrationsApiV2 = datadogV2.NewWebIntegrationsApi(i.HttpClient)
 	}
 	return i.webIntegrationsApiV2
+}
+
+// GetWebhooksIntegrationApiV2 get instance of WebhooksIntegrationApi
+func (i *ApiInstances) GetWebhooksIntegrationApiV2() *datadogV2.WebhooksIntegrationApi {
+	if i.webhooksIntegrationApiV2 == nil {
+		i.webhooksIntegrationApiV2 = datadogV2.NewWebhooksIntegrationApi(i.HttpClient)
+	}
+	return i.webhooksIntegrationApiV2
 }
