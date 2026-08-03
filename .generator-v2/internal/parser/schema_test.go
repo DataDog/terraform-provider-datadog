@@ -370,6 +370,17 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 		Expect(status.Sensitive).To(BeTrue())
 	})
 
+	It("preserves supported outer scalar constraints", func() {
+		formatted := schemaProperty(request, "outer_format")
+		Expect(formatted.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(formatted.Type).To(Equal("string"))
+		Expect(formatted.Format).To(Equal("date-time"))
+
+		enumerated := schemaProperty(request, "outer_enum")
+		Expect(enumerated.Kind).To(Equal(model.SchemaKindPrimitive))
+		Expect(enumerated.Enum).To(Equal([]string{"inactive"}))
+	})
+
 	It("preserves the existing reference-depth limit through allOf", func() {
 		limited := opByID(loadSpecMust("schema_normalize_allof_depth.yaml", WithMaxDepth(1)), "CreateAllOfDepth").RequestSchema
 		Expect(schemaProperty(limited, "depth_limited").Kind).To(Equal(model.SchemaKindRefCycle))
@@ -386,6 +397,7 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 		Entry("annotations without structure", "no_structure", "allOf has no structural branches"),
 		Entry("outer type conflict", "outer_type_conflict", `allOf object composition conflicts with outer type "string"`),
 		Entry("outer and branch properties", "outer_properties", "allOf combined with outer properties is not supported"),
+		Entry("constraint-bearing annotation branch", "constrained_annotation", `allOf branch 2 has unsupported schema kind "unsupported"`),
 	)
 
 	It("normalizes representative JSON:API responses and retains SDK reference identities through overlays", func() {
@@ -422,6 +434,27 @@ var _ = Describe("NormalizeSchemas allOf normalization", func() {
 		artifact, goodErr := model.BuildArtifact(list)
 		Expect(goodErr).NotTo(HaveOccurred())
 		Expect(artifact.Name).To(Equal("allof_items"))
+	})
+})
+
+var _ = Describe("raw schema identity traversal", func() {
+
+	It("terminates property lookup through a recursive allOf", func() {
+		components := loadComponents("schema_raw_traversal_cycles.yaml")
+		normalizer := &schemaNormalizer{components: components, maxDepth: 16}
+
+		property, err := normalizer.findPropertyProxy(componentProxy(components, "PropertyLoop"), "missing")
+		Expect(err).To(Succeed())
+		Expect(property).To(BeNil())
+	})
+
+	It("terminates overlay resolution through a recursive allOf", func() {
+		components := loadComponents("schema_raw_traversal_cycles.yaml")
+		normalizer := &schemaNormalizer{components: components, maxDepth: 16}
+
+		schema, err := normalizer.resolveOverlayToSchema(componentProxy(components, "OverlayLoop"))
+		Expect(err).To(Succeed())
+		Expect(schema).To(BeNil())
 	})
 })
 

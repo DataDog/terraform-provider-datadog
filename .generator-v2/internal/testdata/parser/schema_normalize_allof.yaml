@@ -80,6 +80,22 @@ paths:
                     - $ref: '#/components/schemas/Status'
                     - x-datadog-tf-generator:
                         sensitive: true
+                outer_format:
+                  format: date-time
+                  allOf:
+                    - type: string
+                outer_enum:
+                  enum:
+                    - inactive
+                    - pending
+                  allOf:
+                    - $ref: '#/components/schemas/Status'
+                constrained_annotation:
+                  allOf:
+                    - $ref: '#/components/schemas/Status'
+                    - description: This branch also constrains the value.
+                      enum:
+                        - active
                 duplicate_property:
                   allOf:
                     - $ref: '#/components/schemas/ObjectA'
