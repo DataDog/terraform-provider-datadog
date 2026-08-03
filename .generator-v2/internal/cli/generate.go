@@ -242,9 +242,11 @@ func resolveSDKPackageDir(outputRoot string) (string, error) {
 
 	goList := exec.Command("go", "list", "-f={{.Dir}}", datadogV2SDKPackage)
 	goList.Dir = moduleRoot
-	output, err := goList.CombinedOutput()
+	var stderr bytes.Buffer
+	goList.Stderr = &stderr
+	output, err := goList.Output()
 	if err != nil {
-		return "", fmt.Errorf("go list %s from %s: %w: %s", datadogV2SDKPackage, moduleRoot, err, strings.TrimSpace(string(output)))
+		return "", fmt.Errorf("go list %s from %s: %w: %s", datadogV2SDKPackage, moduleRoot, err, strings.TrimSpace(stderr.String()))
 	}
 	dir := strings.TrimSpace(string(output))
 	if dir == "" {
