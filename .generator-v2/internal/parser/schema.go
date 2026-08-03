@@ -184,11 +184,14 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		return nil
 	}
 	// Capture the response type name from the top-level body proxy before
-	// normalizeProxy follows the $ref and discards it. An inline/absent body
-	// leaves ResponseRefName empty.
-	if respProxy.IsReference() {
-		op.ResponseRefName = lastRefSegment(respProxy.GetReference())
+	// normalizeProxy follows the $ref and discards it. OpenAPI 3.0 $ref siblings
+	// arrive as a synthetic single-structural-branch allOf, so look through that
+	// overlay as well. An inline/composed/absent body leaves ResponseRefName empty.
+	responseRefName, err := n.referenceNameThroughOverlay(respProxy)
+	if err != nil {
+		return err
 	}
+	op.ResponseRefName = responseRefName
 	resp, err := n.normalizeProxy(respProxy, 0)
 	if err != nil {
 		return err
@@ -267,38 +270,144 @@ func (n *schemaNormalizer) retainItemRef(op *model.Operation, respProxy *base.Sc
 	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
 		resultsPath = op.Pagination.ResultsPath
 	}
-	body, err := n.resolveToSchema(respProxy)
-	if err != nil || body == nil || body.Properties == nil {
+	propProxy, err := n.findPropertyProxy(respProxy, resultsPath)
+	if err != nil || propProxy == nil {
 		return err
 	}
-	prop, err := n.resolveToSchema(body.Properties.GetOrZero(resultsPath))
+	prop, err := n.resolveOverlayToSchema(propProxy)
 	if err != nil || prop == nil {
 		return err
 	}
 	if !hasType(prop, "array") || prop.Items == nil || !prop.Items.IsA() {
 		return nil
 	}
-	if elem := prop.Items.A; elem != nil && elem.IsReference() {
-		op.ItemRefName = lastRefSegment(elem.GetReference())
+	itemRefName, err := n.referenceNameThroughOverlay(prop.Items.A)
+	if err != nil {
+		return err
 	}
+	op.ItemRefName = itemRefName
 	return nil
 }
 
 // retainResponseDataRef records op.ResponseDataRefName: the last $ref segment of a
 // by-id response's "data" property when that property is a single object
-// reference (e.g. "FullAPIKey"). A list response's "data" is an inline array, not
-// a reference, so it leaves the field empty (retainItemRef covers that). This lets
-// the model detect a "both" data source whose by-id record shape diverges from its
-// list element shape.
+// reference (e.g. "FullAPIKey"). A list response whose "data" resolves to an
+// array leaves the field empty even when that array is referenced (retainItemRef
+// covers it). This lets the model detect a "both" data source whose by-id record
+// shape diverges from its list element shape.
 func (n *schemaNormalizer) retainResponseDataRef(op *model.Operation, respProxy *base.SchemaProxy) error {
-	body, err := n.resolveToSchema(respProxy)
-	if err != nil || body == nil || body.Properties == nil {
+	data, err := n.findPropertyProxy(respProxy, defaultResultsPath)
+	if err != nil || data == nil {
 		return err
 	}
-	if data := body.Properties.GetOrZero(defaultResultsPath); data != nil && data.IsReference() {
-		op.ResponseDataRefName = lastRefSegment(data.GetReference())
+	dataSchema, err := n.resolveOverlayToSchema(data)
+	if err != nil {
+		return err
 	}
+	if dataSchema != nil && hasType(dataSchema, "array") {
+		return nil
+	}
+	dataRefName, err := n.referenceNameThroughOverlay(data)
+	if err != nil {
+		return err
+	}
+	op.ResponseDataRefName = dataRefName
 	return nil
+}
+
+// referenceNameThroughOverlay returns the last segment of a direct $ref or of
+// the sole structural branch in an allOf metadata overlay. Multi-branch object
+// compositions deliberately have no single SDK type identity.
+func (n *schemaNormalizer) referenceNameThroughOverlay(proxy *base.SchemaProxy) (string, error) {
+	for proxy != nil {
+		if proxy.IsReference() {
+			return lastRefSegment(proxy.GetReference()), nil
+		}
+		branch, ok, err := n.singleAllOfStructuralBranch(proxy.Schema())
+		if err != nil || !ok {
+			return "", err
+		}
+		proxy = branch
+	}
+	return "", nil
+}
+
+// resolveOverlayToSchema resolves refs and unwraps single-structural-branch
+// allOf metadata overlays until it reaches the schema that owns the shape.
+func (n *schemaNormalizer) resolveOverlayToSchema(proxy *base.SchemaProxy) (*base.Schema, error) {
+	for proxy != nil {
+		if proxy.IsReference() {
+			target, err := n.resolveRef(proxy.GetReference())
+			if err != nil {
+				return nil, err
+			}
+			proxy = target
+			continue
+		}
+		schema := proxy.Schema()
+		branch, ok, err := n.singleAllOfStructuralBranch(schema)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			return schema, nil
+		}
+		proxy = branch
+	}
+	return nil, nil
+}
+
+// singleAllOfStructuralBranch finds a unique non-annotation branch. It returns
+// ok=false for schemas that are not overlays (including genuine multi-branch
+// compositions), so callers never invent a single SDK identity for a composite.
+func (n *schemaNormalizer) singleAllOfStructuralBranch(s *base.Schema) (*base.SchemaProxy, bool, error) {
+	if s == nil || len(s.AllOf) == 0 {
+		return nil, false, nil
+	}
+	var structural *base.SchemaProxy
+	for _, branch := range s.AllOf {
+		raw, err := n.resolveToSchema(branch)
+		if err != nil {
+			return nil, false, err
+		}
+		if n.isAnnotationOnlySchema(raw) {
+			continue
+		}
+		if structural != nil {
+			return nil, false, nil
+		}
+		structural = branch
+	}
+	return structural, structural != nil, nil
+}
+
+// findPropertyProxy finds a named property through refs and allOf object
+// composition. Strict duplicate-property rejection happens during normalization;
+// this helper stays conservative and returns no identity if raw branches expose
+// the property more than once.
+func (n *schemaNormalizer) findPropertyProxy(proxy *base.SchemaProxy, name string) (*base.SchemaProxy, error) {
+	schema, err := n.resolveToSchema(proxy)
+	if err != nil || schema == nil {
+		return nil, err
+	}
+	var found *base.SchemaProxy
+	if schema.Properties != nil {
+		found = schema.Properties.GetOrZero(name)
+	}
+	for _, branch := range schema.AllOf {
+		candidate, err := n.findPropertyProxy(branch, name)
+		if err != nil {
+			return nil, err
+		}
+		if candidate == nil {
+			continue
+		}
+		if found != nil {
+			return nil, nil
+		}
+		found = candidate
+	}
+	return found, nil
 }
 
 // resolveToSchema follows a schema proxy through one or more $ref hops to its
@@ -418,6 +527,9 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 	if s == nil {
 		return nil, nil
 	}
+	if len(s.AllOf) > 0 {
+		return n.normalizeAllOf(s, depth)
+	}
 	out := &model.Schema{
 		Kind:        classifyKind(s),
 		Type:        firstType(s),
@@ -482,6 +594,235 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 	}
 
 	return out, nil
+}
+
+// normalizeAllOf flattens the bounded allOf subset used by the Datadog API
+// spec. A single structural branch is a metadata overlay; multiple structural
+// branches must all be objects with disjoint properties. Annotation-only
+// branches are ignored structurally but may supply a local description or
+// sensitive marker. Anything outside that subset becomes an Unsupported schema
+// with a reason so only the affected artifact fails later in the model layer.
+func (n *schemaNormalizer) normalizeAllOf(s *base.Schema, depth int) (*model.Schema, error) {
+	if reason := unsupportedAllOfOuterStructure(s); reason != "" {
+		return unsupportedSchema(reason), nil
+	}
+
+	type structuralBranch struct {
+		index  int
+		schema *model.Schema
+	}
+	branches := make([]structuralBranch, 0, len(s.AllOf))
+	annotationDescription := ""
+	sensitive := n.isSensitive(s)
+
+	for i, proxy := range s.AllOf {
+		branch, err := n.normalizeProxy(proxy, depth)
+		if err != nil {
+			return nil, err
+		}
+		if branch == nil {
+			return unsupportedSchema(fmt.Sprintf("allOf branch %d has no schema", i+1)), nil
+		}
+
+		raw, err := n.resolveToSchema(proxy)
+		if err != nil {
+			return nil, err
+		}
+		if branch.Kind == model.SchemaKindUnsupported && branch.UnsupportedReason == "" && n.isAnnotationOnlySchema(raw) {
+			if annotationDescription == "" && raw.Description != "" {
+				annotationDescription = raw.Description
+			}
+			sensitive = sensitive || n.isSensitive(raw)
+			continue
+		}
+
+		if branch.Kind == model.SchemaKindUnsupported {
+			reason := branch.UnsupportedReason
+			if reason == "" {
+				reason = fmt.Sprintf("allOf branch %d has unsupported schema kind %q", i+1, branch.Kind)
+			}
+			return unsupportedSchema(reason), nil
+		}
+		branches = append(branches, structuralBranch{index: i + 1, schema: branch})
+	}
+
+	if len(branches) == 0 {
+		return unsupportedSchema("allOf has no structural branches"), nil
+	}
+
+	outerType := firstType(s)
+	if len(s.Type) > 1 {
+		return unsupportedSchema("allOf declares multiple outer types"), nil
+	}
+
+	if len(branches) == 1 {
+		out := cloneSchema(branches[0].schema)
+		if outerType != "" && !schemaKindMatchesType(out, outerType) {
+			return unsupportedSchema(fmt.Sprintf("allOf outer type %q conflicts with branch %d schema kind %q", outerType, branches[0].index, out.Kind)), nil
+		}
+		if len(s.Required) > 0 {
+			if out.Kind != model.SchemaKindObject {
+				return unsupportedSchema(fmt.Sprintf("allOf declares outer required fields for branch %d schema kind %q", branches[0].index, out.Kind)), nil
+			}
+			out.Required = unionRequired(out.Required, s.Required)
+		}
+		out.Sensitive = out.Sensitive || sensitive
+		switch {
+		case s.Description != "":
+			out.Description = s.Description
+		case annotationDescription != "":
+			out.Description = annotationDescription
+		}
+		return out, nil
+	}
+
+	if outerType != "" && outerType != "object" {
+		return unsupportedSchema(fmt.Sprintf("allOf object composition conflicts with outer type %q", outerType)), nil
+	}
+
+	out := &model.Schema{
+		Kind:        model.SchemaKindObject,
+		Type:        "object",
+		Properties:  make(map[string]*model.Schema),
+		Sensitive:   sensitive,
+		Description: s.Description,
+	}
+	if out.Description == "" {
+		out.Description = annotationDescription
+	}
+
+	propertyBranch := make(map[string]int)
+	required := make(map[string]bool, len(s.Required))
+	for _, name := range s.Required {
+		required[name] = true
+	}
+	for _, branch := range branches {
+		if branch.schema.Kind != model.SchemaKindObject {
+			return unsupportedSchema(fmt.Sprintf(
+				"allOf branch %d has schema kind %q; multi-branch composition supports objects only",
+				branch.index, branch.schema.Kind,
+			)), nil
+		}
+		out.Sensitive = out.Sensitive || branch.schema.Sensitive
+		for name, child := range branch.schema.Properties {
+			if previous, exists := propertyBranch[name]; exists {
+				return unsupportedSchema(fmt.Sprintf(
+					"allOf property %q is declared by branches %d and %d",
+					name, previous, branch.index,
+				)), nil
+			}
+			propertyBranch[name] = branch.index
+			out.Properties[name] = cloneSchema(child)
+		}
+		for _, name := range branch.schema.Required {
+			required[name] = true
+		}
+	}
+
+	out.Required = make([]string, 0, len(required))
+	for name := range required {
+		out.Required = append(out.Required, name)
+	}
+	sort.Strings(out.Required)
+	return out, nil
+}
+
+// unionRequired returns the sorted union of two required-property lists.
+func unionRequired(left, right []string) []string {
+	required := make(map[string]bool, len(left)+len(right))
+	for _, name := range left {
+		required[name] = true
+	}
+	for _, name := range right {
+		required[name] = true
+	}
+	out := make([]string, 0, len(required))
+	for name := range required {
+		out = append(out, name)
+	}
+	sort.Strings(out)
+	return out
+}
+
+// unsupportedAllOfOuterStructure rejects combinations whose structure lives
+// both outside and inside allOf. The current Datadog subset uses only an outer
+// type assertion plus annotation/constraint metadata; merging outer properties,
+// variants, arrays, or maps would require broader JSON Schema intersection
+// semantics.
+func unsupportedAllOfOuterStructure(s *base.Schema) string {
+	switch {
+	case len(s.OneOf) > 0:
+		return "allOf combined with outer oneOf is not supported"
+	case len(s.AnyOf) > 0:
+		return "allOf combined with outer anyOf is not supported"
+	case s.Properties != nil && orderedmap.Len(s.Properties) > 0:
+		return "allOf combined with outer properties is not supported"
+	case s.Items != nil:
+		return "allOf combined with outer items is not supported"
+	case s.AdditionalProperties != nil:
+		return "allOf combined with outer additionalProperties is not supported"
+	default:
+		return ""
+	}
+}
+
+// isAnnotationOnlySchema recognizes the sibling-only branch libopenapi creates
+// for an OpenAPI 3.0 $ref with description/example siblings, plus the same form
+// when authored explicitly. A completely empty schema is not an annotation: it
+// remains an arbitrary/untyped value and must not be discarded.
+func (n *schemaNormalizer) isAnnotationOnlySchema(s *base.Schema) bool {
+	if s == nil || len(s.Type) > 0 || len(s.AllOf) > 0 || len(s.OneOf) > 0 || len(s.AnyOf) > 0 ||
+		(s.Properties != nil && orderedmap.Len(s.Properties) > 0) || s.Items != nil || s.AdditionalProperties != nil {
+		return false
+	}
+	hasExtension := s.Extensions != nil && orderedmap.Len(s.Extensions) > 0
+	return s.Title != "" || s.Description != "" || s.Example != nil || len(s.Examples) > 0 ||
+		s.Default != nil || hasExtension || n.isSensitive(s)
+}
+
+func unsupportedSchema(reason string) *model.Schema {
+	return &model.Schema{Kind: model.SchemaKindUnsupported, UnsupportedReason: reason}
+}
+
+func schemaKindMatchesType(s *model.Schema, typ string) bool {
+	if s == nil {
+		return false
+	}
+	switch typ {
+	case "object":
+		return s.Kind == model.SchemaKindObject || s.Kind == model.SchemaKindMap
+	case "array":
+		return s.Kind == model.SchemaKindArray
+	case "string", "integer", "number", "boolean":
+		return s.Kind == model.SchemaKindPrimitive && s.Type == typ
+	default:
+		return false
+	}
+}
+
+// cloneSchema returns a deep copy so applying allOf metadata never mutates a
+// normalized branch or any child reachable from it.
+func cloneSchema(s *model.Schema) *model.Schema {
+	if s == nil {
+		return nil
+	}
+	out := *s
+	out.Enum = append([]string(nil), s.Enum...)
+	out.Required = append([]string(nil), s.Required...)
+	out.Items = cloneSchema(s.Items)
+	if s.Properties != nil {
+		out.Properties = make(map[string]*model.Schema, len(s.Properties))
+		for name, child := range s.Properties {
+			out.Properties[name] = cloneSchema(child)
+		}
+	}
+	if s.Variants != nil {
+		out.Variants = make([]*model.Schema, len(s.Variants))
+		for i, variant := range s.Variants {
+			out.Variants[i] = cloneSchema(variant)
+		}
+	}
+	return &out
 }
 
 // classifyKind derives the SchemaKind from structure, not type alone. Precedence
