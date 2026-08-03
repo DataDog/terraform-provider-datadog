@@ -56,7 +56,7 @@ type DataSourceView struct {
 	// not expose APIStruct, e.g. "NewCaseManagementApi". Exactly one of
 	// APIAccessor and APIConstructor is populated after accessor resolution.
 	APIConstructor string
-	// UsesUUID adds the google/uuid import and argument parsing blocks.
+	// UsesUUID adds the google/uuid import and SDK-input parsing blocks.
 	UsesUUID bool
 
 	// ByID and Searchable select how a singular data source resolves its one
@@ -155,6 +155,13 @@ type FilterParamView struct {
 	// Setter is the SDK With* method. Empty retains the legacy direct-field form
 	// used by parser-shaped unit fixtures without resolved SDK bindings.
 	Setter string
+	// UUIDVar and UUIDSource request a uuid.Parse preparation inside the filter's
+	// non-null guard before ValueExpr is passed to Setter. They are populated only
+	// when the pinned SDK setter accepts uuid.UUID.
+	UUIDVar    string
+	UUIDSource string
+	// TFName is the Terraform attribute name used in parse diagnostics.
+	TFName string
 }
 
 // SchemaView is the attribute/block split rendered into the Schema method. The

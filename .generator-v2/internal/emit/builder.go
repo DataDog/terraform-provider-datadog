@@ -117,7 +117,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	leafFields := b.models[0].Fields
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
-	filterParams := buildFilterParams(search, filterLeaves, &b.unsupported)
+	filterParams, filterUUID := buildFilterParams(search, filterLeaves, &b.unsupported)
 	readArgs, readUUID := buildArgumentViews(read, &b.unsupported)
 	searchArgs, searchUUID := buildArgumentViews(search, &b.unsupported)
 	if len(b.unsupported) > 0 {
@@ -136,7 +136,10 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	fields := append([]ModelFieldView{idField}, inputFields...)
 	b.models[0].Fields = append(fields, leafFields...)
 
-	assignments := append([]StateAssignment{env.idAssign}, recordScalars...)
+	assignments := recordScalars
+	if env.idAssign != nil {
+		assignments = append([]StateAssignment{*env.idAssign}, assignments...)
+	}
 
 	var readView, searchView SDKReadView
 	if hasRead {
@@ -161,7 +164,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
 		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
-		UsesUUID:    readUUID || searchUUID,
+		UsesUUID:    readUUID || searchUUID || filterUUID,
 		ByID:        byID,
 		Searchable:  searchable,
 		Read:        readView,
@@ -250,15 +253,16 @@ func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]
 	return views, usesUUID
 }
 
-func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) []FilterParamView {
+func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) ([]FilterParamView, bool) {
 	if call == nil {
-		return nil
+		return nil, false
 	}
 	byName := map[string]model.SDKArgument{}
 	for _, arg := range call.OptionalArguments {
 		byName[arg.TFName] = arg
 	}
 	var params []FilterParamView
+	usesUUID := false
 	for _, leaf := range leaves {
 		tfName := tfNameOf(leaf.Path)
 		if !call.BindingResolved {
@@ -275,19 +279,21 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 			})
 			continue
 		}
-		expr, uuidVar, _, reason := sdkArgumentExpression(call.GoPackage, arg)
-		if uuidVar != "" {
-			reason = "optional UUID arguments are not supported by scalar-first binding"
-		}
+		expr, uuidVar, uuidSource, reason := sdkArgumentExpression(call.GoPackage, arg)
 		if reason != "" {
 			*unsupported = append(*unsupported, UnsupportedNode{Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: reason})
 			continue
 		}
-		params = append(params, FilterParamView{
+		param := FilterParamView{
 			StateField: model.SdkName(tfName), ParamField: model.SdkName(tfName), ValueExpr: expr, Setter: arg.Setter,
-		})
+		}
+		if uuidVar != "" {
+			param.UUIDVar, param.UUIDSource, param.TFName = uuidVar, uuidSource, tfName
+			usesUUID = true
+		}
+		params = append(params, param)
 	}
-	return params
+	return params, usesUUID
 }
 
 func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, uuidVar, uuidSource, reason string) {
@@ -331,7 +337,7 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, uuid
 type flattenedEnvelope struct {
 	leaves   []*model.Attribute
 	idField  ModelFieldView
-	idAssign StateAssignment
+	idAssign *StateAssignment
 	preamble []string
 }
 
@@ -393,8 +399,8 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 			b.dropped = append(b.dropped, droppedAuditField(child.Path))
 			continue
 		}
-		// The envelope id is surfaced unconditionally below, so an id under
-		// attributes always collides with it.
+		// The root model always reserves id for Terraform identity, so an id under
+		// attributes collides even when the response has no data.id getter.
 		if tfNameOf(child.Path) == "id" {
 			b.dropped = append(b.dropped, droppedIDCollision(child.Path))
 			continue
@@ -425,20 +431,24 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		return nil
 	}
 
-	idValueExpr := "*id"
-	if id != nil && id.IsEnum {
-		idValueExpr = "string(*id)"
-	}
-	return &flattenedEnvelope{
-		leaves:  leaves,
-		idField: ModelFieldView{GoField: "ID", GoType: "types.String", TFName: "id"},
-		idAssign: StateAssignment{
+	var idAssign *StateAssignment
+	if id != nil {
+		idAssign = &StateAssignment{
 			Var:      "id",
 			GetterOk: rootExpr + ".GetIdOk()",
 			LHS:      "state.ID",
-			RHS:      "types.StringValue(" + idValueExpr + ")",
-		},
-		preamble: []string{"attributes := " + rootExpr + ".GetAttributes()"},
+			RHS:      guardedValue(id, "id"),
+		}
+	}
+	var preamble []string
+	if len(leaves) > 0 {
+		preamble = []string{"attributes := " + rootExpr + ".GetAttributes()"}
+	}
+	return &flattenedEnvelope{
+		leaves:   leaves,
+		idField:  ModelFieldView{GoField: "ID", GoType: "types.String", TFName: "id"},
+		idAssign: idAssign,
+		preamble: preamble,
 	}
 }
 
@@ -693,13 +703,14 @@ func leafVar(tfName string) string {
 
 // guardedValue wraps a guarded assignment's local (bound from an Ok-getter, so a
 // pointer) in the types.*Value constructor matching the model field's GoType. A
-// date-time pointer renders via .String(); a named enum pointer is dereferenced
-// and cast back to string; integers are cast to int64 as the framework expects.
+// date-time or UUID pointer renders via .String(); a named enum pointer is
+// dereferenced and cast back to string; integers are cast to int64 as the
+// framework expects.
 func guardedValue(a *model.Attribute, varName string) string {
 	switch a.GoType {
 	case "types.String":
 		switch {
-		case a.Format == "date-time":
+		case a.Format == "date-time" || a.Format == "uuid":
 			return "types.StringValue(" + varName + ".String())"
 		case a.IsEnum:
 			return "types.StringValue(string(*" + varName + "))"
@@ -720,13 +731,14 @@ func guardedValue(a *model.Attribute, varName string) string {
 // wrapValue wraps an SDK getter chain in the types.*Value constructor matching
 // the model field's GoType, casting integers to int64 as the framework expects.
 // For strings it also reconciles getters whose Go return type is not a bare
-// string: a date-time getter returns time.Time (rendered via .String()) and an
-// enum getter returns a named string type (cast back with string(...)).
+// string: date-time and UUID getters return stringer values (rendered via
+// .String()) and enum getters return named string types (cast back with
+// string(...)).
 func wrapValue(a *model.Attribute, chain string) string {
 	switch a.GoType {
 	case "types.String":
 		switch {
-		case a.Format == "date-time":
+		case a.Format == "date-time" || a.Format == "uuid":
 			chain += ".String()"
 		case a.IsEnum:
 			chain = "string(" + chain + ")"
@@ -802,7 +814,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
-	filterParams := buildFilterParams(call, filterLeaves, &unsupported)
+	filterParams, filterUUID := buildFilterParams(call, filterLeaves, &unsupported)
 	callArgs, usesUUID := buildArgumentViews(call, &unsupported)
 
 	// b hosts walk so list-of-object item fields generate their element structs.
@@ -911,7 +923,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		SDKPackage:  call.GoPackage,
 		APIStruct:   call.GoApiStruct,
 		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
-		UsesUUID:    usesUUID,
+		UsesUUID:    usesUUID || filterUUID,
 		Read: SDKReadView{
 			Method:             call.GoMethod,
 			Paginated:          call.Paginated,

@@ -58,6 +58,13 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 	var optionalParams {{ .SDKPackage }}.{{ .Read.OptionalParamsType }}
 {{- range .Read.Filters }}
 	if !state.{{ .StateField }}.IsNull() {
+{{- if .UUIDVar }}
+		{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+		if err != nil {
+			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+			return
+		}
+{{- end }}
 {{- if .Setter }}
 		optionalParams.{{ .Setter }}({{ .ValueExpr }})
 {{- else }}

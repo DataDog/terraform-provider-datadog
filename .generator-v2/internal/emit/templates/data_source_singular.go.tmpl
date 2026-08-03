@@ -163,6 +163,13 @@ func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceMode
 	var optionalParams {{ .SDKPackage }}.{{ .Search.OptionalParamsType }}
 {{- range .Search.Filters }}
 	if !state.{{ .StateField }}.IsNull() {
+{{- if .UUIDVar }}
+		{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+		if err != nil {
+			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
+			return
+		}
+{{- end }}
 {{- if .Setter }}
 		optionalParams.{{ .Setter }}({{ .ValueExpr }})
 {{- else }}
