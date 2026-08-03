@@ -65,6 +65,7 @@ type ApiInstances struct {
 	eventsApiV2                    *datadogV2.EventsApi
 	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
 	gcpStsIntegrationApiV2         *datadogV2.GCPIntegrationApi
+	governanceControlsApiV2        *datadogV2.GovernanceControlsApi
 	incidentsApiV2                 *datadogV2.IncidentsApi
 	ipAllowlistApiV2               *datadogV2.IPAllowlistApi
 	keyManagementApiV2             *datadogV2.KeyManagementApi
@@ -456,6 +457,14 @@ func (i *ApiInstances) GetGCPIntegrationApiV2() *datadogV2.GCPIntegrationApi {
 		i.gcpStsIntegrationApiV2 = datadogV2.NewGCPIntegrationApi(i.HttpClient)
 	}
 	return i.gcpStsIntegrationApiV2
+}
+
+// GetGovernanceControlsApiV2 get instance of GovernanceControlsApi
+func (i *ApiInstances) GetGovernanceControlsApiV2() *datadogV2.GovernanceControlsApi {
+	if i.governanceControlsApiV2 == nil {
+		i.governanceControlsApiV2 = datadogV2.NewGovernanceControlsApi(i.HttpClient)
+	}
+	return i.governanceControlsApiV2
 }
 
 // GetIncidentsApiV2 get instance of IncidentsApi
