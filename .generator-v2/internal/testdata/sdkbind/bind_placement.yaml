@@ -1,0 +1,210 @@
+# Fixture for internal/sdkbind: every position a oneOf can occupy relative to the
+# Datadog go-sdk's generated models, so the binding walk is exercised against the
+# real parser rather than hand-built model structs.
+#
+# Expected SDK wrapper per union (derived per child_models):
+#   response.data.attributes.integration          → WidgetIntegration   ($ref)
+#   response.data.attributes.inline_choice        → WidgetAttributesInlineChoice
+#   response.data.attributes.choices[]            → WidgetAttributesChoicesItem
+#   …integration.aws_integration.credentials      → AWSCredentials       ($ref)
+#   request.data.attributes.payload               → WidgetCreateAttributesPayload
+#   response (root)                               → RootUnion           ($ref)
+#
+# GetWidgetUnnamed is the one operation expected to fail, and it is kept separate
+# so every other operation binds cleanly: its union sits at a map value, a position
+# child_models only descends into through a $ref, so no generated model names it.
+#   response.by_key{}                             → (none)
+openapi: 3.0.0
+info:
+  title: sdkbind placement fixture
+  version: "1.0"
+paths:
+  /api/v2/widgets/{widget_id}:
+    get:
+      operationId: GetWidget
+      tags:
+        - Widgets
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: widget
+        group:
+          read: GetWidget
+      parameters:
+        - name: widget_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetResponse'
+  /api/v2/widgets:
+    post:
+      operationId: CreateWidget
+      tags:
+        - Widgets
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: widget_create
+        group:
+          # read is required by the tracking-field contract (a group must name a
+          # read or a search); only the create half matters to this fixture.
+          create: CreateWidget
+          read: GetWidget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WidgetCreateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetCreateResponse'
+  /api/v2/unnamed/{widget_id}:
+    get:
+      operationId: GetWidgetUnnamed
+      tags:
+        - Widgets
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: widget_unnamed
+        group:
+          read: GetWidgetUnnamed
+      parameters:
+        - name: widget_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetUnnamedResponse'
+  /api/v2/roots:
+    get:
+      operationId: GetRoot
+      tags:
+        - Widgets
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: root
+        group:
+          read: GetRoot
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RootUnion'
+components:
+  schemas:
+    WidgetResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Widget'
+    Widget:
+      type: object
+      properties:
+        id:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/WidgetAttributes'
+    WidgetAttributes:
+      type: object
+      description: The definition of `WidgetAttributes` object.
+      properties:
+        integration:
+          $ref: '#/components/schemas/WidgetIntegration'
+        inline_choice:
+          description: An inline union, named after the enclosing model plus the property.
+          oneOf:
+            - type: string
+            - type: boolean
+        choices:
+          type: array
+          description: A list whose element is an inline union.
+          items:
+            oneOf:
+              - type: string
+              - $ref: '#/components/schemas/WidgetSetting'
+    WidgetIntegration:
+      description: The definition of `WidgetIntegration` object.
+      oneOf:
+        - $ref: '#/components/schemas/AWSIntegration'
+        - $ref: '#/components/schemas/HTTPIntegration'
+    AWSIntegration:
+      type: object
+      properties:
+        credentials:
+          $ref: '#/components/schemas/AWSCredentials'
+    AWSCredentials:
+      description: A union nested inside another union's alternative.
+      oneOf:
+        - $ref: '#/components/schemas/AWSAssumeRole'
+    AWSAssumeRole:
+      type: object
+      properties:
+        role_name:
+          type: string
+    HTTPIntegration:
+      type: object
+      properties:
+        base_url:
+          type: string
+    WidgetSetting:
+      type: object
+      properties:
+        name:
+          type: string
+    RootUnion:
+      description: A union at the response root.
+      oneOf:
+        - $ref: '#/components/schemas/WidgetSetting'
+        - type: string
+    WidgetCreateRequest:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/WidgetCreateData'
+    WidgetCreateData:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/WidgetCreateAttributes'
+    WidgetCreateAttributes:
+      type: object
+      properties:
+        payload:
+          description: An inline union on the request side.
+          oneOf:
+            - type: string
+            - type: integer
+    WidgetCreateResponse:
+      type: object
+      description: Kept union-free so the create operation exercises only the request walk.
+      properties:
+        data:
+          $ref: '#/components/schemas/WidgetSetting'
+    WidgetUnnamedResponse:
+      type: object
+      properties:
+        by_key:
+          type: object
+          description: A map whose value is an inline union — no SDK model names it.
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: boolean
