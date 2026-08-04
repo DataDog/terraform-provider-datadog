@@ -12,6 +12,7 @@ import (
 )
 
 func TestAccDatadogGovernanceControl_Basic(t *testing.T) {
+	skipIfNoCassette(t)
 	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -81,7 +82,7 @@ func testAccCheckDatadogGovernanceControlExists(accProvider *fwprovider.Framewor
 			detectionType := r.Primary.ID
 			_, httpResp, err := apiInstances.GetGovernanceControlsApiV2().GetGovernanceControl(auth, detectionType)
 			if err != nil {
-				return fmt.Errorf("received an error retrieving governance control %s: %s", detectionType, err)
+				return fmt.Errorf("received an error retrieving governance control %s: %w", detectionType, err)
 			}
 			if httpResp.StatusCode != 200 {
 				return fmt.Errorf("governance control %s not found", detectionType)
