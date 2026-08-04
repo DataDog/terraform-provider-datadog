@@ -473,16 +473,7 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 	})
 })
 
-// Pending: these specs characterize the oneOf envelope projection before it
-// exists. They are written first, deliberately, so the behaviour they describe is
-// settled in review before any of it is implemented -- but a red suite cannot be
-// merged, and this stack merges bottom-up. PDescribe keeps them reported as
-// pending rather than failing.
-//
-// The commit that projects unions into typed envelopes turns this back into
-// Describe; the specs must all pass at that point, which is what makes them a
-// check on that commit rather than decoration.
-var _ = PDescribe("BuildResponseTree retains oneOf envelopes", func() {
+var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 
 	assertRetained := func(
 		buildTree func(*Schema) (*AttributeTree, []Diagnostic, error),

@@ -53,6 +53,12 @@ var _ = Describe("FrameworkType", func() {
 		Entry("a map of object becomes MapNestedAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindObject}},
 			"schema.MapNestedAttribute", "types.Map"),
+		Entry("an array of oneOf nests its element's variant blocks, like an array of object",
+			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindOneOf}},
+			"schema.ListNestedBlock", "types.List"),
+		Entry("a map of oneOf nests its value's variant blocks, like a map of object",
+			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindOneOf}},
+			"schema.MapNestedAttribute", "types.Map"),
 	)
 
 	DescribeTable("returns an error naming the offender for an unrepresentable node",
