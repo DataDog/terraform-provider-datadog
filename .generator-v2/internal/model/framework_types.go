@@ -6,6 +6,12 @@ import "fmt"
 // schema.* symbol (e.g. schema.StringAttribute), goType the types.* value (e.g.
 // types.String). Objects map to the block form (the builder rewrites to attribute
 // form where needed); unrepresentable kinds return an error naming the offender.
+//
+// A oneOf node has no entry of its own: its Terraform shape is a synthetic
+// envelope whose form depends on where the union sits, so the attribute-tree
+// builder decides it. A collection *of* unions does have an entry — the list or
+// map is representable regardless of what its elements are, and it nests the
+// element's variant blocks the same way it would an object's properties.
 func FrameworkType(s *Schema) (tfType, goType string, err error) {
 	switch s.Kind {
 	case SchemaKindPrimitive:
@@ -21,7 +27,7 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		switch s.Items.Kind {
 		case SchemaKindPrimitive:
 			return "schema.ListAttribute", "types.List", nil
-		case SchemaKindObject:
+		case SchemaKindObject, SchemaKindOneOf:
 			return "schema.ListNestedBlock", "types.List", nil
 		default:
 			return "", "", fmt.Errorf("model: array element kind %q is not representable", s.Items.Kind)
@@ -34,7 +40,7 @@ func FrameworkType(s *Schema) (tfType, goType string, err error) {
 		switch s.Items.Kind {
 		case SchemaKindPrimitive:
 			return "schema.MapAttribute", "types.Map", nil
-		case SchemaKindObject:
+		case SchemaKindObject, SchemaKindOneOf:
 			return "schema.MapNestedAttribute", "types.Map", nil
 		default:
 			return "", "", fmt.Errorf("model: map value kind %q is not representable", s.Items.Kind)
