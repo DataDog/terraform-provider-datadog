@@ -161,5 +161,47 @@ func (d *datadogIncidentTypeDataSource) updateState(ctx context.Context, state *
 	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)
 	}
+	if notifications, ok := attributes.GetNotificationsOk(); ok && notifications != nil {
+		for _, notificationsItem := range *notifications {
+			notificationsEnvelope := &IncidentNotificationModel{}
+			notificationsMatches := 0
+			if stringVariant := notificationsItem.String; stringVariant != nil {
+				stringModel := &IncidentNotificationStringModel{}
+				stringModel.Value = types.StringValue(*stringVariant)
+				notificationsEnvelope.String = stringModel
+				notificationsMatches++
+			}
+			if webhookNotificationVariant := notificationsItem.WebhookNotification; webhookNotificationVariant != nil {
+				webhookNotificationModel := &IncidentNotificationWebhookNotificationModel{}
+				if enabled, ok := webhookNotificationVariant.GetEnabledOk(); ok && enabled != nil {
+					webhookNotificationModel.Enabled = types.BoolValue(*enabled)
+				}
+				if url, ok := webhookNotificationVariant.GetUrlOk(); ok && url != nil {
+					webhookNotificationModel.Url = types.StringValue(*url)
+				}
+				notificationsEnvelope.WebhookNotification = webhookNotificationModel
+				notificationsMatches++
+			}
+			switch {
+			case notificationsItem.UnparsedObject != nil:
+				diags.AddError(
+					"unexpected IncidentNotification in the API response",
+					"response.data.attributes.notifications[]: the Datadog API returned a value none of the IncidentNotification alternatives could parse",
+				)
+			case notificationsMatches > 1:
+				diags.AddError(
+					"ambiguous IncidentNotification in the API response",
+					fmt.Sprintf("response.data.attributes.notifications[]: the Datadog API response matched %d IncidentNotification alternatives, expected exactly one", notificationsMatches),
+				)
+			case notificationsMatches == 1:
+				state.Notifications = append(state.Notifications, notificationsEnvelope)
+			default:
+				diags.AddError(
+					"missing IncidentNotification in the API response",
+					"response.data.attributes.notifications[]: the Datadog API response matched none of the IncidentNotification alternatives, and the field is not optional",
+				)
+			}
+		}
+	}
 	return diags
 }
