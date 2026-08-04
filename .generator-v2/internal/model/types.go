@@ -111,6 +111,11 @@ type Operation struct {
 	Tracking *TrackingFieldMetadata
 	// RequestSchema is the resolved request body schema, if any.
 	RequestSchema *Schema
+	// RequestRefName is the last path segment of the request body $ref, e.g.
+	// "TeamCreateRequest" — the SDK Go request type, and the root the SDK oneOf
+	// binding pass walks from on the request side. Empty when the body is inline
+	// or absent.
+	RequestRefName string
 	// ResponseSchema is the resolved 2xx response schema, if any.
 	ResponseSchema *Schema
 	// ResponseRefName is the last path segment of the 2xx response body $ref,
@@ -199,6 +204,13 @@ type Schema struct {
 	// with the parser's actionable local diagnostic without aborting spec loading
 	// or preventing unrelated artifacts from being generated.
 	UnsupportedReason string
+	// RefName is the OpenAPI component name that supplied this node, e.g.
+	// "ActionConnectionAttributes"; empty for an inline schema. It is the identity
+	// the Datadog go-sdk names its generated model after, so the SDK binding pass
+	// walks the normalized tree and restarts its name accumulation at every node
+	// carrying one — mirroring how the SDK generator's child_models() prefers a
+	// $ref name over the parent-derived alternative name.
+	RefName string
 }
 
 // OneOfSpec is the normalized representation of an OpenAPI oneOf. The envelope
@@ -212,6 +224,15 @@ type OneOfSpec struct {
 	// Path is the canonical request/response schema path used for diagnostics
 	// and as an input to inline envelope naming.
 	Path string
+	// RefName is the OpenAPI component name of the union node itself, empty for an
+	// inline union. It is deliberately separate from Name: Name is a Terraform
+	// identity that falls back to a path-derived spelling, which must never be
+	// mistaken for an SDK type.
+	RefName string
+	// SDKType is the Datadog go-sdk oneOf wrapper struct for this union, e.g.
+	// "ActionConnectionIntegration". It is resolved by the SDK binding pass
+	// (internal/sdkbind) after normalization and stays empty until then.
+	SDKType string
 	// Optional permits the whole envelope to be absent because the containing
 	// OpenAPI field is not required.
 	Optional bool
@@ -251,6 +272,11 @@ type OneOfVariant struct {
 	// SDKConstructor is the generated SDK convenience constructor for this
 	// alternative, when the SDK exposes one.
 	SDKConstructor string
+	// SDKPointer is true when the wrapper member and its convenience constructor
+	// take a pointer, which is every alternative except a free-form object: the SDK
+	// emits that one as a bare map, already nil-able. Mappers must not take the
+	// address of a member the SDK left unpointered.
+	SDKPointer bool
 	// ValueWrapped is true for primitive, list, and map alternatives, whose
 	// Terraform variant model exposes a single field named value. Object
 	// alternatives expose their generated fields directly.
@@ -350,6 +376,11 @@ type OneOfEnvelope struct {
 	Name string
 	// GoModel is the generated Go struct holding one pointer field per variant.
 	GoModel string
+	// SDKType is the Datadog go-sdk oneOf wrapper struct this envelope maps to,
+	// carried through from OneOfSpec. It is a separate identity from Name and
+	// GoModel: an inline union's envelope name is path-derived and names no SDK
+	// struct. Empty until the SDK binding pass has run.
+	SDKType string
 	// Path is the union's own schema path, used by validators and diagnostics. For
 	// a collection of unions it is the element path (e.g. "response.choices[]"),
 	// which is not the path of any attribute in the tree.
@@ -383,6 +414,10 @@ type OneOfEnvelopeVariant struct {
 	// aws_integration binds to the SDK's AWSIntegration, not AwsIntegration).
 	SDKField       string
 	SDKConstructor string
+	// SDKPointer is true when the SDK wrapper member and its convenience
+	// constructor take a pointer — every alternative except a free-form object,
+	// which the SDK emits as a bare, already-nil-able map.
+	SDKPointer bool
 	// ValueWrapped is true for every non-object alternative — scalar, list, map, or
 	// a directly nested union — whose block holds a single child named "value".
 	// Object alternatives expose their own fields directly instead.

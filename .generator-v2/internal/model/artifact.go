@@ -244,10 +244,23 @@ func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 	return attr, nil, err
 }
 
+// SDKPackageForPath returns the versioned datadog-api-client-go package an
+// operation path belongs to, e.g. "/api/v2/teams/{id}" → "datadogV2". A path with
+// no version segment yields the bare "datadog" prefix, which is deliberately not
+// a real package: the emit builder fail-slows on it rather than emitting a broken
+// import.
+//
+// It is the one place this derivation lives, so the emitter, the SDK oneOf
+// binding pass and its corroboration test all agree on which package a union's
+// wrapper is declared in.
+func SDKPackageForPath(path string) string {
+	return "datadog" + strings.ToUpper(versionSegment(path))
+}
+
 // readCall resolves the datadog-api-client-go binding for op's read.
 func readCall(op *Operation) *SDKCall {
 	return &SDKCall{
-		GoPackage:      "datadog" + strings.ToUpper(versionSegment(op.Path)),
+		GoPackage:      SDKPackageForPath(op.Path),
 		GoApiStruct:    tagToClassName(op.Tag) + "Api",
 		GoMethod:       op.OperationId,
 		GoResponseType: op.ResponseRefName,

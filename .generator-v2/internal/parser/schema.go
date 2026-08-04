@@ -179,6 +179,12 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	}
 	if reqProxy := requestBodySchemaProxy(raw); reqProxy != nil {
 		required := raw.RequestBody.Required != nil && *raw.RequestBody.Required
+		// Capture the request type name before normalizeProxy follows the $ref and
+		// discards it — the mirror of ResponseRefName below. It is the SDK root the
+		// oneOf binding pass walks from on the request side.
+		if ref, ok := schemaRef(reqProxy); ok {
+			op.RequestRefName = lastRefSegment(ref)
+		}
 		req, err := n.normalizeProxyAt(reqProxy, 0, schemaContext{
 			path:     "request",
 			required: required,
@@ -479,6 +485,10 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schema
 		Enum:        enumValues(s),
 		Sensitive:   n.isSensitive(s),
 		Description: s.Description,
+		// The component name that led here, retained because the Datadog go-sdk
+		// names its generated model after it. ctx carries the first $ref of the
+		// chain; a node reached inline leaves this empty.
+		RefName: ctx.refName,
 	}
 
 	// The kind (set above by classifyKind) decides which children to recurse into
@@ -569,8 +579,12 @@ type oneOfAlternativeSource struct {
 // associated with the same alternative without guessing downstream.
 func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaContext) (*model.OneOfSpec, error) {
 	union := &model.OneOfSpec{
-		Name:          oneOfEnvelopeName(ctx),
-		Path:          ctx.path,
+		Name: oneOfEnvelopeName(ctx),
+		Path: ctx.path,
+		// Kept apart from Name so the SDK binding pass can tell a component-backed
+		// union (whose wrapper is this name) from an inline one (whose wrapper it
+		// must derive from the SDK root), without inspecting Name's spelling.
+		RefName:       ctx.refName,
 		Optional:      !ctx.required,
 		Nullable:      schemaAllowsNull(s),
 		Discriminator: normalizeDiscriminator(s.Discriminator),
