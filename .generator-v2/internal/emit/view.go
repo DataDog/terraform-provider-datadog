@@ -77,6 +77,13 @@ type DataSourceView struct {
 	// State holds what updateState assigns back into the model.
 	State StateView
 
+	// UsesFmt selects the "fmt" import. The template is no longer in a position to
+	// decide this: fmt is reached from the by-id not-found message and from a plural
+	// filter hash today, and go/format does not prune an unused import, so an over-
+	// or under-estimate is a compile error either way. Deciding it in Go keeps the
+	// rule in one place as more call sites appear.
+	UsesFmt bool
+
 	// Dropped lists response members skipped from the rendered view (e.g.
 	// relationships), surfaced as diagnostics in the run report. It does not
 	// affect rendering.

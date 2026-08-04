@@ -177,6 +177,9 @@ func pluralFixture() DataSourceView {
 	return DataSourceView{
 		Cardinality: Plural,
 		TypeName:    "teams",
+		// Hand-built views set UsesFmt themselves; the builder computes it for every
+		// view it produces. This fixture's filter hash reaches fmt.Sprintf.
+		UsesFmt:     true,
 		GoName:      "datadogTeams",
 		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
 		SDKPackage:  "datadogV2",
