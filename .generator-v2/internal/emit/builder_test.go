@@ -103,11 +103,11 @@ var _ = Describe("BuildDataSourceView", func() {
 			Expect(uerr.Error()).To(ContainSubstring(wantReason))
 			Expect(view).To(Equal(DataSourceView{}), "no view should be produced on failure")
 		},
-		Entry("a non-envelope response root",
+		Entry("a response root with no data object",
 			func(op *model.Operation) {
 				op.ResponseSchema = obj(map[string]*model.Schema{"name": prim("string", "")})
 			},
-			"expected a single-member JSON:API envelope"),
+			"expected a JSON:API envelope with a data object"),
 		Entry("an id_strategy other than data.id",
 			func(op *model.Operation) { op.Tracking.IdStrategy = model.IdStrategyDataAttributesUID },
 			"id_strategy"),
@@ -227,6 +227,30 @@ var _ = Describe("RenderDataSource duplicate field guard", func() {
 		_, err := RenderDataSource(view)
 		Expect(err).To(MatchError(ContainSubstring(`declares tfsdk:"id" twice`)))
 	})
+
+	DescribeTable("drops a JSON:API sibling of data rather than failing on the response shape",
+		func(member string, schema *model.Schema) {
+			op := incidentTypeOperation()
+			op.ResponseSchema.Properties[member] = schema
+			view := mustView(op)
+
+			Expect(view.Dropped).To(HaveLen(1))
+			Expect(view.Dropped[0].Message).To(ContainSubstring("dropped \"response." + member + "\": not part of the surfaced {id, type, attributes} envelope"))
+
+			for _, a := range view.Schema.Attributes {
+				Expect(a.TFName).NotTo(Equal(member))
+			}
+			for _, blk := range view.Schema.Blocks {
+				Expect(blk.TFName).NotTo(Equal(member))
+			}
+		},
+		Entry("meta", "meta", obj(map[string]*model.Schema{"page": prim("string", "")})),
+		Entry("links", "links", obj(map[string]*model.Schema{"next": prim("string", "")})),
+		Entry("included", "included", &model.Schema{
+			Kind:  model.SchemaKindArray,
+			Items: obj(map[string]*model.Schema{"handle": prim("string", "")}),
+		}),
+	)
 })
 
 var _ = Describe("BuildDataSourceView audit fields", func() {
