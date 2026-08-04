@@ -240,11 +240,11 @@ func pluralFixture() DataSourceView {
 					{Comment: "Query Parameters", GoField: "FilterKeyword", GoType: "types.String", TFName: "filter_keyword"},
 					{GoField: "FilterMe", GoType: "types.Bool", TFName: "filter_me"},
 					{Comment: "Results", GoField: "ID", GoType: "types.String", TFName: "id"},
-					{GoField: "Teams", GoType: "[]*TeamModel", TFName: "teams"},
+					{GoField: "Teams", GoType: "[]*datadogTeamsTeamModel", TFName: "teams"},
 				},
 			},
 			{
-				Name: "TeamModel",
+				Name: "datadogTeamsTeamModel",
 				Fields: []ModelFieldView{
 					{GoField: "Description", GoType: "types.String", TFName: "description"},
 					{GoField: "Handle", GoType: "types.String", TFName: "handle"},
@@ -284,7 +284,7 @@ func pluralFixture() DataSourceView {
 			},
 		},
 		State: StateView{
-			ItemStruct: "TeamModel",
+			ItemStruct: "datadogTeamsTeamModel",
 			ItemField:  "Teams",
 			ItemFields: []StateAssignment{
 				{LHS: "Description", RHS: "types.StringValue(item.Attributes.GetDescription())"},

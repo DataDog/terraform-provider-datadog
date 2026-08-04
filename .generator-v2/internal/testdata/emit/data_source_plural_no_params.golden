@@ -18,11 +18,11 @@ var (
 
 type datadogDatastoresDataSourceModel struct {
 	// Results
-	ID         types.String          `tfsdk:"id"`
-	Datastores []*DatastoreDataModel `tfsdk:"datastores"`
+	ID         types.String                           `tfsdk:"id"`
+	Datastores []*datadogDatastoresDatastoreDataModel `tfsdk:"datastores"`
 }
 
-type DatastoreDataModel struct {
+type datadogDatastoresDatastoreDataModel struct {
 	CreatorUserId                types.Int64  `tfsdk:"creator_user_id"`
 	CreatorUserUuid              types.String `tfsdk:"creator_user_uuid"`
 	Description                  types.String `tfsdk:"description"`
@@ -122,9 +122,9 @@ func (d *datadogDatastoresDataSource) Read(ctx context.Context, request datasour
 }
 
 func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSourceModel, data *[]datadogV2.DatastoreData) {
-	results := make([]*DatastoreDataModel, 0, len(*data))
+	results := make([]*datadogDatastoresDatastoreDataModel, 0, len(*data))
 	for _, item := range *data {
-		r := DatastoreDataModel{
+		r := datadogDatastoresDatastoreDataModel{
 			CreatorUserId:                types.Int64Value(int64(item.Attributes.GetCreatorUserId())),
 			CreatorUserUuid:              types.StringValue(item.Attributes.GetCreatorUserUuid()),
 			Description:                  types.StringValue(item.Attributes.GetDescription()),

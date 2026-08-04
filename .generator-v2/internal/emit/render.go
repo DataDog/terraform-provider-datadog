@@ -74,13 +74,18 @@ func RenderDataSource(v DataSourceView) ([]byte, error) {
 	return dropBlankLineAfterBrace(formatted), nil
 }
 
-// checkDuplicateFields rejects a model struct that declares the same Terraform
-// name twice. Such a struct renders three ways that do not compile — a
-// redeclared Go field, a duplicate tfsdk tag, and a duplicate key in the schema
-// attribute map — so failing here keeps a broken artifact from being written and
-// reported as created.
+// checkDuplicateFields rejects duplicate Go model names and a model struct that
+// declares the same Terraform name twice. Either shape produces generated code
+// that does not compile, so failing here keeps a broken artifact from being
+// written and reported as created.
 func checkDuplicateFields(models []ModelStructView) error {
+	modelNames := make(map[string]bool, len(models))
 	for _, m := range models {
+		if modelNames[m.Name] {
+			return fmt.Errorf("model %s is declared twice", m.Name)
+		}
+		modelNames[m.Name] = true
+
 		seen := make(map[string]bool, len(m.Fields))
 		for _, f := range m.Fields {
 			if seen[f.TFName] {
