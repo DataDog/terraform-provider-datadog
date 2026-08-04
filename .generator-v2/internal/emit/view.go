@@ -84,10 +84,77 @@ type DataSourceView struct {
 	// rule in one place as more call sites appear.
 	UsesFmt bool
 
+	// OneOfEnvelopes are the generated oneOf envelopes this artifact contains, one
+	// entry per distinct envelope regardless of how many places use it, ordered by
+	// first use. Their schema blocks and model structs are already folded into
+	// Schema and Models; this slice is what the state mapper walks to unwrap the
+	// SDK wrapper.
+	OneOfEnvelopes []OneOfEnvelopeView
+
 	// Dropped lists response members skipped from the rendered view (e.g.
 	// relationships), surfaced as diagnostics in the run report. It does not
 	// affect rendering.
 	Dropped []DroppedMember
+
+	// Warnings lists things a reader of the generated artifact needs to know that
+	// are not omissions — surfaced as warning diagnostics in the run report. Unlike
+	// Dropped, an entry here concerns something the artifact does contain. It does
+	// not affect rendering.
+	Warnings []string
+}
+
+// OneOfEnvelopeView is one generated oneOf envelope: the Terraform model that
+// holds one pointer per alternative, and the Datadog go-sdk wrapper it maps to.
+//
+// The two identities are deliberately separate: GoModel is derived from
+// the envelope's Terraform name, which for an inline union is path-derived and
+// names no SDK type, while SDKType is what internal/sdkbind resolved by walking
+// the operation's SDK root.
+type OneOfEnvelopeView struct {
+	// Name is the parser's envelope identity, the key this view is deduplicated on.
+	Name string
+	// GoModel is the generated Go struct holding one pointer field per variant.
+	GoModel string
+	// SDKType is the SDK oneOf wrapper struct, e.g. "ActionConnectionIntegration".
+	SDKType string
+	// Path is the union's schema path, for diagnostics the mapper emits.
+	Path string
+	// Optional records that the whole envelope may be absent because its containing
+	// field is optional or nullable, which is the one case where zero populated SDK
+	// members is not an error.
+	Optional bool
+	// Variants are the alternatives, ordered by TFName as the projection ordered
+	// them, so generated output cannot depend on OpenAPI alternative order.
+	Variants []OneOfVariantView
+}
+
+// OneOfVariantView is one alternative of a OneOfEnvelopeView.
+type OneOfVariantView struct {
+	// TFName is the nested block name; GoField the pointer field on the envelope
+	// model whose non-nil-ness selects this variant.
+	TFName  string
+	GoField string
+	// GoModel is the generated struct for this variant's own fields.
+	GoModel string
+	// SDKField is the SDK wrapper member that selects this alternative and
+	// SDKConstructor its `<Member>As<Union>` convenience constructor. SDKPointer is
+	// false only for a free-form object, which the SDK emits as a bare map.
+	SDKField       string
+	SDKConstructor string
+	SDKPointer     bool
+	// ValueWrapped marks a non-object alternative, whose block holds a single
+	// child named "value" rather than exposing fields directly.
+	ValueWrapped bool
+	// SDKVar and ModelVar are the locals the mapper declares for the unwrapped SDK
+	// member and the Terraform variant model it populates. Scalars and Lists are
+	// expressed against them, so they must be used verbatim by the mapper.
+	SDKVar   string
+	ModelVar string
+	// Scalars and Lists are this variant's field assignments, derived by the same
+	// walk that produced its model struct. Not rendered yet — the mapper adds the partial
+	// that consumes them.
+	Scalars []StateAssignment
+	Lists   []ListAssignment
 }
 
 // DroppedMember is one response member omitted from the rendered view, carrying

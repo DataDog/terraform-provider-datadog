@@ -36,6 +36,11 @@ var _ = Describe("data-source templates", func() {
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 		Entry("singular nested object (apm_retention_filter)", "data_source_singular_object.golden", retentionFilterView),
 		Entry("plural nested object (gizmos)", "data_source_plural_object.golden", pluralObjectView),
+		// The oneOf goldens pin the envelope's schema blocks and model structs. Their
+		// updateState is deliberately still mapping-free: the mapper lands next, and the diff
+		// this golden produces then is the review surface for that change.
+		Entry("singular oneOf envelope", "data_source_singular_oneof.golden", oneOfEnvelopeView),
+		Entry("singular oneOf in a list", "data_source_singular_oneof_list.golden", oneOfEnvelopeListView),
 	)
 
 	It("renders deterministically across runs", func() {

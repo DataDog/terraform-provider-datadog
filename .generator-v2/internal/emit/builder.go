@@ -35,6 +35,129 @@ func (e *UnsupportedEmitError) Error() string {
 // off, established by the StateView preamble "attributes := resp.Data.GetAttributes()".
 const envelopeReceiver = "attributes"
 
+// oneOfEnvelope renders one union at one use site: it returns the nested variant
+// blocks to hang under the union's own block, and the Go type of the field that
+// holds the envelope model.
+//
+// Models and block views are cached on the envelope's parser-assigned Name, so two
+// uses of one reusable oneOf component yield a single generated model and
+// identical schema rather than one copy per use site. The blocks are
+// cached too, not just the models: they are a pure function of the envelope's
+// variants, which are shared, so recomputing them could only introduce drift.
+//
+// A variant's own fields go through the same walk as any nested object, which is
+// what produces its model struct and its field assignments. The assignments are
+// carried on the returned OneOfVariantView rather than placed here: the mapper has
+// to unwrap the SDK member before they can run, and that lands separately.
+func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) (variantBlocks []AttrView, envelopeModel string) {
+	env := a.OneOf
+	if cached, ok := b.oneOfBlocks[env.Name]; ok {
+		return cached, env.GoModel
+	}
+
+	// Reserve the envelope's struct slot before walking the variants so it precedes
+	// their structs in Models, matching how walk orders a parent before its children.
+	envIdx := len(b.models)
+	b.models = append(b.models, ModelStructView{Name: env.GoModel})
+
+	view := OneOfEnvelopeView{
+		Name:     env.Name,
+		GoModel:  env.GoModel,
+		SDKType:  env.SDKType,
+		Path:     env.Path,
+		Optional: env.Optional,
+	}
+	envFields := make([]ModelFieldView, 0, len(env.Variants))
+
+	for _, v := range env.Variants {
+		sdkVar := lowerFirst(v.GoField) + "Variant"
+		modelVar := lowerFirst(v.GoField) + "Model"
+
+		attrs, blocks, scalars, lists := b.walk(v.GoModel, sdkVar, modelVar, v.Attribute.Children)
+		variantBlocks = append(variantBlocks, AttrView{
+			TFName:      v.TFName,
+			Description: v.Attribute.Description,
+			Optional:    v.Attribute.Optional,
+			Computed:    v.Attribute.Computed,
+			Sensitive:   v.Attribute.Sensitive,
+			IsBlock:     true,
+			Attributes:  attrs,
+			Blocks:      blocks,
+		})
+		envFields = append(envFields, ModelFieldView{
+			GoField: v.GoField,
+			GoType:  "*" + v.GoModel,
+			TFName:  v.TFName,
+		})
+		view.Variants = append(view.Variants, OneOfVariantView{
+			TFName:         v.TFName,
+			GoField:        v.GoField,
+			GoModel:        v.GoModel,
+			SDKField:       v.SDKField,
+			SDKConstructor: v.SDKConstructor,
+			SDKPointer:     v.SDKPointer,
+			ValueWrapped:   v.ValueWrapped,
+			SDKVar:         sdkVar,
+			ModelVar:       modelVar,
+			Scalars:        scalars,
+			Lists:          lists,
+		})
+	}
+
+	b.models[envIdx].Fields = envFields
+	if b.oneOfBlocks == nil {
+		b.oneOfBlocks = make(map[string][]AttrView)
+	}
+	b.oneOfBlocks[env.Name] = variantBlocks
+	b.envelopes = append(b.envelopes, view)
+	b.warnings = append(b.warnings, pendingOneOfMapping(env))
+	return variantBlocks, env.GoModel
+}
+
+// oneOfFieldType returns the Go type of the model field holding an envelope,
+// given the Terraform form of the attribute the envelope hangs off: a pointer for
+// a union at its own position, a slice for a collection whose element is a union.
+// It reports false for a form the emit path does not represent yet, so the caller
+// fails the artifact rather than dropping the union.
+func oneOfFieldType(tfType, envelopeModel string) (string, bool) {
+	switch tfType {
+	case "schema.SingleNestedBlock", "schema.SingleNestedAttribute":
+		return "*" + envelopeModel, true
+	case "schema.ListNestedBlock", "schema.ListNestedAttribute":
+		return "[]*" + envelopeModel, true
+	default:
+		return "", false
+	}
+}
+
+// pendingOneOfMapping is the warning carried by every artifact containing an
+// envelope while the response mapper is unimplemented. The envelope's schema
+// and models are emitted, so the union is not dropped, but nothing
+// assigns into it yet and the block would read as permanently null. Saying so in the
+// run report is the difference between an increment and a silent lie; the mapper removes
+// this together with the gap it describes.
+func pendingOneOfMapping(env *model.OneOfEnvelope) string {
+	return fmt.Sprintf(
+		"oneOf envelope %q at %q: schema and models are emitted but response mapping is not, "+
+			"so this block stays null until the SDK oneOf wrapper mapping lands",
+		env.Name, env.Path,
+	)
+}
+
+// unsupportedOneOfPlacement explains a union the emit path cannot place yet, named
+// by the Terraform form it arrived in rather than by its schema kind, since that is
+// what the emitter would have had to render.
+func unsupportedOneOfPlacement(env *model.OneOfEnvelope, tfType string) UnsupportedNode {
+	return UnsupportedNode{
+		Path: env.Path,
+		Reason: fmt.Sprintf(
+			"oneOf envelope %q sits on a %s, which the emit path does not represent yet; "+
+				"a union is supported at its own position and as a list element",
+			env.Name, tfType,
+		),
+	}
+}
+
 // BuildDataSourceView derives the singular DataSourceView from a.Schema and
 // a.Lifecycle. It resolves the SDK-call bindings onto the view, then runs a
 // flattening pass that recognizes the singular JSON:API envelope
@@ -163,8 +286,10 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 			Assignments: assignments,
 			Lists:       recordLists,
 		},
-		UsesFmt: !searchable,
-		Dropped: b.dropped,
+		UsesFmt:        !searchable,
+		OneOfEnvelopes: b.envelopes,
+		Dropped:        b.dropped,
+		Warnings:       b.warnings,
 	}, nil
 }
 
@@ -325,6 +450,15 @@ type dataSourceBuilder struct {
 	// dropped notes envelope members skipped from the attributes-only view
 	// (e.g. relationships), surfaced as diagnostics rather than failures.
 	dropped []DroppedMember
+	// oneOfBlocks caches the variant block views of each envelope already rendered,
+	// keyed on the parser's envelope Name, and doubles as the "already emitted its
+	// models" marker. envelopes accumulates one view per distinct envelope in first-use
+	// order, for the state mapper to walk.
+	oneOfBlocks map[string][]AttrView
+	envelopes   []OneOfEnvelopeView
+	// warnings notes things the generated artifact contains that a reader needs to
+	// know about, as opposed to dropped's omissions.
+	warnings []string
 }
 
 // droppedEnvelopeMember is the info-diagnostic note for a JSON:API response
@@ -372,6 +506,32 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 	for _, a := range attrs {
 		tfName := tfNameOf(a.Path)
 		field := model.SdkName(tfName)
+
+		// A union is keyed on OneOf, not on TfType: an envelope arrives wearing the
+		// same schema.SingleNestedBlock as an ordinary nested object, and walking it
+		// as one would emit Get<Variant>Ok getters the SDK oneOf wrapper does not have.
+		if a.OneOf != nil {
+			variantBlocks, envelopeModel := b.oneOfEnvelope(a)
+			goType, ok := oneOfFieldType(a.TfType, envelopeModel)
+			if !ok {
+				b.unsupported = append(b.unsupported, unsupportedOneOfPlacement(a.OneOf, a.TfType))
+				continue
+			}
+			fields = append(fields, ModelFieldView{GoField: field, GoType: goType, TFName: tfName})
+			blockViews = append(blockViews, AttrView{
+				TFName:      tfName,
+				Description: a.Description,
+				Required:    a.Required,
+				Optional:    a.Optional,
+				Computed:    a.Computed,
+				Sensitive:   a.Sensitive,
+				IsBlock:     true,
+				ListBlock:   a.TfType == "schema.ListNestedBlock" || a.TfType == "schema.ListNestedAttribute",
+				Blocks:      variantBlocks,
+			})
+			continue
+		}
+
 		switch a.TfType {
 		case "schema.StringAttribute", "schema.Int64Attribute",
 			"schema.Float64Attribute", "schema.BoolAttribute":
@@ -726,6 +886,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		tfName := tfNameOf(n.Path)
 		field := goFieldName(tfName)
 		getter := getterOk("item.Attributes", tfName)
+
 		switch n.TfType {
 		case "schema.ListAttribute":
 			itemAttrs = append(itemAttrs, AttrView{
@@ -767,11 +928,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			})
 
 		default:
-			// Without this, an item attribute in any other form was dropped with no
-			// field, no block and no diagnostic — the artifact generated as if the
-			// attribute had never been in the response. Fail instead: silently omitting
-			// a representable attribute is not an acceptable outcome. The singular path's
-			// walk has always had this default; the plural item loop did not.
+			// This switch had no default, so an item attribute in any other form was
+			// dropped without a field, a block or a diagnostic. Fail instead: silently
+			// omitting a representable attribute is not an acceptable outcome.
 			unsupported = append(unsupported, UnsupportedNode{Path: n.Path, Reason: unsupportedReason(n.TfType)})
 		}
 	}
@@ -832,8 +991,10 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			ItemFields: itemAssigns,
 			ItemLists:  itemLists,
 		},
-		UsesFmt: len(filterParams) > 0,
-		Dropped: dropped,
+		UsesFmt:        len(filterParams) > 0,
+		OneOfEnvelopes: b.envelopes,
+		Dropped:        dropped,
+		Warnings:       b.warnings,
 	}, nil
 }
 
