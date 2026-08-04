@@ -17,19 +17,19 @@ var (
 )
 
 type datadogApmRetentionFilterDataSourceModel struct {
-	ID      types.String `tfsdk:"id"`
-	Enabled types.Bool   `tfsdk:"enabled"`
-	Filter  *FilterModel `tfsdk:"filter"`
-	Name    types.String `tfsdk:"name"`
+	ID      types.String                          `tfsdk:"id"`
+	Enabled types.Bool                            `tfsdk:"enabled"`
+	Filter  *datadogApmRetentionFilterFilterModel `tfsdk:"filter"`
+	Name    types.String                          `tfsdk:"name"`
 }
 
-type FilterModel struct {
-	Metadata *MetadataModel `tfsdk:"metadata"`
-	Query    types.String   `tfsdk:"query"`
-	Tags     types.List     `tfsdk:"tags"`
+type datadogApmRetentionFilterFilterModel struct {
+	Metadata *datadogApmRetentionFilterFilterMetadataModel `tfsdk:"metadata"`
+	Query    types.String                                  `tfsdk:"query"`
+	Tags     types.List                                    `tfsdk:"tags"`
 }
 
-type MetadataModel struct {
+type datadogApmRetentionFilterFilterMetadataModel struct {
 	CreatedBy types.String `tfsdk:"created_by"`
 }
 
@@ -145,12 +145,12 @@ func (d *datadogApmRetentionFilterDataSource) updateState(ctx context.Context, s
 		state.Name = types.StringValue(*name)
 	}
 	if filter, ok := attributes.GetFilterOk(); ok && filter != nil {
-		filterModel := &FilterModel{}
+		filterModel := &datadogApmRetentionFilterFilterModel{}
 		if query, ok := filter.GetQueryOk(); ok && query != nil {
 			filterModel.Query = types.StringValue(*query)
 		}
 		if metadata, ok := filter.GetMetadataOk(); ok && metadata != nil {
-			metadataModel := &MetadataModel{}
+			metadataModel := &datadogApmRetentionFilterFilterMetadataModel{}
 			if createdBy, ok := metadata.GetCreatedByOk(); ok && createdBy != nil {
 				metadataModel.CreatedBy = types.StringValue(*createdBy)
 			}
