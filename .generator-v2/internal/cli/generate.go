@@ -259,11 +259,6 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	for _, d := range view.Dropped {
 		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: d.Severity, Message: d.Message})
 	}
-	// Caveats about what the artifact does contain ride along as warnings, so a
-	// generated-but-incomplete artifact cannot report as unqualified success.
-	for _, msg := range view.Warnings {
-		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityWarning, Message: msg})
-	}
 
 	src, err := emit.RenderDataSource(view)
 	if err != nil {

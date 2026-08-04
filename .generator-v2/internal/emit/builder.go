@@ -49,10 +49,10 @@ const envelopeReceiver = "attributes"
 // what produces its model struct and its field assignments. The assignments are
 // carried on the returned OneOfVariantView rather than placed here: the mapper has
 // to unwrap the SDK member before they can run, and that lands separately.
-func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) (variantBlocks []AttrView, envelopeModel string) {
+func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 	env := a.OneOf
-	if cached, ok := b.oneOfBlocks[env.Name]; ok {
-		return cached, env.GoModel
+	if cached, ok := b.oneOfRenders[env.Name]; ok {
+		return cached
 	}
 
 	// Reserve the envelope's struct slot before walking the variants so it precedes
@@ -60,21 +60,36 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) (variantBlocks []A
 	envIdx := len(b.models)
 	b.models = append(b.models, ModelStructView{Name: env.GoModel})
 
-	view := OneOfEnvelopeView{
-		Name:     env.Name,
-		GoModel:  env.GoModel,
-		SDKType:  env.SDKType,
-		Path:     env.Path,
-		Optional: env.Optional,
-	}
+	render := oneOfRender{goModel: env.GoModel}
 	envFields := make([]ModelFieldView, 0, len(env.Variants))
 
 	for _, v := range env.Variants {
 		sdkVar := lowerFirst(v.GoField) + "Variant"
 		modelVar := lowerFirst(v.GoField) + "Model"
 
-		attrs, blocks, scalars, lists := b.walk(v.GoModel, sdkVar, modelVar, v.Attribute.Children)
-		variantBlocks = append(variantBlocks, AttrView{
+		assign := OneOfVariantAssignment{
+			SDKField:   v.SDKField,
+			SDKVar:     sdkVar,
+			SDKPointer: v.SDKPointer,
+			GoField:    v.GoField,
+			GoModel:    v.GoModel,
+			ModelVar:   modelVar,
+		}
+
+		var attrs, blocks []AttrView
+		if v.ValueWrapped {
+			// The SDK member of a non-object alternative *is* the value — a *string,
+			// not a struct with getters — so its single "value" field is assigned by
+			// dereferencing the member rather than reading through Get<Field>Ok.
+			attrs, blocks = b.oneOfValueVariant(env, v, sdkVar, modelVar, &assign)
+		} else {
+			var scalars []StateAssignment
+			var lists []ListAssignment
+			attrs, blocks, scalars, lists = b.walk(v.GoModel, sdkVar, modelVar, v.Attribute.Children)
+			assign.Scalars, assign.Lists = scalars, lists
+		}
+
+		render.blocks = append(render.blocks, AttrView{
 			TFName:      v.TFName,
 			Description: v.Attribute.Description,
 			Optional:    v.Attribute.Optional,
@@ -89,29 +104,115 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) (variantBlocks []A
 			GoType:  "*" + v.GoModel,
 			TFName:  v.TFName,
 		})
-		view.Variants = append(view.Variants, OneOfVariantView{
-			TFName:         v.TFName,
-			GoField:        v.GoField,
-			GoModel:        v.GoModel,
-			SDKField:       v.SDKField,
-			SDKConstructor: v.SDKConstructor,
-			SDKPointer:     v.SDKPointer,
-			ValueWrapped:   v.ValueWrapped,
-			SDKVar:         sdkVar,
-			ModelVar:       modelVar,
-			Scalars:        scalars,
-			Lists:          lists,
-		})
+		render.variants = append(render.variants, assign)
 	}
 
 	b.models[envIdx].Fields = envFields
-	if b.oneOfBlocks == nil {
-		b.oneOfBlocks = make(map[string][]AttrView)
+	if b.oneOfRenders == nil {
+		b.oneOfRenders = make(map[string]oneOfRender)
 	}
-	b.oneOfBlocks[env.Name] = variantBlocks
-	b.envelopes = append(b.envelopes, view)
-	b.warnings = append(b.warnings, pendingOneOfMapping(env))
-	return variantBlocks, env.GoModel
+	b.oneOfRenders[env.Name] = render
+	return render
+}
+
+// oneOfValueVariant handles a value-wrapped alternative: the variant model has a
+// single "value" field, and the SDK member it comes from is the value itself.
+//
+// The walk cannot serve this case — it would emit SDKVar.GetValueOk(), and a
+// *string has no methods — so the schema attribute is built here and the
+// assignment dereferences the member directly. A value-wrapped alternative whose
+// value is not a scalar (a list or map alternative) has no such dereference and is
+// recorded unsupported rather than mis-assigned.
+func (b *dataSourceBuilder) oneOfValueVariant(
+	env *model.OneOfEnvelope,
+	v model.OneOfEnvelopeVariant,
+	sdkVar, modelVar string,
+	assign *OneOfVariantAssignment,
+) (attrs, blocks []AttrView) {
+	if len(v.Attribute.Children) != 1 {
+		b.unsupported = append(b.unsupported, UnsupportedNode{
+			Path:   env.Path,
+			Reason: fmt.Sprintf("oneOf envelope %q variant %q is value-wrapped but has %d children, expected exactly one", env.Name, v.TFName, len(v.Attribute.Children)),
+		})
+		return nil, nil
+	}
+	value := v.Attribute.Children[0]
+	if !isLeafType(value.TfType) {
+		b.unsupported = append(b.unsupported, UnsupportedNode{
+			Path: env.Path,
+			Reason: fmt.Sprintf(
+				"oneOf envelope %q variant %q wraps a %s, and the emit path can only read a scalar "+
+					"straight off an SDK oneOf member; give the alternative a named schema component "+
+					"so it becomes an object variant",
+				env.Name, v.TFName, value.TfType),
+		})
+		return nil, nil
+	}
+
+	tfName := tfNameOf(value.Path)
+	goField := model.SdkName(tfName)
+
+	attrs = []AttrView{{
+		TFName:      tfName,
+		TFType:      value.TfType,
+		Description: value.Description,
+		Required:    value.Required,
+		Optional:    value.Optional,
+		Computed:    value.Computed,
+		Sensitive:   value.Sensitive,
+	}}
+	// The variant still needs its own one-field model struct; walk would normally
+	// have appended it, and the envelope's field points at it either way.
+	b.models = append(b.models, ModelStructView{
+		Name:   v.GoModel,
+		Fields: []ModelFieldView{{GoField: goField, GoType: value.GoType, TFName: tfName}},
+	})
+	assign.Value = &StateAssignment{
+		LHS: modelVar + "." + goField,
+		RHS: guardedValue(value, sdkVar),
+	}
+	return attrs, nil
+}
+
+// oneOfRender is one envelope's render-ready output, cached per envelope name.
+// Both halves are a function of the envelope alone: the schema blocks because the
+// variants are shared, and the variant assignments because they are expressed
+// against variant-derived locals and carry GoField rather than a site-specific LHS.
+type oneOfRender struct {
+	blocks   []AttrView
+	variants []OneOfVariantAssignment
+	goModel  string
+}
+
+// oneOfListAssignment builds the site-specific assignment that unwraps an
+// envelope's SDK wrapper into its model, given the render shared across use sites.
+func oneOfListAssignment(
+	env *model.OneOfEnvelope,
+	render oneOfRender,
+	tfName, receiver, lhs string,
+	collection bool,
+) ListAssignment {
+	outer := leafVar(tfName)
+	assignment := &OneOfAssignment{
+		Path:       env.Path,
+		SDKType:    env.SDKType,
+		GoModel:    render.goModel,
+		LHS:        lhs,
+		GetterOk:   getterOk(receiver, tfName),
+		Var:        outer,
+		Receiver:   outer,
+		ModelVar:   outer + "Envelope",
+		MatchVar:   outer + "Matches",
+		Optional:   env.Optional,
+		Collection: collection,
+		Variants:   render.variants,
+	}
+	if collection {
+		// The members are read off each element, not off the slice pointer.
+		assignment.LoopVar = outer + "Item"
+		assignment.Receiver = assignment.LoopVar
+	}
+	return ListAssignment{Kind: "oneof", LHS: lhs, GetterOk: assignment.GetterOk, Var: outer, OneOf: assignment}
 }
 
 // oneOfFieldType returns the Go type of the model field holding an envelope,
@@ -130,18 +231,10 @@ func oneOfFieldType(tfType, envelopeModel string) (string, bool) {
 	}
 }
 
-// pendingOneOfMapping is the warning carried by every artifact containing an
-// envelope while the response mapper is unimplemented. The envelope's schema
-// and models are emitted, so the union is not dropped, but nothing
-// assigns into it yet and the block would read as permanently null. Saying so in the
-// run report is the difference between an increment and a silent lie; the mapper removes
-// this together with the gap it describes.
-func pendingOneOfMapping(env *model.OneOfEnvelope) string {
-	return fmt.Sprintf(
-		"oneOf envelope %q at %q: schema and models are emitted but response mapping is not, "+
-			"so this block stays null until the SDK oneOf wrapper mapping lands",
-		env.Name, env.Path,
-	)
+// isCollectionForm reports whether an envelope-carrying attribute is the
+// collection rather than the union itself, so each element is one envelope.
+func isCollectionForm(tfType string) bool {
+	return tfType == "schema.ListNestedBlock" || tfType == "schema.ListNestedAttribute"
 }
 
 // unsupportedOneOfPlacement explains a union the emit path cannot place yet, named
@@ -286,10 +379,8 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 			Assignments: assignments,
 			Lists:       recordLists,
 		},
-		UsesFmt:        !searchable,
-		OneOfEnvelopes: b.envelopes,
-		Dropped:        b.dropped,
-		Warnings:       b.warnings,
+		UsesFmt: !searchable || len(b.oneOfRenders) > 0,
+		Dropped: b.dropped,
 	}, nil
 }
 
@@ -454,11 +545,7 @@ type dataSourceBuilder struct {
 	// keyed on the parser's envelope Name, and doubles as the "already emitted its
 	// models" marker. envelopes accumulates one view per distinct envelope in first-use
 	// order, for the state mapper to walk.
-	oneOfBlocks map[string][]AttrView
-	envelopes   []OneOfEnvelopeView
-	// warnings notes things the generated artifact contains that a reader needs to
-	// know about, as opposed to dropped's omissions.
-	warnings []string
+	oneOfRenders map[string]oneOfRender
 }
 
 // droppedEnvelopeMember is the info-diagnostic note for a JSON:API response
@@ -511,12 +598,13 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 		// same schema.SingleNestedBlock as an ordinary nested object, and walking it
 		// as one would emit Get<Variant>Ok getters the SDK oneOf wrapper does not have.
 		if a.OneOf != nil {
-			variantBlocks, envelopeModel := b.oneOfEnvelope(a)
-			goType, ok := oneOfFieldType(a.TfType, envelopeModel)
+			render := b.oneOfEnvelope(a)
+			goType, ok := oneOfFieldType(a.TfType, render.goModel)
 			if !ok {
 				b.unsupported = append(b.unsupported, unsupportedOneOfPlacement(a.OneOf, a.TfType))
 				continue
 			}
+			collection := isCollectionForm(a.TfType)
 			fields = append(fields, ModelFieldView{GoField: field, GoType: goType, TFName: tfName})
 			blockViews = append(blockViews, AttrView{
 				TFName:      tfName,
@@ -526,9 +614,11 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 				Computed:    a.Computed,
 				Sensitive:   a.Sensitive,
 				IsBlock:     true,
-				ListBlock:   a.TfType == "schema.ListNestedBlock" || a.TfType == "schema.ListNestedAttribute",
-				Blocks:      variantBlocks,
+				ListBlock:   collection,
+				Blocks:      render.blocks,
 			})
+			lists = append(lists, oneOfListAssignment(
+				a.OneOf, render, tfName, receiver, lhsPrefix+"."+field, collection))
 			continue
 		}
 
@@ -887,6 +977,29 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		field := goFieldName(tfName)
 		getter := getterOk("item.Attributes", tfName)
 
+		// Same rule as walk: a union is keyed on OneOf, never on TfType.
+		if n.OneOf != nil {
+			render := b.oneOfEnvelope(n)
+			goType, ok := oneOfFieldType(n.TfType, render.goModel)
+			if !ok {
+				unsupported = append(unsupported, unsupportedOneOfPlacement(n.OneOf, n.TfType))
+				continue
+			}
+			collection := isCollectionForm(n.TfType)
+			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: goType, TFName: tfName})
+			itemBlocks = append(itemBlocks, AttrView{
+				TFName:      tfName,
+				Description: n.Description,
+				Computed:    true,
+				IsBlock:     true,
+				ListBlock:   collection,
+				Blocks:      render.blocks,
+			})
+			itemLists = append(itemLists, oneOfListAssignment(
+				n.OneOf, render, tfName, "item.Attributes", "r."+field, collection))
+			continue
+		}
+
 		switch n.TfType {
 		case "schema.ListAttribute":
 			itemAttrs = append(itemAttrs, AttrView{
@@ -991,10 +1104,8 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			ItemFields: itemAssigns,
 			ItemLists:  itemLists,
 		},
-		UsesFmt:        len(filterParams) > 0,
-		OneOfEnvelopes: b.envelopes,
-		Dropped:        dropped,
-		Warnings:       b.warnings,
+		UsesFmt: len(filterParams) > 0 || len(b.oneOfRenders) > 0,
+		Dropped: dropped,
 	}, nil
 }
 
