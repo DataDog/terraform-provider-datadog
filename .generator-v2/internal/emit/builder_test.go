@@ -251,6 +251,36 @@ var _ = Describe("RenderDataSource duplicate field guard", func() {
 			Items: obj(map[string]*model.Schema{"handle": prim("string", "")}),
 		}),
 	)
+
+	It("drops included, keeping its element union out of the view entirely", func() {
+		// The real shape: included is an array whose element is a oneOf, since it
+		// sideloads more than one resource type (User | LeakedKey for an API key).
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["included"] = &model.Schema{
+			Kind: model.SchemaKindArray,
+			Items: &model.Schema{
+				Kind: model.SchemaKindOneOf,
+				OneOf: &model.OneOfSpec{
+					Name: "IncidentTypeResponseIncludedItem",
+					Path: "response.included[]",
+					Variants: []model.OneOfVariant{{
+						TFName: "user",
+						GoName: "User",
+						Schema: obj(map[string]*model.Schema{"handle": prim("string", "")}),
+					}},
+				},
+			},
+		}
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		// The model still projects the union faithfully; only the view drops it.
+		Expect(art.Schema.Attributes).To(ContainElement(HaveField("Path", "response.included")))
+
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred(), "a union under a dropped member must not fail the artifact")
+		Expect(view.Dropped).To(HaveLen(1))
+		Expect(view.Dropped[0].Message).To(ContainSubstring("dropped \"response.included\": not part of the surfaced {id, type, attributes} envelope"))
+	})
 })
 
 var _ = Describe("BuildDataSourceView audit fields", func() {
