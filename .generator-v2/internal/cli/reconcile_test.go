@@ -43,7 +43,7 @@ func (f *artifactFixture) writeArtifact(name string, generated bool) {
 	src += "func " + emit.DatasourceConstructor(name) + "() {}\n"
 	Expect(os.WriteFile(f.goPath(name), []byte(src), 0o644)).To(Succeed())
 
-	test := "package test\n\nfunc TestAccDatadog" + name + "DataSource(t *testing.T) {}\n"
+	test := "package test\n\nfunc " + testAccName(name) + "(t *testing.T) {}\n"
 	Expect(os.WriteFile(f.testPath(name), []byte(test), 0o644)).To(Succeed())
 
 	Expect(os.WriteFile(f.docPath(name), []byte("# "+name), 0o644)).To(Succeed())
@@ -65,6 +65,19 @@ func (f *artifactFixture) writeCassette(fn string) {
 	Expect(os.WriteFile(filepath.Join(f.testsRoot, "cassettes", fn), []byte("x"), 0o644)).To(Succeed())
 }
 
+func (f *artifactFixture) writeEndpointTags(names ...string) {
+	path := f.providerTestPath()
+	Expect(os.WriteFile(path, []byte("package test\n\nvar testFiles2EndpointTags = map[string]string{\n}\n"), 0o644)).To(Succeed())
+	for _, name := range names {
+		_, err := emit.InsertEndpointTag(path, emit.EndpointTagTestKey(name), name, false)
+		Expect(err).NotTo(HaveOccurred())
+	}
+}
+
+func testAccName(name string) string {
+	return "TestAccDatadog" + model.SdkName(name) + "Datasource"
+}
+
 func (f *artifactFixture) goPath(name string) string {
 	return filepath.Join(f.outputRoot, "data_source_datadog_"+name+".go")
 }
@@ -83,8 +96,16 @@ func (f *artifactFixture) examplePath(name string) string {
 func (f *artifactFixture) genPath() string {
 	return filepath.Join(f.outputRoot, "datasources_generated.go")
 }
+func (f *artifactFixture) providerTestPath() string {
+	return filepath.Join(f.testsRoot, "provider_test.go")
+}
 func (f *artifactFixture) registry() string {
 	data, err := os.ReadFile(f.genPath())
+	Expect(err).NotTo(HaveOccurred())
+	return string(data)
+}
+func (f *artifactFixture) providerTest() string {
+	data, err := os.ReadFile(f.providerTestPath())
 	Expect(err).NotTo(HaveOccurred())
 	return string(data)
 }
@@ -126,7 +147,7 @@ var _ = Describe("retireArtifact", func() {
 	It("blocks retirement and keeps every file when a recorded cassette adopted it", func() {
 		f := newFixture()
 		f.writeArtifact("team", true)
-		f.writeCassette("TestAccDatadogteamDataSource.yaml")
+		f.writeCassette(testAccName("team") + ".yaml")
 
 		entry := f.retire("team", false)
 
@@ -147,15 +168,25 @@ var _ = Describe("retireArtifact", func() {
 
 		Expect(entry.Status).To(Equal(model.ArtifactStatusRetireBlocked))
 		Expect(f.goPath("team")).To(BeAnExistingFile())
+		Expect(f.testPath("team")).To(BeAnExistingFile())
+		Expect(f.docPath("team")).To(BeAnExistingFile())
+		Expect(f.examplePath("team")).To(BeAnExistingFile())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 	})
 
-	It("matches a cassette recorded under a variant suffix", func() {
+	It("cleans up stray files and registration when the generated source is already missing", func() {
 		f := newFixture()
 		f.writeArtifact("team", true)
-		f.writeCassette("TestAccDatadogteamDataSource_AWS_AssumeRole.yaml")
+		Expect(os.Remove(f.goPath("team"))).To(Succeed())
 
-		Expect(f.retire("team", false).Status).To(Equal(model.ArtifactStatusRetireBlocked))
+		entry := f.retire("team", false)
+
+		Expect(entry.Status).To(Equal(model.ArtifactStatusRetired))
+		Expect(f.testPath("team")).NotTo(BeAnExistingFile())
+		Expect(f.docPath("team")).NotTo(BeAnExistingFile())
+		Expect(f.examplePath("team")).NotTo(BeAnExistingFile())
+		Expect(f.exampleDir("team")).NotTo(BeADirectory())
+		Expect(f.registry()).NotTo(ContainSubstring(emit.DatasourceConstructor("team")))
 	})
 
 	It("touches nothing on disk in check mode", func() {
@@ -166,6 +197,8 @@ var _ = Describe("retireArtifact", func() {
 
 		Expect(entry.Status).To(Equal(model.ArtifactStatusRetired))
 		Expect(f.goPath("team")).To(BeAnExistingFile())
+		Expect(f.testPath("team")).To(BeAnExistingFile())
+		Expect(f.docPath("team")).To(BeAnExistingFile())
 		Expect(f.examplePath("team")).To(BeAnExistingFile())
 		Expect(f.exampleDir("team")).To(BeADirectory())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
@@ -193,11 +226,65 @@ var _ = Describe("retireArtifact", func() {
 	})
 })
 
+var _ = Describe("hasRecordedCassette", func() {
+	DescribeTable("recognizes supported cassette names",
+		func(suffix string) {
+			f := newFixture()
+			f.writeArtifact("team", true)
+			name := testAccName("team") + suffix
+			f.writeCassette(name)
+
+			adopted, cassette := hasRecordedCassette(f.testPath("team"), filepath.Join(f.testsRoot, "cassettes"))
+
+			Expect(adopted).To(BeTrue())
+			Expect(cassette).To(Equal(name))
+		},
+		Entry("yaml", ".yaml"),
+		Entry("freeze", ".freeze"),
+		Entry("variant suffix", "_AWS_AssumeRole.yaml"),
+	)
+
+	It("ignores directories, unsupported extensions, and prefix collisions", func() {
+		f := newFixture()
+		f.writeArtifact("team", true)
+		funcName := testAccName("team")
+		cassettesDir := filepath.Join(f.testsRoot, "cassettes")
+		Expect(os.Mkdir(filepath.Join(cassettesDir, funcName+".yaml"), 0o755)).To(Succeed())
+		f.writeCassette(funcName + ".txt")
+		f.writeCassette(funcName + "Extra.yaml")
+
+		adopted, cassette := hasRecordedCassette(f.testPath("team"), cassettesDir)
+
+		Expect(adopted).To(BeFalse())
+		Expect(cassette).To(BeEmpty())
+	})
+
+	It("treats missing or function-free test files as unadopted", func() {
+		f := newFixture()
+		missing := filepath.Join(f.testsRoot, "missing_test.go")
+		adopted, cassette := hasRecordedCassette(missing, filepath.Join(f.testsRoot, "cassettes"))
+		Expect(adopted).To(BeFalse())
+		Expect(cassette).To(BeEmpty())
+
+		f.writeArtifact("team", true)
+		adopted, cassette = hasRecordedCassette(f.testPath("team"), filepath.Join(f.testsRoot, "missing-cassettes"))
+		Expect(adopted).To(BeFalse())
+		Expect(cassette).To(BeEmpty())
+
+		empty := filepath.Join(f.testsRoot, "empty_test.go")
+		Expect(os.WriteFile(empty, []byte("package test\n"), 0o644)).To(Succeed())
+		adopted, cassette = hasRecordedCassette(empty, filepath.Join(f.testsRoot, "cassettes"))
+		Expect(adopted).To(BeFalse())
+		Expect(cassette).To(BeEmpty())
+	})
+})
+
 var _ = Describe("reconcileOrphans", func() {
 	It("retires a registered data source no longer in the desired set and keeps the rest", func() {
 		f := newFixture()
 		f.writeArtifact("team", true)
 		f.writeArtifact("zoo", true)
+		f.writeEndpointTags("team", "zoo")
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
 
 		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
@@ -212,12 +299,14 @@ var _ = Describe("reconcileOrphans", func() {
 		Expect(f.examplePath("team")).To(BeAnExistingFile())
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 		Expect(f.registry()).NotTo(ContainSubstring(emit.DatasourceConstructor("zoo")))
+		Expect(f.providerTest()).To(ContainSubstring(emit.EndpointTagTestKey("team")))
+		Expect(f.providerTest()).NotTo(ContainSubstring(emit.EndpointTagTestKey("zoo")))
 	})
 
 	It("leaves an adopted orphan in place with status retire_blocked", func() {
 		f := newFixture()
 		f.writeArtifact("zoo", true)
-		f.writeCassette("TestAccDatadogzooDataSource.yaml")
+		f.writeCassette(testAccName("zoo") + ".yaml")
 
 		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, false)
 
@@ -235,7 +324,7 @@ var _ = Describe("reconcileOrphans", func() {
 		f.registerOnly("ghost")
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
 
-		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, desired, false)
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(HaveLen(1))
@@ -246,14 +335,54 @@ var _ = Describe("reconcileOrphans", func() {
 		Expect(f.registry()).To(ContainSubstring(emit.DatasourceConstructor("team")))
 	})
 
+	It("removes only the stale registration for a handwritten source", func() {
+		f := newFixture()
+		f.writeArtifact("team", false)
+
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, false)
+
+		Expect(err).NotTo(HaveOccurred())
+		Expect(entries).To(HaveLen(1))
+		Expect(entries[0].Status).To(Equal(model.ArtifactStatusRegistrationRetired))
+		Expect(f.goPath("team")).To(BeAnExistingFile())
+		Expect(f.testPath("team")).To(BeAnExistingFile())
+		Expect(f.docPath("team")).To(BeAnExistingFile())
+		Expect(f.examplePath("team")).To(BeAnExistingFile())
+		Expect(f.registry()).NotTo(ContainSubstring(emit.DatasourceConstructor("team")))
+	})
+
+	It("reports mixed orphans deterministically without modifying disk in check mode", func() {
+		f := newFixture()
+		f.writeArtifact("team", true)
+		f.registerOnly("ghost")
+		registryBefore := f.registry()
+
+		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, map[string]bool{}, true)
+
+		Expect(err).NotTo(HaveOccurred())
+		Expect(entries).To(HaveLen(2))
+		Expect(entries[0].Status).To(Equal(model.ArtifactStatusRegistrationRetired))
+		Expect(entries[0].Constructor).To(Equal(emit.DatasourceConstructor("ghost")))
+		Expect(entries[1].Name).To(Equal("team"))
+		Expect(entries[1].Status).To(Equal(model.ArtifactStatusRetired))
+		Expect(f.goPath("team")).To(BeAnExistingFile())
+		Expect(f.testPath("team")).To(BeAnExistingFile())
+		Expect(f.docPath("team")).To(BeAnExistingFile())
+		Expect(f.examplePath("team")).To(BeAnExistingFile())
+		Expect(f.registry()).To(Equal(registryBefore))
+	})
+
 	It("finds no orphans when every registration is still desired", func() {
 		f := newFixture()
 		f.writeArtifact("team", true)
 		desired := map[string]bool{emit.DatasourceConstructor("team"): true}
+		registryBefore := f.registry()
 
 		entries, err := reconcileOrphans(f.outputRoot, f.testsRoot, f.docsRoot, f.examplesRoot, desired, false)
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(entries).To(BeEmpty())
+		Expect(f.goPath("team")).To(BeAnExistingFile())
+		Expect(f.registry()).To(Equal(registryBefore))
 	})
 })

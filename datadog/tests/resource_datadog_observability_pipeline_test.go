@@ -2095,7 +2095,8 @@ resource "datadog_observability_pipeline" "syslogng_dest" {
         keepalive = 45000
 
         tls {
-          crt_file = "/etc/certs/syslogng.crt"
+          crt_file    = "/etc/certs/syslogng.crt"
+          server_name = "syslogng.example.com"
         }
       }
     }
@@ -2109,6 +2110,7 @@ resource "datadog_observability_pipeline" "syslogng_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.inputs.0", "source-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.keepalive", "45000"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.tls.0.crt_file", "/etc/certs/syslogng.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.syslog_ng.0.tls.0.server_name", "syslogng.example.com"),
 				),
 			},
 		},
@@ -2817,7 +2819,8 @@ resource "datadog_observability_pipeline" "http_client" {
         scrape_timeout_secs  = 10
         auth_strategy       = "basic"
         tls {
-          crt_file = "/path/to/http.crt"
+          crt_file    = "/path/to/http.crt"
+          server_name = "httpclient.example.com"
         }
       }
     }
@@ -2838,6 +2841,7 @@ resource "datadog_observability_pipeline" "http_client" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.scrape_timeout_secs", "10"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.auth_strategy", "basic"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.tls.0.crt_file", "/path/to/http.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.source.0.http_client.0.tls.0.server_name", "httpclient.example.com"),
 				),
 			},
 		},
@@ -4942,9 +4946,10 @@ resource "datadog_observability_pipeline" "socket_dest" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/socket.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/socket.key"
+          crt_file    = "/etc/ssl/certs/socket.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/socket.key"
+          server_name = "socket.example.com"
         }
       }
     }
@@ -4961,6 +4966,7 @@ resource "datadog_observability_pipeline" "socket_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.crt_file", "/etc/ssl/certs/socket.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.key_file", "/etc/ssl/private/socket.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.socket.0.tls.0.server_name", "socket.example.com"),
 				),
 			},
 		},
@@ -5147,6 +5153,7 @@ resource "datadog_observability_pipeline" "cloud_prem_dest_tls" {
           ca_file      = "/path/to/ca.pem"
           key_file     = "/path/to/key.pem"
           key_pass_key = "TLS_KEY_PASSPHRASE"
+          server_name  = "cloudprem.example.com"
         }
       }
     }
@@ -5160,6 +5167,7 @@ resource "datadog_observability_pipeline" "cloud_prem_dest_tls" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.ca_file", "/path/to/ca.pem"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_file", "/path/to/key.pem"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.key_pass_key", "TLS_KEY_PASSPHRASE"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.cloud_prem.0.tls.0.server_name", "cloudprem.example.com"),
 				),
 			},
 		},
@@ -6620,9 +6628,10 @@ resource "datadog_observability_pipeline" "http_client_dest" {
         }
 
         tls {
-          crt_file = "/etc/ssl/certs/http.crt"
-          ca_file  = "/etc/ssl/certs/ca.crt"
-          key_file = "/etc/ssl/private/http.key"
+          crt_file    = "/etc/ssl/certs/http.crt"
+          ca_file     = "/etc/ssl/certs/ca.crt"
+          key_file    = "/etc/ssl/private/http.key"
+          server_name = "httpclientdest.example.com"
         }
       }
     }
@@ -6640,6 +6649,7 @@ resource "datadog_observability_pipeline" "http_client_dest" {
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.0.destination.0.http_client.0.tls.0.server_name", "httpclientdest.example.com"),
 				),
 			},
 		},

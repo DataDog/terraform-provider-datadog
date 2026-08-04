@@ -495,6 +495,328 @@ var formulaAndFunctionCloudCostQueryFields = []FieldSpec{
 		Description: "The name of the query for use in formulas."},
 }
 
+// productAnalyticsEventQuerySearchFields corresponds to OpenAPI
+// ProductAnalyticsEventQuerySearch.
+var productAnalyticsEventQuerySearchFields = []FieldSpec{
+	{HCLKey: "query", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Product Analytics event search query used to filter views or actions."},
+}
+
+// productAnalyticsEventQueryFields corresponds to OpenAPI ProductAnalyticsEventQuery.
+var productAnalyticsEventQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for the Product Analytics event query.",
+		ValidValues: []string{"product_analytics"}},
+	{HCLKey: "search", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Search configuration for the Product Analytics event query.",
+		Children:    productAnalyticsEventQuerySearchFields},
+}
+
+// calendarIntervalFields corresponds to OpenAPI CalendarInterval.
+var calendarIntervalFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of calendar interval.",
+		ValidValues: []string{"day", "week", "month", "year", "quarter", "minute", "hour"}},
+	{HCLKey: "alignment", Type: TypeString, OmitEmpty: true,
+		Description: "Alignment of the calendar interval."},
+	{HCLKey: "timezone", Type: TypeString, OmitEmpty: true,
+		Description: "Timezone for the calendar interval."},
+	{HCLKey: "quantity", Type: TypeInt, OmitEmpty: true,
+		Description: "Quantity of the calendar interval."},
+}
+
+// productAnalyticsExtendedComputeFields corresponds to OpenAPI
+// ProductAnalyticsExtendedCompute.
+var productAnalyticsExtendedComputeFields = []FieldSpec{
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Aggregation method for the Product Analytics Extended query.",
+		ValidValues: []string{"count", "cardinality", "median", "pc75", "pc90", "pc95", "pc98", "pc99", "sum", "min", "max", "avg"}},
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: true,
+		Description: "Measurable attribute to compute."},
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "Name of the compute for use in formulas."},
+	{HCLKey: "interval", Type: TypeInt, OmitEmpty: true,
+		Description: "Fixed-width time bucket interval in milliseconds. Mutually exclusive with `rollup`."},
+	{HCLKey: "rollup", Type: TypeBlock, OmitEmpty: true,
+		Description: "Calendar-aligned time bucket. Mutually exclusive with `interval`.",
+		Children:    calendarIntervalFields},
+}
+
+// productAnalyticsExtendedGroupByFields corresponds to OpenAPI
+// ProductAnalyticsExtendedGroupBy.
+var productAnalyticsExtendedGroupByFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Facet name to group by."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of groups to return."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+		Description: "Options for sorting group by results.",
+		Children:    formulaAndFunctionEventQueryGroupBySortFields},
+	{HCLKey: "should_exclude_missing", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to exclude events missing the group-by facet."},
+}
+
+// formulaAndFunctionProductAnalyticsExtendedQueryFields corresponds to OpenAPI
+// FormulaAndFunctionProductAnalyticsExtendedQueryDefinition.
+var formulaAndFunctionProductAnalyticsExtendedQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for Product Analytics Extended queries.",
+		ValidValues: []string{"product_analytics_extended"}},
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Name of the query for use in formulas."},
+	{HCLKey: "query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Base Product Analytics event query.",
+		Children:    productAnalyticsEventQueryFields},
+	{HCLKey: "compute", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Compute configuration for the Product Analytics Extended query.",
+		Children:    productAnalyticsExtendedComputeFields},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Group by configuration for the Product Analytics Extended query.",
+		Children:    productAnalyticsExtendedGroupByFields},
+	{HCLKey: "audience_filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Product Analytics audience filters.",
+		Children:    productAnalyticsAudienceFiltersFields},
+	{HCLKey: "indexes", Type: TypeStringList, OmitEmpty: true,
+		Description: "Event indexes to query. Use `*` to query all indexes."},
+}
+
+// userJourneySearchTargetFields corresponds to OpenAPI UserJourneySearchTarget.
+var userJourneySearchTargetFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Target type."},
+	{HCLKey: "start", Type: TypeString, OmitEmpty: true,
+		Description: "Start node of the target range."},
+	{HCLKey: "end", Type: TypeString, OmitEmpty: true,
+		Description: "End node of the target range."},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: true,
+		Description: "Target node value."},
+}
+
+// userJourneySearchGraphFilterFields corresponds to OpenAPI
+// UserJourneySearchGraphFilter.
+var userJourneySearchGraphFilterFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "Graph filter name."},
+	{HCLKey: "operator", Type: TypeString, OmitEmpty: true,
+		Description: "Graph filter operator."},
+	{HCLKey: "value", Type: TypeInt, OmitEmpty: true,
+		Description: "Graph filter value."},
+	{HCLKey: "target", Type: TypeBlock, OmitEmpty: true,
+		Description: "Target for the graph filter.",
+		Children:    userJourneySearchTargetFields},
+}
+
+// userJourneySearchFiltersFields corresponds to OpenAPI UserJourneySearchFilters.
+var userJourneySearchFiltersFields = []FieldSpec{
+	{HCLKey: "string_filter", Type: TypeString, OmitEmpty: true,
+		Description: "String filter for the user journey search."},
+	{HCLKey: "graph_filter", JSONKey: "graph_filters", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Graph filters for the user journey search.",
+		Children:    userJourneySearchGraphFilterFields},
+	{HCLKey: "audience_filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Product Analytics audience filters.",
+		Children:    productAnalyticsAudienceFiltersFields},
+}
+
+// userJourneyJoinKeysFields corresponds to OpenAPI UserJourneyJoinKeys.
+var userJourneyJoinKeysFields = []FieldSpec{
+	{HCLKey: "primary", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Primary join key."},
+	{HCLKey: "secondary", Type: TypeStringList, OmitEmpty: true,
+		Description: "Secondary join keys."},
+}
+
+// userJourneySearchFields corresponds to OpenAPI UserJourneySearch.
+var userJourneySearchFields = []FieldSpec{
+	{HCLKey: "node_objects", Type: TypeJSON, OmitEmpty: false, Required: true,
+		Description: "JSON object mapping journey node names to Product Analytics base queries."},
+	{HCLKey: "expression", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Expression describing the journey between nodes."},
+	{HCLKey: "step_aliases", Type: TypeJSON, OmitEmpty: true,
+		Description: "JSON object mapping journey step names to display aliases."},
+	{HCLKey: "join_keys", Type: TypeBlock, OmitEmpty: true,
+		Description: "Join keys for the user journey query.",
+		Children:    userJourneyJoinKeysFields},
+	{HCLKey: "filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Filters for the user journey search.",
+		Children:    userJourneySearchFiltersFields},
+}
+
+// userJourneyFormulaComputeFields corresponds to OpenAPI UserJourneyFormulaCompute.
+var userJourneyFormulaComputeFields = []FieldSpec{
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Aggregation method for the User Journey query.",
+		ValidValues: []string{"count", "cardinality", "median", "pc75", "pc90", "pc95", "pc98", "pc99", "sum", "min", "max", "avg"}},
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: true,
+		Description: "Metric for the User Journey computation.",
+		ValidValues: []string{"__dd.conversion", "__dd.conversion_rate", "__dd.time_to_convert"}},
+	{HCLKey: "interval", Type: TypeInt, OmitEmpty: true,
+		Description: "Time bucket interval in milliseconds for timeseries queries."},
+	{HCLKey: "target", Type: TypeBlock, OmitEmpty: true,
+		Description: "Journey target to compute.",
+		Children:    userJourneySearchTargetFields},
+}
+
+// userJourneyFormulaGroupByFields corresponds to OpenAPI UserJourneyFormulaGroupBy.
+var userJourneyFormulaGroupByFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Facet name to group by."},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of groups to return."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+		Description: "Options for sorting group by results.",
+		Children:    formulaAndFunctionEventQueryGroupBySortFields},
+	{HCLKey: "should_exclude_missing", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to exclude events missing the group-by facet."},
+	{HCLKey: "target", Type: TypeBlock, OmitEmpty: true,
+		Description: "Journey target to group.",
+		Children:    userJourneySearchTargetFields},
+}
+
+// formulaAndFunctionUserJourneyQueryFields corresponds to OpenAPI
+// FormulaAndFunctionUserJourneyQueryDefinition.
+var formulaAndFunctionUserJourneyQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for User Journey queries.",
+		ValidValues: []string{"product_analytics_journey"}},
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Name of the query for use in formulas."},
+	{HCLKey: "search", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "User journey search configuration.",
+		Children:    userJourneySearchFields},
+	{HCLKey: "compute", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Compute configuration for the User Journey query.",
+		Children:    userJourneyFormulaComputeFields},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Group by configuration for the User Journey query.",
+		Children:    userJourneyFormulaGroupByFields},
+}
+
+// retentionFiltersFields corresponds to OpenAPI RetentionFilters.
+var retentionFiltersFields = []FieldSpec{
+	{HCLKey: "string_filter", Type: TypeString, OmitEmpty: true,
+		Description: "String filter for the retention query."},
+	{HCLKey: "audience_filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Product Analytics audience filters.",
+		Children:    productAnalyticsAudienceFiltersFields},
+}
+
+// retentionCohortCriteriaTimeIntervalFields corresponds to OpenAPI
+// RetentionCohortCriteriaTimeInterval.
+var retentionCohortCriteriaTimeIntervalFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of cohort time interval.",
+		ValidValues: []string{"calendar"}},
+	{HCLKey: "value", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Calendar interval used to build the cohort.",
+		Children:    calendarIntervalFields},
+}
+
+// retentionCohortCriteriaFields corresponds to OpenAPI RetentionCohortCriteria.
+var retentionCohortCriteriaFields = []FieldSpec{
+	{HCLKey: "base_query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Base Product Analytics event query for cohort membership.",
+		Children:    productAnalyticsEventQueryFields},
+	{HCLKey: "time_interval", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Time interval used to build the cohort.",
+		Children:    retentionCohortCriteriaTimeIntervalFields},
+}
+
+// retentionReturnCriteriaTimeIntervalFields corresponds to OpenAPI
+// RetentionReturnCriteriaTimeInterval.
+var retentionReturnCriteriaTimeIntervalFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Type of return interval.",
+		ValidValues: []string{"fixed"}},
+	{HCLKey: "value", Type: TypeFloat, OmitEmpty: false, Required: true,
+		Description: "Value of the return interval."},
+	{HCLKey: "unit", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Unit of the return interval.",
+		ValidValues: []string{"day", "week", "month"}},
+}
+
+// retentionReturnCriteriaFields corresponds to OpenAPI RetentionReturnCriteria.
+var retentionReturnCriteriaFields = []FieldSpec{
+	{HCLKey: "base_query", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Base Product Analytics event query for return activity.",
+		Children:    productAnalyticsEventQueryFields},
+	{HCLKey: "time_interval", Type: TypeBlock, OmitEmpty: true,
+		Description: "Time interval for the return criteria.",
+		Children:    retentionReturnCriteriaTimeIntervalFields},
+}
+
+// retentionSearchFields corresponds to OpenAPI RetentionSearch.
+var retentionSearchFields = []FieldSpec{
+	{HCLKey: "cohort_criteria", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Criteria used to construct the retention cohort.",
+		Children:    retentionCohortCriteriaFields},
+	{HCLKey: "retention_entity", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Entity tracked for retention.",
+		ValidValues: []string{"@usr.id", "@account.id"}},
+	{HCLKey: "return_condition", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Condition for counting an entity as returned.",
+		ValidValues: []string{"conversion_on", "conversion_on_or_after"}},
+	{HCLKey: "return_criteria", Type: TypeBlock, OmitEmpty: true,
+		Description: "Criteria used to identify return activity.",
+		Children:    retentionReturnCriteriaFields},
+	{HCLKey: "filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Filters for the retention search.",
+		Children:    retentionFiltersFields},
+}
+
+// retentionComputeFields corresponds to OpenAPI RetentionCompute.
+var retentionComputeFields = []FieldSpec{
+	{HCLKey: "aggregation", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Aggregation for the retention query, including standard event aggregations and `pcNN` percentiles."},
+	{HCLKey: "metric", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Metric for the retention computation.",
+		ValidValues: []string{"__dd.retention", "__dd.retention_rate"}},
+}
+
+// retentionGroupBySortFields corresponds to OpenAPI RetentionGroupBySort.
+var retentionGroupBySortFields = []FieldSpec{
+	{HCLKey: "order", Type: TypeString, OmitEmpty: true,
+		Description: "Sort order for retention group by results.",
+		ValidValues: []string{"asc", "desc"}},
+}
+
+// retentionGroupByFields corresponds to OpenAPI RetentionGroupBy.
+var retentionGroupByFields = []FieldSpec{
+	{HCLKey: "facet", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Facet to group by."},
+	{HCLKey: "should_exclude_missing", Type: TypeBool, OmitEmpty: true,
+		Description: "Whether to exclude missing values."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true,
+		Description: "Sort configuration for retention group by results.",
+		Children:    retentionGroupBySortFields},
+	{HCLKey: "limit", Type: TypeInt, OmitEmpty: true,
+		Description: "Maximum number of groups."},
+	{HCLKey: "target", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Target for the retention group by.",
+		ValidValues: []string{"cohort", "return_period"}},
+	{HCLKey: "source", Type: TypeString, OmitEmpty: true,
+		Description: "Source field for the retention group by."},
+}
+
+// formulaAndFunctionRetentionQueryFields corresponds to OpenAPI
+// FormulaAndFunctionRetentionQueryDefinition.
+var formulaAndFunctionRetentionQueryFields = []FieldSpec{
+	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Data source for retention queries.",
+		ValidValues: []string{"product_analytics_retention"}},
+	{HCLKey: "name", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Name of the query for use in formulas."},
+	{HCLKey: "search", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Search configuration for the retention query.",
+		Children:    retentionSearchFields},
+	{HCLKey: "compute", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "Compute configuration for the retention query.",
+		Children:    retentionComputeFields},
+	{HCLKey: "group_by", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Group by configuration for the retention query.",
+		Children:    retentionGroupByFields},
+}
+
 // formulaAndFunctionQueryFields corresponds to the elements within a "query" TypeBlockList.
 // Each element is a oneOf FormulaAndFunction query type — exactly one sub-block should be set.
 // HCL: query { metric_query { ... } } or query { event_query { ... } } etc.
@@ -523,6 +845,15 @@ var formulaAndFunctionQueryFields = []FieldSpec{
 	{HCLKey: "cloud_cost_query", Type: TypeBlock, OmitEmpty: true,
 		Description: "The Cloud Cost query using formulas and functions.",
 		Children:    formulaAndFunctionCloudCostQueryFields},
+	{HCLKey: "product_analytics_extended_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "The Product Analytics Extended query using formulas and functions.",
+		Children:    formulaAndFunctionProductAnalyticsExtendedQueryFields},
+	{HCLKey: "user_journey_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "The User Journey query using formulas and functions.",
+		Children:    formulaAndFunctionUserJourneyQueryFields},
+	{HCLKey: "retention_query", Type: TypeBlock, OmitEmpty: true,
+		Description: "The retention query using formulas and functions.",
+		Children:    formulaAndFunctionRetentionQueryFields},
 }
 
 // standardQueryFields are the legacy query-source fields present on most request types.
@@ -782,6 +1113,47 @@ var timeseriesBackgroundFields = []FieldSpec{
 	{HCLKey: "yaxis", Type: TypeBlock, OmitEmpty: true,
 		Description: "A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below.",
 		Children:    widgetAxisFields},
+}
+
+// comparisonCustomTimeframeFields corresponds to OpenAPI ComparisonCustomTimeframe.
+var comparisonCustomTimeframeFields = []FieldSpec{
+	{HCLKey: "from", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "Start time in milliseconds since epoch."},
+	{HCLKey: "to", Type: TypeInt, OmitEmpty: false, Required: true,
+		Description: "End time in milliseconds since epoch."},
+}
+
+// comparisonDurationFields corresponds to OpenAPI ComparisonDuration.
+var comparisonDurationFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "The comparison window type.",
+		ValidValues: []string{"previous_timeframe", "custom_timeframe", "previous_day", "previous_week", "previous_month"}},
+	{HCLKey: "custom_timeframe", Type: TypeBlock, OmitEmpty: true,
+		Description: "Fixed time range to compare against when `type` is `custom_timeframe`.",
+		Children:    comparisonCustomTimeframeFields},
+}
+
+// queryValueWidgetComparisonFields corresponds to OpenAPI QueryValueWidgetComparison.
+var queryValueWidgetComparisonFields = []FieldSpec{
+	{HCLKey: "type", Type: TypeString, OmitEmpty: false, Default: "absolute",
+		Description: "How the delta is expressed.",
+		ValidValues: []string{"absolute", "relative", "both"}},
+	{HCLKey: "directionality", Type: TypeString, OmitEmpty: false, Default: "neutral",
+		Description: "Which direction of change is considered an improvement.",
+		ValidValues: []string{"increase_better", "decrease_better", "neutral"}},
+	{HCLKey: "duration", Type: TypeBlock, OmitEmpty: false, Required: true,
+		Description: "The comparison period.",
+		Children:    comparisonDurationFields},
+}
+
+// queryValueWidgetComparisonField is shared by schema generation and
+// formula-request post-processing.
+var queryValueWidgetComparisonField = FieldSpec{
+	HCLKey:      "comparison",
+	Type:        TypeBlock,
+	OmitEmpty:   true,
+	Description: "A change indicator that compares the current value to a historical period.",
+	Children:    queryValueWidgetComparisonFields,
 }
 
 // scatterplotXYRequestFields corresponds to OpenAPI ScatterPlotRequest.
@@ -1057,6 +1429,9 @@ var queryTableOldRequestFields = append(append([]FieldSpec{
 		ValidValues: []string{"avg", "min", "max", "sum", "last", "area", "l2norm", "percentile"},
 	},
 	{HCLKey: "alias", Type: TypeString, OmitEmpty: true, Description: "The alias for the column name (defaults to metric name)."},
+	{HCLKey: "sort", Type: TypeBlock, OmitEmpty: true, SchemaOnly: true,
+		Description: "The controls for sorting the widget request.",
+		Children:    widgetSortByFields},
 }, queryTableRequestExtraFields...), []FieldSpec{
 	// text_formats: each element is a list of text_format blocks
 	{HCLKey: "text_formats", Type: TypeBlockList, OmitEmpty: true,
@@ -1481,6 +1856,66 @@ var barChartWidgetRequestFields = append([]FieldSpec{
 // Sankey Widget Field Groups (OpenAPI: SankeyWidgetDefinition)
 // ============================================================
 
+// productAnalyticsAudienceUserSubqueryFields corresponds to OpenAPI
+// ProductAnalyticsAudienceUserSubquery.
+var productAnalyticsAudienceUserSubqueryFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "The name of the user subquery."},
+	{HCLKey: "query", Type: TypeString, OmitEmpty: true,
+		Description: "The query string for the user subquery."},
+}
+
+// productAnalyticsAudienceSegmentSubqueryFields corresponds to OpenAPI
+// ProductAnalyticsAudienceSegmentSubquery.
+var productAnalyticsAudienceSegmentSubqueryFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "The name of the segment subquery."},
+	{HCLKey: "segment_id", Type: TypeString, OmitEmpty: true,
+		Description: "The unique identifier of the segment."},
+}
+
+// productAnalyticsAudienceAccountSubqueryFields corresponds to OpenAPI
+// ProductAnalyticsAudienceAccountSubquery.
+var productAnalyticsAudienceAccountSubqueryFields = []FieldSpec{
+	{HCLKey: "name", Type: TypeString, OmitEmpty: true,
+		Description: "The name of the account subquery."},
+	{HCLKey: "query", Type: TypeString, OmitEmpty: true,
+		Description: "The query string for the account subquery."},
+}
+
+// productAnalyticsAudienceFiltersFields corresponds to OpenAPI
+// ProductAnalyticsAudienceFilters.
+var productAnalyticsAudienceFiltersFields = []FieldSpec{
+	{HCLKey: "user", JSONKey: "users", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Product Analytics audience user subqueries.",
+		Children:    productAnalyticsAudienceUserSubqueryFields},
+	{HCLKey: "segment", JSONKey: "segments", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Product Analytics audience segment subqueries.",
+		Children:    productAnalyticsAudienceSegmentSubqueryFields},
+	{HCLKey: "account", JSONKey: "accounts", Type: TypeBlockList, OmitEmpty: true,
+		Description: "Product Analytics audience account subqueries.",
+		Children:    productAnalyticsAudienceAccountSubqueryFields},
+	{HCLKey: "filter_condition", Type: TypeString, OmitEmpty: true,
+		Description: "An optional filter condition applied to the audience subquery."},
+}
+
+// productAnalyticsAudienceOccurrenceFilterFields corresponds to OpenAPI
+// ProductAnalyticsAudienceOccurrenceFilter.
+var productAnalyticsAudienceOccurrenceFilterFields = []FieldSpec{
+	{HCLKey: "operator", Type: TypeString, OmitEmpty: true,
+		Description: "The comparison operator used for the occurrence filter."},
+	{HCLKey: "value", Type: TypeString, OmitEmpty: true,
+		Description: "The threshold value to compare occurrence counts against."},
+}
+
+// sankeyJoinKeysFields corresponds to OpenAPI SankeyJoinKeys.
+var sankeyJoinKeysFields = []FieldSpec{
+	{HCLKey: "primary", Type: TypeString, OmitEmpty: false, Required: true,
+		Description: "Primary join key."},
+	{HCLKey: "secondary", Type: TypeStringList, OmitEmpty: true,
+		Description: "Secondary join keys."},
+}
+
 // sankeyRumQueryFields corresponds to OpenAPI SankeyRumQuery.
 var sankeyRumQueryFields = []FieldSpec{
 	{HCLKey: "data_source", Type: TypeString, OmitEmpty: false, Required: true,
@@ -1501,6 +1936,15 @@ var sankeyRumQueryFields = []FieldSpec{
 		Description: "Number of steps."},
 	{HCLKey: "subquery_id", Type: TypeString, OmitEmpty: true,
 		Description: "Subquery ID."},
+	{HCLKey: "audience_filters", Type: TypeBlock, OmitEmpty: true,
+		Description: "Product Analytics and RUM audience filters.",
+		Children:    productAnalyticsAudienceFiltersFields},
+	{HCLKey: "occurrence", JSONKey: "occurrences", Type: TypeBlock, OmitEmpty: true,
+		Description: "Filter applied to occurrence counts when building a Product Analytics audience.",
+		Children:    productAnalyticsAudienceOccurrenceFilterFields},
+	{HCLKey: "join_keys", Type: TypeBlock, OmitEmpty: true,
+		Description: "Join keys for the Sankey query.",
+		Children:    sankeyJoinKeysFields},
 }
 
 // sankeyNetworkQueryComputeFields corresponds to OpenAPI SankeyNetworkQueryCompute.

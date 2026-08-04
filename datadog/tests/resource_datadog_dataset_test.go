@@ -80,8 +80,10 @@ func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 		ProtoV6ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogDataset(datasetName, invalidProduct),
-				ExpectError: regexp.MustCompile("Invalid product"),
+				Config: testAccCheckDatadogDataset(datasetName, invalidProduct),
+				// Terraform hard-wraps diagnostic text, so the message may
+				// contain a newline between the two words.
+				ExpectError: regexp.MustCompile(`Invalid\s+product`),
 			},
 			{
 				Config:      testAccCheckDatadogDatasetInvalidPrincipal(datasetName, product),

@@ -112,6 +112,9 @@ type FieldSpec struct {
 	// TypeBlock always uses MaxItems: 1 automatically.
 	MaxItems int
 
+	// MinItems: minimum count for list and TypeBlockList fields (default 0 = unset).
+	MinItems int
+
 	// Sensitive: mask this field in logs and UI
 	Sensitive bool
 
@@ -554,9 +557,20 @@ var scalarWithConditionalFormatsConfig = FormulaRequestConfig{
 	ExtraFields:    conditionalFormatsExtraFields,
 }
 
+var queryValueFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat: "scalar",
+	StyleFields:    widgetRequestStyleFields,
+	IncludeSort:    true,
+	ExtraFields: append(
+		append([]FieldSpec{}, conditionalFormatsExtraFields...),
+		queryValueWidgetComparisonField,
+	),
+}
+
 var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	ResponseFormat: "scalar",
 	ExtraFields:    queryTableRequestExtraFields,
+	IncludeSort:    true,
 }
 
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
@@ -568,7 +582,9 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return heatmapFormulaRequestConfig
 	case "change":
 		return changeFormulaRequestConfig
-	case "query_value", "toplist", "bar_chart":
+	case "query_value":
+		return queryValueFormulaRequestConfig
+	case "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
 	default:
 		return scalarFormulaRequestConfig
@@ -637,19 +653,23 @@ func flattenFormulaRequest(req map[string]interface{}, cfg FormulaRequestConfig)
 // dataSourceToQueryType maps JSON data_source values to HCL query block keys.
 // Used by flattenFormulaQueryJSON to route flattened queries to the right block.
 var dataSourceToQueryType = map[string]string{
-	"metrics":              "metric_query",
-	"logs":                 "event_query",
-	"spans":                "event_query",
-	"profiling":            "event_query",
-	"audit":                "event_query",
-	"rum":                  "event_query",
-	"errors":               "event_query",
-	"process":              "process_query",
-	"slo":                  "slo_query",
-	"cloud_cost":           "cloud_cost_query",
-	"apm_dependency_stats": "apm_dependency_stats_query",
-	"apm_resource_stats":   "apm_resource_stats_query",
-	"apm_metrics":          "apm_metrics_query",
+	"metrics":                     "metric_query",
+	"logs":                        "event_query",
+	"spans":                       "event_query",
+	"profiling":                   "event_query",
+	"audit":                       "event_query",
+	"rum":                         "event_query",
+	"errors":                      "event_query",
+	"process":                     "process_query",
+	"slo":                         "slo_query",
+	"cloud_cost":                  "cloud_cost_query",
+	"apm_dependency_stats":        "apm_dependency_stats_query",
+	"apm_resource_stats":          "apm_resource_stats_query",
+	"apm_metrics":                 "apm_metrics_query",
+	"product_analytics":           "event_query",
+	"product_analytics_extended":  "product_analytics_extended_query",
+	"product_analytics_journey":   "user_journey_query",
+	"product_analytics_retention": "retention_query",
 }
 
 // isFormulaCapableWidget returns true for widget types that support
@@ -845,9 +865,7 @@ func flattenWidgetSortByJSON(sortObj map[string]interface{}) map[string]interfac
 			switch sortType {
 			case "formula":
 				fs := map[string]interface{}{}
-				if idx, ok := obMap["index"].(float64); ok {
-					fs["index"] = int(idx)
-				}
+				fs["index"] = getIntFromMap(obMap, "index")
 				if ord, ok := obMap["order"].(string); ok {
 					fs["order"] = ord
 				}
@@ -1170,6 +1188,11 @@ func flattenQueryTableRequestJSON(req map[string]interface{}) map[string]interfa
 	}
 	// Old-style request
 	result := FlattenEngineJSON(queryTableOldRequestFields, req)
+	if sortObj, ok := req["sort"].(map[string]interface{}); ok {
+		if s := flattenWidgetSortByJSON(sortObj); len(s) > 0 {
+			result["sort"] = []interface{}{s}
+		}
+	}
 	// text_formats (2D array) needs special handling
 	if textFormats, ok := req["text_formats"].([]interface{}); ok && len(textFormats) > 0 {
 		result["text_formats"] = flattenQueryTableTextFormatsJSON(textFormats)
@@ -2094,9 +2117,7 @@ func buildWidgetSortByJSONFromMap(sortMap map[string]interface{}) map[string]int
 			entry := map[string]interface{}{}
 			if fsMap := getBlockFromMap(obMap, "formula_sort"); fsMap != nil {
 				entry["type"] = "formula"
-				if idx := getIntFromMap(fsMap, "index"); idx != 0 {
-					entry["index"] = idx
-				}
+				entry["index"] = getIntFromMap(fsMap, "index")
 				if ord := getStringFromMap(fsMap, "order"); ord != "" {
 					entry["order"] = ord
 				}
@@ -2137,6 +2158,11 @@ func buildQueryTableRequestsJSONFromMap(defMap map[string]interface{}) []interfa
 			requests = append(requests, req)
 		} else {
 			req := BuildEngineJSONFromMap(reqMap, queryTableOldRequestFields)
+			if sortMap := getBlockFromMap(reqMap, "sort"); sortMap != nil {
+				if sortJSON := buildWidgetSortByJSONFromMap(sortMap); len(sortJSON) > 0 {
+					req["sort"] = sortJSON
+				}
+			}
 			buildQueryTableTextFormatsJSONFromMap(reqMap, req)
 			requests = append(requests, req)
 		}
