@@ -296,8 +296,8 @@ func pluralFixture() DataSourceView {
 				{LHS: "UserCount", RHS: "types.Int64Value(int64(item.Attributes.GetUserCount()))"},
 			},
 			ItemLists: []ListAssignment{
-				{Kind: "primitive", LHS: "r.HiddenModules", GetterOk: "item.Attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
-				{Kind: "primitive", LHS: "r.VisibleModules", GetterOk: "item.Attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
+				{Kind: "primitive", ContainerKind: "list", LHS: "r.HiddenModules", GetterOk: "item.Attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
+				{Kind: "primitive", ContainerKind: "list", LHS: "r.VisibleModules", GetterOk: "item.Attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
 			},
 		},
 	}

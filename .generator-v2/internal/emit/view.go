@@ -262,9 +262,10 @@ type StateView struct {
 	// ItemFields are the item struct's literal fields ("<GoField>: <RHS>"),
 	// evaluated against the loop variable "item".
 	ItemFields []StateAssignment
-	// ItemLists are the item's list-valued assignments, rendered by "renderList"
-	// after the struct literal (they cannot sit in the literal: a primitive list
-	// is a two-value ListValueFrom, an object list is a loop).
+	// ItemLists are the item's collection-valued assignments, rendered by
+	// "renderList" after the struct literal (they cannot sit in the literal: a
+	// primitive-terminal collection uses a two-value ValueFrom helper, while an
+	// object list uses a loop).
 	ItemLists []ListAssignment
 }
 
@@ -284,16 +285,20 @@ type StateAssignment struct {
 }
 
 // ListAssignment is a nested-state assignment rendered by the updateState
-// "renderList" partial. A primitive list maps the SDK slice into a types.List via
-// types.ListValueFrom; an object list loops the SDK elements into a generated
-// nested model slice, recursing through Scalars (the element's leaf fields) and
-// Lists (its nested list fields); an object_single maps one nested object into a
-// generated model pointer, assigned once instead of looped. All forms are guarded
-// by an Ok-getter so an absent field stays null.
+// "renderList" partial. A primitive-terminal collection maps the SDK value into
+// a types.List or types.Map via the matching ValueFrom helper; an object list
+// loops the SDK elements into a generated nested model slice, recursing through
+// Scalars (the element's leaf fields) and Lists (its nested list fields); an
+// object_single maps one nested object into a generated model pointer, assigned
+// once instead of looped. All forms are guarded by an Ok-getter so an absent
+// field stays null.
 type ListAssignment struct {
 	// Kind is "primitive", "object", or "object_single" (a single nested object,
 	// assigned once rather than appended in a loop).
 	Kind string
+	// ContainerKind is "list" or "map" for Kind == "primitive". It selects
+	// the framework ValueFrom and Null constructors used by the template.
+	ContainerKind string
 	// LHS is the assignment target, e.g. "state.VisibleModules" (top level) or
 	// "entriesModel.TagFilters" (nested element field).
 	LHS string
@@ -302,8 +307,9 @@ type ListAssignment struct {
 	GetterOk string
 	// Var is the local bound from GetterOk (a pointer to the slice).
 	Var string
-	// ElementType is the framework element type for a primitive list, e.g.
-	// "types.StringType". Empty for an object list.
+	// ElementType is the framework element type for a primitive-terminal
+	// collection, e.g. "types.ListType{ElemType: types.StringType}". Empty for
+	// an object list.
 	ElementType string
 
 	// The fields below back an object list (Kind == "object").

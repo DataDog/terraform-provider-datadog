@@ -110,17 +110,19 @@ var _ = Describe("NormalizeSchemas unsupported classification", func() {
 		Expect(op.RequestSchema.Type).To(Equal("string"))
 	})
 
-	DescribeTable("downgrades a collection-of-collection element to unsupported, since a list/map element must be a primitive or object",
-		func(operationId string, wantParentKind model.SchemaKind) {
+	DescribeTable("preserves recursively typed collection elements",
+		func(operationId string, wantParentKind, wantChildKind model.SchemaKind) {
 			op := opByID(spec, operationId)
 			Expect(op.RequestSchema.Kind).To(Equal(wantParentKind), "the outer collection keeps its structural kind")
 			Expect(op.RequestSchema.Items).NotTo(BeNil())
-			Expect(op.RequestSchema.Items.Kind).To(Equal(model.SchemaKindUnsupported), "the nested-collection element is rewritten to the unsupported sentinel")
+			Expect(op.RequestSchema.Items.Kind).To(Equal(wantChildKind))
+			Expect(op.RequestSchema.Items.Items).NotTo(BeNil())
+			Expect(op.RequestSchema.Items.Items.Kind).To(Equal(model.SchemaKindPrimitive))
 		},
-		Entry("array-of-array → array with an unsupported element", "CreateArrayOfArray", model.SchemaKindArray),
-		Entry("array-of-map → array with an unsupported element", "CreateArrayOfMap", model.SchemaKindArray),
-		Entry("map-of-array → map with an unsupported value", "CreateMapOfArray", model.SchemaKindMap),
-		Entry("map-of-map → map with an unsupported value", "CreateMapOfMap", model.SchemaKindMap),
+		Entry("array-of-array", "CreateArrayOfArray", model.SchemaKindArray, model.SchemaKindArray),
+		Entry("array-of-map", "CreateArrayOfMap", model.SchemaKindArray, model.SchemaKindMap),
+		Entry("map-of-array", "CreateMapOfArray", model.SchemaKindMap, model.SchemaKindArray),
+		Entry("map-of-map", "CreateMapOfMap", model.SchemaKindMap, model.SchemaKindMap),
 	)
 })
 

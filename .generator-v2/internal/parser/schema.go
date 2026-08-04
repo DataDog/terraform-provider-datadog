@@ -563,7 +563,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 			if err != nil {
 				return nil, err
 			}
-			out.Items = elementOrUnsupported(item)
+			out.Items = collectionElement(item)
 		}
 
 	case model.SchemaKindMap:
@@ -576,7 +576,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 			if err != nil {
 				return nil, err
 			}
-			out.Items = elementOrUnsupported(value)
+			out.Items = collectionElement(value)
 		} else {
 			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported}
 		}
@@ -873,21 +873,14 @@ func isMap(s *base.Schema) bool {
 	return ap.IsA() || (ap.IsB() && ap.B)
 }
 
-// elementOrUnsupported returns elem unless it is itself a collection (array or
-// map). A Terraform list/map element type must be a primitive or object, so a
-// collection-of-collection has no representable element; returning the Unsupported
-// sentinel makes the attribute-tree builder reject it like any other
-// unrepresentable node.
-func elementOrUnsupported(elem *model.Schema) *model.Schema {
+// collectionElement preserves recursively typed collection shapes. Terraform
+// attr.Type values can represent list/map chains such as list(list(string)) and
+// map(list(string)); only a missing element schema needs an Unsupported sentinel.
+func collectionElement(elem *model.Schema) *model.Schema {
 	if elem == nil {
 		return &model.Schema{Kind: model.SchemaKindUnsupported}
 	}
-	switch elem.Kind {
-	case model.SchemaKindArray, model.SchemaKindMap:
-		return &model.Schema{Kind: model.SchemaKindUnsupported}
-	default:
-		return elem
-	}
+	return elem
 }
 
 // hasType reports whether t is in the schema's type set (a slice, since 3.1
