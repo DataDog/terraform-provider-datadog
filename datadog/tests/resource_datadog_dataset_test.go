@@ -1,7 +1,6 @@
 package test
 
 import (
-	"context"
 	"crypto/sha256"
 	"errors"
 	"fmt"
@@ -20,24 +19,30 @@ var (
 	product = "rum"
 )
 
-// uniqueDatasetFilters returns the RUM and APM filters to use for a dataset test.
 // The API rejects a dataset whose filter is already claimed by another dataset of
 // the same product (`DatasetFilterInUse`), so every test must use its own filter
 // values, otherwise the dataset tests collide with each other when run in parallel.
-// The values are derived from the unique dataset name so they stay stable under the
-// frozen clock used for cassette replay.
-func uniqueDatasetFilters(ctx context.Context, t *testing.T) (string, string) {
-	name := uniqueDatasetName(ctx, t)
-	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(name)))
+// Both filters below are derived from the test's unique dataset name so they stay
+// stable under the frozen clock used for cassette replay.
+
+// uniqueDatasetRUMFilter returns a RUM filter scoped to a UUID-shaped application ID
+// hashed from datasetName.
+func uniqueDatasetRUMFilter(datasetName string) string {
+	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(datasetName)))
 	applicationID := fmt.Sprintf("%s-%s-%s-%s-%s", hash[0:8], hash[8:12], hash[12:16], hash[16:20], hash[20:32])
-	return fmt.Sprintf("@application.id:%s", applicationID), fmt.Sprintf("service:%s", name)
+	return fmt.Sprintf("@application.id:%s", applicationID)
+}
+
+// uniqueDatasetAPMFilter returns an APM filter scoped to a service named after datasetName.
+func uniqueDatasetAPMFilter(datasetName string) string {
+	return fmt.Sprintf("service:%s", datasetName)
 }
 
 func TestAccDatadogDataset_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
-	rumFilter, _ := uniqueDatasetFilters(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
@@ -57,7 +62,8 @@ func TestAccDatadogDataset_Update(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
-	rumFilter, apmFilter := uniqueDatasetFilters(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
+	apmFilter := uniqueDatasetAPMFilter(datasetName)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
@@ -91,7 +97,7 @@ func TestAccDatadogDataset_InvalidInput(t *testing.T) {
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
-	rumFilter, _ := uniqueDatasetFilters(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
 	invalidProduct := "ci-visibility"
 
 	resource.Test(t, resource.TestCase{
@@ -171,7 +177,7 @@ func TestAccDatadogDatasetImport(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(t.Context(), t)
 	datasetName := uniqueDatasetName(ctx, t)
-	rumFilter, _ := uniqueDatasetFilters(ctx, t)
+	rumFilter := uniqueDatasetRUMFilter(datasetName)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
