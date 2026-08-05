@@ -3,12 +3,12 @@
 page_title: "datadog_webhook_oauth2_client_credentials Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog webhook OAuth2 client credentials auth method resource. This can be used to create and manage the auth methods available under Integrations -> Webhooks -> Auth Methods.
+  Provides a Datadog webhook OAuth2 client credentials auth method resource. This can be used to create and manage the auth methods available under Integrations > Webhooks > Auth Methods.
 ---
 
 # datadog_webhook_oauth2_client_credentials (Resource)
 
-Provides a Datadog webhook OAuth2 client credentials auth method resource. This can be used to create and manage the auth methods available under Integrations -> Webhooks -> Auth Methods.
+Provides a Datadog webhook OAuth2 client credentials auth method resource. This can be used to create and manage the auth methods available under Integrations > Webhooks > Auth Methods.
 
 ## Example Usage
 
