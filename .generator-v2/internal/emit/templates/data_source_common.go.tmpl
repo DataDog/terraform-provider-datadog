@@ -85,9 +85,17 @@ Blocks: map[string]schema.Block{
 {{- define "renderList" -}}
 {{- if eq .Kind "primitive" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+	{{- if eq .ContainerKind "map" }}
+	{{ .LHS }}, _ = types.MapValueFrom(context.Background(), {{ .ElementType }}, *{{ .Var }})
+	{{- else }}
 	{{ .LHS }}, _ = types.ListValueFrom(context.Background(), {{ .ElementType }}, *{{ .Var }})
+	{{- end }}
 } else {
+	{{- if eq .ContainerKind "map" }}
+	{{ .LHS }} = types.MapNull({{ .ElementType }})
+	{{- else }}
 	{{ .LHS }} = types.ListNull({{ .ElementType }})
+	{{- end }}
 }
 {{- else if eq .Kind "object" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {

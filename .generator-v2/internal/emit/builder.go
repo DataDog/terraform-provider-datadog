@@ -392,9 +392,8 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 		return nil
 	}
 
-	// Hoist the attribute children to top-level paths: scalar leaves, array nodes
-	// (list-of-primitive / list-of-object), and bare nested objects are in scope;
-	// a map is not.
+	// Hoist the attribute children to top-level paths: scalar leaves, typed list/map
+	// attributes, list-of-object blocks, and bare nested objects are in scope.
 	leaves := make([]*model.Attribute, 0, len(attributes.Children))
 	for _, child := range attributes.Children {
 		if isAuditField(tfNameOf(child.Path)) {
@@ -407,7 +406,7 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 			b.dropped = append(b.dropped, droppedIDCollision(child.Path))
 			continue
 		}
-		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isObjectType(child.TfType) {
+		if !isLeafType(child.TfType) && !isArrayType(child.TfType) && !isMapType(child.TfType) && !isObjectType(child.TfType) {
 			b.unsupported = append(b.unsupported, UnsupportedNode{
 				Path:   child.Path,
 				Reason: "nesting under attributes is not supported",
@@ -547,11 +546,33 @@ func (b *dataSourceBuilder) walk(structName, modelStem, receiver, lhsPrefix stri
 			})
 			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName}) // types.List
 			lists = append(lists, ListAssignment{
-				Kind:        "primitive",
-				LHS:         lhsPrefix + "." + field,
-				GetterOk:    getterOk(receiver, tfName),
-				Var:         leafVar(tfName),
+				Kind:          "primitive",
+				ContainerKind: "list",
+				LHS:           lhsPrefix + "." + field,
+				GetterOk:      getterOk(receiver, tfName),
+				Var:           leafVar(tfName),
+				ElementType:   a.ElementType,
+			})
+
+		case "schema.MapAttribute":
+			attrViews = append(attrViews, AttrView{
+				TFName:      tfName,
+				TFType:      a.TfType,
 				ElementType: a.ElementType,
+				Description: a.Description,
+				Required:    a.Required,
+				Optional:    a.Optional,
+				Computed:    a.Computed,
+				Sensitive:   a.Sensitive,
+			})
+			fields = append(fields, ModelFieldView{GoField: field, GoType: a.GoType, TFName: tfName})
+			lists = append(lists, ListAssignment{
+				Kind:          "primitive",
+				ContainerKind: "map",
+				LHS:           lhsPrefix + "." + field,
+				GetterOk:      getterOk(receiver, tfName),
+				Var:           leafVar(tfName),
+				ElementType:   a.ElementType,
 			})
 
 		case "schema.ListNestedBlock":
@@ -653,6 +674,9 @@ func isArrayType(tfType string) bool {
 		return false
 	}
 }
+
+// isMapType reports whether tfType is a typed dynamic-key map attribute.
+func isMapType(tfType string) bool { return tfType == "schema.MapAttribute" }
 
 // isObjectType reports whether tfType is a bare nested object the envelope
 // hoists into single-object machinery (schema.SingleNestedBlock).
@@ -764,8 +788,6 @@ func wrapValue(a *model.Attribute, chain string) string {
 // TfType the singular emit path does not yet handle.
 func unsupportedReason(tfType string) string {
 	switch tfType {
-	case "schema.MapAttribute":
-		return "map not yet supported"
 	case "schema.MapNestedAttribute":
 		return "map-of-object not yet supported"
 	case "schema.SingleNestedAttribute", "schema.ListNestedAttribute":
@@ -849,9 +871,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	// Non-scalar attributes append after the scalars and map after the literal via
-	// ItemLists, read off item.Attributes: a list-of-primitive as a ListAttribute,
-	// a list-of-object as a ListNestedBlock, and a bare object as a
-	// SingleNestedBlock — each with its element struct walked.
+	// ItemLists, read off item.Attributes: primitive-terminal lists/maps as leaf
+	// attributes, list-of-object as a ListNestedBlock, and a bare object as a
+	// SingleNestedBlock — object forms have their element struct walked.
 	var itemBlocks []AttrView
 	var itemLists []ListAssignment
 	for _, n := range nonScalars {
@@ -859,13 +881,17 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		field := goFieldName(tfName)
 		getter := getterOk("item.Attributes", tfName)
 		switch n.TfType {
-		case "schema.ListAttribute":
+		case "schema.ListAttribute", "schema.MapAttribute":
+			containerKind := "list"
+			if n.TfType == "schema.MapAttribute" {
+				containerKind = "map"
+			}
 			itemAttrs = append(itemAttrs, AttrView{
 				TFName: tfName, TFType: n.TfType, ElementType: n.ElementType, Description: n.Description, Computed: true,
 			})
 			itemFields = append(itemFields, ModelFieldView{GoField: field, GoType: n.GoType, TFName: tfName})
 			itemLists = append(itemLists, ListAssignment{
-				Kind: "primitive", LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName), ElementType: n.ElementType,
+				Kind: "primitive", ContainerKind: containerKind, LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName), ElementType: n.ElementType,
 			})
 		case "schema.ListNestedBlock":
 			elemStem := itemStem + model.SdkName(tfName)
@@ -1014,7 +1040,7 @@ func flattenItemElement(block *model.Attribute, unsupported *[]UnsupportedNode, 
 				switch {
 				case isLeafType(leaf.TfType):
 					scalars = append(scalars, itemElementLeaf{attr: leaf, chain: itemGetter("item.Attributes", tfNameOf(leaf.Path))})
-				case isArrayType(leaf.TfType), isObjectType(leaf.TfType):
+				case isArrayType(leaf.TfType), isMapType(leaf.TfType), isObjectType(leaf.TfType):
 					nonScalars = append(nonScalars, leaf)
 				default:
 					*unsupported = append(*unsupported, UnsupportedNode{Path: leaf.Path, Reason: "nesting under item attributes is not supported"})

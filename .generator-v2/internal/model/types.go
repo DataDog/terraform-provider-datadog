@@ -259,8 +259,9 @@ type Attribute struct {
 	// GoType is the corresponding model-struct type, e.g. types.String.
 	GoType string
 	// ElementType is the framework attr.Type for a list/map element value,
-	// e.g. "types.StringType". Set ONLY for ListAttribute/MapAttribute
-	// (collection-of-primitive); empty for everything else.
+	// e.g. "types.StringType" or "types.ListType{ElemType: types.StringType}".
+	// Set only for ListAttribute/MapAttribute collection chains ending in a
+	// primitive; empty for everything else.
 	ElementType string
 	// Format is the OpenAPI format (e.g. "date-time"). It distinguishes SDK
 	// getters whose Go return type differs from the bare scalar: a date-time

@@ -881,9 +881,77 @@ var _ = Describe("BuildDataSourceView singular arrays", func() {
 
 		// Sorted by attribute name, both string arrays become guarded primitive lists.
 		Expect(view.State.Lists).To(Equal([]ListAssignment{
-			{Kind: "primitive", LHS: "state.HiddenModules", GetterOk: "attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
-			{Kind: "primitive", LHS: "state.VisibleModules", GetterOk: "attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
+			{Kind: "primitive", ContainerKind: "list", LHS: "state.HiddenModules", GetterOk: "attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
+			{Kind: "primitive", ContainerKind: "list", LHS: "state.VisibleModules", GetterOk: "attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
 		}))
+	})
+
+	It("emits recursive list/map types and the matching state constructors", func() {
+		op := teamSingularOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
+		attrs["host_tags_lists"] = &model.Schema{
+			Kind: model.SchemaKindArray, Description: "Host tag conjunctions.",
+			Items: &model.Schema{Kind: model.SchemaKindArray, Items: prim("string", "A host tag.")},
+		}
+		attrs["group_bys"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Named grouping dimensions.",
+			Items: &model.Schema{Kind: model.SchemaKindArray, Items: prim("string", "A grouping dimension.")},
+		}
+		attrs["cloud_provider"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Cloud provider filters.",
+			Items: &model.Schema{Kind: model.SchemaKindMap, Items: &model.Schema{
+				Kind: model.SchemaKindArray, Items: prim("string", "A filter value."),
+			}},
+		}
+
+		view := mustView(op)
+		attributes := map[string]AttrView{}
+		for _, attr := range view.Schema.Attributes {
+			attributes[attr.TFName] = attr
+		}
+		Expect(attributes["host_tags_lists"].TFType).To(Equal("schema.ListAttribute"))
+		Expect(attributes["host_tags_lists"].ElementType).To(Equal("types.ListType{ElemType: types.StringType}"))
+		Expect(attributes["group_bys"].TFType).To(Equal("schema.MapAttribute"))
+		Expect(attributes["group_bys"].ElementType).To(Equal("types.ListType{ElemType: types.StringType}"))
+		Expect(attributes["cloud_provider"].TFType).To(Equal("schema.MapAttribute"))
+		Expect(attributes["cloud_provider"].ElementType).To(Equal("types.MapType{ElemType: types.ListType{ElemType: types.StringType}}"))
+
+		assignments := map[string]ListAssignment{}
+		for _, assignment := range view.State.Lists {
+			assignments[assignment.LHS] = assignment
+		}
+		Expect(assignments["state.HostTagsLists"].ContainerKind).To(Equal("list"))
+		Expect(assignments["state.GroupBys"].ContainerKind).To(Equal("map"))
+		Expect(assignments["state.CloudProvider"].ContainerKind).To(Equal("map"))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring("types.ListValueFrom(context.Background(), types.ListType{ElemType: types.StringType}, *hostTagsLists)"))
+		Expect(src).To(ContainSubstring("types.MapValueFrom(context.Background(), types.ListType{ElemType: types.StringType}, *groupBys)"))
+		Expect(src).To(ContainSubstring("types.MapNull(types.MapType{ElemType: types.ListType{ElemType: types.StringType}})"))
+	})
+
+	It("emits a typed map nested inside an object-list element", func() {
+		op := costBudgetOperation()
+		entry := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties["entries"].Items
+		entry.Properties["metadata"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Entry metadata.",
+			Items: prim("string", "A metadata value."),
+		}
+
+		view := mustView(op)
+		entries := view.State.Lists[0]
+		nested := map[string]ListAssignment{}
+		for _, assignment := range entries.Lists {
+			nested[assignment.LHS] = assignment
+		}
+		Expect(nested["entriesModel.Metadata"].Kind).To(Equal("primitive"))
+		Expect(nested["entriesModel.Metadata"].ContainerKind).To(Equal("map"))
+		Expect(nested["entriesModel.Metadata"].ElementType).To(Equal("types.StringType"))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring("types.MapValueFrom(context.Background(), types.StringType, *metadata)"))
 	})
 
 	It("produces a deeply-equal view across two runs", func() {
@@ -902,6 +970,27 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		view, err := BuildDataSourceView(art)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(view).To(Equal(pluralFixture()))
+	})
+
+	It("emits a recursively typed map on a plural result item", func() {
+		op := teamsOperation()
+		attributes := op.ResponseSchema.Properties["data"].Items.Properties["attributes"].Properties
+		attributes["group_bys"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Named grouping dimensions.",
+			Items: &model.Schema{Kind: model.SchemaKindArray, Items: prim("string", "A grouping dimension.")},
+		}
+
+		view := mustView(op)
+		itemCollections := map[string]ListAssignment{}
+		for _, assignment := range view.State.ItemLists {
+			itemCollections[assignment.LHS] = assignment
+		}
+		Expect(itemCollections["r.GroupBys"].Kind).To(Equal("primitive"))
+		Expect(itemCollections["r.GroupBys"].ContainerKind).To(Equal("map"))
+		Expect(itemCollections["r.GroupBys"].ElementType).To(Equal("types.ListType{ElemType: types.StringType}"))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring("types.MapValueFrom(context.Background(), types.ListType{ElemType: types.StringType}, *groupBys)"))
 	})
 
 	It("drops array and enum query params from the filter set", func() {
