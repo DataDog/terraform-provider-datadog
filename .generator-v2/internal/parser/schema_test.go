@@ -207,6 +207,49 @@ var _ = Describe("NormalizeSchemas field carrying", func() {
 	})
 })
 
+var _ = Describe("ignore-list matching", func() {
+
+	var n *schemaNormalizer
+
+	BeforeEach(func() {
+		n = &schemaNormalizer{}
+		n.beginIgnore([]string{"creator", "settings.foo", "data.attributes.explicit", "nope"})
+	})
+
+	It("matches a top-level attribute by its flattened name under the data.attributes envelope", func() {
+		key, ok := n.ignoreMatch("data.attributes.creator")
+		Expect(ok).To(BeTrue())
+		Expect(key).To(Equal("creator"))
+	})
+
+	It("matches a nested attribute by its flattened dot-path", func() {
+		key, ok := n.ignoreMatch("data.attributes.settings.foo")
+		Expect(ok).To(BeTrue())
+		Expect(key).To(Equal("settings.foo"))
+	})
+
+	It("still matches the full spec-path form", func() {
+		key, ok := n.ignoreMatch("data.attributes.explicit")
+		Expect(ok).To(BeTrue())
+		Expect(key).To(Equal("data.attributes.explicit"))
+	})
+
+	It("treats the flattened name as a whole path, not a suffix, so it never matches a deeper field of the same name", func() {
+		_, ok := n.ignoreMatch("data.attributes.foo.creator")
+		Expect(ok).To(BeFalse())
+	})
+
+	It("reports an entry that matched nothing as unmatched, sorted", func() {
+		// Mirror normalizeSchema: the caller records the matched key.
+		for _, path := range []string{"data.attributes.creator", "data.attributes.settings.foo", "data.attributes.explicit"} {
+			if key, ok := n.ignoreMatch(path); ok {
+				n.matched[key] = true
+			}
+		}
+		Expect(n.unmatchedIgnore()).To(Equal([]string{"nope"}))
+	})
+})
+
 // -------------------------------------------------------------------
 //  2xx response selection
 // -------------------------------------------------------------------

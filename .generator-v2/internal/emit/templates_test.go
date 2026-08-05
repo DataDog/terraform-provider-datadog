@@ -27,6 +27,7 @@ var _ = Describe("data-source templates", func() {
 			matchGolden(golden, got)
 		},
 		Entry("singular (incident_type)", "data_source_singular.golden", incidentTypeView),
+		Entry("singular ignored attribute (incident_type)", "data_source_singular_ignore.golden", incidentTypeIgnoreView),
 		Entry("singular list-of-string (team)", "data_source_singular_list.golden", teamSingularView),
 		Entry("singular nested object arrays (cost_budget)", "data_source_singular_nested.golden", costBudgetView),
 		Entry("singular search (powerpack)", "data_source_singular_search.golden", powerpackSearchView),
@@ -100,6 +101,14 @@ func incidentTypeView() DataSourceView {
 	view, err := BuildDataSourceView(incidentTypeArtifact())
 	Expect(err).NotTo(HaveOccurred())
 	return view
+}
+
+// incidentTypeIgnoreView builds the incident_type data source with is_default
+// ignored; its golden proves an ignored attribute reaches neither the schema,
+// the model struct, nor the state mapper.
+func incidentTypeIgnoreView() DataSourceView {
+	GinkgoHelper()
+	return mustView(incidentTypeIgnoreOperation())
 }
 
 // teamSingularView is the team singular data source built end-to-end through the

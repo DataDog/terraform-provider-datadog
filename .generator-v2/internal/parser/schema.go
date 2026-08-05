@@ -108,6 +108,9 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 		if op == nil || op.Tracking == nil {
 			continue
 		}
+		// Apply this operation's ignore list while filling its group's bodies,
+		// then record which paths matched nothing for BuildArtifact to warn on.
+		n.beginIgnore(op.Tracking.Ignore)
 		for _, id := range groupOperationIds(op.Tracking) {
 			target := byID[id]
 			if target == nil || filled[target] {
@@ -118,6 +121,7 @@ func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operatio
 				return err
 			}
 		}
+		op.IgnoreUnmatched = n.unmatchedIgnore()
 	}
 
 	// Resolve each tracked op's search reference to the list operation it points
@@ -151,11 +155,69 @@ func groupOperationIds(t *model.TrackingFieldMetadata) []string {
 }
 
 // schemaNormalizer holds the per-pass state: the component set for $ref
-// resolution, the depth bound, and the sensitive-marking extension key.
+// resolution, the depth bound, and the sensitive-marking extension key. ignore
+// and matched are per-operation ignore state, reset by beginIgnore before each
+// tracked operation's group is filled.
 type schemaNormalizer struct {
 	components        *v3.Components
 	maxDepth          int
 	trackingFieldName string
+	// ignore is the set of spec-paths the current operation drops; matched
+	// records which of them stamped at least one node, so unmatched entries warn.
+	ignore  map[string]bool
+	matched map[string]bool
+}
+
+// beginIgnore loads the current operation's ignore paths and clears the match
+// record. Called before filling each tracked operation's group.
+func (n *schemaNormalizer) beginIgnore(paths []string) {
+	n.ignore = make(map[string]bool, len(paths))
+	n.matched = make(map[string]bool, len(paths))
+	for _, p := range paths {
+		n.ignore[p] = true
+	}
+}
+
+// ignoreMatch reports whether path is on the current ignore list, and returns
+// the list entry that matched. It tries the full spec-path and its
+// envelope-relative form so an author can name the flattened attribute: the
+// JSON:API envelope hoists data.attributes.X (and data.id) to the top level, so
+// "creator" matches data.attributes.creator and "settings.foo" matches
+// data.attributes.settings.foo. The relative form is the whole path under the
+// envelope, not a suffix, so "creator" never matches a nested foo.creator.
+func (n *schemaNormalizer) ignoreMatch(path string) (string, bool) {
+	if n.ignore[path] {
+		return path, true
+	}
+	if rel, ok := strings.CutPrefix(path, "data.attributes."); ok && n.ignore[rel] {
+		return rel, true
+	}
+	if rel, ok := strings.CutPrefix(path, "data."); ok && n.ignore[rel] {
+		return rel, true
+	}
+	return "", false
+}
+
+// unmatchedIgnore returns the current operation's ignore paths that matched no
+// node, sorted — each is a likely typo or a stale path worth a warning.
+func (n *schemaNormalizer) unmatchedIgnore() []string {
+	var out []string
+	for p := range n.ignore {
+		if !n.matched[p] {
+			out = append(out, p)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
+// childPath joins a parent spec-path and a property key, e.g. ("data", "id") →
+// "data.id". A root parent ("") yields the bare key.
+func childPath(parent, key string) string {
+	if parent == "" {
+		return key
+	}
+	return parent + "." + key
 }
 
 // fillOperation normalizes raw's request and 2xx response bodies into op,
@@ -167,7 +229,7 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		return nil
 	}
 	if reqProxy := requestBodySchemaProxy(raw); reqProxy != nil {
-		req, err := n.normalizeProxy(reqProxy, 0)
+		req, err := n.normalizeProxy(reqProxy, 0, "")
 		if err != nil {
 			return err
 		}
@@ -189,7 +251,7 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	if respProxy.IsReference() {
 		op.ResponseRefName = lastRefSegment(respProxy.GetReference())
 	}
-	resp, err := n.normalizeProxy(respProxy, 0)
+	resp, err := n.normalizeProxy(respProxy, 0, "")
 	if err != nil {
 		return err
 	}
@@ -212,7 +274,9 @@ func (n *schemaNormalizer) fillQueryParams(op *model.Operation, raw *v3.Operatio
 		if p == nil || p.In != "query" || p.Name == "" {
 			continue
 		}
-		schema, err := n.normalizeProxy(p.Schema, 0)
+		// Query-param schemas are not body attributes; the ignore list never
+		// targets them, so a root path is fine.
+		schema, err := n.normalizeProxy(p.Schema, 0, "")
 		if err != nil {
 			return err
 		}
@@ -368,7 +432,7 @@ func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 // normalizeProxy normalizes one schema proxy, resolving a $ref through the
 // component set and counting it against the depth budget. At the boundary the
 // node is classified SchemaKindRefCycle rather than expanded.
-func (n *schemaNormalizer) normalizeProxy(proxy *base.SchemaProxy, depth int) (*model.Schema, error) {
+func (n *schemaNormalizer) normalizeProxy(proxy *base.SchemaProxy, depth int, path string) (*model.Schema, error) {
 	if proxy == nil {
 		return nil, nil
 	}
@@ -381,9 +445,9 @@ func (n *schemaNormalizer) normalizeProxy(proxy *base.SchemaProxy, depth int) (*
 		if err != nil {
 			return nil, err
 		}
-		return n.normalizeProxy(target, depth+1)
+		return n.normalizeProxy(target, depth+1, path)
 	}
-	return n.normalizeSchema(proxy.Schema(), depth)
+	return n.normalizeSchema(proxy.Schema(), depth, path)
 }
 
 // resolveRef returns the proxy a "#/components/schemas/<name>" ref points to, or
@@ -406,7 +470,7 @@ func (n *schemaNormalizer) resolveRef(ref string) (*base.SchemaProxy, error) {
 // normalizeSchema converts a resolved *base.Schema into a model.Schema:
 // classifying its kind from structure and carrying Type, Format, Enum, Required
 // and Sensitive. Children recurse at the same depth — only $refs cost depth.
-func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Schema, error) {
+func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, path string) (*model.Schema, error) {
 	if s == nil {
 		return nil, nil
 	}
@@ -419,6 +483,14 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		Description: s.Description,
 	}
 
+	// The ignore list targets a node by its attribute path; a fresh model.Schema
+	// is built per reference site (below), so stamping here never bleeds across
+	// other usages of a shared component.
+	if key, ok := n.ignoreMatch(path); ok {
+		out.Ignore = true
+		n.matched[key] = true
+	}
+
 	// The kind (set above by classifyKind) decides which children to recurse into
 	// and where to store them. Primitive and Unsupported have no children, so they
 	// have no case and fall through with only the scalar fields already set.
@@ -428,7 +500,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		out.Properties = make(map[string]*model.Schema)
 		// Sorted iteration keeps recursion (and any surfaced error) deterministic.
 		for _, key := range sortedPropertyKeys(s) {
-			child, err := n.normalizeProxy(s.Properties.GetOrZero(key), depth)
+			child, err := n.normalizeProxy(s.Properties.GetOrZero(key), depth, childPath(path, key))
 			if err != nil {
 				return nil, err
 			}
@@ -439,7 +511,9 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 	case model.SchemaKindArray:
 		// Array: a single element schema, carried in out.Items.
 		if s.Items != nil && s.Items.IsA() {
-			item, err := n.normalizeProxy(s.Items.A, depth)
+			// The element inherits the parent's path: an ignore entry targets the
+			// collection property, not its elements.
+			item, err := n.normalizeProxy(s.Items.A, depth, path)
 			if err != nil {
 				return nil, err
 			}
@@ -452,7 +526,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		// no value schema — its values are unconstrained, which TF cannot
 		// represent, so carry an Unsupported sentinel for the check to reject.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
-			value, err := n.normalizeProxy(s.AdditionalProperties.A, depth)
+			value, err := n.normalizeProxy(s.AdditionalProperties.A, depth, path)
 			if err != nil {
 				return nil, err
 			}
@@ -465,7 +539,7 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		// Variant: one of several alternative oneOf shapes (anyOf is classified
 		// unsupported). Every alternative is normalized into out.Variants.
 		for _, variant := range s.OneOf {
-			v, err := n.normalizeProxy(variant, depth)
+			v, err := n.normalizeProxy(variant, depth, path)
 			if err != nil {
 				return nil, err
 			}

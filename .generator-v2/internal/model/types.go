@@ -130,6 +130,9 @@ type Operation struct {
 	// search op (search-only), and is nil when no search is declared or the
 	// declared operationId is unknown.
 	SearchOp *Operation
+	// IgnoreUnmatched holds the Tracking.Ignore paths that matched no node during
+	// normalization, sorted. BuildArtifact turns each into a warning diagnostic.
+	IgnoreUnmatched []string
 }
 
 // QueryParam is one in:query OpenAPI parameter, with its inner schema
@@ -174,6 +177,9 @@ type Schema struct {
 	Enum []string
 	// Sensitive is true when the schema is annotated sensitive: true.
 	Sensitive bool
+	// Ignore is true when the parser matched this node against an operation's
+	// ignore list; the attribute-tree builder drops such nodes and their subtree.
+	Ignore bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
 }

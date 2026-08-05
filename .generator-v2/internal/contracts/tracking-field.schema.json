@@ -59,6 +59,12 @@
         "default": false,
         "description": "Explicitly disable generation for this operation while keeping the annotation in place. Equivalent to removing the extension, but documented in-spec so reviewers see the choice."
       },
+      "ignore": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 },
+        "uniqueItems": true,
+        "description": "Attributes to omit from the generated Terraform schema, named as they appear in Terraform after envelope flattening: a top-level attribute is just its name (e.g. \"creator\"), a nested one is a dot-path (e.g. \"settings.foo\"). Each entry drops that node and its subtree. The full spec-path (e.g. \"data.attributes.creator\") also matches, for fields outside the data.attributes envelope."
+      },
       "overwrites": {
         "type": "string",
         "minLength": 1,
