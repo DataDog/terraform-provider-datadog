@@ -43,8 +43,10 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var retire string
 
 	cmd := &cobra.Command{
-		Use:   "generate",
-		Short: "Generate Terraform artifacts from the OpenAPI spec",
+		Use:               "generate",
+		Short:             "Generate Terraform artifacts from the OpenAPI spec",
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Orphan detection is only valid when tfgen sees the complete annotation
 			// set, so --reconcile cannot be narrowed by --include.
