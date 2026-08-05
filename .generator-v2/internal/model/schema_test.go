@@ -410,6 +410,24 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 			"response.m{}.bad"),
 	)
 
+	It("includes an unsupported reason without losing the full attribute path", func() {
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"composed": {
+				Kind:              SchemaKindUnsupported,
+				UnsupportedReason: `allOf property "status" is declared by multiple branches`,
+			},
+		}))
+		Expect(tree).To(BeNil())
+		var uke *UnsupportedKindError
+		Expect(errors.As(err, &uke)).To(BeTrue(), "expected *UnsupportedKindError, got %T: %v", err, err)
+		Expect(uke.Path).To(Equal("response.composed"))
+		Expect(uke.Kind).To(Equal(SchemaKindUnsupported))
+		Expect(uke.Reason).To(Equal(`allOf property "status" is declared by multiple branches`))
+		Expect(uke.Error()).To(Equal(
+			`model: cannot build attribute at "response.composed": schema kind "unsupported" is not representable: allOf property "status" is declared by multiple branches`,
+		))
+	})
+
 	It("returns the type-mapping error for a non-object root that cannot be mapped (array-of-array)", func() {
 		tree, _, err := BuildResponseTree(arrSchema(arrSchema(primSchema("string"))))
 		Expect(tree).To(BeNil())

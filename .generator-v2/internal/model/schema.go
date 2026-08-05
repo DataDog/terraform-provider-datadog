@@ -22,12 +22,17 @@ const (
 // one rather than emitting a types.Dynamic escape hatch. (oneOf variants are
 // dropped, not errored.)
 type UnsupportedKindError struct {
-	Path string
-	Kind SchemaKind
+	Path   string
+	Kind   SchemaKind
+	Reason string
 }
 
 func (e *UnsupportedKindError) Error() string {
-	return fmt.Sprintf("model: cannot build attribute at %q: schema kind %q is not representable", e.Path, e.Kind)
+	msg := fmt.Sprintf("model: cannot build attribute at %q: schema kind %q is not representable", e.Path, e.Kind)
+	if e.Reason != "" {
+		msg += ": " + e.Reason
+	}
+	return msg
 }
 
 // BuildResponseTree converts a response-body schema into an AttributeTree,
@@ -92,7 +97,7 @@ func buildAttribute(s *Schema, path string, mode nestingMode, diags *[]Diagnosti
 	case SchemaKindPrimitive, SchemaKindObject, SchemaKindArray, SchemaKindMap:
 		// representable — continue
 	default:
-		return nil, &UnsupportedKindError{Path: path, Kind: s.Kind}
+		return nil, &UnsupportedKindError{Path: path, Kind: s.Kind, Reason: s.UnsupportedReason}
 	}
 
 	// A collection whose element is a oneOf variant has no representable element

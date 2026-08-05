@@ -189,6 +189,11 @@ type SDKArgument struct {
 // flattening and oneOf/anyOf variant detection.
 type Schema struct {
 	Kind SchemaKind
+	// UnsupportedReason explains why a node classified as Unsupported cannot be
+	// represented. It is empty for legacy unsupported nodes whose kind alone is
+	// sufficient, and is surfaced by the attribute-tree builder for artifact-local
+	// failures.
+	UnsupportedReason string
 	// Properties is populated for objects only; iteration is always sorted.
 	Properties map[string]*Schema
 	// Required is populated for objects only; sorted.
