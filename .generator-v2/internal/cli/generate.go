@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -25,6 +26,8 @@ var errCheckFailed = fmt.Errorf("check: one or more files would change")
 // than the working directory, so it lands on the real file wherever tfgen is run
 // from.
 const apiInstancesHelperRelPath = "../internal/utils/api_instances_helper.go"
+
+const datadogV2SDKPackage = "github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 
 func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var check bool
@@ -82,14 +85,25 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 
 				filter := parseInclude(include)
 
-				// Resolve the provider's SDK-accessor names, the source of truth for
-				// APIAccessor. Always surface a failure: the fallback to derived names
-				// emits code that does not compile for the APIs whose accessor diverges
-				// from the struct name (RUM, APM, Observability Pipelines).
+				// Resolve the provider's SDK-accessor names first so existing cached
+				// clients and aliased names (RUM, APM, Observability Pipelines) remain
+				// the preferred initialization path.
 				accessors, accErr := emit.ResolveAPIAccessors(filepath.Join(outputRoot, apiInstancesHelperRelPath))
 				if accErr != nil {
-					cmd.PrintErrln("tfgen: could not resolve API accessors, using derived names:", accErr)
+					cmd.PrintErrln("tfgen: could not resolve API accessors; SDK constructors will be used where available:", accErr)
 					accessors = nil
+				}
+
+				var constructors map[string]string
+				sdkPackageDir, sdkDirErr := resolveSDKPackageDir(outputRoot)
+				if sdkDirErr != nil {
+					cmd.PrintErrln("tfgen: could not locate pinned SDK API package; data sources without ApiInstances accessors will fail:", sdkDirErr)
+				} else {
+					constructors, err = emit.ResolveAPIConstructors(sdkPackageDir)
+					if err != nil {
+						cmd.PrintErrln("tfgen: could not resolve pinned SDK API constructors; data sources without ApiInstances accessors will fail:", err)
+						constructors = nil
+					}
 				}
 
 				var registrations []emit.GeneratedRegistration
@@ -121,7 +135,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
-					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors)
+					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, constructors)
 					runReport.Artifacts = append(runReport.Artifacts, entry)
 					if testEntry != nil {
 						runReport.Artifacts = append(runReport.Artifacts, *testEntry)
@@ -216,11 +230,68 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	return cmd
 }
 
+// resolveSDKPackageDir asks the provider module selected by outputRoot for the
+// pinned datadogV2 package directory. Tests often render into a temporary output
+// root, so the current checkout is a fallback when that root is outside a Go
+// module.
+func resolveSDKPackageDir(outputRoot string) (string, error) {
+	moduleRoot, err := findProviderModuleRoot(outputRoot)
+	if err != nil {
+		return "", err
+	}
+
+	goList := exec.Command("go", "list", "-f={{.Dir}}", datadogV2SDKPackage)
+	goList.Dir = moduleRoot
+	var stderr bytes.Buffer
+	goList.Stderr = &stderr
+	output, err := goList.Output()
+	if err != nil {
+		return "", fmt.Errorf("go list %s from %s: %w: %s", datadogV2SDKPackage, moduleRoot, err, strings.TrimSpace(stderr.String()))
+	}
+	dir := strings.TrimSpace(string(output))
+	if dir == "" {
+		return "", fmt.Errorf("go list %s from %s returned an empty directory", datadogV2SDKPackage, moduleRoot)
+	}
+	return dir, nil
+}
+
+func findProviderModuleRoot(outputRoot string) (string, error) {
+	var starts []string
+	if outputRoot != "" {
+		absoluteOutputRoot, err := filepath.Abs(outputRoot)
+		if err != nil {
+			return "", fmt.Errorf("resolve output root %s: %w", outputRoot, err)
+		}
+		starts = append(starts, absoluteOutputRoot)
+	}
+	workingDir, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("get working directory: %w", err)
+	}
+	starts = append(starts, workingDir)
+
+	for _, start := range starts {
+		for dir := start; ; dir = filepath.Dir(dir) {
+			goMod, readErr := os.ReadFile(filepath.Join(dir, "go.mod"))
+			if readErr == nil &&
+				bytes.Contains(goMod, []byte("module github.com/terraform-providers/terraform-provider-datadog")) &&
+				bytes.Contains(goMod, []byte("github.com/DataDog/datadog-api-client-go/v2")) {
+				return dir, nil
+			}
+			parent := filepath.Dir(dir)
+			if parent == dir {
+				break
+			}
+		}
+	}
+	return "", fmt.Errorf("could not find the terraform-provider-datadog module containing the pinned datadog-api-client-go dependency")
+}
+
 // generateArtifact runs the full model→emit→write pipeline for one tracked
 // operation. On success it also returns the GeneratedRegistration the caller
 // uses to wire the data source into the provider; it is nil for a skipped or
 // failed artifact.
-func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors map[string]string) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors, constructors map[string]string) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -249,9 +320,12 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
-	// Correct APIAccessor to the name the provider's helper actually exposes,
-	// which diverges from the derived name for a few acronym/aliased APIs.
-	emit.ApplyAPIAccessor(&view, accessors)
+	// Prefer the provider's existing helper accessor (including acronym/alias
+	// spellings), then fall back to the constructor discovered from the pinned
+	// SDK. Never render the builder's guessed accessor.
+	if err := emit.ApplyAPIAccessor(&view, accessors, constructors); err != nil {
+		return failEntry(entry, err), nil, nil, nil
+	}
 	// Members the emit flattener dropped (e.g. relationships) ride along at the
 	// severity the drop warrants.
 	for _, d := range view.Dropped {
