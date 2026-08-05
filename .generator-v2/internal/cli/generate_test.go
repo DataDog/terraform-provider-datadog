@@ -25,6 +25,56 @@ func runTfgen(args ...string) error {
 	return root.Execute()
 }
 
+// TestGenerateHandlesUUIDResponseAndOptionalFilter drives a production-shaped
+// incident-notification-template list operation through parsing, pinned-SDK
+// binding, model construction, and rendering. Its response data ID and optional
+// incident-type filter are both UUIDs, covering the two emitter boundaries
+// together.
+func TestGenerateHandlesUUIDResponseAndOptionalFilter(t *testing.T) {
+	spec, err := os.ReadFile(filepath.Join("..", "testdata", "mini-oas", "mini-datadog_incident_notification_template.yaml"))
+	if err != nil {
+		t.Fatalf("reading incident notification template spec: %v", err)
+	}
+	annotation := `      operationId: ListIncidentNotificationTemplates
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: incident_notification_templates
+        tf_description: Use this data source to retrieve incident notification templates.
+        group:
+          read: ListIncidentNotificationTemplates
+        cardinality: plural
+`
+	annotated := strings.Replace(string(spec),
+		"      operationId: ListIncidentNotificationTemplates\n", annotation, 1)
+	if annotated == string(spec) {
+		t.Fatal("failed to annotate ListIncidentNotificationTemplates")
+	}
+
+	dir := t.TempDir()
+	specPath := filepath.Join(dir, "incident_notification_templates.yaml")
+	if err := os.WriteFile(specPath, []byte(annotated), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := runTfgen("generate", "--spec", specPath,
+		"--output-root", dir,
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--report", filepath.Join(dir, "report.json")); err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+
+	generated := mustRead(t, filepath.Join(dir, "data_source_datadog_incident_notification_templates.go"))
+	for _, want := range []string{
+		`"github.com/google/uuid"`,
+		`parsedFilterIncidentType, err := uuid.Parse(state.FilterIncidentType.ValueString())`,
+		`optionalParams.WithFilterIncidentType(parsedFilterIncidentType)`,
+		`types.StringValue(item.GetId().String())`,
+	} {
+		if !strings.Contains(generated, want) {
+			t.Errorf("generated data source missing %q:\n%s", want, generated)
+		}
+	}
+}
+
 // TestGenerateWiresMaxDepth proves the --max-depth flag value reaches LoadSpec:
 // the same deep-but-acyclic spec loads at a high bound and fails at a low one.
 // If the flag were ignored, both runs would behave identically.

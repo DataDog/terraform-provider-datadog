@@ -3,6 +3,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -100,6 +101,10 @@ func (d *datadogPowerpackDataSource) Read(ctx context.Context, request datasourc
 		return
 	}
 	d.updateState(&state, items[0])
+	if state.ID.IsNull() {
+		hashingData := fmt.Sprintf("%s", state.FilterName.ValueString())
+		state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }

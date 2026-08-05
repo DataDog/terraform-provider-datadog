@@ -60,10 +60,11 @@ var _ = Describe("BuildDataSourceView", func() {
 		}))
 	})
 
-	It("renders a date-time string via .String(), a named enum via a string() cast, and avoids shadowing state", func() {
+	It("renders date-time and UUID strings via .String(), a named enum via a string() cast, and avoids shadowing state", func() {
 		op := incidentTypeOperation()
 		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
 		attrs["resolved_at"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time"}
+		attrs["owner_id"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "uuid"}
 		attrs["state"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Enum: []string{"active", "archived"}}
 		art, err := model.BuildArtifact(op)
 		Expect(err).NotTo(HaveOccurred())
@@ -77,9 +78,48 @@ var _ = Describe("BuildDataSourceView", func() {
 		}
 		Expect(assign["state.ResolvedAt"].RHS).To(Equal("types.StringValue(resolvedAt.String())"))
 		Expect(assign["state.ResolvedAt"].GetterOk).To(Equal("attributes.GetResolvedAtOk()"))
+		Expect(assign["state.OwnerId"].RHS).To(Equal("types.StringValue(ownerId.String())"))
 		// "state" would shadow the updateState receiver, so its local is suffixed.
 		Expect(assign["state.State"].Var).To(Equal("stateValue"))
 		Expect(assign["state.State"].RHS).To(Equal("types.StringValue(string(*stateValue))"))
+	})
+
+	It("renders a UUID envelope id through its canonical string form", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["id"].Format = "uuid"
+
+		view := mustView(op)
+		Expect(view.State.Assignments[0]).To(Equal(StateAssignment{
+			Var: "id", GetterOk: "resp.Data.GetIdOk()", LHS: "state.ID", RHS: "types.StringValue(id.String())",
+		}))
+	})
+
+	It("keeps the Terraform identity without calling an absent response ID getter", func() {
+		op := incidentTypeOperation()
+		delete(op.ResponseSchema.Properties["data"].Properties, "id")
+
+		view := mustView(op)
+		Expect(view.Models[0].Fields[0]).To(Equal(ModelFieldView{
+			GoField: "ID", GoType: "types.String", TFName: "id",
+		}))
+		Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).NotTo(ContainSubstring("GetIdOk()"))
+		Expect(src).NotTo(ContainSubstring("state.ID ="))
+	})
+
+	It("omits the attributes preamble when no response assignments use it", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["attributes"].Properties = map[string]*model.Schema{}
+
+		view := mustView(op)
+		Expect(view.State.Preamble).To(BeEmpty())
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).NotTo(ContainSubstring("attributes :="))
 	})
 
 	It("renders a Go-keyword attribute through a safe guarded local", func() {
@@ -388,6 +428,49 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(view.State.Preamble).To(Equal([]string{"attributes := data.GetAttributes()"}))
 		})
 
+		It("parses an optional UUID filter before calling its pinned SDK setter", func() {
+			op := powerpackSearchOperation()
+			op.QueryParams[0].Schema.Format = "uuid"
+			op.SDKBinding = &model.SDKOperationBinding{
+				OptionalParamsType: "ListPowerpacksOptionalParameters",
+				Optional: []model.SDKArgument{{
+					Name: "filter[name]", GoName: "filterName", GoType: "uuid.UUID", Location: "query",
+					Schema: op.QueryParams[0].Schema, Setter: "WithFilterName",
+				}},
+			}
+
+			view := mustView(op)
+			Expect(view.UsesUUID).To(BeTrue())
+			Expect(view.Search.Filters).To(Equal([]FilterParamView{{
+				StateField: "FilterName", ParamField: "FilterName", ValueExpr: "parsedFilterName", Setter: "WithFilterName",
+				UUIDVar: "parsedFilterName", UUIDSource: "state.FilterName.ValueString()", TFName: "filter_name",
+			}}))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`parsedFilterName, err := uuid.Parse(state.FilterName.ValueString())`))
+			Expect(src).To(ContainSubstring(`response.Diagnostics.AddError("Invalid filter_name", err.Error())`))
+			Expect(src).To(ContainSubstring(`optionalParams.WithFilterName(parsedFilterName)`))
+		})
+
+		It("hashes the search inputs when the selected record has no id", func() {
+			op := powerpackSearchOperation()
+			delete(op.ResponseSchema.Properties["data"].Items.Properties, "id")
+
+			view := mustView(op)
+			Expect(view.Search.HashInputs).To(Equal([]FilterParamView{
+				{StateField: "FilterName", ValueExpr: "ValueStringPointer()"},
+			}))
+			Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`hashingData := fmt.Sprintf("%s", state.FilterName.ValueString())`))
+			Expect(src).To(ContainSubstring(`state.ID = types.StringValue(utils.ConvertToSha256(hashingData))`))
+		})
+
 	})
 
 	Context("both", func() {
@@ -420,6 +503,22 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 				Description: "Filter datastores by keyword.",
 				Optional:    true,
 			}))
+		})
+
+		It("hashes a fixed seed on the search path when the selected record has no id", func() {
+			op := datastoreBothOperation()
+			delete(op.ResponseSchema.Properties["data"].Properties, "id")
+			delete(op.SearchOp.ResponseSchema.Properties["data"].Items.Properties, "id")
+
+			view := mustView(op)
+			Expect(view.Search.HashInputs).To(BeEmpty())
+			Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`hashingData := "datastore"`))
+			Expect(src).To(ContainSubstring(`state.ID = types.StringValue(utils.ConvertToSha256(hashingData))`))
 		})
 
 	})
@@ -808,6 +907,71 @@ var _ = Describe("BuildDataSourceView plural", func() {
 			names = append(names, f.TFName)
 		}
 		Expect(names).To(Equal([]string{"filter_keyword", "filter_me"}))
+	})
+
+	It("renders UUID response values at the item root, in attributes, and in nested objects", func() {
+		op := pluralNestedOperation()
+		item := op.ResponseSchema.Properties["data"].Items
+		item.Properties["id"].Format = "uuid"
+		item.Properties["attributes"].Properties["owner_id"] = &model.Schema{
+			Kind: model.SchemaKindPrimitive, Type: "string", Format: "uuid", Description: "The owner UUID.",
+		}
+		item.Properties["attributes"].Properties["parts"].Items.Properties["label"].Format = "uuid"
+
+		view := mustView(op)
+		fields := map[string]string{}
+		for _, assignment := range view.State.ItemFields {
+			fields[assignment.LHS] = assignment.RHS
+		}
+		Expect(fields["ID"]).To(Equal("types.StringValue(item.GetId().String())"))
+		Expect(fields["OwnerId"]).To(Equal("types.StringValue(item.Attributes.GetOwnerId().String())"))
+		Expect(view.State.ItemLists[0].Scalars).To(ContainElement(StateAssignment{
+			Var: "label", GetterOk: "partsItem.GetLabelOk()", LHS: "partsModel.Label", RHS: "types.StringValue(label.String())",
+		}))
+	})
+
+	It("parses an optional UUID filter in the plural Read path", func() {
+		op := teamsOperation()
+		filter := op.QueryParams[0]
+		filter.Schema.Format = "uuid"
+		op.SDKBinding = &model.SDKOperationBinding{
+			OptionalParamsType: "ListTeamsOptionalParameters",
+			Optional: []model.SDKArgument{
+				{Name: filter.Name, GoName: "filterKeyword", GoType: "uuid.UUID", Location: "query", Schema: filter.Schema, Setter: "WithFilterKeyword"},
+				{Name: "filter[me]", GoName: "filterMe", GoType: "bool", Location: "query", Schema: op.QueryParams[1].Schema, Setter: "WithFilterMe"},
+			},
+		}
+
+		view := mustView(op)
+		Expect(view.UsesUUID).To(BeTrue())
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`parsedFilterKeyword, err := uuid.Parse(state.FilterKeyword.ValueString())`))
+		Expect(src).To(ContainSubstring(`optionalParams.WithFilterKeyword(parsedFilterKeyword)`))
+	})
+
+	It("uses the pinned setter type rather than UUID schema format for input syntax", func() {
+		op := teamsOperation()
+		filter := op.QueryParams[0]
+		filter.Schema.Format = "uuid"
+		op.SDKBinding = &model.SDKOperationBinding{
+			OptionalParamsType: "ListTeamsOptionalParameters",
+			Optional: []model.SDKArgument{
+				{Name: filter.Name, GoName: "filterKeyword", GoType: "string", Location: "query", Schema: filter.Schema, Setter: "WithFilterKeyword"},
+				{Name: "filter[me]", GoName: "filterMe", GoType: "bool", Location: "query", Schema: op.QueryParams[1].Schema, Setter: "WithFilterMe"},
+			},
+		}
+
+		view := mustView(op)
+		Expect(view.UsesUUID).To(BeFalse())
+		Expect(view.Read.Filters[0]).To(Equal(FilterParamView{
+			StateField: "FilterKeyword", ParamField: "FilterKeyword",
+			ValueExpr: "state.FilterKeyword.ValueString()", Setter: "WithFilterKeyword",
+		}))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).NotTo(ContainSubstring("github.com/google/uuid"))
 	})
 
 	It("hashes a fixed seed when an endpoint has no filters", func() {
