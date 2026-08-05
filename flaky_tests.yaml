@@ -151,12 +151,6 @@ skipped_tests:
     added: "2026-03-02"
     author: fpighi
 
-  # Dataset/IncidentNotificationRule — Rate limiting (1 test)
-  - test: TestAccDatadogDataset_Basic
-    reason: "Initial sync of tests failing on master branch"
-    added: "2026-03-02"
-    author: fpighi
-
   # Incident state — resources not found or externally deleted (1 test)
   - test: TestAccDatadogIncidentNotificationRuleDataSource_ByID
     reason: "Non-empty plan — dependent incident_type deleted outside Terraform, triggering rule replacement"
