@@ -45,6 +45,12 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
+	read := readCall(op, true)
+	inputs, err := buildRequiredInputLeaves(read.Arguments)
+	if err != nil {
+		return nil, err
+	}
+	schema.Attributes = append(inputs, schema.Attributes...)
 	return &Artifact{
 		Name:        op.Tracking.ArtifactName,
 		Kind:        op.Tracking.ArtifactKind,
@@ -53,7 +59,7 @@ func buildSingularByIdArtifact(op *Operation) (*Artifact, error) {
 		Schema:      schema,
 		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
-			Read:       readCall(op),
+			Read:       read,
 			IdStrategy: op.Tracking.IdStrategy,
 		},
 		Diagnostics: diags,
@@ -74,6 +80,11 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
+	search := listCall(op)
+	inputs, err := buildRequiredInputLeaves(search.Arguments)
+	if err != nil {
+		return nil, err
+	}
 	filters, diags := buildFilterLeaves(op)
 	diags = append(diags, recDiags...)
 	return &Artifact{
@@ -81,10 +92,10 @@ func buildSingularSearchArtifact(op *Operation) (*Artifact, error) {
 		Kind:        op.Tracking.ArtifactKind,
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
-		Schema:      &AttributeTree{Attributes: append(filters, record.Attributes...)},
+		Schema:      &AttributeTree{Attributes: append(append(inputs, filters...), record.Attributes...)},
 		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
-			Search:     listCall(op),
+			Search:     search,
 			IdStrategy: op.Tracking.IdStrategy,
 		},
 		Diagnostics: diags,
@@ -127,6 +138,12 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
+	read := readCall(op, true)
+	search := listCall(searchOp)
+	inputs, err := mergeRequiredInputLeaves(read.Arguments, search.Arguments)
+	if err != nil {
+		return nil, err
+	}
 	filters, diags := buildFilterLeaves(searchOp)
 	diags = append(diags, recDiags...)
 	return &Artifact{
@@ -134,11 +151,11 @@ func buildSingularBothArtifact(op *Operation) (*Artifact, error) {
 		Kind:        op.Tracking.ArtifactKind,
 		Cardinality: CardinalitySingular,
 		Description: op.Tracking.TfDescription,
-		Schema:      &AttributeTree{Attributes: append(filters, record.Attributes...)},
+		Schema:      &AttributeTree{Attributes: append(append(inputs, filters...), record.Attributes...)},
 		SourceFile:  sourceFileFor(op.Tracking.ArtifactName),
 		Lifecycle: &LifecycleBindings{
-			Read:       readCall(op),
-			Search:     listCall(searchOp),
+			Read:       read,
+			Search:     search,
 			IdStrategy: op.Tracking.IdStrategy,
 		},
 		Diagnostics: diags,
@@ -188,14 +205,18 @@ func buildPluralArtifact(op *Operation) (*Artifact, error) {
 	if err != nil {
 		return nil, err
 	}
+	read := listCall(op)
+	inputs, err := buildRequiredInputLeaves(read.Arguments)
+	if err != nil {
+		return nil, err
+	}
 	filters, diags := buildFilterLeaves(op)
 	diags = append(diags, itemDiags...)
-	attrs := filters
+	attrs := append(inputs, filters...)
 	if itemsBlock != nil {
 		attrs = append(attrs, itemsBlock)
 	}
 
-	read := listCall(op)
 	name := op.Tracking.ArtifactName
 	return &Artifact{
 		Name:        name,
@@ -239,13 +260,15 @@ func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 }
 
 // readCall resolves the datadog-api-client-go binding for op's read.
-func readCall(op *Operation) *SDKCall {
-	return &SDKCall{
+func readCall(op *Operation, aliasTerminalID bool) *SDKCall {
+	call := &SDKCall{
 		GoPackage:      "datadog" + strings.ToUpper(versionSegment(op.Path)),
 		GoApiStruct:    tagToClassName(op.Tag) + "Api",
 		GoMethod:       op.OperationId,
 		GoResponseType: op.ResponseRefName,
 	}
+	applySDKBinding(call, op, aliasTerminalID)
+	return call
 }
 
 // listCall resolves the datadog-api-client-go binding for op's list call: the
@@ -254,13 +277,81 @@ func readCall(op *Operation) *SDKCall {
 // params are query parameters), and the pagination flag. Shared by the plural
 // path and the singular search path.
 func listCall(op *Operation) *SDKCall {
-	c := readCall(op)
+	c := readCall(op, false)
 	c.ItemType = op.ItemRefName
 	c.Paginated = op.Pagination != nil
-	if len(op.QueryParams) > 0 {
+	if op.SDKBinding == nil && len(op.QueryParams) > 0 {
 		c.OptionalParamsType = op.OperationId + "OptionalParameters"
 	}
 	return c
+}
+
+func applySDKBinding(call *SDKCall, op *Operation, aliasTerminalID bool) {
+	if op.SDKBinding == nil {
+		return
+	}
+	call.BindingResolved = true
+	call.OptionalParamsType = op.SDKBinding.OptionalParamsType
+	for _, raw := range op.SDKBinding.Required {
+		arg := raw
+		arg.TFName = SnakeCase(arg.Name)
+		if aliasTerminalID && arg.Location == "path" && strings.HasSuffix(strings.TrimRight(op.Path, "/"), "/{"+arg.Name+"}") {
+			arg.TFName = "id"
+		}
+		call.Arguments = append(call.Arguments, arg)
+	}
+	for _, raw := range op.SDKBinding.Optional {
+		arg := raw
+		arg.TFName = SnakeCase(arg.Name)
+		call.OptionalArguments = append(call.OptionalArguments, arg)
+	}
+}
+
+func buildRequiredInputLeaves(arguments []SDKArgument) ([]*Attribute, error) {
+	var leaves []*Attribute
+	for _, arg := range arguments {
+		if arg.TFName == "id" {
+			continue
+		}
+		if arg.Schema == nil || arg.Schema.Kind != SchemaKindPrimitive {
+			return nil, fmt.Errorf("model: SDK argument %s has unsupported scalar-first type %s", arg.Name, arg.GoType)
+		}
+		tfType, goType, err := FrameworkType(arg.Schema)
+		if err != nil {
+			return nil, fmt.Errorf("model: SDK argument %s: %w", arg.Name, err)
+		}
+		description := arg.Description
+		if description == "" {
+			description = fmt.Sprintf("The %s argument.", arg.Name)
+		}
+		leaves = append(leaves, &Attribute{
+			Path: arg.TFName, TfType: tfType, GoType: goType, Format: arg.Schema.Format,
+			Required: true, Description: description,
+		})
+	}
+	return leaves, nil
+}
+
+func mergeRequiredInputLeaves(argumentGroups ...[]SDKArgument) ([]*Attribute, error) {
+	seen := map[string]*Attribute{}
+	var merged []*Attribute
+	for _, arguments := range argumentGroups {
+		leaves, err := buildRequiredInputLeaves(arguments)
+		if err != nil {
+			return nil, err
+		}
+		for _, leaf := range leaves {
+			if prior, ok := seen[leaf.Path]; ok {
+				if prior.TfType != leaf.TfType {
+					return nil, fmt.Errorf("model: SDK argument %s has conflicting Terraform types %s and %s", leaf.Path, prior.TfType, leaf.TfType)
+				}
+				continue
+			}
+			seen[leaf.Path] = leaf
+			merged = append(merged, leaf)
+		}
+	}
+	return merged, nil
 }
 
 // buildFilterLeaves converts op's scalar query parameters into Optional
@@ -272,7 +363,18 @@ func listCall(op *Operation) *SDKCall {
 func buildFilterLeaves(op *Operation) ([]*Attribute, []Diagnostic) {
 	var leaves []*Attribute
 	var diags []Diagnostic
+	boundRequired := map[string]bool{}
+	if op.SDKBinding != nil {
+		for _, arg := range op.SDKBinding.Required {
+			if arg.Location == "query" {
+				boundRequired[arg.Name] = true
+			}
+		}
+	}
 	for _, p := range op.QueryParams {
+		if boundRequired[p.Name] {
+			continue
+		}
 		if op.Pagination != nil && (p.Name == op.Pagination.LimitParam || p.Name == op.Pagination.PageParam) {
 			continue
 		}

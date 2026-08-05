@@ -111,6 +111,10 @@ type Operation struct {
 	// by name. Populated for every operation; the plural data-source path turns
 	// the scalar ones into filters.
 	QueryParams []QueryParam
+	// PathParams are the operation's in:path parameters, normalized and sorted
+	// by name. SDK binding resolves their actual call order from the pinned Go
+	// client's method signature rather than relying on OpenAPI declaration order.
+	PathParams []QueryParam
 	// Pagination is the decoded x-pagination extension, or nil when the
 	// operation declares none.
 	Pagination *Pagination
@@ -130,11 +134,16 @@ type Operation struct {
 	// search op (search-only), and is nil when no search is declared or the
 	// declared operationId is unknown.
 	SearchOp *Operation
+	// SDKBinding is the call signature resolved from the pinned Go SDK. The CLI
+	// fills it before artifact construction. Tests that build parser-shaped
+	// operations directly may leave it nil and exercise the legacy call shape.
+	SDKBinding *SDKOperationBinding
 }
 
-// QueryParam is one in:query OpenAPI parameter, with its inner schema
-// normalized like a request/response body. Name preserves the raw OpenAPI
-// spelling, including brackets (e.g. "filter[keyword]").
+// QueryParam is one normalized OpenAPI path or query parameter (the historical
+// name is retained to avoid broad churn). Its inner schema is normalized like a
+// request/response body, and Name preserves raw spelling such as
+// "filter[keyword]".
 type QueryParam struct {
 	Name        string
 	Required    bool
@@ -152,6 +161,28 @@ type Pagination struct {
 	PageParam string
 	// ResultsPath is the response property holding the result array, e.g. "data".
 	ResultsPath string
+}
+
+// SDKOperationBinding is the pinned Go SDK signature for one OpenAPI operation.
+// Required arguments are positional and retain SDK order. Optional arguments
+// are fields set through With* methods on OptionalParamsType.
+type SDKOperationBinding struct {
+	Required           []SDKArgument
+	Optional           []SDKArgument
+	OptionalParamsType string
+}
+
+// SDKArgument binds one SDK method argument or options setter to an OpenAPI
+// parameter and, after artifact construction, its Terraform model field.
+type SDKArgument struct {
+	Name        string
+	GoName      string
+	GoType      string
+	Location    string
+	Description string
+	Schema      *Schema
+	TFName      string
+	Setter      string
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
@@ -282,6 +313,9 @@ type LifecycleBindings struct {
 
 // SDKCall represents a single datadog-api-client-go invocation.
 type SDKCall struct {
+	// BindingResolved distinguishes an SDK method that genuinely takes no
+	// positional arguments from legacy test fixtures that omit binding data.
+	BindingResolved bool
 	// GoPackage is the versioned SDK package, e.g. "datadogV2".
 	// Rule: "datadog" + strings.ToUpper(version), where version is the path
 	// segment after /api/ in Operation.Path (e.g. /api/v2/... → "datadogV2").
@@ -309,6 +343,10 @@ type SDKCall struct {
 	// NOTE: Schema has no Name field; the model-builder must read this from the
 	// raw libopenapi node, not from Operation.ResponseSchema.
 	GoResponseType string
+	// Arguments are the required positional SDK arguments in call order.
+	Arguments []SDKArgument
+	// OptionalArguments bind Terraform filters to OptionalParamsType setters.
+	OptionalArguments []SDKArgument
 
 	// The fields below back a plural data-source list call.
 

@@ -15,6 +15,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/sdkbinding"
 )
 
 // errCheckFailed signals that --check found files that would change.
@@ -94,16 +95,18 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 					accessors = nil
 				}
 
-				var constructors map[string]string
-				sdkPackageDir, sdkDirErr := resolveSDKPackageDir(outputRoot)
-				if sdkDirErr != nil {
-					cmd.PrintErrln("tfgen: could not locate pinned SDK API package; data sources without ApiInstances accessors will fail:", sdkDirErr)
-				} else {
-					constructors, err = emit.ResolveAPIConstructors(sdkPackageDir)
-					if err != nil {
-						cmd.PrintErrln("tfgen: could not resolve pinned SDK API constructors; data sources without ApiInstances accessors will fail:", err)
-						constructors = nil
-					}
+				sdkPackageDir, err := resolveSDKPackageDir(outputRoot)
+				if err != nil {
+					return fmt.Errorf("generate: resolve pinned SDK: %w", err)
+				}
+				constructors, constructorErr := emit.ResolveAPIConstructors(sdkPackageDir)
+				if constructorErr != nil {
+					cmd.PrintErrln("tfgen: could not resolve pinned SDK API constructors; data sources without ApiInstances accessors will fail:", constructorErr)
+					constructors = nil
+				}
+				sdkBindings, err := sdkbinding.Load(sdkPackageDir)
+				if err != nil {
+					return fmt.Errorf("generate: load pinned SDK bindings: %w", err)
 				}
 
 				var registrations []emit.GeneratedRegistration
@@ -135,7 +138,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
-					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, constructors)
+					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, constructors, sdkBindings)
 					runReport.Artifacts = append(runReport.Artifacts, entry)
 					if testEntry != nil {
 						runReport.Artifacts = append(runReport.Artifacts, *testEntry)
@@ -291,7 +294,7 @@ func findProviderModuleRoot(outputRoot string) (string, error) {
 // operation. On success it also returns the GeneratedRegistration the caller
 // uses to wire the data source into the provider; it is nil for a skipped or
 // failed artifact.
-func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors, constructors map[string]string) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors, constructors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -304,6 +307,15 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 			Message:  fmt.Sprintf("resource generation not yet supported (kind=%s)", op.Tracking.ArtifactKind),
 		}}
 		return entry, nil, nil, nil
+	}
+
+	if err := sdkBindings.Bind(op); err != nil {
+		return failEntry(entry, err), nil, nil, nil
+	}
+	if op.SearchOp != nil && op.SearchOp != op {
+		if err := sdkBindings.Bind(op.SearchOp); err != nil {
+			return failEntry(entry, err), nil, nil, nil
+		}
 	}
 
 	artifact, err := model.BuildArtifact(op)

@@ -97,12 +97,63 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(src).NotTo(ContainSubstring("if type, ok :="))
 	})
 
+	It("casts a named string envelope id before storing it in Terraform state", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["id"].Enum = []string{"permanent"}
+		view := mustView(op)
+		Expect(view.State.Assignments[0]).To(Equal(StateAssignment{
+			Var: "id", GetterOk: "resp.Data.GetIdOk()", LHS: "state.ID", RHS: "types.StringValue(string(*id))",
+		}))
+	})
+
 	It("produces a deeply-equal view across two runs", func() {
 		first, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())
 		second, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())
 		Expect(first).To(Equal(second))
+	})
+
+	It("renders resolved path arguments in SDK order, including UUID conversion", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/accounts/{account_id}/incident-types/{incident_type_id}"
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "account_id", GoName: "accountId", GoType: "int64", Location: "path", Schema: prim("integer", "The account ID.")},
+			{Name: "incident_type_id", GoName: "incidentTypeId", GoType: "uuid.UUID", Location: "path", Schema: &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "uuid"}},
+		}}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.UsesUUID).To(BeTrue())
+		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
+			{Expression: "state.AccountId.ValueInt64()", TFName: "account_id"},
+			{Expression: "parsedId", UUIDVar: "parsedId", UUIDSource: "state.ID.ValueString()", TFName: "id"},
+		}))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`parsedId, err := uuid.Parse(state.ID.ValueString())`))
+		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, state.AccountId.ValueInt64(), parsedId)`))
+	})
+
+	It("renders a resolved singleton call without inventing an id argument", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/incidents/config/types/default"
+		op.SDKBinding = &model.SDKOperationBinding{}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.ByID).To(BeFalse())
+		Expect(view.Read.Arguments).To(BeEmpty())
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring(`GetIncidentType(d.Auth)`))
 	})
 
 	DescribeTable("fail-slows anything outside the recognized envelope",
@@ -770,6 +821,32 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		Expect(view.Read.Filters).To(BeEmpty())
 		Expect(view.Read.OptionalParamsType).To(BeEmpty())
 		Expect(view.Schema.Attributes).To(BeEmpty())
+	})
+
+	It("includes required positional SDK inputs in the plural identity hash", func() {
+		op := teamsOperation()
+		op.Path = "/api/v2/accounts/{account_id}/team"
+		op.SDKBinding = &model.SDKOperationBinding{
+			Required: []model.SDKArgument{
+				{Name: "account_id", GoName: "accountId", GoType: "int64", Location: "path", Schema: prim("integer", "The account ID.")},
+			},
+			OptionalParamsType: "ListTeamsOptionalParameters",
+			Optional: []model.SDKArgument{
+				{Name: "filter[keyword]", GoName: "filterKeyword", GoType: "string", Location: "query", Schema: prim("string", ""), Setter: "WithFilterKeyword"},
+				{Name: "filter[me]", GoName: "filterMe", GoType: "bool", Location: "query", Schema: prim("boolean", ""), Setter: "WithFilterMe"},
+			},
+		}
+
+		view, err := BuildDataSourceView(mustArtifact(op))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.Read.HashInputs).To(Equal([]FilterParamView{
+			{StateField: "AccountId", ValueExpr: "ValueInt64Pointer()"},
+			{StateField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
+			{StateField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
+		}))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring(`fmt.Sprintf("%d:%s:%t", state.AccountId.ValueInt64(), state.FilterKeyword.ValueString(), state.FilterMe.ValueBool())`))
 	})
 
 	It("produces a deeply-equal plural view across two runs", func() {

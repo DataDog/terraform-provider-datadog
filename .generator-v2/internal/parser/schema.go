@@ -174,7 +174,7 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		op.RequestSchema = req
 	}
 
-	if err := n.fillQueryParams(op, raw); err != nil {
+	if err := n.fillParameters(op, raw); err != nil {
 		return err
 	}
 	op.Pagination = decodePagination(raw)
@@ -201,28 +201,36 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	return n.retainResponseDataRef(op, respProxy)
 }
 
-// fillQueryParams normalizes raw's in:query parameters onto op.QueryParams,
-// sorted by name. libopenapi resolves $ref parameters (e.g.
+// fillParameters normalizes raw's in:path and in:query parameters onto the
+// corresponding operation fields, sorted by name. libopenapi resolves $ref parameters (e.g.
 // #/components/parameters/PageNumber) during its build, so each parameter
 // arrives with Name and Schema populated; the inner schema is normalized like a
 // body so type/format/enum/array come through. Raw bracketed names
 // (filter[keyword]) are preserved.
-func (n *schemaNormalizer) fillQueryParams(op *model.Operation, raw *v3.Operation) error {
+func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation) error {
 	for _, p := range raw.Parameters {
-		if p == nil || p.In != "query" || p.Name == "" {
+		if p == nil || (p.In != "query" && p.In != "path") || p.Name == "" {
 			continue
 		}
 		schema, err := n.normalizeProxy(p.Schema, 0)
 		if err != nil {
 			return err
 		}
-		op.QueryParams = append(op.QueryParams, model.QueryParam{
+		parameter := model.QueryParam{
 			Name:        p.Name,
 			Required:    p.Required != nil && *p.Required,
 			Schema:      schema,
 			Description: p.Description,
-		})
+		}
+		if p.In == "path" {
+			op.PathParams = append(op.PathParams, parameter)
+		} else {
+			op.QueryParams = append(op.QueryParams, parameter)
+		}
 	}
+	sort.Slice(op.PathParams, func(i, j int) bool {
+		return op.PathParams[i].Name < op.PathParams[j].Name
+	})
 	sort.Slice(op.QueryParams, func(i, j int) bool {
 		return op.QueryParams[i].Name < op.QueryParams[j].Name
 	})

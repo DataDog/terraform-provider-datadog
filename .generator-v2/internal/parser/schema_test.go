@@ -457,7 +457,7 @@ var _ = Describe("NormalizeSchemas list operation", func() {
 		list = opByID(loadSpecMust("schema_normalize_list.yaml"), "ListThings")
 	})
 
-	It("captures only in:query parameters, sorted by name, preserving bracketed names", func() {
+	It("captures query parameters sorted by name, preserving bracketed names", func() {
 		var names []string
 		for _, p := range list.QueryParams {
 			names = append(names, p.Name)
@@ -499,6 +499,10 @@ var _ = Describe("NormalizeSchemas list operation", func() {
 	It("retains a get-by-id data object $ref as ResponseDataRefName, leaving ItemRefName empty", func() {
 		get := opByID(loadSpecMust("schema_normalize_list.yaml"), "GetThing")
 		Expect(get.QueryParams).To(BeEmpty())
+		Expect(get.PathParams).To(HaveLen(1))
+		Expect(get.PathParams[0].Name).To(Equal("thing_id"))
+		Expect(get.PathParams[0].Required).To(BeTrue())
+		Expect(get.PathParams[0].Schema.Type).To(Equal("string"))
 		Expect(get.Pagination).To(BeNil())
 		Expect(get.ItemRefName).To(BeEmpty())
 		Expect(get.ResponseDataRefName).To(Equal("Thing"))

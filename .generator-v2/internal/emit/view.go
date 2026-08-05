@@ -56,6 +56,8 @@ type DataSourceView struct {
 	// not expose APIStruct, e.g. "NewCaseManagementApi". Exactly one of
 	// APIAccessor and APIConstructor is populated after accessor resolution.
 	APIConstructor string
+	// UsesUUID adds the google/uuid import and argument parsing blocks.
+	UsesUUID bool
 
 	// ByID and Searchable select how a singular data source resolves its one
 	// record, driving the Read body and the "id" attribute: ByID only → by-id
@@ -105,6 +107,8 @@ type SDKReadView struct {
 	// ResponseType is the SDK response type returned by a singular Method, e.g.
 	// "IncidentTypeResponse". It names the updateState receiver.
 	ResponseType string
+	// Arguments are required positional SDK call arguments in call order.
+	Arguments []SDKArgumentView
 
 	// The fields below are plural-only.
 
@@ -119,6 +123,19 @@ type SDKReadView struct {
 	// Filters maps each optional query parameter from the model onto the
 	// request's optional-parameters struct.
 	Filters []FilterParamView
+	// HashInputs includes every Terraform input that identifies the returned
+	// collection, both required positional arguments and optional filters.
+	HashInputs []FilterParamView
+}
+
+// SDKArgumentView is one rendered positional SDK call argument. UUID arguments
+// carry a preparation variable; all other scalar arguments render Expression
+// directly at the call site.
+type SDKArgumentView struct {
+	Expression string
+	UUIDVar    string
+	UUIDSource string
+	TFName     string
 }
 
 // FilterParamView maps one optional query parameter from the Terraform model
@@ -135,6 +152,9 @@ type FilterParamView struct {
 	// ValueExpr is the model accessor producing the SDK value, e.g.
 	// "ValueStringPointer()".
 	ValueExpr string
+	// Setter is the SDK With* method. Empty retains the legacy direct-field form
+	// used by parser-shaped unit fixtures without resolved SDK bindings.
+	Setter string
 }
 
 // SchemaView is the attribute/block split rendered into the Schema method. The
