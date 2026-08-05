@@ -18,17 +18,17 @@ var (
 
 type datadogWidgetsDataSourceModel struct {
 	// Results
-	ID      types.String   `tfsdk:"id"`
-	Widgets []*WidgetModel `tfsdk:"widgets"`
+	ID      types.String                 `tfsdk:"id"`
+	Widgets []*datadogWidgetsWidgetModel `tfsdk:"widgets"`
 }
 
-type WidgetModel struct {
-	ID    types.String  `tfsdk:"id"`
-	Name  types.String  `tfsdk:"name"`
-	Parts []*PartsModel `tfsdk:"parts"`
+type datadogWidgetsWidgetModel struct {
+	ID    types.String                      `tfsdk:"id"`
+	Name  types.String                      `tfsdk:"name"`
+	Parts []*datadogWidgetsWidgetPartsModel `tfsdk:"parts"`
 }
 
-type PartsModel struct {
+type datadogWidgetsWidgetPartsModel struct {
 	Label    types.String `tfsdk:"label"`
 	Quantity types.Int64  `tfsdk:"quantity"`
 }
@@ -115,15 +115,15 @@ func (d *datadogWidgetsDataSource) Read(ctx context.Context, request datasource.
 }
 
 func (d *datadogWidgetsDataSource) updateState(state *datadogWidgetsDataSourceModel, data *[]datadogV2.Widget) {
-	results := make([]*WidgetModel, 0, len(*data))
+	results := make([]*datadogWidgetsWidgetModel, 0, len(*data))
 	for _, item := range *data {
-		r := WidgetModel{
+		r := datadogWidgetsWidgetModel{
 			ID:   types.StringValue(item.GetId()),
 			Name: types.StringValue(item.Attributes.GetName()),
 		}
 		if parts, ok := item.Attributes.GetPartsOk(); ok && parts != nil {
 			for _, partsItem := range *parts {
-				partsModel := &PartsModel{}
+				partsModel := &datadogWidgetsWidgetPartsModel{}
 				if label, ok := partsItem.GetLabelOk(); ok && label != nil {
 					partsModel.Label = types.StringValue(*label)
 				}

@@ -104,7 +104,8 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		}
 	}
 
-	rootStruct := dsGoName(a.Name) + "DataSourceModel"
+	goName := dsGoName(a.Name)
+	rootStruct := goName + "DataSourceModel"
 	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
 
 	if len(b.unsupported) > 0 {
@@ -113,7 +114,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 
 	// env is non-nil here: flattenEnvelope records an unsupported node (caught
 	// above) on every failure path. Walk the hoisted leaves into the root struct.
-	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, b.receiver, "state", env.leaves)
+	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, goName, b.receiver, "state", env.leaves)
 	leafFields := b.models[0].Fields
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
@@ -160,7 +161,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	return DataSourceView{
 		Cardinality: Singular,
 		TypeName:    a.Name,
-		GoName:      dsGoName(a.Name),
+		GoName:      goName,
 		Description: a.Description,
 		SDKPackage:  primary.GoPackage,
 		APIStruct:   primary.GoApiStruct,
@@ -499,11 +500,12 @@ func droppedIDCollision(path string) DroppedMember {
 // struct's slot in b.models up front so a parent precedes its children, then
 // filling its fields as it goes. receiver is the SDK getter root the state mapper
 // reads off ("attributes" at the record root, the loop variable inside a list
-// element); lhsPrefix is the model target the assignments write into ("state", or
-// the per-element accumulator). It returns the schema attr/block views plus the
-// scalar and list state assignments for the caller to place, recursing through
-// nested blocks.
-func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs []*model.Attribute) (attrViews, blockViews []AttrView, scalars []StateAssignment, lists []ListAssignment) {
+// element); modelStem is the artifact-scoped ownership path without the trailing
+// "Model" (for example, "datadogTeamsTeamParts"); lhsPrefix is the model target
+// the assignments write into ("state", or the per-element accumulator). It
+// returns the schema attr/block views plus the scalar and list state assignments
+// for the caller to place, recursing through nested blocks.
+func (b *dataSourceBuilder) walk(structName, modelStem, receiver, lhsPrefix string, attrs []*model.Attribute) (attrViews, blockViews []AttrView, scalars []StateAssignment, lists []ListAssignment) {
 	idx := len(b.models)
 	b.models = append(b.models, ModelStructView{Name: structName})
 	var fields []ModelFieldView
@@ -553,11 +555,12 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 			})
 
 		case "schema.ListNestedBlock":
-			elemStruct := field + "Model"
+			elemStem := modelStem + field
+			elemStruct := elemStem + "Model"
 			base := lowerFirst(field)
 			loopVar, elemVar := base+"Item", base+"Model"
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
-			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, loopVar, elemVar, a.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, elemStem, loopVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
 				TFName:      tfName,
 				Description: a.Description,
@@ -583,11 +586,12 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 			})
 
 		case "schema.SingleNestedBlock":
-			childStruct := field + "Model"
+			childStem := modelStem + field
+			childStruct := childStem + "Model"
 			objVar := leafVar(tfName)
 			elemVar := lowerFirst(field) + "Model"
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "*" + childStruct, TFName: tfName})
-			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, objVar, elemVar, a.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, childStem, objVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
 				TFName:      tfName,
 				Description: a.Description,
@@ -817,6 +821,9 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
 	filterParams, filterUUID := buildFilterParams(call, filterLeaves, &unsupported)
 	callArgs, usesUUID := buildArgumentViews(call, &unsupported)
+	goName := dsGoName(a.Name)
+	itemStem := goName + model.SdkName(call.ItemType)
+	itemStruct := itemStem + "Model"
 
 	// b hosts walk so list-of-object item fields generate their element structs.
 	b := &dataSourceBuilder{}
@@ -861,10 +868,11 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				Kind: "primitive", LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName), ElementType: n.ElementType,
 			})
 		case "schema.ListNestedBlock":
-			elemStruct := model.SdkName(tfName) + "Model"
+			elemStem := itemStem + model.SdkName(tfName)
+			elemStruct := elemStem + "Model"
 			base := lowerFirst(model.SdkName(tfName))
 			loopVar, elemVar := base+"Item", base+"Model"
-			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, loopVar, elemVar, n.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, elemStem, loopVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
 				TFName: tfName, Description: n.Description,
 				IsBlock: true, ListBlock: true, Attributes: childAttrs, Blocks: childBlocks,
@@ -876,10 +884,11 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				Scalars: childScalars, Lists: childLists,
 			})
 		case "schema.SingleNestedBlock":
-			elemStruct := model.SdkName(tfName) + "Model"
+			elemStem := itemStem + model.SdkName(tfName)
+			elemStruct := elemStem + "Model"
 			objVar := leafVar(tfName)
 			elemVar := lowerFirst(model.SdkName(tfName)) + "Model"
-			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, objVar, elemVar, n.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, elemStem, objVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
 				TFName: tfName, Description: n.Description,
 				IsBlock: true, ListBlock: false, Attributes: childAttrs, Blocks: childBlocks,
@@ -898,9 +907,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: unsupported}
 	}
 
-	itemStruct := model.SdkName(call.ItemType) + "Model"
 	itemField := model.SdkName(a.Name)
-	goName := dsGoName(a.Name)
 
 	parentFields := append([]ModelFieldView{}, inputFields...)
 	parentFields = append(parentFields,
