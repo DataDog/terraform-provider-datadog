@@ -50,7 +50,7 @@ func (r *webhookOauth2ClientCredentialsResource) Metadata(_ context.Context, req
 
 func (r *webhookOauth2ClientCredentialsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog webhook OAuth2 client credentials auth method resource. This can be used to create and manage the auth methods available under Integrations -> Webhooks -> Auth Methods.",
+		Description: "Provides a Datadog webhook OAuth2 client credentials auth method resource. This can be used to create and manage the auth methods available under Integrations > Webhooks > Auth Methods.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "The name of the auth method.",
