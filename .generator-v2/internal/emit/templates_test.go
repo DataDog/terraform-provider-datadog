@@ -11,7 +11,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 )
 
-// updateGolden rewrites the testdata/*.golden files from the current template
+// updateGolden rewrites the snapshots/*.golden files from the current template
 // output. Run `go test ./internal/emit/... -update` after an intentional
 // template change, then review the diff.
 var updateGolden = flag.Bool("update", false, "update golden files")
@@ -76,10 +76,10 @@ var _ = Describe("data-source acceptance-test scaffolds", func() {
 	})
 })
 
-// matchGolden compares got against testdata/<name>, or rewrites it under -update.
+// matchGolden compares got against snapshots/<name>, or rewrites it under -update.
 func matchGolden(name string, got []byte) {
 	GinkgoHelper()
-	path := filepath.Join("../testdata/emit", name)
+	path := filepath.Join("../snapshots", name)
 
 	if *updateGolden {
 		Expect(os.MkdirAll(filepath.Dir(path), 0o755)).To(Succeed())
