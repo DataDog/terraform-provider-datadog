@@ -1,0 +1,174 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 221
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"category":"Scheduled Maintenance","description":"test correction with slo_query","end":1780622253,"slo_query":"env:prod service:checkout","start":1780611453,"timezone":"UTC"},"type":"correction"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"d5ee306c-605a-11f1-924b-da7ad0902001","attributes":{"slo_id":null,"start":1780611453,"end":1780622253,"description":"test correction with slo_query","category":"Scheduled Maintenance","timezone":"UTC","created_at":null,"modified_at":null,"rrule":null,"duration":null,"slo_query":"env:prod service:checkout","creator":{"data":{"type":"users","id":"b3c4bfec-fd67-11ec-ac32-da7ad0900001","attributes":{"uuid":"b3c4bfec-fd67-11ec-ac32-da7ad0900001","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com","name":"Blaise von Ohlen","icon":"https://secure.gravatar.com/avatar/c78d8282d57321884e8f77172229634f?d=retro&s=48"}}},"modifier":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 183.7275ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/d5ee306c-605a-11f1-924b-da7ad0902001
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"d5ee306c-605a-11f1-924b-da7ad0902001","attributes":{"slo_id":null,"start":1780611453,"end":1780622253,"description":"test correction with slo_query","category":"Scheduled Maintenance","timezone":"UTC","created_at":1780607867,"modified_at":1780607867,"rrule":null,"duration":null,"slo_query":"env:prod service:checkout","creator":{"data":{"type":"users","id":"b3c4bfec-fd67-11ec-ac32-da7ad0900001","attributes":{"uuid":"b3c4bfec-fd67-11ec-ac32-da7ad0900001","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com","name":"Blaise von Ohlen","icon":"https://secure.gravatar.com/avatar/c78d8282d57321884e8f77172229634f?d=retro&s=48"}}},"modifier":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 113.134333ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/d5ee306c-605a-11f1-924b-da7ad0902001
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"correction","id":"d5ee306c-605a-11f1-924b-da7ad0902001","attributes":{"slo_id":null,"start":1780611453,"end":1780622253,"description":"test correction with slo_query","category":"Scheduled Maintenance","timezone":"UTC","created_at":1780607867,"modified_at":1780607867,"rrule":null,"duration":null,"slo_query":"env:prod service:checkout","creator":{"data":{"type":"users","id":"b3c4bfec-fd67-11ec-ac32-da7ad0900001","attributes":{"uuid":"b3c4bfec-fd67-11ec-ac32-da7ad0900001","handle":"blaise.vonohlen@datadoghq.com","email":"blaise.vonohlen@datadoghq.com","name":"Blaise von Ohlen","icon":"https://secure.gravatar.com/avatar/c78d8282d57321884e8f77172229634f?d=retro&s=48"}}},"modifier":null}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 153.033708ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/slo/correction/d5ee306c-605a-11f1-924b-da7ad0902001
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 215.143083ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/correction/d5ee306c-605a-11f1-924b-da7ad0902001
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["slo correction public id d5ee306c-605a-11f1-924b-da7ad0902001 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 120.163375ms
