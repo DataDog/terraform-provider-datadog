@@ -163,6 +163,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 			Assignments: assignments,
 			Lists:       recordLists,
 		},
+		UsesFmt: !searchable,
 		Dropped: b.dropped,
 	}, nil
 }
@@ -555,7 +556,13 @@ func leafVar(tfName string) string {
 	case "state", "attributes", "ok", "d", "data", "resp", "items", "ctx":
 		return v + "Value"
 	}
-	return v
+	// A property named "type" — common in JSON:API payloads and in every
+	// action_connection oneOf variant — would otherwise emit `if type, ok := ...`,
+	// which is not Go. The SDK generator solves this by suffixing "Var"; reuse its
+	// rule rather than a second scheme. The shadow suffix above stays "Value"
+	// because it answers a different question (colliding with a local the template
+	// declares, not with the language).
+	return model.EscapeReservedKeyword(v)
 }
 
 // guardedValue wraps a guarded assignment's local (bound from an Ok-getter, so a
@@ -758,6 +765,14 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				ElemVar: elemVar, ElemStruct: elemStruct,
 				Scalars: childScalars, Lists: childLists,
 			})
+
+		default:
+			// Without this, an item attribute in any other form was dropped with no
+			// field, no block and no diagnostic — the artifact generated as if the
+			// attribute had never been in the response. Fail instead: silently omitting
+			// a representable attribute is not an acceptable outcome. The singular path's
+			// walk has always had this default; the plural item loop did not.
+			unsupported = append(unsupported, UnsupportedNode{Path: n.Path, Reason: unsupportedReason(n.TfType)})
 		}
 	}
 
@@ -817,6 +832,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 			ItemFields: itemAssigns,
 			ItemLists:  itemLists,
 		},
+		UsesFmt: len(filterParams) > 0,
 		Dropped: dropped,
 	}, nil
 }
