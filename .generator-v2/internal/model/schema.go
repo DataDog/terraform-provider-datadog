@@ -343,6 +343,7 @@ func (b *treeBuilder) oneOfVariants(s *Schema, basePath string, mode nestingMode
 	envelope := &OneOfEnvelope{
 		Name:    spec.Name,
 		GoModel: oneOfModelName(spec.Name),
+		SDKType: spec.SDKType,
 		Path:    basePath,
 		// A nullable union maps to an absent envelope, so it is as optional as one
 		// whose containing field is optional.
@@ -437,6 +438,7 @@ func (b *treeBuilder) oneOfVariant(
 		// Carried through, never derived: SDK and Terraform naming diverge.
 		SDKField:       variant.SDKField,
 		SDKConstructor: variant.SDKConstructor,
+		SDKPointer:     variant.SDKPointer,
 		ValueWrapped:   valueWrapped,
 		Attribute:      block,
 	}, nil
