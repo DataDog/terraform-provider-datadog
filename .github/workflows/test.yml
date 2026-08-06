@@ -72,11 +72,11 @@ jobs:
           files=$(git diff --name-only --diff-filter=d "${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}")
           generated=""
           for f in $files; do
-            # testdata/snapshots fixtures (e.g. generator golden files)
-            # intentionally contain this header as fixture content; they
-            # aren't tfgen output.
+            # testdata/snapshots fixtures (e.g. generator golden files) and
+            # generator templates (*.go.tmpl) intentionally contain this
+            # header as fixture/template content; they aren't tfgen output.
             case "$f" in
-              */testdata/*|*/snapshots/*) continue ;;
+              */testdata/*|*/snapshots/*|*.go.tmpl) continue ;;
             esac
             # Match tfgen's exact header rather than the generic Go "Code
             # generated ... DO NOT EDIT." pattern, so this check doesn't flag
