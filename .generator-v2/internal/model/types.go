@@ -32,20 +32,26 @@ const (
 
 // SchemaKind classifies a normalized Schema node by structure. Primitive,
 // Object, Array and Map are directly emittable as Terraform attributes. OneOf
-// requires a synthetic envelope described by Schema.OneOf. RefCycle ($ref cycle
-// or beyond --max-depth) and Unsupported (no representable type or structure,
-// and anyOf) are fatal — the builder fails the artifact rather than emitting a
-// types.Dynamic escape hatch.
+// requires a synthetic envelope described by Schema.OneOf. RefCycle,
+// DepthExceeded and Unsupported are fatal — the builder fails the artifact rather
+// than emitting a types.Dynamic escape hatch.
+//
+// RefCycle and DepthExceeded are deliberately distinct: a cycle is a property of
+// the document that no flag can fix, whereas exhausting --max-depth says only
+// that the walk stopped early, and raising the limit may resolve the node.
+// Reporting the latter as a cycle sends the reader hunting for a cycle that does
+// not exist.
 type SchemaKind string
 
 const (
-	SchemaKindPrimitive   SchemaKind = "primitive"
-	SchemaKindObject      SchemaKind = "object"
-	SchemaKindArray       SchemaKind = "array"
-	SchemaKindMap         SchemaKind = "map"
-	SchemaKindOneOf       SchemaKind = "one_of"
-	SchemaKindRefCycle    SchemaKind = "ref_cycle"   // $ref cycle or beyond --max-depth
-	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure, or anyOf; always rejected
+	SchemaKindPrimitive     SchemaKind = "primitive"
+	SchemaKindObject        SchemaKind = "object"
+	SchemaKindArray         SchemaKind = "array"
+	SchemaKindMap           SchemaKind = "map"
+	SchemaKindOneOf         SchemaKind = "one_of"
+	SchemaKindRefCycle      SchemaKind = "ref_cycle"      // a $ref that re-enters a schema already being expanded
+	SchemaKindDepthExceeded SchemaKind = "depth_exceeded" // $ref expansion stopped at --max-depth; not a cycle
+	SchemaKindUnsupported   SchemaKind = "unsupported"    // no representable type/structure, or anyOf; always rejected
 
 	// SchemaKindVariant is retained as a source-compatibility alias for code
 	// written before the parser populated Schema.OneOf directly. New code should

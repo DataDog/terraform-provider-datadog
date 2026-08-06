@@ -1,0 +1,80 @@
+openapi: 3.0.0
+info:
+  title: normalize $ref-with-siblings fixture
+  version: 1.0.0
+# A $ref carrying sibling keywords. OpenAPI 3.0 says siblings of $ref are ignored,
+# so each property below must normalize to whatever its referenced schema says —
+# the sibling must never cost the node its type. Shapes taken from the real
+# Datadog spec, where UrlParam.name is {$ref: TokenName, example: ...}.
+paths:
+  /siblings:
+    get:
+      operationId: GetSiblings
+      x-datadog-tf-generator:
+        artifact_kind: data_source
+        artifact_name: siblings
+        group:
+          read: GetSiblings
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  # $ref + example → still the referenced string
+                  named:
+                    $ref: '#/components/schemas/TokenName'
+                    example: MyUrlParameter
+                  # $ref + description → still the referenced string
+                  described:
+                    $ref: '#/components/schemas/TokenName'
+                    description: An overriding description.
+                  # $ref + several siblings at once
+                  multi:
+                    $ref: '#/components/schemas/TokenName'
+                    example: MyToken
+                    description: Both at once.
+                  # $ref to an object, with a sibling
+                  nested:
+                    $ref: '#/components/schemas/UrlParam'
+                    example: '{}'
+                  # a bare $ref, as the control case
+                  plain:
+                    $ref: '#/components/schemas/TokenName'
+                  # $ref to an enum, with a sibling: the enum must survive
+                  kind:
+                    $ref: '#/components/schemas/TokenType'
+                    example: SECRET
+                  # a collection whose element is a $ref with a sibling
+                  params:
+                    type: array
+                    description: The url parameters.
+                    items:
+                      $ref: '#/components/schemas/UrlParam'
+                      example: '{}'
+components:
+  schemas:
+    TokenName:
+      type: string
+      description: Name for tokens.
+      pattern: '^[A-Za-z][A-Za-z\d]*$'
+    TokenType:
+      type: string
+      description: The definition of the TokenType object.
+      enum:
+        - SECRET
+        - PUBLIC
+    UrlParam:
+      type: object
+      description: The definition of the UrlParam object.
+      required:
+        - name
+        - value
+      properties:
+        name:
+          $ref: '#/components/schemas/TokenName'
+          example: MyUrlParameter
+        value:
+          type: string
+          description: The UrlParam value.
