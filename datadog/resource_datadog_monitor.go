@@ -1892,9 +1892,9 @@ func getOptionalString(data map[string]interface{}, fieldName string) (string, b
 	return val, ok && len(val) > 0
 }
 
-// getOptionalFloat safely extracts an optional float from a map. A zero value is treated as unset:
-// the backend rejects a non-positive sensitivity and falls back to its own default, and SDKv2 cannot
-// distinguish an omitted float attribute from one explicitly set to 0.
+// getOptionalFloat safely extracts an optional float from a map. A zero value is treated as unset
+// because SDKv2 cannot distinguish an omitted float attribute from one explicitly set to 0. The
+// framework implementation of this resource has no such limitation and forwards an explicit 0.
 func getOptionalFloat(data map[string]interface{}, fieldName string) (float64, bool) {
 	val, ok := data[fieldName].(float64)
 	return val, ok && val != 0
