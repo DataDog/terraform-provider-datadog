@@ -251,6 +251,36 @@ var _ = Describe("RenderDataSource duplicate field guard", func() {
 			Items: obj(map[string]*model.Schema{"handle": prim("string", "")}),
 		}),
 	)
+
+	It("drops included, keeping its element union out of the view entirely", func() {
+		// The real shape: included is an array whose element is a oneOf, since it
+		// sideloads more than one resource type (User | LeakedKey for an API key).
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["included"] = &model.Schema{
+			Kind: model.SchemaKindArray,
+			Items: &model.Schema{
+				Kind: model.SchemaKindOneOf,
+				OneOf: &model.OneOfSpec{
+					Name: "IncidentTypeResponseIncludedItem",
+					Path: "response.included[]",
+					Variants: []model.OneOfVariant{{
+						TFName: "user",
+						GoName: "User",
+						Schema: obj(map[string]*model.Schema{"handle": prim("string", "")}),
+					}},
+				},
+			},
+		}
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		// The model still projects the union faithfully; only the view drops it.
+		Expect(art.Schema.Attributes).To(ContainElement(HaveField("Path", "response.included")))
+
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred(), "a union under a dropped member must not fail the artifact")
+		Expect(view.Dropped).To(HaveLen(1))
+		Expect(view.Dropped[0].Message).To(ContainSubstring("dropped \"response.included\": not part of the surfaced {id, type, attributes} envelope"))
+	})
 })
 
 var _ = Describe("BuildDataSourceView audit fields", func() {
@@ -643,7 +673,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogCostBudgetDataSourceModel", "EntriesModel", "TagFiltersModel"}))
+		Expect(names).To(Equal([]string{"datadogCostBudgetDataSourceModel", "datadogCostBudgetEntriesModel", "datadogCostBudgetEntriesTagFiltersModel"}))
 	})
 
 	It("maps each element through a guarded loop, recursing for nested arrays", func() {
@@ -657,7 +687,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		Expect(entries.GetterOk).To(Equal("attributes.GetEntriesOk()"))
 		Expect(entries.LoopVar).To(Equal("entriesItem"))
 		Expect(entries.ElemVar).To(Equal("entriesModel"))
-		Expect(entries.ElemStruct).To(Equal("EntriesModel"))
+		Expect(entries.ElemStruct).To(Equal("datadogCostBudgetEntriesModel"))
 		Expect(entries.Scalars).To(ContainElement(StateAssignment{
 			Var: "amount", GetterOk: "entriesItem.GetAmountOk()",
 			LHS: "entriesModel.Amount", RHS: "types.Float64Value(*amount)",
@@ -669,7 +699,7 @@ var _ = Describe("BuildDataSourceView singular nested arrays", func() {
 		Expect(tagFilters.LHS).To(Equal("entriesModel.TagFilters"))
 		Expect(tagFilters.GetterOk).To(Equal("entriesItem.GetTagFiltersOk()"))
 		Expect(tagFilters.LoopVar).To(Equal("tagFiltersItem"))
-		Expect(tagFilters.ElemStruct).To(Equal("TagFiltersModel"))
+		Expect(tagFilters.ElemStruct).To(Equal("datadogCostBudgetEntriesTagFiltersModel"))
 	})
 
 	It("produces a deeply-equal view across two runs", func() {
@@ -949,7 +979,7 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogWidgetsDataSourceModel", "WidgetModel", "PartsModel"}))
+		Expect(names).To(Equal([]string{"datadogWidgetsDataSourceModel", "datadogWidgetsWidgetModel", "datadogWidgetsWidgetPartsModel"}))
 	})
 
 	It("maps the object array off item.Attributes into the item accumulator", func() {
@@ -962,7 +992,7 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		Expect(parts.LHS).To(Equal("r.Parts"))
 		Expect(parts.GetterOk).To(Equal("item.Attributes.GetPartsOk()"))
 		Expect(parts.LoopVar).To(Equal("partsItem"))
-		Expect(parts.ElemStruct).To(Equal("PartsModel"))
+		Expect(parts.ElemStruct).To(Equal("datadogWidgetsWidgetPartsModel"))
 		Expect(parts.Scalars).To(ContainElement(StateAssignment{
 			Var: "label", GetterOk: "partsItem.GetLabelOk()",
 			LHS: "partsModel.Label", RHS: "types.StringValue(*label)",
@@ -1037,7 +1067,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogApmRetentionFilterDataSourceModel", "FilterModel", "MetadataModel"}))
+		Expect(names).To(Equal([]string{"datadogApmRetentionFilterDataSourceModel", "datadogApmRetentionFilterFilterModel", "datadogApmRetentionFilterFilterMetadataModel"}))
 	})
 
 	It("maps the object through a guarded assignment, recursing into the nested object", func() {
@@ -1054,7 +1084,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		Expect(filter.GetterOk).To(Equal("attributes.GetFilterOk()"))
 		Expect(filter.Var).To(Equal("filter"))
 		Expect(filter.ElemVar).To(Equal("filterModel"))
-		Expect(filter.ElemStruct).To(Equal("FilterModel"))
+		Expect(filter.ElemStruct).To(Equal("datadogApmRetentionFilterFilterModel"))
 		Expect(filter.Scalars).To(ContainElement(StateAssignment{
 			Var: "query", GetterOk: "filter.GetQueryOk()",
 			LHS: "filterModel.Query", RHS: "types.StringValue(*query)",
@@ -1068,7 +1098,7 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		}
 		Expect(metadata.LHS).To(Equal("filterModel.Metadata"))
 		Expect(metadata.GetterOk).To(Equal("filter.GetMetadataOk()"))
-		Expect(metadata.ElemStruct).To(Equal("MetadataModel"))
+		Expect(metadata.ElemStruct).To(Equal("datadogApmRetentionFilterFilterMetadataModel"))
 	})
 
 	It("renders the guarded object block and the recursive assignment in updateState", func() {
@@ -1149,7 +1179,7 @@ var _ = Describe("BuildDataSourceView plural nested objects", func() {
 		for _, m := range view.Models {
 			names = append(names, m.Name)
 		}
-		Expect(names).To(Equal([]string{"datadogGizmosDataSourceModel", "GizmoModel", "SpecModel"}))
+		Expect(names).To(Equal([]string{"datadogGizmosDataSourceModel", "datadogGizmosGizmoModel", "datadogGizmosGizmoSpecModel"}))
 	})
 
 	It("maps the object off item.Attributes into the item accumulator", func() {
@@ -1162,7 +1192,7 @@ var _ = Describe("BuildDataSourceView plural nested objects", func() {
 		Expect(spec.LHS).To(Equal("r.Spec"))
 		Expect(spec.GetterOk).To(Equal("item.Attributes.GetSpecOk()"))
 		Expect(spec.Var).To(Equal("spec"))
-		Expect(spec.ElemStruct).To(Equal("SpecModel"))
+		Expect(spec.ElemStruct).To(Equal("datadogGizmosGizmoSpecModel"))
 		Expect(spec.Scalars).To(ContainElement(StateAssignment{
 			Var: "shape", GetterOk: "spec.GetShapeOk()",
 			LHS: "specModel.Shape", RHS: "types.StringValue(*shape)",

@@ -14,6 +14,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/sdkbind"
 )
 
 // errCheckFailed signals that --check found files that would change.
@@ -237,6 +238,14 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 		return entry, nil, nil, nil
 	}
 
+	// Resolve the SDK oneOf wrapper, members and constructors before the schema is
+	// projected, since the projection carries those bindings onto each envelope
+	// rather than deriving them. Binding is per operation, so an unresolvable union
+	// fails only this artifact.
+	if err := sdkbind.BindOperation(op); err != nil {
+		return failEntry(entry, err), nil, nil, nil
+	}
+
 	artifact, err := model.BuildArtifact(op)
 	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
@@ -258,11 +267,6 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	// severity the drop warrants.
 	for _, d := range view.Dropped {
 		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: d.Severity, Message: d.Message})
-	}
-	// Caveats about what the artifact does contain ride along as warnings, so a
-	// generated-but-incomplete artifact cannot report as unqualified success.
-	for _, msg := range view.Warnings {
-		entry.Diagnostics = append(entry.Diagnostics, model.Diagnostic{Severity: model.SeverityWarning, Message: msg})
 	}
 
 	src, err := emit.RenderDataSource(view)

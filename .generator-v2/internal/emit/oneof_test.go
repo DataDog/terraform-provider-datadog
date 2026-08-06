@@ -84,6 +84,50 @@ func modelByName(view DataSourceView, name string) ModelStructView {
 	return ModelStructView{}
 }
 
+// oneOfAssignmentAt finds the oneOf assignment for the union at path, searching
+// the state mapper's assignments and recursing through variants.
+func oneOfAssignmentAt(view DataSourceView, path string) *OneOfAssignment {
+	GinkgoHelper()
+	var find func(lists []ListAssignment) *OneOfAssignment
+	find = func(lists []ListAssignment) *OneOfAssignment {
+		for _, l := range lists {
+			if l.Kind == "oneof" && l.OneOf != nil {
+				if l.OneOf.Path == path {
+					return l.OneOf
+				}
+				for _, v := range l.OneOf.Variants {
+					if got := find(v.Lists); got != nil {
+						return got
+					}
+				}
+				continue
+			}
+			if got := find(l.Lists); got != nil {
+				return got
+			}
+		}
+		return nil
+	}
+	got := find(view.State.Lists)
+	if got == nil {
+		got = find(view.State.ItemLists)
+	}
+	Expect(got).NotTo(BeNil(), "no oneOf assignment at %q", path)
+	return got
+}
+
+// variantAssignment returns the alternative selected by the given SDK member.
+func variantAssignment(assign *OneOfAssignment, sdkField string) OneOfVariantAssignment {
+	GinkgoHelper()
+	for _, v := range assign.Variants {
+		if v.SDKField == sdkField {
+			return v
+		}
+	}
+	Fail("no variant bound to SDK member " + sdkField)
+	return OneOfVariantAssignment{}
+}
+
 // blockByName returns the named block from a block list.
 func blockByName(blocks []AttrView, name string) AttrView {
 	GinkgoHelper()
@@ -101,11 +145,11 @@ var _ = Describe("oneOf envelope emission", func() {
 	Context("the envelope model", func() {
 		It("holds one pointer field per variant, keyed on the Terraform variant name", func() {
 			view := unionView(unionOperation())
-			envelope := modelByName(view, "IncidentNotificationModel")
+			envelope := modelByName(view, "datadogIncidentTypeIncidentNotificationModel")
 
 			Expect(envelope.Fields).To(Equal([]ModelFieldView{
-				{GoField: "String", GoType: "*IncidentNotificationStringModel", TFName: "string"},
-				{GoField: "WebhookNotification", GoType: "*IncidentNotificationWebhookNotificationModel", TFName: "webhook_notification"},
+				{GoField: "String", GoType: "*datadogIncidentTypeIncidentNotificationStringModel", TFName: "string"},
+				{GoField: "WebhookNotification", GoType: "*datadogIncidentTypeIncidentNotificationWebhookNotificationModel", TFName: "webhook_notification"},
 			}))
 		})
 
@@ -122,17 +166,17 @@ var _ = Describe("oneOf envelope emission", func() {
 				}
 			}
 			Expect(field.GoField).To(Equal("Notification"))
-			Expect(field.GoType).To(Equal("*IncidentNotificationModel"))
+			Expect(field.GoType).To(Equal("*datadogIncidentTypeIncidentNotificationModel"))
 		})
 
 		It("gives an object variant its own fields and a scalar variant a single value field", func() {
 			view := unionView(unionOperation())
 
-			Expect(modelByName(view, "IncidentNotificationWebhookNotificationModel").Fields).To(Equal([]ModelFieldView{
+			Expect(modelByName(view, "datadogIncidentTypeIncidentNotificationWebhookNotificationModel").Fields).To(Equal([]ModelFieldView{
 				{GoField: "Enabled", GoType: "types.Bool", TFName: "enabled"},
 				{GoField: "Url", GoType: "types.String", TFName: "url"},
 			}))
-			Expect(modelByName(view, "IncidentNotificationStringModel").Fields).To(Equal([]ModelFieldView{
+			Expect(modelByName(view, "datadogIncidentTypeIncidentNotificationStringModel").Fields).To(Equal([]ModelFieldView{
 				{GoField: "Value", GoType: "types.String", TFName: "value"},
 			}))
 		})
@@ -142,9 +186,9 @@ var _ = Describe("oneOf envelope emission", func() {
 			var envelopeAt, variantAt = -1, -1
 			for i, m := range view.Models {
 				switch m.Name {
-				case "IncidentNotificationModel":
+				case "datadogIncidentTypeIncidentNotificationModel":
 					envelopeAt = i
-				case "IncidentNotificationWebhookNotificationModel":
+				case "datadogIncidentTypeIncidentNotificationWebhookNotificationModel":
 					variantAt = i
 				}
 			}
@@ -199,65 +243,74 @@ var _ = Describe("oneOf envelope emission", func() {
 
 			var envelopeModels int
 			for _, m := range view.Models {
-				if m.Name == "IncidentNotificationModel" {
+				if m.Name == "datadogIncidentTypeIncidentNotificationModel" {
 					envelopeModels++
 				}
 			}
 			Expect(envelopeModels).To(Equal(1), "the component yielded one model per use site")
 
-			Expect(view.OneOfEnvelopes).To(HaveLen(1))
 			Expect(blockByName(view.Schema.Blocks, "primary").Blocks).
 				To(Equal(blockByName(view.Schema.Blocks, "secondary").Blocks))
+
+			// The two sites share the variant bodies but not the outer locals, so
+			// each unwraps into its own envelope model without colliding.
+			primary := oneOfAssignmentAt(view, "response.data.attributes.primary")
+			secondary := oneOfAssignmentAt(view, "response.data.attributes.secondary")
+			Expect(primary.Variants).To(Equal(secondary.Variants))
+			Expect(primary.ModelVar).NotTo(Equal(secondary.ModelVar))
+			Expect(primary.LHS).To(Equal("state.Primary"))
+			Expect(secondary.LHS).To(Equal("state.Secondary"))
 		})
 	})
 
-	Context("the envelope view handed to the mapper", func() {
-		It("carries both identities plus the per-variant SDK binding", func() {
+	Context("the assignment handed to the template", func() {
+		It("unwraps the wrapper through an ordinary getter and counts every member", func() {
 			view := unionView(unionOperation())
-			Expect(view.OneOfEnvelopes).To(HaveLen(1))
-			env := view.OneOfEnvelopes[0]
+			assign := oneOfAssignmentAt(view, "response.data.attributes.notification")
 
-			Expect(env.Name).To(Equal("IncidentNotification"))
-			Expect(env.GoModel).To(Equal("IncidentNotificationModel"))
-			Expect(env.SDKType).To(Equal("IncidentNotification"))
-			Expect(env.Path).To(Equal("response.data.attributes.notification"))
+			Expect(assign.SDKType).To(Equal("IncidentNotification"))
+			Expect(assign.GoModel).To(Equal("datadogIncidentTypeIncidentNotificationModel"))
+			Expect(assign.LHS).To(Equal("state.Notification"))
+			// The wrapper itself is a normal field on its parent; only its members
+			// lack getters.
+			Expect(assign.GetterOk).To(Equal("attributes.GetNotificationOk()"))
+			Expect(assign.Receiver).To(Equal(assign.Var))
+			Expect(assign.MatchVar).NotTo(BeEmpty())
+			Expect(assign.Collection).To(BeFalse())
+			Expect(assign.Variants).To(HaveLen(2))
+		})
 
-			byName := map[string]OneOfVariantView{}
-			for _, v := range env.Variants {
-				byName[v.TFName] = v
-			}
+		It("reads an object alternative's fields through the SDK member's getters", func() {
+			view := unionView(unionOperation())
+			webhook := variantAssignment(
+				oneOfAssignmentAt(view, "response.data.attributes.notification"), "WebhookNotification")
 
-			webhook := byName["webhook_notification"]
 			Expect(webhook.GoField).To(Equal("WebhookNotification"))
-			Expect(webhook.SDKField).To(Equal("WebhookNotification"))
-			Expect(webhook.SDKConstructor).To(Equal("WebhookNotificationAsIncidentNotification"))
-			Expect(webhook.SDKPointer).To(BeTrue())
-			Expect(webhook.ValueWrapped).To(BeFalse())
-			// The field assignments are derived against the mapper's own locals.
 			Expect(webhook.SDKVar).To(Equal("webhookNotificationVariant"))
 			Expect(webhook.ModelVar).To(Equal("webhookNotificationModel"))
+			Expect(webhook.SDKPointer).To(BeTrue())
+			Expect(webhook.Value).To(BeNil())
 			Expect(webhook.Scalars).To(ContainElement(StateAssignment{
 				Var:      "url",
 				GetterOk: "webhookNotificationVariant.GetUrlOk()",
 				LHS:      "webhookNotificationModel.Url",
 				RHS:      "types.StringValue(*url)",
 			}))
-
-			scalar := byName["string"]
-			Expect(scalar.SDKField).To(Equal("String"))
-			Expect(scalar.SDKConstructor).To(Equal("StringAsIncidentNotification"))
-			Expect(scalar.ValueWrapped).To(BeTrue())
 		})
-	})
 
-	Context("honesty of the run report", func() {
-		It("warns that the envelope is emitted but not yet populated", func() {
-			// While the mapper is unimplemented the block reads as permanently null.
-			// Reporting that is what separates an increment from a silent lie.
+		It("dereferences a scalar alternative instead of calling a getter on it", func() {
+			// The SDK member of a value-wrapped alternative is a *string, which has no
+			// GetValueOk; reading through one would not compile.
 			view := unionView(unionOperation())
-			Expect(view.Warnings).To(HaveLen(1))
-			Expect(view.Warnings[0]).To(ContainSubstring("IncidentNotification"))
-			Expect(view.Warnings[0]).To(ContainSubstring("response mapping is not"))
+			scalar := variantAssignment(
+				oneOfAssignmentAt(view, "response.data.attributes.notification"), "String")
+
+			Expect(scalar.Scalars).To(BeEmpty())
+			Expect(scalar.Value).NotTo(BeNil())
+			Expect(*scalar.Value).To(Equal(StateAssignment{
+				LHS: "stringModel.Value",
+				RHS: "types.StringValue(*stringVariant)",
+			}))
 		})
 	})
 
@@ -324,8 +377,8 @@ var _ = Describe("oneOf envelope emission", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			out := string(src)
-			Expect(out).To(ContainSubstring("type IncidentNotificationModel struct {"))
-			Expect(out).To(ContainSubstring("WebhookNotification *IncidentNotificationWebhookNotificationModel `tfsdk:\"webhook_notification\"`"))
+			Expect(out).To(ContainSubstring("type datadogIncidentTypeIncidentNotificationModel struct {"))
+			Expect(out).To(ContainSubstring("WebhookNotification *datadogIncidentTypeIncidentNotificationWebhookNotificationModel `tfsdk:\"webhook_notification\"`"))
 			Expect(out).To(ContainSubstring(`"notification": schema.SingleNestedBlock{`))
 			Expect(out).To(ContainSubstring(`"webhook_notification": schema.SingleNestedBlock{`))
 		})
@@ -364,7 +417,7 @@ var _ = Describe("oneOf envelope in a collection", func() {
 				field = f
 			}
 		}
-		Expect(field.GoType).To(Equal("[]*IncidentNotificationModel"),
+		Expect(field.GoType).To(Equal("[]*datadogIncidentTypeIncidentNotificationModel"),
 			"each element of the list is one envelope")
 
 		block := blockByName(view.Schema.Blocks, "notifications")
@@ -387,3 +440,82 @@ var _ = Describe("oneOf envelope in a collection", func() {
 // templates_test.go, covering a union at its own position and one as a list element.
 func oneOfEnvelopeView() DataSourceView     { return unionView(unionOperation()) }
 func oneOfEnvelopeListView() DataSourceView { return unionView(unionListOperation()) }
+
+var _ = Describe("oneOf response mapping", func() {
+	It("inspects every member rather than taking the first non-nil one", func() {
+		// The SDK's own MarshalJSON and GetActualInstance are first-match; the
+		// generated mapper deliberately is not.
+		src := string(mustRender(unionOperation()))
+		Expect(src).To(ContainSubstring("if stringVariant := notification.String; stringVariant != nil {"))
+		Expect(src).To(ContainSubstring("if webhookNotificationVariant := notification.WebhookNotification; webhookNotificationVariant != nil {"))
+		Expect(src).To(ContainSubstring("notificationMatches++"))
+	})
+
+	It("reports an unparsed payload at the union's schema path", func() {
+		src := string(mustRender(unionOperation()))
+		Expect(src).To(ContainSubstring("case notification.UnparsedObject != nil:"))
+		Expect(src).To(ContainSubstring("response.data.attributes.notification: the Datadog API returned a value none of the IncidentNotification alternatives could parse"))
+	})
+
+	It("reports multiple populated members instead of choosing one", func() {
+		src := string(mustRender(unionOperation()))
+		Expect(src).To(ContainSubstring("case notificationMatches > 1:"))
+		Expect(src).To(ContainSubstring("alternatives, expected exactly one"))
+	})
+
+	It("assigns the envelope only when exactly one member matched", func() {
+		src := string(mustRender(unionOperation()))
+		Expect(src).To(ContainSubstring("case notificationMatches == 1:\n\t\t\tstate.Notification = notificationEnvelope"))
+	})
+
+	It("errors on zero members when the union is required", func() {
+		op := unionOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"]
+		attrs.Required = []string{"notification"}
+
+		src := string(mustRender(op))
+		Expect(src).To(ContainSubstring("matched none of the IncidentNotification alternatives, and the field is not optional"))
+	})
+
+	It("accepts zero members when the union is optional", func() {
+		// Zero populated members may represent an absent nullable value, so
+		// an optional envelope must not raise — it simply stays nil.
+		op := unionOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"]
+		attrs.Properties["notification"].OneOf.Optional = true
+
+		src := string(mustRender(op))
+		Expect(src).NotTo(ContainSubstring("matched none of the IncidentNotification alternatives"))
+		Expect(src).To(ContainSubstring("case notificationMatches == 1:"))
+	})
+
+	It("maps a union nested inside another union's alternative", func() {
+		op := unionOperation()
+		webhook := op.ResponseSchema.Properties["data"].
+			Properties["attributes"].Properties["notification"].OneOf.Variants[1].Schema
+		webhook.Properties["target"] = unionSchema(
+			"response.data.attributes.notification.webhook_notification.target", "NotificationTarget")
+
+		src := string(mustRender(op))
+		// The inner wrapper is reached with an ordinary getter off the outer variant.
+		Expect(src).To(ContainSubstring("if target, ok := webhookNotificationVariant.GetTargetOk(); ok && target != nil {"))
+		Expect(src).To(ContainSubstring("targetEnvelope := &datadogIncidentTypeNotificationTargetModel{}"))
+		Expect(src).To(ContainSubstring("targetMatches++"))
+	})
+
+	It("imports fmt, which the ambiguous-match diagnostic needs", func() {
+		// go/format does not prune imports, so an under-estimate here is a compile
+		// error and an over-estimate is an unused import.
+		view := unionView(unionOperation())
+		Expect(view.UsesFmt).To(BeTrue())
+		Expect(string(mustRender(unionOperation()))).To(ContainSubstring("\"fmt\""))
+	})
+})
+
+// mustRender renders op's data source, asserting every stage succeeded.
+func mustRender(op *model.Operation) []byte {
+	GinkgoHelper()
+	src, err := RenderDataSource(unionView(op))
+	Expect(err).NotTo(HaveOccurred())
+	return src
+}

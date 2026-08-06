@@ -352,6 +352,18 @@ type Attribute struct {
 	Description string
 	// Children holds nested attributes for nested blocks.
 	Children []*Attribute
+	// ModelRefName is the OpenAPI component name that supplied the *object* schema
+	// backing this attribute's generated model struct: the node's own schema for an
+	// object, its element schema for an array or map of objects. Empty when that
+	// schema was inline, and empty for a leaf, which has no struct.
+	//
+	// It exists so emit can name a nested model after its component rather than
+	// after the property that happens to point at it — the same preference the SDK
+	// generator's child_models() applies (get_name(schema) or alternative_name) and
+	// that oneOf envelope naming already applies via OneOfSpec.Name. Without it, two
+	// differently-shaped objects reachable under the same property name produce one
+	// struct name and the artifact cannot compile.
+	ModelRefName string
 	// OneOf is non-nil when this attribute carries a synthetic oneOf envelope:
 	// either the envelope itself (a union at the root or an object property) or
 	// the collection whose element is a union. Children then holds the variant

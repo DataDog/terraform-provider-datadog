@@ -17,18 +17,18 @@ var (
 )
 
 type datadogCostBudgetDataSourceModel struct {
-	ID      types.String    `tfsdk:"id"`
-	Entries []*EntriesModel `tfsdk:"entries"`
-	Name    types.String    `tfsdk:"name"`
+	ID      types.String                     `tfsdk:"id"`
+	Entries []*datadogCostBudgetEntriesModel `tfsdk:"entries"`
+	Name    types.String                     `tfsdk:"name"`
 }
 
-type EntriesModel struct {
-	Amount     types.Float64      `tfsdk:"amount"`
-	Month      types.Int64        `tfsdk:"month"`
-	TagFilters []*TagFiltersModel `tfsdk:"tag_filters"`
+type datadogCostBudgetEntriesModel struct {
+	Amount     types.Float64                              `tfsdk:"amount"`
+	Month      types.Int64                                `tfsdk:"month"`
+	TagFilters []*datadogCostBudgetEntriesTagFiltersModel `tfsdk:"tag_filters"`
 }
 
-type TagFiltersModel struct {
+type datadogCostBudgetEntriesTagFiltersModel struct {
 	TagKey   types.String `tfsdk:"tag_key"`
 	TagValue types.String `tfsdk:"tag_value"`
 }
@@ -144,7 +144,7 @@ func (d *datadogCostBudgetDataSource) updateState(ctx context.Context, state *da
 	}
 	if entries, ok := attributes.GetEntriesOk(); ok && entries != nil {
 		for _, entriesItem := range *entries {
-			entriesModel := &EntriesModel{}
+			entriesModel := &datadogCostBudgetEntriesModel{}
 			if amount, ok := entriesItem.GetAmountOk(); ok && amount != nil {
 				entriesModel.Amount = types.Float64Value(*amount)
 			}
@@ -153,7 +153,7 @@ func (d *datadogCostBudgetDataSource) updateState(ctx context.Context, state *da
 			}
 			if tagFilters, ok := entriesItem.GetTagFiltersOk(); ok && tagFilters != nil {
 				for _, tagFiltersItem := range *tagFilters {
-					tagFiltersModel := &TagFiltersModel{}
+					tagFiltersModel := &datadogCostBudgetEntriesTagFiltersModel{}
 					if tagKey, ok := tagFiltersItem.GetTagKeyOk(); ok && tagKey != nil {
 						tagFiltersModel.TagKey = types.StringValue(*tagKey)
 					}

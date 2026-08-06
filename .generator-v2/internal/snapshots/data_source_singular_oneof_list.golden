@@ -17,23 +17,23 @@ var (
 )
 
 type datadogIncidentTypeDataSourceModel struct {
-	ID            types.String                 `tfsdk:"id"`
-	Description   types.String                 `tfsdk:"description"`
-	IsDefault     types.Bool                   `tfsdk:"is_default"`
-	Name          types.String                 `tfsdk:"name"`
-	Notifications []*IncidentNotificationModel `tfsdk:"notifications"`
+	ID            types.String                                    `tfsdk:"id"`
+	Description   types.String                                    `tfsdk:"description"`
+	IsDefault     types.Bool                                      `tfsdk:"is_default"`
+	Name          types.String                                    `tfsdk:"name"`
+	Notifications []*datadogIncidentTypeIncidentNotificationModel `tfsdk:"notifications"`
 }
 
-type IncidentNotificationModel struct {
-	String              *IncidentNotificationStringModel              `tfsdk:"string"`
-	WebhookNotification *IncidentNotificationWebhookNotificationModel `tfsdk:"webhook_notification"`
+type datadogIncidentTypeIncidentNotificationModel struct {
+	String              *datadogIncidentTypeIncidentNotificationStringModel              `tfsdk:"string"`
+	WebhookNotification *datadogIncidentTypeIncidentNotificationWebhookNotificationModel `tfsdk:"webhook_notification"`
 }
 
-type IncidentNotificationStringModel struct {
+type datadogIncidentTypeIncidentNotificationStringModel struct {
 	Value types.String `tfsdk:"value"`
 }
 
-type IncidentNotificationWebhookNotificationModel struct {
+type datadogIncidentTypeIncidentNotificationWebhookNotificationModel struct {
 	Enabled types.Bool   `tfsdk:"enabled"`
 	Url     types.String `tfsdk:"url"`
 }
@@ -160,6 +160,48 @@ func (d *datadogIncidentTypeDataSource) updateState(ctx context.Context, state *
 	}
 	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)
+	}
+	if notifications, ok := attributes.GetNotificationsOk(); ok && notifications != nil {
+		for _, notificationsItem := range *notifications {
+			notificationsEnvelope := &datadogIncidentTypeIncidentNotificationModel{}
+			notificationsMatches := 0
+			if stringVariant := notificationsItem.String; stringVariant != nil {
+				stringModel := &datadogIncidentTypeIncidentNotificationStringModel{}
+				stringModel.Value = types.StringValue(*stringVariant)
+				notificationsEnvelope.String = stringModel
+				notificationsMatches++
+			}
+			if webhookNotificationVariant := notificationsItem.WebhookNotification; webhookNotificationVariant != nil {
+				webhookNotificationModel := &datadogIncidentTypeIncidentNotificationWebhookNotificationModel{}
+				if enabled, ok := webhookNotificationVariant.GetEnabledOk(); ok && enabled != nil {
+					webhookNotificationModel.Enabled = types.BoolValue(*enabled)
+				}
+				if url, ok := webhookNotificationVariant.GetUrlOk(); ok && url != nil {
+					webhookNotificationModel.Url = types.StringValue(*url)
+				}
+				notificationsEnvelope.WebhookNotification = webhookNotificationModel
+				notificationsMatches++
+			}
+			switch {
+			case notificationsItem.UnparsedObject != nil:
+				diags.AddError(
+					"unexpected IncidentNotification in the API response",
+					"response.data.attributes.notifications[]: the Datadog API returned a value none of the IncidentNotification alternatives could parse",
+				)
+			case notificationsMatches > 1:
+				diags.AddError(
+					"ambiguous IncidentNotification in the API response",
+					fmt.Sprintf("response.data.attributes.notifications[]: the Datadog API response matched %d IncidentNotification alternatives, expected exactly one", notificationsMatches),
+				)
+			case notificationsMatches == 1:
+				state.Notifications = append(state.Notifications, notificationsEnvelope)
+			default:
+				diags.AddError(
+					"missing IncidentNotification in the API response",
+					"response.data.attributes.notifications[]: the Datadog API response matched none of the IncidentNotification alternatives, and the field is not optional",
+				)
+			}
+		}
 	}
 	return diags
 }
