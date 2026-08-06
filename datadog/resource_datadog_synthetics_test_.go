@@ -6053,7 +6053,11 @@ func convertStepParamsValueForConfig(stepType interface{}, key string, value int
 		return value, diags
 
 	case "pattern", "variable":
-		return value.([]interface{})[0], diags
+		valueList, ok := value.([]interface{})
+		if !ok || len(valueList) == 0 {
+			return nil, diags
+		}
+		return valueList[0], diags
 
 	case "drag_drop_options":
 		optsList, ok := value.([]interface{})
