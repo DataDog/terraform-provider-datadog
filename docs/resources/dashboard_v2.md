@@ -677,6 +677,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--bar_chart_definition--request--query--event_query))
@@ -706,6 +707,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--bar_chart_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.bar_chart_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--bar_chart_definition--request--query--apm_resource_stats_query"></a>
@@ -1939,6 +1962,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query))
@@ -1968,6 +1992,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--change_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.change_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--change_definition--request--query--apm_resource_stats_query"></a>
@@ -3431,9 +3477,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--distribution_definition--request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.distribution_definition.request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--distribution_definition--request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.distribution_definition.request.histogram_query.apm_resource_stats_query`
@@ -3649,6 +3718,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--distribution_definition--request--query--event_query))
@@ -3678,6 +3748,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--distribution_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.distribution_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--distribution_definition--request--query--apm_resource_stats_query"></a>
@@ -4998,6 +5090,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query))
@@ -5027,6 +5120,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--geomap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.geomap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query"></a>
@@ -6342,6 +6457,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--event_query))
@@ -6371,6 +6487,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.bar_chart_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--bar_chart_definition--request--query--apm_resource_stats_query"></a>
@@ -7604,6 +7742,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query))
@@ -7633,6 +7772,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--apm_resource_stats_query"></a>
@@ -9096,9 +9257,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.distribution_definition.request.histogram_query.apm_resource_stats_query`
@@ -9314,6 +9498,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request--query--event_query))
@@ -9343,6 +9528,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request--query--apm_resource_stats_query"></a>
@@ -10663,6 +10870,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query))
@@ -10692,6 +10900,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query"></a>
@@ -11829,6 +12059,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query))
@@ -11858,6 +12089,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_resource_stats_query"></a>
@@ -13053,6 +13306,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--event_query))
@@ -13082,6 +13336,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.fill.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--fill--query--apm_resource_stats_query"></a>
@@ -14179,6 +14455,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--event_query))
@@ -14208,6 +14485,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.hostmap_definition.request.size.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--hostmap_definition--request--size--query--apm_resource_stats_query"></a>
@@ -16183,6 +16482,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query))
@@ -16212,6 +16512,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query"></a>
@@ -17570,6 +17892,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query))
@@ -17599,6 +17922,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query"></a>
@@ -19105,6 +19450,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
@@ -19134,6 +19480,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
@@ -20104,6 +20472,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--event_query))
@@ -20133,6 +20502,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.x.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--x--query--apm_resource_stats_query"></a>
@@ -21231,6 +21622,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--event_query))
@@ -21260,6 +21652,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.y.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--y--query--apm_resource_stats_query"></a>
@@ -22777,6 +23191,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query))
@@ -22806,6 +23221,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query"></a>
@@ -24312,6 +24749,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query))
@@ -24341,6 +24779,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query"></a>
@@ -25616,6 +26076,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query))
@@ -25645,6 +26106,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query"></a>
@@ -26857,6 +27340,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query))
@@ -26886,6 +27370,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_resource_stats_query"></a>
@@ -27724,9 +28230,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.histogram_request.histogram_query.apm_resource_stats_query`
@@ -28196,6 +28725,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--event_query))
@@ -28225,6 +28755,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.timeseries_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query"></a>
@@ -29369,6 +29921,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--event_query))
@@ -29398,6 +29951,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.group_definition.widget.wildcard_definition.request.treemap_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--group_definition--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query"></a>
@@ -30639,6 +31214,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query))
@@ -30668,6 +31244,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--heatmap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--apm_resource_stats_query"></a>
@@ -31863,6 +32461,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--fill--query--event_query))
@@ -31892,6 +32491,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--fill--query--apm_metrics_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.fill.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--fill--query--apm_resource_stats_query"></a>
@@ -32989,6 +33610,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--hostmap_definition--request--size--query--event_query))
@@ -33018,6 +33640,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--hostmap_definition--request--size--query--apm_metrics_query"></a>
+### Nested Schema for `widget.hostmap_definition.request.size.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--hostmap_definition--request--size--query--apm_resource_stats_query"></a>
@@ -35077,6 +35721,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query))
@@ -35106,6 +35751,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--query_table_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.query_table_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query"></a>
@@ -36464,6 +37131,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
@@ -36493,6 +37161,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query"></a>
@@ -37999,6 +38689,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
@@ -38028,6 +38719,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
@@ -38998,6 +39711,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--x--query--event_query))
@@ -39027,6 +39741,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--x--query--apm_metrics_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.x.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--x--query--apm_resource_stats_query"></a>
@@ -40125,6 +40861,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--y--query--event_query))
@@ -40154,6 +40891,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--y--query--apm_metrics_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.y.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--y--query--apm_resource_stats_query"></a>
@@ -41619,6 +42378,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query))
@@ -41648,6 +42408,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query"></a>
@@ -42720,6 +43502,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query))
@@ -42749,6 +43532,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query"></a>
@@ -43913,6 +44718,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query))
@@ -43942,6 +44748,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query"></a>
@@ -45300,6 +46128,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query))
@@ -45329,6 +46158,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query"></a>
@@ -46271,6 +47122,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query))
@@ -46300,6 +47152,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query"></a>
@@ -47270,6 +48144,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--event_query))
@@ -47299,6 +48174,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.x.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--x--query--apm_resource_stats_query"></a>
@@ -48397,6 +49294,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--event_query))
@@ -48426,6 +49324,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.y.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--y--query--apm_resource_stats_query"></a>
@@ -49758,6 +50678,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query))
@@ -49787,6 +50708,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query"></a>
@@ -51293,6 +52236,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query))
@@ -51322,6 +52266,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query"></a>
@@ -52597,6 +53563,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query))
@@ -52626,6 +53593,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query"></a>
@@ -53707,6 +54696,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query))
@@ -53736,6 +54726,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query"></a>
@@ -54989,6 +56001,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query))
@@ -55018,6 +56031,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query"></a>
@@ -56524,6 +57559,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query))
@@ -56553,6 +57589,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query"></a>
@@ -57828,6 +58886,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
@@ -57857,6 +58916,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query"></a>
@@ -59069,6 +60150,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query))
@@ -59098,6 +60180,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--treemap_definition--request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.treemap_definition.request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--apm_resource_stats_query"></a>
@@ -59936,9 +61040,32 @@ Optional:
 
 Optional:
 
+- `apm_metrics_query` (Block List, Max: 1) APM metrics query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) APM resource stats query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query))
 - `event_query` (Block List, Max: 1) Event query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--event_query))
 - `metric_query` (Block List, Max: 1) Metric query for histogram-mode distribution. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--metric_query))
+
+<a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_metrics_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
+
 
 <a id="nestedblock--widget--wildcard_definition--request--histogram_request--histogram_query--apm_resource_stats_query"></a>
 ### Nested Schema for `widget.wildcard_definition.request.histogram_request.histogram_query.apm_resource_stats_query`
@@ -60408,6 +61535,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--timeseries_request--query--event_query))
@@ -60437,6 +61565,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.timeseries_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--wildcard_definition--request--timeseries_request--query--apm_resource_stats_query"></a>
@@ -61581,6 +62731,7 @@ Optional:
 Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_dependency_stats_query))
+- `apm_metrics_query` (Block List, Max: 1) The APM metrics query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query))
 - `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--wildcard_definition--request--treemap_request--query--event_query))
@@ -61610,6 +62761,28 @@ Optional:
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_metrics_query"></a>
+### Nested Schema for `widget.wildcard_definition.request.treemap_request.query.apm_metrics_query`
+
+Required:
+
+- `data_source` (String) The data source for APM metrics queries. Valid values are `apm_metrics`.
+- `name` (String) Name of this query to use in formulas.
+- `stat` (String) APM metric stat name. Valid values are `errors`, `error_rate`, `errors_per_second`, `latency_avg`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`, `latency_p999`, `latency_distribution`, `hits`, `hits_per_second`, `total_time`, `apdex`.
+
+Optional:
+
+- `group_by` (List of String) Optional fields to group the query results by.
+- `operation_mode` (String) Optional operation mode used to aggregate across operation names.
+- `operation_name` (String) Name of the operation on the service. If omitted, the primary operation name is used.
+- `peer_tags` (List of String) Tags to query for a specific downstream entity, such as `peer.service` or `peer.db_instance`.
+- `query_filter` (String) Additional filters for the query using metrics query syntax.
+- `resource_hash` (String) The hash of a specific resource to filter by.
+- `resource_name` (String) The full name of a specific resource to filter by.
+- `service` (String) APM service name.
+- `span_kind` (String) The relationship between the span, its parents, and its children in a trace. Valid values are `consumer`, `server`, `client`, `producer`, `internal`.
 
 
 <a id="nestedblock--widget--wildcard_definition--request--treemap_request--query--apm_resource_stats_query"></a>
