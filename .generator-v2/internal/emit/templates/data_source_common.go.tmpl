@@ -127,7 +127,81 @@ if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
 {{- end }}
 	{{ .LHS }} = {{ .ElemVar }}
 }
+{{- else if eq .Kind "oneof" -}}
+{{ template "renderOneOf" .OneOf }}
 {{- end }}
+{{- end -}}
+
+{{/*
+  renderOneOf unwraps one SDK oneOf wrapper into its Terraform envelope model.
+
+  Every member is inspected and the matches counted; the envelope is only assigned
+  when exactly one matched. This is deliberately not the SDK's own behaviour —
+  MarshalJSON and GetActualInstance both return the first non-nil member — because
+  the contract requires zero, multiple, or an unparsed payload to be reported at the
+  union's schema path rather than silently resolving to one branch.
+
+  The wrapper itself is reached through an ordinary Ok-getter; only its members are
+  plain fields, which is why they are read with `:=` rather than Get<Field>Ok.
+*/}}
+{{- define "renderOneOf" -}}
+if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+{{- if .Collection }}
+	for _, {{ .LoopVar }} := range *{{ .Var }} {
+		{{ template "oneOfBody" . }}
+	}
+{{- else }}
+	{{ template "oneOfBody" . }}
+{{- end }}
+}
+{{- end -}}
+
+{{/*
+  oneOfBody selects at most one variant off .Receiver and reports anything
+  ambiguous. Split from renderOneOf so the collection and single forms share it.
+*/}}
+{{- define "oneOfBody" -}}
+{{ .ModelVar }} := &{{ .GoModel }}{}
+{{ .MatchVar }} := 0
+{{- range .Variants }}
+if {{ .SDKVar }} := {{ $.Receiver }}.{{ .SDKField }}; {{ .SDKVar }} != nil {
+	{{ .ModelVar }} := &{{ .GoModel }}{}
+{{- with .Value }}
+	{{ .LHS }} = {{ .RHS }}
+{{- end }}
+{{- range .Scalars }}
+	if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
+		{{ .LHS }} = {{ .RHS }}
+	}
+{{- end }}
+{{- range .Lists }}
+	{{ template "renderList" . }}
+{{- end }}
+	{{ $.ModelVar }}.{{ .GoField }} = {{ .ModelVar }}
+	{{ $.MatchVar }}++
+}
+{{- end }}
+switch {
+case {{ .Receiver }}.UnparsedObject != nil:
+	diags.AddError(
+		"unexpected {{ .SDKType }} in the API response",
+		"{{ .Path }}: the Datadog API returned a value none of the {{ .SDKType }} alternatives could parse",
+	)
+case {{ .MatchVar }} > 1:
+	diags.AddError(
+		"ambiguous {{ .SDKType }} in the API response",
+		fmt.Sprintf("{{ .Path }}: the Datadog API response matched %d {{ .SDKType }} alternatives, expected exactly one", {{ .MatchVar }}),
+	)
+case {{ .MatchVar }} == 1:
+	{{ if .Collection }}{{ .LHS }} = append({{ .LHS }}, {{ .ModelVar }}){{ else }}{{ .LHS }} = {{ .ModelVar }}{{ end }}
+{{- if not .Optional }}
+default:
+	diags.AddError(
+		"missing {{ .SDKType }} in the API response",
+		"{{ .Path }}: the Datadog API response matched none of the {{ .SDKType }} alternatives, and the field is not optional",
+	)
+{{- end }}
+}
 {{- end -}}
 
 {{/* boilerplate renders the data-source struct, constructor, Configure, Metadata. */}}

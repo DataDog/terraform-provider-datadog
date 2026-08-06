@@ -77,17 +77,70 @@ type DataSourceView struct {
 	// State holds what updateState assigns back into the model.
 	State StateView
 
-	// UsesFmt selects the "fmt" import. The template is no longer in a position to
-	// decide this: fmt is reached from the by-id not-found message and from a plural
-	// filter hash today, and go/format does not prune an unused import, so an over-
-	// or under-estimate is a compile error either way. Deciding it in Go keeps the
-	// rule in one place as more call sites appear.
+	// UsesFmt selects the "fmt" import. The template cannot decide this: fmt is
+	// reached from the by-id not-found message, from a plural filter hash, and from
+	// a oneOf's ambiguous-match diagnostic, and go/format does not prune an unused
+	// import — so an over- or under-estimate here is a compile error either way.
 	UsesFmt bool
 
 	// Dropped lists response members skipped from the rendered view (e.g.
 	// relationships), surfaced as diagnostics in the run report. It does not
 	// affect rendering.
 	Dropped []DroppedMember
+}
+
+// OneOfEnvelopeView is one generated oneOf envelope: the Terraform model that
+// holds one pointer per alternative, and the Datadog go-sdk wrapper it maps to.
+//
+// The two identities are deliberately separate: GoModel is derived from
+// the envelope's Terraform name, which for an inline union is path-derived and
+// names no SDK type, while SDKType is what internal/sdkbind resolved by walking
+// the operation's SDK root.
+type OneOfEnvelopeView struct {
+	// Name is the parser's envelope identity, the key this view is deduplicated on.
+	Name string
+	// GoModel is the generated Go struct holding one pointer field per variant.
+	GoModel string
+	// SDKType is the SDK oneOf wrapper struct, e.g. "ActionConnectionIntegration".
+	SDKType string
+	// Path is the union's schema path, for diagnostics the mapper emits.
+	Path string
+	// Optional records that the whole envelope may be absent because its containing
+	// field is optional or nullable, which is the one case where zero populated SDK
+	// members is not an error.
+	Optional bool
+	// Variants are the alternatives, ordered by TFName as the projection ordered
+	// them, so generated output cannot depend on OpenAPI alternative order.
+	Variants []OneOfVariantView
+}
+
+// OneOfVariantView is one alternative of a OneOfEnvelopeView.
+type OneOfVariantView struct {
+	// TFName is the nested block name; GoField the pointer field on the envelope
+	// model whose non-nil-ness selects this variant.
+	TFName  string
+	GoField string
+	// GoModel is the generated struct for this variant's own fields.
+	GoModel string
+	// SDKField is the SDK wrapper member that selects this alternative and
+	// SDKConstructor its `<Member>As<Union>` convenience constructor. SDKPointer is
+	// false only for a free-form object, which the SDK emits as a bare map.
+	SDKField       string
+	SDKConstructor string
+	SDKPointer     bool
+	// ValueWrapped marks a non-object alternative, whose block holds a single
+	// child named "value" rather than exposing fields directly.
+	ValueWrapped bool
+	// SDKVar and ModelVar are the locals the mapper declares for the unwrapped SDK
+	// member and the Terraform variant model it populates. Scalars and Lists are
+	// expressed against them, so they must be used verbatim by the mapper.
+	SDKVar   string
+	ModelVar string
+	// Scalars and Lists are this variant's field assignments, derived by the same
+	// walk that produced its model struct. Not rendered yet — the mapper adds the partial
+	// that consumes them.
+	Scalars []StateAssignment
+	Lists   []ListAssignment
 }
 
 // DroppedMember is one response member omitted from the rendered view, carrying
@@ -259,16 +312,23 @@ type StateAssignment struct {
 	GetterOk string
 }
 
-// ListAssignment is a nested-state assignment rendered by the updateState
-// "renderList" partial. A primitive list maps the SDK slice into a types.List via
+// ListAssignment is one non-scalar state assignment rendered by the updateState
+// "renderList" partial. Despite the name it covers every shape that is not a bare
+// leaf: a primitive list maps the SDK slice into a types.List via
 // types.ListValueFrom; an object list loops the SDK elements into a generated
 // nested model slice, recursing through Scalars (the element's leaf fields) and
 // Lists (its nested list fields); an object_single maps one nested object into a
-// generated model pointer, assigned once instead of looped. All forms are guarded
-// by an Ok-getter so an absent field stays null.
+// generated model pointer, assigned once instead of looped; and a oneof unwraps an
+// SDK oneOf wrapper through OneOf. All forms are guarded by an Ok-getter so an
+// absent field stays null.
+//
+// A oneOf envelope rides this type rather than a parallel one because it needs
+// exactly the same placement plumbing — it can appear at the top level, inside a
+// nested object, inside a list element, or inside another envelope's variant — and
+// duplicating that composition for one extra shape would be the larger cost.
 type ListAssignment struct {
-	// Kind is "primitive", "object", or "object_single" (a single nested object,
-	// assigned once rather than appended in a loop).
+	// Kind is "primitive", "object", "object_single" (a single nested object,
+	// assigned once rather than appended in a loop), or "oneof" (see OneOf).
 	Kind string
 	// LHS is the assignment target, e.g. "state.VisibleModules" (top level) or
 	// "entriesModel.TagFilters" (nested element field).
@@ -294,4 +354,81 @@ type ListAssignment struct {
 	Scalars []StateAssignment
 	// Lists are the element's nested list fields (recursion).
 	Lists []ListAssignment
+
+	// OneOf backs Kind == "oneof" and is nil otherwise.
+	OneOf *OneOfAssignment
+}
+
+// OneOfAssignment maps one Datadog go-sdk oneOf wrapper into one generated
+// Terraform envelope model.
+//
+// The generated code inspects *every* wrapper member rather than taking the first
+// non-nil one: the SDK's own MarshalJSON and GetActualInstance are first-match, and
+// the contract requires zero, multiple, or unparsed to be reported at the union's schema
+// path instead of silently resolving to one branch. Exactly one populated member
+// assigns the envelope; anything else either leaves it absent (permitted only when
+// Optional) or raises a diagnostic.
+type OneOfAssignment struct {
+	// Path is the union's schema path, named in every diagnostic this emits.
+	Path string
+	// SDKType is the wrapper struct, named in diagnostics so a reader can find it
+	// in the SDK.
+	SDKType string
+	// GoModel is the generated envelope struct, and LHS where it is stored, e.g.
+	// "state.Integration". For Collection, LHS is appended to.
+	GoModel string
+	LHS     string
+	// GetterOk is the ordinary optional getter that yields the wrapper off its
+	// parent, e.g. "attributes.GetIntegrationOk()". Only the wrapper's *members*
+	// lack getters; the wrapper itself is a normal field on its parent.
+	GetterOk string
+	// Var is the local bound from GetterOk.
+	Var string
+	// Receiver is the expression the members are read off: Var for a single
+	// envelope, LoopVar inside a collection.
+	Receiver string
+	// ModelVar is the local accumulating the envelope model, MatchVar the local
+	// counting populated members.
+	ModelVar string
+	MatchVar string
+	// Optional permits zero populated members, which is how an absent nullable
+	// union arrives. When false, zero members is an error.
+	Optional bool
+	// Collection marks a list whose element is an envelope; LoopVar is then the
+	// per-element local.
+	Collection bool
+	LoopVar    string
+	// Variants are the alternatives, ordered by Terraform variant name.
+	Variants []OneOfVariantAssignment
+}
+
+// OneOfVariantAssignment unwraps one alternative of a OneOfAssignment.
+//
+// Every field here is a function of the envelope alone, never of the site using it,
+// so one reusable oneOf component's variant bodies are computed once and shared.
+// That is why the envelope-model target is carried as GoField and composed with the
+// enclosing OneOfAssignment.ModelVar at render time rather than being a
+// precomputed LHS: the model var differs per use site, the field does not.
+type OneOfVariantAssignment struct {
+	// SDKField is the wrapper member whose non-nil-ness selects this alternative,
+	// and SDKVar the local bound to it. SDKPointer is false only for a free-form
+	// object, which the SDK emits as a bare, already-nil-able map.
+	SDKField   string
+	SDKVar     string
+	SDKPointer bool
+	// GoField is the envelope-model field this variant assigns, e.g.
+	// "AwsIntegration"; GoModel is its generated struct and ModelVar the local
+	// accumulating it.
+	GoField  string
+	GoModel  string
+	ModelVar string
+	// Value is set for a value-wrapped (non-object) alternative, whose SDK member is
+	// the scalar itself and therefore has no getters to read fields through: the
+	// single "value" field is assigned by dereferencing SDKVar directly.
+	Value *StateAssignment
+	// Scalars are this alternative's leaf fields and Lists its non-scalar ones,
+	// expressed against SDKVar and ModelVar. A union nested inside this alternative
+	// arrives in Lists with Kind "oneof", so recursion needs no extra channel.
+	Scalars []StateAssignment
+	Lists   []ListAssignment
 }

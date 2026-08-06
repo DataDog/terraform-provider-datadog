@@ -24,11 +24,11 @@ type datadogTeamsDataSourceModel struct {
 	FilterMe      types.Bool   `tfsdk:"filter_me"`
 
 	// Results
-	ID    types.String `tfsdk:"id"`
-	Teams []*TeamModel `tfsdk:"teams"`
+	ID    types.String             `tfsdk:"id"`
+	Teams []*datadogTeamsTeamModel `tfsdk:"teams"`
 }
 
-type TeamModel struct {
+type datadogTeamsTeamModel struct {
 	Description    types.String `tfsdk:"description"`
 	Handle         types.String `tfsdk:"handle"`
 	ID             types.String `tfsdk:"id"`
@@ -158,9 +158,9 @@ func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.Re
 
 func (d *datadogTeamsDataSource) updateState(ctx context.Context, state *datadogTeamsDataSourceModel, data *[]datadogV2.Team) diag.Diagnostics {
 	var diags diag.Diagnostics
-	results := make([]*TeamModel, 0, len(*data))
+	results := make([]*datadogTeamsTeamModel, 0, len(*data))
 	for _, item := range *data {
-		r := TeamModel{
+		r := datadogTeamsTeamModel{
 			Description: types.StringValue(item.Attributes.GetDescription()),
 			Handle:      types.StringValue(item.Attributes.GetHandle()),
 			ID:          types.StringValue(item.GetId()),

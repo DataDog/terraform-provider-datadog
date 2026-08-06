@@ -36,6 +36,11 @@ var _ = Describe("data-source templates", func() {
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 		Entry("singular nested object (apm_retention_filter)", "data_source_singular_object.golden", retentionFilterView),
 		Entry("plural nested object (gizmos)", "data_source_plural_object.golden", pluralObjectView),
+		// The oneOf goldens pin the envelope's schema blocks and model structs. Their
+		// updateState is deliberately still mapping-free: the mapper lands next, and the diff
+		// this golden produces then is the review surface for that change.
+		Entry("singular oneOf envelope", "data_source_singular_oneof.golden", oneOfEnvelopeView),
+		Entry("singular oneOf in a list", "data_source_singular_oneof_list.golden", oneOfEnvelopeListView),
 	)
 
 	It("renders deterministically across runs", func() {
@@ -177,8 +182,8 @@ func pluralFixture() DataSourceView {
 	return DataSourceView{
 		Cardinality: Plural,
 		TypeName:    "teams",
-		// Hand-built views set UsesFmt themselves; the builder computes it for every
-		// view it produces. This fixture's filter hash reaches fmt.Sprintf.
+		// Hand-built views must set UsesFmt themselves; the builder computes it for
+		// every view it produces. This fixture's filter hash reaches fmt.Sprintf.
 		UsesFmt:     true,
 		GoName:      "datadogTeams",
 		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
@@ -202,11 +207,11 @@ func pluralFixture() DataSourceView {
 					{Comment: "Query Parameters", GoField: "FilterKeyword", GoType: "types.String", TFName: "filter_keyword"},
 					{GoField: "FilterMe", GoType: "types.Bool", TFName: "filter_me"},
 					{Comment: "Results", GoField: "ID", GoType: "types.String", TFName: "id"},
-					{GoField: "Teams", GoType: "[]*TeamModel", TFName: "teams"},
+					{GoField: "Teams", GoType: "[]*datadogTeamsTeamModel", TFName: "teams"},
 				},
 			},
 			{
-				Name: "TeamModel",
+				Name: "datadogTeamsTeamModel",
 				Fields: []ModelFieldView{
 					{GoField: "Description", GoType: "types.String", TFName: "description"},
 					{GoField: "Handle", GoType: "types.String", TFName: "handle"},
@@ -246,7 +251,7 @@ func pluralFixture() DataSourceView {
 			},
 		},
 		State: StateView{
-			ItemStruct: "TeamModel",
+			ItemStruct: "datadogTeamsTeamModel",
 			ItemField:  "Teams",
 			ItemFields: []StateAssignment{
 				{LHS: "Description", RHS: "types.StringValue(item.Attributes.GetDescription())"},
