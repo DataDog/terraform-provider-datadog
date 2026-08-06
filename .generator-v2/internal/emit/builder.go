@@ -55,24 +55,30 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 		return cached
 	}
 
+	// The model layer names an envelope and its variants without knowing which
+	// artifact will render them — a reusable union has no single owner — so emit
+	// applies the artifact scope here, at the one point that does know.
+	envModel := b.namer.qualify(env.GoModel)
+
 	// Reserve the envelope's struct slot before walking the variants so it precedes
 	// their structs in Models, matching how walk orders a parent before its children.
 	envIdx := len(b.models)
-	b.models = append(b.models, ModelStructView{Name: env.GoModel})
+	b.models = append(b.models, ModelStructView{Name: envModel})
 
-	render := oneOfRender{goModel: env.GoModel}
+	render := oneOfRender{goModel: envModel}
 	envFields := make([]ModelFieldView, 0, len(env.Variants))
 
 	for _, v := range env.Variants {
 		sdkVar := lowerFirst(v.GoField) + "Variant"
 		modelVar := lowerFirst(v.GoField) + "Model"
+		variantModel := b.namer.qualify(v.GoModel)
 
 		assign := OneOfVariantAssignment{
 			SDKField:   v.SDKField,
 			SDKVar:     sdkVar,
 			SDKPointer: v.SDKPointer,
 			GoField:    v.GoField,
-			GoModel:    v.GoModel,
+			GoModel:    variantModel,
 			ModelVar:   modelVar,
 		}
 
@@ -81,11 +87,11 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 			// The SDK member of a non-object alternative *is* the value — a *string,
 			// not a struct with getters — so its single "value" field is assigned by
 			// dereferencing the member rather than reading through Get<Field>Ok.
-			attrs, blocks = b.oneOfValueVariant(env, v, sdkVar, modelVar, &assign)
+			attrs, blocks = b.oneOfValueVariant(env, v, variantModel, sdkVar, modelVar, &assign)
 		} else {
 			var scalars []StateAssignment
 			var lists []ListAssignment
-			attrs, blocks, scalars, lists = b.walk(v.GoModel, sdkVar, modelVar, v.Attribute.Children)
+			attrs, blocks, scalars, lists = b.walk(variantModel, stemOf(v.GoModel), sdkVar, modelVar, v.Attribute.Children)
 			assign.Scalars, assign.Lists = scalars, lists
 		}
 
@@ -101,7 +107,7 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 		})
 		envFields = append(envFields, ModelFieldView{
 			GoField: v.GoField,
-			GoType:  "*" + v.GoModel,
+			GoType:  "*" + variantModel,
 			TFName:  v.TFName,
 		})
 		render.variants = append(render.variants, assign)
@@ -126,6 +132,7 @@ func (b *dataSourceBuilder) oneOfEnvelope(a *model.Attribute) oneOfRender {
 func (b *dataSourceBuilder) oneOfValueVariant(
 	env *model.OneOfEnvelope,
 	v model.OneOfEnvelopeVariant,
+	variantModel string,
 	sdkVar, modelVar string,
 	assign *OneOfVariantAssignment,
 ) (attrs, blocks []AttrView) {
@@ -164,7 +171,7 @@ func (b *dataSourceBuilder) oneOfValueVariant(
 	// The variant still needs its own one-field model struct; walk would normally
 	// have appended it, and the envelope's field points at it either way.
 	b.models = append(b.models, ModelStructView{
-		Name:   v.GoModel,
+		Name:   variantModel,
 		Fields: []ModelFieldView{{GoField: goField, GoType: value.GoType, TFName: tfName}},
 	})
 	assign.Value = &StateAssignment{
@@ -263,7 +270,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		return buildPluralView(a)
 	}
 
-	b := &dataSourceBuilder{receiver: envelopeReceiver}
+	b := &dataSourceBuilder{receiver: envelopeReceiver, namer: modelNamer{base: dsGoName(a.Name)}}
 
 	// Resolve the SDK calls. read backs the by-id lookup, search the list; the
 	// presence of each selects the resolution shape (read-only / search / both).
@@ -315,7 +322,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		}
 	}
 
-	rootStruct := dsGoName(a.Name) + "DataSourceModel"
+	rootStruct := b.namer.qualify("DataSourceModel")
 	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
 
 	if len(b.unsupported) > 0 {
@@ -324,7 +331,9 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 
 	// env is non-nil here: flattenEnvelope records an unsupported node (caught
 	// above) on every failure path. Walk the hoisted leaves into the root struct.
-	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, b.receiver, "state", env.leaves)
+	// The root's stem is empty: its inline children accumulate from the artifact base
+	// alone, so a top-level "foo" object becomes <base>FooModel.
+	recordAttrs, recordBlocks, recordScalars, recordLists := b.walk(rootStruct, "", b.receiver, "state", env.leaves)
 	leafFields := b.models[0].Fields
 
 	// Search filters: one Optional attribute + model field + param binding each.
@@ -341,6 +350,11 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	}
 	fields := append([]ModelFieldView{idField}, filterFields...)
 	b.models[0].Fields = append(fields, leafFields...)
+
+	models, conflicts := dedupeModels(b.models)
+	if len(conflicts) > 0 {
+		return DataSourceView{}, &UnsupportedEmitError{Nodes: conflicts}
+	}
 
 	assignments := append([]StateAssignment{env.idAssign}, recordScalars...)
 
@@ -370,7 +384,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		Searchable:  searchable,
 		Read:        readView,
 		Search:      searchView,
-		Models:      b.models,
+		Models:      models,
 		Schema:      SchemaView{Attributes: append(filterAttrs, recordAttrs...), Blocks: recordBlocks},
 		State: StateView{
 			ParamName:   paramName,
@@ -535,7 +549,10 @@ func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrat
 // unsupported-node collector. receiver is the getter root the state-mapper reads
 // leaves off (e.g. "attributes" for the flattened envelope).
 type dataSourceBuilder struct {
-	receiver    string
+	receiver string
+	// namer scopes every model struct name to this artifact and derives nested
+	// names from their OpenAPI component. See modelname.go.
+	namer       modelNamer
 	models      []ModelStructView
 	unsupported []UnsupportedNode
 	// dropped notes envelope members skipped from the attributes-only view
@@ -585,7 +602,16 @@ func droppedIDCollision(path string) DroppedMember {
 // the per-element accumulator). It returns the schema attr/block views plus the
 // scalar and list state assignments for the caller to place, recursing through
 // nested blocks.
-func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs []*model.Attribute) (attrViews, blockViews []AttrView, scalars []StateAssignment, lists []ListAssignment) {
+//
+// stem is this struct's own naming stem, which its children accumulate from when
+// their schema is inline (modelname.go). It is separate from structName because
+// structName is already qualified and suffixed, and a stem must be neither.
+//
+// The same struct may be reserved twice when one OpenAPI component is reached from
+// two properties: each site needs its own assignments, which are expressed against
+// site-specific receivers and LHS prefixes, so both walks run. dedupeModels
+// collapses the duplicate declarations afterwards.
+func (b *dataSourceBuilder) walk(structName, stem, receiver, lhsPrefix string, attrs []*model.Attribute) (attrViews, blockViews []AttrView, scalars []StateAssignment, lists []ListAssignment) {
 	idx := len(b.models)
 	b.models = append(b.models, ModelStructView{Name: structName})
 	var fields []ModelFieldView
@@ -664,11 +690,11 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 			})
 
 		case "schema.ListNestedBlock":
-			elemStruct := field + "Model"
+			elemStruct, childStem := b.namer.nested(stem, a)
 			base := lowerFirst(field)
 			loopVar, elemVar := base+"Item", base+"Model"
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "[]*" + elemStruct, TFName: tfName})
-			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, loopVar, elemVar, a.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
 				TFName:      tfName,
 				Description: a.Description,
@@ -694,11 +720,11 @@ func (b *dataSourceBuilder) walk(structName, receiver, lhsPrefix string, attrs [
 			})
 
 		case "schema.SingleNestedBlock":
-			childStruct := field + "Model"
+			childStruct, childStem := b.namer.nested(stem, a)
 			objVar := leafVar(tfName)
 			elemVar := lowerFirst(field) + "Model"
 			fields = append(fields, ModelFieldView{GoField: field, GoType: "*" + childStruct, TFName: tfName})
-			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, objVar, elemVar, a.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(childStruct, childStem, objVar, elemVar, a.Children)
 			blockViews = append(blockViews, AttrView{
 				TFName:      tfName,
 				Description: a.Description,
@@ -944,8 +970,21 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	// b hosts walk so list-of-object item fields generate their element structs.
-	b := &dataSourceBuilder{}
+	b := &dataSourceBuilder{namer: modelNamer{base: dsGoName(a.Name)}}
 	scalarLeaves, nonScalars := flattenItemElement(itemsBlock, &unsupported, &dropped)
+
+	// The item element's own stem. call.ItemType is the response element's component
+	// name, so it plays the same role here that ModelRefName plays under walk: the
+	// item struct is named after its component, and the item's inline children
+	// accumulate from it.
+	// Verbatim, like any other component name: ItemType is already a Go type name
+	// (it is spelled as call.GoPackage + "." + call.ItemType elsewhere), so SdkName
+	// would only mangle its acronyms.
+	var itemStem string
+	if call != nil {
+		itemStem = call.ItemType
+	}
+	itemStruct := b.namer.qualify(itemStem + "Model")
 
 	// Scalar leaves project into the item struct literal, unguarded, off the loop
 	// variable "item".
@@ -1010,10 +1049,12 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				Kind: "primitive", LHS: "r." + field, GetterOk: getter, Var: leafVar(tfName), ElementType: n.ElementType,
 			})
 		case "schema.ListNestedBlock":
-			elemStruct := model.SdkName(tfName) + "Model"
+			// itemStem, not "": these hang off the item element, so an inline child
+			// accumulates from the item struct the same way it would under walk.
+			elemStruct, childStem := b.namer.nested(itemStem, n)
 			base := lowerFirst(model.SdkName(tfName))
 			loopVar, elemVar := base+"Item", base+"Model"
-			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, loopVar, elemVar, n.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, loopVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
 				TFName: tfName, Description: n.Description,
 				IsBlock: true, ListBlock: true, Attributes: childAttrs, Blocks: childBlocks,
@@ -1025,10 +1066,10 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 				Scalars: childScalars, Lists: childLists,
 			})
 		case "schema.SingleNestedBlock":
-			elemStruct := model.SdkName(tfName) + "Model"
+			elemStruct, childStem := b.namer.nested(itemStem, n)
 			objVar := leafVar(tfName)
 			elemVar := lowerFirst(model.SdkName(tfName)) + "Model"
-			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, objVar, elemVar, n.Children)
+			childAttrs, childBlocks, childScalars, childLists := b.walk(elemStruct, childStem, objVar, elemVar, n.Children)
 			itemBlocks = append(itemBlocks, AttrView{
 				TFName: tfName, Description: n.Description,
 				IsBlock: true, ListBlock: false, Attributes: childAttrs, Blocks: childBlocks,
@@ -1053,7 +1094,6 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: unsupported}
 	}
 
-	itemStruct := model.SdkName(call.ItemType) + "Model"
 	itemField := model.SdkName(a.Name)
 	goName := dsGoName(a.Name)
 
@@ -1066,10 +1106,14 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	// Models: parent, the item struct, then any element structs walked for
 	// list-of-object item fields.
 	models := []ModelStructView{
-		{Name: goName + "DataSourceModel", Fields: parentFields},
+		{Name: b.namer.qualify("DataSourceModel"), Fields: parentFields},
 		{Name: itemStruct, Fields: itemFields},
 	}
 	models = append(models, b.models...)
+	models, conflicts := dedupeModels(models)
+	if len(conflicts) > 0 {
+		return DataSourceView{}, &UnsupportedEmitError{Nodes: conflicts}
+	}
 
 	return DataSourceView{
 		Cardinality: Plural,

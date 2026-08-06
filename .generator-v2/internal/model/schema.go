@@ -203,7 +203,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 		if err != nil {
 			return nil, err
 		}
-		attr.Children = children
+		attr.Children, attr.ModelRefName = children, s.RefName
 
 	case SchemaKindArray:
 		switch s.Items.Kind {
@@ -212,7 +212,8 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 			if err != nil {
 				return nil, err
 			}
-			attr.Children = children
+			// The element supplies the struct, so the element's component names it.
+			attr.Children, attr.ModelRefName = children, s.Items.RefName
 		case SchemaKindOneOf:
 			// The list itself carries the envelope: its elements are variant
 			// blocks, so no attribute stands at the element path.
@@ -238,7 +239,7 @@ func (b *treeBuilder) attribute(s *Schema, path string, mode nestingMode, requir
 			if err != nil {
 				return nil, err
 			}
-			attr.Children = children
+			attr.Children, attr.ModelRefName = children, s.Items.RefName
 		case SchemaKindOneOf:
 			variants, envelope, err := b.oneOfVariants(s.Items, path+"{}", nestAttribute)
 			if err != nil {
