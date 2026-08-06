@@ -51,8 +51,22 @@ func EscapeReservedKeyword(word string) string {
 	return word
 }
 
+// UpperFirst upper-cases the first rune and leaves the rest untouched, a port of
+// the SDK generator's utils.upperfirst. It is not a PascalCase conversion: the
+// SDK applies it to an already-formed name (a component name, or a Go type
+// spelling) when deriving a oneOf wrapper member, so "AWSIntegration" and
+// "string" must come back as "AWSIntegration" and "String" respectively.
+func UpperFirst(value string) string {
+	if value == "" {
+		return ""
+	}
+	runes := []rune(value)
+	return string(unicode.ToUpper(runes[0])) + string(runes[1:])
+}
+
 // SdkName translates an OpenAPI identifier into the PascalCase form used by
-// datadog-api-client-go.
+// datadog-api-client-go. It is the port of the SDK generator's
+// utils.camel_case (snake_case, then upperfirst each underscore-delimited part).
 //
 // OperationIds in the Datadog spec are already PascalCase and serve as SDK
 // method anchors directly; SdkName is for snake_case property and parameter names.
