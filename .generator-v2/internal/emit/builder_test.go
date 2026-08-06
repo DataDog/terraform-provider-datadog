@@ -349,7 +349,7 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(src).To(ContainSubstring(`response.Diagnostics.AddError("filters returned no results", "")`))
 			Expect(src).To(ContainSubstring(`if len(items) > 1 {`))
 			Expect(src).To(ContainSubstring(`use more specific search criteria`))
-			Expect(src).To(ContainSubstring(`d.updateState(&state, items[0])`))
+			Expect(src).To(ContainSubstring(`response.Diagnostics.Append(d.updateState(ctx, &state, items[0])...)`))
 		},
 		Entry("search only", powerpackSearchOperation),
 		Entry("both", datastoreBothOperation),

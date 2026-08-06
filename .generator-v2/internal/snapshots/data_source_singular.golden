@@ -8,6 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -88,12 +89,16 @@ func (d *datadogIncidentTypeDataSource) Read(ctx context.Context, request dataso
 		return
 	}
 
-	d.updateState(&state, &resp)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &resp)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogIncidentTypeDataSource) updateState(state *datadogIncidentTypeDataSourceModel, resp *datadogV2.IncidentTypeResponse) {
+func (d *datadogIncidentTypeDataSource) updateState(ctx context.Context, state *datadogIncidentTypeDataSourceModel, resp *datadogV2.IncidentTypeResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 	if id, ok := resp.Data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)
@@ -107,4 +112,5 @@ func (d *datadogIncidentTypeDataSource) updateState(state *datadogIncidentTypeDa
 	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)
 	}
+	return diags
 }

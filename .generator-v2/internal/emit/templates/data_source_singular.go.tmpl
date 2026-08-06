@@ -18,6 +18,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 {{- if .Searchable }}
 
@@ -90,7 +91,10 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 		return
 	}
 
-	d.updateState(&state, &resp)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &resp)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 {{- else if .ByID }}
 
 	if !state.ID.IsNull() {
@@ -100,20 +104,33 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 			return
 		}
 
-		d.updateState(&state, resp.GetData())
+		response.Diagnostics.Append(d.updateState(ctx, &state, resp.GetData())...)
 	} else {
 {{ template "searchFetch" . }}
-		d.updateState(&state, items[0])
+		response.Diagnostics.Append(d.updateState(ctx, &state, items[0])...)
+	}
+	if response.Diagnostics.HasError() {
+		return
 	}
 {{- else }}
 {{ template "searchFetch" . }}
-	d.updateState(&state, items[0])
+	response.Diagnostics.Append(d.updateState(ctx, &state, items[0])...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 {{- end }}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceModel, {{ .State.ParamName }} {{ .State.ParamType }}) {
+{{/*
+  updateState returns diagnostics rather than writing them, so it stays free of
+  the datasource request/response types and can fail at a specific schema path.
+  Shape follows the one hand-written precedent that reports from a state mapper,
+  datadog/fwprovider/data_source_datadog_azure_uc_config.go.
+*/}}
+func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .GoName }}DataSourceModel, {{ .State.ParamName }} {{ .State.ParamType }}) diag.Diagnostics {
+	var diags diag.Diagnostics
 {{- range .State.Preamble }}
 	{{ . }}
 {{- end }}
@@ -125,6 +142,7 @@ func (d *{{ .GoName }}DataSource) updateState(state *{{ .GoName }}DataSourceMode
 {{- range .State.Lists }}
 	{{ template "renderList" . }}
 {{- end }}
+	return diags
 }
 {{- end -}}
 

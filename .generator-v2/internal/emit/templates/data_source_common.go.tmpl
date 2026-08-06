@@ -82,10 +82,20 @@ Blocks: map[string]schema.Block{
 {{- end }}
 {{- end -}}
 
+{{/*
+  renderList projects one SDK collection into state. The primitive branch reports
+  the conversion's own diagnostics instead of discarding them, and converts under
+  the caller's ctx: a state mapper has no business minting context.Background(),
+  and a failed ListValueFrom used to leave a zero value in state silently. Each
+  branch opens its own `if` block, so the block-scoped listDiags cannot collide
+  with a sibling or nested list.
+*/}}
 {{- define "renderList" -}}
 {{- if eq .Kind "primitive" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
-	{{ .LHS }}, _ = types.ListValueFrom(context.Background(), {{ .ElementType }}, *{{ .Var }})
+	var listDiags diag.Diagnostics
+	{{ .LHS }}, listDiags = types.ListValueFrom(ctx, {{ .ElementType }}, *{{ .Var }})
+	diags.Append(listDiags...)
 } else {
 	{{ .LHS }} = types.ListNull({{ .ElementType }})
 }
