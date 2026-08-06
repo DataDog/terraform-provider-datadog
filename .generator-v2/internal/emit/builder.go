@@ -199,20 +199,34 @@ type flattenedEnvelope struct {
 }
 
 // flattenEnvelope recognizes the singular JSON:API envelope at the response root
-// and reshapes it for the walk. It expects a single top-level "data" object whose
-// members are a subset of {id, type, attributes}, with "attributes" an object of
-// leaves only. It hoists each attribute leaf to a top-level path ("response.<leaf>"),
+// and reshapes it for the walk. It expects a top-level "data" object whose members
+// are a subset of {id, type, attributes}, with "attributes" an object of leaves
+// only. It hoists each attribute leaf to a top-level path ("response.<leaf>"),
 // surfaces "id" from id_strategy (data.id only), and drops "type". Anything outside
 // the recognized envelope is appended to b.unsupported and the result is nil.
 func (b *dataSourceBuilder) flattenEnvelope(topLevel []*model.Attribute, idStrategy model.IdStrategy, rootExpr string) *flattenedEnvelope {
-	if len(topLevel) != 1 || tfNameOf(topLevel[0].Path) != "data" || topLevel[0].TfType != "schema.SingleNestedBlock" {
+	// A JSON:API response carries sideloading and request metadata beside the
+	// primary resource: "included" (the hydrated targets of data.relationships),
+	// "meta", "links". None of it is the resource's own state — no hand-written
+	// artifact in the provider surfaces any of it — so drop those siblings the same
+	// way data.relationships is dropped below, rather than failing on a shape that
+	// is in fact recognized. Dropping "included" also keeps its element union out
+	// of the view; that union is the reason these responses need a decision at all.
+	var data *model.Attribute
+	for _, attr := range topLevel {
+		if tfNameOf(attr.Path) == "data" {
+			data = attr
+			continue
+		}
+		b.dropped = append(b.dropped, droppedEnvelopeMember(attr.Path))
+	}
+	if data == nil || data.TfType != "schema.SingleNestedBlock" {
 		b.unsupported = append(b.unsupported, UnsupportedNode{
 			Path:   "response",
-			Reason: "expected a single-member JSON:API envelope {data:{...}}",
+			Reason: "expected a JSON:API envelope with a data object {data:{...}}",
 		})
 		return nil
 	}
-	data := topLevel[0]
 
 	// data members must be a subset of {id, type, attributes}.
 	var attributes *model.Attribute
