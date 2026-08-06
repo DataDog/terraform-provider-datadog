@@ -31,12 +31,11 @@ const (
 )
 
 // SchemaKind classifies a normalized Schema node by structure. Primitive,
-// Object, Array and Map are emittable as Terraform attributes. Variant (oneOf)
-// has no Terraform equivalent, so the attribute-tree builder drops it (skipping
-// the property, or the whole collection when it is an array/map element). RefCycle
-// ($ref cycle or beyond --max-depth) and Unsupported (no representable type or
-// structure, and anyOf) are fatal — the builder fails the artifact rather than
-// emitting a types.Dynamic escape hatch.
+// Object, Array and Map are directly emittable as Terraform attributes. OneOf
+// requires a synthetic envelope described by Schema.OneOf. RefCycle ($ref cycle
+// or beyond --max-depth) and Unsupported (no representable type or structure,
+// and anyOf) are fatal — the builder fails the artifact rather than emitting a
+// types.Dynamic escape hatch.
 type SchemaKind string
 
 const (
@@ -44,9 +43,14 @@ const (
 	SchemaKindObject      SchemaKind = "object"
 	SchemaKindArray       SchemaKind = "array"
 	SchemaKindMap         SchemaKind = "map"
-	SchemaKindVariant     SchemaKind = "variant"     // oneOf; dropped from the attribute tree
+	SchemaKindOneOf       SchemaKind = "one_of"
 	SchemaKindRefCycle    SchemaKind = "ref_cycle"   // $ref cycle or beyond --max-depth
 	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure, or anyOf; always rejected
+
+	// SchemaKindVariant is the legacy parser name for SchemaKindOneOf. It stays
+	// as an alias until the parser migration populates Schema.OneOf directly.
+	// New model code should use SchemaKindOneOf.
+	SchemaKindVariant = SchemaKindOneOf
 )
 
 // Cardinality distinguishes a singular data source (resolves one item by id)
@@ -155,7 +159,7 @@ type Pagination struct {
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
-// flattening and oneOf/anyOf variant detection.
+// flattening, oneOf-envelope detection, and explicit anyOf rejection.
 type Schema struct {
 	Kind SchemaKind
 	// Properties is populated for objects only; iteration is always sorted.
@@ -164,7 +168,15 @@ type Schema struct {
 	Required []string
 	// Items is populated for arrays only.
 	Items *Schema
-	// Variants is populated for oneOf/anyOf only.
+	// OneOf is populated when Kind is SchemaKindOneOf. It carries the stable
+	// Terraform envelope identity, its non-null alternatives, and the metadata
+	// required to bind those alternatives to the generated SDK wrapper.
+	OneOf *OneOfSpec
+	// Variants is the parser's legacy oneOf representation. It remains only as a
+	// compatibility bridge until normalization constructs OneOfSpec; new model
+	// and emit code must consume OneOf instead.
+	//
+	// Deprecated: use OneOf.Variants.
 	Variants []*Schema
 	// Type is the primitive type (string/integer/number/boolean).
 	Type string
@@ -176,6 +188,62 @@ type Schema struct {
 	Sensitive bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
+}
+
+// OneOfSpec is the normalized representation of an OpenAPI oneOf. The envelope
+// exists only in generated Terraform/Go code; request and response mappers
+// unwrap/wrap it when interacting with the Datadog go-sdk.
+type OneOfSpec struct {
+	// Name is the deterministic generated envelope type name. Reusable
+	// component unions use their component name; inline unions use a
+	// schema-path-derived name.
+	Name string
+	// Path is the canonical request/response schema path used for diagnostics
+	// and as an input to inline envelope naming.
+	Path string
+	// Optional permits the whole envelope to be absent because the containing
+	// OpenAPI field is not required.
+	Optional bool
+	// Nullable permits OpenAPI null. Null is represented by an absent envelope,
+	// never by a synthetic null variant.
+	Nullable bool
+	// Discriminator retains optional OpenAPI discriminator metadata for stable
+	// naming and diagnostics. It is not required for branch selection.
+	Discriminator *OneOfDiscriminator
+	// Variants contains only non-null alternatives, sorted by TFName. Parser
+	// source order and map iteration order must not affect this slice.
+	Variants []OneOfVariant
+}
+
+// OneOfDiscriminator retains the OpenAPI discriminator metadata relevant to a
+// normalized union. Mapping keys may participate in stable variant naming;
+// consumers must sort keys before iterating over Mapping.
+type OneOfDiscriminator struct {
+	PropertyName string
+	Mapping      map[string]string
+}
+
+// OneOfVariant is one non-null oneOf alternative and its Terraform/SDK binding.
+type OneOfVariant struct {
+	// TFName is the stable snake_case nested-block name.
+	TFName string
+	// GoName is the generated Go model/field stem corresponding to TFName.
+	GoName string
+	// Schema is the fully normalized alternative, including constraints common
+	// to the parent oneOf. It may recursively contain another oneOf.
+	Schema *Schema
+	// RefName is the referenced OpenAPI component name, when present.
+	RefName string
+	// SDKField is the Datadog go-sdk wrapper member whose presence selects this
+	// alternative.
+	SDKField string
+	// SDKConstructor is the generated SDK convenience constructor for this
+	// alternative, when the SDK exposes one.
+	SDKConstructor string
+	// ValueWrapped is true for primitive, list, and map alternatives, whose
+	// Terraform variant model exposes a single field named value. Object
+	// alternatives expose their generated fields directly.
+	ValueWrapped bool
 }
 
 // ----------------------------------------------------------------------------
