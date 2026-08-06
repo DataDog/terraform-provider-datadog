@@ -18,10 +18,32 @@ paths:
         content:
           application/json:
             schema:
-              nullable: true
               oneOf:
                 - type: string
                 - type: boolean
+                - nullable: true
+      responses:
+        "204":
+          description: no content
+  /inline-reordered:
+    post:
+      operationId: CreateReorderedInlineOneOf
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: reordered_inline_oneof
+        group:
+          create: CreateReorderedInlineOneOf
+          read: CreateReorderedInlineOneOf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - nullable: true
+                - type: boolean
+                - type: string
       responses:
         "204":
           description: no content
@@ -42,8 +64,12 @@ paths:
             schema:
               $ref: "#/components/schemas/AnimalUnion"
       responses:
-        "204":
-          description: no content
+        "200":
+          description: animal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnimalUnion"
   /nested:
     post:
       operationId: CreateNestedOneOf
@@ -85,12 +111,7 @@ paths:
                 recursive:
                   oneOf:
                     - type: string
-                    - type: object
-                      properties:
-                        nested:
-                          oneOf:
-                            - type: boolean
-                            - type: string
+                    - $ref: "#/components/schemas/RecursiveVariant"
       responses:
         "204":
           description: no content
@@ -115,21 +136,59 @@ paths:
                 shared:
                   type: string
               oneOf:
-                - type: object
-                  required: [alpha]
-                  properties:
-                    alpha:
-                      type: boolean
-                - type: object
-                  required: [beta]
-                  properties:
-                    beta:
-                      type: integer
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+      responses:
+        "204":
+          description: no content
+  /required-only-sibling:
+    post:
+      operationId: CreateOneOfWithRequiredOnlySibling
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: oneof_with_required_only_sibling
+        group:
+          create: CreateOneOfWithRequiredOnlySibling
+          read: CreateOneOfWithRequiredOnlySibling
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind]
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
       responses:
         "204":
           description: no content
 components:
   schemas:
+    RecursiveVariant:
+      type: object
+      properties:
+        nested:
+          oneOf:
+            - type: boolean
+            - type: string
+    AlphaVariant:
+      type: object
+      required: [alpha]
+      properties:
+        kind:
+          type: string
+        alpha:
+          type: boolean
+    BetaVariant:
+      type: object
+      required: [beta]
+      properties:
+        kind:
+          type: string
+        beta:
+          type: integer
     AnimalUnion:
       discriminator:
         propertyName: kind

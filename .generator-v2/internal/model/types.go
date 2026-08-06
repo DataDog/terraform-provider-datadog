@@ -47,9 +47,9 @@ const (
 	SchemaKindRefCycle    SchemaKind = "ref_cycle"   // $ref cycle or beyond --max-depth
 	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure, or anyOf; always rejected
 
-	// SchemaKindVariant is the legacy parser name for SchemaKindOneOf. It stays
-	// as an alias until the parser migration populates Schema.OneOf directly.
-	// New model code should use SchemaKindOneOf.
+	// SchemaKindVariant is retained as a source-compatibility alias for code
+	// written before the parser populated Schema.OneOf directly. New code should
+	// use SchemaKindOneOf.
 	SchemaKindVariant = SchemaKindOneOf
 )
 
@@ -173,7 +173,7 @@ type Schema struct {
 	// required to bind those alternatives to the generated SDK wrapper.
 	OneOf *OneOfSpec
 	// Variants is the parser's legacy oneOf representation. It remains only as a
-	// compatibility bridge until normalization constructs OneOfSpec; new model
+	// source-compatibility bridge; NormalizeSchemas leaves it empty and new model
 	// and emit code must consume OneOf instead.
 	//
 	// Deprecated: use OneOf.Variants.
@@ -188,6 +188,11 @@ type Schema struct {
 	Sensitive bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
+	// UnsupportedReason explains why a node with Kind == SchemaKindUnsupported
+	// cannot be represented. It is retained so the affected artifact can fail
+	// with the parser's actionable local diagnostic without aborting spec loading
+	// or preventing unrelated artifacts from being generated.
+	UnsupportedReason string
 }
 
 // OneOfSpec is the normalized representation of an OpenAPI oneOf. The envelope

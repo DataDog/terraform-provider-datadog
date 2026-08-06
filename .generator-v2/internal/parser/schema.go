@@ -81,7 +81,9 @@ func backtickedToken(s string) (string, bool) {
 // application/json body of the lowest-numbered 2xx code that has one. A missing
 // body leaves the field nil. $refs resolve through spec.Components up to maxDepth
 // edges, beyond which a node is SchemaKindRefCycle; a missing target yields
-// *UnresolvableRefError. Untracked, ungrouped operations are left untouched.
+// *UnresolvableRefError. Local oneOf naming failures become
+// SchemaKindUnsupported nodes carrying their reason so unrelated operations can
+// still normalize. Untracked, ungrouped operations are left untouched.
 func NormalizeSchemas(spec *model.Spec, rawOps map[*model.Operation]*v3.Operation, maxDepth int, trackingFieldName string) error {
 	if spec == nil {
 		return nil
@@ -158,6 +160,15 @@ type schemaNormalizer struct {
 	trackingFieldName string
 }
 
+// schemaContext carries information that is not available after a SchemaProxy
+// has been resolved. oneOf normalization needs all three values to retain
+// component identity and to give inline/nested unions deterministic paths.
+type schemaContext struct {
+	path     string
+	required bool
+	refName  string
+}
+
 // fillOperation normalizes raw's request and 2xx response bodies into op,
 // leaving a field nil when its body is absent. It also captures query
 // parameters, pagination, and the list element type, which feed the plural
@@ -167,7 +178,11 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 		return nil
 	}
 	if reqProxy := requestBodySchemaProxy(raw); reqProxy != nil {
-		req, err := n.normalizeProxy(reqProxy, 0)
+		required := raw.RequestBody.Required != nil && *raw.RequestBody.Required
+		req, err := n.normalizeProxyAt(reqProxy, 0, schemaContext{
+			path:     "request",
+			required: required,
+		})
 		if err != nil {
 			return err
 		}
@@ -189,7 +204,7 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 	if respProxy.IsReference() {
 		op.ResponseRefName = lastRefSegment(respProxy.GetReference())
 	}
-	resp, err := n.normalizeProxy(respProxy, 0)
+	resp, err := n.normalizeProxyAt(respProxy, 0, schemaContext{path: "response", required: true})
 	if err != nil {
 		return err
 	}
@@ -212,7 +227,10 @@ func (n *schemaNormalizer) fillQueryParams(op *model.Operation, raw *v3.Operatio
 		if p == nil || p.In != "query" || p.Name == "" {
 			continue
 		}
-		schema, err := n.normalizeProxy(p.Schema, 0)
+		schema, err := n.normalizeProxyAt(p.Schema, 0, schemaContext{
+			path:     "query." + p.Name,
+			required: p.Required != nil && *p.Required,
+		})
 		if err != nil {
 			return err
 		}
@@ -365,14 +383,18 @@ func responseBodySchemaProxy(op *v3.Operation) *base.SchemaProxy {
 	return nil
 }
 
-// normalizeProxy normalizes one schema proxy, resolving a $ref through the
-// component set and counting it against the depth budget. At the boundary the
-// node is classified SchemaKindRefCycle rather than expanded.
-func (n *schemaNormalizer) normalizeProxy(proxy *base.SchemaProxy, depth int) (*model.Schema, error) {
+// normalizeProxyAt normalizes one schema proxy, resolving a $ref through the
+// component set and counting it against the depth budget. The first component
+// name is retained in ctx before resolution, since libopenapi's resolved schema
+// no longer identifies the component that supplied a oneOf envelope.
+func (n *schemaNormalizer) normalizeProxyAt(proxy *base.SchemaProxy, depth int, ctx schemaContext) (*model.Schema, error) {
 	if proxy == nil {
 		return nil, nil
 	}
 	if proxy.IsReference() {
+		if ctx.refName == "" {
+			ctx.refName = lastRefSegment(proxy.GetReference())
+		}
 		// depth counts $ref edges already followed; the >= bound matches cycles.go.
 		if n.maxDepth > 0 && depth >= n.maxDepth {
 			return &model.Schema{Kind: model.SchemaKindRefCycle}, nil
@@ -381,9 +403,9 @@ func (n *schemaNormalizer) normalizeProxy(proxy *base.SchemaProxy, depth int) (*
 		if err != nil {
 			return nil, err
 		}
-		return n.normalizeProxy(target, depth+1)
+		return n.normalizeProxyAt(target, depth+1, ctx)
 	}
-	return n.normalizeSchema(proxy.Schema(), depth)
+	return n.normalizeSchema(proxy.Schema(), depth, ctx)
 }
 
 // resolveRef returns the proxy a "#/components/schemas/<name>" ref points to, or
@@ -406,7 +428,7 @@ func (n *schemaNormalizer) resolveRef(ref string) (*base.SchemaProxy, error) {
 // normalizeSchema converts a resolved *base.Schema into a model.Schema:
 // classifying its kind from structure and carrying Type, Format, Enum, Required
 // and Sensitive. Children recurse at the same depth — only $refs cost depth.
-func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Schema, error) {
+func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int, ctx schemaContext) (*model.Schema, error) {
 	if s == nil {
 		return nil, nil
 	}
@@ -428,7 +450,10 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		out.Properties = make(map[string]*model.Schema)
 		// Sorted iteration keeps recursion (and any surfaced error) deterministic.
 		for _, key := range sortedPropertyKeys(s) {
-			child, err := n.normalizeProxy(s.Properties.GetOrZero(key), depth)
+			child, err := n.normalizeProxyAt(s.Properties.GetOrZero(key), depth, schemaContext{
+				path:     childPath(ctx.path, key),
+				required: slices.Contains(s.Required, key),
+			})
 			if err != nil {
 				return nil, err
 			}
@@ -439,7 +464,10 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 	case model.SchemaKindArray:
 		// Array: a single element schema, carried in out.Items.
 		if s.Items != nil && s.Items.IsA() {
-			item, err := n.normalizeProxy(s.Items.A, depth)
+			item, err := n.normalizeProxyAt(s.Items.A, depth, schemaContext{
+				path:     childPath(ctx.path, "[]"),
+				required: true,
+			})
 			if err != nil {
 				return nil, err
 			}
@@ -452,7 +480,10 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 		// no value schema — its values are unconstrained, which TF cannot
 		// represent, so carry an Unsupported sentinel for the check to reject.
 		if s.AdditionalProperties != nil && s.AdditionalProperties.IsA() {
-			value, err := n.normalizeProxy(s.AdditionalProperties.A, depth)
+			value, err := n.normalizeProxyAt(s.AdditionalProperties.A, depth, schemaContext{
+				path:     childPath(ctx.path, "{}"),
+				required: true,
+			})
 			if err != nil {
 				return nil, err
 			}
@@ -461,38 +492,431 @@ func (n *schemaNormalizer) normalizeSchema(s *base.Schema, depth int) (*model.Sc
 			out.Items = &model.Schema{Kind: model.SchemaKindUnsupported}
 		}
 
-	case model.SchemaKindVariant:
-		// Variant: one of several alternative oneOf shapes (anyOf is classified
-		// unsupported). Every alternative is normalized into out.Variants.
-		for _, variant := range s.OneOf {
-			v, err := n.normalizeProxy(variant, depth)
-			if err != nil {
-				return nil, err
+	case model.SchemaKindOneOf:
+		union, err := n.normalizeOneOf(s, depth, ctx)
+		if err != nil {
+			if isLocalOneOfNamingError(err) {
+				out.Kind = model.SchemaKindUnsupported
+				out.UnsupportedReason = err.Error()
+				return out, nil
 			}
-			out.Variants = append(out.Variants, v)
+			return nil, err
 		}
+		out.OneOf = union
 	}
 
 	return out, nil
 }
 
+func isLocalOneOfNamingError(err error) bool {
+	var unresolved *model.OneOfVariantNameResolutionError
+	if errors.As(err, &unresolved) {
+		return true
+	}
+	var collision *model.OneOfVariantNameCollisionError
+	return errors.As(err, &collision)
+}
+
+type oneOfAlternativeSource struct {
+	schema  *base.Schema
+	ref     string
+	refName string
+}
+
+// normalizeOneOf builds the parser-facing union model while the raw OpenAPI
+// proxies are still available. This is the only point at which component
+// references, discriminator mappings and sibling constraints can all be
+// associated with the same alternative without guessing downstream.
+func (n *schemaNormalizer) normalizeOneOf(s *base.Schema, depth int, ctx schemaContext) (*model.OneOfSpec, error) {
+	union := &model.OneOfSpec{
+		Name:          oneOfEnvelopeName(ctx),
+		Path:          ctx.path,
+		Optional:      !ctx.required,
+		Nullable:      schemaAllowsNull(s),
+		Discriminator: normalizeDiscriminator(s.Discriminator),
+	}
+
+	for alternativeIndex, proxy := range s.OneOf {
+		source, err := n.inspectOneOfVariants(proxy, depth)
+		if err != nil {
+			return nil, err
+		}
+		if source.schema != nil && schemaAllowsNull(source.schema) {
+			union.Nullable = true
+		}
+		if source.schema != nil && isNullOnlySchema(source.schema) {
+			continue
+		}
+
+		tfName, err := oneOfVariantName(
+			s.Discriminator,
+			source,
+			ctx.path,
+			alternativeIndex+1,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("parser: %w", err)
+		}
+		variantPath := childPath(ctx.path, tfName)
+		variantSchema, err := n.normalizeProxyAt(proxy, depth, schemaContext{
+			path:     variantPath,
+			required: true,
+			refName:  source.refName,
+		})
+		if err != nil {
+			return nil, err
+		}
+		variantSchema, err = n.mergeOneOfSiblings(s, variantSchema, depth, schemaContext{path: variantPath})
+		if err != nil {
+			return nil, err
+		}
+		if variantSchema == nil {
+			variantSchema = &model.Schema{Kind: model.SchemaKindUnsupported}
+		}
+
+		union.Variants = append(union.Variants, model.OneOfVariant{
+			TFName:       tfName,
+			GoName:       model.SdkName(tfName),
+			Schema:       variantSchema,
+			RefName:      source.refName,
+			ValueWrapped: oneOfValueWrapped(variantSchema),
+		})
+	}
+
+	sort.Slice(union.Variants, func(i, j int) bool {
+		return union.Variants[i].TFName < union.Variants[j].TFName
+	})
+	if err := model.ValidateOneOfVariantNames(ctx.path, union.Variants); err != nil {
+		return nil, fmt.Errorf("parser: %w", err)
+	}
+	return union, nil
+}
+
+// inspectOneOfVariants follows reference chains only far enough to retain
+// the outer component name and inspect naming/nullability metadata. The normal
+// normalization pass still owns depth handling and schema conversion.
+func (n *schemaNormalizer) inspectOneOfVariants(proxy *base.SchemaProxy, depth int) (oneOfAlternativeSource, error) {
+	var source oneOfAlternativeSource
+	for proxy != nil && proxy.IsReference() {
+		if source.ref == "" {
+			source.ref = proxy.GetReference()
+			source.refName = lastRefSegment(source.ref)
+		}
+		if n.maxDepth > 0 && depth >= n.maxDepth {
+			return source, nil
+		}
+		target, err := n.resolveRef(proxy.GetReference())
+		if err != nil {
+			return source, err
+		}
+		proxy = target
+		depth++
+	}
+	if proxy != nil {
+		source.schema = proxy.Schema()
+	}
+	return source, nil
+}
+
+func oneOfEnvelopeName(ctx schemaContext) string {
+	if ctx.refName != "" {
+		return ctx.refName
+	}
+	name := model.SdkName(ctx.path)
+	if name == "" {
+		name = "Inline"
+	}
+	return name + "OneOf"
+}
+
+func normalizeDiscriminator(discriminator *base.Discriminator) *model.OneOfDiscriminator {
+	if discriminator == nil {
+		return nil
+	}
+	out := &model.OneOfDiscriminator{PropertyName: discriminator.PropertyName}
+	if discriminator.Mapping != nil && orderedmap.Len(discriminator.Mapping) > 0 {
+		out.Mapping = make(map[string]string, orderedmap.Len(discriminator.Mapping))
+		for key, value := range discriminator.Mapping.FromOldest() {
+			out.Mapping[key] = value
+		}
+	}
+	return out
+}
+
+func oneOfVariantName(
+	discriminator *base.Discriminator,
+	source oneOfAlternativeSource,
+	path string,
+	alternative int,
+) (string, error) {
+	candidates := model.OneOfVariantNameCandidates{
+		DiscriminatorKey: discriminatorNameForRef(discriminator, source.ref, source.refName),
+		RefName:          source.refName,
+	}
+	if source.schema != nil {
+		if isRepresentablePrimitive(source.schema) {
+			candidates.PrimitiveType = firstType(source.schema)
+			candidates.PrimitiveFormat = source.schema.Format
+		}
+	}
+	return model.ResolveOneOfVariantName(path, alternative, candidates)
+}
+
+func discriminatorNameForRef(discriminator *base.Discriminator, ref, refName string) string {
+	if discriminator == nil || discriminator.Mapping == nil || (ref == "" && refName == "") {
+		return ""
+	}
+	keys := make([]string, 0, orderedmap.Len(discriminator.Mapping))
+	for key := range discriminator.Mapping.KeysFromOldest() {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		mapped := discriminator.Mapping.GetOrZero(key)
+		if mapped == ref || (refName != "" && lastRefSegment(mapped) == refName) {
+			return key
+		}
+	}
+	return ""
+}
+
+// mergeOneOfSiblings applies the constraints adjacent to oneOf to an
+// alternative. Normalizing a shallow copy without oneOf lets the existing
+// object/array/map/primitive code process those siblings using the variant's
+// canonical path.
+func (n *schemaNormalizer) mergeOneOfSiblings(
+	parent *base.Schema,
+	variant *model.Schema,
+	depth int,
+	ctx schemaContext,
+) (*model.Schema, error) {
+	commonRaw, ok := oneOfSiblingSchema(parent)
+	if !ok {
+		return variant, nil
+	}
+	common, err := n.normalizeSchema(commonRaw, depth, ctx)
+	if err != nil {
+		return nil, err
+	}
+	// A type:object sibling carrying only required names is a constraint
+	// carrier, not a standalone Terraform object. General schema normalization
+	// correctly classifies an object with no properties as Unsupported, but
+	// retaining that sentinel here would cause mergeNormalizedSchemas to discard
+	// the required constraint. Give this merge-only schema an empty object shape
+	// so its required names are applied to every object alternative.
+	if common.Kind == model.SchemaKindUnsupported && isRequiredOnlyObjectConstraint(commonRaw) {
+		common.Kind = model.SchemaKindObject
+		common.Properties = make(map[string]*model.Schema)
+		common.Required = sortedRequired(commonRaw)
+	}
+	return mergeNormalizedSchemas(variant, common), nil
+}
+
+func isRequiredOnlyObjectConstraint(s *base.Schema) bool {
+	return s != nil &&
+		hasType(s, "object") &&
+		len(s.Required) > 0 &&
+		(s.Properties == nil || orderedmap.Len(s.Properties) == 0) &&
+		s.Items == nil &&
+		s.AdditionalProperties == nil &&
+		len(s.Enum) == 0 &&
+		s.Format == ""
+}
+
+func oneOfSiblingSchema(s *base.Schema) (*base.Schema, bool) {
+	if s == nil {
+		return nil, false
+	}
+	common := *s
+	common.OneOf = nil
+	common.AnyOf = nil
+	common.Discriminator = nil
+	common.Nullable = nil
+	common.Description = ""
+	common.Type = nonNullTypes(s.Type)
+
+	hasConstraints := len(common.Type) > 0 ||
+		(common.Properties != nil && orderedmap.Len(common.Properties) > 0) ||
+		len(common.Required) > 0 ||
+		common.Items != nil ||
+		common.AdditionalProperties != nil ||
+		len(common.Enum) > 0 ||
+		common.Format != ""
+	return &common, hasConstraints
+}
+
+// mergeNormalizedSchemas intersects the subset of OpenAPI constraints retained
+// by model.Schema. A kind mismatch remains present as an Unsupported variant so
+// later validation can report that precise alternative instead of dropping it.
+func mergeNormalizedSchemas(variant, common *model.Schema) *model.Schema {
+	if variant == nil {
+		return common
+	}
+	if common == nil || common.Kind == model.SchemaKindUnsupported {
+		return variant
+	}
+	if variant.Kind == model.SchemaKindOneOf && variant.OneOf != nil {
+		for i := range variant.OneOf.Variants {
+			variant.OneOf.Variants[i].Schema = mergeNormalizedSchemas(variant.OneOf.Variants[i].Schema, common)
+			variant.OneOf.Variants[i].ValueWrapped = oneOfValueWrapped(variant.OneOf.Variants[i].Schema)
+		}
+		return variant
+	}
+	if variant.Kind == model.SchemaKindUnsupported {
+		if variant.UnsupportedReason != "" {
+			return variant
+		}
+		if common.Description == "" {
+			common.Description = variant.Description
+		}
+		return common
+	}
+	if variant.Kind != common.Kind {
+		return &model.Schema{
+			Kind:        model.SchemaKindUnsupported,
+			Description: variant.Description,
+		}
+	}
+
+	switch variant.Kind {
+	case model.SchemaKindObject:
+		if variant.Properties == nil {
+			variant.Properties = make(map[string]*model.Schema)
+		}
+		for key, commonProperty := range common.Properties {
+			if property, exists := variant.Properties[key]; exists {
+				variant.Properties[key] = mergeNormalizedSchemas(property, commonProperty)
+			} else {
+				variant.Properties[key] = commonProperty
+			}
+		}
+		variant.Required = sortedUniqueStrings(append(variant.Required, common.Required...))
+	case model.SchemaKindArray, model.SchemaKindMap:
+		variant.Items = mergeNormalizedSchemas(variant.Items, common.Items)
+	case model.SchemaKindPrimitive:
+		if variant.Type != "" && common.Type != "" && variant.Type != common.Type {
+			return &model.Schema{
+				Kind:        model.SchemaKindUnsupported,
+				Description: variant.Description,
+			}
+		}
+		if variant.Type == "" {
+			variant.Type = common.Type
+		}
+		if variant.Format != "" && common.Format != "" && variant.Format != common.Format {
+			return &model.Schema{
+				Kind:        model.SchemaKindUnsupported,
+				Description: variant.Description,
+			}
+		}
+		if variant.Format == "" {
+			variant.Format = common.Format
+		}
+		switch {
+		case len(variant.Enum) == 0:
+			variant.Enum = append([]string(nil), common.Enum...)
+		case len(common.Enum) > 0:
+			intersection := intersectStrings(variant.Enum, common.Enum)
+			if len(intersection) == 0 {
+				return &model.Schema{
+					Kind:        model.SchemaKindUnsupported,
+					Description: variant.Description,
+				}
+			}
+			variant.Enum = intersection
+		}
+	}
+	variant.Sensitive = variant.Sensitive || common.Sensitive
+	return variant
+}
+
+func oneOfValueWrapped(schema *model.Schema) bool {
+	if schema == nil {
+		return false
+	}
+	switch schema.Kind {
+	case model.SchemaKindPrimitive, model.SchemaKindArray, model.SchemaKindMap:
+		return true
+	default:
+		return false
+	}
+}
+
+func schemaAllowsNull(s *base.Schema) bool {
+	return s != nil && ((s.Nullable != nil && *s.Nullable) || hasType(s, "null"))
+}
+
+func isNullOnlySchema(s *base.Schema) bool {
+	if !schemaAllowsNull(s) {
+		return false
+	}
+	return len(nonNullTypes(s.Type)) == 0 &&
+		len(s.AllOf) == 0 &&
+		len(s.OneOf) == 0 &&
+		len(s.AnyOf) == 0 &&
+		(s.Properties == nil || orderedmap.Len(s.Properties) == 0) &&
+		s.Items == nil &&
+		s.AdditionalProperties == nil
+}
+
+func nonNullTypes(types []string) []string {
+	out := make([]string, 0, len(types))
+	for _, typ := range types {
+		if typ != "null" {
+			out = append(out, typ)
+		}
+	}
+	return out
+}
+
+func childPath(parent, child string) string {
+	if parent == "" {
+		return child
+	}
+	if child == "[]" || child == "{}" {
+		return parent + child
+	}
+	return parent + "." + child
+}
+
+func sortedUniqueStrings(values []string) []string {
+	if len(values) == 0 {
+		return nil
+	}
+	sort.Strings(values)
+	return slices.Compact(values)
+}
+
+func intersectStrings(left, right []string) []string {
+	allowed := make(map[string]struct{}, len(right))
+	for _, value := range right {
+		allowed[value] = struct{}{}
+	}
+	var intersection []string
+	for _, value := range left {
+		if _, ok := allowed[value]; ok {
+			intersection = append(intersection, value)
+		}
+	}
+	return sortedUniqueStrings(intersection)
+}
+
 // classifyKind derives the SchemaKind from structure, not type alone. Precedence
 // (first match wins, since a node can satisfy several at once):
-// anyOf → unsupported; oneOf → variant; properties → object; type:array+items →
+// anyOf → unsupported; oneOf → one_of; properties → object; type:array+items →
 // array; additionalProperties → map; a concrete scalar type → primitive; anything
 // else (free-form/empty object, typeless leaf, itemless array) → unsupported.
 //
-// oneOf and anyOf are handled differently downstream: a oneOf variant is dropped
-// from the attribute tree, while an anyOf — which we never expect and have not
-// validated — is classified unsupported so its artifact fails rather than guessing.
+// oneOf and anyOf are intentionally distinct: oneOf is normalized into a typed
+// envelope, while anyOf remains unsupported so its artifact fails rather than
+// inheriting oneOf's exactly-one semantics.
 func classifyKind(s *base.Schema) model.SchemaKind {
 	switch {
 	case len(s.AnyOf) > 0:
 		// anyOf has no Terraform equivalent; reject rather than drop or guess.
 		return model.SchemaKindUnsupported
 	case len(s.OneOf) > 0:
-		// "one of several shapes"; the attribute-tree builder drops it.
-		return model.SchemaKindVariant
+		return model.SchemaKindOneOf
 	case s.Properties != nil && orderedmap.Len(s.Properties) > 0:
 		// Declared named fields → object, regardless of the type keyword.
 		return model.SchemaKindObject
@@ -560,10 +984,14 @@ func isRepresentablePrimitive(s *base.Schema) bool {
 	}
 }
 
-// firstType returns the schema's first declared type, or "" when untyped.
+// firstType returns the schema's first non-null declared type, or "" when the
+// schema is untyped/null-only. Nullability is represented on OneOfSpec rather
+// than as a primitive alternative.
 func firstType(s *base.Schema) string {
-	if len(s.Type) > 0 {
-		return s.Type[0]
+	for _, typ := range s.Type {
+		if typ != "null" {
+			return typ
+		}
 	}
 	return ""
 }
