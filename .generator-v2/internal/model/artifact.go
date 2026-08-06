@@ -219,8 +219,8 @@ const defaultResultsPath = "data"
 // buildItemsBlock builds the plural items block from the results array alone
 // (op.Pagination.ResultsPath, else "data"), so response siblings such as
 // meta/links/included are dropped rather than emitted. Returns a nil Attribute
-// when the response declares no such array, and the drop diagnostics raised
-// while building the element.
+// when the response declares no such array, plus the diagnostics raised while
+// building the element (none today: an element either projects or fails).
 func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 	resultsPath := defaultResultsPath
 	if op.Pagination != nil && op.Pagination.ResultsPath != "" {
@@ -233,9 +233,15 @@ func buildItemsBlock(op *Operation) (*Attribute, []Diagnostic, error) {
 	if arr == nil {
 		return nil, nil, nil
 	}
-	var diags []Diagnostic
-	attr, err := buildAttribute(arr, "response."+resultsPath, nestBlock, &diags)
-	return attr, diags, err
+	required := false
+	for _, name := range op.ResponseSchema.Required {
+		if name == resultsPath {
+			required = true
+			break
+		}
+	}
+	attr, err := (&treeBuilder{kind: responseTree}).attribute(arr, "response."+resultsPath, nestBlock, required)
+	return attr, nil, err
 }
 
 // readCall resolves the datadog-api-client-go binding for op's read.

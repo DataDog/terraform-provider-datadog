@@ -326,6 +326,72 @@ type Attribute struct {
 	Description string
 	// Children holds nested attributes for nested blocks.
 	Children []*Attribute
+	// OneOf is non-nil when this attribute carries a synthetic oneOf envelope:
+	// either the envelope itself (a union at the root or an object property) or
+	// the collection whose element is a union. Children then holds the variant
+	// blocks, and OneOf holds the naming and SDK-binding metadata the emit layer
+	// needs to map them.
+	OneOf *OneOfEnvelope
+}
+
+// OneOfEnvelope is the Terraform projection of a parser-normalized OneOfSpec: the
+// synthetic block holding one nested variant block per non-null alternative,
+// exactly one of which is selected whenever the envelope is present.
+//
+// It hangs off the Attribute standing at the union's position in the tree; that
+// attribute's Children are the projected variant blocks, in the same order as
+// Variants. Terraform concerns live here rather than on OneOfSpec so that
+// OpenAPI normalization stays free of them.
+type OneOfEnvelope struct {
+	// Name is the parser-assigned envelope identity (OneOfSpec.Name): the OpenAPI
+	// component name for a reusable union, a deterministic path-derived name for
+	// an inline one. Two uses of the same component share a Name, which is what
+	// lets emit generate one model per envelope instead of one per use site.
+	Name string
+	// GoModel is the generated Go struct holding one pointer field per variant.
+	GoModel string
+	// Path is the union's own schema path, used by validators and diagnostics. For
+	// a collection of unions it is the element path (e.g. "response.choices[]"),
+	// which is not the path of any attribute in the tree.
+	Path string
+	// Optional permits the whole envelope to be absent because its containing
+	// OpenAPI field is optional or nullable. When false, exactly one variant must
+	// be selected.
+	Optional bool
+	// Computed marks a response-only envelope, where selection is enforced by
+	// response mapping rather than by practitioner configuration.
+	Computed bool
+	// Variants are the projected non-null alternatives, ordered by TFName so
+	// neither OpenAPI alternative order nor map iteration can reach the output.
+	Variants []OneOfEnvelopeVariant
+}
+
+// OneOfEnvelopeVariant is one projected alternative of a OneOfEnvelope.
+type OneOfEnvelopeVariant struct {
+	// TFName is the stable snake_case nested-block name.
+	TFName string
+	// GoField is the pointer field naming this variant on the envelope's model.
+	// The pointer being non-nil is what selects the variant.
+	GoField string
+	// GoModel is the generated Go struct for this variant's own fields.
+	GoModel string
+	// SDKField is the Datadog go-sdk wrapper member whose presence selects this
+	// alternative, and SDKConstructor the SDK convenience constructor for it. Both
+	// are carried through from the parser's OneOfVariant and stay empty until the
+	// SDK binding pass resolves them: the projection never derives an SDK identity
+	// from a Terraform name, since the two conventions differ (a variant named
+	// aws_integration binds to the SDK's AWSIntegration, not AwsIntegration).
+	SDKField       string
+	SDKConstructor string
+	// ValueWrapped is true for every non-object alternative — scalar, list, map, or
+	// a directly nested union — whose block holds a single child named "value".
+	// Object alternatives expose their own fields directly instead.
+	ValueWrapped bool
+	// Attribute is this variant's projected block: the same pointer as the
+	// envelope-carrying attribute's Children entry at this index. Children drives
+	// schema rendering; this field lets the mapper reach a block without
+	// re-deriving the ordering.
+	Attribute *Attribute
 }
 
 // Literal is a default value rendered as a Go source expression
