@@ -36,10 +36,11 @@ var _ = Describe("data-source templates", func() {
 		Entry("plural no-params (datastores)", "data_source_plural_no_params.golden", datastoresView),
 		Entry("singular nested object (apm_retention_filter)", "data_source_singular_object.golden", retentionFilterView),
 		Entry("plural nested object (gizmos)", "data_source_plural_object.golden", pluralObjectView),
+		Entry("singular SDK constructor fallback (case)", "data_source_singular_constructor.golden", caseConstructorView),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView(), retentionFilterView(), pluralObjectView()} {
+		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView(), retentionFilterView(), pluralObjectView(), caseConstructorView()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -170,6 +171,42 @@ func powerpackSearchView() DataSourceView {
 func datastoreBothView() DataSourceView {
 	GinkgoHelper()
 	return mustView(datastoreBothOperation())
+}
+
+// caseConstructorView exercises the missing-ApiInstances path end to end through
+// API client resolution and the shared Configure template.
+func caseConstructorView() DataSourceView {
+	GinkgoHelper()
+	view := DataSourceView{
+		Cardinality: Singular,
+		TypeName:    "case",
+		GoName:      "datadogCase",
+		Description: "Use this data source to retrieve a case.",
+		SDKPackage:  "datadogV2",
+		APIStruct:   "CaseManagementApi",
+		APIAccessor: "GetCaseManagementApiV2",
+		ByID:        true,
+		Read: SDKReadView{
+			Method:       "GetCase",
+			ResponseType: "CaseResponse",
+		},
+		Models: []ModelStructView{{
+			Name: "datadogCaseDataSourceModel",
+			Fields: []ModelFieldView{{
+				GoField: "ID",
+				GoType:  "types.String",
+				TFName:  "id",
+			}},
+		}},
+		State: StateView{
+			ParamName: "resp",
+			ParamType: "*datadogV2.CaseResponse",
+		},
+	}
+	Expect(ApplyAPIAccessor(&view, nil, map[string]string{
+		"CaseManagementApi": "NewCaseManagementApi",
+	})).To(Succeed())
+	return view
 }
 
 // pluralFixture is the teams data source as a view.
