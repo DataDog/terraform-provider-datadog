@@ -60,10 +60,11 @@ var _ = Describe("BuildDataSourceView", func() {
 		}))
 	})
 
-	It("renders a date-time string via .String(), a named enum via a string() cast, and avoids shadowing state", func() {
+	It("renders date-time and UUID strings via .String(), a named enum via a string() cast, and avoids shadowing state", func() {
 		op := incidentTypeOperation()
 		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
 		attrs["resolved_at"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "date-time"}
+		attrs["owner_id"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "uuid"}
 		attrs["state"] = &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Enum: []string{"active", "archived"}}
 		art, err := model.BuildArtifact(op)
 		Expect(err).NotTo(HaveOccurred())
@@ -77,9 +78,72 @@ var _ = Describe("BuildDataSourceView", func() {
 		}
 		Expect(assign["state.ResolvedAt"].RHS).To(Equal("types.StringValue(resolvedAt.String())"))
 		Expect(assign["state.ResolvedAt"].GetterOk).To(Equal("attributes.GetResolvedAtOk()"))
+		Expect(assign["state.OwnerId"].RHS).To(Equal("types.StringValue(ownerId.String())"))
 		// "state" would shadow the updateState receiver, so its local is suffixed.
 		Expect(assign["state.State"].Var).To(Equal("stateValue"))
 		Expect(assign["state.State"].RHS).To(Equal("types.StringValue(string(*stateValue))"))
+	})
+
+	It("renders a UUID envelope id through its canonical string form", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["id"].Format = "uuid"
+
+		view := mustView(op)
+		Expect(view.State.Assignments[0]).To(Equal(StateAssignment{
+			Var: "id", GetterOk: "resp.Data.GetIdOk()", LHS: "state.ID", RHS: "types.StringValue(id.String())",
+		}))
+	})
+
+	It("keeps the Terraform identity without calling an absent response ID getter", func() {
+		op := incidentTypeOperation()
+		delete(op.ResponseSchema.Properties["data"].Properties, "id")
+
+		view := mustView(op)
+		Expect(view.Models[0].Fields[0]).To(Equal(ModelFieldView{
+			GoField: "ID", GoType: "types.String", TFName: "id",
+		}))
+		Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).NotTo(ContainSubstring("GetIdOk()"))
+		Expect(src).NotTo(ContainSubstring("state.ID ="))
+	})
+
+	It("omits the attributes preamble when no response assignments use it", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["attributes"].Properties = map[string]*model.Schema{}
+
+		view := mustView(op)
+		Expect(view.State.Preamble).To(BeEmpty())
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).NotTo(ContainSubstring("attributes :="))
+	})
+
+	It("renders a Go-keyword attribute through a safe guarded local", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["attributes"].
+			Properties["type"] = prim("string", "The incident type category.")
+
+		got, err := RenderDataSource(mustView(op))
+		Expect(err).NotTo(HaveOccurred())
+		src := string(got)
+		Expect(src).To(ContainSubstring(
+			"if typeVar, ok := attributes.GetTypeOk(); ok && typeVar != nil {",
+		))
+		Expect(src).To(ContainSubstring("state.Type = types.StringValue(*typeVar)"))
+		Expect(src).NotTo(ContainSubstring("if type, ok :="))
+	})
+
+	It("casts a named string envelope id before storing it in Terraform state", func() {
+		op := incidentTypeOperation()
+		op.ResponseSchema.Properties["data"].Properties["id"].Enum = []string{"permanent"}
+		view := mustView(op)
+		Expect(view.State.Assignments[0]).To(Equal(StateAssignment{
+			Var: "id", GetterOk: "resp.Data.GetIdOk()", LHS: "state.ID", RHS: "types.StringValue(string(*id))",
+		}))
 	})
 
 	It("produces a deeply-equal view across two runs", func() {
@@ -88,6 +152,48 @@ var _ = Describe("BuildDataSourceView", func() {
 		second, err := BuildDataSourceView(incidentTypeArtifact())
 		Expect(err).NotTo(HaveOccurred())
 		Expect(first).To(Equal(second))
+	})
+
+	It("renders resolved path arguments in SDK order, including UUID conversion", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/accounts/{account_id}/incident-types/{incident_type_id}"
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "account_id", GoName: "accountId", GoType: "int64", Location: "path", Schema: prim("integer", "The account ID.")},
+			{Name: "incident_type_id", GoName: "incidentTypeId", GoType: "uuid.UUID", Location: "path", Schema: &model.Schema{Kind: model.SchemaKindPrimitive, Type: "string", Format: "uuid"}},
+		}}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.UsesUUID).To(BeTrue())
+		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
+			{Expression: "state.AccountId.ValueInt64()", TFName: "account_id"},
+			{Expression: "parsedId", UUIDVar: "parsedId", UUIDSource: "state.ID.ValueString()", TFName: "id"},
+		}))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`parsedId, err := uuid.Parse(state.ID.ValueString())`))
+		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, state.AccountId.ValueInt64(), parsedId)`))
+	})
+
+	It("renders a resolved singleton call without inventing an id argument", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/incidents/config/types/default"
+		op.SDKBinding = &model.SDKOperationBinding{}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.ByID).To(BeFalse())
+		Expect(view.Read.Arguments).To(BeEmpty())
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring(`GetIncidentType(d.Auth)`))
 	})
 
 	DescribeTable("fail-slows anything outside the recognized envelope",
@@ -218,6 +324,24 @@ var _ = Describe("BuildDataSourceView envelope id collision", func() {
 	})
 })
 
+var _ = Describe("leafVar", func() {
+	It("suffixes every Go keyword and preserves ordinary identifiers", func() {
+		keywords := []string{
+			"break", "default", "func", "interface", "select",
+			"case", "defer", "go", "map", "struct",
+			"chan", "else", "goto", "package", "switch",
+			"const", "fallthrough", "if", "range", "type",
+			"continue", "for", "import", "return", "var",
+		}
+		for _, keyword := range keywords {
+			Expect(leafVar(keyword)).To(Equal(keyword+"Var"), keyword)
+		}
+
+		Expect(leafVar("display_name")).To(Equal("displayName"))
+		Expect(leafVar("state")).To(Equal("stateValue"))
+	})
+})
+
 var _ = Describe("RenderDataSource duplicate field guard", func() {
 	It("fails instead of writing a model that declares the same tfsdk tag twice", func() {
 		view := mustView(incidentTypeOperation())
@@ -280,6 +404,14 @@ var _ = Describe("RenderDataSource duplicate field guard", func() {
 		Expect(err).NotTo(HaveOccurred(), "a union under a dropped member must not fail the artifact")
 		Expect(view.Dropped).To(HaveLen(1))
 		Expect(view.Dropped[0].Message).To(ContainSubstring("dropped \"response.included\": not part of the surfaced {id, type, attributes} envelope"))
+	})
+
+	It("fails instead of writing two model types with the same Go name", func() {
+		view := mustView(incidentTypeOperation())
+		view.Models = append(view.Models, ModelStructView{Name: view.Models[0].Name})
+
+		_, err := RenderDataSource(view)
+		Expect(err).To(MatchError(ContainSubstring(`model datadogIncidentTypeDataSourceModel is declared twice`)))
 	})
 })
 
@@ -358,6 +490,49 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(view.State.Preamble).To(Equal([]string{"attributes := data.GetAttributes()"}))
 		})
 
+		It("parses an optional UUID filter before calling its pinned SDK setter", func() {
+			op := powerpackSearchOperation()
+			op.QueryParams[0].Schema.Format = "uuid"
+			op.SDKBinding = &model.SDKOperationBinding{
+				OptionalParamsType: "ListPowerpacksOptionalParameters",
+				Optional: []model.SDKArgument{{
+					Name: "filter[name]", GoName: "filterName", GoType: "uuid.UUID", Location: "query",
+					Schema: op.QueryParams[0].Schema, Setter: "WithFilterName",
+				}},
+			}
+
+			view := mustView(op)
+			Expect(view.UsesUUID).To(BeTrue())
+			Expect(view.Search.Filters).To(Equal([]FilterParamView{{
+				StateField: "FilterName", ParamField: "FilterName", ValueExpr: "parsedFilterName", Setter: "WithFilterName",
+				UUIDVar: "parsedFilterName", UUIDSource: "state.FilterName.ValueString()", TFName: "filter_name",
+			}}))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`parsedFilterName, err := uuid.Parse(state.FilterName.ValueString())`))
+			Expect(src).To(ContainSubstring(`response.Diagnostics.AddError("Invalid filter_name", err.Error())`))
+			Expect(src).To(ContainSubstring(`optionalParams.WithFilterName(parsedFilterName)`))
+		})
+
+		It("hashes the search inputs when the selected record has no id", func() {
+			op := powerpackSearchOperation()
+			delete(op.ResponseSchema.Properties["data"].Items.Properties, "id")
+
+			view := mustView(op)
+			Expect(view.Search.HashInputs).To(Equal([]FilterParamView{
+				{StateField: "FilterName", ValueExpr: "ValueStringPointer()"},
+			}))
+			Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`hashingData := fmt.Sprintf("%s", state.FilterName.ValueString())`))
+			Expect(src).To(ContainSubstring(`state.ID = types.StringValue(utils.ConvertToSha256(hashingData))`))
+		})
+
 	})
 
 	Context("both", func() {
@@ -390,6 +565,22 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 				Description: "Filter datastores by keyword.",
 				Optional:    true,
 			}))
+		})
+
+		It("hashes a fixed seed on the search path when the selected record has no id", func() {
+			op := datastoreBothOperation()
+			delete(op.ResponseSchema.Properties["data"].Properties, "id")
+			delete(op.SearchOp.ResponseSchema.Properties["data"].Items.Properties, "id")
+
+			view := mustView(op)
+			Expect(view.Search.HashInputs).To(BeEmpty())
+			Expect(view.State.Assignments).NotTo(ContainElement(HaveField("LHS", "state.ID")))
+
+			rendered, err := RenderDataSource(view)
+			Expect(err).NotTo(HaveOccurred())
+			src := string(rendered)
+			Expect(src).To(ContainSubstring(`hashingData := "datastore"`))
+			Expect(src).To(ContainSubstring(`state.ID = types.StringValue(utils.ConvertToSha256(hashingData))`))
 		})
 
 	})
@@ -744,9 +935,77 @@ var _ = Describe("BuildDataSourceView singular arrays", func() {
 
 		// Sorted by attribute name, both string arrays become guarded primitive lists.
 		Expect(view.State.Lists).To(Equal([]ListAssignment{
-			{Kind: "primitive", LHS: "state.HiddenModules", GetterOk: "attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
-			{Kind: "primitive", LHS: "state.VisibleModules", GetterOk: "attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
+			{Kind: "primitive", ContainerKind: "list", LHS: "state.HiddenModules", GetterOk: "attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
+			{Kind: "primitive", ContainerKind: "list", LHS: "state.VisibleModules", GetterOk: "attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
 		}))
+	})
+
+	It("emits recursive list/map types and the matching state constructors", func() {
+		op := teamSingularOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
+		attrs["host_tags_lists"] = &model.Schema{
+			Kind: model.SchemaKindArray, Description: "Host tag conjunctions.",
+			Items: &model.Schema{Kind: model.SchemaKindArray, Items: prim("string", "A host tag.")},
+		}
+		attrs["group_bys"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Named grouping dimensions.",
+			Items: &model.Schema{Kind: model.SchemaKindArray, Items: prim("string", "A grouping dimension.")},
+		}
+		attrs["cloud_provider"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Cloud provider filters.",
+			Items: &model.Schema{Kind: model.SchemaKindMap, Items: &model.Schema{
+				Kind: model.SchemaKindArray, Items: prim("string", "A filter value."),
+			}},
+		}
+
+		view := mustView(op)
+		attributes := map[string]AttrView{}
+		for _, attr := range view.Schema.Attributes {
+			attributes[attr.TFName] = attr
+		}
+		Expect(attributes["host_tags_lists"].TFType).To(Equal("schema.ListAttribute"))
+		Expect(attributes["host_tags_lists"].ElementType).To(Equal("types.ListType{ElemType: types.StringType}"))
+		Expect(attributes["group_bys"].TFType).To(Equal("schema.MapAttribute"))
+		Expect(attributes["group_bys"].ElementType).To(Equal("types.ListType{ElemType: types.StringType}"))
+		Expect(attributes["cloud_provider"].TFType).To(Equal("schema.MapAttribute"))
+		Expect(attributes["cloud_provider"].ElementType).To(Equal("types.MapType{ElemType: types.ListType{ElemType: types.StringType}}"))
+
+		assignments := map[string]ListAssignment{}
+		for _, assignment := range view.State.Lists {
+			assignments[assignment.LHS] = assignment
+		}
+		Expect(assignments["state.HostTagsLists"].ContainerKind).To(Equal("list"))
+		Expect(assignments["state.GroupBys"].ContainerKind).To(Equal("map"))
+		Expect(assignments["state.CloudProvider"].ContainerKind).To(Equal("map"))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring("types.ListValueFrom(ctx, types.ListType{ElemType: types.StringType}, *hostTagsLists)"))
+		Expect(src).To(ContainSubstring("types.MapValueFrom(ctx, types.ListType{ElemType: types.StringType}, *groupBys)"))
+		Expect(src).To(ContainSubstring("types.MapNull(types.MapType{ElemType: types.ListType{ElemType: types.StringType}})"))
+	})
+
+	It("emits a typed map nested inside an object-list element", func() {
+		op := costBudgetOperation()
+		entry := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties["entries"].Items
+		entry.Properties["metadata"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Entry metadata.",
+			Items: prim("string", "A metadata value."),
+		}
+
+		view := mustView(op)
+		entries := view.State.Lists[0]
+		nested := map[string]ListAssignment{}
+		for _, assignment := range entries.Lists {
+			nested[assignment.LHS] = assignment
+		}
+		Expect(nested["entriesModel.Metadata"].Kind).To(Equal("primitive"))
+		Expect(nested["entriesModel.Metadata"].ContainerKind).To(Equal("map"))
+		Expect(nested["entriesModel.Metadata"].ElementType).To(Equal("types.StringType"))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring("types.MapValueFrom(ctx, types.StringType, *metadata)"))
 	})
 
 	It("produces a deeply-equal view across two runs", func() {
@@ -767,6 +1026,27 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		Expect(view).To(Equal(pluralFixture()))
 	})
 
+	It("emits a recursively typed map on a plural result item", func() {
+		op := teamsOperation()
+		attributes := op.ResponseSchema.Properties["data"].Items.Properties["attributes"].Properties
+		attributes["group_bys"] = &model.Schema{
+			Kind: model.SchemaKindMap, Description: "Named grouping dimensions.",
+			Items: &model.Schema{Kind: model.SchemaKindArray, Items: prim("string", "A grouping dimension.")},
+		}
+
+		view := mustView(op)
+		itemCollections := map[string]ListAssignment{}
+		for _, assignment := range view.State.ItemLists {
+			itemCollections[assignment.LHS] = assignment
+		}
+		Expect(itemCollections["r.GroupBys"].Kind).To(Equal("primitive"))
+		Expect(itemCollections["r.GroupBys"].ContainerKind).To(Equal("map"))
+		Expect(itemCollections["r.GroupBys"].ElementType).To(Equal("types.ListType{ElemType: types.StringType}"))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring("types.MapValueFrom(ctx, types.ListType{ElemType: types.StringType}, *groupBys)"))
+	})
+
 	It("drops array and enum query params from the filter set", func() {
 		art, err := model.BuildArtifact(teamsOperation())
 		Expect(err).NotTo(HaveOccurred())
@@ -780,6 +1060,71 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		Expect(names).To(Equal([]string{"filter_keyword", "filter_me"}))
 	})
 
+	It("renders UUID response values at the item root, in attributes, and in nested objects", func() {
+		op := pluralNestedOperation()
+		item := op.ResponseSchema.Properties["data"].Items
+		item.Properties["id"].Format = "uuid"
+		item.Properties["attributes"].Properties["owner_id"] = &model.Schema{
+			Kind: model.SchemaKindPrimitive, Type: "string", Format: "uuid", Description: "The owner UUID.",
+		}
+		item.Properties["attributes"].Properties["parts"].Items.Properties["label"].Format = "uuid"
+
+		view := mustView(op)
+		fields := map[string]string{}
+		for _, assignment := range view.State.ItemFields {
+			fields[assignment.LHS] = assignment.RHS
+		}
+		Expect(fields["ID"]).To(Equal("types.StringValue(item.GetId().String())"))
+		Expect(fields["OwnerId"]).To(Equal("types.StringValue(item.Attributes.GetOwnerId().String())"))
+		Expect(view.State.ItemLists[0].Scalars).To(ContainElement(StateAssignment{
+			Var: "label", GetterOk: "partsItem.GetLabelOk()", LHS: "partsModel.Label", RHS: "types.StringValue(label.String())",
+		}))
+	})
+
+	It("parses an optional UUID filter in the plural Read path", func() {
+		op := teamsOperation()
+		filter := op.QueryParams[0]
+		filter.Schema.Format = "uuid"
+		op.SDKBinding = &model.SDKOperationBinding{
+			OptionalParamsType: "ListTeamsOptionalParameters",
+			Optional: []model.SDKArgument{
+				{Name: filter.Name, GoName: "filterKeyword", GoType: "uuid.UUID", Location: "query", Schema: filter.Schema, Setter: "WithFilterKeyword"},
+				{Name: "filter[me]", GoName: "filterMe", GoType: "bool", Location: "query", Schema: op.QueryParams[1].Schema, Setter: "WithFilterMe"},
+			},
+		}
+
+		view := mustView(op)
+		Expect(view.UsesUUID).To(BeTrue())
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`parsedFilterKeyword, err := uuid.Parse(state.FilterKeyword.ValueString())`))
+		Expect(src).To(ContainSubstring(`optionalParams.WithFilterKeyword(parsedFilterKeyword)`))
+	})
+
+	It("uses the pinned setter type rather than UUID schema format for input syntax", func() {
+		op := teamsOperation()
+		filter := op.QueryParams[0]
+		filter.Schema.Format = "uuid"
+		op.SDKBinding = &model.SDKOperationBinding{
+			OptionalParamsType: "ListTeamsOptionalParameters",
+			Optional: []model.SDKArgument{
+				{Name: filter.Name, GoName: "filterKeyword", GoType: "string", Location: "query", Schema: filter.Schema, Setter: "WithFilterKeyword"},
+				{Name: "filter[me]", GoName: "filterMe", GoType: "bool", Location: "query", Schema: op.QueryParams[1].Schema, Setter: "WithFilterMe"},
+			},
+		}
+
+		view := mustView(op)
+		Expect(view.UsesUUID).To(BeFalse())
+		Expect(view.Read.Filters[0]).To(Equal(FilterParamView{
+			StateField: "FilterKeyword", ParamField: "FilterKeyword",
+			ValueExpr: "state.FilterKeyword.ValueString()", Setter: "WithFilterKeyword",
+		}))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).NotTo(ContainSubstring("github.com/google/uuid"))
+	})
+
 	It("hashes a fixed seed when an endpoint has no filters", func() {
 		op := teamsOperation()
 		op.QueryParams = nil
@@ -791,6 +1136,32 @@ var _ = Describe("BuildDataSourceView plural", func() {
 		Expect(view.Read.Filters).To(BeEmpty())
 		Expect(view.Read.OptionalParamsType).To(BeEmpty())
 		Expect(view.Schema.Attributes).To(BeEmpty())
+	})
+
+	It("includes required positional SDK inputs in the plural identity hash", func() {
+		op := teamsOperation()
+		op.Path = "/api/v2/accounts/{account_id}/team"
+		op.SDKBinding = &model.SDKOperationBinding{
+			Required: []model.SDKArgument{
+				{Name: "account_id", GoName: "accountId", GoType: "int64", Location: "path", Schema: prim("integer", "The account ID.")},
+			},
+			OptionalParamsType: "ListTeamsOptionalParameters",
+			Optional: []model.SDKArgument{
+				{Name: "filter[keyword]", GoName: "filterKeyword", GoType: "string", Location: "query", Schema: prim("string", ""), Setter: "WithFilterKeyword"},
+				{Name: "filter[me]", GoName: "filterMe", GoType: "bool", Location: "query", Schema: prim("boolean", ""), Setter: "WithFilterMe"},
+			},
+		}
+
+		view, err := BuildDataSourceView(mustArtifact(op))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.Read.HashInputs).To(Equal([]FilterParamView{
+			{StateField: "AccountId", ValueExpr: "ValueInt64Pointer()"},
+			{StateField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
+			{StateField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
+		}))
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(rendered)).To(ContainSubstring(`fmt.Sprintf("%d:%s:%t", state.AccountId.ValueInt64(), state.FilterKeyword.ValueString(), state.FilterMe.ValueBool())`))
 	})
 
 	It("produces a deeply-equal plural view across two runs", func() {
@@ -999,12 +1370,37 @@ var _ = Describe("BuildDataSourceView plural nested arrays", func() {
 		}))
 	})
 
+	It("renders a nested Go-keyword attribute through a safe guarded local", func() {
+		op := pluralNestedOperation()
+		op.ResponseSchema.Properties["data"].Items.Properties["attributes"].
+			Properties["parts"].Items.Properties["type"] = prim("string", "The part type.")
+
+		got, err := RenderDataSource(mustView(op))
+		Expect(err).NotTo(HaveOccurred())
+		src := string(got)
+		Expect(src).To(ContainSubstring(
+			"if typeVar, ok := partsItem.GetTypeOk(); ok && typeVar != nil {",
+		))
+		Expect(src).To(ContainSubstring("partsModel.Type = types.StringValue(*typeVar)"))
+		Expect(src).NotTo(ContainSubstring("if type, ok :="))
+	})
+
 	It("produces a deeply-equal view across two runs", func() {
 		first, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
 		Expect(err).NotTo(HaveOccurred())
 		second, err := BuildDataSourceView(mustArtifact(pluralNestedOperation()))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(first).To(Equal(second))
+	})
+
+	It("scopes the shared SDK item type to the Terraform artifact", func() {
+		teams := mustView(teamsOperation())
+		roleUsersOperation := teamsOperation()
+		roleUsersOperation.Tracking.ArtifactName = "role_users"
+		roleUsers := mustView(roleUsersOperation)
+
+		Expect(teams.State.ItemStruct).To(Equal("datadogTeamsTeamModel"))
+		Expect(roleUsers.State.ItemStruct).To(Equal("datadogRoleUsersTeamModel"))
 	})
 })
 
@@ -1117,6 +1513,32 @@ var _ = Describe("BuildDataSourceView singular nested objects", func() {
 		second, err := BuildDataSourceView(mustArtifact(retentionFilterOperation()))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(first).To(Equal(second))
+	})
+
+	It("includes the full parent path when two branches reuse the same leaf name", func() {
+		op := retentionFilterOperation()
+		attrs := op.ResponseSchema.Properties["data"].Properties["attributes"].Properties
+		attrs["primary"] = obj(map[string]*model.Schema{
+			"data": obj(map[string]*model.Schema{"value": prim("string", "The primary value.")}),
+		})
+		attrs["secondary"] = obj(map[string]*model.Schema{
+			"data": obj(map[string]*model.Schema{"value": prim("string", "The secondary value.")}),
+		})
+
+		view := mustView(op)
+		names := make([]string, 0, len(view.Models))
+		for _, modelView := range view.Models {
+			names = append(names, modelView.Name)
+		}
+		Expect(names).To(Equal([]string{
+			"datadogApmRetentionFilterDataSourceModel",
+			"datadogApmRetentionFilterFilterModel",
+			"datadogApmRetentionFilterFilterMetadataModel",
+			"datadogApmRetentionFilterPrimaryModel",
+			"datadogApmRetentionFilterPrimaryDataModel",
+			"datadogApmRetentionFilterSecondaryModel",
+			"datadogApmRetentionFilterSecondaryDataModel",
+		}))
 	})
 })
 

@@ -93,11 +93,19 @@ Blocks: map[string]schema.Block{
 {{- define "renderList" -}}
 {{- if eq .Kind "primitive" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
-	var listDiags diag.Diagnostics
-	{{ .LHS }}, listDiags = types.ListValueFrom(ctx, {{ .ElementType }}, *{{ .Var }})
-	diags.Append(listDiags...)
+	var collectionDiags diag.Diagnostics
+	{{- if eq .ContainerKind "map" }}
+	{{ .LHS }}, collectionDiags = types.MapValueFrom(ctx, {{ .ElementType }}, *{{ .Var }})
+	{{- else }}
+	{{ .LHS }}, collectionDiags = types.ListValueFrom(ctx, {{ .ElementType }}, *{{ .Var }})
+	{{- end }}
+	diags.Append(collectionDiags...)
 } else {
+	{{- if eq .ContainerKind "map" }}
+	{{ .LHS }} = types.MapNull({{ .ElementType }})
+	{{- else }}
 	{{ .LHS }} = types.ListNull({{ .ElementType }})
+	{{- end }}
 }
 {{- else if eq .Kind "object" -}}
 if {{ .Var }}, ok := {{ .GetterOk }}; ok && {{ .Var }} != nil {
@@ -217,7 +225,11 @@ func New{{ title .GoName }}DataSource() datasource.DataSource {
 
 func (d *{{ .GoName }}DataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
+{{- if .APIAccessor }}
 	d.Api = providerData.DatadogApiInstances.{{ .APIAccessor }}()
+{{- else }}
+	d.Api = {{ .SDKPackage }}.{{ .APIConstructor }}(providerData.DatadogApiInstances.HttpClient)
+{{- end }}
 	d.Auth = providerData.Auth
 }
 
