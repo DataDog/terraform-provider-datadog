@@ -35,35 +35,6 @@ func (e *UnsupportedEmitError) Error() string {
 // off, established by the StateView preamble "attributes := resp.Data.GetAttributes()".
 const envelopeReceiver = "attributes"
 
-// collectOneOfEnvelopes records every oneOf envelope reachable from attrs as an
-// unsupported node.
-//
-// The model layer projects each union into a typed envelope, but rendering one
-// needs the Datadog go-sdk's oneOf wrapper binding: the wrapper exposes plain
-// pointer members and a GetActualInstance method rather than the Get<Field>Ok
-// getters this path's state mapper is built on. Until that mapping exists, failing
-// the artifact here is the only correct outcome — the alternatives are emitting
-// getter calls the SDK does not have, or dropping the union, which is what the
-// generator did before the envelope projection, and is not acceptable.
-//
-// Descent stops at an envelope: one diagnostic per union is enough to fail the
-// artifact, and a union nested inside a variant is already covered by its parent.
-func collectOneOfEnvelopes(attrs []*model.Attribute, out *[]UnsupportedNode) {
-	for _, a := range attrs {
-		if a.OneOf != nil {
-			*out = append(*out, UnsupportedNode{
-				Path: a.OneOf.Path,
-				Reason: fmt.Sprintf(
-					"oneOf envelope %q needs the SDK oneOf wrapper mapping, which the emit path does not implement yet",
-					a.OneOf.Name,
-				),
-			})
-			continue
-		}
-		collectOneOfEnvelopes(a.Children, out)
-	}
-}
-
 // BuildDataSourceView derives the singular DataSourceView from a.Schema and
 // a.Lifecycle. It resolves the SDK-call bindings onto the view, then runs a
 // flattening pass that recognizes the singular JSON:API envelope
@@ -130,13 +101,6 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 
 	rootStruct := dsGoName(a.Name) + "DataSourceModel"
 	env := b.flattenEnvelope(topLevel, idStrategy, rootExpr)
-
-	// Scan for oneOf envelopes only across what survived flattening: a union under
-	// a dropped envelope member (e.g. included[]) never reaches the generated code,
-	// so it must not fail the artifact.
-	if env != nil {
-		collectOneOfEnvelopes(env.leaves, &b.unsupported)
-	}
 
 	if len(b.unsupported) > 0 {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
@@ -678,10 +642,6 @@ func unsupportedReason(tfType string) string {
 func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	var unsupported []UnsupportedNode
 	var dropped []DroppedMember
-
-	if a.Schema != nil {
-		collectOneOfEnvelopes(a.Schema.Attributes, &unsupported)
-	}
 
 	var call *model.SDKCall
 	if a.Lifecycle != nil {
