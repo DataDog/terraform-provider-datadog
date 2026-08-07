@@ -557,6 +557,9 @@ type FormulaRequestConfig struct {
 	ExtraFields []FieldSpec
 	// IncludeSort: when true, build/flatten the sort block (toplist, geomap, etc.).
 	IncludeSort bool
+	// AllowResponseFormatOverride reads response_format from HCL when present,
+	// falling back to ResponseFormat when omitted.
+	AllowResponseFormatOverride bool
 }
 
 // Per-widget FormulaRequestConfig declarations.
@@ -636,6 +639,14 @@ var queryTableFormulaRequestConfig = FormulaRequestConfig{
 	IncludeSort:    true,
 }
 
+var geomapFormulaRequestConfig = FormulaRequestConfig{
+	ResponseFormat:              "scalar",
+	StyleFields:                 geomapWidgetRequestStyleFields,
+	ExtraFields:                 geomapRequestExtraFields,
+	IncludeSort:                 true,
+	AllowResponseFormatOverride: true,
+}
+
 // formulaRequestConfigForWidget returns the FormulaRequestConfig for a given widget type.
 func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 	switch jsonType {
@@ -649,6 +660,8 @@ func formulaRequestConfigForWidget(jsonType string) FormulaRequestConfig {
 		return queryValueFormulaRequestConfig
 	case "toplist", "bar_chart":
 		return scalarWithConditionalFormatsConfig
+	case "geomap":
+		return geomapFormulaRequestConfig
 	default:
 		return scalarFormulaRequestConfig
 	}
@@ -2030,7 +2043,13 @@ func buildFormulaRequestFromMap(reqMap map[string]interface{}, cfg FormulaReques
 
 	// response_format
 	if len(formulaList) > 0 || len(queryList) > 0 {
-		result["response_format"] = cfg.ResponseFormat
+		responseFormat := cfg.ResponseFormat
+		if cfg.AllowResponseFormatOverride {
+			if configured := getStringFromMap(reqMap, "response_format"); configured != "" {
+				responseFormat = configured
+			}
+		}
+		result["response_format"] = responseFormat
 	}
 
 	return result
@@ -2871,6 +2890,14 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 			if requestFields != nil {
 				reqList := getBlockListFromMap(defMap, "request")
 				for ri, reqMap := range reqList {
+					if spec.JSONType == "geomap" {
+						if err := validateGeomapRequestVariant(reqMap); err != "" {
+							errs = append(errs, fmt.Sprintf(
+								"widget[%d].%s.request[%d]: %s",
+								wi, spec.HCLKey, ri, err,
+							))
+						}
+					}
 					for _, f := range requestFields {
 						if len(f.ConflictsWith) == 0 {
 							continue
@@ -2903,6 +2930,54 @@ func ValidateWidgetConflicts(data map[string]interface{}) []string {
 		}
 	}
 	return errs
+}
+
+// validateGeomapRequestVariant enforces the Geomap request union while preserving
+// the existing flat HCL request block. The API distinguishes region-layer
+// formula requests from event-list point requests by response_format and uses
+// different JSON keys for their queries ("queries" versus "query").
+func validateGeomapRequestVariant(reqMap map[string]interface{}) string {
+	regionQueryFields := []string{"q", "log_query", "rum_query", "query", "formula"}
+	hasRegionQuery := false
+	for _, key := range regionQueryFields {
+		if valueIsSet(reqMap[key]) {
+			hasRegionQuery = true
+			break
+		}
+	}
+	hasListStreamQuery := valueIsSet(reqMap["list_stream_query"])
+
+	if hasRegionQuery && hasListStreamQuery {
+		return `"list_stream_query" cannot be combined with a region-layer query or formula`
+	}
+
+	responseFormat, _ := reqMap["response_format"].(string)
+	switch responseFormat {
+	case "event_list":
+		if hasRegionQuery {
+			return `response_format "event_list" cannot be used with a region-layer query or formula`
+		}
+	case "scalar", "timeseries":
+		if hasListStreamQuery {
+			return fmt.Sprintf(
+				`response_format %q cannot be used with "list_stream_query"`,
+				responseFormat,
+			)
+		}
+	}
+
+	return ""
+}
+
+func valueIsSet(v interface{}) bool {
+	switch value := v.(type) {
+	case string:
+		return value != ""
+	case []interface{}:
+		return len(value) > 0
+	default:
+		return v != nil
+	}
 }
 
 // fieldIsSetInMap returns true if the field has a non-zero value in the map.
