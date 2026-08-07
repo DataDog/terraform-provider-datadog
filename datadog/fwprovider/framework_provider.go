@@ -820,6 +820,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	// Enable Governance Controls
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControl", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControl", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetGovernanceControlNotificationSettings", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateGovernanceControlNotificationSettings", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
