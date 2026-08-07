@@ -69,8 +69,10 @@ func TestAccRestrictionPolicyInvalidInput(t *testing.T) {
 	resourceType := "security-rule"
 	invalidResourceType := "security_rule"
 
-	invalidResourceTypeError, _ := regexp.Compile("Invalid resource type")
-	invalidPrincipalError, _ := regexp.Compile("PrincipalTypeInvalidForRelation")
+	// Terraform hard-wraps diagnostic text, so the message may contain
+	// newlines between the words.
+	invalidResourceTypeError := regexp.MustCompile(`Invalid\s+resource\s+type`)
+	invalidPrincipalError := regexp.MustCompile(`PrincipalTypeInvalidForRelation`)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV6ProviderFactories: accProviders,
