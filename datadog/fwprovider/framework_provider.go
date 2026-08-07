@@ -202,6 +202,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIncidentNotificationRuleDataSource,
 	NewDatadogAwsCurConfigDataSource,
 	NewDatadogGcpUcConfigDataSource,
+	NewDatadogGcpUcConfigsDataSource,
 	NewDatadogCustomAllocationRuleDataSource,
 	NewDatadogAzureUcConfigDataSource,
 	NewDatadogReferenceTableDataSource,
