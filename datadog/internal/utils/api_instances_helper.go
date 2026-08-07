@@ -48,6 +48,7 @@ type ApiInstances struct {
 	actionsDatastoresApiV2         *datadogV2.ActionsDatastoresApi
 	agentlessScanningApiV2         *datadogV2.AgentlessScanningApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
+	apmApiV2                       *datadogV2.APMApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
 	appBuilderApiV2                *datadogV2.AppBuilderApi
 	applicationSecurityApiV2       *datadogV2.ApplicationSecurityApi
@@ -391,6 +392,14 @@ func (i *ApiInstances) GetWebhooksIntegrationApiV1() *datadogV1.WebhooksIntegrat
 		i.webhooksIntegrationApiV1 = datadogV1.NewWebhooksIntegrationApi(i.HttpClient)
 	}
 	return i.webhooksIntegrationApiV1
+}
+
+// GetAPMApiV2 get instance of APMApi
+func (i *ApiInstances) GetAPMApiV2() *datadogV2.APMApi {
+	if i.apmApiV2 == nil {
+		i.apmApiV2 = datadogV2.NewAPMApi(i.HttpClient)
+	}
+	return i.apmApiV2
 }
 
 // GetAuditApiV2 get instance of AuditApi
