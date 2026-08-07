@@ -2,6 +2,7 @@ package emit
 
 import (
 	"fmt"
+	"go/token"
 	"sort"
 	"strings"
 	"unicode"
@@ -824,10 +825,14 @@ func stripMarkers(s string) string {
 }
 
 // leafVar is the local variable a guarded assignment binds the optional getter's
-// value to: the attribute's lowerCamel name, suffixed with "Value" when it would
-// shadow an identifier in updateState's scope (state, attributes, the receiver).
+// value to: the attribute's lowerCamel name, suffixed with "Var" for Go keywords
+// or "Value" when it would shadow an identifier in updateState's scope (state,
+// attributes, the receiver).
 func leafVar(tfName string) string {
 	v := lowerFirst(model.SdkName(tfName))
+	if token.Lookup(v).IsKeyword() {
+		return v + "Var"
+	}
 	switch v {
 	case "state", "attributes", "ok", "d", "data", "resp", "items", "ctx":
 		return v + "Value"
