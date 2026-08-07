@@ -940,6 +940,16 @@ var _ = Describe("NormalizeSchemas list operation", func() {
 		}))
 	})
 
+	It("retains OpenAPI declaration order for SDK signature derivation", func() {
+		want := map[string]int{
+			"page[number]": 1, "page[size]": 2, "sort": 3,
+			"include": 4, "filter[keyword]": 5, "filter[me]": 6,
+		}
+		for _, parameter := range list.QueryParams {
+			Expect(parameter.DeclarationOrder).To(Equal(want[parameter.Name]), parameter.Name)
+		}
+	})
+
 	It("resolves a $ref parameter (#/components/parameters) and normalizes its schema", func() {
 		page := paramByName(list, "page[number]")
 		Expect(page.Schema).NotTo(BeNil())

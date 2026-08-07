@@ -232,7 +232,7 @@ func (n *schemaNormalizer) fillOperation(op *model.Operation, raw *v3.Operation)
 // body so type/format/enum/array come through. Raw bracketed names
 // (filter[keyword]) are preserved.
 func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation) error {
-	for _, p := range raw.Parameters {
+	for index, p := range raw.Parameters {
 		if p == nil || (p.In != "query" && p.In != "path") || p.Name == "" {
 			continue
 		}
@@ -244,10 +244,11 @@ func (n *schemaNormalizer) fillParameters(op *model.Operation, raw *v3.Operation
 			return err
 		}
 		parameter := model.QueryParam{
-			Name:        p.Name,
-			Required:    p.Required != nil && *p.Required,
-			Schema:      schema,
-			Description: p.Description,
+			Name:             p.Name,
+			Required:         p.Required != nil && *p.Required,
+			Schema:           schema,
+			Description:      p.Description,
+			DeclarationOrder: index + 1,
 		}
 		if p.In == "path" {
 			op.PathParams = append(op.PathParams, parameter)

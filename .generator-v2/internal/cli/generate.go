@@ -94,22 +94,23 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 				// the preferred initialization path.
 				accessors, accErr := emit.ResolveAPIAccessors(filepath.Join(outputRoot, apiInstancesHelperRelPath))
 				if accErr != nil {
-					cmd.PrintErrln("tfgen: could not resolve API accessors; SDK constructors will be used where available:", accErr)
+					cmd.PrintErrln("tfgen: could not resolve provider API accessors; SDK constructor names will be derived from OpenAPI tags:", accErr)
 					accessors = nil
 				}
 
-				sdkPackageDir, err := resolveSDKPackageDir(outputRoot)
-				if err != nil {
-					return fmt.Errorf("generate: resolve pinned SDK: %w", err)
-				}
-				constructors, constructorErr := emit.ResolveAPIConstructors(sdkPackageDir)
-				if constructorErr != nil {
-					cmd.PrintErrln("tfgen: could not resolve pinned SDK API constructors; data sources without ApiInstances accessors will fail:", constructorErr)
-					constructors = nil
-				}
-				sdkBindings, err := sdkbinding.Load(sdkPackageDir)
-				if err != nil {
-					return fmt.Errorf("generate: load pinned SDK bindings: %w", err)
+				// The OpenAPI derivation is authoritative. Loading the pinned SDK is
+				// best-effort corroboration only: a cold cache, missing package, or new
+				// endpoint must not prevent generation before the SDK update lands.
+				var sdkBindings *sdkbinding.Inventory
+				sdkPackageDir, sdkDirErr := resolveSDKPackageDir(outputRoot)
+				if sdkDirErr != nil {
+					cmd.PrintErrln("tfgen: pinned SDK corroboration unavailable; generating from OpenAPI bindings:", sdkDirErr)
+				} else {
+					sdkBindings, err = sdkbinding.Load(sdkPackageDir)
+					if err != nil {
+						cmd.PrintErrln("tfgen: pinned SDK corroboration unavailable; generating from OpenAPI bindings:", err)
+						sdkBindings = nil
+					}
 				}
 
 				var registrations []emit.GeneratedRegistration
@@ -141,7 +142,7 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 						continue
 					}
 
-					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, constructors, sdkBindings)
+					entry, testEntry, exampleEntry, reg := generateArtifact(op, outputRoot, testsOutputRoot, examplesOutputRoot, emitTests, check, accessors, sdkBindings)
 					runReport.Artifacts = append(runReport.Artifacts, entry)
 					if testEntry != nil {
 						runReport.Artifacts = append(runReport.Artifacts, *testEntry)
@@ -297,7 +298,7 @@ func findProviderModuleRoot(outputRoot string) (string, error) {
 // operation. On success it also returns the GeneratedRegistration the caller
 // uses to wire the data source into the provider; it is nil for a skipped or
 // failed artifact.
-func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors, constructors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
+func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examplesOutputRoot string, emitTests, check bool, accessors map[string]string, sdkBindings *sdkbinding.Inventory) (model.ArtifactReportEntry, *model.ArtifactReportEntry, *model.ArtifactReportEntry, *emit.GeneratedRegistration) {
 	entry := model.ArtifactReportEntry{
 		Name: op.Tracking.ArtifactName,
 		Kind: op.Tracking.ArtifactKind,
@@ -319,16 +320,19 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	if err := sdkbind.BindOperation(op); err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
-	if err := sdkBindings.Bind(op); err != nil {
+	bindingDiagnostics, err := sdkbinding.Bind(op, sdkBindings)
+	if err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
 	if op.SearchOp != nil && op.SearchOp != op {
 		if err := sdkbind.BindOperation(op.SearchOp); err != nil {
 			return failEntry(entry, err), nil, nil, nil
 		}
-		if err := sdkBindings.Bind(op.SearchOp); err != nil {
+		searchDiagnostics, err := sdkbinding.Bind(op.SearchOp, sdkBindings)
+		if err != nil {
 			return failEntry(entry, err), nil, nil, nil
 		}
+		bindingDiagnostics = append(bindingDiagnostics, searchDiagnostics...)
 	}
 
 	artifact, err := model.BuildArtifact(op)
@@ -339,6 +343,7 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 	entry.Path = artifact.SourceFile
 	// Non-fatal notes (e.g. query params dropped from a plural filter set) ride
 	// along on a successful entry; failEntry below overrides them on failure.
+	entry.Diagnostics = append(entry.Diagnostics, bindingDiagnostics...)
 	entry.Diagnostics = append(entry.Diagnostics, artifact.Diagnostics...)
 
 	view, err := emit.BuildDataSourceView(artifact)
@@ -346,9 +351,8 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 		return failEntry(entry, err), nil, nil, nil
 	}
 	// Prefer the provider's existing helper accessor (including acronym/alias
-	// spellings), then fall back to the constructor discovered from the pinned
-	// SDK. Never render the builder's guessed accessor.
-	if err := emit.ApplyAPIAccessor(&view, accessors, constructors); err != nil {
+	// spellings), then derive the same constructor the SDK generator will emit.
+	if err := emit.ApplyAPIAccessor(&view, accessors); err != nil {
 		return failEntry(entry, err), nil, nil, nil
 	}
 	// Members the emit flattener dropped (e.g. relationships) ride along at the

@@ -50,73 +50,37 @@ func (i *ApiInstances) HttpClient() {}
 	})
 })
 
-var _ = Describe("ResolveAPIConstructors", func() {
-	const fixture = `package datadogV2
-
-func NewCaseManagementApi(client *datadog.APIClient) *CaseManagementApi { return nil }
-func NewRUMApi(client *datadog.APIClient) *RUMApi { return nil }
-func NewWrongClient(client *other.APIClient) *WrongClientApi { return nil }
-func NewWrongResult(client *datadog.APIClient) WrongResultApi { return WrongResultApi{} }
-func NewModel(client *datadog.APIClient) *Model { return nil }
-`
-
-	var dir string
-	BeforeEach(func() {
-		dir = GinkgoT().TempDir()
-		Expect(os.WriteFile(filepath.Join(dir, "api_fixture.go"), []byte(fixture), 0o644)).To(Succeed())
-		Expect(os.WriteFile(filepath.Join(dir, "model_fixture.go"), []byte("package datadogV2\nfunc NewIgnoredApi(client *datadog.APIClient) *IgnoredApi { return nil }\n"), 0o644)).To(Succeed())
-	})
-
-	It("maps API structs to verified shared-client constructors and preserves SDK acronym spelling", func() {
-		constructors, err := ResolveAPIConstructors(dir)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(constructors).To(Equal(map[string]string{
-			"CaseManagementApi": "NewCaseManagementApi",
-			"RUMApi":            "NewRUMApi",
-		}))
-	})
-
-	It("returns an error when the SDK package cannot be read", func() {
-		_, err := ResolveAPIConstructors(filepath.Join(dir, "missing"))
-		Expect(err).To(MatchError(ContainSubstring("read SDK API package")))
-	})
-})
-
 var _ = Describe("ApplyAPIAccessor", func() {
 	accessors := map[string]string{"RUMApi": "GetRumApiV2"}
-	constructors := map[string]string{
-		"RUMApi":            "NewRUMApi",
-		"CaseManagementApi": "NewCaseManagementApi",
-	}
 
 	It("prefers a discovered accessor when the provider names it differently", func() {
 		view := &DataSourceView{APIStruct: "RUMApi", APIAccessor: "GetRUMApiV2"}
-		Expect(ApplyAPIAccessor(view, accessors, constructors)).To(Succeed())
+		Expect(ApplyAPIAccessor(view, accessors)).To(Succeed())
 		Expect(view.APIAccessor).To(Equal("GetRumApiV2"))
 		Expect(view.APIConstructor).To(BeEmpty())
 	})
 
-	It("uses a discovered SDK constructor when no helper accessor exists", func() {
+	It("derives the SDK generator's constructor when no helper accessor exists", func() {
 		view := &DataSourceView{
 			SDKPackage:  "datadogV2",
 			APIStruct:   "CaseManagementApi",
 			APIAccessor: "GetCaseManagementApiV2",
 		}
-		Expect(ApplyAPIAccessor(view, accessors, constructors)).To(Succeed())
+		Expect(ApplyAPIAccessor(view, accessors)).To(Succeed())
 		Expect(view.APIAccessor).To(BeEmpty())
 		Expect(view.APIConstructor).To(Equal("NewCaseManagementApi"))
 	})
 
-	It("fails instead of retaining a guessed accessor when neither path resolves", func() {
+	It("fails when the OpenAPI tag could not produce an API struct", func() {
 		view := &DataSourceView{
 			SDKPackage:  "datadogV2",
-			APIStruct:   "MissingApi",
-			APIAccessor: "GetMissingApiV2",
+			APIStruct:   "Api",
+			APIAccessor: "GetApiV2",
 		}
-		err := ApplyAPIAccessor(view, accessors, constructors)
+		err := ApplyAPIAccessor(view, accessors)
 		Expect(err).To(MatchError(And(
-			ContainSubstring("datadogV2.MissingApi"),
-			ContainSubstring("no ApiInstances accessor or SDK constructor"),
+			ContainSubstring("datadogV2.Api"),
+			ContainSubstring("no usable API tag"),
 		)))
 		Expect(view.APIAccessor).To(BeEmpty())
 		Expect(view.APIConstructor).To(BeEmpty())

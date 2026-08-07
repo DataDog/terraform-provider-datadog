@@ -75,6 +75,42 @@ func TestGenerateHandlesUUIDResponseAndOptionalFilter(t *testing.T) {
 	}
 }
 
+// TestGenerateDoesNotRequireEndpointInPinnedSDK proves an OpenAPI operation can
+// be generated before the corresponding client release is pinned. The method
+// name is intentionally absent from the current SDK; generated Go is the
+// artifact that will compile once the SDK update lands.
+func TestGenerateDoesNotRequireEndpointInPinnedSDK(t *testing.T) {
+	spec, err := os.ReadFile(filepath.Join("..", "testdata", "mini-oas", "scripts", "gen-test", "datastore.yaml"))
+	if err != nil {
+		t.Fatalf("reading datastore spec: %v", err)
+	}
+	future := strings.ReplaceAll(string(spec), "GetDatastore", "GetFutureDatastore")
+	if future == string(spec) {
+		t.Fatal("failed to replace datastore operationId")
+	}
+
+	dir := t.TempDir()
+	specPath := filepath.Join(dir, "future-datastore.yaml")
+	if err := os.WriteFile(specPath, []byte(future), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := runTfgen("generate", "--spec", specPath,
+		"--output-root", dir,
+		"--examples-output-root", filepath.Join(dir, "examples"),
+		"--report", filepath.Join(dir, "report.json")); err != nil {
+		t.Fatalf("generate operation absent from pinned SDK: %v", err)
+	}
+
+	generated := mustRead(t, filepath.Join(dir, "data_source_datadog_datastore.go"))
+	if !strings.Contains(generated, ".GetFutureDatastore(d.Auth") {
+		t.Fatalf("generated data source did not use future OpenAPI method:\n%s", generated)
+	}
+	report := mustRead(t, filepath.Join(dir, "report.json"))
+	if !strings.Contains(report, `"failed": 0`) {
+		t.Fatalf("future endpoint was not an ordinary successful artifact:\n%s", report)
+	}
+}
+
 // TestGenerateWiresMaxDepth proves the --max-depth flag value reaches LoadSpec:
 // the same deep-but-acyclic spec loads at a high bound and fails at a low one.
 // If the flag were ignored, both runs would behave identically.

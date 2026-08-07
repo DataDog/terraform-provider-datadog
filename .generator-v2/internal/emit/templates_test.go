@@ -209,9 +209,7 @@ func caseConstructorView() DataSourceView {
 			ParamType: "*datadogV2.CaseResponse",
 		},
 	}
-	Expect(ApplyAPIAccessor(&view, nil, map[string]string{
-		"CaseManagementApi": "NewCaseManagementApi",
-	})).To(Succeed())
+	Expect(ApplyAPIAccessor(&view, nil)).To(Succeed())
 	return view
 }
 

@@ -124,11 +124,12 @@ type Operation struct {
 	ResponseRefName string
 	// QueryParams are the operation's in:query parameters, normalized and sorted
 	// by name. Populated for every operation; the plural data-source path turns
-	// the scalar ones into filters.
+	// the scalar ones into filters. DeclarationOrder retains the original OpenAPI
+	// position so SDK binding can reproduce the client generator's call order.
 	QueryParams []QueryParam
 	// PathParams are the operation's in:path parameters, normalized and sorted
-	// by name. SDK binding resolves their actual call order from the pinned Go
-	// client's method signature rather than relying on OpenAPI declaration order.
+	// by name. DeclarationOrder retains their position relative to required query
+	// parameters, matching the Go client generator's parameter walk.
 	PathParams []QueryParam
 	// Pagination is the decoded x-pagination extension, or nil when the
 	// operation declares none.
@@ -149,9 +150,10 @@ type Operation struct {
 	// search op (search-only), and is nil when no search is declared or the
 	// declared operationId is unknown.
 	SearchOp *Operation
-	// SDKBinding is the call signature resolved from the pinned Go SDK. The CLI
-	// fills it before artifact construction. Tests that build parser-shaped
-	// operations directly may leave it nil and exercise the legacy call shape.
+	// SDKBinding is the call signature derived from the OpenAPI operation using
+	// the Go SDK generator's naming and ordering rules. The CLI fills it before
+	// artifact construction. Tests that build parser-shaped operations directly
+	// may leave it nil and exercise the legacy call shape.
 	SDKBinding *SDKOperationBinding
 }
 
@@ -164,6 +166,9 @@ type QueryParam struct {
 	Required    bool
 	Schema      *Schema
 	Description string
+	// DeclarationOrder is the one-based position in operation.parameters. Zero
+	// is reserved for hand-built test fixtures that do not carry source order.
+	DeclarationOrder int
 }
 
 // Pagination is the decoded x-pagination extension on a list operation. It
@@ -178,9 +183,9 @@ type Pagination struct {
 	ResultsPath string
 }
 
-// SDKOperationBinding is the pinned Go SDK signature for one OpenAPI operation.
-// Required arguments are positional and retain SDK order. Optional arguments
-// are fields set through With* methods on OptionalParamsType.
+// SDKOperationBinding is the Go SDK signature derived for one OpenAPI operation.
+// Required arguments are positional and retain the SDK generator's order.
+// Optional arguments are fields set through With* methods on OptionalParamsType.
 type SDKOperationBinding struct {
 	Required           []SDKArgument
 	Optional           []SDKArgument
