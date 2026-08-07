@@ -96,6 +96,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
+	NewWebhookOauth2ClientCredentialsResource,
 	NewLogsCustomDestinationResource,
 	NewLogsRestrictionQueryResource,
 	NewTenantBasedHandleResource,
