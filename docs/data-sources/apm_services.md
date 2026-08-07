@@ -8,7 +8,7 @@ description: |-
 
 # datadog_apm_services (Data Source)
 
-Use this data source to list the APM services reporting traces or universal service monitoring data to Datadog.
+Use this data source to list the APM services reporting traces or Universal Service Monitoring data to Datadog.
 
 ## Example Usage
 
