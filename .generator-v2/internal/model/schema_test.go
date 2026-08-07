@@ -257,6 +257,26 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(labels.Children).To(BeEmpty())
 	})
 
+	DescribeTable("builds recursively typed collections as leaf attributes",
+		func(name string, schema *Schema, wantTFType, wantGoType, wantElementType string) {
+			tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{name: schema}))
+			Expect(err).NotTo(HaveOccurred())
+			attr := attrByPath(tree, "response."+name)
+			Expect(attr.TfType).To(Equal(wantTFType))
+			Expect(attr.GoType).To(Equal(wantGoType))
+			Expect(attr.ElementType).To(Equal(wantElementType))
+			Expect(attr.Children).To(BeEmpty())
+		},
+		Entry("array of arrays", "matrix", arrSchema(arrSchema(primSchema("string"))),
+			"schema.ListAttribute", "types.List", "types.ListType{ElemType: types.StringType}"),
+		Entry("map of arrays", "groups", mapSchema(arrSchema(primSchema("string"))),
+			"schema.MapAttribute", "types.Map", "types.ListType{ElemType: types.StringType}"),
+		Entry("array of typed maps", "rows", arrSchema(mapSchema(primSchema("string"))),
+			"schema.ListAttribute", "types.List", "types.MapType{ElemType: types.StringType}"),
+		Entry("deep map-map-list", "providers", mapSchema(mapSchema(arrSchema(primSchema("string")))),
+			"schema.MapAttribute", "types.Map", "types.MapType{ElemType: types.ListType{ElemType: types.StringType}}"),
+	)
+
 	It("builds map<object> as a MapNestedAttribute with {} value children", func() {
 		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
 			"configs": mapSchema(objSchema(map[string]*Schema{"x": primSchema("string")})),
@@ -280,13 +300,13 @@ var _ = Describe("BuildResponseTree type delegation and composites", func() {
 		Expect(options.Children[0].TfType).To(Equal("schema.BoolAttribute"))
 	})
 
-	It("surfaces a FrameworkType error for a deferred composite property (array-of-array)", func() {
+	It("surfaces an element-type error for a nested collection ending in unsupported JSON", func() {
 		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
-			"matrix": arrSchema(arrSchema(primSchema("string"))),
+			"matrix": arrSchema(arrSchema(&Schema{Kind: SchemaKindUnsupported})),
 		}))
 		Expect(tree).To(BeNil())
 		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("array"))
+		Expect(err.Error()).To(ContainSubstring("unsupported"))
 	})
 })
 
@@ -452,11 +472,30 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 		Expect(err.Error()).To(ContainSubstring(`oneOf at "response.choice"`))
 	})
 
-	It("returns the type-mapping error for a non-object root that cannot be mapped (array-of-array)", func() {
-		tree, _, err := BuildResponseTree(arrSchema(arrSchema(primSchema("string"))))
+	It("includes an unsupported reason without losing the full attribute path", func() {
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"composed": {
+				Kind:              SchemaKindUnsupported,
+				UnsupportedReason: `allOf property "status" is declared by multiple branches`,
+			},
+		}))
 		Expect(tree).To(BeNil())
-		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("array"))
+		var uke *UnsupportedKindError
+		Expect(errors.As(err, &uke)).To(BeTrue(), "expected *UnsupportedKindError, got %T: %v", err, err)
+		Expect(uke.Path).To(Equal("response.composed"))
+		Expect(uke.Kind).To(Equal(SchemaKindUnsupported))
+		Expect(uke.Reason).To(Equal(`allOf property "status" is declared by multiple branches`))
+		Expect(uke.Error()).To(Equal(
+			`model: cannot build attribute at "response.composed": schema kind "unsupported" is not representable: allOf property "status" is declared by multiple branches`,
+		))
+	})
+
+	It("builds a recursively typed non-object root", func() {
+		tree, _, err := BuildResponseTree(arrSchema(arrSchema(primSchema("string"))))
+		Expect(err).NotTo(HaveOccurred())
+		Expect(tree.Attributes).To(HaveLen(1))
+		Expect(tree.Attributes[0].TfType).To(Equal("schema.ListAttribute"))
+		Expect(tree.Attributes[0].ElementType).To(Equal("types.ListType{ElemType: types.StringType}"))
 	})
 
 	It("builds a well-formed object nested several levels deep without error", func() {

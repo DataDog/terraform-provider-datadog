@@ -164,6 +164,80 @@ paths:
       responses:
         "204":
           description: no content
+  /allof-sibling:
+    post:
+      operationId: CreateOneOfWithAllOfSibling
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: oneof_with_allof_sibling
+        group:
+          create: CreateOneOfWithAllOfSibling
+          read: CreateOneOfWithAllOfSibling
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+              allOf:
+                - type: object
+                  required: [shared]
+                  properties:
+                    shared:
+                      type: string
+      responses:
+        "204":
+          description: no content
+  /independent-unions:
+    post:
+      operationId: CreateIndependentUnions
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: independent_unions
+        group:
+          create: CreateIndependentUnions
+          read: CreateIndependentUnions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                - $ref: "#/components/schemas/BetaVariant"
+              allOf:
+                - oneOf:
+                    - type: string
+                    - type: boolean
+      responses:
+        "204":
+          description: no content
+  /ref-sibling-alternative:
+    post:
+      operationId: CreateOneOfRefSiblingAlternative
+      tags: [OneOf]
+      x-datadog-tf-generator:
+        artifact_kind: resource
+        artifact_name: oneof_ref_sibling_alternative
+        group:
+          create: CreateOneOfRefSiblingAlternative
+          read: CreateOneOfRefSiblingAlternative
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/AlphaVariant"
+                  description: Local alpha description.
+                - $ref: "#/components/schemas/BetaVariant"
+      responses:
+        "204":
+          description: no content
 components:
   schemas:
     RecursiveVariant:

@@ -117,16 +117,16 @@ func (d *datadogTeamDataSource) updateState(ctx context.Context, state *datadogT
 		state.Name = types.StringValue(*name)
 	}
 	if hiddenModules, ok := attributes.GetHiddenModulesOk(); ok && hiddenModules != nil {
-		var listDiags diag.Diagnostics
-		state.HiddenModules, listDiags = types.ListValueFrom(ctx, types.StringType, *hiddenModules)
-		diags.Append(listDiags...)
+		var collectionDiags diag.Diagnostics
+		state.HiddenModules, collectionDiags = types.ListValueFrom(ctx, types.StringType, *hiddenModules)
+		diags.Append(collectionDiags...)
 	} else {
 		state.HiddenModules = types.ListNull(types.StringType)
 	}
 	if visibleModules, ok := attributes.GetVisibleModulesOk(); ok && visibleModules != nil {
-		var listDiags diag.Diagnostics
-		state.VisibleModules, listDiags = types.ListValueFrom(ctx, types.StringType, *visibleModules)
-		diags.Append(listDiags...)
+		var collectionDiags diag.Diagnostics
+		state.VisibleModules, collectionDiags = types.ListValueFrom(ctx, types.StringType, *visibleModules)
+		diags.Append(collectionDiags...)
 	} else {
 		state.VisibleModules = types.ListNull(types.StringType)
 	}

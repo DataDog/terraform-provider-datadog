@@ -41,10 +41,11 @@ var _ = Describe("data-source templates", func() {
 		// this golden produces then is the review surface for that change.
 		Entry("singular oneOf envelope", "data_source_singular_oneof.golden", oneOfEnvelopeView),
 		Entry("singular oneOf in a list", "data_source_singular_oneof_list.golden", oneOfEnvelopeListView),
+		Entry("singular SDK constructor fallback (case)", "data_source_singular_constructor.golden", caseConstructorView),
 	)
 
 	It("renders deterministically across runs", func() {
-		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView(), retentionFilterView(), pluralObjectView()} {
+		for _, v := range []DataSourceView{incidentTypeView(), teamSingularView(), costBudgetView(), powerpackSearchView(), datastoreBothView(), pluralFixture(), pluralNestedView(), datastoresView(), retentionFilterView(), pluralObjectView(), oneOfEnvelopeView(), oneOfEnvelopeListView(), caseConstructorView()} {
 			first, err := RenderDataSource(v)
 			Expect(err).NotTo(HaveOccurred())
 			second, err := RenderDataSource(v)
@@ -177,6 +178,41 @@ func datastoreBothView() DataSourceView {
 	return mustView(datastoreBothOperation())
 }
 
+// caseConstructorView exercises the missing-ApiInstances path end to end through
+// API client resolution and the shared Configure template.
+func caseConstructorView() DataSourceView {
+	GinkgoHelper()
+	view := DataSourceView{
+		Cardinality: Singular,
+		TypeName:    "case",
+		UsesFmt:     true,
+		GoName:      "datadogCase",
+		Description: "Use this data source to retrieve a case.",
+		SDKPackage:  "datadogV2",
+		APIStruct:   "CaseManagementApi",
+		APIAccessor: "GetCaseManagementApiV2",
+		ByID:        true,
+		Read: SDKReadView{
+			Method:       "GetCase",
+			ResponseType: "CaseResponse",
+		},
+		Models: []ModelStructView{{
+			Name: "datadogCaseDataSourceModel",
+			Fields: []ModelFieldView{{
+				GoField: "ID",
+				GoType:  "types.String",
+				TFName:  "id",
+			}},
+		}},
+		State: StateView{
+			ParamName: "resp",
+			ParamType: "*datadogV2.CaseResponse",
+		},
+	}
+	Expect(ApplyAPIAccessor(&view, nil)).To(Succeed())
+	return view
+}
+
 // pluralFixture is the teams data source as a view.
 func pluralFixture() DataSourceView {
 	return DataSourceView{
@@ -198,6 +234,10 @@ func pluralFixture() DataSourceView {
 			Filters: []FilterParamView{
 				{StateField: "FilterKeyword", ParamField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
 				{StateField: "FilterMe", ParamField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
+			},
+			HashInputs: []FilterParamView{
+				{StateField: "FilterKeyword", ValueExpr: "ValueStringPointer()"},
+				{StateField: "FilterMe", ValueExpr: "ValueBoolPointer()"},
 			},
 		},
 		Models: []ModelStructView{
@@ -263,8 +303,8 @@ func pluralFixture() DataSourceView {
 				{LHS: "UserCount", RHS: "types.Int64Value(int64(item.Attributes.GetUserCount()))"},
 			},
 			ItemLists: []ListAssignment{
-				{Kind: "primitive", LHS: "r.HiddenModules", GetterOk: "item.Attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
-				{Kind: "primitive", LHS: "r.VisibleModules", GetterOk: "item.Attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
+				{Kind: "primitive", ContainerKind: "list", LHS: "r.HiddenModules", GetterOk: "item.Attributes.GetHiddenModulesOk()", Var: "hiddenModules", ElementType: "types.StringType"},
+				{Kind: "primitive", ContainerKind: "list", LHS: "r.VisibleModules", GetterOk: "item.Attributes.GetVisibleModulesOk()", Var: "visibleModules", ElementType: "types.StringType"},
 			},
 		},
 	}
