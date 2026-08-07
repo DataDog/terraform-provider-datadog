@@ -35,18 +35,32 @@ resource "datadog_governance_control" "unused_api_keys" {
 
 ### Optional
 
-- `detection_frequency` (String) How often detections are evaluated for the control.
 - `detection_parameters` (String) Detection parameters for the control, as a JSON-encoded map of parameter names to their configured values.
 - `mitigation_parameters` (String) Mitigation parameters for the control, as a JSON-encoded map of parameter names to their configured values.
 - `mitigation_type` (String) The mitigation type configured for the control. Empty when not configured.
-- `name` (String) Human-readable name of the control.
-- `notification_frequency` (String) The notification frequency configured for the control. Empty when not configured.
-- `notification_parameters` (String) Notification parameters for the control, as a JSON-encoded map of parameter names to their configured values.
-- `notification_type` (String) The notification type configured for the control. Empty when not configured.
+- `notification_settings` (Attributes List) The notification settings for the control, one entry per event type. (see [below for nested schema](#nestedatt--notification_settings))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+- `name` (String) Human-readable name of the control.
+
+<a id="nestedatt--notification_settings"></a>
+### Nested Schema for `notification_settings`
+
+Required:
+
+- `enabled` (Boolean) Whether notifications are enabled for this event type.
+- `event_type` (String) The event type the notification settings apply to, such as `new_detection`.
+- `targets` (Attributes List) The destinations that receive notifications for this event type. (see [below for nested schema](#nestedatt--notification_settings--targets))
+
+<a id="nestedatt--notification_settings--targets"></a>
+### Nested Schema for `notification_settings.targets`
+
+Required:
+
+- `handle` (String) The handle of the notification target.
+- `type` (String) The type of notification target: `email`, `slack`, `at_mention`, or `case`.
 
 ## Import
 

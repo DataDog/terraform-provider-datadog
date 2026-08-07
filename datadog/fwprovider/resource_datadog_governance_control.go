@@ -8,10 +8,12 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -25,22 +27,49 @@ var (
 )
 
 type governanceControlResource struct {
-	Api  *datadogV2.GovernanceControlsApi
+	Api  *datadogV2.GovernanceConsoleApi
 	Auth context.Context
 }
 
 type governanceControlModel struct {
-	ID                     types.String         `tfsdk:"id"`
-	DetectionType          types.String         `tfsdk:"detection_type"`
-	Name                   types.String         `tfsdk:"name"`
-	DetectionFrequency     types.String         `tfsdk:"detection_frequency"`
-	DetectionParameters    jsontypes.Normalized `tfsdk:"detection_parameters"`
-	MitigationType         types.String         `tfsdk:"mitigation_type"`
-	MitigationParameters   jsontypes.Normalized `tfsdk:"mitigation_parameters"`
-	NotificationType       types.String         `tfsdk:"notification_type"`
-	NotificationFrequency  types.String         `tfsdk:"notification_frequency"`
-	NotificationParameters jsontypes.Normalized `tfsdk:"notification_parameters"`
+	ID                   types.String         `tfsdk:"id"`
+	DetectionType        types.String         `tfsdk:"detection_type"`
+	Name                 types.String         `tfsdk:"name"`
+	DetectionParameters  jsontypes.Normalized `tfsdk:"detection_parameters"`
+	MitigationType       types.String         `tfsdk:"mitigation_type"`
+	MitigationParameters jsontypes.Normalized `tfsdk:"mitigation_parameters"`
+	// NotificationSettings is a types.List (not a native Go slice) because it is Optional+Computed:
+	// it can be Unknown during planning, and only attr.Value-backed types can represent that.
+	NotificationSettings types.List `tfsdk:"notification_settings"`
 }
+
+// governanceControlNotificationTargetModel mirrors datadogV2.ControlNotificationTarget.
+type governanceControlNotificationTargetModel struct {
+	Type   types.String `tfsdk:"type"`
+	Handle types.String `tfsdk:"handle"`
+}
+
+// governanceControlNotificationEventSettingModel mirrors datadogV2.ControlNotificationEventSetting.
+// It is only ever accessed via NotificationSettings.ElementsAs/ListValueFrom, so its fields do not
+// need to individually support Unknown the way the outer list does.
+type governanceControlNotificationEventSettingModel struct {
+	EventType types.String                               `tfsdk:"event_type"`
+	Enabled   types.Bool                                 `tfsdk:"enabled"`
+	Targets   []governanceControlNotificationTargetModel `tfsdk:"targets"`
+}
+
+var governanceControlNotificationTargetAttrTypes = map[string]attr.Type{
+	"type":   types.StringType,
+	"handle": types.StringType,
+}
+
+var governanceControlNotificationEventSettingAttrTypes = map[string]attr.Type{
+	"event_type": types.StringType,
+	"enabled":    types.BoolType,
+	"targets":    types.ListType{ElemType: types.ObjectType{AttrTypes: governanceControlNotificationTargetAttrTypes}},
+}
+
+var governanceControlNotificationEventSettingObjectType = types.ObjectType{AttrTypes: governanceControlNotificationEventSettingAttrTypes}
 
 func NewGovernanceControlResource() resource.Resource {
 	return &governanceControlResource{}
@@ -48,7 +77,7 @@ func NewGovernanceControlResource() resource.Resource {
 
 func (r *governanceControlResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetGovernanceControlsApiV2()
+	r.Api = providerData.DatadogApiInstances.GetGovernanceConsoleApiV2()
 	r.Auth = providerData.Auth
 }
 
@@ -69,17 +98,8 @@ func (r *governanceControlResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 			},
 			"name": schema.StringAttribute{
-				Optional:    true,
 				Computed:    true,
 				Description: "Human-readable name of the control.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"detection_frequency": schema.StringAttribute{
-				Optional:    true,
-				Computed:    true,
-				Description: "How often detections are evaluated for the control.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -110,29 +130,40 @@ func (r *governanceControlResource) Schema(_ context.Context, _ resource.SchemaR
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"notification_type": schema.StringAttribute{
+			"notification_settings": schema.ListNestedAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "The notification type configured for the control. Empty when not configured.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+				Description: "The notification settings for the control, one entry per event type.",
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"notification_frequency": schema.StringAttribute{
-				Optional:    true,
-				Computed:    true,
-				Description: "The notification frequency configured for the control. Empty when not configured.",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"notification_parameters": schema.StringAttribute{
-				Optional:    true,
-				Computed:    true,
-				Description: "Notification parameters for the control, as a JSON-encoded map of parameter names to their configured values.",
-				CustomType:  jsontypes.NormalizedType{},
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"event_type": schema.StringAttribute{
+							Required:    true,
+							Description: "The event type the notification settings apply to, such as `new_detection`.",
+						},
+						"enabled": schema.BoolAttribute{
+							Required:    true,
+							Description: "Whether notifications are enabled for this event type.",
+						},
+						"targets": schema.ListNestedAttribute{
+							Required:    true,
+							Description: "The destinations that receive notifications for this event type.",
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"type": schema.StringAttribute{
+										Required:    true,
+										Description: "The type of notification target: `email`, `slack`, `at_mention`, or `case`.",
+									},
+									"handle": schema.StringAttribute{
+										Required:    true,
+										Description: "The handle of the notification target.",
+									},
+								},
+							},
+						},
+					},
 				},
 			},
 		},
@@ -164,8 +195,22 @@ func (r *governanceControlResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
-	if err := r.updateState(&state, &resp); err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating state from governance control response"))
+	notificationResp, notificationHTTPResp, err := r.Api.GetGovernanceControlNotificationSettings(r.Auth, state.ID.ValueString())
+	if err != nil {
+		if notificationHTTPResp != nil && notificationHTTPResp.StatusCode == http.StatusNotFound {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving governance control notification settings"))
+		return
+	}
+	if err := utils.CheckForUnparsed(notificationResp); err != nil {
+		response.Diagnostics.AddError("datadog_governance_control: response contains unparsedObject", err.Error())
+		return
+	}
+
+	response.Diagnostics.Append(r.updateState(ctx, &state, &resp, &notificationResp)...)
+	if response.Diagnostics.HasError() {
 		return
 	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -177,7 +222,7 @@ func (r *governanceControlResource) Create(ctx context.Context, request resource
 	if response.Diagnostics.HasError() {
 		return
 	}
-	r.upsertGovernanceControl(&state, &response.Diagnostics)
+	r.upsertGovernanceControl(ctx, &state, &response.Diagnostics)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -190,7 +235,7 @@ func (r *governanceControlResource) Update(ctx context.Context, request resource
 	if response.Diagnostics.HasError() {
 		return
 	}
-	r.upsertGovernanceControl(&state, &response.Diagnostics)
+	r.upsertGovernanceControl(ctx, &state, &response.Diagnostics)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -203,7 +248,7 @@ func (r *governanceControlResource) Delete(_ context.Context, _ resource.DeleteR
 
 // upsertGovernanceControl backs both Create and Update: controls are built into
 // Datadog, so "creating" the resource means configuring the existing control.
-func (r *governanceControlResource) upsertGovernanceControl(state *governanceControlModel, diags *diag.Diagnostics) {
+func (r *governanceControlResource) upsertGovernanceControl(ctx context.Context, state *governanceControlModel, diags *diag.Diagnostics) {
 	req := r.buildGovernanceControlUpdateRequest(state, diags)
 	if diags.HasError() {
 		return
@@ -219,28 +264,19 @@ func (r *governanceControlResource) upsertGovernanceControl(state *governanceCon
 		return
 	}
 
-	if err := r.updateState(state, &resp); err != nil {
-		diags.Append(utils.FrameworkErrorDiag(err, "error updating state from governance control response"))
+	notificationResp := r.upsertNotificationSettings(ctx, state, diags)
+	if diags.HasError() {
+		return
 	}
+
+	diags.Append(r.updateState(ctx, state, &resp, notificationResp)...)
 }
 
 func (r *governanceControlResource) buildGovernanceControlUpdateRequest(state *governanceControlModel, diags *diag.Diagnostics) *datadogV2.GovernanceControlUpdateRequest {
 	attributes := datadogV2.NewGovernanceControlUpdateAttributesWithDefaults()
 
-	if !state.Name.IsNull() && !state.Name.IsUnknown() {
-		attributes.SetName(state.Name.ValueString())
-	}
-	if !state.DetectionFrequency.IsNull() && !state.DetectionFrequency.IsUnknown() {
-		attributes.SetDetectionFrequency(state.DetectionFrequency.ValueString())
-	}
 	if !state.MitigationType.IsNull() && !state.MitigationType.IsUnknown() {
 		attributes.SetMitigationType(state.MitigationType.ValueString())
-	}
-	if !state.NotificationType.IsNull() && !state.NotificationType.IsUnknown() {
-		attributes.SetNotificationType(state.NotificationType.ValueString())
-	}
-	if !state.NotificationFrequency.IsNull() && !state.NotificationFrequency.IsUnknown() {
-		attributes.SetNotificationFrequency(state.NotificationFrequency.ValueString())
 	}
 
 	for _, param := range []struct {
@@ -250,7 +286,6 @@ func (r *governanceControlResource) buildGovernanceControlUpdateRequest(state *g
 	}{
 		{state.DetectionParameters, "detection_parameters", attributes.SetDetectionParameters},
 		{state.MitigationParameters, "mitigation_parameters", attributes.SetMitigationParameters},
-		{state.NotificationParameters, "notification_parameters", attributes.SetNotificationParameters},
 	} {
 		if param.value.IsNull() || param.value.IsUnknown() {
 			continue
@@ -265,20 +300,86 @@ func (r *governanceControlResource) buildGovernanceControlUpdateRequest(state *g
 
 	req := datadogV2.NewGovernanceControlUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewGovernanceControlUpdateDataWithDefaults()
+	req.Data.SetType(datadogV2.GOVERNANCECONTROLRESOURCETYPE_GOVERNANCE_CONTROL)
 	req.Data.SetAttributes(*attributes)
 	return req
 }
 
-func (r *governanceControlResource) updateState(state *governanceControlModel, resp *datadogV2.GovernanceControlResponse) error {
+// upsertNotificationSettings updates the control's notification settings when configured, then
+// always re-fetches the current settings so state reflects the control's actual configuration.
+func (r *governanceControlResource) upsertNotificationSettings(ctx context.Context, state *governanceControlModel, diags *diag.Diagnostics) *datadogV2.ControlNotificationSettingsResponse {
+	if !state.NotificationSettings.IsNull() && !state.NotificationSettings.IsUnknown() {
+		req, reqDiags := r.buildNotificationSettingsUpdateRequest(ctx, state)
+		diags.Append(reqDiags...)
+		if diags.HasError() {
+			return nil
+		}
+
+		resp, _, err := r.Api.UpdateGovernanceControlNotificationSettings(r.Auth, state.DetectionType.ValueString(), *req)
+		if err != nil {
+			diags.Append(utils.FrameworkErrorDiag(err, "error updating governance control notification settings"))
+			return nil
+		}
+		if err := utils.CheckForUnparsed(resp); err != nil {
+			diags.AddError("datadog_governance_control: response contains unparsedObject", err.Error())
+			return nil
+		}
+		return &resp
+	}
+
+	resp, _, err := r.Api.GetGovernanceControlNotificationSettings(r.Auth, state.DetectionType.ValueString())
+	if err != nil {
+		diags.Append(utils.FrameworkErrorDiag(err, "error retrieving governance control notification settings"))
+		return nil
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		diags.AddError("datadog_governance_control: response contains unparsedObject", err.Error())
+		return nil
+	}
+	return &resp
+}
+
+func (r *governanceControlResource) buildNotificationSettingsUpdateRequest(ctx context.Context, state *governanceControlModel) (*datadogV2.ControlNotificationSettingsUpdateRequest, diag.Diagnostics) {
+	var settings []governanceControlNotificationEventSettingModel
+	diags := state.NotificationSettings.ElementsAs(ctx, &settings, false)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	eventSettings := make([]datadogV2.ControlNotificationEventSetting, 0, len(settings))
+	for _, es := range settings {
+		targets := make([]datadogV2.ControlNotificationTarget, 0, len(es.Targets))
+		for _, t := range es.Targets {
+			targets = append(targets, datadogV2.ControlNotificationTarget{
+				Type:   datadogV2.ControlNotificationTargetType(t.Type.ValueString()),
+				Handle: t.Handle.ValueString(),
+			})
+		}
+		eventSettings = append(eventSettings, datadogV2.ControlNotificationEventSetting{
+			EventType: es.EventType.ValueString(),
+			Enabled:   es.Enabled.ValueBool(),
+			Targets:   targets,
+		})
+	}
+
+	attributes := datadogV2.NewControlNotificationSettingsUpdateAttributesWithDefaults()
+	attributes.SetEventSettings(eventSettings)
+
+	req := datadogV2.NewControlNotificationSettingsUpdateRequestWithDefaults()
+	req.Data = *datadogV2.NewControlNotificationSettingsUpdateDataWithDefaults()
+	req.Data.SetType(datadogV2.CONTROLNOTIFICATIONSETTINGSRESOURCETYPE_CONTROL_NOTIFICATION_SETTINGS)
+	req.Data.SetAttributes(*attributes)
+	return req, diags
+}
+
+func (r *governanceControlResource) updateState(ctx context.Context, state *governanceControlModel, resp *datadogV2.GovernanceControlResponse, notificationResp *datadogV2.ControlNotificationSettingsResponse) diag.Diagnostics {
+	var diags diag.Diagnostics
 	attributes := resp.Data.GetAttributes()
 
-	state.ID = types.StringValue(attributes.GetDetectionType())
-	state.DetectionType = types.StringValue(attributes.GetDetectionType())
+	state.ID = types.StringValue(resp.Data.GetId())
+	state.DetectionType = types.StringValue(resp.Data.GetId())
 	state.Name = types.StringValue(attributes.GetName())
-	state.DetectionFrequency = types.StringValue(attributes.GetDetectionFrequency())
 	state.MitigationType = types.StringValue(attributes.GetMitigationType())
-	state.NotificationType = types.StringValue(attributes.GetNotificationType())
-	state.NotificationFrequency = types.StringValue(attributes.GetNotificationFrequency())
 
 	for _, param := range []struct {
 		value  map[string]interface{}
@@ -286,14 +387,39 @@ func (r *governanceControlResource) updateState(state *governanceControlModel, r
 	}{
 		{attributes.GetDetectionParameters(), &state.DetectionParameters},
 		{attributes.GetMitigationParameters(), &state.MitigationParameters},
-		{attributes.GetNotificationParameters(), &state.NotificationParameters},
 	} {
 		encoded, err := json.Marshal(param.value)
 		if err != nil {
-			return fmt.Errorf("error marshaling governance control parameters: %w", err)
+			diags.Append(utils.FrameworkErrorDiag(err, "error marshaling governance control parameters"))
+			return diags
 		}
 		*param.target = jsontypes.NewNormalizedValue(string(encoded))
 	}
 
-	return nil
+	notificationAttributes := notificationResp.Data.GetAttributes()
+	eventSettings := notificationAttributes.GetEventSettings()
+	settings := make([]governanceControlNotificationEventSettingModel, 0, len(eventSettings))
+	for _, es := range eventSettings {
+		targets := make([]governanceControlNotificationTargetModel, 0, len(es.Targets))
+		for _, t := range es.Targets {
+			targets = append(targets, governanceControlNotificationTargetModel{
+				Type:   types.StringValue(string(t.Type)),
+				Handle: types.StringValue(t.Handle),
+			})
+		}
+		settings = append(settings, governanceControlNotificationEventSettingModel{
+			EventType: types.StringValue(es.EventType),
+			Enabled:   types.BoolValue(es.Enabled),
+			Targets:   targets,
+		})
+	}
+
+	notificationSettings, notificationDiags := types.ListValueFrom(ctx, governanceControlNotificationEventSettingObjectType, settings)
+	diags.Append(notificationDiags...)
+	if diags.HasError() {
+		return diags
+	}
+	state.NotificationSettings = notificationSettings
+
+	return diags
 }
