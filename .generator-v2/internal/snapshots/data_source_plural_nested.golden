@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -18,17 +19,17 @@ var (
 
 type datadogWidgetsDataSourceModel struct {
 	// Results
-	ID      types.String   `tfsdk:"id"`
-	Widgets []*WidgetModel `tfsdk:"widgets"`
+	ID      types.String                 `tfsdk:"id"`
+	Widgets []*datadogWidgetsWidgetModel `tfsdk:"widgets"`
 }
 
-type WidgetModel struct {
-	ID    types.String  `tfsdk:"id"`
-	Name  types.String  `tfsdk:"name"`
-	Parts []*PartsModel `tfsdk:"parts"`
+type datadogWidgetsWidgetModel struct {
+	ID    types.String                      `tfsdk:"id"`
+	Name  types.String                      `tfsdk:"name"`
+	Parts []*datadogWidgetsWidgetPartsModel `tfsdk:"parts"`
 }
 
-type PartsModel struct {
+type datadogWidgetsWidgetPartsModel struct {
 	Label    types.String `tfsdk:"label"`
 	Quantity types.Int64  `tfsdk:"quantity"`
 }
@@ -110,20 +111,24 @@ func (d *datadogWidgetsDataSource) Read(ctx context.Context, request datasource.
 	}
 	items = append(items, resp.Data...)
 
-	d.updateState(&state, &items)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &items)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogWidgetsDataSource) updateState(state *datadogWidgetsDataSourceModel, data *[]datadogV2.Widget) {
-	results := make([]*WidgetModel, 0, len(*data))
+func (d *datadogWidgetsDataSource) updateState(ctx context.Context, state *datadogWidgetsDataSourceModel, data *[]datadogV2.Widget) diag.Diagnostics {
+	var diags diag.Diagnostics
+	results := make([]*datadogWidgetsWidgetModel, 0, len(*data))
 	for _, item := range *data {
-		r := WidgetModel{
+		r := datadogWidgetsWidgetModel{
 			ID:   types.StringValue(item.GetId()),
 			Name: types.StringValue(item.Attributes.GetName()),
 		}
 		if parts, ok := item.Attributes.GetPartsOk(); ok && parts != nil {
 			for _, partsItem := range *parts {
-				partsModel := &PartsModel{}
+				partsModel := &datadogWidgetsWidgetPartsModel{}
 				if label, ok := partsItem.GetLabelOk(); ok && label != nil {
 					partsModel.Label = types.StringValue(*label)
 				}
@@ -139,4 +144,5 @@ func (d *datadogWidgetsDataSource) updateState(state *datadogWidgetsDataSourceMo
 	hashingData := "widgets"
 	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.Widgets = results
+	return diags
 }

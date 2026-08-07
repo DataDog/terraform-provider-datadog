@@ -53,6 +53,12 @@ var _ = Describe("FrameworkType", func() {
 		Entry("a map of object becomes MapNestedAttribute / types.Map",
 			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindObject}},
 			"schema.MapNestedAttribute", "types.Map"),
+		Entry("an array of oneOf nests its element's variant blocks, like an array of object",
+			&Schema{Kind: SchemaKindArray, Items: &Schema{Kind: SchemaKindOneOf}},
+			"schema.ListNestedBlock", "types.List"),
+		Entry("a map of oneOf nests its value's variant blocks, like a map of object",
+			&Schema{Kind: SchemaKindMap, Items: &Schema{Kind: SchemaKindOneOf}},
+			"schema.MapNestedAttribute", "types.Map"),
 	)
 
 	DescribeTable("returns an error naming the offender for an unrepresentable node",
@@ -61,8 +67,8 @@ var _ = Describe("FrameworkType", func() {
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring(wantSubstr))
 		},
-		Entry("a variant (oneOf/anyOf) has no framework equivalent",
-			&Schema{Kind: SchemaKindVariant}, "variant"),
+		Entry("a oneOf has no direct framework equivalent",
+			&Schema{Kind: SchemaKindOneOf}, "one_of"),
 		Entry("a ref_cycle has no framework equivalent",
 			&Schema{Kind: SchemaKindRefCycle}, "ref_cycle"),
 		Entry("an unsupported node has no framework equivalent",

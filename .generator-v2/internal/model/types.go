@@ -31,22 +31,32 @@ const (
 )
 
 // SchemaKind classifies a normalized Schema node by structure. Primitive,
-// Object, Array and Map are emittable as Terraform attributes. Variant (oneOf)
-// has no Terraform equivalent, so the attribute-tree builder drops it (skipping
-// the property, or the whole collection when it is an array/map element). RefCycle
-// ($ref cycle or beyond --max-depth) and Unsupported (no representable type or
-// structure, and anyOf) are fatal — the builder fails the artifact rather than
-// emitting a types.Dynamic escape hatch.
+// Object, Array and Map are directly emittable as Terraform attributes. OneOf
+// requires a synthetic envelope described by Schema.OneOf. RefCycle,
+// DepthExceeded and Unsupported are fatal — the builder fails the artifact rather
+// than emitting a types.Dynamic escape hatch.
+//
+// RefCycle and DepthExceeded are deliberately distinct: a cycle is a property of
+// the document that no flag can fix, whereas exhausting --max-depth says only
+// that the walk stopped early, and raising the limit may resolve the node.
+// Reporting the latter as a cycle sends the reader hunting for a cycle that does
+// not exist.
 type SchemaKind string
 
 const (
-	SchemaKindPrimitive   SchemaKind = "primitive"
-	SchemaKindObject      SchemaKind = "object"
-	SchemaKindArray       SchemaKind = "array"
-	SchemaKindMap         SchemaKind = "map"
-	SchemaKindVariant     SchemaKind = "variant"     // oneOf; dropped from the attribute tree
-	SchemaKindRefCycle    SchemaKind = "ref_cycle"   // $ref cycle or beyond --max-depth
-	SchemaKindUnsupported SchemaKind = "unsupported" // no representable type/structure, or anyOf; always rejected
+	SchemaKindPrimitive     SchemaKind = "primitive"
+	SchemaKindObject        SchemaKind = "object"
+	SchemaKindArray         SchemaKind = "array"
+	SchemaKindMap           SchemaKind = "map"
+	SchemaKindOneOf         SchemaKind = "one_of"
+	SchemaKindRefCycle      SchemaKind = "ref_cycle"      // a $ref that re-enters a schema already being expanded
+	SchemaKindDepthExceeded SchemaKind = "depth_exceeded" // $ref expansion stopped at --max-depth; not a cycle
+	SchemaKindUnsupported   SchemaKind = "unsupported"    // no representable type/structure, or anyOf; always rejected
+
+	// SchemaKindVariant is retained as a source-compatibility alias for code
+	// written before the parser populated Schema.OneOf directly. New code should
+	// use SchemaKindOneOf.
+	SchemaKindVariant = SchemaKindOneOf
 )
 
 // Cardinality distinguishes a singular data source (resolves one item by id)
@@ -101,6 +111,11 @@ type Operation struct {
 	Tracking *TrackingFieldMetadata
 	// RequestSchema is the resolved request body schema, if any.
 	RequestSchema *Schema
+	// RequestRefName is the last path segment of the request body $ref, e.g.
+	// "TeamCreateRequest" — the SDK Go request type, and the root the SDK oneOf
+	// binding pass walks from on the request side. Empty when the body is inline
+	// or absent.
+	RequestRefName string
 	// ResponseSchema is the resolved 2xx response schema, if any.
 	ResponseSchema *Schema
 	// ResponseRefName is the last path segment of the 2xx response body $ref,
@@ -155,7 +170,7 @@ type Pagination struct {
 }
 
 // Schema is a normalized, recursive view of an OpenAPI schema after allOf
-// flattening and oneOf/anyOf variant detection.
+// flattening, oneOf-envelope detection, and explicit anyOf rejection.
 type Schema struct {
 	Kind SchemaKind
 	// Properties is populated for objects only; iteration is always sorted.
@@ -164,7 +179,15 @@ type Schema struct {
 	Required []string
 	// Items is populated for arrays only.
 	Items *Schema
-	// Variants is populated for oneOf/anyOf only.
+	// OneOf is populated when Kind is SchemaKindOneOf. It carries the stable
+	// Terraform envelope identity, its non-null alternatives, and the metadata
+	// required to bind those alternatives to the generated SDK wrapper.
+	OneOf *OneOfSpec
+	// Variants is the parser's legacy oneOf representation. It remains only as a
+	// source-compatibility bridge; NormalizeSchemas leaves it empty and new model
+	// and emit code must consume OneOf instead.
+	//
+	// Deprecated: use OneOf.Variants.
 	Variants []*Schema
 	// Type is the primitive type (string/integer/number/boolean).
 	Type string
@@ -176,6 +199,88 @@ type Schema struct {
 	Sensitive bool
 	// Description is the OpenAPI description, populated during NormalizeSchemas.
 	Description string
+	// UnsupportedReason explains why a node with Kind == SchemaKindUnsupported
+	// cannot be represented. It is retained so the affected artifact can fail
+	// with the parser's actionable local diagnostic without aborting spec loading
+	// or preventing unrelated artifacts from being generated.
+	UnsupportedReason string
+	// RefName is the OpenAPI component name that supplied this node, e.g.
+	// "ActionConnectionAttributes"; empty for an inline schema. It is the identity
+	// the Datadog go-sdk names its generated model after, so the SDK binding pass
+	// walks the normalized tree and restarts its name accumulation at every node
+	// carrying one — mirroring how the SDK generator's child_models() prefers a
+	// $ref name over the parent-derived alternative name.
+	RefName string
+}
+
+// OneOfSpec is the normalized representation of an OpenAPI oneOf. The envelope
+// exists only in generated Terraform/Go code; request and response mappers
+// unwrap/wrap it when interacting with the Datadog go-sdk.
+type OneOfSpec struct {
+	// Name is the deterministic generated envelope type name. Reusable
+	// component unions use their component name; inline unions use a
+	// schema-path-derived name.
+	Name string
+	// Path is the canonical request/response schema path used for diagnostics
+	// and as an input to inline envelope naming.
+	Path string
+	// RefName is the OpenAPI component name of the union node itself, empty for an
+	// inline union. It is deliberately separate from Name: Name is a Terraform
+	// identity that falls back to a path-derived spelling, which must never be
+	// mistaken for an SDK type.
+	RefName string
+	// SDKType is the Datadog go-sdk oneOf wrapper struct for this union, e.g.
+	// "ActionConnectionIntegration". It is resolved by the SDK binding pass
+	// (internal/sdkbind) after normalization and stays empty until then.
+	SDKType string
+	// Optional permits the whole envelope to be absent because the containing
+	// OpenAPI field is not required.
+	Optional bool
+	// Nullable permits OpenAPI null. Null is represented by an absent envelope,
+	// never by a synthetic null variant.
+	Nullable bool
+	// Discriminator retains optional OpenAPI discriminator metadata for stable
+	// naming and diagnostics. It is not required for branch selection.
+	Discriminator *OneOfDiscriminator
+	// Variants contains only non-null alternatives, sorted by TFName. Parser
+	// source order and map iteration order must not affect this slice.
+	Variants []OneOfVariant
+}
+
+// OneOfDiscriminator retains the OpenAPI discriminator metadata relevant to a
+// normalized union. Mapping keys may participate in stable variant naming;
+// consumers must sort keys before iterating over Mapping.
+type OneOfDiscriminator struct {
+	PropertyName string
+	Mapping      map[string]string
+}
+
+// OneOfVariant is one non-null oneOf alternative and its Terraform/SDK binding.
+type OneOfVariant struct {
+	// TFName is the stable snake_case nested-block name.
+	TFName string
+	// GoName is the generated Go model/field stem corresponding to TFName.
+	GoName string
+	// Schema is the fully normalized alternative, including constraints common
+	// to the parent oneOf. It may recursively contain another oneOf.
+	Schema *Schema
+	// RefName is the referenced OpenAPI component name, when present.
+	RefName string
+	// SDKField is the Datadog go-sdk wrapper member whose presence selects this
+	// alternative.
+	SDKField string
+	// SDKConstructor is the generated SDK convenience constructor for this
+	// alternative, when the SDK exposes one.
+	SDKConstructor string
+	// SDKPointer is true when the wrapper member and its convenience constructor
+	// take a pointer, which is every alternative except a free-form object: the SDK
+	// emits that one as a bare map, already nil-able. Mappers must not take the
+	// address of a member the SDK left unpointered.
+	SDKPointer bool
+	// ValueWrapped is true for primitive, list, and map alternatives, whose
+	// Terraform variant model exposes a single field named value. Object
+	// alternatives expose their generated fields directly.
+	ValueWrapped bool
 }
 
 // ----------------------------------------------------------------------------
@@ -247,6 +352,93 @@ type Attribute struct {
 	Description string
 	// Children holds nested attributes for nested blocks.
 	Children []*Attribute
+	// ModelRefName is the OpenAPI component name that supplied the *object* schema
+	// backing this attribute's generated model struct: the node's own schema for an
+	// object, its element schema for an array or map of objects. Empty when that
+	// schema was inline, and empty for a leaf, which has no struct.
+	//
+	// It exists so emit can name a nested model after its component rather than
+	// after the property that happens to point at it — the same preference the SDK
+	// generator's child_models() applies (get_name(schema) or alternative_name) and
+	// that oneOf envelope naming already applies via OneOfSpec.Name. Without it, two
+	// differently-shaped objects reachable under the same property name produce one
+	// struct name and the artifact cannot compile.
+	ModelRefName string
+	// OneOf is non-nil when this attribute carries a synthetic oneOf envelope:
+	// either the envelope itself (a union at the root or an object property) or
+	// the collection whose element is a union. Children then holds the variant
+	// blocks, and OneOf holds the naming and SDK-binding metadata the emit layer
+	// needs to map them.
+	OneOf *OneOfEnvelope
+}
+
+// OneOfEnvelope is the Terraform projection of a parser-normalized OneOfSpec: the
+// synthetic block holding one nested variant block per non-null alternative,
+// exactly one of which is selected whenever the envelope is present.
+//
+// It hangs off the Attribute standing at the union's position in the tree; that
+// attribute's Children are the projected variant blocks, in the same order as
+// Variants. Terraform concerns live here rather than on OneOfSpec so that
+// OpenAPI normalization stays free of them.
+type OneOfEnvelope struct {
+	// Name is the parser-assigned envelope identity (OneOfSpec.Name): the OpenAPI
+	// component name for a reusable union, a deterministic path-derived name for
+	// an inline one. Two uses of the same component share a Name, which is what
+	// lets emit generate one model per envelope instead of one per use site.
+	Name string
+	// GoModel is the generated Go struct holding one pointer field per variant.
+	GoModel string
+	// SDKType is the Datadog go-sdk oneOf wrapper struct this envelope maps to,
+	// carried through from OneOfSpec. It is a separate identity from Name and
+	// GoModel: an inline union's envelope name is path-derived and names no SDK
+	// struct. Empty until the SDK binding pass has run.
+	SDKType string
+	// Path is the union's own schema path, used by validators and diagnostics. For
+	// a collection of unions it is the element path (e.g. "response.choices[]"),
+	// which is not the path of any attribute in the tree.
+	Path string
+	// Optional permits the whole envelope to be absent because its containing
+	// OpenAPI field is optional or nullable. When false, exactly one variant must
+	// be selected.
+	Optional bool
+	// Computed marks a response-only envelope, where selection is enforced by
+	// response mapping rather than by practitioner configuration.
+	Computed bool
+	// Variants are the projected non-null alternatives, ordered by TFName so
+	// neither OpenAPI alternative order nor map iteration can reach the output.
+	Variants []OneOfEnvelopeVariant
+}
+
+// OneOfEnvelopeVariant is one projected alternative of a OneOfEnvelope.
+type OneOfEnvelopeVariant struct {
+	// TFName is the stable snake_case nested-block name.
+	TFName string
+	// GoField is the pointer field naming this variant on the envelope's model.
+	// The pointer being non-nil is what selects the variant.
+	GoField string
+	// GoModel is the generated Go struct for this variant's own fields.
+	GoModel string
+	// SDKField is the Datadog go-sdk wrapper member whose presence selects this
+	// alternative, and SDKConstructor the SDK convenience constructor for it. Both
+	// are carried through from the parser's OneOfVariant and stay empty until the
+	// SDK binding pass resolves them: the projection never derives an SDK identity
+	// from a Terraform name, since the two conventions differ (a variant named
+	// aws_integration binds to the SDK's AWSIntegration, not AwsIntegration).
+	SDKField       string
+	SDKConstructor string
+	// SDKPointer is true when the SDK wrapper member and its convenience
+	// constructor take a pointer — every alternative except a free-form object,
+	// which the SDK emits as a bare, already-nil-able map.
+	SDKPointer bool
+	// ValueWrapped is true for every non-object alternative — scalar, list, map, or
+	// a directly nested union — whose block holds a single child named "value".
+	// Object alternatives expose their own fields directly instead.
+	ValueWrapped bool
+	// Attribute is this variant's projected block: the same pointer as the
+	// envelope-carrying attribute's Children entry at this index. Children drives
+	// schema rendering; this field lets the mapper reach a block without
+	// re-deriving the ordering.
+	Attribute *Attribute
 }
 
 // Literal is a default value rendered as a Go source expression

@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -18,11 +19,11 @@ var (
 
 type datadogDatastoresDataSourceModel struct {
 	// Results
-	ID         types.String          `tfsdk:"id"`
-	Datastores []*DatastoreDataModel `tfsdk:"datastores"`
+	ID         types.String                           `tfsdk:"id"`
+	Datastores []*datadogDatastoresDatastoreDataModel `tfsdk:"datastores"`
 }
 
-type DatastoreDataModel struct {
+type datadogDatastoresDatastoreDataModel struct {
 	CreatorUserId                types.Int64  `tfsdk:"creator_user_id"`
 	CreatorUserUuid              types.String `tfsdk:"creator_user_uuid"`
 	Description                  types.String `tfsdk:"description"`
@@ -117,14 +118,18 @@ func (d *datadogDatastoresDataSource) Read(ctx context.Context, request datasour
 	}
 	items = append(items, resp.Data...)
 
-	d.updateState(&state, &items)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &items)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSourceModel, data *[]datadogV2.DatastoreData) {
-	results := make([]*DatastoreDataModel, 0, len(*data))
+func (d *datadogDatastoresDataSource) updateState(ctx context.Context, state *datadogDatastoresDataSourceModel, data *[]datadogV2.DatastoreData) diag.Diagnostics {
+	var diags diag.Diagnostics
+	results := make([]*datadogDatastoresDatastoreDataModel, 0, len(*data))
 	for _, item := range *data {
-		r := DatastoreDataModel{
+		r := datadogDatastoresDatastoreDataModel{
 			CreatorUserId:                types.Int64Value(int64(item.Attributes.GetCreatorUserId())),
 			CreatorUserUuid:              types.StringValue(item.Attributes.GetCreatorUserUuid()),
 			Description:                  types.StringValue(item.Attributes.GetDescription()),
@@ -140,4 +145,5 @@ func (d *datadogDatastoresDataSource) updateState(state *datadogDatastoresDataSo
 	hashingData := "datastores"
 	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.Datastores = results
+	return diags
 }

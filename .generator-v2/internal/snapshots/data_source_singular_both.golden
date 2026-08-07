@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -104,7 +105,7 @@ func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasourc
 			return
 		}
 
-		d.updateState(&state, resp.GetData())
+		response.Diagnostics.Append(d.updateState(ctx, &state, resp.GetData())...)
 	} else {
 		var items []datadogV2.DatastoreData
 		listResp, _, err := d.Api.ListDatastores(d.Auth)
@@ -122,13 +123,17 @@ func (d *datadogDatastoreDataSource) Read(ctx context.Context, request datasourc
 			response.Diagnostics.AddError("filters returned more than one result, use more specific search criteria", "")
 			return
 		}
-		d.updateState(&state, items[0])
+		response.Diagnostics.Append(d.updateState(ctx, &state, items[0])...)
+	}
+	if response.Diagnostics.HasError() {
+		return
 	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogDatastoreDataSource) updateState(state *datadogDatastoreDataSourceModel, data datadogV2.DatastoreData) {
+func (d *datadogDatastoreDataSource) updateState(ctx context.Context, state *datadogDatastoreDataSourceModel, data datadogV2.DatastoreData) diag.Diagnostics {
+	var diags diag.Diagnostics
 	attributes := data.GetAttributes()
 	if id, ok := data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)
@@ -154,4 +159,5 @@ func (d *datadogDatastoreDataSource) updateState(state *datadogDatastoreDataSour
 	if primaryKeyGenerationStrategy, ok := attributes.GetPrimaryKeyGenerationStrategyOk(); ok && primaryKeyGenerationStrategy != nil {
 		state.PrimaryKeyGenerationStrategy = types.StringValue(string(*primaryKeyGenerationStrategy))
 	}
+	return diags
 }

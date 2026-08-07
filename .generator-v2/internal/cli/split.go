@@ -19,8 +19,10 @@ func newSplitCmd(flags *globalFlags) *cobra.Command {
 	var check bool
 
 	cmd := &cobra.Command{
-		Use:   "split",
-		Short: "Split an aggregate generated push into per-artifact bundles",
+		Use:               "split",
+		Short:             "Split an aggregate generated push into per-artifact bundles",
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			rep, splitErr := split.Split(split.Options{
 				BaseDir:          baseDir,

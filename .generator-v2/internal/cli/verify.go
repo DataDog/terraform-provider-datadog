@@ -8,8 +8,10 @@ func newVerifyCmd(flags *globalFlags) *cobra.Command {
 	var strict bool
 
 	cmd := &cobra.Command{
-		Use:   "verify",
-		Short: "Run post-generation checks without writing files",
+		Use:               "verify",
+		Short:             "Run post-generation checks without writing files",
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// TODO: implement
 			_ = flags

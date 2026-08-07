@@ -8,6 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -23,11 +24,11 @@ type datadogTeamsDataSourceModel struct {
 	FilterMe      types.Bool   `tfsdk:"filter_me"`
 
 	// Results
-	ID    types.String `tfsdk:"id"`
-	Teams []*TeamModel `tfsdk:"teams"`
+	ID    types.String             `tfsdk:"id"`
+	Teams []*datadogTeamsTeamModel `tfsdk:"teams"`
 }
 
-type TeamModel struct {
+type datadogTeamsTeamModel struct {
 	Description    types.String `tfsdk:"description"`
 	Handle         types.String `tfsdk:"handle"`
 	ID             types.String `tfsdk:"id"`
@@ -148,14 +149,18 @@ func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.Re
 		items = append(items, paginationResult.Item)
 	}
 
-	d.updateState(&state, &items)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &items)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogTeamsDataSource) updateState(state *datadogTeamsDataSourceModel, data *[]datadogV2.Team) {
-	results := make([]*TeamModel, 0, len(*data))
+func (d *datadogTeamsDataSource) updateState(ctx context.Context, state *datadogTeamsDataSourceModel, data *[]datadogV2.Team) diag.Diagnostics {
+	var diags diag.Diagnostics
+	results := make([]*datadogTeamsTeamModel, 0, len(*data))
 	for _, item := range *data {
-		r := TeamModel{
+		r := datadogTeamsTeamModel{
 			Description: types.StringValue(item.Attributes.GetDescription()),
 			Handle:      types.StringValue(item.Attributes.GetHandle()),
 			ID:          types.StringValue(item.GetId()),
@@ -165,12 +170,16 @@ func (d *datadogTeamsDataSource) updateState(state *datadogTeamsDataSourceModel,
 			UserCount:   types.Int64Value(int64(item.Attributes.GetUserCount())),
 		}
 		if hiddenModules, ok := item.Attributes.GetHiddenModulesOk(); ok && hiddenModules != nil {
-			r.HiddenModules, _ = types.ListValueFrom(context.Background(), types.StringType, *hiddenModules)
+			var listDiags diag.Diagnostics
+			r.HiddenModules, listDiags = types.ListValueFrom(ctx, types.StringType, *hiddenModules)
+			diags.Append(listDiags...)
 		} else {
 			r.HiddenModules = types.ListNull(types.StringType)
 		}
 		if visibleModules, ok := item.Attributes.GetVisibleModulesOk(); ok && visibleModules != nil {
-			r.VisibleModules, _ = types.ListValueFrom(context.Background(), types.StringType, *visibleModules)
+			var listDiags diag.Diagnostics
+			r.VisibleModules, listDiags = types.ListValueFrom(ctx, types.StringType, *visibleModules)
+			diags.Append(listDiags...)
 		} else {
 			r.VisibleModules = types.ListNull(types.StringType)
 		}
@@ -180,4 +189,5 @@ func (d *datadogTeamsDataSource) updateState(state *datadogTeamsDataSourceModel,
 	hashingData := fmt.Sprintf("%s:%t", state.FilterKeyword.ValueString(), state.FilterMe.ValueBool())
 	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.Teams = results
+	return diags
 }

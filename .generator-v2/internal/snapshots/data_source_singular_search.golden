@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -99,12 +100,16 @@ func (d *datadogPowerpackDataSource) Read(ctx context.Context, request datasourc
 		response.Diagnostics.AddError("filters returned more than one result, use more specific search criteria", "")
 		return
 	}
-	d.updateState(&state, items[0])
+	response.Diagnostics.Append(d.updateState(ctx, &state, items[0])...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogPowerpackDataSource) updateState(state *datadogPowerpackDataSourceModel, data datadogV2.PowerpackData) {
+func (d *datadogPowerpackDataSource) updateState(ctx context.Context, state *datadogPowerpackDataSourceModel, data datadogV2.PowerpackData) diag.Diagnostics {
+	var diags diag.Diagnostics
 	attributes := data.GetAttributes()
 	if id, ok := data.GetIdOk(); ok && id != nil {
 		state.ID = types.StringValue(*id)
@@ -115,4 +120,5 @@ func (d *datadogPowerpackDataSource) updateState(state *datadogPowerpackDataSour
 	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)
 	}
+	return diags
 }

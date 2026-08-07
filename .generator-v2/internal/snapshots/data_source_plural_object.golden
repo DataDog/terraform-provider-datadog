@@ -7,6 +7,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -18,17 +19,17 @@ var (
 
 type datadogGizmosDataSourceModel struct {
 	// Results
-	ID     types.String  `tfsdk:"id"`
-	Gizmos []*GizmoModel `tfsdk:"gizmos"`
+	ID     types.String               `tfsdk:"id"`
+	Gizmos []*datadogGizmosGizmoModel `tfsdk:"gizmos"`
 }
 
-type GizmoModel struct {
-	ID   types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Spec *SpecModel   `tfsdk:"spec"`
+type datadogGizmosGizmoModel struct {
+	ID   types.String                 `tfsdk:"id"`
+	Name types.String                 `tfsdk:"name"`
+	Spec *datadogGizmosGizmoSpecModel `tfsdk:"spec"`
 }
 
-type SpecModel struct {
+type datadogGizmosGizmoSpecModel struct {
 	Shape types.String `tfsdk:"shape"`
 	Size  types.Int64  `tfsdk:"size"`
 }
@@ -109,19 +110,23 @@ func (d *datadogGizmosDataSource) Read(ctx context.Context, request datasource.R
 	}
 	items = append(items, resp.Data...)
 
-	d.updateState(&state, &items)
+	response.Diagnostics.Append(d.updateState(ctx, &state, &items)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (d *datadogGizmosDataSource) updateState(state *datadogGizmosDataSourceModel, data *[]datadogV2.Gizmo) {
-	results := make([]*GizmoModel, 0, len(*data))
+func (d *datadogGizmosDataSource) updateState(ctx context.Context, state *datadogGizmosDataSourceModel, data *[]datadogV2.Gizmo) diag.Diagnostics {
+	var diags diag.Diagnostics
+	results := make([]*datadogGizmosGizmoModel, 0, len(*data))
 	for _, item := range *data {
-		r := GizmoModel{
+		r := datadogGizmosGizmoModel{
 			ID:   types.StringValue(item.GetId()),
 			Name: types.StringValue(item.Attributes.GetName()),
 		}
 		if spec, ok := item.Attributes.GetSpecOk(); ok && spec != nil {
-			specModel := &SpecModel{}
+			specModel := &datadogGizmosGizmoSpecModel{}
 			if shape, ok := spec.GetShapeOk(); ok && shape != nil {
 				specModel.Shape = types.StringValue(*shape)
 			}
@@ -136,4 +141,5 @@ func (d *datadogGizmosDataSource) updateState(state *datadogGizmosDataSourceMode
 	hashingData := "gizmos"
 	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.Gizmos = results
+	return diags
 }

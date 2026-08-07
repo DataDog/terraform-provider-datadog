@@ -14,6 +14,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/emit"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/model"
 	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/parser"
+	"github.com/terraform-providers/terraform-provider-datadog/generator/internal/sdkbind"
 )
 
 // errCheckFailed signals that --check found files that would change.
@@ -43,8 +44,10 @@ func newGenerateCmd(flags *globalFlags) *cobra.Command {
 	var retire string
 
 	cmd := &cobra.Command{
-		Use:   "generate",
-		Short: "Generate Terraform artifacts from the OpenAPI spec",
+		Use:               "generate",
+		Short:             "Generate Terraform artifacts from the OpenAPI spec",
+		Args:              cobra.NoArgs,
+		ValidArgsFunction: cobra.NoFileCompletions,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Orphan detection is only valid when tfgen sees the complete annotation
 			// set, so --reconcile cannot be narrowed by --include.
@@ -233,6 +236,14 @@ func generateArtifact(op *model.Operation, outputRoot, testsOutputRoot, examples
 			Message:  fmt.Sprintf("resource generation not yet supported (kind=%s)", op.Tracking.ArtifactKind),
 		}}
 		return entry, nil, nil, nil
+	}
+
+	// Resolve the SDK oneOf wrapper, members and constructors before the schema is
+	// projected, since the projection carries those bindings onto each envelope
+	// rather than deriving them. Binding is per operation, so an unresolvable union
+	// fails only this artifact.
+	if err := sdkbind.BindOperation(op); err != nil {
+		return failEntry(entry, err), nil, nil, nil
 	}
 
 	artifact, err := model.BuildArtifact(op)

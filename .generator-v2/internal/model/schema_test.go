@@ -20,6 +20,31 @@ func objSchema(props map[string]*Schema) *Schema {
 }
 func arrSchema(item *Schema) *Schema { return &Schema{Kind: SchemaKindArray, Items: item} }
 func mapSchema(val *Schema) *Schema  { return &Schema{Kind: SchemaKindMap, Items: val} }
+func oneOfSchema(path, name string, variants ...OneOfVariant) *Schema {
+	return &Schema{
+		Kind: SchemaKindOneOf,
+		OneOf: &OneOfSpec{
+			Name:     name,
+			Path:     path,
+			Variants: variants,
+		},
+	}
+}
+func primitiveOneOfVariant(name, typ string) OneOfVariant {
+	return OneOfVariant{
+		TFName:       name,
+		GoName:       SdkName(name),
+		Schema:       primSchema(typ),
+		ValueWrapped: true,
+	}
+}
+func objectOneOfVariant(name string, props map[string]*Schema) OneOfVariant {
+	return OneOfVariant{
+		TFName: name,
+		GoName: SdkName(name),
+		Schema: objSchema(props),
+	}
+}
 
 // richSchema is a response schema exercising one of every shape, including the
 // block→attribute switch (cfg is a map<object{settings:object}>). A fresh tree
@@ -410,6 +435,23 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 			"response.m{}.bad"),
 	)
 
+	It("retains a parser-supplied reason when an unsupported node fails one artifact", func() {
+		tree, _, err := BuildResponseTree(objSchema(map[string]*Schema{
+			"choice": {
+				Kind:              SchemaKindUnsupported,
+				UnsupportedReason: `parser: oneOf at "response.choice" has colliding variant name "object"`,
+			},
+		}))
+		Expect(tree).To(BeNil())
+
+		var unsupported *UnsupportedKindError
+		Expect(errors.As(err, &unsupported)).To(BeTrue())
+		Expect(unsupported.Path).To(Equal("response.choice"))
+		Expect(unsupported.Kind).To(Equal(SchemaKindUnsupported))
+		Expect(unsupported.Reason).To(ContainSubstring("colliding variant name"))
+		Expect(err.Error()).To(ContainSubstring(`oneOf at "response.choice"`))
+	})
+
 	It("returns the type-mapping error for a non-object root that cannot be mapped (array-of-array)", func() {
 		tree, _, err := BuildResponseTree(arrSchema(arrSchema(primSchema("string"))))
 		Expect(tree).To(BeNil())
@@ -431,37 +473,300 @@ var _ = Describe("BuildResponseTree defensive guard", func() {
 	})
 })
 
-var _ = Describe("BuildResponseTree drops oneOf variants", func() {
+var _ = Describe("BuildResponseTree retains oneOf envelopes", func() {
 
-	It("omits a oneOf property and records an info diagnostic", func() {
-		tree, diags, err := BuildResponseTree(objSchema(map[string]*Schema{
-			"name":     primSchema("string"),
-			"included": {Kind: SchemaKindVariant},
-		}))
+	assertRetained := func(
+		buildTree func(*Schema) (*AttributeTree, []Diagnostic, error),
+		schema *Schema,
+		path, tfType string,
+		required, computed bool,
+		wantPaths ...string,
+	) *AttributeTree {
+		GinkgoHelper()
+
+		tree, diags, err := buildTree(schema)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(tree.Attributes).To(HaveLen(1))
-		Expect(tree.Attributes[0].Path).To(Equal("response.name"))
-		Expect(diags).To(HaveLen(1))
-		Expect(diags[0].Severity).To(Equal(SeverityInfo))
-		Expect(diags[0].Message).To(ContainSubstring(`dropped "response.included"`))
+		Expect(diags).To(BeEmpty(), "supported oneOf at %q must not emit diagnostics", path)
+
+		envelope := attrByPath(tree, path)
+		Expect(envelope.TfType).To(Equal(tfType))
+		Expect(envelope.Required).To(Equal(required))
+		Expect(envelope.Computed).To(Equal(computed))
+		envelopeAttrs := allAttrs(&AttributeTree{Attributes: []*Attribute{envelope}})
+		Expect(pathsOf(envelopeAttrs)).To(Equal(wantPaths))
+		for _, attr := range envelopeAttrs {
+			Expect(attr.Computed).To(Equal(computed), "unexpected Computed flag at %q", attr.Path)
+		}
+		return tree
+	}
+
+	It("retains a root oneOf as an envelope at the response root", func() {
+		tree := assertRetained(
+			BuildResponseTree,
+			oneOfSchema(
+				"response",
+				"RootChoice",
+				primitiveOneOfVariant("boolean", "boolean"),
+				primitiveOneOfVariant("string", "string"),
+			),
+			"response",
+			"schema.SingleNestedBlock",
+			false,
+			true,
+			"response",
+			"response.boolean",
+			"response.boolean.value",
+			"response.string",
+			"response.string.value",
+		)
+		Expect(attrByPath(tree, "response.boolean").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.boolean.value").TfType).To(Equal("schema.BoolAttribute"))
+		Expect(attrByPath(tree, "response.string").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.string.value").TfType).To(Equal("schema.StringAttribute"))
 	})
 
-	It("drops the whole array attribute when its element is a oneOf variant", func() {
-		tree, diags, err := BuildResponseTree(objSchema(map[string]*Schema{
-			"name":     primSchema("string"),
-			"included": arrSchema(&Schema{Kind: SchemaKindVariant}),
-		}))
-		Expect(err).NotTo(HaveOccurred())
-		Expect(tree.Attributes).To(HaveLen(1))
-		Expect(tree.Attributes[0].Path).To(Equal("response.name"))
-		Expect(diags).To(HaveLen(1))
-		Expect(diags[0].Message).To(ContainSubstring("collection element is a oneOf variant"))
+	It("retains a oneOf object property as an envelope attribute", func() {
+		tree := assertRetained(
+			BuildResponseTree,
+			objSchema(map[string]*Schema{
+				"choice": oneOfSchema(
+					"response.choice",
+					"Choice",
+					objectOneOfVariant("object", map[string]*Schema{"name": primSchema("string")}),
+					primitiveOneOfVariant("string", "string"),
+				),
+			}),
+			"response.choice",
+			"schema.SingleNestedBlock",
+			false,
+			true,
+			"response.choice",
+			"response.choice.object",
+			"response.choice.object.name",
+			"response.choice.string",
+			"response.choice.string.value",
+		)
+		Expect(attrByPath(tree, "response.choice.object").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.choice.object.name").TfType).To(Equal("schema.StringAttribute"))
+		Expect(attrByPath(tree, "response.choice.string").TfType).To(Equal("schema.SingleNestedBlock"))
+		Expect(attrByPath(tree, "response.choice.string.value").TfType).To(Equal("schema.StringAttribute"))
 	})
 
-	It("fails when the schema root is itself a oneOf variant", func() {
-		tree, _, err := BuildResponseTree(&Schema{Kind: SchemaKindVariant})
-		Expect(tree).To(BeNil())
-		Expect(err).To(MatchError(ContainSubstring("dropped oneOf variant")))
+	It("retains a oneOf nested inside another object", func() {
+		assertRetained(
+			BuildResponseTree,
+			objSchema(map[string]*Schema{
+				"container": objSchema(map[string]*Schema{
+					"choice": oneOfSchema(
+						"response.container.choice",
+						"ContainerChoice",
+						objectOneOfVariant("enabled", map[string]*Schema{"enabled": primSchema("boolean")}),
+						objectOneOfVariant("threshold", map[string]*Schema{"threshold": primSchema("number")}),
+					),
+				}),
+			}),
+			"response.container.choice",
+			"schema.SingleNestedBlock",
+			false,
+			true,
+			"response.container.choice",
+			"response.container.choice.enabled",
+			"response.container.choice.enabled.enabled",
+			"response.container.choice.threshold",
+			"response.container.choice.threshold.threshold",
+		)
+	})
+
+	DescribeTable("retains a collection whose element is a oneOf envelope",
+		func(collection *Schema, tfType, elementPath string) {
+			tree := assertRetained(
+				BuildResponseTree,
+				objSchema(map[string]*Schema{"choices": collection}),
+				"response.choices",
+				tfType,
+				false,
+				true,
+				"response.choices",
+				elementPath+".boolean",
+				elementPath+".boolean.value",
+				elementPath+".string",
+				elementPath+".string.value",
+			)
+			variantType := "schema.SingleNestedBlock"
+			if tfType == "schema.MapNestedAttribute" {
+				variantType = "schema.SingleNestedAttribute"
+			}
+			Expect(attrByPath(tree, elementPath+".boolean").TfType).To(Equal(variantType))
+			Expect(attrByPath(tree, elementPath+".boolean.value").TfType).To(Equal("schema.BoolAttribute"))
+			Expect(attrByPath(tree, elementPath+".string").TfType).To(Equal(variantType))
+			Expect(attrByPath(tree, elementPath+".string.value").TfType).To(Equal("schema.StringAttribute"))
+		},
+		Entry(
+			"array element",
+			arrSchema(oneOfSchema(
+				"response.choices[]",
+				"ChoicesItem",
+				primitiveOneOfVariant("boolean", "boolean"),
+				primitiveOneOfVariant("string", "string"),
+			)),
+			"schema.ListNestedBlock",
+			"response.choices[]",
+		),
+		Entry(
+			"map value",
+			mapSchema(oneOfSchema(
+				"response.choices{}",
+				"ChoicesValue",
+				primitiveOneOfVariant("boolean", "boolean"),
+				primitiveOneOfVariant("string", "string"),
+			)),
+			"schema.MapNestedAttribute",
+			"response.choices{}",
+		),
+	)
+
+	DescribeTable("retains a root collection whose element is a oneOf envelope",
+		func(collection *Schema, tfType, elementPath string) {
+			assertRetained(
+				BuildResponseTree,
+				collection,
+				"response",
+				tfType,
+				false,
+				true,
+				"response",
+				elementPath+".boolean",
+				elementPath+".boolean.value",
+				elementPath+".string",
+				elementPath+".string.value",
+			)
+		},
+		Entry(
+			"root array",
+			arrSchema(oneOfSchema(
+				"response[]",
+				"RootItem",
+				primitiveOneOfVariant("boolean", "boolean"),
+				primitiveOneOfVariant("string", "string"),
+			)),
+			"schema.ListNestedBlock",
+			"response[]",
+		),
+		Entry(
+			"root map",
+			mapSchema(oneOfSchema(
+				"response{}",
+				"RootValue",
+				primitiveOneOfVariant("boolean", "boolean"),
+				primitiveOneOfVariant("string", "string"),
+			)),
+			"schema.MapNestedAttribute",
+			"response{}",
+		),
+	)
+
+	It("retains a required request oneOf instead of treating it as computed response state", func() {
+		assertRetained(
+			BuildRequestTree,
+			oneOfSchema(
+				"request",
+				"RequestChoice",
+				primitiveOneOfVariant("boolean", "boolean"),
+				primitiveOneOfVariant("string", "string"),
+			),
+			"request",
+			"schema.SingleNestedBlock",
+			true,
+			false,
+			"request",
+			"request.boolean",
+			"request.boolean.value",
+			"request.string",
+			"request.string.value",
+		)
+	})
+
+	DescribeTable("retains a oneOf nested in a collection element object",
+		func(schema *Schema, path, tfType string, wantPaths []string) {
+			assertRetained(BuildResponseTree, schema, path, tfType, false, true, wantPaths...)
+		},
+		Entry(
+			"array element object",
+			objSchema(map[string]*Schema{
+				"containers": arrSchema(objSchema(map[string]*Schema{
+					"choice": oneOfSchema(
+						"response.containers[].choice",
+						"ContainerChoice",
+						primitiveOneOfVariant("boolean", "boolean"),
+						primitiveOneOfVariant("string", "string"),
+					),
+				})),
+			}),
+			"response.containers[].choice",
+			"schema.SingleNestedBlock",
+			[]string{
+				"response.containers[].choice",
+				"response.containers[].choice.boolean",
+				"response.containers[].choice.boolean.value",
+				"response.containers[].choice.string",
+				"response.containers[].choice.string.value",
+			},
+		),
+		Entry(
+			"map value object",
+			objSchema(map[string]*Schema{
+				"containers": mapSchema(objSchema(map[string]*Schema{
+					"choice": oneOfSchema(
+						"response.containers{}.choice",
+						"ContainerChoice",
+						primitiveOneOfVariant("boolean", "boolean"),
+						primitiveOneOfVariant("string", "string"),
+					),
+				})),
+			}),
+			"response.containers{}.choice",
+			"schema.SingleNestedAttribute",
+			[]string{
+				"response.containers{}.choice",
+				"response.containers{}.choice.boolean",
+				"response.containers{}.choice.boolean.value",
+				"response.containers{}.choice.string",
+				"response.containers{}.choice.string.value",
+			},
+		),
+	)
+
+	It("retains a recursively nested oneOf inside an object alternative", func() {
+		inner := oneOfSchema(
+			"response.object.nested",
+			"NestedChoice",
+			primitiveOneOfVariant("boolean", "boolean"),
+			primitiveOneOfVariant("string", "string"),
+		)
+		outer := oneOfSchema(
+			"response",
+			"OuterChoice",
+			objectOneOfVariant("object", map[string]*Schema{"nested": inner}),
+			primitiveOneOfVariant("string", "string"),
+		)
+
+		assertRetained(
+			BuildResponseTree,
+			outer,
+			"response",
+			"schema.SingleNestedBlock",
+			false,
+			true,
+			"response",
+			"response.object",
+			"response.object.nested",
+			"response.object.nested.boolean",
+			"response.object.nested.boolean.value",
+			"response.object.nested.string",
+			"response.object.nested.string.value",
+			"response.string",
+			"response.string.value",
+		)
 	})
 })
 
