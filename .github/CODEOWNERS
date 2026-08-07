@@ -118,6 +118,7 @@ datadog/**/*datadog_deployment_gate*             @DataDog/ci-app-backend
 datadog/**/*observability_pipeline*              @DataDog/observability-pipelines
 datadog/**/*datadog_secure_embed_dashboard*      @DataDog/api-reliability @DataDog/reporting-and-sharing
 datadog/**/*datadog_tag_indexing_rule*           @DataDog/metrics-experience
+datadog/**/*datadog_governance_control*          @DataDog/aaa-governance-console
 
 # Examples (HCL snippets embedded in rendered docs)
 examples/**/datadog_org_group*/**                @DataDog/org-management
@@ -135,3 +136,4 @@ docs/resources/on_call_team_routing_rules.md          @DataDog/on-call
 examples/resources/datadog_on_call_team_routing_rules/**  @DataDog/on-call
 docs/resources/security_findings_*.md                 @DataDog/k9-shared-capabilities
 examples/resources/datadog_security_findings_*/**     @DataDog/k9-shared-capabilities
+docs/resources/governance_control.md                  @DataDog/aaa-governance-console
