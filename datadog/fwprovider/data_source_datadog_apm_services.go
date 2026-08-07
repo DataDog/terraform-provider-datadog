@@ -55,7 +55,7 @@ func (d *datadogApmServicesDataSource) Metadata(_ context.Context, _ datasource.
 
 func (d *datadogApmServicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to list the APM services reporting traces or universal service monitoring data to Datadog.",
+		Description: "Use this data source to list the APM services reporting traces or Universal Service Monitoring (USM) data to Datadog.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource Parameters
 			"filter_env": schema.StringAttribute{
