@@ -83,5 +83,6 @@ var datadogPowerpackTopologyMapTestAsserts = []string{
 }
 
 func TestAccDatadogPowerpackTopologyMap(t *testing.T) {
+	t.Skip(topologyMapClientBugSkipReason)
 	testAccDatadogPowerpackWidgetUtil(t, datadogPowerpackTopologyMapTest, "datadog_powerpack.topology_map_powerpack", datadogPowerpackTopologyMapTestAsserts)
 }

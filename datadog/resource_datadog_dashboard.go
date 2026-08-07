@@ -5662,7 +5662,7 @@ func getTopologyQuerySchema() *schema.Schema {
 					Description:      "The data source for the Topology request ('service_map' or 'data_streams').",
 					Type:             schema.TypeString,
 					Required:         true,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTopologyQueryDataSourceFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTopologyQueryDataStreamsDataSourceFromValue, datadogV1.NewTopologyQueryServiceMapDataSourceFromValue),
 				},
 				"service": {
 					Description: "The ID of the service to map.",
@@ -5680,91 +5680,166 @@ func getTopologyQuerySchema() *schema.Schema {
 	}
 }
 
-func buildDatadogTopologyMapDefinition(terraformDefinition map[string]interface{}) *datadogV1.TopologyMapWidgetDefinition {
-	datadogDefinition := datadogV1.NewTopologyMapWidgetDefinitionWithDefaults()
-
-	// Required params
-	terraformRequests := terraformDefinition["request"].([]interface{})
-	datadogDefinition.Requests = *buildDatadogTopologyRequests(&terraformRequests)
-	// Optional params
-	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetTitle(v)
-	}
-	if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetTitleSize(v)
-	}
-	if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
-	}
-	if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
-		datadogDefinition.SetDescription(v)
-	}
-	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
-		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
-	}
-	return datadogDefinition
-}
-func buildDatadogTopologyRequests(terraformRequests *[]interface{}) *[]datadogV1.TopologyRequest {
-	datadogRequests := make([]datadogV1.TopologyRequest, len(*terraformRequests))
-	for i, request := range *terraformRequests {
+// isTopologyDataStreamsRequest returns whether a terraform topology request's query
+// targets the "data_streams" data source rather than "service_map".
+func isTopologyDataStreamsRequest(terraformRequests []interface{}) bool {
+	for _, request := range terraformRequests {
 		if request == nil {
 			continue
 		}
 		terraformRequest := request.(map[string]interface{})
-		// Build TopologyRequest
-		datadogTopologyRequest := datadogV1.NewTopologyRequest()
+		if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			topologyQuery := v[0].(map[string]interface{})
+			return topologyQuery["data_source"].(string) == string(datadogV1.TOPOLOGYQUERYDATASTREAMSDATASOURCE_DATA_STREAMS)
+		}
+	}
+	return false
+}
+
+func buildDatadogTopologyMapDefinition(terraformDefinition map[string]interface{}) *datadogV1.TopologyMapWidgetDefinition {
+	terraformRequests := terraformDefinition["request"].([]interface{})
+
+	var datadogDefinition datadogV1.TopologyMapWidgetDefinition
+	if isTopologyDataStreamsRequest(terraformRequests) {
+		dataStreamsDefinition := datadogV1.NewTopologyMapWidgetDefinitionDataStreamsWithDefaults()
+		dataStreamsDefinition.Requests = buildDatadogTopologyDataStreamsRequests(terraformRequests)
+		if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+			dataStreamsDefinition.SetTitle(v)
+		}
+		if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+			dataStreamsDefinition.SetTitleSize(v)
+		}
+		if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+			dataStreamsDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+		}
+		if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+			dataStreamsDefinition.SetDescription(v)
+		}
+		if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+			dataStreamsDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
+		}
+		datadogDefinition = datadogV1.TopologyMapWidgetDefinitionDataStreamsAsTopologyMapWidgetDefinition(dataStreamsDefinition)
+	} else {
+		serviceMapDefinition := datadogV1.NewTopologyMapWidgetDefinitionServiceMapWithDefaults()
+		serviceMapDefinition.Requests = buildDatadogTopologyServiceMapRequests(terraformRequests)
+		if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+			serviceMapDefinition.SetTitle(v)
+		}
+		if v, ok := terraformDefinition["title_size"].(string); ok && len(v) != 0 {
+			serviceMapDefinition.SetTitleSize(v)
+		}
+		if v, ok := terraformDefinition["title_align"].(string); ok && len(v) != 0 {
+			serviceMapDefinition.SetTitleAlign(datadogV1.WidgetTextAlign(v))
+		}
+		if v, ok := terraformDefinition["description"].(string); ok && len(v) != 0 {
+			serviceMapDefinition.SetDescription(v)
+		}
+		if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
+			serviceMapDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
+		}
+		datadogDefinition = datadogV1.TopologyMapWidgetDefinitionServiceMapAsTopologyMapWidgetDefinition(serviceMapDefinition)
+	}
+	return &datadogDefinition
+}
+
+func buildDatadogTopologyDataStreamsRequests(terraformRequests []interface{}) []datadogV1.TopologyRequestDataStreams {
+	datadogRequests := make([]datadogV1.TopologyRequestDataStreams, len(terraformRequests))
+	for i, request := range terraformRequests {
+		if request == nil {
+			continue
+		}
+		terraformRequest := request.(map[string]interface{})
+		datadogTopologyRequest := datadogV1.NewTopologyRequestDataStreams()
 		if v, ok := terraformRequest["request_type"].(string); ok && len(v) != 0 {
 			datadogTopologyRequest.SetRequestType(datadogV1.TopologyRequestType(v))
 		}
 		if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
 			topologyQuery := v[0].(map[string]interface{})
-			datadogTopologyRequest.Query = buildDatadogTopologyQuery(topologyQuery)
+			datadogQuery := datadogV1.NewTopologyQueryDataStreamsWithDefaults()
+			datadogQuery.SetDataSource(datadogV1.TOPOLOGYQUERYDATASTREAMSDATASOURCE_DATA_STREAMS)
+			datadogQuery.SetService(topologyQuery["service"].(string))
+			datadogQuery.SetFilters(buildTopologyFilters(topologyQuery["filters"].([]interface{})))
+			datadogTopologyRequest.Query = datadogQuery
 		}
-
 		datadogRequests[i] = *datadogTopologyRequest
 	}
-	return &datadogRequests
+	return datadogRequests
 }
-func buildDatadogTopologyQuery(terraformQuery map[string]interface{}) *datadogV1.TopologyQuery {
-	datadogQuery := datadogV1.NewTopologyQuery()
-	// Required params
-	datadogQuery.SetDataSource(datadogV1.TopologyQueryDataSource(terraformQuery["data_source"].(string)))
-	datadogQuery.SetService(terraformQuery["service"].(string))
-	terraformFilters := terraformQuery["filters"].([]interface{})
+
+func buildDatadogTopologyServiceMapRequests(terraformRequests []interface{}) []datadogV1.TopologyRequestServiceMap {
+	datadogRequests := make([]datadogV1.TopologyRequestServiceMap, len(terraformRequests))
+	for i, request := range terraformRequests {
+		if request == nil {
+			continue
+		}
+		terraformRequest := request.(map[string]interface{})
+		datadogTopologyRequest := datadogV1.NewTopologyRequestServiceMap()
+		if v, ok := terraformRequest["request_type"].(string); ok && len(v) != 0 {
+			datadogTopologyRequest.SetRequestType(datadogV1.TopologyRequestType(v))
+		}
+		if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			topologyQuery := v[0].(map[string]interface{})
+			datadogQuery := datadogV1.NewTopologyQueryServiceMapWithDefaults()
+			datadogQuery.SetDataSource(datadogV1.TOPOLOGYQUERYSERVICEMAPDATASOURCE_SERVICE_MAP)
+			datadogQuery.SetService(topologyQuery["service"].(string))
+			datadogQuery.SetFilters(buildTopologyFilters(topologyQuery["filters"].([]interface{})))
+			datadogTopologyRequest.Query = datadogQuery
+		}
+		datadogRequests[i] = *datadogTopologyRequest
+	}
+	return datadogRequests
+}
+
+func buildTopologyFilters(terraformFilters []interface{}) []string {
 	datadogFilters := make([]string, len(terraformFilters))
 	for i, terraformFilter := range terraformFilters {
 		datadogFilters[i] = terraformFilter.(string)
 	}
-	datadogQuery.SetFilters(datadogFilters)
-
-	return datadogQuery
+	return datadogFilters
 }
 
 func buildTerraformTopologyMapDefinition(datadogDefinition *datadogV1.TopologyMapWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 
-	// Required params
-	terraformDefinition["request"] = buildTerraformTopologyRequests(&datadogDefinition.Requests)
-
-	// Optional params
-	if v, ok := datadogDefinition.GetTitleOk(); ok {
-		terraformDefinition["title"] = *v
-	}
-	if v, ok := datadogDefinition.GetTitleSizeOk(); ok {
-		terraformDefinition["title_size"] = *v
-	}
-	if v, ok := datadogDefinition.GetTitleAlignOk(); ok {
-		terraformDefinition["title_align"] = *v
-	}
-	if v, ok := datadogDefinition.GetDescriptionOk(); ok {
-		terraformDefinition["description"] = *v
-	}
-	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
-		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
+	if dataStreamsDefinition := datadogDefinition.TopologyMapWidgetDefinitionDataStreams; dataStreamsDefinition != nil {
+		terraformDefinition["request"] = buildTerraformTopologyDataStreamsRequests(&dataStreamsDefinition.Requests)
+		if v, ok := dataStreamsDefinition.GetTitleOk(); ok {
+			terraformDefinition["title"] = *v
+		}
+		if v, ok := dataStreamsDefinition.GetTitleSizeOk(); ok {
+			terraformDefinition["title_size"] = *v
+		}
+		if v, ok := dataStreamsDefinition.GetTitleAlignOk(); ok {
+			terraformDefinition["title_align"] = *v
+		}
+		if v, ok := dataStreamsDefinition.GetDescriptionOk(); ok {
+			terraformDefinition["description"] = *v
+		}
+		if v, ok := dataStreamsDefinition.GetCustomLinksOk(); ok {
+			terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
+		}
+	} else if serviceMapDefinition := datadogDefinition.TopologyMapWidgetDefinitionServiceMap; serviceMapDefinition != nil {
+		terraformDefinition["request"] = buildTerraformTopologyServiceMapRequests(&serviceMapDefinition.Requests)
+		if v, ok := serviceMapDefinition.GetTitleOk(); ok {
+			terraformDefinition["title"] = *v
+		}
+		if v, ok := serviceMapDefinition.GetTitleSizeOk(); ok {
+			terraformDefinition["title_size"] = *v
+		}
+		if v, ok := serviceMapDefinition.GetTitleAlignOk(); ok {
+			terraformDefinition["title_align"] = *v
+		}
+		if v, ok := serviceMapDefinition.GetDescriptionOk(); ok {
+			terraformDefinition["description"] = *v
+		}
+		if v, ok := serviceMapDefinition.GetCustomLinksOk(); ok {
+			terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
+		}
 	}
 	return terraformDefinition
 }
-func buildTerraformTopologyRequests(datadogTopologyRequests *[]datadogV1.TopologyRequest) *[]map[string]interface{} {
+
+func buildTerraformTopologyDataStreamsRequests(datadogTopologyRequests *[]datadogV1.TopologyRequestDataStreams) *[]map[string]interface{} {
 	terraformRequests := make([]map[string]interface{}, len(*datadogTopologyRequests))
 	for i, datadogRequest := range *datadogTopologyRequests {
 		terraformRequest := map[string]interface{}{}
@@ -5772,22 +5847,36 @@ func buildTerraformTopologyRequests(datadogTopologyRequests *[]datadogV1.Topolog
 			terraformRequest["request_type"] = *v
 		}
 		if v, ok := datadogRequest.GetQueryOk(); ok {
-			terraformQuery := buildTerraformTopologyQuery(v)
+			terraformQuery := map[string]interface{}{
+				"data_source": string(v.GetDataSource()),
+				"service":     v.GetService(),
+				"filters":     v.GetFilters(),
+			}
 			terraformRequest["query"] = []map[string]interface{}{terraformQuery}
 		}
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
 }
-func buildTerraformTopologyQuery(datadogQuery *datadogV1.TopologyQuery) map[string]interface{} {
-	terraformQuery := map[string]interface{}{}
 
-	// Required params
-	terraformQuery["data_source"] = datadogQuery.GetDataSource()
-	terraformQuery["service"] = datadogQuery.GetService()
-	terraformQuery["filters"] = datadogQuery.GetFilters()
-
-	return terraformQuery
+func buildTerraformTopologyServiceMapRequests(datadogTopologyRequests *[]datadogV1.TopologyRequestServiceMap) *[]map[string]interface{} {
+	terraformRequests := make([]map[string]interface{}, len(*datadogTopologyRequests))
+	for i, datadogRequest := range *datadogTopologyRequests {
+		terraformRequest := map[string]interface{}{}
+		if v, ok := datadogRequest.GetRequestTypeOk(); ok {
+			terraformRequest["request_type"] = *v
+		}
+		if v, ok := datadogRequest.GetQueryOk(); ok {
+			terraformQuery := map[string]interface{}{
+				"data_source": string(v.GetDataSource()),
+				"service":     v.GetService(),
+				"filters":     v.GetFilters(),
+			}
+			terraformRequest["query"] = []map[string]interface{}{terraformQuery}
+		}
+		terraformRequests[i] = terraformRequest
+	}
+	return &terraformRequests
 }
 
 //
