@@ -96,6 +96,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteIncidentNotificationTemplate", true)
 	config.SetUnstableOperationEnabled("v2.ListIncidentNotificationTemplates", true)
 
+	// Enable IncidentPostmortemTemplate
+	config.SetUnstableOperationEnabled("v2.CreateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.GetIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.UpdateIncidentPostmortemTemplate", true)
+	config.SetUnstableOperationEnabled("v2.DeleteIncidentPostmortemTemplate", true)
+
 	config.SetUnstableOperationEnabled("v2.ListIncidentUserDefinedFields", true)
 	config.SetUnstableOperationEnabled("v2.CreateIncidentUserDefinedField", true)
 	config.SetUnstableOperationEnabled("v2.GetIncidentUserDefinedField", true)
