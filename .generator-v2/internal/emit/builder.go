@@ -343,9 +343,9 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 	leafFields := b.models[0].Fields
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
-	filterParams, filterUUID := buildFilterParams(search, filterLeaves, &b.unsupported)
-	readArgs, readUUID := buildArgumentViews(read, &b.unsupported)
-	searchArgs, searchUUID := buildArgumentViews(search, &b.unsupported)
+	filterParams, filterUUID, filterStrconv := buildFilterParams(search, filterLeaves, &b.unsupported)
+	readArgs, readUUID, readStrconv := buildArgumentViews(read, &b.unsupported)
+	searchArgs, searchUUID, searchStrconv := buildArgumentViews(search, &b.unsupported)
 	if len(b.unsupported) > 0 {
 		return DataSourceView{}, &UnsupportedEmitError{Nodes: b.unsupported}
 	}
@@ -397,6 +397,7 @@ func BuildDataSourceView(a *model.Artifact) (DataSourceView, error) {
 		APIStruct:   primary.GoApiStruct,
 		APIAccessor: "Get" + primary.GoApiStruct + strings.TrimPrefix(primary.GoPackage, "datadog"),
 		UsesUUID:    readUUID || searchUUID || filterUUID,
+		UsesStrconv: readStrconv || searchStrconv || filterStrconv,
 		ByID:        byID,
 		Searchable:  searchable,
 		Read:        readView,
@@ -464,14 +465,14 @@ func callHasArgument(call *model.SDKCall, tfName string) bool {
 	return false
 }
 
-func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]SDKArgumentView, bool) {
+func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]SDKArgumentView, bool, bool) {
 	if call == nil || !call.BindingResolved {
-		return nil, false
+		return nil, false, false
 	}
 	var views []SDKArgumentView
-	usesUUID := false
+	usesUUID, usesStrconv := false, false
 	for _, arg := range call.Arguments {
-		expr, uuidVar, uuidSource, reason := sdkArgumentExpression(call.GoPackage, arg)
+		expr, parsedVar, parseCall, reason := sdkArgumentExpression(call.GoPackage, arg)
 		if reason != "" {
 			*unsupported = append(*unsupported, UnsupportedNode{
 				Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: reason,
@@ -479,23 +480,24 @@ func buildArgumentViews(call *model.SDKCall, unsupported *[]UnsupportedNode) ([]
 			continue
 		}
 		views = append(views, SDKArgumentView{
-			Expression: expr, UUIDVar: uuidVar, UUIDSource: uuidSource, TFName: arg.TFName,
+			Expression: expr, ParsedVar: parsedVar, ParseCall: parseCall, TFName: arg.TFName,
 		})
-		usesUUID = usesUUID || uuidVar != ""
+		u, s := parseCallImports(parseCall)
+		usesUUID, usesStrconv = usesUUID || u, usesStrconv || s
 	}
-	return views, usesUUID
+	return views, usesUUID, usesStrconv
 }
 
-func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) ([]FilterParamView, bool) {
+func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupported *[]UnsupportedNode) ([]FilterParamView, bool, bool) {
 	if call == nil {
-		return nil, false
+		return nil, false, false
 	}
 	byName := map[string]model.SDKArgument{}
 	for _, arg := range call.OptionalArguments {
 		byName[arg.TFName] = arg
 	}
 	var params []FilterParamView
-	usesUUID := false
+	usesUUID, usesStrconv := false, false
 	for _, leaf := range leaves {
 		tfName := tfNameOf(leaf.Path)
 		if !call.BindingResolved {
@@ -512,7 +514,7 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 			})
 			continue
 		}
-		expr, uuidVar, uuidSource, reason := sdkArgumentExpression(call.GoPackage, arg)
+		expr, parsedVar, parseCall, reason := sdkArgumentExpression(call.GoPackage, arg)
 		if reason != "" {
 			*unsupported = append(*unsupported, UnsupportedNode{Path: "sdk." + call.GoMethod + "." + arg.Name, Reason: reason})
 			continue
@@ -520,21 +522,46 @@ func buildFilterParams(call *model.SDKCall, leaves []*model.Attribute, unsupport
 		param := FilterParamView{
 			StateField: model.SdkName(tfName), ParamField: model.SdkName(tfName), ValueExpr: expr, Setter: arg.Setter,
 		}
-		if uuidVar != "" {
-			param.UUIDVar, param.UUIDSource, param.TFName = uuidVar, uuidSource, tfName
-			usesUUID = true
+		if parsedVar != "" {
+			param.ParsedVar, param.ParseCall, param.TFName = parsedVar, parseCall, tfName
+			u, s := parseCallImports(parseCall)
+			usesUUID, usesStrconv = usesUUID || u, usesStrconv || s
 		}
 		params = append(params, param)
 	}
-	return params, usesUUID
+	return params, usesUUID, usesStrconv
 }
 
-func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, uuidVar, uuidSource, reason string) {
+// parseCallImports reports which extra import a ParseCall expression needs,
+// based on the parse function it calls.
+func parseCallImports(parseCall string) (usesUUID, usesStrconv bool) {
+	switch {
+	case strings.HasPrefix(parseCall, "uuid."):
+		return true, false
+	case strings.HasPrefix(parseCall, "strconv."):
+		return false, true
+	default:
+		return false, false
+	}
+}
+
+func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, parsedVar, parseCall, reason string) {
 	if arg.Schema == nil || arg.Schema.Kind != model.SchemaKindPrimitive {
 		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
 	}
 	field := goFieldName(arg.TFName)
 	source := "state." + field
+
+	// The id-aliased argument's backing model field is always types.String —
+	// Terraform's resource identity is always a string — regardless of what
+	// type the path parameter it stands in for actually is. Any non-string
+	// Go type must therefore be recovered by parsing the string id, the same
+	// way a uuid-typed id already is, rather than by dispatching on the
+	// OpenAPI parameter's own (here irrelevant) schema type below.
+	if arg.TFName == "id" {
+		return idArgumentExpression(source, arg.GoType)
+	}
+
 	var value string
 	switch arg.Schema.Type {
 	case "string":
@@ -556,12 +583,39 @@ func sdkArgumentExpression(sdkPackage string, arg model.SDKArgument) (expr, uuid
 		return arg.GoType + "(" + value + ")", "", "", ""
 	case "uuid.UUID":
 		name := "parsed" + model.SdkName(arg.TFName)
-		return name, name, value, ""
+		return name, name, "uuid.Parse(" + value + ")", ""
 	}
 	if strings.ContainsAny(arg.GoType, "[]*{}.") || arg.GoType == "interface{}" {
 		return "", "", "", fmt.Sprintf("SDK argument type %s is outside scalar-first support", arg.GoType)
 	}
 	return sdkPackage + "." + arg.GoType + "(" + value + ")", "", "", ""
+}
+
+// idArgumentExpression binds an SDK argument aliased from the "id" attribute,
+// whose model field is always types.String. A string-typed SDK argument reads
+// it directly; every other type is recovered by parsing that string, mirroring
+// the uuid.UUID case sdkArgumentExpression already handles for non-id
+// arguments.
+func idArgumentExpression(source, goType string) (expr, parsedVar, parseCall, reason string) {
+	value := source + ".ValueString()"
+	const name = "parsedId"
+	switch goType {
+	case "string":
+		return value, "", "", ""
+	case "uuid.UUID":
+		return name, name, "uuid.Parse(" + value + ")", ""
+	case "int64":
+		return name, name, "strconv.ParseInt(" + value + ", 10, 64)", ""
+	case "int", "int32":
+		return goType + "(" + name + ")", name, "strconv.ParseInt(" + value + ", 10, 64)", ""
+	case "float64":
+		return name, name, "strconv.ParseFloat(" + value + ", 64)", ""
+	case "float32":
+		return goType + "(" + name + ")", name, "strconv.ParseFloat(" + value + ", 64)", ""
+	case "bool":
+		return name, name, "strconv.ParseBool(" + value + ")", ""
+	}
+	return "", "", "", fmt.Sprintf("id-bound SDK argument type %s is outside scalar-first support", goType)
 }
 
 // flattenedEnvelope is the result of recognizing a singular JSON:API envelope:
@@ -1135,8 +1189,8 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 	}
 
 	inputAttrs, inputFields := buildInputViews(inputLeaves)
-	filterParams, filterUUID := buildFilterParams(call, filterLeaves, &unsupported)
-	callArgs, usesUUID := buildArgumentViews(call, &unsupported)
+	filterParams, filterUUID, filterStrconv := buildFilterParams(call, filterLeaves, &unsupported)
+	callArgs, usesUUID, usesStrconv := buildArgumentViews(call, &unsupported)
 	goName := dsGoName(a.Name)
 
 	// b hosts walk so list-of-object item fields generate their element structs.
@@ -1297,6 +1351,7 @@ func buildPluralView(a *model.Artifact) (DataSourceView, error) {
 		APIStruct:   call.GoApiStruct,
 		APIAccessor: "Get" + call.GoApiStruct + strings.TrimPrefix(call.GoPackage, "datadog"),
 		UsesUUID:    usesUUID || filterUUID,
+		UsesStrconv: usesStrconv || filterStrconv,
 		Read: SDKReadView{
 			Method:             call.GoMethod,
 			Paginated:          call.Paginated,

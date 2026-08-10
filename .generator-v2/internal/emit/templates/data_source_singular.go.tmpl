@@ -14,6 +14,9 @@ import (
 {{- if .UsesFmt }}
 	"fmt"
 {{- end }}
+{{- if .UsesStrconv }}
+	"strconv"
+{{- end }}
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/{{ .SDKPackage }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -83,8 +86,8 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 {{- if not .Searchable }}
 
 {{ range .Read.Arguments }}
-{{- if .UUIDVar }}
-	{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+{{- if .ParsedVar }}
+	{{ .ParsedVar }}, err := {{ .ParseCall }}
 	if err != nil {
 		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 		return
@@ -115,8 +118,8 @@ func (d *{{ .GoName }}DataSource) Read(ctx context.Context, request datasource.R
 
 	if !state.ID.IsNull() {
 {{ range .Read.Arguments }}
-{{- if .UUIDVar }}
-		{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+{{- if .ParsedVar }}
+		{{ .ParsedVar }}, err := {{ .ParseCall }}
 		if err != nil {
 			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 			return
@@ -197,8 +200,8 @@ func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .Go
 	var optionalParams {{ .SDKPackage }}.{{ .Search.OptionalParamsType }}
 {{- range .Search.Filters }}
 	if !state.{{ .StateField }}.IsNull() {
-{{- if .UUIDVar }}
-		{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+{{- if .ParsedVar }}
+		{{ .ParsedVar }}, err := {{ .ParseCall }}
 		if err != nil {
 			response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 			return
@@ -213,8 +216,8 @@ func (d *{{ .GoName }}DataSource) updateState(ctx context.Context, state *{{ .Go
 {{- end }}
 {{ end }}
 {{- range .Search.Arguments }}
-{{- if .UUIDVar }}
-	{{ .UUIDVar }}, err := uuid.Parse({{ .UUIDSource }})
+{{- if .ParsedVar }}
+	{{ .ParsedVar }}, err := {{ .ParseCall }}
 	if err != nil {
 		response.Diagnostics.AddError("Invalid {{ .TFName }}", err.Error())
 		return

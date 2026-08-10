@@ -169,7 +169,7 @@ var _ = Describe("BuildDataSourceView", func() {
 		Expect(view.UsesUUID).To(BeTrue())
 		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
 			{Expression: "state.AccountId.ValueInt64()", TFName: "account_id"},
-			{Expression: "parsedId", UUIDVar: "parsedId", UUIDSource: "state.ID.ValueString()", TFName: "id"},
+			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "uuid.Parse(state.ID.ValueString())", TFName: "id"},
 		}))
 
 		rendered, err := RenderDataSource(view)
@@ -177,6 +177,30 @@ var _ = Describe("BuildDataSourceView", func() {
 		src := string(rendered)
 		Expect(src).To(ContainSubstring(`parsedId, err := uuid.Parse(state.ID.ValueString())`))
 		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, state.AccountId.ValueInt64(), parsedId)`))
+	})
+
+	It("parses a non-string id-aliased argument back to its SDK integer type", func() {
+		op := incidentTypeOperation()
+		op.Path = "/api/v2/incident-types/{incident_type_id}"
+		op.SDKBinding = &model.SDKOperationBinding{Required: []model.SDKArgument{
+			{Name: "incident_type_id", GoName: "incidentTypeId", GoType: "int64", Location: "path", Schema: prim("integer", "The incident type ID.")},
+		}}
+
+		art, err := model.BuildArtifact(op)
+		Expect(err).NotTo(HaveOccurred())
+		view, err := BuildDataSourceView(art)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(view.UsesStrconv).To(BeTrue())
+		Expect(view.Read.Arguments).To(Equal([]SDKArgumentView{
+			{Expression: "parsedId", ParsedVar: "parsedId", ParseCall: "strconv.ParseInt(state.ID.ValueString(), 10, 64)", TFName: "id"},
+		}))
+
+		rendered, err := RenderDataSource(view)
+		Expect(err).NotTo(HaveOccurred())
+		src := string(rendered)
+		Expect(src).To(ContainSubstring(`"strconv"`))
+		Expect(src).To(ContainSubstring(`parsedId, err := strconv.ParseInt(state.ID.ValueString(), 10, 64)`))
+		Expect(src).To(ContainSubstring(`GetIncidentType(d.Auth, parsedId)`))
 	})
 
 	It("renders a resolved singleton call without inventing an id argument", func() {
@@ -505,7 +529,7 @@ var _ = Describe("BuildDataSourceView singular search", func() {
 			Expect(view.UsesUUID).To(BeTrue())
 			Expect(view.Search.Filters).To(Equal([]FilterParamView{{
 				StateField: "FilterName", ParamField: "FilterName", ValueExpr: "parsedFilterName", Setter: "WithFilterName",
-				UUIDVar: "parsedFilterName", UUIDSource: "state.FilterName.ValueString()", TFName: "filter_name",
+				ParsedVar: "parsedFilterName", ParseCall: "uuid.Parse(state.FilterName.ValueString())", TFName: "filter_name",
 			}}))
 
 			rendered, err := RenderDataSource(view)
